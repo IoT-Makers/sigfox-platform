@@ -10,16 +10,41 @@
 
 <div class="app-body">
     <div class="sidebar">
-        <nav class="sidebar-nav">
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link" routerLinkActive="active" [routerLink]="['/dashboard']"><i class="icon-speedometer"></i> Dashboard <span class="badge badge-info"></span></a>
-                </li>
-            </ul>
-          <ul class="nav">
+      <nav class="sidebar-nav">
+        <ul class="nav">
+          <li class="nav-title">
+            Dashboard
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/dashboard']"><i class="icon-speedometer"></i> Dashboard <span class="badge badge-info">NEW</span></a>
+          </li>
+          <li class="divider"></li>
+          <li class="nav-title">
+            Logic
+          </li>
             <li class="nav-item">
               <a class="nav-link" routerLinkActive="active" [routerLink]="['/devices']"><i class="icon-energy"></i> Devices <span class="badge badge-info"></span></a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLinkActive="active" [routerLink]="['/categories']"><i class="icon-briefcase"></i> Categories <span class="badge badge-info"></span></a>
+            </li>
+          <li class="nav-item nav-dropdown" routerLinkActive="open">
+            <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-star"></i> Pages</a>
+            <ul class="nav-dropdown-items">
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/login']"><i class="icon-star"></i> Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/register']"><i class="icon-star"></i> Register</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/404']"><i class="icon-star"></i> Error 404</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/500']"><i class="icon-star"></i> Error 500</a>
+              </li>
+            </ul>
+          </li>
           </ul>
         </nav>
     </div>

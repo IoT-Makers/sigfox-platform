@@ -17,6 +17,7 @@ import { AppRoutingModule } from './app.routing';
 
 //Layouts
 import { FullLayoutComponent } from './layouts/full-layout.component';
+import { SimpleLayoutComponent } from './layouts/simple-layout.component';
 import { AssetsComponent } from './assets/assets.component';
 
 //SDK
@@ -35,6 +36,7 @@ import { SDKBrowserModule } from './shared/sdk/index';
   declarations: [
     AppComponent,
     FullLayoutComponent,
+    SimpleLayoutComponent,
     NAV_DROPDOWN_DIRECTIVES,
     BreadcrumbsComponent,
     SIDEBAR_TOGGLE_DIRECTIVES,
