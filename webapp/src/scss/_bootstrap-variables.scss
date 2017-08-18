@@ -1,0 +1,98 @@
+// Bootstrap overrides
+
+// Colors
+//
+// Grayscale and brand colors for use across Bootstrap.
+
+$gray-dark:                 #2a2c36;
+$gray:                      #9fa1a3; //#5d76a8;
+$gray-light:                #d1d4d7; //#9faecb;
+$gray-lighter:              #e4e5e6; //#c0cadd
+$gray-lightest:             #f8f9fa; //#e1e6ef
+
+$brand-primary:             #20a8d8;
+$brand-success:             #4dbd74;
+$brand-info:                #63c2de;
+$brand-warning:             #f8cb00;
+$brand-danger:              #f86c6b;
+
+// Options
+//
+// Quickly modify global styling by enabling or disabling optional features.
+
+$enable-transitions:        true;
+$enable-rounded:            false;
+
+// Spacing
+//
+// Control the default styling of most Bootstrap elements by modifying these
+// variables. Mostly focused on spacing.
+
+$spacer:   1rem !default;
+$spacer-x: $spacer !default;
+$spacer-y: $spacer !default;
+$spacers: (
+  q: (
+    x:   ($spacer-x * 0.25),
+    y:   ($spacer-y * 0.25)
+  ),
+  h: (
+    x:   ($spacer-x * 0.5),
+    y:   ($spacer-y * 0.5)
+  ),
+  0: (
+    x:   0,
+    y:   0
+  ),
+  1: (
+    x:   $spacer-x,
+    y:   $spacer-y
+  ),
+  2: (
+    x:   ($spacer-x * 1.5),
+    y:   ($spacer-y * 1.5)
+  ),
+  3: (
+    x:   ($spacer-x * 3),
+    y:   ($spacer-y * 3)
+  )
+);
+
+// Body
+//
+// Settings for the `<body>` element.
+
+$body-bg:                    #e4e5e6;
+$body-color:                 #3d3f42;
+
+// Typography
+//
+// Font, line-height, and color for body text, headings, and more.
+
+$font-size-base:             0.875rem;
+
+// Breadcrumbs
+
+$breadcrumb-padding-x:          2rem !default;
+$breadcrumb-bg:                 transparent;
+$breadcrumb-divider-color:      $gray;
+$breadcrumb-active-color:       $gray;
+
+// Cards
+
+$card-border-color:        $gray-light;
+$card-cap-bg:              $gray-lightest;
+
+// Dropdowns
+
+$dropdown-padding-y:             0;
+$dropdown-border-color:          $gray-lighter;
+$dropdown-divider-bg:            $gray-lightest;
+
+// Progress bars
+
+$progress-bg:                    darken($gray-lightest,1%);
+
+// Forms
+
+$input-border-color:             $gray-light;

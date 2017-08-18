@@ -1,0 +1,44 @@
+{
+  "name": "Category",
+  "plural": "Categories",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "FireLoop": true,
+    "TimeStamp": {
+      "required": false
+    },
+    "Stats": [
+      {
+        "method": "stats",
+        "endpoint": "/stats",
+        "description": "Statistical information for Asset registers.",
+        "type": "model",
+        "count": {
+          "on": "createdAt",
+          "by": "index"
+        }
+      }
+    ]
+  },
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "properties": {
+      "type": "object"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "Devices": {
+      "type": "hasMany",
+      "model": "Device"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

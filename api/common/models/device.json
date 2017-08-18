@@ -1,0 +1,62 @@
+{
+  "name": "Device",
+  "plural": "Devices",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "FireLoop": true,
+    "TimeStamp": {
+      "required": false
+    },
+    "Stats": [
+      {
+        "method": "stats",
+        "endpoint": "/stats",
+        "description": "Statistical information for Device registers.",
+        "type": "model",
+        "count": {
+          "on": "createdAt",
+          "by": "index"
+        }
+      }
+    ]
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "id": true,
+      "required": true
+    },
+    "creation": {
+      "type": "date"
+    },
+    "name": {
+      "type": "string"
+    },
+    "last_seen": {
+      "type": "date"
+    },
+    "dl_payload": {
+      "type": "string"
+    },
+    "last_known_location": {
+      "type": "GeoPoint"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "Messages": {
+      "type": "hasMany",
+      "model": "Message"
+    },
+    "Category": {
+      "type": "belongsTo",
+      "model": "Category"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

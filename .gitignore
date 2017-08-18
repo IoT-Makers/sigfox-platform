@@ -1,0 +1,5 @@
+**/node_modules
+api/node_modules
+api/dist
+webapp/node_modules
+.DS_store

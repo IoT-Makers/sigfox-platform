@@ -1,0 +1,76 @@
+{
+  "name": "Message",
+  "plural": "Messages",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "FireLoop": true,
+    "TimeStamp": {
+      "required": false
+    },
+    "Stats": [
+      {
+        "method": "stats",
+        "endpoint": "/stats",
+        "description": "Statistical information for Message registers.",
+        "type": "model",
+        "count": {
+          "on": "createdAt",
+          "by": "index"
+        }
+      }
+    ]
+  },
+  "properties": {
+    "data": {
+      "type": "string",
+      "required": true
+    },
+    "time": {
+      "type": "number",
+      "required": true
+    },
+    "RSSI": {
+      "type": "number"
+    },
+    "seqNumber": {
+      "type": "number"
+    },
+    "GPS": {
+      "type": {
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        }
+      }
+    },
+    "geoloc_sigfox": {
+      "type": "GeoPoint"
+    },
+    "parsed_data": {
+      "type": "object"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "Device": {
+      "type": "belongsTo",
+      "model": "Device"
+    },
+    "MessageProperty": {
+      "type": "hasMany",
+      "model": "MessageProperty"
+    },
+    "BaseStation": {
+      "type": "hasMany",
+      "model": "BaseStation"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

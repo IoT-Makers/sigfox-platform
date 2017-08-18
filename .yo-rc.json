@@ -1,0 +1,25 @@
+{
+  "generator-fireloop": {
+    "version": "1.0.0-beta.2.6",
+    "clients": {
+      "api": {
+        "path": "./api",
+        "type": "server"
+      },
+      "webapp": {
+        "path": "./webapp",
+        "type": "ng2web",
+        "name": "webapp",
+        "sdkPath": "webapp/src/app/shared/sdk"
+      }
+    },
+    "promptValues": {
+      "sdkFeatures": [
+        "Enable PubSub + IO + FireLoop functionality",
+        "Generate ONLY FireLoop SDK + Auth Services",
+        "Enable NGRX functionality",
+        "Add default values in models"
+      ]
+    }
+  }
+}

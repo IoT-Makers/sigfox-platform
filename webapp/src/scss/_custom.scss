@@ -1,0 +1,82 @@
+// Here you can add other styles
+.navbar {
+
+  .form-inline {
+    i {
+      color: $navbar-color;
+    }
+    .form-control {
+      min-width: 250px;
+      color: $navbar-color;
+      border: 0;
+
+      &::placeholder {
+        color: $navbar-color;
+      }
+    }
+    .form-control::-webkit-input-placeholder { color: $navbar-color; }
+    .form-control:-moz-placeholder { color: $navbar-color; }
+    .form-control::-moz-placeholder { color: $navbar-color; }
+    .form-control:-ms-input-placeholder { color: $navbar-color; }
+  }
+}
+
+$sidebar-header-height: 200px;
+
+.sidebar {
+  .sidebar-header {
+    height: $sidebar-header-height;
+    padding-bottom: 10px;
+    text-align: center;
+    background: $sidebar-header-bg;
+
+    .img-avatar {
+      width: 80px;
+      margin: 20px auto 10px;
+      border-radius: 50em;
+    }
+
+    .text-muted {
+      margin-top: -5px;
+    }
+
+    > .btn-group {
+      margin-top: 10px;
+    }
+
+    .btn-link {
+      color: $text-muted;
+
+      .badge {
+        top: -8px;
+      }
+
+      &:hover {
+        color: $sidebar-color;
+        text-decoration: none;
+      }
+    }
+  }
+  .sidebar-header + .sidebar-nav {
+    height: calc(100vh - #{$navbar-height} - #{$sidebar-header-height}) !important;
+  }
+}
+
+@include media-breakpoint-up(sm) {
+  .sidebar-compact {
+    .sidebar {
+      .sidebar-header {
+        height: 50px;
+        padding: 0;
+
+        .img-avatar {
+          width: $sidebar-compact-width - 10px;
+          margin: 5px auto;
+        }
+        div {
+          display: none;
+        }
+      }
+    }
+  }
+}
