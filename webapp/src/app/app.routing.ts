@@ -34,6 +34,14 @@ export const routes: Routes = [
         path: 'parsers',
         loadChildren: './parsers/parsers.module#ParsersModule'
       },
+      {
+        path: 'messages',
+        loadChildren: './messages/messages.module#MessagesModule'
+      },
+      {
+        path: 'base-stations',
+        loadChildren: './base-stations/base-stations.module#BaseStationsModule'
+      },
     ]
   },
   {
