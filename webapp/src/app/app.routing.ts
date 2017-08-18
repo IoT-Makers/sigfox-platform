@@ -30,6 +30,10 @@ export const routes: Routes = [
         path: 'categories',
         loadChildren: './categories/categories.module#CategoriesModule'
       },
+      {
+        path: 'parsers',
+        loadChildren: './parsers/parsers.module#ParsersModule'
+      },
     ]
   },
   {
