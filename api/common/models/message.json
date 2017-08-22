@@ -50,7 +50,15 @@
       }
     },
     "geoloc_sigfox": {
-      "type": "GeoPoint"
+      "type": {
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        },
+        "precision": "number"
+      }
     },
     "parsed_data": {
       "type": "object"

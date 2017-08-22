@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 // import { Router } from '@angular/router';
-import { Message, FireLoopRef } from '../shared/sdk/models';
-import { RealTime, MessageApi } from '../shared/sdk/services';
+import { Message, Device, Category, FireLoopRef } from '../shared/sdk/models';
+import { RealTime, MessageApi, DeviceApi, CategoryApi } from '../shared/sdk/services';
 import {count} from "rxjs/operator/count";
 
 @Component({
@@ -14,20 +14,60 @@ export class DashboardComponent implements OnInit {
   private messageRef : FireLoopRef<Message>;
   private countMessages:number = 0;
 
+  private device    : Device   = new Device();
+  private devices   : Device[] = new Array<Device>();
+  private deviceRef : FireLoopRef<Device>;
+  private countDevices:number = 0;
 
-  constructor(private rt: RealTime, private messageApi: MessageApi) {
+  private category    : Category   = new Category();
+  private categories   : Category[] = new Array<Category>();
+  private categoryRef : FireLoopRef<Category>;
+  private countCategories:number = 0;
+
+  public data;
+
+
+  constructor(private rt: RealTime,
+              private messageApi: MessageApi,
+              private deviceApi: DeviceApi,
+              private categoryApi: CategoryApi ) {
 
     this.rt.onReady().subscribe(() => {
+
+      //Messages
       this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-      this.messageRef.on('change',
-        { limit: 100, order: 'id DESC' }
-      ).subscribe((messages: Message[]) => {
+      this.messageRef.on('change').subscribe((messages: Message[]) => {
+        this.data = messages;
         this.messages = messages;
         console.log(this.messages);
         this.messageApi.count().subscribe(result => {
           console.log(messageApi);
           console.log("count: ", result);
           this.countMessages = result.count;
+        });
+      });
+
+      //Devices
+      this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+      this.deviceRef.on('change').subscribe((devices: Device[]) => {
+        this.devices = devices;
+        console.log(this.devices);
+        this.deviceApi.count().subscribe(result => {
+          console.log(deviceApi);
+          console.log("count: ", result);
+          this.countDevices = result.count;
+        });
+      });
+
+      //Categories
+      this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
+      this.categoryRef.on('change').subscribe((categories: Category[]) => {
+        this.categories = categories;
+        console.log(this.categories);
+        this.categoryApi.count().subscribe(result => {
+          console.log(categoryApi);
+          console.log("count: ", result);
+          this.countCategories = result.count;
         });
       });
     });
@@ -46,6 +86,56 @@ export class DashboardComponent implements OnInit {
   remove(message: Message): void {
     this.messageRef.remove(message).subscribe();
   }
+
+  // events
+  public chartClicked(e:any):void {
+    console.log(e);
+  }
+
+  public chartHovered(e:any):void {
+    console.log(e);
+  }
+
+  // lineChart
+  public lineChartData: Array<any> = [
+    {data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A'},
+    {data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B'},
+    {data: [18, 48, 77, 9, 100, 27, 40], label: 'Series C'}
+  ];
+  public lineChartLabels: Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+  public lineChartOptions: any = {
+    animation: false,
+    responsive: true
+  };
+  public lineChartColours: Array<any> = [
+    { // grey
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // dark grey
+      backgroundColor: 'rgba(77,83,96,0.2)',
+      borderColor: 'rgba(77,83,96,1)',
+      pointBackgroundColor: 'rgba(77,83,96,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(77,83,96,1)'
+    },
+    { // grey
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    }
+  ];
+  public lineChartLegend: boolean = true;
+  public lineChartType: string = 'line';
+
 
   ngOnInit(): void {
     //console.log(this.messages);

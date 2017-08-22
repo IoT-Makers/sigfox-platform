@@ -1,3 +1,58 @@
-<p>
-  parsers works!
-</p>
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="icon-calculator"></i> Parsers
+        </div>
+        <div class="card-block" *ngFor="let parser of parsers; let i = index">
+          <p class="text-uppercase">{{parser.name}}</p>
+          <div class="row">
+            <div class="col col-6">
+              <p> {{parser.description}}</p>
+              <div class="input-group">
+                <input type="email" id="input2-group2" name="input2-group2" class="form-control" placeholder="Sigfox payload in hexadecimal">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-primary">Test</button>
+                </span>
+                <button type="button" class="btn btn-success" data-toggle="modal" (click)="update(parser)">
+                  Save code
+                </button>
+              </div>
+
+            </div>
+            <div class="col col-6">
+              <div ace-editor
+                   [(text)]="parser.function"
+                   [mode]="'javascript'"
+                   style="min-height: 200px; width:100%; overflow: auto;"></div>
+            </div>
+
+          </div><!--/.row-->
+
+          <!--Danger delete-->
+          <div class="row">
+            <div class="col col-4">
+              <button type="button" class="btn btn-danger text-center" data-toggle="modal" (click)="delete(i, true)">
+                Delete Parser
+              </button>
+            </div>
+            <div class="col col-8" *ngIf="deleteConfirmation[i]">
+              <p class="text-danger">Are you sure?</p>
+              <button type="button" class="btn btn-danger text-center" data-toggle="modal" (click)="remove(parser)" *ngIf="deleteConfirmation[i]">
+                Delete
+              </button>
+              <button type="button" class="btn text-center" data-toggle="modal" (click)="delete(i, false)" *ngIf="deleteConfirmation[i]">
+                Cancel
+              </button>
+            </div>
+          </div>
+
+          <hr>
+
+
+        </div>
+      </div><!--/.col-->
+    </div><!--/.row-->
+  </div>
+</div>

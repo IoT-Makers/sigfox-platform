@@ -2,10 +2,12 @@ import { NgModule } from '@angular/core';
 
 import { BaseStationsComponent } from './base-stations.component';
 import { BaseStationsRoutingModule } from './base-stations-routing.module';
+import {CommonModule} from "@angular/common";
 
 @NgModule({
   imports: [
-    BaseStationsRoutingModule
+    BaseStationsRoutingModule,
+    CommonModule
   ],
   declarations: [ BaseStationsComponent ]
 })

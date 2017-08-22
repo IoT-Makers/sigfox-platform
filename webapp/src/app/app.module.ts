@@ -18,7 +18,7 @@ import { AppRoutingModule } from './app.routing';
 //Layouts
 import { FullLayoutComponent } from './layouts/full-layout.component';
 import { SimpleLayoutComponent } from './layouts/simple-layout.component';
-import { AssetsComponent } from './assets/assets.component';
+//import { AssetsComponent } from './assets/assets.component';
 
 //SDK
 import { SDKBrowserModule } from './shared/sdk/index';
@@ -41,7 +41,7 @@ import { SDKBrowserModule } from './shared/sdk/index';
     BreadcrumbsComponent,
     SIDEBAR_TOGGLE_DIRECTIVES,
     AsideToggleDirective,
-    AssetsComponent
+    //AssetsComponent
   ],
   providers: [{
     provide: LocationStrategy,

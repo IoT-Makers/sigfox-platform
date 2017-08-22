@@ -36,14 +36,16 @@
     "name": {
       "type": "string"
     },
-    "last_seen": {
-      "type": "date"
-    },
     "dl_payload": {
       "type": "string"
     },
     "last_known_location": {
       "type": "GeoPoint"
+    },
+    "properties": {
+      "type": [
+        "object"
+      ]
     }
   },
   "validations": [],

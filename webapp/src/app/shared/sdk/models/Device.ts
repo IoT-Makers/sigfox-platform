@@ -10,9 +10,9 @@ export interface DeviceInterface {
   "id": string;
   "creation"?: Date;
   "name"?: string;
-  "last_seen"?: Date;
   "dl_payload"?: string;
   "last_known_location"?: GeoPoint;
+  "properties"?: Array<any>;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "categoryId"?: number;
@@ -25,9 +25,9 @@ export class Device implements DeviceInterface {
   "id": string = '';
   "creation": Date = new Date(0);
   "name": string = '';
-  "last_seen": Date = new Date(0);
   "dl_payload": string = '';
   "last_known_location": GeoPoint = <any>null;
+  "properties": Array<any> = <any>[];
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "categoryId": number = 0;
@@ -78,10 +78,6 @@ export class Device implements DeviceInterface {
           name: 'name',
           type: 'string'
         },
-        "last_seen": {
-          name: 'last_seen',
-          type: 'Date'
-        },
         "dl_payload": {
           name: 'dl_payload',
           type: 'string'
@@ -89,6 +85,10 @@ export class Device implements DeviceInterface {
         "last_known_location": {
           name: 'last_known_location',
           type: 'GeoPoint'
+        },
+        "properties": {
+          name: 'properties',
+          type: 'Array&lt;any&gt;'
         },
         "createdAt": {
           name: 'createdAt',

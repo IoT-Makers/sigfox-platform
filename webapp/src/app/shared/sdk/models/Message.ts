@@ -2,8 +2,7 @@
 import {
   Device,
   BaseStation,
-  MessageProperty,
-  GeoPoint
+  MessageProperty
 } from '../index';
 
 declare var Object: any;
@@ -13,7 +12,7 @@ export interface MessageInterface {
   "RSSI"?: number;
   "seqNumber"?: number;
   "GPS"?: any;
-  "geoloc_sigfox"?: GeoPoint;
+  "geoloc_sigfox"?: any;
   "parsed_data"?: any;
   "id"?: number;
   "DeviceId"?: string;
@@ -32,7 +31,7 @@ export class Message implements MessageInterface {
   "RSSI": number = 0;
   "seqNumber": number = 0;
   "GPS": any = <any>null;
-  "geoloc_sigfox": GeoPoint = <any>null;
+  "geoloc_sigfox": any = <any>null;
   "parsed_data": any = <any>null;
   "id": number = 0;
   "DeviceId": string = '';
@@ -97,7 +96,7 @@ export class Message implements MessageInterface {
         },
         "geoloc_sigfox": {
           name: 'geoloc_sigfox',
-          type: 'GeoPoint'
+          type: 'any'
         },
         "parsed_data": {
           name: 'parsed_data',
