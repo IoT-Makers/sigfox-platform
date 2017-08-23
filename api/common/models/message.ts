@@ -22,11 +22,33 @@ class Message {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {}
 
-  // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
-    console.log('Message: Before Save');
+    //obtain the model data of ctx
+    let data = JSON.parse(JSON.stringify(ctx.instance));
+
+    console.log(data);
+
+    let device = {
+      id: data.deviceId
+    };
+
+    //access another model inside the method
+    this.model.app.models.Device.findOrCreate(
+      { where:{id: data.deviceId} }, //find
+      device, //create
+      (err: any, createdItem: any, created: boolean) => { //Callback
+        if (err) {
+          console.error('error creating device', err);
+        }
+        (created) ? console.log('created device', createdItem.id)
+          : console.log('found device', createdItem.id);
+      }
+    );
+
     next();
   }
+
+
   // Example Remote Method
   myRemote(next: Function): void {
     this.model.find(next);

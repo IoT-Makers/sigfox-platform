@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 // import { Router } from '@angular/router';
-import { Message, Device, Category, FireLoopRef } from '../shared/sdk/models';
-import { RealTime, MessageApi, DeviceApi, CategoryApi } from '../shared/sdk/services';
+import { Message, Device, Category, Parser, FireLoopRef } from '../shared/sdk/models';
+import { RealTime, MessageApi, DeviceApi, CategoryApi, ParserApi } from '../shared/sdk/services';
 import {count} from "rxjs/operator/count";
 
 @Component({
@@ -19,6 +19,11 @@ export class DashboardComponent implements OnInit {
   private deviceRef : FireLoopRef<Device>;
   private countDevices:number = 0;
 
+  private parser    : Parser   = new Parser();
+  private parsers   : Parser[] = new Array<Parser>();
+  private parserRef : FireLoopRef<Parser>;
+  private countParsers:number = 0;
+
   private category    : Category   = new Category();
   private categories   : Category[] = new Array<Category>();
   private categoryRef : FireLoopRef<Category>;
@@ -30,7 +35,8 @@ export class DashboardComponent implements OnInit {
   constructor(private rt: RealTime,
               private messageApi: MessageApi,
               private deviceApi: DeviceApi,
-              private categoryApi: CategoryApi ) {
+              private categoryApi: CategoryApi,
+              private parserApi: ParserApi) {
 
     this.rt.onReady().subscribe(() => {
 
@@ -70,7 +76,21 @@ export class DashboardComponent implements OnInit {
           this.countCategories = result.count;
         });
       });
+
+      //Parsers
+      this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
+      this.parserRef.on('change').subscribe((parsers: Parser[]) => {
+        this.parsers = parsers;
+        console.log(this.parsers);
+        this.parserApi.count().subscribe(result => {
+          console.log(parserApi);
+          console.log("count: ", result);
+          this.countParsers = result.count;
+        });
+      });
+
     });
+
 
 
   }

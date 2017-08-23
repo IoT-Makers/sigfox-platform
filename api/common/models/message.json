@@ -2,7 +2,7 @@
   "name": "Message",
   "plural": "Messages",
   "base": "PersistedModel",
-  "idInjection": true,
+  "idInjection": false,
   "options": {
     "validateUpsert": true
   },
@@ -25,13 +25,17 @@
     ]
   },
   "properties": {
+    "id":{
+      "type": "string",
+      "required": true,
+      "id": true
+    },
     "data": {
       "type": "string",
       "required": true
     },
     "time": {
-      "type": "number",
-      "required": true
+      "type": "number"
     },
     "RSSI": {
       "type": "number"

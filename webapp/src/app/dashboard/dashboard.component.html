@@ -36,6 +36,19 @@
         </div>
       </div>
     </div>
+    <div class="card">
+      <div class="card-block">
+        <div class="h1 text-muted text-right mb-2">
+          <i class="icon-calculator"></i>
+        </div>
+        <div class="h4 mb-0">{{countParsers}}</div>
+        <small class="text-muted text-uppercase font-weight-bold">Parsers</small>
+        <div class="progress progress-xs mt-1 mb-0">
+          <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+    </div>
+
 
   </div>
 
@@ -56,17 +69,14 @@
           <th style="width: 20%">
             <mfDefaultSorter by="createdAt">Date</mfDefaultSorter>
           </th>
-          <th style="width: 20%">
+          <th style="width: 40%">
             <mfDefaultSorter by="data">Data</mfDefaultSorter>
           </th>
-          <th style="width: 10%">
+          <th style="width: 20%">
             <mfDefaultSorter by="deviceId">Device</mfDefaultSorter>
           </th>
           <th style="width: 20%">
             <mfDefaultSorter by="geolocation">Geoloc</mfDefaultSorter>
-          </th>
-          <th style="width: 20%">
-            <mfDefaultSorter by="seqNumber">Seq Number</mfDefaultSorter>
           </th>
         </tr>
         </thead>
@@ -76,7 +86,6 @@
           <td>{{item.data}}</td>
           <td>{{item.deviceId}}</td>
           <td>{{item.geolocation}}</td>
-          <td>{{item.seqNumber}}</td>
         </tr>
         </tbody>
         <tfoot>
