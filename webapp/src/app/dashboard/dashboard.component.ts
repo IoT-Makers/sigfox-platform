@@ -31,7 +31,6 @@ export class DashboardComponent implements OnInit {
 
   public data;
 
-
   constructor(private rt: RealTime,
               private messageApi: MessageApi,
               private deviceApi: DeviceApi,

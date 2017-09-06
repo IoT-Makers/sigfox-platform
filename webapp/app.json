@@ -1,0 +1,7 @@
+{
+    "scripts": {
+        "dokku": {
+            "predeploy": "echo Predeploy... && ng build --env=prod"
+        }
+    }
+}

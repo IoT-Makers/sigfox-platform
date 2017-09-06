@@ -1,14 +1,14 @@
-import { CoreUIPage } from './app.po';
+import { AppPage } from './app.po';
 
-describe('core-ui App', function() {
-  let page: CoreUIPage;
+describe('bananas App', () => {
+  let page: AppPage;
 
   beforeEach(() => {
-    page = new CoreUIPage();
+    page = new AppPage();
   });
 
-  it('should display message saying app works', () => {
+  it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('app works!');
+    expect(page.getParagraphText()).toEqual('Welcome to app!');
   });
 });

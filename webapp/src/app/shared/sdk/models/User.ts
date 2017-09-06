@@ -10,6 +10,8 @@ export interface UserInterface {
   "email": string;
   "emailVerified"?: boolean;
   "id"?: number;
+  "createdAt"?: Date;
+  "updatedAt"?: Date;
   "password"?: string;
   accessTokens?: AccessToken[];
 }
@@ -20,6 +22,8 @@ export class User implements UserInterface {
   "email": string = '';
   "emailVerified": boolean = false;
   "id": number = 0;
+  "createdAt": Date = new Date(0);
+  "updatedAt": Date = new Date(0);
   "password": string = '';
   accessTokens: AccessToken[] = null;
   constructor(data?: UserInterface) {
@@ -51,8 +55,8 @@ export class User implements UserInterface {
   public static getModelDefinition() {
     return {
       name: 'User',
-      plural: 'Users',
-      path: 'Users',
+      plural: 'users',
+      path: 'users',
       properties: {
         "realm": {
           name: 'realm',
@@ -73,6 +77,14 @@ export class User implements UserInterface {
         "id": {
           name: 'id',
           type: 'number'
+        },
+        "createdAt": {
+          name: 'createdAt',
+          type: 'Date'
+        },
+        "updatedAt": {
+          name: 'updatedAt',
+          type: 'Date'
         },
         "password": {
           name: 'password',

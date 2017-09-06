@@ -8,8 +8,8 @@ export interface MessagePropertyInterface {
   "key": string;
   "value": string;
   "id"?: number;
-  "MessageId"?: number;
-  "messageId"?: number;
+  "MessageId"?: string;
+  "messageId"?: string;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   Message?: Message;
@@ -19,8 +19,8 @@ export class MessageProperty implements MessagePropertyInterface {
   "key": string = '';
   "value": string = '';
   "id": number = 0;
-  "MessageId": number = 0;
-  "messageId": number = 0;
+  "MessageId": string = '';
+  "messageId": string = '';
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   Message: Message = null;
@@ -70,11 +70,11 @@ export class MessageProperty implements MessagePropertyInterface {
         },
         "MessageId": {
           name: 'MessageId',
-          type: 'number'
+          type: 'string'
         },
         "messageId": {
           name: 'messageId',
-          type: 'number'
+          type: 'string'
         },
         "createdAt": {
           name: 'createdAt',

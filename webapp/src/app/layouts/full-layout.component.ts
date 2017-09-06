@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {UserApi} from "../shared/sdk/services/custom/User";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-dashboard',
@@ -6,10 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FullLayoutComponent implements OnInit {
 
-  constructor() { }
+  constructor(private userApi: UserApi, private router: Router) { }
 
   public disabled:boolean = false;
   public status:{isopen:boolean} = {isopen: false};
+
+
+  ngOnInit(): void {}
 
   public toggled(open:boolean):void {
     console.log('Dropdown is now: ', open);
@@ -21,5 +26,10 @@ export class FullLayoutComponent implements OnInit {
     this.status.isopen = !this.status.isopen;
   }
 
-  ngOnInit(): void {}
+  onLogout(): void {
+    this.userApi.logout().subscribe(() => {
+      // some actions on logout
+      this.router.navigate(['/login']);
+    });
+  }
 }

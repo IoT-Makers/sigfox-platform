@@ -48,7 +48,6 @@ class Message {
     next();
   }
 
-
   // Example Remote Method
   myRemote(next: Function): void {
     this.model.find(next);

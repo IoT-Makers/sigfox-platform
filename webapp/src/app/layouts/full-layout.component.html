@@ -1,82 +1,91 @@
 <header class="app-header navbar">
-    <button class="navbar-toggler mobile-sidebar-toggler hidden-lg-up" type="button">&#9776;</button>
-    <a class="navbar-brand" href="#"></a>
-    <ul class="nav navbar-nav hidden-md-down">
-        <li class="nav-item">
-            <a class="nav-link navbar-toggler sidebar-toggler" href="#">&#9776;</a>
-        </li>
-    </ul>
+  <button class="navbar-toggler mobile-sidebar-toggler hidden-lg-up" type="button">&#9776;</button>
+  <a class="navbar-brand" href="#"></a>
+
+  <ul class="nav navbar-nav hidden-md-down">
+    <li class="nav-item">
+      <a class="nav-link navbar-toggler sidebar-toggler" href="#">&#9776;</a>
+    </li>
+  </ul>
+  <ul class="navbar-toggler-right">
+    <li class="nav-item dropdown-item"><a (click)="onLogout()"><i class="fa fa-power-off"></i>Logout</a></li>
+  </ul>
 </header>
 
 <div class="app-body">
-    <div class="sidebar">
-      <nav class="sidebar-nav">
-        <ul class="nav">
-          <li class="nav-title">
-            Dashboard
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLinkActive="active" [routerLink]="['/dashboard']"><i class="icon-speedometer"></i> Dashboard <span class="badge badge-info"></span></a>
-          </li>
-          <li class="divider"></li>
-          <li class="nav-title">
-            Information
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLinkActive="active" [routerLink]="['/categories']"><i class="icon-tag"></i> Categories <span class="badge badge-info"></span></a>
-          </li>
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <ul class="nav">
+        <li class="nav-title">
+          Dashboard
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/dashboard']"><i class="icon-speedometer"></i> Dashboard <span class="badge badge-info"></span></a>
+        </li>
+        <li class="divider"></li>
+        <li class="nav-title">
+          Information
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/categories']"><i class="icon-tag"></i> Categories <span class="badge badge-info"></span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/devices']"><i class="icon-energy"></i> Devices / Assets <span class="badge badge-info"></span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/messages']"><i class="icon-compass"></i> Messages <span class="badge badge-info"></span></a>
+        </li>
+        <li class="nav-title">
+          More
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/parsers']"><i class="icon-calculator"></i> Parsers <span class="badge badge-info"></span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/base-stations']"><i class="fa fa-server"></i> Base Stations <span class="badge badge-info"></span></a>
+        </li>
+        <li class="nav-item nav-dropdown" routerLinkActive="open">
+          <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-notebook"></i> Pages</a>
+          <ul class="nav-dropdown-items">
             <li class="nav-item">
-              <a class="nav-link" routerLinkActive="active" [routerLink]="['/devices']"><i class="icon-energy"></i> Devices / Assets <span class="badge badge-info"></span></a>
+              <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/login']"><i class="icon-star"></i> Login</a>
             </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLinkActive="active" [routerLink]="['/messages']"><i class="icon-compass"></i> Messages <span class="badge badge-info"></span></a>
-          </li>
-          <li class="nav-title">
-            More
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLinkActive="active" [routerLink]="['/parsers']"><i class="icon-calculator"></i> Parsers <span class="badge badge-info"></span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLinkActive="active" [routerLink]="['/base-stations']"><i class="fa fa-server"></i> Base Stations <span class="badge badge-info"></span></a>
-          </li>
-          <li class="nav-item nav-dropdown" routerLinkActive="open">
-            <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-notebook"></i> Pages</a>
-            <ul class="nav-dropdown-items">
-              <li class="nav-item">
-                <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/login']"><i class="icon-star"></i> Login</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/register']"><i class="icon-star"></i> Register</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/404']"><i class="icon-star"></i> Error 404</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/500']"><i class="icon-star"></i> Error 500</a>
-              </li>
-            </ul>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/register']"><i class="icon-star"></i> Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/404']"><i class="icon-star"></i> Error 404</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/500']"><i class="icon-star"></i> Error 500</a>
+            </li>
           </ul>
-        </nav>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/profile']"><i class="icon-user"></i> Profile <span class="badge badge-info"></span></a>
+        </li>
+
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- Breadcrumb -->
+    <ol class="breadcrumb">
+      <breadcrumbs></breadcrumbs>
+    </ol>
+
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
     </div>
-
-    <!-- Main content -->
-    <main class="main">
-
-        <!-- Breadcrumb -->
-        <ol class="breadcrumb">
-            <breadcrumbs></breadcrumbs>
-        </ol>
-
-        <div class="container-fluid">
-            <router-outlet></router-outlet>
-        </div>
-        <!-- /.conainer-fluid -->
-    </main>
+    <!-- /.conainer-fluid -->
+  </main>
 </div>
 
 <!--<footer class="app-footer">-->
-    <!--<a href="https://sigfoxfoundation.org">Sigfox Foundation</a> &copy; 2017.-->
-    <!--<span class="float-right">Author: Louis Moreau</span>-->
+<!--<a href="https://sigfoxfoundation.org">Sigfox Foundation</a> &copy; 2017.-->
+<!--<span class="float-right">Author: Louis Moreau</span>-->
 <!--</footer>-->

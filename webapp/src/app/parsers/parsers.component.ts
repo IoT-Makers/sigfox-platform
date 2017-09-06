@@ -1,7 +1,7 @@
-import { Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
-import { Parser, FireLoopRef } from '../shared/sdk/models';
-import { RealTime, ParserApi } from '../shared/sdk/services';
+import {FireLoopRef, Parser} from '../shared/sdk/models';
+import {ParserApi, RealTime} from '../shared/sdk/services';
 
 @Component({
 

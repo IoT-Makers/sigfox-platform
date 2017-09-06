@@ -1,6 +1,5 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
-import { User } from '../../models/User';
 import { AccessToken } from '../../models/AccessToken';
 import { RoleMapping } from '../../models/RoleMapping';
 import { Role } from '../../models/Role';
@@ -10,6 +9,7 @@ import { Category } from '../../models/Category';
 import { Message } from '../../models/Message';
 import { BaseStation } from '../../models/BaseStation';
 import { MessageProperty } from '../../models/MessageProperty';
+import { User } from '../../models/User';
 
 export interface Models { [name: string]: any }
 
@@ -17,7 +17,6 @@ export interface Models { [name: string]: any }
 export class SDKModels {
 
   private models: Models = {
-    User: User,
     AccessToken: AccessToken,
     RoleMapping: RoleMapping,
     Role: Role,
@@ -27,6 +26,7 @@ export class SDKModels {
     Message: Message,
     BaseStation: BaseStation,
     MessageProperty: MessageProperty,
+    User: User,
     
   };
 

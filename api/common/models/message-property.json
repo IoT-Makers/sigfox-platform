@@ -6,6 +6,24 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "FireLoop": true,
+    "TimeStamp": {
+      "required": false
+    },
+    "Stats": [
+      {
+        "method": "stats",
+        "endpoint": "/stats",
+        "description": "Statistical information for MessageProperty registers.",
+        "type": "model",
+        "count": {
+          "on": "createdAt",
+          "by": "index"
+        }
+      }
+    ]
+  },
   "properties": {
     "key": {
       "type": "string",
@@ -24,23 +42,5 @@
     }
   },
   "acls": [],
-  "methods": {},
-  "mixins": {
-    "FireLoop": true,
-    "TimeStamp": {
-      "required": false
-    },
-    "Stats": [
-      {
-        "method": "stats",
-        "endpoint": "/stats",
-        "description": "Statistical information for MessageProperty registers.",
-        "type": "model",
-        "count": {
-          "on": "createdAt",
-          "by": "index"
-        }
-      }
-    ]
-  }
+  "methods": {}
 }
