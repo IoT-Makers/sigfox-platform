@@ -44,7 +44,7 @@ export class DashboardComponent implements OnInit {
       this.messageRef.on('change').subscribe((messages: Message[]) => {
         this.data = messages;
         this.messages = messages;
-        console.log(this.messages);
+        console.log("Messages", this.messages);
         this.messageApi.count().subscribe(result => {
           console.log(messageApi);
           console.log("count: ", result);
@@ -56,7 +56,7 @@ export class DashboardComponent implements OnInit {
       this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
       this.deviceRef.on('change').subscribe((devices: Device[]) => {
         this.devices = devices;
-        console.log(this.devices);
+        console.log("Devices", this.devices);
         this.deviceApi.count().subscribe(result => {
           console.log(deviceApi);
           console.log("count: ", result);
@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit {
       this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
       this.categoryRef.on('change').subscribe((categories: Category[]) => {
         this.categories = categories;
-        console.log(this.categories);
+        console.log("Categories", this.categories);
         this.categoryApi.count().subscribe(result => {
           console.log(categoryApi);
           console.log("count: ", result);
@@ -80,7 +80,7 @@ export class DashboardComponent implements OnInit {
       this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
       this.parserRef.on('change').subscribe((parsers: Parser[]) => {
         this.parsers = parsers;
-        console.log(this.parsers);
+        console.log("Parsers", this.parsers);
         this.parserApi.count().subscribe(result => {
           console.log(parserApi);
           console.log("count: ", result);

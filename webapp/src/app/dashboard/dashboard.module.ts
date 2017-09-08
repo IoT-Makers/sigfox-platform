@@ -7,8 +7,8 @@ import { ChartsModule } from 'ng2-charts/ng2-charts';
 
 // DataTable
 import { DataTableModule } from 'angular2-datatable';
-import { DataFilterPipe } from '../dashboard/datafilterpipe';
 import { FormsModule } from '@angular/forms';
+import {DataFilterPipe} from "./datafilterpipe";
 
 @NgModule({
   imports: [
@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     ChartsModule,
     DataTableModule,
-    FormsModule,
+    FormsModule
   ],
   declarations: [
     DashboardComponent,

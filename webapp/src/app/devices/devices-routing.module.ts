@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { DevicesComponent } from './devices.component';
+import {DevicesComponent} from "./devices.component";
 
 const routes: Routes = [
   {

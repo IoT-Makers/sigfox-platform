@@ -20,6 +20,7 @@ import {SimpleLayoutComponent} from './layouts/simple-layout.component';
 // Custom
 import {LoginComponent} from "./user/login/login.component";
 import {ProfileComponent} from './user/profile/profile.component';
+import {DevicesComponent} from './devices/devices.component';
 //import { AssetsComponent } from './assets/assets.component';
 // SDK
 import {SDKBrowserModule} from './shared/sdk/index';
@@ -46,6 +47,7 @@ import {AuthGuard} from "./_guards/auth.guard";
     SIDEBAR_TOGGLE_DIRECTIVES,
     AsideToggleDirective,
 
+    // Components
     ProfileComponent,
     LoginComponent
     //AssetsComponent

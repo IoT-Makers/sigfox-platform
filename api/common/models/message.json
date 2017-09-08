@@ -25,14 +25,8 @@
     ]
   },
   "properties": {
-    "id":{
-      "type": "string",
-      "required": true,
-      "id": true
-    },
     "data": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "time": {
       "type": "number"

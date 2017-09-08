@@ -7,6 +7,7 @@ import { SimpleLayoutComponent } from './layouts/simple-layout.component';
 import {LoginComponent} from "./user/login/login.component";
 import {ProfileComponent} from "./user/profile/profile.component";
 import {AuthGuard} from "./_guards/auth.guard";
+import {DevicesComponent} from "./devices/devices.component";
 
 export const routes: Routes = [
   {
@@ -39,7 +40,7 @@ export const routes: Routes = [
       },
       {
         path: 'devices',
-        loadChildren: './devices/devices.module#DevicesModule'
+        loadChildren: './devices/devices.module#DevicesModule',
       },
       {
         path: 'categories',

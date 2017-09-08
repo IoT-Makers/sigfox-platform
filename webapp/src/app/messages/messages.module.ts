@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
     MessagesRoutingModule,
     CommonModule,
     DataTableModule,
-    FormsModule,
+    FormsModule
   ],
   declarations: [
     MessagesComponent,
