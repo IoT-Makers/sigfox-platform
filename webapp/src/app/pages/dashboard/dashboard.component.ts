@@ -1,13 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 // import { Router } from '@angular/router';
-import { Message, Device, Category, Parser, FireLoopRef } from '../shared/sdk/models';
-import { RealTime, MessageApi, DeviceApi, CategoryApi, ParserApi } from '../shared/sdk/services';
+import { Message, Device, Category, Parser, FireLoopRef } from '../../shared/sdk/models';
+import { RealTime, MessageApi, DeviceApi, CategoryApi, ParserApi } from '../../shared/sdk/services';
 import {count} from "rxjs/operator/count";
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
   templateUrl: 'dashboard.component.html'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit,OnDestroy {
+
+  private subscriptions: Subscription[] = new Array<Subscription>();
 
   private message    : Message   = new Message();
   private messages   : Message[] = new Array<Message>();
@@ -37,58 +40,60 @@ export class DashboardComponent implements OnInit {
               private categoryApi: CategoryApi,
               private parserApi: ParserApi) {
 
-    this.rt.onReady().subscribe(() => {
+    this.subscriptions.push(
 
-      //Messages
-      this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-      this.messageRef.on('change').subscribe((messages: Message[]) => {
-        this.data = messages;
-        this.messages = messages;
-        console.log("Messages", this.messages);
-        this.messageApi.count().subscribe(result => {
-          console.log(messageApi);
-          console.log("count: ", result);
-          this.countMessages = result.count;
+      this.rt.onReady().subscribe(() => {
+
+        //Messages
+        this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+        this.messageRef.on('change').subscribe((messages: Message[]) => {
+          this.data = messages;
+          this.messages = messages;
+          console.log("Messages", this.messages);
+          this.messageApi.count().subscribe(result => {
+            console.log(messageApi);
+            console.log("count: ", result);
+            this.countMessages = result.count;
+          });
         });
-      });
 
-      //Devices
-      this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-      this.deviceRef.on('change').subscribe((devices: Device[]) => {
-        this.devices = devices;
-        console.log("Devices", this.devices);
-        this.deviceApi.count().subscribe(result => {
-          console.log(deviceApi);
-          console.log("count: ", result);
-          this.countDevices = result.count;
+        //Devices
+        this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+        this.deviceRef.on('change').subscribe((devices: Device[]) => {
+          this.devices = devices;
+          console.log("Devices", this.devices);
+          this.deviceApi.count().subscribe(result => {
+            console.log(deviceApi);
+            console.log("count: ", result);
+            this.countDevices = result.count;
+          });
         });
-      });
 
-      //Categories
-      this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-      this.categoryRef.on('change').subscribe((categories: Category[]) => {
-        this.categories = categories;
-        console.log("Categories", this.categories);
-        this.categoryApi.count().subscribe(result => {
-          console.log(categoryApi);
-          console.log("count: ", result);
-          this.countCategories = result.count;
+        //Categories
+        this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
+        this.categoryRef.on('change').subscribe((categories: Category[]) => {
+          this.categories = categories;
+          console.log("Categories", this.categories);
+          this.categoryApi.count().subscribe(result => {
+            console.log(categoryApi);
+            console.log("count: ", result);
+            this.countCategories = result.count;
+          });
         });
-      });
 
-      //Parsers
-      this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-      this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-        this.parsers = parsers;
-        console.log("Parsers", this.parsers);
-        this.parserApi.count().subscribe(result => {
-          console.log(parserApi);
-          console.log("count: ", result);
-          this.countParsers = result.count;
+        //Parsers
+        this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
+        this.parserRef.on('change').subscribe((parsers: Parser[]) => {
+          this.parsers = parsers;
+          console.log("Parsers", this.parsers);
+          this.parserApi.count().subscribe(result => {
+            console.log(parserApi);
+            console.log("count: ", result);
+            this.countParsers = result.count;
+          });
         });
-      });
 
-    });
+      }));
 
 
 
@@ -158,5 +163,14 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     //console.log(this.messages);
+  }
+
+  ngOnDestroy(): void {
+    console.log("Dashboard: ngOnDestroy");
+    this.messageRef.dispose();
+    this.parserRef.dispose();
+    this.categoryRef.dispose();
+    this.deviceRef.dispose();
+    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
   }
 }

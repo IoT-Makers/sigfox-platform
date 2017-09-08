@@ -1,7 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {User} from "../../shared/sdk/models/User";
-import {isNullOrUndefined} from "util";
-import {UserApi} from "../../shared/sdk/services/custom/User";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {User} from "../../../shared/sdk/models/User";
+import {UserApi} from "../../../shared/sdk/services/custom/User";
 
 @Component({
   selector: 'app-profile',

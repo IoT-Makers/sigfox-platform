@@ -4,24 +4,18 @@ import { Routes, RouterModule } from '@angular/router';
 // Layouts
 import { FullLayoutComponent } from './layouts/full-layout.component';
 import { SimpleLayoutComponent } from './layouts/simple-layout.component';
-import {LoginComponent} from "./user/login/login.component";
-import {ProfileComponent} from "./user/profile/profile.component";
 import {AuthGuard} from "./_guards/auth.guard";
-import {DevicesComponent} from "./devices/devices.component";
 
 export const routes: Routes = [
-  {
-    path: 'login',
-    component: LoginComponent,
-    data: {
-      title: 'Login'
-    }
-  },
+  { path: 'login', loadChildren: './pages/user/login/login.module#LoginModule' },
+  /*{ path: 'signup', loadChildren: './pages/user/signup/signup.module#SignupModule' },*/
+  /*{ path: 'not-found', loadChildren: './pages/not-found/not-found.module#NotFoundModule' },
+  { path: '**', redirectTo: 'not-found' },*/
   {
     path: '',
     canActivate: [AuthGuard],
     redirectTo: 'dashboard',
-    pathMatch: 'full',
+    pathMatch: 'full'
   },
   {
     path: '',
@@ -30,38 +24,14 @@ export const routes: Routes = [
     data: {
       title: 'Home'
     },
-    /***
-     * TODO: CHECK if loadChildren can be replaced by component for routing simplicity
-     */
     children: [
-      {
-        path: 'dashboard',
-        loadChildren: './dashboard/dashboard.module#DashboardModule'
-      },
-      {
-        path: 'devices',
-        loadChildren: './devices/devices.module#DevicesModule',
-      },
-      {
-        path: 'categories',
-        loadChildren: './categories/categories.module#CategoriesModule'
-      },
-      {
-        path: 'parsers',
-        loadChildren: './parsers/parsers.module#ParsersModule'
-      },
-      {
-        path: 'messages',
-        loadChildren: './messages/messages.module#MessagesModule'
-      },
-      {
-        path: 'base-stations',
-        loadChildren: './base-stations/base-stations.module#BaseStationsModule'
-      },
-      {
-        path: 'profile',
-        component: ProfileComponent
-      }
+      { path: 'dashboard', loadChildren: './pages/dashboard/dashboard.module#DashboardModule' },
+      { path: 'devices', loadChildren: './pages/devices/devices.module#DevicesModule' },
+      { path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule' },
+      { path: 'parsers', loadChildren: './pages/parsers/parsers.module#ParsersModule' },
+      { path: 'messages', loadChildren: './pages/messages/messages.module#MessagesModule' },
+      { path: 'base-stations', loadChildren: './pages/base-stations/base-stations.module#BaseStationsModule' },
+      { path: 'profile', loadChildren: './pages/user/profile/profile.module#ProfileModule' }
     ]
   }/*,
   {

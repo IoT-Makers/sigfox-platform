@@ -1,9 +1,10 @@
 import {Component} from '@angular/core';
-import {User} from "../../shared/sdk/models";
-import {UserApi} from '../../shared/sdk/services';
+import {User} from "../../../shared/sdk/models";
+import {UserApi} from '../../../shared/sdk/services';
 import {Router} from "@angular/router";
 
 @Component({
+  selector: 'app-login',
   templateUrl: 'login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -15,7 +16,9 @@ export class LoginComponent {
   constructor(private userApi: UserApi, private router: Router) {}
 
   private onRegister(): void {
-    this.userApi.create(this.user).subscribe((user: User) => this.onLogin());
+    this.userApi.create(this.user).subscribe((user: User) => {
+      this.onLogin();
+    });
   }
 
   private onLogin(): void {

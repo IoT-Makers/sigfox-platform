@@ -3,7 +3,6 @@ import {UserApi} from "../shared/sdk/services/custom/User";
 import {Router} from "@angular/router";
 
 @Component({
-  selector: 'app-dashboard',
   templateUrl: './full-layout.component.html'
 })
 export class FullLayoutComponent implements OnInit {
