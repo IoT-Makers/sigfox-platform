@@ -7,8 +7,24 @@
       <a class="nav-link navbar-toggler sidebar-toggler" href="#">&#9776;</a>
     </li>
   </ul>
-  <ul class="navbar-toggler-right">
-    <li class="nav-item dropdown-item"><a (click)="onLogout()"><i class="fa fa-power-off"></i>Logout</a></li>
+
+  <ul class="nav navbar-nav ml-auto" style="margin-right: 2%">
+    <li class="nav-item dropdown" dropdown (onToggle)="toggled($event)">
+      <a href class="nav-link dropdown-toggle" dropdownToggle (click)="false">
+        <img src="{{user.avatar}}" class="img-avatar" alt="{{user.email}}">
+        <span class="d-md-down-none">{{user.username}}</span>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+
+        <div class="dropdown-header text-center"><strong>Information</strong></div>
+        <a class="dropdown-item" href="#"><i class="fa fa-microchip"></i> Devices<span class="badge badge-success">{{countDevices}}</span></a>
+        <a class="dropdown-item" href="#"><i class="fa fa-envelope"></i> Messages<span class="badge badge-success">{{countMessages}}</span></a>
+        <div class="dropdown-header text-center"><strong>Settings</strong></div>
+        <a class="dropdown-item" href="#" [routerLink]="['/profile']"><i class="fa fa-user"></i> Profile</a>
+        <a class="dropdown-item" href="#" (click)="onLogout()"><i class="fa fa-lock"></i> Logout</a>
+
+      </div>
+    </li>
   </ul>
 </header>
 
@@ -43,27 +59,6 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/base-stations']"><i class="fa fa-server"></i> Base Stations <span class="badge badge-info"></span></a>
-        </li>
-        <li class="nav-item nav-dropdown" routerLinkActive="open">
-          <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-notebook"></i> Pages</a>
-          <ul class="nav-dropdown-items">
-            <li class="nav-item">
-              <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/login']"><i class="icon-star"></i> Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/register']"><i class="icon-star"></i> Register</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/404']"><i class="icon-star"></i> Error 404</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/500']"><i class="icon-star"></i> Error 500</a>
-            </li>
-          </ul>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/profile']"><i class="icon-user"></i> Profile <span class="badge badge-info"></span></a>
         </li>
 
       </ul>

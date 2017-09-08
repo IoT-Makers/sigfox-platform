@@ -5,6 +5,7 @@ import {
 
 declare var Object: any;
 export interface UserInterface {
+  "avatar"?: string;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -17,6 +18,7 @@ export interface UserInterface {
 }
 
 export class User implements UserInterface {
+  "avatar": string = '';
   "realm": string = '';
   "username": string = '';
   "email": string = '';
@@ -58,6 +60,10 @@ export class User implements UserInterface {
       plural: 'users',
       path: 'users',
       properties: {
+        "avatar": {
+          name: 'avatar',
+          type: 'string'
+        },
         "realm": {
           name: 'realm',
           type: 'string'

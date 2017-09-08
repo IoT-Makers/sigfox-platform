@@ -11,9 +11,9 @@ module.exports = function(app){
   if(!isCreated){
 
     User.create([
-      {username: 'Antoine', email: 'antoine@admin.com', password: 'password', emailVerified: 'true', createdAt: "2017-08-29T07:59:45.675Z"},
-      {username: 'Louis', email: 'louis@admin.com', password: 'password', emailVerified: 'true', createdAt: "2017-08-29T07:59:45.675Z"},
-      {username: 'Bob', email: 'bob@user.com', password: 'password', emailVerified: 'true', createdAt: "2017-08-29T07:59:45.675Z"}
+      {username: 'Antoine', email: 'antoine@admin.com', password: 'password', emailVerified: 'true', avatar: 'http://www.tresnjica.com/img/daycare.png', createdAt: "2017-08-29T07:59:45.675Z"},
+      {username: 'Louis', email: 'louis@admin.com', password: 'password', emailVerified: 'true', avatar: 'http://www.tresnjica.com/img/daycare.png', createdAt: "2017-08-29T07:59:45.675Z"},
+      {username: 'Bob', email: 'bob@user.com', password: 'password', emailVerified: 'true', avatar: 'http://www.tresnjica.com/img/daycare.png', createdAt: "2017-08-29T07:59:45.675Z"}
     ], function (err, users) {
       if (err) throw err;
 

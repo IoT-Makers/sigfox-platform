@@ -9,7 +9,7 @@ import {UserApi} from "../../../shared/sdk/services/custom/User";
 })
 export class ProfileComponent implements OnInit {
 
-  user: User = new User();
+  private user: User = new User();
 
   constructor(private userApi: UserApi) { }
 

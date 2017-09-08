@@ -6,7 +6,11 @@
   "options": {
     "validateUpsert": true
   },
-  "properties": {},
+  "properties": {
+    "avatar": {
+      "type": "string"
+    }
+  },
   "validations": [],
   "relations": {},
   "acls": [{

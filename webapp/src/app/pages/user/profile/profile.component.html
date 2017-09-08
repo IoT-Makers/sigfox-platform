@@ -3,20 +3,31 @@
 
   <hr>
 
-  <div>
-    <ul>
-      <li>
-        <b>id:</b> {{user.id}}
-      </li>
-      <li>
-        <b>email:</b> {{user.email}}
-      </li>
-      <li>
-        <b>createdAt:</b> {{user.createdAt}}
-      </li>
-      <li>
-        <b>emailVerified:</b> {{user.emailVerified}}
-      </li>
-    </ul>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card mb-3">
+        <div class="card-header card-default">
+          My Profile
+        </div>
+        <div class="card-block">
+          <div><b><i class="fa fa-envelope" aria-hidden="true"></i><span style="margin-right:1em"></span> Email:</b> {{user.email}}</div>
+          <hr>
+          <div><b><i class="fa fa-user" aria-hidden="true"></i><span style="margin-right:1em"></span> Avatar:</b> {{user.avatar}}</div>
+          <hr>
+          <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Creation:</b> {{user.createdAt}}</div>
+          <hr>
+          <div *ngIf="user.emailVerified; then verifiedEmail else unverifiedEmail"></div>
+          <ng-template #verifiedEmail>
+            <div style='color:green'><b><i class="fa fa-check-circle" aria-hidden="true"></i><span style="margin-right:1em"></span> Email verified</b></div>
+          </ng-template>
+          <ng-template #unverifiedEmail>
+            <div  style='color:red'><b><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span style="margin-right:1em"></span> Email unverified</b></div>
+          </ng-template>
+        </div>
+      </div>
+
+    </div>
+    <!-- /.col-sm-4 -->
   </div>
 </div>

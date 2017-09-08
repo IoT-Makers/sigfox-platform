@@ -7,14 +7,14 @@ import {
 
 declare var Object: any;
 export interface MessageInterface {
-  "id": string;
-  "data": string;
+  "data"?: string;
   "time"?: number;
   "RSSI"?: number;
   "seqNumber"?: number;
   "GPS"?: any;
   "geoloc_sigfox"?: any;
   "parsed_data"?: any;
+  "id"?: number;
   "DeviceId"?: string;
   "deviceId"?: string;
   "createdAt"?: Date;
@@ -26,7 +26,6 @@ export interface MessageInterface {
 }
 
 export class Message implements MessageInterface {
-  "id": string = '';
   "data": string = '';
   "time": number = 0;
   "RSSI": number = 0;
@@ -34,6 +33,7 @@ export class Message implements MessageInterface {
   "GPS": any = <any>null;
   "geoloc_sigfox": any = <any>null;
   "parsed_data": any = <any>null;
+  "id": number = 0;
   "DeviceId": string = '';
   "deviceId": string = '';
   "createdAt": Date = new Date(0);
@@ -74,10 +74,6 @@ export class Message implements MessageInterface {
       plural: 'Messages',
       path: 'Messages',
       properties: {
-        "id": {
-          name: 'id',
-          type: 'string'
-        },
         "data": {
           name: 'data',
           type: 'string'
@@ -105,6 +101,10 @@ export class Message implements MessageInterface {
         "parsed_data": {
           name: 'parsed_data',
           type: 'any'
+        },
+        "id": {
+          name: 'id',
+          type: 'number'
         },
         "DeviceId": {
           name: 'DeviceId',
