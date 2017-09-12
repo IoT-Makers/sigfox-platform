@@ -2,7 +2,7 @@
   "name": "BaseStation",
   "plural": "BaseStations",
   "base": "PersistedModel",
-  "idInjection": false,
+  "idInjection": true,
   "options": {
     "validateUpsert": true
   },
@@ -25,10 +25,6 @@
     ]
   },
   "properties": {
-    "id": {
-      "type": "string",
-      "id": true
-    },
     "geolocation": {
       "type": "GeoPoint"
     }

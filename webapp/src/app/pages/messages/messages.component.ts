@@ -55,5 +55,9 @@ export class MessagesComponent implements OnInit,OnDestroy {
     this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
   }
 
+  remove(message: Message): void {
+    this.messageRef.remove(message).subscribe();
+  }
+
 }
 

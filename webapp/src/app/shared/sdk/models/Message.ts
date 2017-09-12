@@ -19,7 +19,7 @@ export interface MessageInterface {
   "deviceId"?: string;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "baseStationId"?: string;
+  "baseStationId"?: number;
   Device?: Device;
   BaseStation?: BaseStation[];
   MessageProperty?: MessageProperty[];
@@ -38,7 +38,7 @@ export class Message implements MessageInterface {
   "deviceId": string = '';
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "baseStationId": string = '';
+  "baseStationId": number = 0;
   Device: Device = null;
   BaseStation: BaseStation[] = null;
   MessageProperty: MessageProperty[] = null;
@@ -124,7 +124,7 @@ export class Message implements MessageInterface {
         },
         "baseStationId": {
           name: 'baseStationId',
-          type: 'string'
+          type: 'number'
         },
       },
       relations: {

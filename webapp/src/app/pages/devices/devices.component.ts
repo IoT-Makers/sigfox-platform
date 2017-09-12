@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {Device} from "../../shared/sdk/models/Device";
 import {RealTime} from "../../shared/sdk/services/core/real.time";
 import {FireLoopRef} from "../../shared/sdk/models/FireLoopRef";
@@ -12,9 +12,11 @@ import {Subscription} from "rxjs/Subscription";
 export class DevicesComponent implements OnInit,OnDestroy {
 
   private subscriptions: Subscription[] = new Array<Subscription>();
+  editRowId: any;
 
   private devices : Device[] = new Array<Device>();
   private deviceRef : FireLoopRef<Device>;
+  private callbackURL;
 
   constructor(private rt: RealTime) {
 
@@ -33,6 +35,11 @@ export class DevicesComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit() {
+
+  }
+
+  toggle(id){
+    this.editRowId = id;
   }
 
   add(): void {
@@ -40,6 +47,7 @@ export class DevicesComponent implements OnInit,OnDestroy {
   }
   update(device: Device): void {
     this.deviceRef.upsert(device).subscribe();
+    this.editRowId = 0;
   }
   remove(device: Device): void {
     this.deviceRef.remove(device).subscribe();

@@ -2,7 +2,7 @@
   "name": "Message",
   "plural": "Messages",
   "base": "PersistedModel",
-  "idInjection": false,
+  "idInjection": true,
   "options": {
     "validateUpsert": true
   },

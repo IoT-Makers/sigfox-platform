@@ -4,51 +4,80 @@
     <div class="card-header">Devices</div>
     <div class="card-block">
 
-
-      <ul>
-        <li *ngFor="let device of devices">
-          {{ device.id }}
-          {{ device.name }}
-        </li>
-      </ul>
-
-        <div class="row mb-1">
-          <div class="col-md-4 offset-md-8">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-search"></i></span>
-              <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search by name"/>
-            </div>
+      <div class="row mb-1">
+        <div class="col-md-4 offset-md-8">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-search"></i></span>
+            <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search by name"/>
           </div>
         </div>
-        <table class="table table-striped" [mfData]="devices | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
-          <thead>
-          <tr>
-            <th style="width: 20%">
-              <mfDefaultSorter by="createdAt">Date</mfDefaultSorter>
-            </th>
-            <th style="width: 20%">
-              <mfDefaultSorter by="name">Name</mfDefaultSorter>
-            </th>
-            <th style="width: 10%">
-              <mfDefaultSorter by="id">DeviceId</mfDefaultSorter>
-            </th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let item of mf.data">
-            <td>{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
-            <td>{{item.name}}</td>
-            <td>{{item.id}}</td>
-          </tr>
-          </tbody>
-          <tfoot>
-          <tr>
-            <td colspan="4">
-              <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+      </div>
+      <table class="table table-striped" [mfData]="devices | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+        <thead>
+        <tr>
+          <th style="width: 20%">
+            <mfDefaultSorter by="createdAt">Date</mfDefaultSorter>
+          </th>
+          <th style="width: 20%">
+            <mfDefaultSorter by="name">Name</mfDefaultSorter>
+          </th>
+          <th style="width: 20%">
+            <mfDefaultSorter by="id">DeviceId</mfDefaultSorter>
+          </th>
+          <th style="width: 10%">
+            Options
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of mf.data">
+          <td>{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
+          <td *ngIf="item.id == editRowId">
+            <input type="text" [(ngModel)]="item.name">
+          </td>
+          <td *ngIf="item.id !== editRowId">
+            {{item.name}}
+          </td>
+          <td>{{item.id}}</td>
+
+          <div *ngIf="item.id !== editRowId; then normal else editing"></div>
+          <ng-template #editing>
+            <td>
+              <button type="button" class="btn btn-success" (click)="update(item)">
+                <i class="fa fa-check"></i>
+              </button>
             </td>
-          </tr>
-          </tfoot>
-        </table>
+          </ng-template>
+          <ng-template #normal>
+            <td>
+              <button type="button" class="btn btn-info" (click)="toggle(item.id)">
+                <i class="fa fa-pencil"></i>
+              </button>
+              <button type="button" class="btn btn-danger" (click)="remove(item)">
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </ng-template>
+
+          <!--
+          <td>
+            <button type="button" class="btn btn-info" (click)="toggle(item.id)">
+              <i class="fa fa-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-danger" (click)="remove(item)">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>-->
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+          <td colspan="4">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
 
 
     </div>

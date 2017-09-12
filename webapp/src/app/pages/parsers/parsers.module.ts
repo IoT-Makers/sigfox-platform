@@ -7,11 +7,13 @@ import {CommonModule} from "@angular/common";
 import {ModalModule} from 'ng2-bootstrap/modal';
 // Code editor
 import {AceEditorModule} from 'ng2-ace-editor';
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   imports: [
     ParsersRoutingModule,
     CommonModule,
+    FormsModule,
     ModalModule.forRoot(),
     AceEditorModule
   ],

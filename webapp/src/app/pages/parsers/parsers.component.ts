@@ -13,7 +13,10 @@ export class ParsersComponent implements OnInit,OnDestroy {
 
   private subscriptions: Subscription[] = new Array<Subscription>();
 
-  private parser: Parser = new Parser();
+  private newParser: Parser = new Parser();
+  private decodedPayload;
+  private testPayload = [];
+
   private parsers: Parser[] = new Array<Parser>();
   private parserRef: FireLoopRef<Parser>;
 
@@ -42,6 +45,22 @@ export class ParsersComponent implements OnInit,OnDestroy {
     console.log("Parsers: ngOnDestroy");
     this.parserRef.dispose();
     this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
+  }
+
+
+  decodePayload(i: number, parser: Parser, payload: string): void{
+    if(payload != ""){
+      this.testPayload[i] = true;
+      let fn = Function("payload", parser.function);
+      this.decodedPayload = fn(payload);
+    } else
+      this.decodedPayload = "Please fill input";
+  }
+
+  create(): void{
+    this.newParser.id = null;
+    console.log(this.newParser);
+    this.parserRef.create(this.newParser).subscribe(() => this.newParser = new Parser());
   }
 
   update(parser: Parser): void {

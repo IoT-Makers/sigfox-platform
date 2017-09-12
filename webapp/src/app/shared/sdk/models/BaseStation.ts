@@ -6,8 +6,8 @@ import {
 
 declare var Object: any;
 export interface BaseStationInterface {
-  "id"?: string;
   "geolocation"?: GeoPoint;
+  "id"?: number;
   "messageId"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
@@ -15,8 +15,8 @@ export interface BaseStationInterface {
 }
 
 export class BaseStation implements BaseStationInterface {
-  "id": string = '';
   "geolocation": GeoPoint = <any>null;
+  "id": number = 0;
   "messageId": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
@@ -53,13 +53,13 @@ export class BaseStation implements BaseStationInterface {
       plural: 'BaseStations',
       path: 'BaseStations',
       properties: {
-        "id": {
-          name: 'id',
-          type: 'string'
-        },
         "geolocation": {
           name: 'geolocation',
           type: 'GeoPoint'
+        },
+        "id": {
+          name: 'id',
+          type: 'number'
         },
         "messageId": {
           name: 'messageId',

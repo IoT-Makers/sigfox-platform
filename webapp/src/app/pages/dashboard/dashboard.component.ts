@@ -1,14 +1,17 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 // import { Router } from '@angular/router';
 import { Message, Device, Category, Parser, FireLoopRef } from '../../shared/sdk/models';
 import { RealTime, MessageApi, DeviceApi, CategoryApi, ParserApi } from '../../shared/sdk/services';
 import {count} from "rxjs/operator/count";
 import {Subscription} from "rxjs/Subscription";
+import {DOCUMENT} from "@angular/common";
 
 @Component({
   templateUrl: 'dashboard.component.html'
 })
 export class DashboardComponent implements OnInit,OnDestroy {
+
+  private callbackURL;
 
   private subscriptions: Subscription[] = new Array<Subscription>();
 
@@ -34,7 +37,8 @@ export class DashboardComponent implements OnInit,OnDestroy {
 
   public data;
 
-  constructor(private rt: RealTime,
+  constructor(@Inject(DOCUMENT) private document: any,
+              private rt: RealTime,
               private messageApi: MessageApi,
               private deviceApi: DeviceApi,
               private categoryApi: CategoryApi,
@@ -95,9 +99,21 @@ export class DashboardComponent implements OnInit,OnDestroy {
 
       }));
 
-
-
   }
+
+  ngOnInit(): void {
+    this.callbackURL = this.document.location.origin + "/api/Messages";
+  }
+
+  ngOnDestroy(): void {
+    console.log("Dashboard: ngOnDestroy");
+    this.messageRef.dispose();
+    this.parserRef.dispose();
+    this.categoryRef.dispose();
+    this.deviceRef.dispose();
+    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
+  }
+
 
   create(): void {
     this.messageRef.create(this.message).subscribe(() => this.message = new Message());
@@ -159,18 +175,4 @@ export class DashboardComponent implements OnInit,OnDestroy {
   ];
   public lineChartLegend: boolean = true;
   public lineChartType: string = 'line';
-
-
-  ngOnInit(): void {
-    //console.log(this.messages);
-  }
-
-  ngOnDestroy(): void {
-    console.log("Dashboard: ngOnDestroy");
-    this.messageRef.dispose();
-    this.parserRef.dispose();
-    this.categoryRef.dispose();
-    this.deviceRef.dispose();
-    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
-  }
 }

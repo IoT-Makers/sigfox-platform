@@ -17,8 +17,8 @@
       <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
 
         <div class="dropdown-header text-center"><strong>Information</strong></div>
-        <a class="dropdown-item" href="#"><i class="fa fa-microchip"></i> Devices<span class="badge badge-success">{{countDevices}}</span></a>
-        <a class="dropdown-item" href="#"><i class="fa fa-envelope"></i> Messages<span class="badge badge-success">{{countMessages}}</span></a>
+        <a class="dropdown-item" href="#" [routerLink]="['/devices']"><i class="fa fa-microchip"></i> Devices<span class="badge badge-success">{{countDevices}}</span></a>
+        <a class="dropdown-item" href="#" [routerLink]="['/messages']"><i class="fa fa-envelope"></i> Messages<span class="badge badge-success">{{countMessages}}</span></a>
         <div class="dropdown-header text-center"><strong>Settings</strong></div>
         <a class="dropdown-item" href="#" [routerLink]="['/profile']"><i class="fa fa-user"></i> Profile</a>
         <a class="dropdown-item" href="#" (click)="onLogout()"><i class="fa fa-lock"></i> Logout</a>
