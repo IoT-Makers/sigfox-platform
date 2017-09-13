@@ -1,5 +1,6 @@
 /* tslint:disable */
 import {
+  Parser,
   Category,
   Message,
   GeoPoint
@@ -15,8 +16,10 @@ export interface DeviceInterface {
   "properties"?: Array<any>;
   "createdAt"?: Date;
   "updatedAt"?: Date;
+  "parserId"?: number;
   "categoryId"?: number;
   "CategoryId"?: number;
+  Parser?: Parser;
   Category?: Category;
   Messages?: Message[];
 }
@@ -30,8 +33,10 @@ export class Device implements DeviceInterface {
   "properties": Array<any> = <any>[];
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
+  "parserId": number = 0;
   "categoryId": number = 0;
   "CategoryId": number = 0;
+  Parser: Parser = null;
   Category: Category = null;
   Messages: Message[] = null;
   constructor(data?: DeviceInterface) {
@@ -98,6 +103,10 @@ export class Device implements DeviceInterface {
           name: 'updatedAt',
           type: 'Date'
         },
+        "parserId": {
+          name: 'parserId',
+          type: 'number'
+        },
         "categoryId": {
           name: 'categoryId',
           type: 'number'
@@ -108,6 +117,11 @@ export class Device implements DeviceInterface {
         },
       },
       relations: {
+        Parser: {
+          name: 'Parser',
+          type: 'Parser',
+          model: 'Parser'
+        },
         Category: {
           name: 'Category',
           type: 'Category',

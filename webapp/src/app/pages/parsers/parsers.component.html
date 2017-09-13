@@ -7,7 +7,7 @@
         </div>
 
         <div class="card-block">
-          <p class="text-uppercase">Add a new parser</p>
+          <strong class="text-uppercase">Add a new parser</strong>
           <div class="row">
             <div class="col col-6">
               <div class="input-group">
@@ -37,12 +37,12 @@
         </div>
 
         <div class="card-block" *ngFor="let parser of parsers; let i = index">
-          <p class="text-uppercase">{{parser.name}}</p>
+          <strong class="text-uppercase">{{parser.name}}</strong>
           <div class="row">
             <div class="col col-6">
               <p> {{parser.description}}</p>
               <div class="input-group">
-                <input type="text" required #payload id="{{parser.name}}" name="{{parser.name}}" class="form-control" placeholder="Sigfox payload in hexadecimal">
+                <input type="text" #payload id="{{parser.name}}" name="{{parser.name}}" class="form-control" placeholder="Sigfox payload in hexadecimal">
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-primary" (click)="decodePayload(i, parser, payload.value)">
                       Test
@@ -53,11 +53,10 @@
                 </button>
               </div>
 
-              <div *ngIf="testPayload[i]" class="alert alert-success box-msg" role="alert">
-                <strong>The decoded payload:</strong>
-                <div *ngIf="decodedPayload.length > 0; then content else other_content"></div>
-                <ng-template #content><li *ngFor="let obj of decodedPayload">{{obj | json}}</li></ng-template>
-                <ng-template #other_content>{{decodedPayload}}</ng-template>
+              <div *ngIf="testPayload[i]" class="alert alert-info box-msg" role="alert">
+                <i class="pull-right fa fa-window-close" (click)="closeDecodedPayload(i)"></i>
+                <strong>Decoded payload:</strong>
+                <pre>{{decodedPayload[i] | json}}</pre>
               </div>
 
             </div>

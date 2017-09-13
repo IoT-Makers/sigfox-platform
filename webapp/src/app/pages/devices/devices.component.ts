@@ -3,6 +3,8 @@ import {Device} from "../../shared/sdk/models/Device";
 import {RealTime} from "../../shared/sdk/services/core/real.time";
 import {FireLoopRef} from "../../shared/sdk/models/FireLoopRef";
 import {Subscription} from "rxjs/Subscription";
+import {forEach} from "@angular/router/src/utils/collection";
+import {Parser} from "../../shared/sdk/models/Parser";
 
 @Component({
   selector: 'app-devices',
@@ -25,7 +27,7 @@ export class DevicesComponent implements OnInit,OnDestroy {
       this.rt.onReady().subscribe(() => {
         this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
         this.deviceRef.on('change',
-          {limit: 1000, order: 'id DESC'}
+          {limit: 1000, order: 'createdAt DESC'}
         ).subscribe((devices: Device[]) => {
           this.devices = devices;
           console.log("Devices", this.devices);
@@ -35,7 +37,6 @@ export class DevicesComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit() {
-
   }
 
   toggle(id){

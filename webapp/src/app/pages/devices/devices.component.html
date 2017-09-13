@@ -24,6 +24,9 @@
           <th style="width: 20%">
             <mfDefaultSorter by="id">DeviceId</mfDefaultSorter>
           </th>
+          <th style="width: 20%">
+            <mfDefaultSorter by="id">Parser</mfDefaultSorter>
+          </th>
           <th style="width: 10%">
             Options
           </th>
@@ -32,13 +35,19 @@
         <tbody>
         <tr *ngFor="let item of mf.data">
           <td>{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
+
           <td *ngIf="item.id == editRowId">
             <input type="text" [(ngModel)]="item.name">
           </td>
+
           <td *ngIf="item.id !== editRowId">
             {{item.name}}
           </td>
+
           <td>{{item.id}}</td>
+
+          <td *ngIf="item.Parser != null">{{item.Parser.name}}</td>
+          <td *ngIf="item.Parser == null">Select a parser</td>
 
           <div *ngIf="item.id !== editRowId; then normal else editing"></div>
           <ng-template #editing>

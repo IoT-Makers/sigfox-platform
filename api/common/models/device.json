@@ -50,6 +50,10 @@
   },
   "validations": [],
   "relations": {
+    "Parser": {
+      "type": "hasOne",
+      "model": "Parser"
+    },
     "Messages": {
       "type": "hasMany",
       "model": "Message"

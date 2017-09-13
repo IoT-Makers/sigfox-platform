@@ -36,7 +36,12 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "Devices": {
+      "type": "hasMany",
+      "model": "Device"
+    }
+  },
   "acls": [],
   "methods": {}
 }

@@ -14,7 +14,7 @@ export class ParsersComponent implements OnInit,OnDestroy {
   private subscriptions: Subscription[] = new Array<Subscription>();
 
   private newParser: Parser = new Parser();
-  private decodedPayload;
+  private decodedPayload = [];
   private testPayload = [];
 
   private parsers: Parser[] = new Array<Parser>();
@@ -47,14 +47,21 @@ export class ParsersComponent implements OnInit,OnDestroy {
     this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
   }
 
-
   decodePayload(i: number, parser: Parser, payload: string): void{
+    this.testPayload[i] = true;
     if(payload != ""){
-      this.testPayload[i] = true;
       let fn = Function("payload", parser.function);
-      this.decodedPayload = fn(payload);
-    } else
-      this.decodedPayload = "Please fill input";
+      this.decodedPayload[i] = fn(payload);
+    } else {
+      this.decodedPayload[i] = [{"error": "Please fill input"}];
+      setTimeout(function() {
+        this.testPayload[i] = false;
+      }.bind(this), 2000);
+    }
+  }
+
+  closeDecodedPayload(i: number){
+    this.testPayload[i] = false;
   }
 
   create(): void{

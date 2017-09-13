@@ -26,7 +26,7 @@ export class MessagesComponent implements OnInit,OnDestroy {
 
   public sortByWordLength = (a:any) => {
     return a.name.length;
-  }
+  };
 
 
   constructor(private rt: RealTime, private messageApi: MessageApi) {
