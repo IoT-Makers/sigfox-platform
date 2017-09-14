@@ -1,14 +1,14 @@
 'use strict';
 
-const isCreated = true;
-
 module.exports = function(app){
+
+  if (app.dataSources.db.name !== 'Memory' && process.env.INITDB != false) {
+    return
+  }
 
   var Role = app.models.Role;
   var User = app.models.user;
   var RoleMapping = app.models.RoleMapping;
-
-  if(!isCreated){
 
     User.create([
       {username: 'Antoine', email: 'antoine@admin.com', password: 'password', emailVerified: 'true', avatar: 'http://www.tresnjica.com/img/daycare.png', createdAt: "2017-08-29T07:59:45.675Z"},
@@ -46,6 +46,4 @@ module.exports = function(app){
         });
       });
     });
-
-  }
 };

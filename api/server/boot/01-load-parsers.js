@@ -4,17 +4,18 @@ var log = require('debug')('boot:01-load-parsers');
 
 module.exports = function (app) {
 
-  if (app.dataSources.db.name !== 'Memory' && !process.env.INITDB) {
+  if (app.dataSources.db.name !== 'Memory' && process.env.INITDB != false) {
     return
   }
 
   var Parser = app.models.Parser;
 
-  function decodeSensit(message) {
+  function decodeSensit() {
+    var payload;
 
     //private function
-    function getBinaryFrame(frameHex) {
-      var bytes = frameHex.match(/.{1,2}/g);
+    function getBinaryFrame(payload) {
+      var bytes = payload.match(/.{1,2}/g);
       if (bytes.length > 12) {
         console.log('Invalid frame, got %s bytes', bytes.length);
         return null;
@@ -25,7 +26,7 @@ module.exports = function (app) {
 
       });
       if (!binaryString.match(/^([0-9]*)$/)) {
-        console.log('Unable to parse frame %s : %s', frameHex, binaryString);
+        console.log('Unable to parse frame %s : %s', payload, binaryString);
         return null;
       }
       return binaryString;
@@ -132,12 +133,13 @@ module.exports = function (app) {
 
   };
 
-  function decodeTutoGPS(message){
+  function decodeTutoGPS(){
+    var payload;
     //Private functions
 
-    function getBinaryFrame(frameHex) {
-//  console.log('getFrameBinary', frameHex);
-      var bytes = frameHex.match(/.{1,2}/g);
+    function getBinaryFrame(payload) {
+    //  console.log('getFrameBinary', payload);
+      var bytes = payload.match(/.{1,2}/g);
       // if (bytes.length !== 12) {
       //   console.log('Invalid frame, got %s bytes', bytes.length);
       //   return null;
@@ -148,7 +150,7 @@ module.exports = function (app) {
 
       });
       if (!binaryString.match(/^([0-9]*)$/)) {
-        console.log('Unable to parse frame %s : %s', frameHex, binaryString);
+        console.log('Unable to parse frame %s : %s', payload, binaryString);
         return null;
       }
 
@@ -306,29 +308,84 @@ module.exports = function (app) {
 
   };
 
-  function decode(message){
+  function decodeHidenseek(){
+    var payload = "000000000000000000000000000";
+    // Get latitude - float 4 bytes
+    var buffer = new ArrayBuffer(4);
+    var bytes = new Uint8Array(buffer);
+    bytes[0] = "0x" + payload.substring(0,2);
+    bytes[1] = "0x" + payload.substring(2,4);
+    bytes[2] = "0x" + payload.substring(4,6);
+    bytes[3] = "0x" + payload.substring(6,8);
+    var view = new DataView(buffer);
+    var lat = view.getFloat32(0, true);
+    // Get longitude - float 4 bytes
+    buffer = new ArrayBuffer(4);
+    bytes = new Uint8Array(buffer);
+    bytes[0] = "0x" + payload.substring(8,10);
+    bytes[1] = "0x" + payload.substring(10,12);
+    bytes[2] = "0x" + payload.substring(12,14);
+    bytes[3] = "0x" + payload.substring(14,16);
+    view = new DataView(buffer);
+    var lng = view.getFloat32(0, true);
+    // Get options - uint 4 bytes 32 bit little endian
+    buffer = new ArrayBuffer(4);
+    bytes = new Uint8Array(buffer);
+    bytes[0] = "0x" + payload.substring(16,18);
+    bytes[1] = "0x" + payload.substring(18,20);
+    bytes[2] = "0x" + payload.substring(20,22);
+    bytes[3] = "0x" + payload.substring(22,24);
+    view = new DataView(buffer);
+    var cpx = view.getUint32(0, true);
 
+    var alt = 0x1fff & cpx >> 19;
+    var speed = (cpx >> 12) & 0xff;
+    if (speed > 102) speed = (speed - 94) * 16;
+    else if (speed > 90) speed = (speed - 60) * 3;
+    var cap = (cpx >> 10) & 3;
+    var bat = (cpx >> 3) & 0xff;
+    var mod = cpx & 7;
+
+    var parsedData = [];
+
+    var obj = {};
+    var gps = {};
+    gps.lat = lat;
+    gps.lng = lng;
+    obj.gps = gps;
+    obj.alt = alt;
+    obj.speed = speed;
+    obj.cap = cap;
+    obj.bat = bat;
+    obj.mod = mod;
+
+    parsedData.push(obj);
+
+    return parsedData;
+  }
+
+  function decodeTalkingPlant(){
+    var payload = "000000000000000000000000000";
     var result = [
       {
         "key": "temperature",
-        "value": parseInt('0x'+params.data.substring(0,2))
+        "value": parseInt('0x' + payload.substring(0,2))
       },
       {
         "key": "humidity",
-        "value": parseInt('0x'+params.data.substring(2,4))
+        "value": parseInt('0x' + payload.substring(2,4))
       },
       {
         "key": "Battery",
-        "value": parseInt('0x'+params.data.substring(4,6))
+        "value": parseInt('0x' + payload.substring(4,6))
       },
       {
         "key": "Alert",
-        "value": parseInt('0x'+params.data.substring(6,8))
+        "value": parseInt('0x'+ payload.substring(6,8))
       }
     ];
-    return results;
+    return result;
   }
-
 
   var parsers = [
     {
@@ -348,11 +405,16 @@ module.exports = function (app) {
     {
       "name": "Talking Plant",
       "description": "Get the plan information, first byte being humidity, second temperature and third brightness and forth alert",
-      "function": decode.toString()
+      "function": decodeTalkingPlant().toString()
     },
     {
       "name": "Forest Fire Alarm",
       "description": "First byte is temperature, second humidity, third remaining voltage and fourth the alert"
+    },
+    {
+      "name": "Hidenseek",
+      "description": "https://github.com/hidnseek/hidnseek/blob/master/arduino/libraries/HidnSeek/Examples/HidnSeek_v3_28/HidnSeek_v3_28.ino",
+      "function": decodeHidenseek().toString()
     }
   ];
 

@@ -6,20 +6,6 @@
   "options": {
     "validateUpsert": true
   },
-  "properties": {
-    "avatar": {
-      "type": "string"
-    }
-  },
-  "validations": [],
-  "relations": {},
-  "acls": [{
-    "accessType": "*",
-    "principalType": "ROLE",
-    "principalId": "$authenticated",
-    "permission": "ALLOW"
-  }],
-  "methods": {},
   "mixins": {
     "FireLoop": true,
     "TimeStamp": {
@@ -37,5 +23,21 @@
         }
       }
     ]
-  }
+  },
+  "properties": {
+    "avatar": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
 }

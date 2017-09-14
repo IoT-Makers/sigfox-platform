@@ -51,7 +51,7 @@
   "validations": [],
   "relations": {
     "Parser": {
-      "type": "hasOne",
+      "type": "belongsTo",
       "model": "Parser"
     },
     "Messages": {

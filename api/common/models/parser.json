@@ -2,6 +2,7 @@
   "name": "Parser",
   "plural": "Parsers",
   "base": "PersistedModel",
+  "strict": false,
   "idInjection": true,
   "options": {
     "validateUpsert": true
@@ -36,12 +37,7 @@
     }
   },
   "validations": [],
-  "relations": {
-    "Devices": {
-      "type": "hasMany",
-      "model": "Device"
-    }
-  },
+  "relations": {},
   "acls": [],
   "methods": {}
 }
