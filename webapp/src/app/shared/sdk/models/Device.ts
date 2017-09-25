@@ -16,6 +16,7 @@ export interface DeviceInterface {
   "properties"?: Array<any>;
   "createdAt"?: Date;
   "updatedAt"?: Date;
+  "parserId"?: number;
   "ParserId"?: number;
   "categoryId"?: number;
   "CategoryId"?: number;
@@ -33,6 +34,7 @@ export class Device implements DeviceInterface {
   "properties": Array<any> = <any>[];
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
+  "parserId": number = 0;
   "ParserId": number = 0;
   "categoryId": number = 0;
   "CategoryId": number = 0;
@@ -102,6 +104,10 @@ export class Device implements DeviceInterface {
         "updatedAt": {
           name: 'updatedAt',
           type: 'Date'
+        },
+        "parserId": {
+          name: 'parserId',
+          type: 'number'
         },
         "ParserId": {
           name: 'ParserId',

@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
   envName : 'prod',
-  apiUrl : '//api.antoinedechassey.fr',
+  apiUrl : '//localhost:3000',
   apiVersion : 'api'
 };

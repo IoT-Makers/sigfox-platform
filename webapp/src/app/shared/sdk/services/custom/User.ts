@@ -321,10 +321,10 @@ export class UserApi extends BaseLoopBackApi {
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * Le corps de réponse contient les propriétés de AccessToken créées lors de la connexion.
-   * En fonction de la valeur du paramètre `include`, le corps peut contenir des propriétés supplémentaires :
+   * The response body contains properties of the AccessToken created on login.
+   * Depending on the value of `include` parameter, the body may contain additional properties:
    * 
-   *   - `user` - `U+007BUserU+007D` - Données de l'utilisateur connecté. (`include=user`)
+   *   - `user` - `U+007BUserU+007D` - Data of the currently logged in user. (`include=user`)
    * 
    *
    */
@@ -487,8 +487,6 @@ export class UserApi extends BaseLoopBackApi {
       }
     };
     let _urlParams: any = {};
-    if (typeof oldPassword !== 'undefined' && oldPassword !== null) _urlParams.oldPassword = oldPassword;
-    if (typeof newPassword !== 'undefined' && newPassword !== null) _urlParams.newPassword = newPassword;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -517,7 +515,6 @@ export class UserApi extends BaseLoopBackApi {
       }
     };
     let _urlParams: any = {};
-    if (typeof newPassword !== 'undefined' && newPassword !== null) _urlParams.newPassword = newPassword;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

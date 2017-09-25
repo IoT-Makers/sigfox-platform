@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "setup": "cd api/ && npm install && node server/server.js"
+    "start": "cd api/ && node server/server.js"
   },
   "keywords": [],
   "author": "",

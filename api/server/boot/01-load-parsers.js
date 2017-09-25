@@ -5,7 +5,7 @@ var log = require('debug')('boot:01-load-parsers');
 module.exports = function (app) {
 
   if (app.dataSources.db.name !== 'Memory' && process.env.INITDB != false) {
-    return
+    return;
   }
 
   var Parser = app.models.Parser;
