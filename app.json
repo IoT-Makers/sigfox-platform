@@ -13,7 +13,7 @@
    ],
   "scripts": {
     "dokku": {
-      "predeploy": "cd webapp/ && npm install && ng build --environment prod && ../api/ && npm install"
+      "predeploy": "cd webapp/ && npm install && ng build --environment prod && cd ../api/ && npm install"
     }
   }
 }
