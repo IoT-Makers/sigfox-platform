@@ -6,6 +6,10 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
+  "engines": {
+    "node": "8.4.0",
+    "npm": "5.3.0"
+  },
   "scripts": {
     "setup": "cd webapp/ && npm install && ng build --environment prod && cd .. && cd api/ && npm install && node server/server.js"
   }
