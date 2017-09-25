@@ -12,6 +12,8 @@
       "realtime"
    ],
   "scripts": {
-    "predeploy": "cd webapp/ && npm install && ng build --env=prod && cd .. && cd api/ && npm install && cd .."
+    "dokku": {
+      "predeploy": "cd webapp/ && npm install && ng build --env=prod && cd .. && cd api/ && npm install && cd .."
+    }
   }
 }
