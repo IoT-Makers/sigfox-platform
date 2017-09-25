@@ -7,6 +7,6 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "setup": "cd webapp/ && npm install && ng build --env=prod && cd .. && cd api/ && npm install && node server/server.js"
+    "setup": "cd webapp/ && npm install && ng build --environment prod && cd .. && cd api/ && npm install && node server/server.js"
   }
 }
