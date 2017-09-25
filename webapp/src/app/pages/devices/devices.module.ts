@@ -1,25 +1,25 @@
 import { NgModule } from '@angular/core';
-
-// DataTable
-import { DataTableModule } from 'angular2-datatable';
-import { DataFilterPipe } from './datafilterpipe';
-import {DevicesComponent} from "./devices.component";
-import {ChartsModule} from "ng2-charts";
+import { FormsModule }   from '@angular/forms';
 import {CommonModule} from "@angular/common";
-import {FormsModule} from "@angular/forms";
-import {DevicesRoutingModule} from "./devices-routing.module";
+import { MomentModule } from 'angular2-moment';
+
+import { AgmCoreModule } from '@agm/core';
+
+import { DevicesComponent } from './devices.component';
+import { DevicesRoutingModule } from './devices-routing.module';
+
+
 
 @NgModule({
   imports: [
     DevicesRoutingModule,
     CommonModule,
-    ChartsModule,
-    DataTableModule,
-    FormsModule
+    MomentModule,
+    FormsModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
+    })
   ],
-  declarations: [
-    DevicesComponent,
-    DataFilterPipe
-  ]
+  declarations: [ DevicesComponent ]
 })
 export class DevicesModule { }

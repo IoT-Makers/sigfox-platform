@@ -39,14 +39,23 @@ class Message {
       (err: any, createdItem: any, created: boolean) => { //Callback
         if (err) {
           console.error('error creating device', err);
+        }else if (created){
+          console.log('created device', createdItem.id);
+        }else {
+          console.log('found device', createdItem.id);
+
+          this.model.app.models.Device.update(
+            device,
+            (err: any, response: any) => {
+              console.log(response);
+            })
         }
-        (created) ? console.log('created device', createdItem.id)
-          : console.log('found device', createdItem.id);
       }
     );
 
     next();
   }
+
 
   // Example Remote Method
   myRemote(next: Function): void {

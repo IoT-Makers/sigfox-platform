@@ -1,83 +1,74 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {Device} from "../../shared/sdk/models/Device";
-import {RealTime} from "../../shared/sdk/services/core/real.time";
-import {FireLoopRef} from "../../shared/sdk/models/FireLoopRef";
-import {Subscription} from "rxjs/Subscription";
-import {forEach} from "@angular/router/src/utils/collection";
-import {Parser} from "../../shared/sdk/models/Parser";
-import {DeviceApi} from "../../shared/sdk/services/custom/Device";
-import {ParserApi} from "../../shared/sdk/services/custom/Parser";
+import { Component, OnInit } from '@angular/core';
+
+import { Device, Parser, FireLoopRef } from '../../shared/sdk/models';
+import { RealTime, DeviceApi } from '../../shared/sdk/services';
 
 @Component({
   selector: 'app-devices',
   templateUrl: './devices.component.html',
   styleUrls: ['./devices.component.scss']
 })
-export class DevicesComponent implements OnInit,OnDestroy {
+export class DevicesComponent implements OnInit {
 
-  private subscriptions: Subscription[] = new Array<Subscription>();
-  editRowId: any;
+  private device: Device = new Device();
+  private deviceToEdit: Device = new Device();
+  private devices: Device[] = new Array<Device>();
+  private deviceRef: FireLoopRef<Device>;
+  private countDevices: number = 0;
 
-  private devices : Device[] = new Array<Device>();
-  private deviceRef : FireLoopRef<Device>;
-  private callbackURL;
+  private parser: Parser = new Parser();
+  private parsers: Parser[] = new Array<Parser>();
+  private parserRef: FireLoopRef<Parser>;
 
-  constructor(private rt: RealTime, private parserApi: ParserApi, private deviceApi: DeviceApi) {
+  private edit: boolean = false;
 
-    this.subscriptions.push(
-
-      this.rt.onReady().subscribe(() => {
-        this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-        this.deviceRef.on('change',
-          {limit: 1000, order: 'createdAt DESC'}
-        ).subscribe((devices: Device[]) => {
-          devices.forEach(device => {
-            console.log(device.ParserId);
-
-           /* this.parserApi.findById(device.ParserId).subscribe(response => {
-              console.log(response);
-            });*/
-
-            /***
-             * TODO: Check if 'include' is a better choice in the request!
-             */
-
-            this.deviceApi.getParser(device.id).subscribe(response => {
-              console.log(response);
-              device.Parser = response;
-            });
+  private lat: number = 48.86795;
+  private lng: number = 2.334070;
 
 
+  constructor(private rt: RealTime, private deviceApi: DeviceApi) {
 
-          });
-          this.devices = devices;
-          console.log("Devices", this.devices);
-        });
+    this.rt.onReady().subscribe(() => {
 
-      }));
+      //Get and listen devices
+      this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+      this.deviceRef.on('change',
+        {limit: 1000, order: 'updatedAt DESC', include: ['Parser', 'Category']}
+      ).subscribe((devices: Device[]) => {
+        this.devices = devices;
+        console.log(this.devices);
+      });
+
+      //Get and parsers
+      this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
+      this.parserRef.on('change'
+      ).subscribe((parsers: Parser[]) => {
+        this.parsers = parsers;
+        console.log(this.parsers);
+
+      });
+
+
+    });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.edit = false;
   }
 
-  toggle(id){
-    this.editRowId = id;
+  editDevice(device): void{
+    this.edit = true;
+    this.deviceToEdit = device;
   }
 
-  add(): void {
-    //this.deviceRef.create(this.device).subscribe(() => this.device = new Device());
-  }
   update(device: Device): void {
+    this.edit = false;
     this.deviceRef.upsert(device).subscribe();
-    this.editRowId = 0;
-  }
-  remove(device: Device): void {
-    this.deviceRef.remove(device).subscribe();
   }
 
-  ngOnDestroy(): void {
-    console.log("Devices: ngOnDestroy");
-    this.deviceRef.dispose();
-    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
+  cancel(): void{
+    this.edit = false;
   }
+
 }
+

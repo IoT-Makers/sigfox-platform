@@ -1,94 +1,163 @@
 <div class="animated fadeIn">
 
   <div class="card">
-    <div class="card-header">Devices</div>
+    <div class="card-header">Map</div>
     <div class="card-block">
-
-      <div class="row mb-1">
-        <div class="col-md-4 offset-md-8">
-          <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-search"></i></span>
-            <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search by name"/>
-          </div>
-        </div>
-      </div>
-      <table class="table table-striped" [mfData]="devices | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
-        <thead>
-        <tr>
-          <th style="width: 20%">
-            <mfDefaultSorter by="createdAt">Date</mfDefaultSorter>
-          </th>
-          <th style="width: 20%">
-            <mfDefaultSorter by="name">Name</mfDefaultSorter>
-          </th>
-          <th style="width: 20%">
-            <mfDefaultSorter by="id">DeviceId</mfDefaultSorter>
-          </th>
-          <th style="width: 20%">
-            <mfDefaultSorter by="id">Parser</mfDefaultSorter>
-          </th>
-          <th style="width: 10%">
-            Options
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let item of mf.data">
-          <td>{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
-
-          <td *ngIf="item.id == editRowId">
-            <input type="text" [(ngModel)]="item.name">
-          </td>
-
-          <td *ngIf="item.id !== editRowId">
-            {{item.name}}
-          </td>
-
-          <td>{{item.id}}</td>
-
-          <td *ngIf="item.Parser != null">{{item.Parser.name}}</td>
-          <td *ngIf="item.Parser == null">Select a parser</td>
-
-          <div *ngIf="item.id !== editRowId; then normal else editing"></div>
-          <ng-template #editing>
-            <td>
-              <button type="button" class="btn btn-success" (click)="update(item)">
-                <i class="fa fa-check"></i>
-              </button>
-            </td>
-          </ng-template>
-          <ng-template #normal>
-            <td>
-              <button type="button" class="btn btn-info" (click)="toggle(item.id)">
-                <i class="fa fa-pencil"></i>
-              </button>
-              <button type="button" class="btn btn-danger" (click)="remove(item)">
-                <i class="fa fa-trash"></i>
-              </button>
-            </td>
-          </ng-template>
-
-          <!--
-          <td>
-            <button type="button" class="btn btn-info" (click)="toggle(item.id)">
-              <i class="fa fa-pencil"></i>
-            </button>
-            <button type="button" class="btn btn-danger" (click)="remove(item)">
-              <i class="fa fa-trash"></i>
-            </button>
-          </td>-->
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-          <td colspan="4">
-            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
-          </td>
-        </tr>
-        </tfoot>
-      </table>
-
+      <agm-map [latitude]="lat" [longitude]="lng" [zoom]="12">
+        <agm-marker
+          *ngFor="let device of devices; let i = index"
+          [latitude]="device.last_known_location ? device.last_known_location.lat : '' "
+          [longitude]="device.last_known_location ? device.last_known_location.lng: ''">
+          <agm-info-window>
+            <strong>{{device.name}}</strong>
+          </agm-info-window>
+        </agm-marker>
+      </agm-map>
 
     </div>
   </div>
+
+  <div class="card-group">
+
+    <div [ngClass]="(edit)?'col-md-6 col-xs-12':'col-12 col-sm-12'">
+      <div class="card ">
+        <div class="card-header">Devices</div>
+        <div class="card-block">
+
+          <!--Table-->
+          <table class="table table-hover table-outline mb-0">
+            <thead class="thead-default">
+            <tr>
+              <th class="text-center">ID</th>
+              <th class="hidden-xs-down">Info</th>
+              <th *ngIf="!edit" class="text-center hidden-xs-down">Geoloc</th>
+              <!--<th *ngIf="!edit">Battery</th>-->
+              <th *ngIf="!edit">Last Update</th>
+              <th>Properties</th>
+              <th *ngIf="!edit">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let device of devices; let i = index">
+              <td class="text-center">
+                <strong>{{device.id}}</strong>
+                <span class="hidden-sm-up">{{device.name}}</span>
+                <a href="" *ngIf="device.last_known_location" class="hidden-sm-up"><i class="fa fa-map-marker" style="font-size:24px"></i></a>
+              </td>
+              <td class="hidden-xs-down">
+                <div>{{device.name}}</div>
+                <div class="small text-muted">
+                  <span>Parser:</span> {{device.Parser ? device.Parser.name : ""}}
+                </div>
+                <div class="small text-muted">
+                  <span>Category:</span> {{device.Category ? device.Category.name : ""}}
+                </div>
+              </td>
+              <td *ngIf="!edit" class="text-center hidden-xs-down">
+                <a href="" *ngIf="device.last_known_location"><i class="fa fa-map-marker" style="font-size:24px"></i>
+                  <span class="small text-muted"><br>Lat:{{device.last_known_location.lat}}<br>Lng:{{device.last_known_location.lng}}</span>
+                </a>
+              </td>
+              <!--<td *ngIf="!edit">-->
+              <!--<div class="clearfix">-->
+              <!--<div class="float-left">-->
+              <!--<strong>50%</strong>-->
+              <!--</div>-->
+              <!--<div class="float-right">-->
+              <!--<small class="text-muted">3,321V</small>-->
+              <!--</div>-->
+              <!--</div>-->
+              <!--<div class="progress progress-xs">-->
+              <!--<div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50"-->
+              <!--aria-valuemin="0" aria-valuemax="100"></div>-->
+              <!--</div>-->
+              <!--</td>-->
+              <td *ngIf="!edit">
+                <div class="small text-muted">Last message:</div>
+                <strong>{{device.updatedAt | amTimeAgo}}</strong>
+              </td>
+              <td>
+                <div class="small text-muted"><span>Rhino name:</span> Dozer</div>
+                <div class="small text-muted"><span>Rhino id:</span> 1205</div>
+                <div class="small text-muted"><span>Birthdate:</span> 1992/03/10</div>
+                <div class="small text-muted"><span>Genre:</span> Male</div>
+                <div class="small text-muted"><span>Rhino type:</span> Black</div>
+              </td>
+              <td class="text-center" *ngIf="!edit">
+                <div class="btn-group-sm">
+                  <button class="btn btn-info" (click)="editDevice(device)"><i class="fa fa-pencil"
+                                                                               style="font-size:24px"></i></button>
+                  <button class="btn btn-danger"><i class="fa fa-trash" style="font-size:24px"></i></button>
+                </div>
+
+
+              </td>
+            </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-md-auto" *ngIf="edit">
+      <div class="card">
+        <div class="card-header">
+          <strong>Edit Device</strong>
+        </div>
+        <div class="card-block">
+          <form (ngSubmit)="update(deviceToEdit)" class="form-horizontal" #editForm="ngForm">
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">ID</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control" placeholder="Device ID" name="deviceToEdit.id" disabled
+                       [(ngModel)]="deviceToEdit.id">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Name</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control" placeholder="Device name" name="deviceToEdit.name"
+                       [(ngModel)]="deviceToEdit.name">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Parser</label>
+              <div class="col-md-9">
+                <select name="device.ParserId" class="form-control" size="1" [(ngModel)]="deviceToEdit.ParserId">
+                  <option [ngValue]="parser.id" *ngFor="let parser of parsers">{{parser.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Category</label>
+              <div class="col-md-9">
+                <select name="device.CategoryId" class="form-control" size="1" [(ngModel)]="deviceToEdit.CategoryId">
+                  <option [ngValue]="category.id" *ngFor="let category of categories">{{category.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Downlink payload</label>
+              <div class="col-md-9">
+                <input #dl_payload="ngModel" type="text" class="form-control" placeholder="Downlink payload in HEX"
+                       name="dl_payload" maxlength="16" pattern="([a-fA-F0-9]{16})$"
+                       [(ngModel)]="deviceToEdit.dl_payload">
+                <div [hidden]="dl_payload.valid || dl_payload.pristine"
+                     class="text-danger">
+                  Length must be 8 bytes, in hexadecimal
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="update(deviceToEdit)"><i
+            class="fa fa-dot-circle-o"></i>Update
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

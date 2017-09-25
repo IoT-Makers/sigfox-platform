@@ -80,3 +80,8 @@ $sidebar-header-height: 200px;
     }
   }
 }
+
+agm-map {
+  width: 100%;
+  height: calc(100vh - 283px);
+}
