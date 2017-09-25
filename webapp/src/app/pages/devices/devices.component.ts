@@ -5,6 +5,8 @@ import {FireLoopRef} from "../../shared/sdk/models/FireLoopRef";
 import {Subscription} from "rxjs/Subscription";
 import {forEach} from "@angular/router/src/utils/collection";
 import {Parser} from "../../shared/sdk/models/Parser";
+import {DeviceApi} from "../../shared/sdk/services/custom/Device";
+import {ParserApi} from "../../shared/sdk/services/custom/Parser";
 
 @Component({
   selector: 'app-devices',
@@ -20,7 +22,7 @@ export class DevicesComponent implements OnInit,OnDestroy {
   private deviceRef : FireLoopRef<Device>;
   private callbackURL;
 
-  constructor(private rt: RealTime) {
+  constructor(private rt: RealTime, private parserApi: ParserApi, private deviceApi: DeviceApi) {
 
     this.subscriptions.push(
 
@@ -29,6 +31,25 @@ export class DevicesComponent implements OnInit,OnDestroy {
         this.deviceRef.on('change',
           {limit: 1000, order: 'createdAt DESC'}
         ).subscribe((devices: Device[]) => {
+          devices.forEach(device => {
+            console.log(device.ParserId);
+
+           /* this.parserApi.findById(device.ParserId).subscribe(response => {
+              console.log(response);
+            });*/
+
+            /***
+             * TODO: Check if 'include' is a better choice in the request!
+             */
+
+            this.deviceApi.getParser(device.id).subscribe(response => {
+              console.log(response);
+              device.Parser = response;
+            });
+
+
+
+          });
           this.devices = devices;
           console.log("Devices", this.devices);
         });
