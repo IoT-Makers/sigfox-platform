@@ -68,10 +68,6 @@
       "type": "belongsTo",
       "model": "Device"
     },
-    "MessageProperty": {
-      "type": "hasMany",
-      "model": "MessageProperty"
-    },
     "BaseStation": {
       "type": "hasMany",
       "model": "BaseStation"

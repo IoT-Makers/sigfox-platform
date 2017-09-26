@@ -56,10 +56,6 @@
     "dataSource": "db",
     "public": true
   },
-  "MessageProperty": {
-    "dataSource": "db",
-    "public": true
-  },
   "user": {
     "dataSource": "db",
     "public": true,

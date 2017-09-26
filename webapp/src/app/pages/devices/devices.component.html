@@ -77,11 +77,9 @@
                 <strong>{{device.updatedAt | amTimeAgo}}</strong>
               </td>
               <td>
-                <div class="small text-muted"><span>Rhino name:</span> Dozer</div>
-                <div class="small text-muted"><span>Rhino id:</span> 1205</div>
-                <div class="small text-muted"><span>Birthdate:</span> 1992/03/10</div>
-                <div class="small text-muted"><span>Genre:</span> Male</div>
-                <div class="small text-muted"><span>Rhino type:</span> Black</div>
+                <div *ngIf="device.Category">
+                  <div class="small text-muted" *ngFor="let property of device.Category.properties; let i = index"><span>{{property.key ? property.key : ""}}</span> {{property.value ? property.value : ""}}</div>
+                </div>
               </td>
               <td class="text-center" *ngIf="!edit">
                 <div class="btn-group-sm">

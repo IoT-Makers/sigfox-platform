@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Device, Parser, FireLoopRef } from '../../shared/sdk/models';
+import { Device, Parser, Category, FireLoopRef } from '../../shared/sdk/models';
 import { RealTime, DeviceApi } from '../../shared/sdk/services';
 
 @Component({
@@ -19,6 +19,10 @@ export class DevicesComponent implements OnInit {
   private parser: Parser = new Parser();
   private parsers: Parser[] = new Array<Parser>();
   private parserRef: FireLoopRef<Parser>;
+
+  private category: Category = new Category();
+  private categories: Category[] = new Array<Category>();
+  private categoryRef: FireLoopRef<Category>;
 
   private edit: boolean = false;
 
@@ -45,8 +49,16 @@ export class DevicesComponent implements OnInit {
       ).subscribe((parsers: Parser[]) => {
         this.parsers = parsers;
         console.log(this.parsers);
-
       });
+
+      //Get and categories
+      this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
+      this.categoryRef.on('change'
+      ).subscribe((categories: Category[]) => {
+        this.categories = categories;
+        console.log(this.categories);
+      });
+
 
 
     });
