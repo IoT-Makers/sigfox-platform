@@ -12,6 +12,7 @@ import {Router} from "@angular/router";
 export class LoginComponent {
 
   private user: User = new User();
+  private errorMessage = "";
 
   constructor(private userApi: UserApi, private router: Router) {}
 
@@ -28,6 +29,10 @@ export class LoginComponent {
       console.log(this.user);
       this.router.navigate(['/dashboard']);
     }, err => {
+      if(err = "Server error")
+        this.errorMessage = "Server is not responding.";
+      else
+        this.errorMessage = "Invalid username or password.";
       console.log(err);
     });
   }
