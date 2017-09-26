@@ -12,7 +12,7 @@
     "ng": "./node_modules/.bin/ng",
     "start": "node server.js",
     "test": "ng test",
-    "build": "ng build --envrionment prod",
+    "build": "ng build --env=prod",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

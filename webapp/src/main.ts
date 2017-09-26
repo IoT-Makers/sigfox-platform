@@ -6,6 +6,8 @@ import { environment } from './environments/environment';
 
 import { LoopBackConfig } from './app/shared/sdk';
 
+import { Router } from '@angular/router';
+
 LoopBackConfig.setBaseURL(environment.apiUrl);
 LoopBackConfig.setApiVersion(environment.apiVersion);
 
