@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Device, Parser, Category, FireLoopRef } from '../../shared/sdk/models';
-import { RealTime, DeviceApi } from '../../shared/sdk/services';
+import { RealTime, DeviceApi, CategoryApi } from '../../shared/sdk/services';
+
 
 @Component({
   selector: 'app-devices',
@@ -30,7 +31,7 @@ export class DevicesComponent implements OnInit {
   private lng: number = 2.334070;
 
 
-  constructor(private rt: RealTime, private deviceApi: DeviceApi) {
+  constructor(private rt: RealTime, private deviceApi: DeviceApi, private categoryApi: CategoryApi) {
 
     this.rt.onReady().subscribe(() => {
 
@@ -76,6 +77,19 @@ export class DevicesComponent implements OnInit {
   update(device: Device): void {
     this.edit = false;
     this.deviceRef.upsert(device).subscribe();
+  }
+
+  updateDeviceProperties(device: Device): void {
+    console.log(device.CategoryId);
+    if(device.CategoryId){
+      this.categoryApi.findById(device.CategoryId).subscribe((category: Category) => {
+        console.log(category);
+        this.deviceToEdit.properties = category.properties;
+      });
+    }
+
+    console.log(device);
+    //this.deviceRef.upsert(device).subscribe();
   }
 
   cancel(): void{
