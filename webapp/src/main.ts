@@ -8,10 +8,7 @@ import { LoopBackConfig } from './app/shared/sdk';
 
 import { Router } from '@angular/router';
 
-let router : Router;
-
-/*LoopBackConfig.setBaseURL(environment.apiUrl);*/
-LoopBackConfig.setBaseURL(router.url);
+LoopBackConfig.setBaseURL(environment.apiUrl);
 LoopBackConfig.setApiVersion(environment.apiVersion);
 
 if (environment.production) {
