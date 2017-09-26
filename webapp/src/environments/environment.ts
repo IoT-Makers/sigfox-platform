@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  apiUrl : '//localhost',
+  apiUrl : process.env.URL || '//localhost:3000',
   apiVersion : 'api'
 };
