@@ -11,7 +11,12 @@
     "npm": "5.3.0"
   },
   "scripts": {
-    "setup": "cd api/ && npm install && node server/server.js"
+    "preinstall": "cd api/ && npm install && cd ../webapp && npm install && cd ..",
+    "postinstall": "npm run build",
+    "build": "cd webapp/ && npm run build && cd ..",
+    "start": "npm run serve",
+    "serve": "cd api/ && node server/server.js",
+    "test": "npm run install"
   },
   "dependencies": {}
 }

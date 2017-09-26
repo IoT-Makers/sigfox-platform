@@ -9,7 +9,7 @@
     "npm": "5.3.0"
   },
   "scripts": {
-    "ng": "ng",
+    "ng": "./node_modules/.bin/ng",
     "start": "node server.js",
     "test": "ng test",
     "build": "ng build",
