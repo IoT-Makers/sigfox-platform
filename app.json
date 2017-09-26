@@ -10,10 +10,5 @@
       "loopback",
       "fireloop",
       "realtime"
-   ],
-  "scripts": {
-    "dokku": {
-      "predeploy": "cd webapp/ && npm install && ng build --environment prod && cd ../api/ && npm install"
-    }
-  }
+   ]
 }
