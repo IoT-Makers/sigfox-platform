@@ -68,7 +68,11 @@
       "type": "belongsTo",
       "model": "Device"
     },
-    "BaseStation": {
+    "user": {
+      "type": "belongsTo",
+      "model": "user"
+    },
+    "BaseStations": {
       "type": "hasMany",
       "model": "BaseStation"
     }

@@ -1,11 +1,15 @@
 /* tslint:disable */
 import {
-  AccessToken
+  AccessToken,
+  Message,
+  Device
 } from '../index';
 
 declare var Object: any;
 export interface UserInterface {
   "avatar"?: string;
+  "lastLogin"?: Date;
+  "location"?: any;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -15,10 +19,14 @@ export interface UserInterface {
   "updatedAt"?: Date;
   "password"?: string;
   accessTokens?: AccessToken[];
+  Messages?: Message[];
+  Devices?: Device[];
 }
 
 export class User implements UserInterface {
   "avatar": string = '';
+  "lastLogin": Date = new Date(0);
+  "location": any = <any>null;
   "realm": string = '';
   "username": string = '';
   "email": string = '';
@@ -28,6 +36,8 @@ export class User implements UserInterface {
   "updatedAt": Date = new Date(0);
   "password": string = '';
   accessTokens: AccessToken[] = null;
+  Messages: Message[] = null;
+  Devices: Device[] = null;
   constructor(data?: UserInterface) {
     Object.assign(this, data);
   }
@@ -63,6 +73,14 @@ export class User implements UserInterface {
         "avatar": {
           name: 'avatar',
           type: 'string'
+        },
+        "lastLogin": {
+          name: 'lastLogin',
+          type: 'Date'
+        },
+        "location": {
+          name: 'location',
+          type: 'any'
         },
         "realm": {
           name: 'realm',
@@ -102,6 +120,16 @@ export class User implements UserInterface {
           name: 'accessTokens',
           type: 'AccessToken[]',
           model: 'AccessToken'
+        },
+        Messages: {
+          name: 'Messages',
+          type: 'Message[]',
+          model: 'Message'
+        },
+        Devices: {
+          name: 'Devices',
+          type: 'Device[]',
+          model: 'Device'
         },
       }
     }

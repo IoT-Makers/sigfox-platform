@@ -8,7 +8,7 @@ import {AuthGuard} from "./_guards/auth.guard";
 
 export const routes: Routes = [
   { path: 'login', loadChildren: './pages/user/login/login.module#LoginModule' },
-  /*{ path: 'signup', loadChildren: './pages/user/signup/signup.module#SignupModule' },*/
+  { path: 'register', loadChildren: './pages/user/register/register.module#RegisterModule' },
   /*{ path: 'not-found', loadChildren: './pages/not-found/not-found.module#NotFoundModule' },
   { path: '**', redirectTo: 'not-found' },*/
   {

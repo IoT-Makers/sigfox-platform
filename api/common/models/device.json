@@ -54,6 +54,10 @@
       "type": "belongsTo",
       "model": "Parser"
     },
+    "user": {
+      "type": "belongsTo",
+      "model": "user"
+    },
     "Messages": {
       "type": "hasMany",
       "model": "Message"

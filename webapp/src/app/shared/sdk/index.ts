@@ -56,7 +56,6 @@ import { ParserApi } from './services/custom/Parser';
 import { CategoryApi } from './services/custom/Category';
 import { MessageApi } from './services/custom/Message';
 import { BaseStationApi } from './services/custom/BaseStation';
-import { MessagePropertyApi } from './services/custom/MessageProperty';
 import { UserApi } from './services/custom/User';
 /**
 * @module SDKBrowserModule
@@ -97,7 +96,6 @@ export class SDKBrowserModule {
         CategoryApi,
         MessageApi,
         BaseStationApi,
-        MessagePropertyApi,
         UserApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },

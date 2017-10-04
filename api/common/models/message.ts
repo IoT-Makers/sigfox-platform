@@ -28,26 +28,36 @@ class Message {
 
     console.log(data);
 
+    // if(!data.deviceId||!data.userId){
+    //   return
+    // }
+
     let device = {
-      id: data.deviceId
+      id: data.deviceId,
+      userId: data.userId
     };
 
     //access another model inside the method
     this.model.app.models.Device.findOrCreate(
       { where:{id: data.deviceId} }, //find
       device, //create
-      (err: any, createdItem: any, created: boolean) => { //Callback
+      (err: any, instance: any, created: boolean) => { //Callback
         if (err) {
           console.error('error creating device', err);
         }else if (created){
-          console.log('created device', createdItem.id);
+          console.log('created device', instance.id);
         }else {
-          console.log('found device', createdItem.id);
+          console.log('found device', instance.id);
 
-          this.model.app.models.Device.update(
-            device,
+          this.model.app.models.Device.upsert(
+            instance,
             (err: any, response: any) => {
-              console.log(response);
+              if(err){
+                console.log(err)
+              }else{
+                console.log(response);
+              }
+
             })
         }
       }

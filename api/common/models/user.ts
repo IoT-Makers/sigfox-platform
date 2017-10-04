@@ -8,7 +8,8 @@ import { Model } from '@mean-expert/model';
  **/
 @Model({
   hooks: {
-    beforeSave: { name: 'before save', type: 'operation' }
+    beforeSave: { name: 'before save', type: 'operation' },
+    afterRemoteLogin: { name: 'login', type: 'afterRemote' }
   },
   remotes: {
     myRemote: {
@@ -27,10 +28,37 @@ class user {
     console.log('user: Before Save');
     next();
   }
+
+  afterRemoteLogin(context: any, loggedUser: any, next: any) {
+
+    let now = Date.now();
+
+    let user = {
+      id: loggedUser.userId,
+      lastLogin: now
+    };
+
+    console.log(loggedUser);
+    this.model.app.models.user.upsert(
+      user,
+      (err: any, response: any) => {
+        if(err){
+          console.log(err)
+        }else{
+          console.log(response);
+        }
+        next();
+      });
+
+
+  }
+
   // Example Remote Method
   myRemote(next: Function): void {
     this.model.find(next);
   }
+
+
 }
 
 module.exports = user;

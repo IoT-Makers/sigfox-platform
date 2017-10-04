@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {User} from "../../../shared/sdk/models/User";
+import {User, FireLoopRef} from "../../../shared/sdk/models";
 import {UserApi} from "../../../shared/sdk/services/custom/User";
 
 @Component({
@@ -10,10 +10,18 @@ import {UserApi} from "../../../shared/sdk/services/custom/User";
 export class ProfileComponent implements OnInit {
 
   private user: User = new User();
+  private userRef: FireLoopRef<User>;
 
-  constructor(private userApi: UserApi) { }
+  constructor(private userApi: UserApi) {
+
+  }
 
   ngOnInit() {
     this.user = this.userApi.getCachedCurrent();
+    this.userApi.findById(this.user.id).subscribe((user: User)=>{
+      console.log(user);
+      this.user = user;
+    });
+
   }
 }

@@ -27,10 +27,25 @@
   "properties": {
     "avatar": {
       "type": "string"
+    },
+    "lastLogin":{
+      "type": "date"
+    },
+    "location":{
+      "type": "object"
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "Messages": {
+      "type": "hasMany",
+      "model": "Message"
+    },
+    "Devices": {
+      "type": "hasMany",
+      "model": "Device"
+    }
+  },
   "acls": [
     {
       "accessType": "*",

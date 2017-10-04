@@ -2,7 +2,7 @@
 import {
   Device,
   BaseStation,
-  MessageProperty
+  User
 } from '../index';
 
 declare var Object: any;
@@ -20,9 +20,10 @@ export interface MessageInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "baseStationId"?: number;
+  "userId"?: number;
   Device?: Device;
-  BaseStation?: BaseStation[];
-  MessageProperty?: MessageProperty[];
+  BaseStations?: BaseStation[];
+  user?: User;
 }
 
 export class Message implements MessageInterface {
@@ -39,9 +40,10 @@ export class Message implements MessageInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "baseStationId": number = 0;
+  "userId": number = 0;
   Device: Device = null;
-  BaseStation: BaseStation[] = null;
-  MessageProperty: MessageProperty[] = null;
+  BaseStations: BaseStation[] = null;
+  user: User = null;
   constructor(data?: MessageInterface) {
     Object.assign(this, data);
   }
@@ -126,6 +128,10 @@ export class Message implements MessageInterface {
           name: 'baseStationId',
           type: 'number'
         },
+        "userId": {
+          name: 'userId',
+          type: 'number'
+        },
       },
       relations: {
         Device: {
@@ -133,15 +139,15 @@ export class Message implements MessageInterface {
           type: 'Device',
           model: 'Device'
         },
-        BaseStation: {
-          name: 'BaseStation',
+        BaseStations: {
+          name: 'BaseStations',
           type: 'BaseStation[]',
           model: 'BaseStation'
         },
-        MessageProperty: {
-          name: 'MessageProperty',
-          type: 'MessageProperty[]',
-          model: 'MessageProperty'
+        user: {
+          name: 'user',
+          type: 'User',
+          model: 'User'
         },
       }
     }

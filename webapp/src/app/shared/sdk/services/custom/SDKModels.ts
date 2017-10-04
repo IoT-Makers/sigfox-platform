@@ -8,7 +8,6 @@ import { Parser } from '../../models/Parser';
 import { Category } from '../../models/Category';
 import { Message } from '../../models/Message';
 import { BaseStation } from '../../models/BaseStation';
-import { MessageProperty } from '../../models/MessageProperty';
 import { User } from '../../models/User';
 
 export interface Models { [name: string]: any }
@@ -25,7 +24,6 @@ export class SDKModels {
     Category: Category,
     Message: Message,
     BaseStation: BaseStation,
-    MessageProperty: MessageProperty,
     User: User,
     
   };

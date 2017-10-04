@@ -17,12 +17,14 @@
           <hr>
           <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Creation:</b> {{user.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
           <hr>
+          <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Last login:</b> {{user.lastLogin | date:"yyyy/MM/dd HH:mm:ss"}}</div>
+          <hr>
           <div *ngIf="user.emailVerified; then verifiedEmail else unverifiedEmail"></div>
           <ng-template #verifiedEmail>
             <div style='color:green'><b><i class="fa fa-check-circle" aria-hidden="true"></i><span style="margin-right:1em"></span> Email verified</b></div>
           </ng-template>
           <ng-template #unverifiedEmail>
-            <div  style='color:red'><b><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span style="margin-right:1em"></span> Email unverified</b></div>
+            <div  style='color:red'><b><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span style="margin-right:1em"></span> Please verify your email</b></div>
           </ng-template>
         </div>
       </div>

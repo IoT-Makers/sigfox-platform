@@ -1,7 +1,7 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 // import { Router } from '@angular/router';
-import { Message, Device, Category, Parser, FireLoopRef } from '../../shared/sdk/models';
-import { RealTime, MessageApi, DeviceApi, CategoryApi, ParserApi } from '../../shared/sdk/services';
+import { Message, Device, Category, Parser, User, FireLoopRef } from '../../shared/sdk/models';
+import { RealTime, MessageApi, DeviceApi, CategoryApi, ParserApi, UserApi } from '../../shared/sdk/services';
 import {count} from "rxjs/operator/count";
 import {Subscription} from "rxjs/Subscription";
 import {DOCUMENT} from "@angular/common";
@@ -35,6 +35,9 @@ export class DashboardComponent implements OnInit,OnDestroy {
   private categoryRef : FireLoopRef<Category>;
   private countCategories:number = 0;
 
+  private user: User = new User();
+
+
   public data;
 
   constructor(@Inject(DOCUMENT) private document: any,
@@ -42,7 +45,8 @@ export class DashboardComponent implements OnInit,OnDestroy {
               private messageApi: MessageApi,
               private deviceApi: DeviceApi,
               private categoryApi: CategoryApi,
-              private parserApi: ParserApi) {
+              private parserApi: ParserApi,
+              private userApi: UserApi) {
 
     this.subscriptions.push(
 
@@ -102,7 +106,9 @@ export class DashboardComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
-    this.callbackURL = this.document.location.origin + "/api/Messages";
+    this.user = this.userApi.getCachedCurrent();
+    console.log(this.user);
+    this.callbackURL = this.document.location.origin + "/api/users/"+ this.user.id + "/Messages?access_token=";
   }
 
   ngOnDestroy(): void {

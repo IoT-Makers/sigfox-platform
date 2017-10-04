@@ -29,7 +29,7 @@
                     <button type="submit" class="btn btn-primary px-2">Login</button>
                   </div>
                   <div class="col-6 text-right">
-                    <button type="button" class="btn btn-link px-0">Forgot password?</button>
+                    <button type="button" class="btn btn-link px-0" disabled>Forgot password?</button>
                   </div>
                 </div>
               </form>
@@ -43,7 +43,7 @@
               <div>
                 <h2>Sign up</h2>
                 <p>Registration are not available at the moment, please come back later ;)</p>
-                <button type="button" class="btn btn-primary active mt-1" disabled>Register Now!</button>
+                <button type="button" class="btn btn-primary active mt-1" [routerLink]="['/register']">Register Now!</button>
               </div>
             </div>
           </div>

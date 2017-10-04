@@ -7,7 +7,6 @@ export * from './Parser';
 export * from './Category';
 export * from './Message';
 export * from './BaseStation';
-export * from './MessageProperty';
 export * from './User';
 export * from './BaseModels';
 export * from './FireLoopRef';

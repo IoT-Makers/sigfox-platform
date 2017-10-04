@@ -3,7 +3,7 @@
     "mountPath": "/explorer"
   },
   "@mean-expert/loopback-component-realtime": {
-    "auth": false,
+    "auth": true,
     "debug": false,
     "driver": {
       "name": "socket.io"

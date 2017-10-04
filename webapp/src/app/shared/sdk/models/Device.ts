@@ -3,6 +3,7 @@ import {
   Parser,
   Category,
   Message,
+  User,
   GeoPoint
 } from '../index';
 
@@ -20,9 +21,11 @@ export interface DeviceInterface {
   "ParserId"?: number;
   "categoryId"?: number;
   "CategoryId"?: number;
+  "userId"?: number;
   Parser?: Parser;
   Category?: Category;
   Messages?: Message[];
+  user?: User;
 }
 
 export class Device implements DeviceInterface {
@@ -38,9 +41,11 @@ export class Device implements DeviceInterface {
   "ParserId": number = 0;
   "categoryId": number = 0;
   "CategoryId": number = 0;
+  "userId": number = 0;
   Parser: Parser = null;
   Category: Category = null;
   Messages: Message[] = null;
+  user: User = null;
   constructor(data?: DeviceInterface) {
     Object.assign(this, data);
   }
@@ -121,6 +126,10 @@ export class Device implements DeviceInterface {
           name: 'CategoryId',
           type: 'number'
         },
+        "userId": {
+          name: 'userId',
+          type: 'number'
+        },
       },
       relations: {
         Parser: {
@@ -137,6 +146,11 @@ export class Device implements DeviceInterface {
           name: 'Messages',
           type: 'Message[]',
           model: 'Message'
+        },
+        user: {
+          name: 'user',
+          type: 'User',
+          model: 'User'
         },
       }
     }

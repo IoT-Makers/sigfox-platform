@@ -6,7 +6,7 @@ import {
 declare var Object: any;
 export interface CategoryInterface {
   "name"?: string;
-  "properties"?: any;
+  "properties"?: Array<any>;
   "id"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
@@ -15,7 +15,7 @@ export interface CategoryInterface {
 
 export class Category implements CategoryInterface {
   "name": string = '';
-  "properties": any = <any>null;
+  "properties": Array<any> = <any>[];
   "id": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
@@ -58,7 +58,7 @@ export class Category implements CategoryInterface {
         },
         "properties": {
           name: 'properties',
-          type: 'any'
+          type: 'Array&lt;any&gt;'
         },
         "id": {
           name: 'id',

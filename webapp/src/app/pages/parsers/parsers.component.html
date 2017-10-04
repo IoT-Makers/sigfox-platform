@@ -42,15 +42,19 @@
             <div class="col col-6">
               <p> {{parser.description}}</p>
               <div class="input-group">
-                <input type="text" #payload id="{{parser.name}}" name="{{parser.name}}" class="form-control" placeholder="Sigfox payload in hexadecimal">
+                <input type="text" [(ngModel)]="payload" #value="ngModel" id="{{parser.name}}" name="{{parser.name}}" class="form-control" placeholder="Sigfox payload in hexadecimal" maxlength="24" pattern="([a-fA-F0-9])$">
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-primary" (click)="decodePayload(i, parser, payload.value)">
+                    <button type="button" class="btn btn-primary" (click)="decodePayload(i, parser, payload)">
                       Test
                     </button>
                 </span>
                 <button type="button" class="btn btn-success" data-toggle="modal" (click)="update(parser)">
                   Save code
                 </button>
+              </div>
+              <div [hidden]="value.valid || value.pristine"
+                   class="text-danger">
+                Length must be maximum 12 bytes, in hexadecimal
               </div>
 
               <div *ngIf="testPayload[i]" class="alert alert-info box-msg" role="alert">

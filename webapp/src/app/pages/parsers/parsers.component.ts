@@ -17,6 +17,8 @@ export class ParsersComponent implements OnInit,OnDestroy {
   private decodedPayload = [];
   private testPayload = [];
 
+  private payload: any;
+
   private parsers: Parser[] = new Array<Parser>();
   private parserRef: FireLoopRef<Parser>;
 
