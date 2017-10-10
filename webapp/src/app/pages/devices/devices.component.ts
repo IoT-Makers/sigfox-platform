@@ -44,7 +44,7 @@ export class DevicesComponent implements OnInit {
         console.log(this.devices);
       });
 
-      //Get and parsers
+      //Get and listen parsers
       this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
       this.parserRef.on('change'
       ).subscribe((parsers: Parser[]) => {
@@ -52,7 +52,7 @@ export class DevicesComponent implements OnInit {
         console.log(this.parsers);
       });
 
-      //Get and categories
+      //Get and listen categories
       this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
       this.categoryRef.on('change'
       ).subscribe((categories: Category[]) => {

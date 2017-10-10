@@ -1,0 +1,44 @@
+<div class="animated fadeIn">
+
+  <div class="card">
+    <div class="card-header">Map</div>
+    <div class="card-block">
+      <input #box (keyup.enter)="onTrack(box.value)">
+      <button (click)="onTrack(box.value)">Track device</button>
+      <p>{{searchResult}}</p>
+
+      <agm-map [latitude]="lat" [longitude]="lng" [zoom]="12">
+        <agm-polyline>
+          <agm-marker
+            *ngFor="let marker of geoloc_sigfoxMarkers; let i = index"
+            [latitude]="marker.geoloc_sigfox.lat"
+            [longitude]="marker.geoloc_sigfox.lng"
+            [iconUrl]="">
+            <agm-info-window>
+              <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
+              <br>
+              <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
+              <br>
+              <strong><b>Data:</b> {{marker.data}}</strong>
+            </agm-info-window>
+          </agm-marker>
+          <agm-marker
+            *ngFor="let marker of GPSMarkers; let i = index"
+            [latitude]="marker.GPS.lat"
+            [longitude]="marker.GPS.lng"
+            [iconUrl]="">
+            <agm-info-window>
+              <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
+              <br>
+              <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
+              <br>
+              <strong><b>Data:</b> {{marker.data}}</strong>
+            </agm-info-window>
+          </agm-marker>
+
+        </agm-polyline>
+      </agm-map>
+    </div>
+  </div>
+
+</div>
