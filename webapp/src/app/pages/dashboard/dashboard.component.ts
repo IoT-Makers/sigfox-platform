@@ -1,7 +1,14 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 // import { Router } from '@angular/router';
-import { Message, Device, Category, Parser, User, FireLoopRef } from '../../shared/sdk/models';
-import { RealTime, MessageApi, DeviceApi, CategoryApi, ParserApi, UserApi } from '../../shared/sdk/services';
+import {Message, Device, Category, Parser, User, FireLoopRef} from '../../shared/sdk/models';
+import {
+  RealTime,
+  MessageApi,
+  DeviceApi,
+  CategoryApi,
+  ParserApi,
+  UserApi
+} from '../../shared/sdk/services';
 import {count} from "rxjs/operator/count";
 import {Subscription} from "rxjs/Subscription";
 import {DOCUMENT} from "@angular/common";
@@ -15,30 +22,30 @@ export class DashboardComponent implements OnInit,OnDestroy {
 
   private subscriptions: Subscription[] = new Array<Subscription>();
 
-  private message    : Message   = new Message();
-  private messages   : Message[] = new Array<Message>();
-  private messageRef : FireLoopRef<Message>;
-  private countMessages:number = 0;
+  private message: Message = new Message();
+  private messages: Message[] = new Array<Message>();
+  private messageRef: FireLoopRef<Message>;
+  private countMessages: number = 0;
 
-  private device    : Device   = new Device();
-  private devices   : Device[] = new Array<Device>();
-  private deviceRef : FireLoopRef<Device>;
-  private countDevices:number = 0;
+  private device: Device = new Device();
+  private devices: Device[] = new Array<Device>();
+  private deviceRef: FireLoopRef<Device>;
+  private countDevices: number = 0;
 
-  private parser    : Parser   = new Parser();
-  private parsers   : Parser[] = new Array<Parser>();
-  private parserRef : FireLoopRef<Parser>;
-  private countParsers:number = 0;
+  private parser: Parser = new Parser();
+  private parsers: Parser[] = new Array<Parser>();
+  private parserRef: FireLoopRef<Parser>;
+  private countParsers: number = 0;
 
-  private category    : Category   = new Category();
-  private categories   : Category[] = new Array<Category>();
-  private categoryRef : FireLoopRef<Category>;
-  private countCategories:number = 0;
+  private category: Category = new Category();
+  private categories: Category[] = new Array<Category>();
+  private categoryRef: FireLoopRef<Category>;
+  private countCategories: number = 0;
 
   private user: User = new User();
 
 
-  public data;
+  public data = [];
 
   constructor(@Inject(DOCUMENT) private document: any,
               private rt: RealTime,
@@ -48,22 +55,25 @@ export class DashboardComponent implements OnInit,OnDestroy {
               private parserApi: ParserApi,
               private userApi: UserApi) {
 
+    console.log(this.rt.connection);
+
     this.subscriptions.push(
 
       this.rt.onReady().subscribe(() => {
 
         //Messages
         this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-        this.messageRef.on('change').subscribe((messages: Message[]) => {
-          this.data = messages;
-          this.messages = messages;
-          console.log("Messages", this.messages);
-          this.messageApi.count().subscribe(result => {
-            console.log(messageApi);
-            console.log("count: ", result);
-            this.countMessages = result.count;
+        this.messageRef.on('change').subscribe(
+          (messages: Message[]) => {
+            this.data = messages;
+            this.messages = messages;
+            console.log("Messages", this.messages);
+            this.messageApi.count().subscribe(result => {
+              //console.log(messageApi);
+              console.log("count: ", result);
+              this.countMessages = result.count;
+            });
           });
-        });
 
         //Devices
         this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
@@ -71,7 +81,7 @@ export class DashboardComponent implements OnInit,OnDestroy {
           this.devices = devices;
           console.log("Devices", this.devices);
           this.deviceApi.count().subscribe(result => {
-            console.log(deviceApi);
+            //console.log(deviceApi);
             console.log("count: ", result);
             this.countDevices = result.count;
           });
@@ -83,7 +93,7 @@ export class DashboardComponent implements OnInit,OnDestroy {
           this.categories = categories;
           console.log("Categories", this.categories);
           this.categoryApi.count().subscribe(result => {
-            console.log(categoryApi);
+            //console.log(categoryApi);
             console.log("count: ", result);
             this.countCategories = result.count;
           });
@@ -95,7 +105,7 @@ export class DashboardComponent implements OnInit,OnDestroy {
           this.parsers = parsers;
           console.log("Parsers", this.parsers);
           this.parserApi.count().subscribe(result => {
-            console.log(parserApi);
+            //console.log(parserApi);
             console.log("count: ", result);
             this.countParsers = result.count;
           });
@@ -108,7 +118,7 @@ export class DashboardComponent implements OnInit,OnDestroy {
   ngOnInit(): void {
     this.user = this.userApi.getCachedCurrent();
     console.log(this.user);
-    this.callbackURL = this.document.location.origin + "/api/users/"+ this.user.id + "/Messages?access_token=";
+    this.callbackURL = this.document.location.origin + "/api/users/" + this.user.id + "/Messages?access_token=";
   }
 
   ngOnDestroy(): void {
@@ -134,11 +144,11 @@ export class DashboardComponent implements OnInit,OnDestroy {
   }
 
   // events
-  public chartClicked(e:any):void {
+  public chartClicked(e: any): void {
     console.log(e);
   }
 
-  public chartHovered(e:any):void {
+  public chartHovered(e: any): void {
     console.log(e);
   }
 

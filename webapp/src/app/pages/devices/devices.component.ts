@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Device, Parser, Category, FireLoopRef } from '../../shared/sdk/models';
-import { RealTime, DeviceApi, CategoryApi } from '../../shared/sdk/services';
+import { Device, Parser, Category, User, FireLoopRef } from '../../shared/sdk/models';
+import { RealTime, DeviceApi, CategoryApi, UserApi } from '../../shared/sdk/services';
 
 
 @Component({
@@ -25,13 +25,15 @@ export class DevicesComponent implements OnInit {
   private categories: Category[] = new Array<Category>();
   private categoryRef: FireLoopRef<Category>;
 
+  private user: User = new User();
+
   private edit: boolean = false;
 
   private lat: number = 48.86795;
   private lng: number = 2.334070;
 
 
-  constructor(private rt: RealTime, private deviceApi: DeviceApi, private categoryApi: CategoryApi) {
+  constructor(private rt: RealTime, private deviceApi: DeviceApi, private categoryApi: CategoryApi, private userApi: UserApi) {
 
     this.rt.onReady().subscribe(() => {
 
@@ -46,8 +48,7 @@ export class DevicesComponent implements OnInit {
 
       //Get and parsers
       this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-      this.parserRef.on('change'
-      ).subscribe((parsers: Parser[]) => {
+      this.parserRef.on('change').subscribe((parsers: Parser[]) => {
         this.parsers = parsers;
         console.log(this.parsers);
       });
@@ -67,6 +68,7 @@ export class DevicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.edit = false;
+    this.user = this.userApi.getCachedCurrent();
   }
 
   editDevice(device): void{

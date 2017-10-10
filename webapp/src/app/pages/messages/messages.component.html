@@ -1,7 +1,10 @@
 <div class="animated fadeIn">
   <div class="card">
     <div class="card-header">Messages</div>
-    <div class="card-block">
+    <div *ngIf="!messages.length" class="card-block">
+      No message yet...
+    </div>
+    <div *ngIf="messages.length>0" class="card-block">
       <div class="row mb-1">
         <div class="col-md-4 offset-md-8">
           <div class="input-group">

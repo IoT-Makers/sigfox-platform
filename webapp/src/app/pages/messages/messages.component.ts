@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 
-import { Message, FireLoopRef } from '../../shared/sdk/models';
-import { RealTime, MessageApi } from '../../shared/sdk/services';
+import { Message, User, FireLoopRef } from '../../shared/sdk/models';
+import { RealTime, MessageApi, UserApi } from '../../shared/sdk/services';
 import {Subscription} from "rxjs/Subscription";
 
 @Component({
@@ -18,6 +18,8 @@ export class MessagesComponent implements OnInit,OnDestroy {
   private messageRef: FireLoopRef<Message>;
   private countMessages: number = 0;
 
+  private user: User = new User();
+
   public filterQuery = '';
 
   public toInt(num:string) {
@@ -29,7 +31,7 @@ export class MessagesComponent implements OnInit,OnDestroy {
   };
 
 
-  constructor(private rt: RealTime, private messageApi: MessageApi) {
+  constructor(private rt: RealTime, private messageApi: MessageApi, private userApi: UserApi) {
 
     this.subscriptions.push(
 
@@ -47,6 +49,7 @@ export class MessagesComponent implements OnInit,OnDestroy {
 
   ngOnInit(): void {
     console.log("Messages: ngOnInit");
+    this.user = this.userApi.getCachedCurrent();
   }
 
   ngOnDestroy(): void {

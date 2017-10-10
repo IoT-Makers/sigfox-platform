@@ -1,6 +1,6 @@
 <div class="animated fadeIn">
 
-  <div class="card">
+  <div *ngIf="devices.length>0" class="card">
     <div class="card-header">Map</div>
     <div class="card-block">
       <agm-map [latitude]="lat" [longitude]="lng" [zoom]="12">
@@ -22,7 +22,10 @@
     <div [ngClass]="(edit)?'col-md-6 col-xs-12':'col-12 col-sm-12'">
       <div class="card ">
         <div class="card-header">Devices</div>
-        <div class="card-block">
+        <div *ngIf="!devices.length" class="card-block">
+        No device yet...
+        </div>
+        <div *ngIf="devices.length>0" class="card-block">
 
           <!--Table-->
           <table class="table table-hover table-outline mb-0">
