@@ -34,7 +34,8 @@ class Message {
 
     let device = {
       id: data.deviceId,
-      userId: data.userId
+      userId: data.userId,
+      last_known_location: data.GPS
     };
 
     //access another model inside the method
@@ -45,12 +46,12 @@ class Message {
         if (err) {
           console.error('error creating device', err);
         }else if (created){
-          console.log('created device', instance.id);
+          console.log('created device', instance);
         }else {
-          console.log('found device', instance.id);
+          console.log('found device', instance);
 
           this.model.app.models.Device.upsert(
-            instance,
+            device,
             (err: any, response: any) => {
               if(err){
                 console.log(err)
