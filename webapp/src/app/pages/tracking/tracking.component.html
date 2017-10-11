@@ -3,40 +3,73 @@
   <div class="card">
     <div class="card-header">Map</div>
     <div class="card-block">
-      <input #box (keyup.enter)="onTrack(box.value)">
-      <button (click)="onTrack(box.value)">Track device</button>
+      <input [ngModel]="dateBegin | date:'yyyy-MM-dd'" (ngModelChange)="dateBegin = $event" type="date" name="dateBegin"/>
+      <input [ngModel]="dateEnd | date:'yyyy-MM-dd'" (ngModelChange)="dateEnd = $event" type="date" name="dateEnd"/>
+      <input #box (keyup.enter)="onTrack(box.value)" [required]="true">
+      <button (click)="onTrack(box.value, dateBegin, dateEnd)">Track device</button>
       <p>{{searchResult}}</p>
 
-      <agm-map [latitude]="lat" [longitude]="lng" [zoom]="12">
-        <agm-polyline>
-          <agm-marker
-            *ngFor="let marker of geoloc_sigfoxMarkers; let i = index"
-            [latitude]="marker.geoloc_sigfox.lat"
-            [longitude]="marker.geoloc_sigfox.lng"
-            [iconUrl]="">
-            <agm-info-window>
-              <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
-              <br>
-              <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
-              <br>
-              <strong><b>Data:</b> {{marker.data}}</strong>
-            </agm-info-window>
-          </agm-marker>
-          <agm-marker
-            *ngFor="let marker of GPSMarkers; let i = index"
-            [latitude]="marker.GPS.lat"
-            [longitude]="marker.GPS.lng"
-            [iconUrl]="">
-            <agm-info-window>
-              <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
-              <br>
-              <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
-              <br>
-              <strong><b>Data:</b> {{marker.data}}</strong>
-            </agm-info-window>
-          </agm-marker>
+      <agm-map [latitude]="lat" [longitude]="lng" [zoom]="7">
 
+        <!-- Polylines -->
+        <agm-polyline
+          [geodesic] = true
+          [strokeOpacity] = 0.5>
+          <agm-polyline-point
+            *ngFor="let marker of GPSMessages; let i = index"
+            [latitude]="marker.GPS.lat"
+            [longitude]="marker.GPS.lng">
+          </agm-polyline-point>
         </agm-polyline>
+        <agm-polyline
+          [geodesic] = true
+          [strokeOpacity] = 0.5>
+          <agm-polyline-point
+            *ngFor="let marker of geoloc_sigfoxMessages; let i = index"
+            [latitude]="marker.geoloc_sigfox.lat"
+            [longitude]="marker.geoloc_sigfox.lng">
+          </agm-polyline-point>
+        </agm-polyline>
+        <!-- End Polylines -->
+
+        <!-- Circles -->
+        <agm-circle
+          *ngFor="let marker of geoloc_sigfoxMessages; let i = index"
+          [latitude]="marker.geoloc_sigfox.lat"
+          [longitude]="marker.geoloc_sigfox.lng"
+          [radius]="marker.geoloc_sigfox.precision">
+        </agm-circle>
+        <!-- End Circles -->
+
+        <!-- Markers -->
+        <agm-marker
+          *ngFor="let marker of geoloc_sigfoxMessages; let i = index"
+          [latitude]="marker.geoloc_sigfox.lat"
+          [longitude]="marker.geoloc_sigfox.lng"
+          [iconUrl]="">
+          <agm-info-window>
+            <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
+            <br>
+            <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
+            <br>
+            <strong><b>Data:</b> {{marker.data}}</strong>
+          </agm-info-window>
+        </agm-marker>
+        <agm-marker
+          *ngFor="let marker of GPSMessages; let i = index"
+          [latitude]="marker.GPS.lat"
+          [longitude]="marker.GPS.lng"
+          [iconUrl]="">
+          <agm-info-window>
+            <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
+            <br>
+            <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
+            <br>
+            <strong><b>Data:</b> {{marker.data}}</strong>
+          </agm-info-window>
+        </agm-marker>
+        <!-- End Markers -->
+
       </agm-map>
     </div>
   </div>

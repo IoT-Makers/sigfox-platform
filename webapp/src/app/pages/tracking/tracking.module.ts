@@ -7,6 +7,7 @@ import {AgmCoreModule} from '@agm/core';
 
 import {TrackingComponent} from './tracking.component';
 import {TrackingRoutingModule} from './tracking-routing.module';
+import {DatepickerModule} from "ng2-bootstrap";
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import {TrackingRoutingModule} from './tracking-routing.module';
     CommonModule,
     MomentModule,
     FormsModule,
+    DatepickerModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
     })
