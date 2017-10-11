@@ -7,10 +7,10 @@
       <button (click)="onTrack(box.value)">Track device</button>
       <p>{{searchResult}}</p>
 
-      <agm-map [latitude]="lat" [longitude]="lng" [zoom]="12">
-        <agm-polyline>
+      <agm-map [latitude]="lat" [longitude]="lng" [zoom]="7">
+
           <agm-marker
-            *ngFor="let marker of geoloc_sigfoxMarkers; let i = index"
+            *ngFor="let marker of geoloc_sigfoxMessages; let i = index"
             [latitude]="marker.geoloc_sigfox.lat"
             [longitude]="marker.geoloc_sigfox.lng"
             [iconUrl]="">
@@ -23,7 +23,7 @@
             </agm-info-window>
           </agm-marker>
           <agm-marker
-            *ngFor="let marker of GPSMarkers; let i = index"
+            *ngFor="let marker of GPSMessages; let i = index"
             [latitude]="marker.GPS.lat"
             [longitude]="marker.GPS.lng"
             [iconUrl]="">
@@ -36,7 +36,6 @@
             </agm-info-window>
           </agm-marker>
 
-        </agm-polyline>
       </agm-map>
     </div>
   </div>

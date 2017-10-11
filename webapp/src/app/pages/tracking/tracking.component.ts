@@ -25,8 +25,8 @@ export class TrackingComponent implements OnInit {
 
   private searchResult: String = '';
 
-  private geoloc_sigfoxMarkers = new Array<Message>();
-  private GPSMarkers = new Array<Message>();
+  private geoloc_sigfoxMessages: Message[] = new Array<Message>();
+  private GPSMessages: Message[] = new Array<Message>()
 
   constructor(private rt: RealTime, private deviceApi: DeviceApi) {
 
@@ -44,25 +44,26 @@ export class TrackingComponent implements OnInit {
   }
 
   onTrack(deviceId: string) {
-    this.geoloc_sigfoxMarkers = [];
-    this.GPSMarkers = [];
-    this.deviceApi.getMessages(deviceId).subscribe((messages: Message[]) => {
-      messages.forEach(message => {
-        if (message.hasOwnProperty("geoloc_sigfox")) {
-          //console.log(message.GPS || message.geoloc_sigfox);
-          this.geoloc_sigfoxMarkers.push(message);
-          this.searchResult = "Found geoloc_sigfox messages for this device ID."
-        }
-        if (message.hasOwnProperty("GPS")){
-          this.GPSMarkers.push(message);
-          this.searchResult = "Found GPS messages for this device ID."
-        } else {
-          this.searchResult = "No geolocation for this device ID."
-        };
-      });
+    this.geoloc_sigfoxMessages = [];
+    this.GPSMessages = [];
+    this.searchResult = "Searching for geolocation messages for this device ID.";
 
-    });
-    this.searchResult = "No messages found for this device ID."
+    this.deviceApi.getMessages(deviceId, {where: {geoloc_sigfox: {neq: null}}}).subscribe((messages: Message[]) => {
+      if(messages.length > 0){
+        this.searchResult = "Found " + messages.length + " geoloc_sigfox messages for this device ID.";
+        this.geoloc_sigfoxMessages = messages;
+      }
+
+      this.deviceApi.getMessages(deviceId,{where: {GPS: {neq: null}}}).subscribe((messages: Message[]) => {
+        if(messages.length > 0){
+          this.searchResult = "Found " + messages.length + " GPS messages for this device ID.";
+          this.GPSMessages = messages;
+        }
+
+        if(this.geoloc_sigfoxMessages.length == 0 && this.GPSMessages.length == 0)
+          this.searchResult = "No geolocation messages found for this device ID.";
+      });
+    }, (error: Error) => this.searchResult = error.message);
   }
 
   ngOnInit(): void {
