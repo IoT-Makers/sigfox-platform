@@ -57,9 +57,9 @@ export class DirectionsComponent implements AfterViewInit {
           this.trackingComponent.directionsDisplayStore.push(directionsDisplay);
           directionsDisplay.setOptions({
             polylineOptions: {
-              strokeWeight: 8,
+              strokeWeight: 6,
               strokeOpacity: 0.7,
-              strokeColor: color
+              strokeColor: '#08dedb'
             },
             markerOptions: {
               visible: false
