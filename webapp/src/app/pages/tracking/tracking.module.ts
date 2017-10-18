@@ -3,11 +3,13 @@ import {FormsModule} from '@angular/forms';
 import {CommonModule} from "@angular/common";
 import {MomentModule} from 'angular2-moment';
 
-import {AgmCoreModule} from '@agm/core';
+import {AgmCoreModule, GoogleMapsAPIWrapper} from '@agm/core';
 
 import {TrackingComponent} from './tracking.component';
 import {TrackingRoutingModule} from './tracking-routing.module';
-import {DatepickerModule} from "ng2-bootstrap";
+import {DateTimePickerModule} from "ng-pick-datetime";
+import {HttpClientModule} from "@angular/common/http";
+import {DirectionsComponent} from "./directions.component";
 
 
 @NgModule({
@@ -16,11 +18,15 @@ import {DatepickerModule} from "ng2-bootstrap";
     CommonModule,
     MomentModule,
     FormsModule,
-    DatepickerModule,
+    DateTimePickerModule,
+    HttpClientModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
     })
   ],
-  declarations: [ TrackingComponent ]
+  providers:[
+    GoogleMapsAPIWrapper
+  ],
+  declarations: [ TrackingComponent, DirectionsComponent ]
 })
 export class TrackingModule { }

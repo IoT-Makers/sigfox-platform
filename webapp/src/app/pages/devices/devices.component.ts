@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Device, Parser, Category, User, FireLoopRef } from '../../shared/sdk/models';
 import { RealTime, DeviceApi, CategoryApi, UserApi } from '../../shared/sdk/services';
+import {Subscription} from "rxjs/Subscription";
 
 
 @Component({
@@ -10,6 +11,8 @@ import { RealTime, DeviceApi, CategoryApi, UserApi } from '../../shared/sdk/serv
   styleUrls: ['./devices.component.scss']
 })
 export class DevicesComponent implements OnInit {
+
+  private subscriptions: Subscription[] = new Array<Subscription>();
 
   private device: Device = new Device();
   private deviceToEdit: Device = new Device();
@@ -35,40 +38,47 @@ export class DevicesComponent implements OnInit {
 
   constructor(private rt: RealTime, private deviceApi: DeviceApi, private categoryApi: CategoryApi, private userApi: UserApi) {
 
-    this.rt.onReady().subscribe(() => {
+    this.subscriptions.push(
 
-      //Get and listen devices
-      this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-      this.deviceRef.on('change',
-        {limit: 1000, order: 'updatedAt DESC', include: ['Parser', 'Category']}
-      ).subscribe((devices: Device[]) => {
-        this.devices = devices;
-        console.log(this.devices);
-      });
+      this.rt.onReady().subscribe(() => {
 
-      //Get and listen parsers
-      this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-      this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-        this.parsers = parsers;
-        console.log(this.parsers);
-      });
+        //Get and listen devices
+        this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+        this.deviceRef.on('change',
+          {limit: 1000, order: 'updatedAt DESC', include: ['Parser', 'Category']}
+        ).subscribe((devices: Device[]) => {
+          this.devices = devices;
+          console.log(this.devices);
+        });
 
-      //Get and listen categories
-      this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-      this.categoryRef.on('change'
-      ).subscribe((categories: Category[]) => {
-        this.categories = categories;
-        console.log(this.categories);
-      });
+        //Get and listen parsers
+        this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
+        this.parserRef.on('change').subscribe((parsers: Parser[]) => {
+          this.parsers = parsers;
+          console.log(this.parsers);
+        });
 
-
-
-    });
+        //Get and listen categories
+        this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
+        this.categoryRef.on('change'
+        ).subscribe((categories: Category[]) => {
+          this.categories = categories;
+          console.log(this.categories);
+        });
+      }));
   }
 
   ngOnInit(): void {
     this.edit = false;
     this.user = this.userApi.getCachedCurrent();
+  }
+
+  ngOnDestroy(): void {
+    console.log("Devices: ngOnDestroy");
+    this.deviceRef.dispose();
+    this.parserRef.dispose();
+    this.categoryRef.dispose();
+    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
   }
 
   editDevice(device): void{

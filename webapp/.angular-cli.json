@@ -19,7 +19,13 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "scss/style.scss"
+        "scss/style.scss",
+        "assets/css/font-awesome.min.css",
+        "assets/css/simple-line-icons.css",
+        "assets/css/glyphicons.css",
+        "assets/css/glyphicons-filetypes.css",
+        "assets/css/glyphicons-social.css",
+        "../node_modules/ng-pick-datetime/assets/style/picker.min.css"
       ],
       "scripts": [
         "../node_modules/chart.js/dist/Chart.bundle.min.js",
