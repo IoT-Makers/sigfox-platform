@@ -28,15 +28,19 @@
     "avatar": {
       "type": "string"
     },
-    "lastLogin":{
+    "lastLogin": {
       "type": "date"
     },
-    "location":{
+    "location": {
       "type": "object"
     }
   },
   "validations": [],
   "relations": {
+    "Organizations":{
+      "type": "hasAndBelongsToMany",
+      "model": "Organization"
+    },
     "Messages": {
       "type": "hasMany",
       "model": "Message"
@@ -44,8 +48,19 @@
     "Devices": {
       "type": "hasMany",
       "model": "Device"
+    },
+    "Categories": {
+      "type": "hasMany",
+      "model": "Category"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW"
+    }
+  ],
   "methods": {}
 }

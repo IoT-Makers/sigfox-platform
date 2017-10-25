@@ -8,5 +8,6 @@ export * from './Category';
 export * from './Message';
 export * from './BaseStation';
 export * from './User';
+export * from './Organization';
 export * from './SDKModels';
 export * from './logger.service';

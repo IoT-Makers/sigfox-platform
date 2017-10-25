@@ -9,7 +9,8 @@ import { Model } from '@mean-expert/model';
 @Model({
   hooks: {
     beforeSave: { name: 'before save', type: 'operation' },
-    afterRemoteLogin: { name: 'login', type: 'afterRemote' }
+    afterRemoteLogin: { name: 'login', type: 'afterRemote' },
+    afterRemoteCreate: { name: 'create', type: 'afterRemote' }
   },
   remotes: {
     myRemote: {
@@ -49,8 +50,47 @@ class user {
         }
         next();
       });
+  }
 
+  afterRemoteCreate(context: any, user: any, next: any) {
 
+    let organization = {
+      name: user.email,
+      ownerId:user.id,
+    };
+
+    user.Organizations.create(
+      organization,
+      (err: any, organizationInstance: any) => {
+      if(err){
+        console.log(err)
+      }else{
+        console.log(organizationInstance);
+        // console.log(user);
+        // organizationInstance.users.add(user,
+        //   (err: any, organization: any) => {
+        //     if(err){
+        //       console.log(err)
+        //     }else {
+        //       console.log(organization);
+        //     }
+        // })
+
+      }
+      next();
+    });
+
+    // // this.model.app.models.Organization.create(
+    // //   organization,
+    //   (err: any, response: any) => {
+    //     if(err){
+    //       console.log(err)
+    //     }else{
+    //       console.log(response);
+    //       this.model.app.models.Organization.link()
+    //     }
+    //     next();
+    //   });
   }
 
   // Example Remote Method

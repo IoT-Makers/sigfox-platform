@@ -62,5 +62,9 @@
     "options": {
       "emailVerificationRequired": false
     }
+  },
+  "Organization": {
+    "dataSource": "db",
+    "public": true
   }
 }

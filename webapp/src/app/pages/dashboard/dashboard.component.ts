@@ -77,7 +77,8 @@ export class DashboardComponent implements OnInit,OnDestroy {
 
         //Devices
         this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-        this.deviceRef.on('change').subscribe((devices: Device[]) => {
+        this.deviceRef.on('change').subscribe(
+          (devices: Device[]) => {
           this.devices = devices;
           console.log("Devices", this.devices);
           this.deviceApi.count().subscribe(result => {
@@ -89,7 +90,8 @@ export class DashboardComponent implements OnInit,OnDestroy {
 
         //Categories
         this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-        this.categoryRef.on('change').subscribe((categories: Category[]) => {
+        this.categoryRef.on('change').subscribe(
+          (categories: Category[]) => {
           this.categories = categories;
           console.log("Categories", this.categories);
           this.categoryApi.count().subscribe(result => {

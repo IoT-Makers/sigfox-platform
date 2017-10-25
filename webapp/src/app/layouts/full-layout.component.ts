@@ -1,9 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {UserApi} from "../shared/sdk/services/custom/User";
 import {Router} from "@angular/router";
-import {User} from "../shared/sdk/models/User";
-import {DeviceApi} from "../shared/sdk/services/custom/Device";
-import {MessageApi} from "../shared/sdk/services/custom/Message";
+import {User} from "../shared/sdk/models";
+import {UserApi, DeviceApi, MessageApi} from "../shared/sdk/services";
 
 @Component({
   templateUrl: './full-layout.component.html'
@@ -25,9 +23,13 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.user = this.userApi.getCachedCurrent();
     this.deviceApi.count().subscribe(result => {
+      //console.log(deviceApi);
+      //console.log("count: ", result);
       this.countDevices = result.count;
     });
     this.messageApi.count().subscribe(result => {
+      //console.log(messageApi);
+      //console.log("count: ", result);
       this.countMessages = result.count;
     });
   }

@@ -61,6 +61,12 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "teamMember",
+      "permission": "ALLOW"
     }
   ],
   "methods": {}

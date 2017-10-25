@@ -19,6 +19,7 @@ export class MessagesComponent implements OnInit,OnDestroy {
   private countMessages: number = 0;
 
   private user: User = new User();
+  private userRef: FireLoopRef<User>
 
   public filterQuery = '';
 
@@ -35,8 +36,14 @@ export class MessagesComponent implements OnInit,OnDestroy {
 
     this.subscriptions.push(
 
+
+
       this.rt.onReady().subscribe(() => {
+
+        this.userRef = this.rt.FireLoop.ref<User>(User);
+
         this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+        //this.messageRef = this.userRef.make(this.user).child<Message>('Messages');
         this.messageRef.on('change',
           {limit: 1000, order: 'id DESC'}
         ).subscribe((messages: Message[]) => {

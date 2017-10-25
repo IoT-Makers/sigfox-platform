@@ -73,7 +73,7 @@
       "model": "user"
     },
     "BaseStations": {
-      "type": "hasMany",
+      "type": "hasAndBelongsToMany",
       "model": "BaseStation"
     }
   },
@@ -81,8 +81,14 @@
     {
       "accessType": "*",
       "principalType": "ROLE",
-      "principalId": "$unathenticated",
+      "principalId": "$unauthenticated",
       "permission": "DENY"
+    },
+    {
+      "accessType": "CREATE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW"
     },
     {
       "accessType": "*",
@@ -91,30 +97,17 @@
       "permission": "ALLOW"
     },
     {
-      "accessType": "READ",
+      "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$owner",
       "permission": "ALLOW"
     },
     {
-      "accessType": "EXECUTE",
+      "accessType": "*",
       "principalType": "ROLE",
-      "principalId": "$owner",
+      "principalId": "organizationMember",
       "permission": "ALLOW"
-    },
-    {
-      "accessType": "WRITE",
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW",
-      "property": "count"
     }
-
   ],
   "methods": {}
 }

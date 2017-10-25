@@ -75,6 +75,12 @@
       "permission": "DENY"
     },
     {
+      "accessType": "CREATE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW"
+    },
+    {
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",
@@ -84,6 +90,12 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$owner",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "organizationMember",
       "permission": "ALLOW"
     }
   ],
