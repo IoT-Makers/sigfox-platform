@@ -1,4 +1,5 @@
 import { Model } from '@mean-expert/model';
+import {Device} from "../../../webapp/src/app/shared/sdk/models/Device";
 /**
  * @module Message
  * @description
@@ -11,9 +12,23 @@ import { Model } from '@mean-expert/model';
     beforeSave: { name: 'before save', type: 'operation' }
   },
   remotes: {
-    myRemote: {
-      returns : { arg: 'result', type: 'array' },
-      http    : { path: '/my-remote', verb: 'get' }
+    postDownlink: {
+      accepts: {
+        arg: 'data',
+        type: 'Message',
+        http: {
+          source: 'body'
+        }
+      },
+      http: {
+        path: '/downlink',
+        verb: 'post'
+      },
+      returns: {
+        arg: 'deviceId',
+        type: 'Object',
+        root: true
+      }
     }
   }
 })
@@ -29,13 +44,13 @@ class Message {
     //console.log("Context: ", ctx);
     console.log("Message data", data);
 
-    if(!data.deviceId||!data.userId){
+    if(!data.deviceId || !data.userId){
       next();
     }else{
       let device = {
         id: data.deviceId,
         userId: data.userId,
-        last_known_location: data.GPS
+        last_known_location: data.GPS || data.geoloc_sigfox
       };
 
       //access another model inside the method
@@ -64,7 +79,7 @@ class Message {
                         (err:any, parserInstance:any) =>{
                           if(err){
                             console.log(err);
-                          }else{
+                          } else {
                             //console.log("Parser:", parserInstance);
 
                             // Here we will decode the Sigfox payload
@@ -93,10 +108,25 @@ class Message {
 
   }
 
-
-  // Example Remote Method
-  myRemote(next: Function): void {
-    this.model.find(next);
+  // Remote method
+  postDownlink(data: any, cb: any) {
+    this.model.app.models.Device.findOne({where: {id: data.deviceId}}, function (err: any, device: Device) {
+      let results;
+      if(device && device.dl_payload){
+        results = {
+          [data.deviceId]:{
+            downlinkData: device.dl_payload
+          }
+        }
+      } else {
+        results = {
+          [data.deviceId]:{
+            noData: true
+          }
+        }
+      }
+      cb(null, results);
+    });
   }
 }
 
