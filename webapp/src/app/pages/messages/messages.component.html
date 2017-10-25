@@ -45,12 +45,18 @@
         <tbody>
         <tr *ngFor="let item of mf.data">
           <td>{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
-          <td>{{item.data}}</td>
+          <td>{{item.data}}
+            <div *ngIf="item.parsed_data">
+              <div *ngFor="let object of item.parsed_data">
+                <small>{{object.key}}: {{object.value}}</small>
+              </div>
+            </div>
+          </td>
           <td>{{item.deviceId}}</td>
           <td>{{item.geolocation}}</td>
           <td>{{item.seqNumber}}</td>
           <td>{{item.RSSI}}</td>
-          <td>{{item.BaseStation}}</td>
+          <td></td>
           <td>
             <button type="button" class="btn btn-danger" (click)="remove(item)">
               <i class="fa fa-trash"></i>

@@ -8,19 +8,17 @@ declare var Object: any;
 export interface BaseStationInterface {
   "geolocation"?: GeoPoint;
   "id"?: number;
-  "messageId"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  Message?: Message[];
+  Messages?: Message[];
 }
 
 export class BaseStation implements BaseStationInterface {
   "geolocation": GeoPoint = <any>null;
   "id": number = 0;
-  "messageId": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  Message: Message[] = null;
+  Messages: Message[] = null;
   constructor(data?: BaseStationInterface) {
     Object.assign(this, data);
   }
@@ -61,10 +59,6 @@ export class BaseStation implements BaseStationInterface {
           name: 'id',
           type: 'number'
         },
-        "messageId": {
-          name: 'messageId',
-          type: 'number'
-        },
         "createdAt": {
           name: 'createdAt',
           type: 'Date'
@@ -75,8 +69,8 @@ export class BaseStation implements BaseStationInterface {
         },
       },
       relations: {
-        Message: {
-          name: 'Message',
+        Messages: {
+          name: 'Messages',
           type: 'Message[]',
           model: 'Message'
         },

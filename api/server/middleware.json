@@ -45,7 +45,7 @@
   "files": {
     "loopback#static": {
       "params": "$!../../webapp/dist"
-  }
+    }
   },
   "final": {
     "loopback#urlNotFound": {}

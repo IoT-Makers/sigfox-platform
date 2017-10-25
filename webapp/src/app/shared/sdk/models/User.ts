@@ -2,7 +2,9 @@
 import {
   AccessToken,
   Message,
-  Device
+  Device,
+  Category,
+  Organization
 } from '../index';
 
 declare var Object: any;
@@ -21,6 +23,8 @@ export interface UserInterface {
   accessTokens?: AccessToken[];
   Messages?: Message[];
   Devices?: Device[];
+  Categories?: Category[];
+  Organizations?: Organization[];
 }
 
 export class User implements UserInterface {
@@ -38,6 +42,8 @@ export class User implements UserInterface {
   accessTokens: AccessToken[] = null;
   Messages: Message[] = null;
   Devices: Device[] = null;
+  Categories: Category[] = null;
+  Organizations: Organization[] = null;
   constructor(data?: UserInterface) {
     Object.assign(this, data);
   }
@@ -130,6 +136,16 @@ export class User implements UserInterface {
           name: 'Devices',
           type: 'Device[]',
           model: 'Device'
+        },
+        Categories: {
+          name: 'Categories',
+          type: 'Category[]',
+          model: 'Category'
+        },
+        Organizations: {
+          name: 'Organizations',
+          type: 'Organization[]',
+          model: 'Organization'
         },
       }
     }

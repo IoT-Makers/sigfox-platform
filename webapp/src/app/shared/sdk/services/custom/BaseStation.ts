@@ -33,11 +33,11 @@ export class BaseStationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Message.
+   * Find a related item by id for Messages.
    *
    * @param {any} id BaseStation id
    *
-   * @param {any} fk Foreign key for Message
+   * @param {any} fk Foreign key for Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -48,10 +48,10 @@ export class BaseStationApi extends BaseLoopBackApi {
    * This usually means the response is a `BaseStation` object.)
    * </em>
    */
-  public findByIdMessage(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public findByIdMessages(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/BaseStations/:id/Message/:fk";
+    "/BaseStations/:id/Messages/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -63,11 +63,11 @@ export class BaseStationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Message.
+   * Delete a related item by id for Messages.
    *
    * @param {any} id BaseStation id
    *
-   * @param {any} fk Foreign key for Message
+   * @param {any} fk Foreign key for Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -75,10 +75,10 @@ export class BaseStationApi extends BaseLoopBackApi {
    *
    * This method returns no data.
    */
-  public destroyByIdMessage(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public destroyByIdMessages(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/BaseStations/:id/Message/:fk";
+    "/BaseStations/:id/Messages/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -90,11 +90,11 @@ export class BaseStationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Message.
+   * Update a related item by id for Messages.
    *
    * @param {any} id BaseStation id
    *
-   * @param {any} fk Foreign key for Message
+   * @param {any} fk Foreign key for Messages
    *
    * @param {object} data Request data.
    *
@@ -109,10 +109,10 @@ export class BaseStationApi extends BaseLoopBackApi {
    * This usually means the response is a `BaseStation` object.)
    * </em>
    */
-  public updateByIdMessage(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
+  public updateByIdMessages(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/BaseStations/:id/Message/:fk";
+    "/BaseStations/:id/Messages/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -126,7 +126,100 @@ export class BaseStationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Message of BaseStation.
+   * Add a related item by id for Messages.
+   *
+   * @param {any} id BaseStation id
+   *
+   * @param {any} fk Foreign key for Messages
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `BaseStation` object.)
+   * </em>
+   */
+  public linkMessages(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/BaseStations/:id/Messages/rel/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Remove the Messages relation to an item by id.
+   *
+   * @param {any} id BaseStation id
+   *
+   * @param {any} fk Foreign key for Messages
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * This method returns no data.
+   */
+  public unlinkMessages(id: any, fk: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "DELETE";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/BaseStations/:id/Messages/rel/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Check the existence of Messages relation to an item by id.
+   *
+   * @param {any} id BaseStation id
+   *
+   * @param {any} fk Foreign key for Messages
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `BaseStation` object.)
+   * </em>
+   */
+  public existsMessages(id: any, fk: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "HEAD";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/BaseStations/:id/Messages/rel/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Queries Messages of BaseStation.
    *
    * @param {any} id BaseStation id
    *
@@ -141,10 +234,10 @@ export class BaseStationApi extends BaseLoopBackApi {
    * This usually means the response is a `BaseStation` object.)
    * </em>
    */
-  public getMessage(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
+  public getMessages(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/BaseStations/:id/Message";
+    "/BaseStations/:id/Messages";
     let _routeParams: any = {
       id: id
     };
@@ -156,7 +249,7 @@ export class BaseStationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Message of this model.
+   * Creates a new instance in Messages of this model.
    *
    * @param {any} id BaseStation id
    *
@@ -173,10 +266,10 @@ export class BaseStationApi extends BaseLoopBackApi {
    * This usually means the response is a `BaseStation` object.)
    * </em>
    */
-  public createMessage(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
+  public createMessages(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/BaseStations/:id/Message";
+    "/BaseStations/:id/Messages";
     let _routeParams: any = {
       id: id
     };
@@ -189,7 +282,7 @@ export class BaseStationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Message of this model.
+   * Deletes all Messages of this model.
    *
    * @param {any} id BaseStation id
    *
@@ -199,10 +292,10 @@ export class BaseStationApi extends BaseLoopBackApi {
    *
    * This method returns no data.
    */
-  public deleteMessage(id: any, customHeaders?: Function): Observable<any> {
+  public deleteMessages(id: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/BaseStations/:id/Message";
+    "/BaseStations/:id/Messages";
     let _routeParams: any = {
       id: id
     };
@@ -213,7 +306,7 @@ export class BaseStationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Message of BaseStation.
+   * Counts Messages of BaseStation.
    *
    * @param {any} id BaseStation id
    *
@@ -227,10 +320,10 @@ export class BaseStationApi extends BaseLoopBackApi {
    *
    *  - `count` – `{number}` - 
    */
-  public countMessage(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
+  public countMessages(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/BaseStations/:id/Message/count";
+    "/BaseStations/:id/Messages/count";
     let _routeParams: any = {
       id: id
     };
@@ -363,7 +456,7 @@ export class BaseStationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Message of this model.
+   * Creates a new instance in Messages of this model.
    *
    * @param {any} id BaseStation id
    *
@@ -380,10 +473,10 @@ export class BaseStationApi extends BaseLoopBackApi {
    * This usually means the response is a `BaseStation` object.)
    * </em>
    */
-  public createManyMessage(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
+  public createManyMessages(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/BaseStations/:id/Message";
+    "/BaseStations/:id/Messages";
     let _routeParams: any = {
       id: id
     };

@@ -19,7 +19,6 @@ export interface MessageInterface {
   "deviceId"?: string;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "baseStationId"?: number;
   "userId"?: number;
   Device?: Device;
   BaseStations?: BaseStation[];
@@ -39,7 +38,6 @@ export class Message implements MessageInterface {
   "deviceId": string = '';
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "baseStationId": number = 0;
   "userId": number = 0;
   Device: Device = null;
   BaseStations: BaseStation[] = null;
@@ -123,10 +121,6 @@ export class Message implements MessageInterface {
         "updatedAt": {
           name: 'updatedAt',
           type: 'Date'
-        },
-        "baseStationId": {
-          name: 'baseStationId',
-          type: 'number'
         },
         "userId": {
           name: 'userId',

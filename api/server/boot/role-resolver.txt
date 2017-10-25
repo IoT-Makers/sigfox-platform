@@ -1,0 +1,59 @@
+// import { BootScript } from '@mean-expert/boot-script';
+//
+// @BootScript()
+// class Role {
+//   constructor(app: any) {
+//
+//
+//   }
+// }
+//
+// module.exports = Role;
+
+module.exports = function(app) {
+  var Role = app.models.Role;
+
+  Role.registerResolver('organizationMember', function(role, context, cb) {
+    function reject() {
+      process.nextTick(function() {
+        cb(null, false);
+      });
+    }
+
+    // // if the target model is not project
+    // if (context.modelName !== 'project') {
+    //   return reject();
+    // }
+    console.log("--- role-resolver ---");
+    //console.log(context);
+    // do not allow anonymous users
+    var userId = context.accessToken.userId;
+    if (!userId) {
+      return reject();
+    }else{
+      cb(null, true); // true = is a team member
+    }
+
+
+
+    // check if userId is in organization table for the given model id
+    // context.model.findById(context.modelId, function(err, model) {
+    //   console.log("Model:", model);
+    //   if (err || !model)
+    //     return reject();
+    //
+    //   var Organization = app.models.Organization;
+    //   Organization.users.find(
+    //     {where:{userId:userId}
+    //   }, function(err, instance) {
+    //     console.log(instance);
+    //     if (err) {
+    //       console.log(err);
+    //       return cb(null, false);
+    //     }
+    //     cb(null, count > 0); // true = is a team member
+    //   });
+    //
+    // });
+  });
+};

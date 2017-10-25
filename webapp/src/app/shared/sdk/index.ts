@@ -57,6 +57,7 @@ import { CategoryApi } from './services/custom/Category';
 import { MessageApi } from './services/custom/Message';
 import { BaseStationApi } from './services/custom/BaseStation';
 import { UserApi } from './services/custom/User';
+import { OrganizationApi } from './services/custom/Organization';
 /**
 * @module SDKBrowserModule
 * @description
@@ -97,6 +98,7 @@ export class SDKBrowserModule {
         MessageApi,
         BaseStationApi,
         UserApi,
+        OrganizationApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }

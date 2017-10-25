@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {User} from "../../../shared/sdk/models";
+import {User, AccessToken} from "../../../shared/sdk/models";
 import {UserApi} from '../../../shared/sdk/services';
 import {Router} from "@angular/router";
 
@@ -13,10 +13,10 @@ export class LoginComponent implements OnInit {
 
   private user: User = new User();
   private errorMessage = "";
-  private location = {
-    lat:0,
-    long:0
-  };
+  // private location = {
+  //   lat:0,
+  //   long:0
+  // };
 
   constructor(private userApi: UserApi, private router: Router) {}
 
@@ -25,10 +25,11 @@ export class LoginComponent implements OnInit {
     //   this.user.location = this.location;
     // }
     console.log(this.user);
-    this.userApi.login(this.user).subscribe(response => {
-      console.log(response);
-      this.user = response.user;
-      console.log(this.user);
+    this.userApi.login(this.user).subscribe(
+      (token: AccessToken) =>{
+      console.log(token);
+      //this.user = response.user;
+      //console.log(this.user);
       this.router.navigate(['/dashboard']);
     }, err => {
       console.log(err);
