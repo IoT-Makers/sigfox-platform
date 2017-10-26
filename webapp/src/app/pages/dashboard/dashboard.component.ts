@@ -44,9 +44,6 @@ export class DashboardComponent implements OnInit,OnDestroy {
 
   private user: User = new User();
 
-
-  public data = [];
-
   constructor(@Inject(DOCUMENT) private document: any,
               private rt: RealTime,
               private messageApi: MessageApi,
@@ -65,7 +62,6 @@ export class DashboardComponent implements OnInit,OnDestroy {
         this.messageRef = this.rt.FireLoop.ref<Message>(Message);
         this.messageRef.on('change').subscribe(
           (messages: Message[]) => {
-            this.data = messages;
             this.messages = messages;
             console.log("Messages", this.messages);
             this.messageApi.count().subscribe(result => {
@@ -113,7 +109,8 @@ export class DashboardComponent implements OnInit,OnDestroy {
           });
         });
 
-      }));
+      })
+    );
 
   }
 

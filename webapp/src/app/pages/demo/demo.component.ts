@@ -35,9 +35,9 @@ export class DemoComponent implements OnInit,OnDestroy {
   };
 
 
-  constructor(private rt: RealTime, private messageApi: MessageApi, private userApi: UserApi) {
+  constructor(private rt: RealTime) {
 
-  this.subscriptions.push(
+    this.subscriptions.push(
 
       this.rt.onReady().subscribe(() => {
 
@@ -50,15 +50,11 @@ export class DemoComponent implements OnInit,OnDestroy {
         ).subscribe((messages: Message[]) => {
           this.message = messages[0];
 
-          console.log(this.message);
-
           let parsed_data = this.message.parsed_data;
           for(let object of parsed_data){
             if(object.key == "iFace")
               this.iFace = object.value;
           }
-
-          console.log(this.iFace);
         });
 
       }));
@@ -66,7 +62,6 @@ export class DemoComponent implements OnInit,OnDestroy {
 
   ngOnInit(): void {
     console.log("Messages: ngOnInit");
-    this.user = this.userApi.getCachedCurrent();
   }
 
   ngOnDestroy(): void {
