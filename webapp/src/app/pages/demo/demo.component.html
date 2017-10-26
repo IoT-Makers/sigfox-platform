@@ -3,7 +3,7 @@
   <div class="card-group">
 
     <!-- 1 -->
-    <ng-container *ngIf="iFace == 1;else not1">
+    <ng-container *ngIf="iFace == 1 && frameType == 'uplink';else not1">
       <div class="card card-danger">
         <div class="card-block">
           <div class="h1 text-muted text-right mb-2">
@@ -27,7 +27,7 @@
     </ng-template>
 
     <!-- 2 -->
-    <ng-container *ngIf="iFace == 2;else not2">
+    <ng-container *ngIf="iFace == 2 && frameType == 'uplink';else not2">
       <div class="card card-success">
         <div class="card-block">
           <div class="h1 text-muted text-right mb-2">
@@ -51,7 +51,7 @@
     </ng-template>
 
     <!-- 3 -->
-    <ng-container *ngIf="iFace == 3;else not3">
+    <ng-container *ngIf="iFace == 3 && frameType == 'uplink';else not3">
       <div class="card card-warning">
         <div class="card-block">
           <div class="h1 text-muted text-right mb-2">
@@ -79,7 +79,7 @@
 
   <div class="card-group">
     <!-- 4 -->
-    <ng-container *ngIf="iFace == 4;else not4">
+    <ng-container *ngIf="iFace == 4 && frameType == 'uplink';else not4">
       <div class="card card-info">
         <div class="card-block">
           <div class="h1 text-muted text-right mb-2">
@@ -103,7 +103,7 @@
     </ng-template>
 
     <!-- 5 -->
-    <ng-container *ngIf="iFace == 5;else not5">
+    <ng-container *ngIf="iFace == 5 && frameType == 'uplink';else not5">
       <div class="card card-info">
         <div class="card-block">
           <div class="h1 text-muted text-right mb-2">
@@ -127,7 +127,7 @@
     </ng-template>
 
     <!-- 6 -->
-    <ng-container *ngIf="iFace == 6;else not6">
+    <ng-container *ngIf="iFace == 6 && frameType == 'uplink';else not6">
       <div class="card card-info">
         <div class="card-block">
           <div class="h1 text-muted text-right mb-2">
@@ -158,10 +158,11 @@
       No message yet...
     </div>
     <div *ngIf="message" class="card-block">
-
+      <strong>Data: {{message.data}}</strong>
+      <hr>
       <div *ngIf="message.parsed_data">
         <div *ngFor="let object of message.parsed_data">
-          <small>{{object.key}}: {{object.value}}</small>
+          <p>{{object.key}}: {{object.value}}</p>
         </div>
       </div>
     </div>

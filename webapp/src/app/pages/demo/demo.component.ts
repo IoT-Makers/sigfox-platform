@@ -12,8 +12,8 @@ import * as _ from 'lodash';
 })
 export class DemoComponent implements OnInit,OnDestroy {
 
-
   private iFace: any;
+  private frameType: any;
 
   private subscriptions: Subscription[] = new Array<Subscription>();
 
@@ -54,6 +54,8 @@ export class DemoComponent implements OnInit,OnDestroy {
           for(let object of parsed_data){
             if(object.key == "iFace")
               this.iFace = object.value;
+            else if(object.key == "frameType")
+              this.frameType = object.value;
           }
         });
 
