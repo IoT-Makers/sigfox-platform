@@ -9,7 +9,6 @@ import {
   ParserApi,
   UserApi
 } from '../../shared/sdk/services';
-import {count} from "rxjs/operator/count";
 import {Subscription} from "rxjs/Subscription";
 import {DOCUMENT} from "@angular/common";
 

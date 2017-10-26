@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Device, Parser, Category, User, FireLoopRef } from '../../shared/sdk/models';
 import { RealTime, DeviceApi, CategoryApi, UserApi } from '../../shared/sdk/services';
 import {Subscription} from "rxjs/Subscription";
+import {Message} from "../../shared/sdk/models/Message";
 
 
 @Component({
@@ -106,6 +107,10 @@ export class DevicesComponent implements OnInit {
 
   cancel(): void{
     this.edit = false;
+  }
+
+  remove(device: Device): void {
+    this.deviceRef.remove(device).subscribe();
   }
 
 }

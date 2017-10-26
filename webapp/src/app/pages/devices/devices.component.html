@@ -86,9 +86,8 @@
               </td>
               <td class="text-center" *ngIf="!edit">
                 <div class="btn-group-sm">
-                  <button class="btn btn-info" (click)="editDevice(device)"><i class="fa fa-pencil"
-                                                                               style="font-size:24px"></i></button>
-                  <button class="btn btn-danger"><i class="fa fa-trash" style="font-size:24px"></i></button>
+                  <button class="btn btn-info" (click)="editDevice(device)"><i class="fa fa-pencil" style="font-size:24px"></i></button>
+                  <button class="btn btn-danger" (click)="remove(device)"><i class="fa fa-trash" style="font-size:24px"></i></button>
                 </div>
 
 

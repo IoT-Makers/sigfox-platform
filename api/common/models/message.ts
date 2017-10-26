@@ -57,11 +57,12 @@ class Message {
       this.model.app.models.Device.findOrCreate(
         { where:{id: data.deviceId} }, //find
         device, //create
-        (err: any, instance: any, created: boolean) => { //Callback
+        (err: any, instance: any, created: boolean) => { //callback
           if (err) {
             console.error('error creating device', err);
           }else if (created){
             console.log('created device', instance);
+            next();
           }else {
             console.log('found device', instance);
 
@@ -88,11 +89,10 @@ class Message {
                             let fn = Function("payload", parserInstance.function);
                             ctx.instance.parsed_data = fn(data.data);
                             console.log(ctx.instance);
-                            next();
-
                           }
                         })
                     }
+                    next();
                   }
 
                 }

@@ -153,12 +153,12 @@
 
 
   <div class="card">
-    <div class="card-header">Last cube message for <strong>{{message.deviceId}}</strong></div>
+    <div *ngIf="message" class="card-header">Last message for deviceId: <strong class="text-danger">{{message.deviceId}}</strong> - at: <strong>{{message.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</strong></div>
     <div *ngIf="!message" class="card-block">
       No message yet...
     </div>
     <div *ngIf="message" class="card-block">
-      <strong>Data: {{message.data}}</strong>
+      Data: <strong>{{message.data}}</strong>
       <hr>
       <div *ngIf="message.parsed_data">
         <div *ngFor="let object of message.parsed_data">

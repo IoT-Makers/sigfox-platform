@@ -2,135 +2,186 @@
 
 var log = require('debug')('boot:01-load-parsers');
 
-module.exports = function (app) {
+module.exports = function(app){
 
-  if (app.dataSources.db.name !== 'Memory' && process.env.INITDB != false) {
+  if (app.dataSources.db.name !== 'Memory') {
     return;
   }
 
   var Parser = app.models.Parser;
 
   function decodeSensit() {
-    var payload;
+    var binary,
+      bytes,
+      frameStr,
+      frame,
+      frameType,
+      battery,
+      temperatureLP,
+      temperature,
+      mode,
+      humidity,
+      light,
+      parsedData = [],
+      obj = {};
 
-    //private function
-    function getBinaryFrame(payload) {
-      var bytes = payload.match(/.{1,2}/g);
-      if (bytes.length > 12) {
-        console.log('Invalid frame, got %s bytes', bytes.length);
-        return null;
-      }
-      var binaryString = '';
-      bytes.forEach(function (byte) {
-        binaryString += getBinaryFromHex(byte);
+    function getBinary(){
+      binary = frame.toString(2);
+    }
+    function getBytes(){
+      bytes = [];
+      frameStr.match(/[0-f]{1,2}/g).forEach(function (byte){
+        bytes.push(parseInt(byte, 16));
+      }.bind(this));
+    }
+    function getMode(){
+      //Mode : bits 1 to 3
+      mode = bytes[0] & 0b111;
+      //frame type: bits 6 & 7
+      frameType = (bytes[0] >> 5 ) & 0b11;
 
-      });
-      if (!binaryString.match(/^([0-9]*)$/)) {
-        console.log('Unable to parse frame %s : %s', payload, binaryString);
-        return null;
+      switch (mode){
+        case 0: mode='Button';
+          break;
+        case 1: mode='Temperature';
+          break;
+        case 2: mode='Light';
+          break;
+        case 3: mode='Door';
+          break;
+        case 4: mode='Move';
+          break;
+        case 5: mode='Reed switch';
+          break;
+        default: mode='Unknown mode {'+mode+'}';
       }
-      return binaryString;
+
+      switch (frameType){
+        case 0: frameType = "Classic";
+          break;
+        case 1: frameType = "Button";
+          break;
+        case 2: frameType = "Alert";
+          break;
+        case 3: frameType = "New Mode";
+          break;
+        default: frameType = "Unknown {"+frameType+"}";
+      }
+    }
+    function getBattery(){
+      //MSB : first byte's first bit
+      var MSB = bytes[0] >> 7;
+      //LSB : second byte's trailing 4 bits
+      var LSB = bytes[1] & 0b1111;
+
+      //console.log("Battery", MSB, LSB, (MSB*16)+LSB);
+
+      battery =(((MSB*16)+LSB) * 2.7) / 20;
+    }
+    function getValues(){
+      getTemperatureLowPrecision();
+
+      switch(mode){
+        case 'Temperature':
+          if (frameType !== 'Alert'){
+            getHumidity();
+          }
+          getTemperature();
+
+          break;
+        case 'Light':
+          getLight();
+        default:
+          console.warn("No getValues() method implemented for %s mode", mode);
+      }
+    }
+    function getTemperatureLowPrecision(){
+      //Last 4 bits of byte 2
+      var temp = bytes[1] & 0b1111;
+
+      temperatureLP = (temp * 64 -200)/10;
+    }
+    function getTemperature(){
+      //MSB : First 4 bits of byte 2
+      var MSB = Number(bytes[1] >> 4).toString(2);
+      //console.log('temp MSB %s - %s', MSB,parseInt(MSB,2));
+
+      //LSB : 6 last bits of byte 3
+      var LSB = Number(bytes[2] & 0b111111, 2).toString(2);
+      while (LSB.length < 6){
+        LSB = '0'+LSB;
+      }
+      //console.log('temp LSB %s - %s', LSB, parseInt(LSB,2));
+      //console.log('temperature', MSB+LSB, parseInt(MSB+LSB, 2));
+      temperature = (parseInt(MSB+LSB,2)-200) / 8;
+    }
+    function getHumidity(){
+      humidity = bytes[3] / 2;
+    }
+    function getLight(){
+      console.log("Get Light", bytes[2], new Number(bytes[2]).toString(16),new Number(bytes[2]).toString(2));
+      //Value	 b0-5
+      //Multiplier b6 - b7
+      var lightValue = bytes[2] & 0b111111;
+      console.log("value", lightValue);
+      var lightMultiplier = getLightMultiplier();
+      console.log('x factor', lightMultiplier);
+      light = 0.01 * lightMultiplier * lightValue;
+    }
+    function getLightMultiplier(){
+      /*
+    Multiplier value	Final multiplier
+    0	1
+    1	8
+    2	64
+    3	2014
+    */
+      var multiplier = bytes[2] >> 6;
+      console.log("multiplier", multiplier);
+
+      switch (multiplier){
+        case 0 : return 1;
+        case 1 : return 8;
+        case 2 : return 64;
+        default: return 2014;
+      }
     }
 
-    function getBinaryFromHex(byte) {
-      var num = Number(parseInt(byte, 16));
-      if (isNaN(num)) {
-        console.log('Invalid byte %s', byte);
-        return null;
-      }
-      var binary = num.toString(2);
+    frame = Number(parseInt(payload, 16));
+    frameStr = payload;
 
-      //Fill the byte with zeros
-      while (binary.length < 8) {
-        binary = '0' + binary;
-      }
-      return binary;
-    }
+    getBinary();
+    getBytes();
+    getMode();
+    getBattery();
+    getValues();
 
-    //Declaration
-    var parsedData = [];
-    var obj = {};
-
-    var framePattern = /(.{1})(.{2})(.{2})(.{3})(.{4})(.{4})/;
-    var binaryFrame = getBinaryFrame(message.data);
-    var frame = framePattern.exec(binaryFrame);
-    console.log(frame);
-
-    var type = parseInt(frame[2], 2);
-    obj.key = "type";
-    switch (type) {
-      case 0:
-        obj.value = "regular";
-        break;
-      case 1:
-        obj.value = "button call";
-        break;
-      case 2:
-        obj.value = "alert";
-        break;
-      case 3:
-        obj.value = "new mode";
-        break;
-    }
+    obj = {};
+    obj.key = "frameType";
+    obj.value = frameType;
     parsedData.push(obj);
     obj = {};
-
-
-    var timeframe = parseInt(frame[3], 2);
-    obj.key = "timeframe";
-    switch (timeframe) {
-      case 0:
-        obj.value = "10 min";
-        break;
-      case 1:
-        obj.value = "1 hour";
-        break;
-      case 2:
-        obj.value = "6 hours";
-        break;
-      case 3:
-        obj.value = "24 hours";
-        break;
-    }
-    parsedData.push(obj);
-    obj = {};
-
-
-    var mode = parseInt(frame[4], 2);
     obj.key = "mode";
-    switch (mode) {
-      case 0:
-        obj.value = "button";
-        break;
-      case 1:
-        obj.value = "temperature and humidity";
-        break;
-      case 2:
-        obj.value = "light";
-        break;
-      case 3:
-        obj.value = "door";
-        break;
-      case 4:
-        obj.value = "move";
-        break;
-      case 5:
-        obj.value = "magnet";
-        break;
-    }
+    obj.value = mode;
     parsedData.push(obj);
     obj = {};
-
-    var temp = parseInt(frame[5], 2);
-    obj.key = "temp";
-    obj.value = (temp * 6.4) - 20;
+    obj.key = "temperature";
+    obj.value = temperature;
     parsedData.push(obj);
-    console.log(obj.value);
     obj = {};
+    obj.key = "humidity";
+    obj.value = humidity;
+    parsedData.push(obj);
+    obj = {};
+    obj.key = "light";
+    obj.value = light;
+    parsedData.push(obj);
+    obj = {};
+    obj.key = "battery";
+    obj.value = battery;
+    parsedData.push(obj);
 
-    console.log(parsedData);
     return parsedData;
-
   };
 
   function decodeTutoGPS(){
@@ -138,7 +189,7 @@ module.exports = function (app) {
     //Private functions
 
     function getBinaryFrame(payload) {
-    //  console.log('getFrameBinary', payload);
+      //  console.log('getFrameBinary', payload);
       var bytes = payload.match(/.{1,2}/g);
       // if (bytes.length !== 12) {
       //   console.log('Invalid frame, got %s bytes', bytes.length);
