@@ -1,5 +1,4 @@
 import { Model } from '@mean-expert/model';
-import {Device} from "../../../webapp/src/app/shared/sdk/models/Device";
 /**
  * @module user
  * @description
@@ -17,24 +16,6 @@ import {Device} from "../../../webapp/src/app/shared/sdk/models/Device";
     myRemote: {
       returns : { arg: 'result', type: 'array' },
       http    : { path: '/my-remote', verb: 'get' }
-    },
-    postDownlink: {
-      accepts: {
-        arg: 'data',
-        type: 'Message',
-        http: {
-          source: 'body'
-        }
-      },
-      http: {
-        path: '/downlink',
-        verb: 'post'
-      },
-      returns: {
-        arg: 'deviceId',
-        type: 'Object',
-        root: true
-      }
     }
   }
 })
@@ -118,26 +99,6 @@ class user {
   }
 
 
-  // Remote method
-  postDownlink(data: any, cb: any) {
-    this.model.app.models.Device.findOne({where: {id: data.deviceId}}, function (err: any, device: Device) {
-      let results;
-      if(device && device.dl_payload){
-        results = {
-          [data.deviceId]:{
-            downlinkData: device.dl_payload
-          }
-        }
-      } else {
-        results = {
-          [data.deviceId]:{
-            noData: true
-          }
-        }
-      }
-      cb(null, results);
-    });
-  }
 }
 
 module.exports = user;
