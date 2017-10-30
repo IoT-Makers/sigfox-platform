@@ -4,6 +4,18 @@
     <div class="card">
       <div class="card-block">
         <div class="h1 text-muted text-right mb-2">
+          <i class="fa fa-group"></i>
+        </div>
+        <div class="h4 mb-0">{{countOrganizations}}</div>
+        <small class="text-muted text-uppercase font-weight-bold">Organizations</small>
+        <div class="progress progress-xs mt-1 mb-0">
+          <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-block">
+        <div class="h1 text-muted text-right mb-2">
           <i class="fa fa-tag"></i>
         </div>
         <div class="h4 mb-0">{{countCategories}}</div>
@@ -37,26 +49,14 @@
         </div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-block">
-        <div class="h1 text-muted text-right mb-2">
-          <i class="fa fa-code"></i>
-        </div>
-        <div class="h4 mb-0">{{countParsers}}</div>
-        <small class="text-muted text-uppercase font-weight-bold">Parsers</small>
-        <div class="progress progress-xs mt-1 mb-0">
-          <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <div class="card">
-    <div class="card-header">Last Messages</div>
-    <div *ngIf="!data.length" class="card-block">
+    <div class="card-header">Messages</div>
+    <div *ngIf="!messages.length" class="card-block">
       No message yet...
     </div>
-    <div *ngIf="data.length>0" class="card-block">
+    <div *ngIf="messages.length>0" class="card-block">
       <div class="row mb-1">
         <div class="col-md-4 offset-md-8">
           <div class="input-group">
@@ -65,29 +65,55 @@
           </div>
         </div>
       </div>
-      <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+      <table class="table table-striped" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
         <thead>
         <tr>
-          <th style="width: 20%">
+          <th style="width: 10%">
             <mfDefaultSorter by="createdAt">Date</mfDefaultSorter>
           </th>
-          <th style="width: 40%">
+          <th style="width: 20%">
             <mfDefaultSorter by="data">Data</mfDefaultSorter>
           </th>
-          <th style="width: 20%">
+          <th style="width: 10%">
             <mfDefaultSorter by="deviceId">Device</mfDefaultSorter>
           </th>
           <th style="width: 20%">
             <mfDefaultSorter by="geolocation">Geoloc</mfDefaultSorter>
+          </th>
+          <th style="width: 10%">
+            <mfDefaultSorter by="seqNumber">Seq Number</mfDefaultSorter>
+          </th>
+          <th style="width: 10%">
+            <mfDefaultSorter by="RSSI">RSSI</mfDefaultSorter>
+          </th>
+          <th style="width: 10%">
+            <mfDefaultSorter by="RSSI">Base Stations</mfDefaultSorter>
+          </th>
+          <th style="width: 10%">
+            Options
           </th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let item of mf.data">
           <td>{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
-          <td>{{item.data}}</td>
+          <td>{{item.data}}
+            <div *ngIf="item.parsed_data">
+              <div *ngFor="let object of item.parsed_data">
+                <small>{{object.key}}: {{object.value}}</small>
+              </div>
+            </div>
+          </td>
           <td>{{item.deviceId}}</td>
           <td>{{item.geolocation}}</td>
+          <td>{{item.seqNumber}}</td>
+          <td>{{item.RSSI}}</td>
+          <td></td>
+          <td>
+            <button type="button" class="btn btn-danger" (click)="remove(item)">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
         </tr>
         </tbody>
         <tfoot>

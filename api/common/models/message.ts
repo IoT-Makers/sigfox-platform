@@ -29,12 +29,12 @@ class Message {
     //console.log("Context: ", ctx);
     console.log("Message data", data);
 
-    if(!data.deviceId||!data.userId){
+    if(!data.deviceId||!data.organizationId){
       next();
     }else{
       let device = {
         id: data.deviceId,
-        userId: data.userId,
+        organizationId: data.organizationId,
         last_known_location: data.GPS
       };
 
@@ -47,6 +47,7 @@ class Message {
             console.error('error creating device', err);
           }else if (created){
             console.log('created device', instance);
+            next();
           }else {
             console.log('found device', instance);
 

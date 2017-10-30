@@ -2,6 +2,8 @@ import {Component, OnDestroy, OnInit, Inject} from '@angular/core';
 import {User, FireLoopRef} from "../../../shared/sdk/models";
 import {UserApi} from "../../../shared/sdk/services/custom/User";
 import {DOCUMENT} from "@angular/common";
+import {OrganizationApi} from "../../../shared/sdk/services/custom/Organization";
+import {forEach} from "@angular/router/src/utils/collection";
 
 @Component({
   selector: 'app-profile',
@@ -13,20 +15,26 @@ export class ProfileComponent implements OnInit {
   private user: User = new User();
   private userRef: FireLoopRef<User>;
 
-  private callbackURL;
+  private callbackURLbase;
 
-  constructor(@Inject(DOCUMENT) private document: any,private userApi: UserApi) {
+  constructor(@Inject(DOCUMENT) private document: any,private userApi: UserApi, private organizationApi: OrganizationApi) {
 
   }
 
   ngOnInit() {
 
     this.user = this.userApi.getCachedCurrent();
-    this.userApi.findById(this.user.id).subscribe((user: User)=>{
-      console.log(user);
+    console.log(this.user);
+    this.userApi.findById(this.user.id, {include: ['Organizations', 'accessTokens']}).subscribe((user: User)=>{
+
       this.user = user;
+      console.log(this.user);
     });
-    this.callbackURL = this.document.location.origin + "/api/users/" + this.user.id + "/Messages?access_token=";
+
+    this.callbackURLbase = this.document.location.origin + "/api/Organizations/";
+  }
+
+  ngOnDestroy(){
 
   }
 }

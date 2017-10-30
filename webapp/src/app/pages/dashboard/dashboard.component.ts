@@ -1,17 +1,19 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 // import { Router } from '@angular/router';
-import {Message, Device, Category, Parser, User, FireLoopRef} from '../../shared/sdk/models';
+import {Message, Device, Category, Parser, User, Organization, FireLoopRef} from '../../shared/sdk/models';
 import {
   RealTime,
   MessageApi,
   DeviceApi,
   CategoryApi,
   ParserApi,
-  UserApi
+  UserApi,
+  OrganizationApi
 } from '../../shared/sdk/services';
-import {count} from "rxjs/operator/count";
+
 import {Subscription} from "rxjs/Subscription";
 import {DOCUMENT} from "@angular/common";
+
 
 @Component({
   templateUrl: 'dashboard.component.html'
@@ -45,6 +47,12 @@ export class DashboardComponent implements OnInit,OnDestroy {
   private user: User = new User();
 
 
+  private organization: Organization = new Organization();
+  private organizations: Organization[] = new Array<Organization>();
+  private organizationRef: FireLoopRef<Organization>;
+  private countOrganizations: number = 0;
+
+
   public data = [];
 
   constructor(@Inject(DOCUMENT) private document: any,
@@ -53,8 +61,26 @@ export class DashboardComponent implements OnInit,OnDestroy {
               private deviceApi: DeviceApi,
               private categoryApi: CategoryApi,
               private parserApi: ParserApi,
-              private userApi: UserApi) {
+              private userApi: UserApi,
+              private organizationApi: OrganizationApi) {}
 
+  ngOnInit(): void {
+    this.user = this.userApi.getCachedCurrent();
+    //console.log(this.user);
+    this.userApi.findById(this.user.id, {include: 'Organizations'}).subscribe((user: User)=>{
+    //this.userApi.findById(this.user.id).subscribe((user: User)=>{
+      console.log(user);
+      this.user = user;
+      this.organizations = user.Organizations;
+      console.log(this.organizations);
+      this.countOrganizations = user.Organizations.length;
+
+      this.setup();
+    });
+
+  }
+
+  setup(): void {
     console.log(this.rt.connection);
 
     this.subscriptions.push(
@@ -63,6 +89,7 @@ export class DashboardComponent implements OnInit,OnDestroy {
 
         //Messages
         this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+        //console.log(this.organizations[0].id);
         this.messageRef.on('change').subscribe(
           (messages: Message[]) => {
             this.data = messages;
@@ -79,56 +106,49 @@ export class DashboardComponent implements OnInit,OnDestroy {
         this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
         this.deviceRef.on('change').subscribe(
           (devices: Device[]) => {
-          this.devices = devices;
-          console.log("Devices", this.devices);
-          this.deviceApi.count().subscribe(result => {
-            //console.log(deviceApi);
-            console.log("count: ", result);
-            this.countDevices = result.count;
+            this.devices = devices;
+            console.log("Devices", this.devices);
+            this.deviceApi.count().subscribe(result => {
+              //console.log(deviceApi);
+              console.log("count: ", result);
+              this.countDevices = result.count;
+            });
           });
-        });
 
         //Categories
         this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
         this.categoryRef.on('change').subscribe(
           (categories: Category[]) => {
-          this.categories = categories;
-          console.log("Categories", this.categories);
-          this.categoryApi.count().subscribe(result => {
-            //console.log(categoryApi);
-            console.log("count: ", result);
-            this.countCategories = result.count;
+            this.categories = categories;
+            console.log("Categories", this.categories);
+            this.categoryApi.count().subscribe(result => {
+              //console.log(categoryApi);
+              console.log("count: ", result);
+              this.countCategories = result.count;
+            });
           });
-        });
 
         //Parsers
-        this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-        this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-          this.parsers = parsers;
-          console.log("Parsers", this.parsers);
-          this.parserApi.count().subscribe(result => {
-            //console.log(parserApi);
-            console.log("count: ", result);
-            this.countParsers = result.count;
-          });
-        });
+        // this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
+        // this.parserRef.on('change').subscribe((parsers: Parser[]) => {
+        //   this.parsers = parsers;
+        //   console.log("Parsers", this.parsers);
+        //   this.parserApi.count().subscribe(result => {
+        //     //console.log(parserApi);
+        //     console.log("count: ", result);
+        //     this.countParsers = result.count;
+        //   });
+        // });
 
       }));
-
-  }
-
-  ngOnInit(): void {
-    this.user = this.userApi.getCachedCurrent();
-    console.log(this.user);
-    this.callbackURL = this.document.location.origin + "/api/users/" + this.user.id + "/Messages?access_token=";
   }
 
   ngOnDestroy(): void {
     console.log("Dashboard: ngOnDestroy");
     this.messageRef.dispose();
-    this.parserRef.dispose();
-    this.categoryRef.dispose();
+    //this.parserRef.dispose();
     this.deviceRef.dispose();
+    this.categoryRef.dispose();
     this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
   }
 

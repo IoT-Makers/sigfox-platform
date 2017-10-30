@@ -8,7 +8,7 @@ import {UserApi, DeviceApi, MessageApi} from "../shared/sdk/services";
 })
 export class FullLayoutComponent implements OnInit, OnDestroy {
 
-  public user: User = new User();
+  private user: User = new User();
   private countDevices: number = 0;
   private countMessages: number = 0;
 
@@ -22,6 +22,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.user = this.userApi.getCachedCurrent();
+    this.userApi.findById(this.user.id, {include:'Organizations'}).subscribe((user: User)=>{
+      console.log(user);
+      this.user = user;
+      // this.countOrganizations = user.Organizations.length;
+    });
     this.deviceApi.count().subscribe(result => {
       //console.log(deviceApi);
       //console.log("count: ", result);
@@ -49,6 +54,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   onLogout(): void {
     this.userApi.logout().subscribe(() => {
+      console.log("is authenticated: ", this.userApi.isAuthenticated());
       // some actions on logout
       this.router.navigate(['/login']);
     });
