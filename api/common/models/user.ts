@@ -1,4 +1,4 @@
-import { Model } from '@mean-expert/model';
+import {Model} from '@mean-expert/model';
 /**
  * @module user
  * @description
@@ -8,21 +8,22 @@ import { Model } from '@mean-expert/model';
  **/
 @Model({
   hooks: {
-    beforeSave: { name: 'before save', type: 'operation' },
-    afterRemoteLogin: { name: 'login', type: 'afterRemote' },
-    afterRemoteCreate: { name: 'create', type: 'afterRemote' }
+    beforeSave: {name: 'before save', type: 'operation'},
+    afterRemoteLogin: {name: 'login', type: 'afterRemote'},
+    afterRemoteCreate: {name: 'create', type: 'afterRemote'}
   },
   remotes: {
     myRemote: {
-      returns : { arg: 'result', type: 'array' },
-      http    : { path: '/my-remote', verb: 'get' }
+      returns: {arg: 'result', type: 'array'},
+      http: {path: '/my-remote', verb: 'get'}
     }
   }
 })
 
 class user {
   // LoopBack model instance is injected in constructor
-  constructor(public model: any) {}
+  constructor(public model: any) {
+  }
 
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
@@ -43,42 +44,126 @@ class user {
     this.model.app.models.user.upsert(
       user,
       (err: any, response: any) => {
-        if(err){
+        if (err) {
           console.log(err)
-        }else{
+        } else {
           console.log(response);
         }
         next();
       });
   }
 
-  afterRemoteCreate(context: any, user: any, next: any) {
+  afterRemoteCreate(context: any, userInstance: any, next: any) {
 
-    let organization = {
-      name: user.email,
-      ownerId:user.id,
+    // let organization = {
+    //   name: userInstance.email,
+    //   ownerId: userInstance.id,
+    // };
+
+    let adminRole = {
+      name: "admin"
     };
 
-    user.Organizations.create(
-      organization,
-      (err: any, organizationInstance: any) => {
-      if(err){
-        console.log(err)
-      }else{
-        console.log(organizationInstance);
-        // console.log(user);
-        // organizationInstance.users.add(user,
-        //   (err: any, organization: any) => {
-        //     if(err){
-        //       console.log(err)
-        //     }else {
-        //       console.log(organization);
-        //     }
-        // })
+    let userRole = {
+      name: "user"
+    };
 
-      }
-      next();
-    });
+
+    this.model.app.models.user.count(
+      (err: any, countUser: any) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log(countUser);
+          if(countUser==1){// Create admin
+            this.model.app.models.Role.findOrCreate(
+              {where: {name: "admin"}}, // Find
+              adminRole, // Create
+              (err: any, instance: any, created: boolean) => { //Callback
+                if (err) {
+                  console.error('error creating device', err);
+                } else if (created) {
+                  console.log('created role', instance);
+                  instance.principals.create({
+                    principalType: this.model.app.models.RoleMapping.USER,
+                    principalId: userInstance.id
+                  }, (err: any, principalInstance: any) => {
+                    if (err) {
+                      console.log(err)
+                    } else {
+                      console.log(principalInstance);
+                      next();
+                    }
+                  })
+
+                } else {
+                  console.log('found role', instance);
+                  instance.principals.create({
+                    principalType: this.model.app.models.RoleMapping.USER,
+                    principalId: userInstance.id
+                  }, (err: any, principalInstance: any) => {
+                    if (err) {
+                      console.log(err)
+                    } else {
+                      console.log(principalInstance);
+                      next();
+                    }
+                  })
+                }
+              });
+          }else{ // Create user
+            this.model.app.models.Role.findOrCreate(
+              {where: {name: "user"}}, // Find
+              userRole, // Create
+              (err: any, instance: any, created: boolean) => { //Callback
+                if (err) {
+                  console.error('error creating device', err);
+                } else if (created) {
+                  console.log('created role', instance);
+                  instance.principals.create({
+                    principalType: this.model.app.models.RoleMapping.USER,
+                    principalId: userInstance.id
+                  }, (err: any, principalInstance: any) => {
+                    if (err) {
+                      console.log(err)
+                    } else {
+                      console.log(principalInstance);
+                      next();
+                    }
+                  })
+
+                } else {
+                  console.log('found role', instance);
+                  instance.principals.create({
+                    principalType: this.model.app.models.RoleMapping.USER,
+                    principalId: userInstance.id
+                  }, (err: any, principalInstance: any) => {
+                    if (err) {
+                      console.log(err)
+                    } else {
+                      console.log(principalInstance);
+                      next();
+                    }
+                  })
+                }
+              });
+          }
+        }
+      });
+
+
+
+    // userInstance.Organizations.create(
+    //   organization,
+    //   (err: any, organizationInstance: any) => {
+    //   if(err){
+    //     console.log(err)
+    //   }else{
+    //     console.log(organizationInstance);
+    //     console.log(user);
+    //   }
+    //   next();
+    // });
 
     // // this.model.app.models.Organization.create(
     // //   organization,

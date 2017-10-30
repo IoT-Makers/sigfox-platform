@@ -41,6 +41,10 @@
     "Devices": {
       "type": "hasMany",
       "model": "Device"
+    },
+    "Organization": {
+      "type": "belongsTo",
+      "model": "Organization"
     }
   },
   "acls": [
@@ -54,6 +58,12 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "user",
       "permission": "ALLOW"
     },
     {

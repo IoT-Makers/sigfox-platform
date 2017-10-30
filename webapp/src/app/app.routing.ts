@@ -14,12 +14,6 @@ export const routes: Routes = [
   {
     path: '',
     canActivate: [AuthGuard],
-    redirectTo: 'dashboard',
-    pathMatch: 'full'
-  },
-  {
-    path: '',
-    canActivate: [AuthGuard],
     component: FullLayoutComponent,
     data: {
       title: 'Home'

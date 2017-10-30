@@ -57,13 +57,19 @@
     {
       "accessType": "*",
       "principalType": "ROLE",
+      "principalId": "user",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
       "principalId": "$owner",
       "permission": "ALLOW"
     },
     {
       "accessType": "*",
       "principalType": "ROLE",
-      "principalId": "teamMember",
+      "principalId": "organizationMember",
       "permission": "ALLOW"
     }
   ],

@@ -11,28 +11,57 @@
           My Profile
         </div>
         <div class="card-block">
-          <div><b><i class="fa fa-envelope" aria-hidden="true"></i><span style="margin-right:1em"></span> Email:</b> {{user.email}}</div>
+          <div><b><i class="fa fa-envelope" aria-hidden="true"></i><span style="margin-right:1em"></span> Email:</b>
+            {{user.email}}
+          </div>
           <hr>
-          <div><b><i class="fa fa-user" aria-hidden="true"></i><span style="margin-right:1em"></span> Avatar:</b> {{user.avatar}}</div>
+          <div><b><i class="fa fa-user" aria-hidden="true"></i><span style="margin-right:1em"></span> Avatar:</b>
+            {{user.avatar}}
+          </div>
           <hr>
-          <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Creation:</b> {{user.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
+          <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Creation:</b>
+            {{user.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}
+          </div>
           <hr>
-          <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Last login:</b> {{user.lastLogin | date:"yyyy/MM/dd HH:mm:ss"}}</div>
+          <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Last
+            login:</b> {{user.lastLogin | date:"yyyy/MM/dd HH:mm:ss"}}
+          </div>
           <hr>
           <div *ngIf="user.emailVerified; then verifiedEmail else unverifiedEmail"></div>
           <ng-template #verifiedEmail>
-            <div style='color:green'><b><i class="fa fa-check-circle" aria-hidden="true"></i><span style="margin-right:1em"></span> Email verified</b></div>
+            <div style='color:green'><b><i class="fa fa-check-circle" aria-hidden="true"></i><span
+              style="margin-right:1em"></span> Email verified</b></div>
           </ng-template>
           <ng-template #unverifiedEmail>
-            <div  style='color:red'><b><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span style="margin-right:1em"></span> Please verify your email</b></div>
+            <div style='color:red'><b><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span
+              style="margin-right:1em"></span> Please verify your email</b></div>
           </ng-template>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">Callback URL</div>
-        <div class="card-block card-info text-center text-white font-weight-bold">{{callbackURL}}</div>
-      </div>
+      <!--<div class="card">-->
+        <!--<div class="card-header card-default">-->
+          <!--My organizations-->
+        <!--</div>-->
+        <!--<div *ngFor="let organization of user.Organizations;" class="card-block">-->
+          <!--<div><b><i class="fa fa-group" aria-hidden="true"></i><span style="margin-right:1em"></span> Name: </b>-->
+            <!--{{organization.name}}-->
+          <!--</div>-->
+          <!--<div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Creation: </b>-->
+            <!--{{organization.createdAt | date:"yyyy/MM/dd HH:mm:ss" }}-->
+          <!--</div>-->
+          <!--<div><b><i class="fa fa-upload" aria-hidden="true"></i><span style="margin-right:1em"></span> Callback URL: </b>-->
+            <!--{{callbackURLbase}}{{organization.id}}/Messages-->
+          <!--</div>-->
+          <!--<hr>-->
+        <!--</div>-->
+      <!--</div>-->
+
+
+      <!--<div class="card">-->
+        <!--<div class="card-header">Callback URL</div>-->
+        <!--<div class="card-block card-info text-center text-white font-weight-bold">{{callbackURL}}</div>-->
+      <!--</div>-->
 
     </div>
     <!-- /.col-sm-4 -->

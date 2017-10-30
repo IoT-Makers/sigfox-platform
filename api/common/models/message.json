@@ -72,6 +72,10 @@
       "type": "belongsTo",
       "model": "user"
     },
+    "Organization": {
+      "type": "belongsTo",
+      "model": "Organization"
+    },
     "BaseStations": {
       "type": "hasAndBelongsToMany",
       "model": "BaseStation"
@@ -87,6 +91,12 @@
     {
       "accessType": "CREATE",
       "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW"
     },
@@ -94,6 +104,12 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "user",
       "permission": "ALLOW"
     },
     {

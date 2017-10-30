@@ -58,6 +58,10 @@
       "type": "belongsTo",
       "model": "user"
     },
+    "Organization": {
+      "type": "belongsTo",
+      "model": "Organization"
+    },
     "Messages": {
       "type": "hasMany",
       "model": "Message"
@@ -84,6 +88,12 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "user",
       "permission": "ALLOW"
     },
     {
