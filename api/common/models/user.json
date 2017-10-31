@@ -41,6 +41,12 @@
       "type": "hasAndBelongsToMany",
       "model": "Organization"
     },
+    "roles": {
+      "type": "hasMany",
+      "model": "Role",
+      "foreignKey": "principalId",
+      "through": "RoleMapping"
+    },
     "Messages": {
       "type": "hasMany",
       "model": "Message"

@@ -1,27 +1,34 @@
 /* tslint:disable */
 import {
-  User
+  User,
+  Message,
+  Device,
+  Category
 } from '../index';
 
 declare var Object: any;
 export interface OrganizationInterface {
   "id"?: string;
   "name": string;
-  "ownerId"?: number;
+  "ownerId": string;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  users?: User[];
-  Owner?: User;
+  Members?: User[];
+  Messages?: Message[];
+  Devices?: Device[];
+  Categories?: Category[];
 }
 
 export class Organization implements OrganizationInterface {
   "id": string = '';
   "name": string = '';
-  "ownerId": number = 0;
+  "ownerId": string = '';
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  users: User[] = null;
-  Owner: User = null;
+  Members: User[] = null;
+  Messages: Message[] = null;
+  Devices: Device[] = null;
+  Categories: Category[] = null;
   constructor(data?: OrganizationInterface) {
     Object.assign(this, data);
   }
@@ -64,7 +71,7 @@ export class Organization implements OrganizationInterface {
         },
         "ownerId": {
           name: 'ownerId',
-          type: 'number'
+          type: 'string'
         },
         "createdAt": {
           name: 'createdAt',
@@ -76,15 +83,25 @@ export class Organization implements OrganizationInterface {
         },
       },
       relations: {
-        users: {
-          name: 'users',
+        Members: {
+          name: 'Members',
           type: 'User[]',
           model: 'User'
         },
-        Owner: {
-          name: 'Owner',
-          type: 'User',
-          model: 'User'
+        Messages: {
+          name: 'Messages',
+          type: 'Message[]',
+          model: 'Message'
+        },
+        Devices: {
+          name: 'Devices',
+          type: 'Device[]',
+          model: 'Device'
+        },
+        Categories: {
+          name: 'Categories',
+          type: 'Category[]',
+          model: 'Category'
         },
       }
     }

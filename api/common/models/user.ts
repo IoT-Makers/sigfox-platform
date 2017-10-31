@@ -69,13 +69,16 @@ class user {
     };
 
 
+    // Check if any user exists
     this.model.app.models.user.count(
       (err: any, countUser: any) => {
         if (err) {
           console.log(err)
         } else {
           console.log(countUser);
-          if(countUser==1){// Create admin
+          if(countUser==1){
+
+            // Create admin
             this.model.app.models.Role.findOrCreate(
               {where: {name: "admin"}}, // Find
               adminRole, // Create
@@ -111,7 +114,9 @@ class user {
                   })
                 }
               });
-          }else{ // Create user
+          }else{
+
+            // Create user
             this.model.app.models.Role.findOrCreate(
               {where: {name: "user"}}, // Find
               userRole, // Create

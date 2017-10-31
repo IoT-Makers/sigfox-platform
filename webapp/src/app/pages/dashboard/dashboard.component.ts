@@ -67,13 +67,10 @@ export class DashboardComponent implements OnInit,OnDestroy {
   ngOnInit(): void {
     this.user = this.userApi.getCachedCurrent();
     //console.log(this.user);
-    this.userApi.findById(this.user.id, {include: 'Organizations'}).subscribe((user: User)=>{
+    this.userApi.findById(this.user.id).subscribe((user: User)=>{
     //this.userApi.findById(this.user.id).subscribe((user: User)=>{
       console.log(user);
       this.user = user;
-      this.organizations = user.Organizations;
-      console.log(this.organizations);
-      this.countOrganizations = user.Organizations.length;
 
       this.setup();
     });

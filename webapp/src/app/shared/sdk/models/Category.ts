@@ -11,6 +11,7 @@ export interface CategoryInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: number;
+  "organizationId"?: string;
   Devices?: Device[];
 }
 
@@ -21,6 +22,7 @@ export class Category implements CategoryInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": number = 0;
+  "organizationId": string = '';
   Devices: Device[] = null;
   constructor(data?: CategoryInterface) {
     Object.assign(this, data);
@@ -77,6 +79,10 @@ export class Category implements CategoryInterface {
         "userId": {
           name: 'userId',
           type: 'number'
+        },
+        "organizationId": {
+          name: 'organizationId',
+          type: 'string'
         },
       },
       relations: {

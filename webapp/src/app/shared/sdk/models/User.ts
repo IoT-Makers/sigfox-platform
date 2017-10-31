@@ -1,6 +1,7 @@
 /* tslint:disable */
 import {
   AccessToken,
+  Role,
   Message,
   Device,
   Category,
@@ -21,6 +22,7 @@ export interface UserInterface {
   "updatedAt"?: Date;
   "password"?: string;
   accessTokens?: AccessToken[];
+  roles?: Role[];
   Messages?: Message[];
   Devices?: Device[];
   Categories?: Category[];
@@ -40,6 +42,7 @@ export class User implements UserInterface {
   "updatedAt": Date = new Date(0);
   "password": string = '';
   accessTokens: AccessToken[] = null;
+  roles: Role[] = null;
   Messages: Message[] = null;
   Devices: Device[] = null;
   Categories: Category[] = null;
@@ -126,6 +129,11 @@ export class User implements UserInterface {
           name: 'accessTokens',
           type: 'AccessToken[]',
           model: 'AccessToken'
+        },
+        roles: {
+          name: 'roles',
+          type: 'Role[]',
+          model: 'Role'
         },
         Messages: {
           name: 'Messages',

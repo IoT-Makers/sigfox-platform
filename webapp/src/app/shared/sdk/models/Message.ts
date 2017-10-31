@@ -2,7 +2,8 @@
 import {
   Device,
   BaseStation,
-  User
+  User,
+  Organization
 } from '../index';
 
 declare var Object: any;
@@ -20,9 +21,12 @@ export interface MessageInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: number;
+  "organizationId"?: string;
+  "OrganizationId"?: string;
   Device?: Device;
   BaseStations?: BaseStation[];
   user?: User;
+  Organization?: Organization;
 }
 
 export class Message implements MessageInterface {
@@ -39,9 +43,12 @@ export class Message implements MessageInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": number = 0;
+  "organizationId": string = '';
+  "OrganizationId": string = '';
   Device: Device = null;
   BaseStations: BaseStation[] = null;
   user: User = null;
+  Organization: Organization = null;
   constructor(data?: MessageInterface) {
     Object.assign(this, data);
   }
@@ -126,6 +133,14 @@ export class Message implements MessageInterface {
           name: 'userId',
           type: 'number'
         },
+        "organizationId": {
+          name: 'organizationId',
+          type: 'string'
+        },
+        "OrganizationId": {
+          name: 'OrganizationId',
+          type: 'string'
+        },
       },
       relations: {
         Device: {
@@ -142,6 +157,11 @@ export class Message implements MessageInterface {
           name: 'user',
           type: 'User',
           model: 'User'
+        },
+        Organization: {
+          name: 'Organization',
+          type: 'Organization',
+          model: 'Organization'
         },
       }
     }

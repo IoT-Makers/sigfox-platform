@@ -1,4 +1,4 @@
-import { Model } from '@mean-expert/model';
+import {Model} from '@mean-expert/model';
 import {Device} from "../../../webapp/src/app/shared/sdk/models/Device";
 /**
  * @module Message
@@ -9,7 +9,8 @@ import {Device} from "../../../webapp/src/app/shared/sdk/models/Device";
  **/
 @Model({
   hooks: {
-    beforeSave: { name: 'before save', type: 'operation' }
+    beforeRemoteCreate: {name: 'create', type: 'beforeRemote'},
+    beforeRemoteUpsert: {name: 'prototype.updateAttributes', type: 'beforeRemote'}
   },
   remotes: {
     postDownlink: {
@@ -35,18 +36,20 @@ import {Device} from "../../../webapp/src/app/shared/sdk/models/Device";
 
 class Message {
   // LoopBack model instance is injected in constructor
-  constructor(public model: any) {}
+  constructor(public model: any) {
+  }
 
-  beforeSave(ctx: any, next: Function): void {
+  beforeRemoteCreate(ctx: any, messageInstance:any, next: Function): void {
+
     //obtain the model data of ctx
-    let data = JSON.parse(JSON.stringify(ctx.instance));
+    let data = ctx.args.data;
 
     //console.log("Context: ", ctx);
     console.log("Message data", data);
 
-    if(!data.deviceId || !data.userId){
+    if (!data.deviceId || !data.userId) {
       next();
-    }else{
+    } else {
       let device = {
         id: data.deviceId,
         userId: data.userId,
@@ -55,30 +58,30 @@ class Message {
 
       //access another model inside the method
       this.model.app.models.Device.findOrCreate(
-        { where:{id: data.deviceId} }, //find
+        {where: {id: data.deviceId}}, //find
         device, //create
         (err: any, instance: any, created: boolean) => { //callback
           if (err) {
             console.error('error creating device', err);
-          }else if (created){
+          } else if (created) {
             console.log('created device', instance);
             next();
-          }else {
+          } else {
             console.log('found device', instance);
 
             this.model.app.models.Device.upsert(
               device,
               (err: any, deviceInstance: any) => {
-                if(err){
+                if (err) {
                   console.log(err)
-                }else{
+                } else {
                   console.log(deviceInstance);
-                  if(!data.parsed_data){
-                    if(deviceInstance.ParserId){
+                  if (!data.parsed_data) {
+                    if (deviceInstance.ParserId) {
                       this.model.app.models.Parser.findById(
                         deviceInstance.ParserId,
-                        (err:any, parserInstance:any) =>{
-                          if(err){
+                        (err: any, parserInstance: any) => {
+                          if (err) {
                             console.log(err);
                           } else {
                             //console.log("Parser:", parserInstance);
@@ -87,24 +90,18 @@ class Message {
                             // @Todo: run it in another container because it can crash the app if something goes wrong...
 
                             let fn = Function("payload", parserInstance.function);
-                            ctx.instance.parsed_data = fn(data.data);
-                            console.log(ctx.instance);
+                            ctx.args.data.parsed_data = fn(data.data);
+                            next();
                           }
                         })
                     }
-                    next();
                   }
-
                 }
-
               })
           }
         }
       );
     }
-
-
-
 
   }
 
@@ -112,21 +109,55 @@ class Message {
   postDownlink(data: any, cb: any) {
     this.model.app.models.Device.findOne({where: {id: data.deviceId}}, function (err: any, device: Device) {
       let results;
-      if(device && device.dl_payload){
+      if (device && device.dl_payload) {
         results = {
-          [data.deviceId]:{
+          [data.deviceId]: {
             downlinkData: device.dl_payload
           }
         }
       } else {
         results = {
-          [data.deviceId]:{
+          [data.deviceId]: {
             noData: true
           }
         }
       }
       cb(null, results);
     });
+  }
+
+
+  // Before remote upsert @Todo to fix upsert geoloc
+  beforeRemoteUpsert(ctx: any, messageInstance: any, next: any) {
+    console.log("device remote upsert");
+
+    let data = ctx.args.data;
+    let geoloc_sigfox = data.geoloc_sigfox;
+
+    console.log(data);
+
+    // Here we will update the message with the Sigfox Geoloc
+    this.model.findOne({
+        where: {
+          and: [
+            {deviceId: data.deviceId},
+            {time: data.time},
+            {seqNumber: data.seqNumber}
+          ]
+        }
+      },
+      (err: any, message: any) => {
+        if (err) {
+          console.log(err);
+          return;
+        } else {
+          console.log(message);
+          message.geoloc_sigfox = geoloc_sigfox;
+          ctx.args.data = message;
+          console.log("Before saving message: ",ctx.args.data);
+          next();
+        }
+      })
   }
 }
 

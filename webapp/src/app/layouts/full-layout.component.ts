@@ -8,7 +8,7 @@ import {UserApi, DeviceApi, MessageApi} from "../shared/sdk/services";
 })
 export class FullLayoutComponent implements OnInit, OnDestroy {
 
-  private user: User = new User();
+  public user: User = new User();
   private countDevices: number = 0;
   private countMessages: number = 0;
 
@@ -22,7 +22,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.user = this.userApi.getCachedCurrent();
-    this.userApi.findById(this.user.id, {include:'Organizations'}).subscribe((user: User)=>{
+    this.userApi.findById(this.user.id).subscribe((user: User)=>{
       console.log(user);
       this.user = user;
       // this.countOrganizations = user.Organizations.length;
