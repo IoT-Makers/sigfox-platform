@@ -75,7 +75,8 @@
   "mixins": {
     "FireLoop": true,
     "TimeStamp": {
-      "required": false
+      "required": false,
+      "validateUpsert": true
     },
     "Stats": [
       {
