@@ -10,7 +10,7 @@ import {Device} from "../../../webapp/src/app/shared/sdk/models/Device";
 @Model({
   hooks: {
     beforeRemoteCreate: {name: 'create', type: 'beforeRemote'},
-    beforeRemoteUpsert: {name: 'upsert', type: 'beforeRemote'}
+    beforeRemoteUpsert: {name: 'replaceOrCreate', type: 'beforeRemote'}
   },
   remotes: {
     postDownlink: {
@@ -127,8 +127,9 @@ class Message {
   }
 
 
-  // Before remote upsert @Todo to fix upsert geoloc
+  // Before remote upsert
   beforeRemoteUpsert(ctx: any, messageInstance: any, next: any) {
+    console.log(ctx.method.name);
     console.log("device remote upsert");
 
     console.log("messageInstance;: ", messageInstance);
