@@ -38,7 +38,7 @@
   },
   "validations": [],
   "relations": {
-    "Organizations":{
+    "Organizations": {
       "type": "hasAndBelongsToMany",
       "model": "Organization"
     },

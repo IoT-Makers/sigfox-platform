@@ -40,8 +40,10 @@
     "dl_payload": {
       "type": "string"
     },
-    "last_known_location": {
-      "type": "GeoPoint"
+    "location": {
+      "type": [
+        "Geoloc"
+      ]
     },
     "properties": {
       "type": [

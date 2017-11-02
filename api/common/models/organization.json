@@ -6,6 +6,25 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "FireLoop": true,
+    "TimeStamp": {
+      "required": false,
+      "validateUpsert": true
+    },
+    "Stats": [
+      {
+        "method": "stats",
+        "endpoint": "/stats",
+        "description": "Statistical information for organization registers.",
+        "type": "model",
+        "count": {
+          "on": "createdAt",
+          "by": "index"
+        }
+      }
+    ]
+  },
   "properties": {
     "id": {
       "type": "string",
@@ -22,7 +41,7 @@
   },
   "validations": [],
   "relations": {
-    "Members":{
+    "Members": {
       "type": "hasAndBelongsToMany",
       "model": "user"
     },
@@ -71,24 +90,5 @@
       "permission": "ALLOW"
     }
   ],
-  "methods": {},
-  "mixins": {
-    "FireLoop": true,
-    "TimeStamp": {
-      "required": false,
-      "validateUpsert": true
-    },
-    "Stats": [
-      {
-        "method": "stats",
-        "endpoint": "/stats",
-        "description": "Statistical information for organization registers.",
-        "type": "model",
-        "count": {
-          "on": "createdAt",
-          "by": "index"
-        }
-      }
-    ]
-  }
+  "methods": {}
 }

@@ -66,5 +66,9 @@
   "Organization": {
     "dataSource": "db",
     "public": true
+  },
+  "Geoloc": {
+    "dataSource": "db",
+    "public": false
   }
 }

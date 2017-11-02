@@ -25,8 +25,8 @@ export class DirectionsComponent implements AfterViewInit {
 
     let allLocalizedMessages: Message[] = this.trackingComponent.allLocalizedMessages;
     let messages: Message[] = [];
-    let startCoord = allLocalizedMessages[0].GPS ? allLocalizedMessages[0].GPS : (allLocalizedMessages[0].geoloc_sigfox ? allLocalizedMessages[0].geoloc_sigfox : null);
-    let endCoord = allLocalizedMessages[allLocalizedMessages.length - 1].GPS ? allLocalizedMessages[allLocalizedMessages.length - 1].GPS : (allLocalizedMessages[allLocalizedMessages.length - 1].geoloc_sigfox ? allLocalizedMessages[allLocalizedMessages.length - 1].geoloc_sigfox : null);
+    let startCoord = allLocalizedMessages[0].geoloc[0];
+    let endCoord = allLocalizedMessages[allLocalizedMessages.length - 1].geoloc[0];
 
     let routes = Math.floor(allLocalizedMessages.length / 23);
     console.log("routes", routes);
@@ -41,7 +41,7 @@ export class DirectionsComponent implements AfterViewInit {
       console.log(messages);
 
       messages.forEach(message => {
-        let coord = message.GPS ? message.GPS : (message.geoloc_sigfox ? message.geoloc_sigfox : null);
+        let coord = message.geoloc[0];
         let latLng = new google.maps.LatLng(coord.lat, coord.lng);
         waypoints.push({location: latLng, stopover:true});
       });

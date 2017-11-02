@@ -4,8 +4,7 @@ import {
   Category,
   Message,
   User,
-  Organization,
-  GeoPoint
+  Organization
 } from '../index';
 
 declare var Object: any;
@@ -14,7 +13,7 @@ export interface DeviceInterface {
   "creation"?: Date;
   "name"?: string;
   "dl_payload"?: string;
-  "last_known_location"?: GeoPoint;
+  "location"?: Array<any>;
   "properties"?: Array<any>;
   "createdAt"?: Date;
   "updatedAt"?: Date;
@@ -37,7 +36,7 @@ export class Device implements DeviceInterface {
   "creation": Date = new Date(0);
   "name": string = '';
   "dl_payload": string = '';
-  "last_known_location": GeoPoint = <any>null;
+  "location": Array<any> = <any>[];
   "properties": Array<any> = <any>[];
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
@@ -101,9 +100,9 @@ export class Device implements DeviceInterface {
           name: 'dl_payload',
           type: 'string'
         },
-        "last_known_location": {
-          name: 'last_known_location',
-          type: 'GeoPoint'
+        "location": {
+          name: 'location',
+          type: 'Array&lt;any&gt;'
         },
         "properties": {
           name: 'properties',

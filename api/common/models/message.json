@@ -38,29 +38,15 @@
     "seqNumber": {
       "type": "number"
     },
-    "GPS": {
-      "type": {
-        "lat": {
-          "type": "number"
-        },
-        "lng": {
-          "type": "number"
-        }
-      }
-    },
-    "geoloc_sigfox": {
-      "type": {
-        "lat": {
-          "type": "number"
-        },
-        "lng": {
-          "type": "number"
-        },
-        "precision": "number"
-      }
+    "geoloc": {
+      "type": [
+        "Geoloc"
+      ]
     },
     "parsed_data": {
-      "type": "object"
+      "type": [
+        "object"
+      ]
     }
   },
   "validations": [],

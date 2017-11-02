@@ -32,12 +32,12 @@ export class TrackingComponent implements OnInit {
     this.allLocalizedMessages = [];
     this.searchResult = "Searching for geolocation messages for this device ID.";
 
-    this.deviceApi.getMessages(deviceId, {where: {and: [{createdAt: {gte: this.dateBegin}}, {createdAt: {lte: this.dateEnd}}], or: [{geoloc_sigfox: {neq: null}}, {GPS: {neq: null}}]}, fields: ["geoloc_sigfox", "GPS", "createdAt"]}).subscribe((messages: Message[]) => {
+    this.deviceApi.getMessages(deviceId, {where: {and: [{createdAt: {gte: this.dateBegin}}, {createdAt: {lte: this.dateEnd}}], or: [{geoloc: {neq: null}}]}, fields: ["geoloc", "createdAt"]}).subscribe((messages: Message[]) => {
       if (messages.length > 0) {
         this.searchResult = "Found " + messages.length + " geoloc messages for device ID: " + deviceId;
         this.allLocalizedMessages = messages;
         // Center map
-        this.initMapPosition = messages[0].GPS ? messages[0].GPS : (messages[0].geoloc_sigfox ? messages[0].geoloc_sigfox : null);
+        this.initMapPosition = messages[0].geoloc[0];
         console.log(messages);
         // DEBUG
         /*console.log("initMapPosition");

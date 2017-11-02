@@ -89,7 +89,10 @@ export class DevicesComponent implements OnInit {
 
   update(device: Device): void {
     this.edit = false;
-    this.deviceRef.upsert(device).subscribe();
+    console.log(device.ParserId);
+    /*if(device.ParserId.toString() == "None")*/
+
+      this.deviceRef.upsert(device).subscribe();
   }
 
   updateDeviceProperties(device: Device): void {

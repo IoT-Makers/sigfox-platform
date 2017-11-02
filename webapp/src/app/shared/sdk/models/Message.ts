@@ -12,9 +12,8 @@ export interface MessageInterface {
   "time"?: number;
   "RSSI"?: number;
   "seqNumber"?: number;
-  "GPS"?: any;
-  "geoloc_sigfox"?: any;
-  "parsed_data"?: any;
+  "geoloc"?: Array<any>;
+  "parsed_data"?: Array<any>;
   "id"?: number;
   "DeviceId"?: string;
   "deviceId"?: string;
@@ -34,9 +33,8 @@ export class Message implements MessageInterface {
   "time": number = 0;
   "RSSI": number = 0;
   "seqNumber": number = 0;
-  "GPS": any = <any>null;
-  "geoloc_sigfox": any = <any>null;
-  "parsed_data": any = <any>null;
+  "geoloc": Array<any> = <any>[];
+  "parsed_data": Array<any> = <any>[];
   "id": number = 0;
   "DeviceId": string = '';
   "deviceId": string = '';
@@ -97,17 +95,13 @@ export class Message implements MessageInterface {
           name: 'seqNumber',
           type: 'number'
         },
-        "GPS": {
-          name: 'GPS',
-          type: 'any'
-        },
-        "geoloc_sigfox": {
-          name: 'geoloc_sigfox',
-          type: 'any'
+        "geoloc": {
+          name: 'geoloc',
+          type: 'Array&lt;any&gt;'
         },
         "parsed_data": {
           name: 'parsed_data',
-          type: 'any'
+          type: 'Array&lt;any&gt;'
         },
         "id": {
           name: 'id',
