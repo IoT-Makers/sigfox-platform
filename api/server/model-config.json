@@ -69,6 +69,6 @@
   },
   "Geoloc": {
     "dataSource": "db",
-    "public": false
+    "public": true
   }
 }

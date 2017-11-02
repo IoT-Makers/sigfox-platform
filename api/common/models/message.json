@@ -26,17 +26,23 @@
     ]
   },
   "properties": {
+    "deviceId": {
+      "type": "string",
+      "required": true
+    },
     "data": {
       "type": "string"
     },
     "time": {
-      "type": "number"
+      "type": "number",
+      "required": true
     },
     "RSSI": {
       "type": "number"
     },
     "seqNumber": {
-      "type": "number"
+      "type": "number",
+      "required": true
     },
     "geoloc": {
       "type": [

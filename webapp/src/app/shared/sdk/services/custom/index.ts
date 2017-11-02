@@ -9,5 +9,6 @@ export * from './Message';
 export * from './BaseStation';
 export * from './User';
 export * from './Organization';
+export * from './Geoloc';
 export * from './SDKModels';
 export * from './logger.service';

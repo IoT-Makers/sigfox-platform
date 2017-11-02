@@ -10,6 +10,7 @@ import { Message } from '../../models/Message';
 import { BaseStation } from '../../models/BaseStation';
 import { User } from '../../models/User';
 import { Organization } from '../../models/Organization';
+import { Geoloc } from '../../models/Geoloc';
 
 export interface Models { [name: string]: any }
 
@@ -27,6 +28,7 @@ export class SDKModels {
     BaseStation: BaseStation,
     User: User,
     Organization: Organization,
+    Geoloc: Geoloc,
     
   };
 
