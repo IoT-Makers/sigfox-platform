@@ -22,29 +22,29 @@ import {FullLayoutComponent} from "../../layouts/full-layout.component";
 export class DashboardComponent implements OnInit,OnDestroy {
 
   private message: Message = new Message();
-  private messageSub: Subscription;
-  private messages: Message[] = new Array<Message>();
-  private messageRef: FireLoopRef<Message>;
-  private countMessages: number = 0;
-
   private device: Device = new Device();
-  private devices: Device[] = new Array<Device>();
-  private deviceRef: FireLoopRef<Device>;
-  private deviceSub: Subscription;
-  private countDevices: number = 0;
-
   private parser: Parser = new Parser();
-  private parsers: Parser[] = new Array<Parser>();
-  private parserRef: FireLoopRef<Parser>;
-  private parserSub: Subscription;
-  private countParsers: number = 0;
-
   private category: Category = new Category();
-  private categories: Category[] = new Array<Category>();
-  private categoryRef: FireLoopRef<Category>;
+
+  private messageSub: Subscription;
+  private deviceSub: Subscription;
+  private parserSub: Subscription;
   private categorySub: Subscription;
+
+  private messages: Message[] = new Array<Message>();
+  private devices: Device[] = new Array<Device>();
+  private parsers: Parser[] = new Array<Parser>();
+  private categories: Category[] = new Array<Category>();
+
+  private countMessages: number = 0;
+  private countDevices: number = 0;
+  private countParsers: number = 0;
   private countCategories: number = 0;
 
+  private messageRef: FireLoopRef<Message>;
+  private deviceRef: FireLoopRef<Device>;
+  private parserRef: FireLoopRef<Parser>;
+  private categoryRef: FireLoopRef<Category>;
 
   public data = [];
 

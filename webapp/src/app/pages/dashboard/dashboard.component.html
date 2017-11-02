@@ -105,7 +105,21 @@
             </div>
           </td>
           <td>{{item.deviceId}}</td>
-          <td>{{item.geolocation}}</td>
+          <td>
+            <div *ngIf="item.geoloc">
+            <div *ngFor="let object of item.geoloc">
+              <a href=""><i class="fa fa-map-marker" style="font-size:24px"></i>
+                <span class="small text-muted"><br>Lat: {{object.lat}}<br>Lng: {{object.lng}}</span>
+              </a>
+              <!--<ul>
+              <li><small>type: {{object.type}}</small></li>
+              <li><small>lat: {{object.lat}}</small></li>
+              <li><small>lng: {{object.lng}}</small></li>
+              <li><small>precision: {{object.precision}}</small></li>
+              </ul>-->
+            </div>
+          </div>
+          </td>
           <td>{{item.seqNumber}}</td>
           <td>{{item.RSSI}}</td>
           <td></td>

@@ -40,28 +40,38 @@
       </div>
 
       <!--<div class="card">-->
-        <!--<div class="card-header card-default">-->
-          <!--My organizations-->
-        <!--</div>-->
-        <!--<div *ngFor="let organization of user.Organizations;" class="card-block">-->
-          <!--<div><b><i class="fa fa-group" aria-hidden="true"></i><span style="margin-right:1em"></span> Name: </b>-->
-            <!--{{organization.name}}-->
-          <!--</div>-->
-          <!--<div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Creation: </b>-->
-            <!--{{organization.createdAt | date:"yyyy/MM/dd HH:mm:ss" }}-->
-          <!--</div>-->
-          <!--<div><b><i class="fa fa-upload" aria-hidden="true"></i><span style="margin-right:1em"></span> Callback URL: </b>-->
-            <!--{{callbackURLbase}}{{organization.id}}/Messages-->
-          <!--</div>-->
-          <!--<hr>-->
-        <!--</div>-->
+      <!--<div class="card-header card-default">-->
+      <!--My organizations-->
+      <!--</div>-->
+      <!--<div *ngFor="let organization of user.Organizations;" class="card-block">-->
+      <!--<div><b><i class="fa fa-group" aria-hidden="true"></i><span style="margin-right:1em"></span> Name: </b>-->
+      <!--{{organization.name}}-->
+      <!--</div>-->
+      <!--<div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Creation: </b>-->
+      <!--{{organization.createdAt | date:"yyyy/MM/dd HH:mm:ss" }}-->
+      <!--</div>-->
+      <!--<div><b><i class="fa fa-upload" aria-hidden="true"></i><span style="margin-right:1em"></span> Callback URL: </b>-->
+      <!--{{callbackURLbase}}{{organization.id}}/Messages-->
+      <!--</div>-->
+      <!--<hr>-->
+      <!--</div>-->
       <!--</div>-->
 
 
       <div class="card">
         <div class="card-header">Callback URL</div>
         <div class="card-block card-info text-center text-white font-weight-bold">{{callbackURL}}</div>
-        <div class="card-block card-outline-danger">{{accessTokens}}</div>
+        <div class="card-block card-outline-danger">
+          <div *ngIf="accessTokens">
+            <div *ngFor="let token of accessTokens">
+              <ul>
+                <li><strong class="text-danger">id:</strong> {{token.id}}</li>
+                <li><strong class="text-info">ttl:</strong> {{token.ttl / 60}} </li>
+                <hr>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>

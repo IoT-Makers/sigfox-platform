@@ -6,8 +6,8 @@
       <agm-map [latitude]="lat" [longitude]="lng" [zoom]="12">
         <agm-marker
           *ngFor="let device of devices; let i = index"
-          [latitude]="device.last_known_location ? device.last_known_location.lat : '' "
-          [longitude]="device.last_known_location ? device.last_known_location.lng: ''">
+          [latitude]="device.location ? device.location[0].lat : '' "
+          [longitude]="device.location ? device.location[0].lng: ''">
           <agm-info-window>
             <strong>{{device.name}}</strong>
           </agm-info-window>
@@ -45,20 +45,20 @@
               <td class="text-center">
                 <strong>{{device.id}}</strong>
                 <span class="hidden-sm-up">{{device.name}}</span>
-                <a href="" *ngIf="device.last_known_location" class="hidden-sm-up"><i class="fa fa-map-marker" style="font-size:24px"></i></a>
+                <a href="" *ngIf="device.location" class="hidden-sm-up"><i class="fa fa-map-marker" style="font-size:24px"></i></a>
               </td>
               <td class="hidden-xs-down">
                 <div>{{device.name}}</div>
-                <div class="small text-muted">
-                  <span>Parser:</span> {{device.Parser ? device.Parser.name : ""}}
+                <div class="small">
+                  <span class="text-muted">Parser:</span> <strong class="text-primary">{{device.Parser ? device.Parser.name : ""}}</strong>
                 </div>
-                <div class="small text-muted">
-                  <span>Category:</span> {{device.Category ? device.Category.name : ""}}
+                <div class="small">
+                  <span class="text-muted">Category:</span> <strong class="text-primary">{{device.Category ? device.Category.name : ""}}</strong>
                 </div>
               </td>
               <td *ngIf="!edit" class="text-center hidden-xs-down">
-                <a href="" *ngIf="device.last_known_location"><i class="fa fa-map-marker" style="font-size:24px"></i>
-                  <span class="small text-muted"><br>Lat:{{device.last_known_location.lat}}<br>Lng:{{device.last_known_location.lng}}</span>
+                <a href="" *ngIf="device.location"><i class="fa fa-map-marker" style="font-size:24px"></i>
+                  <span class="small text-muted"><br>Lat: {{device.location[0].lat}}<br>Lng: {{device.location[0].lng}}</span>
                 </a>
               </td>
               <!--<td *ngIf="!edit">-->

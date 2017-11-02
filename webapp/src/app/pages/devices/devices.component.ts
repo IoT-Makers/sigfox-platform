@@ -13,21 +13,33 @@ import {Message} from "../../shared/sdk/models/Message";
 })
 export class DevicesComponent implements OnInit {
 
-  private subscriptions: Subscription[] = new Array<Subscription>();
-
+  private message: Message = new Message();
   private device: Device = new Device();
-  private deviceToEdit: Device = new Device();
-  private devices: Device[] = new Array<Device>();
-  private deviceRef: FireLoopRef<Device>;
-  private countDevices: number = 0;
-
   private parser: Parser = new Parser();
-  private parsers: Parser[] = new Array<Parser>();
-  private parserRef: FireLoopRef<Parser>;
-
   private category: Category = new Category();
+
+  private messageSub: Subscription;
+  private deviceSub: Subscription;
+  private parserSub: Subscription;
+  private categorySub: Subscription;
+
+
+  private messages: Message[] = new Array<Message>();
+  private devices: Device[] = new Array<Device>();
+  private parsers: Parser[] = new Array<Parser>();
   private categories: Category[] = new Array<Category>();
+
+  private countMessages: number = 0;
+  private countDevices: number = 0;
+  private countParsers: number = 0;
+  private countCategories: number = 0;
+
+  private messageRef: FireLoopRef<Message>;
+  private deviceRef: FireLoopRef<Device>;
+  private parserRef: FireLoopRef<Parser>;
   private categoryRef: FireLoopRef<Category>;
+
+  private deviceToEdit: Device = new Device();
 
   private edit: boolean = false;
 
@@ -37,46 +49,59 @@ export class DevicesComponent implements OnInit {
 
   constructor(private rt: RealTime, private deviceApi: DeviceApi, private categoryApi: CategoryApi, private userApi: UserApi) {
 
-    this.subscriptions.push(
-
-      this.rt.onReady().subscribe(() => {
-
-        //Get and listen devices
-        this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-        this.deviceRef.on('change',
-          {limit: 1000, order: 'updatedAt DESC', include: ['Parser', 'Category']}
-        ).subscribe((devices: Device[]) => {
-          this.devices = devices;
-          console.log(this.devices);
-        });
-
-        //Get and listen parsers
-        this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-        this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-          this.parsers = parsers;
-          console.log(this.parsers);
-        });
-
-        //Get and listen categories
-        this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-        this.categoryRef.on('change'
-        ).subscribe((categories: Category[]) => {
-          this.categories = categories;
-          console.log(this.categories);
-        });
-      }));
   }
 
   ngOnInit(): void {
     this.edit = false;
+    if (
+      this.rt.connection.isConnected() &&
+      this.rt.connection.authenticated
+    ) {
+      this.rt.onReady().subscribe(() => this.setup());
+    } else {
+      this.rt.onAuthenticated().subscribe(() => this.setup());
+      this.rt.onReady().subscribe();
+    }
+  }
+
+  setup(): void {
+    console.log(this.rt.connection);
+    this.ngOnDestroy();//Get and listen devices
+    this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+    this.deviceSub = this.deviceRef.on('change',
+      {limit: 1000, order: 'updatedAt DESC', include: ['Parser', 'Category']}
+    ).subscribe((devices: Device[]) => {
+      this.devices = devices;
+      console.log(this.devices);
+    });
+
+    //Get and listen parsers
+    this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
+    this.parserSub = this.parserRef.on('change').subscribe((parsers: Parser[]) => {
+      this.parsers = parsers;
+      console.log(this.parsers);
+    });
+
+    //Get and listen categories
+    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
+    this.categorySub = this.categoryRef.on('change'
+    ).subscribe((categories: Category[]) => {
+      this.categories = categories;
+      console.log(this.categories);
+    });
+
   }
 
   ngOnDestroy(): void {
     console.log("Devices: ngOnDestroy");
-    this.deviceRef.dispose();
-    this.parserRef.dispose();
-    this.categoryRef.dispose();
-    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
+    if (this.deviceRef)this.deviceRef.dispose();
+    if (this.deviceSub)this.deviceSub.unsubscribe();
+
+    if (this.parserRef)this.parserRef.dispose();
+    if (this.parserSub)this.parserSub.unsubscribe();
+
+    if (this.categoryRef)this.categoryRef.dispose();
+    if (this.categorySub)this.categorySub.unsubscribe();
   }
 
   editDevice(device): void{
@@ -89,7 +114,7 @@ export class DevicesComponent implements OnInit {
     console.log(device.ParserId);
     /*if(device.ParserId.toString() == "None")*/
 
-      this.deviceRef.upsert(device).subscribe();
+    this.deviceRef.upsert(device).subscribe();
   }
 
   updateDeviceProperties(device: Device): void {

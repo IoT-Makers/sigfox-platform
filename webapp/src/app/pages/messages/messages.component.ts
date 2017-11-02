@@ -11,15 +11,11 @@ import {Subscription} from "rxjs/Subscription";
 })
 export class MessagesComponent implements OnInit,OnDestroy {
 
-  private subscriptions: Subscription[] = new Array<Subscription>();
-
   private message: Message = new Message();
+  private messageSub: Subscription;
   private messages: Message[] = new Array<Message>();
-  private messageRef: FireLoopRef<Message>;
   private countMessages: number = 0;
-
-  private user: User = new User();
-  private userRef: FireLoopRef<User>
+  private messageRef: FireLoopRef<Message>;
 
   public filterQuery = '';
 
@@ -34,35 +30,38 @@ export class MessagesComponent implements OnInit,OnDestroy {
 
   constructor(private rt: RealTime, private messageApi: MessageApi, private userApi: UserApi) {
 
-    this.subscriptions.push(
-
-
-
-      this.rt.onReady().subscribe(() => {
-
-        this.userRef = this.rt.FireLoop.ref<User>(User);
-
-        this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-        //this.messageRef = this.userRef.make(this.user).child<Message>('Messages');
-        this.messageRef.on('change',
-          {limit: 1000, order: 'id DESC'}
-        ).subscribe((messages: Message[]) => {
-          this.messages = messages;
-          console.log(this.messages);
-        });
-
-      }));
   }
 
   ngOnInit(): void {
-    console.log("Messages: ngOnInit");
-    this.user = this.userApi.getCachedCurrent();
+    if (
+      this.rt.connection.isConnected() &&
+      this.rt.connection.authenticated
+    ) {
+      this.rt.onReady().subscribe(() => this.setup());
+    } else {
+      this.rt.onAuthenticated().subscribe(() => this.setup());
+      this.rt.onReady().subscribe();
+    }
+  }
+
+  setup(): void {
+    console.log(this.rt.connection);
+    this.ngOnDestroy();
+    //Messages
+    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+    //this.messageRef = this.userRef.make(this.user).child<Message>('Messages');
+    this.messageSub = this.messageRef.on('change',
+      {limit: 1000, order: 'id DESC'}
+    ).subscribe((messages: Message[]) => {
+      this.messages = messages;
+      console.log(this.messages);
+    });
   }
 
   ngOnDestroy(): void {
     console.log("Messages: ngOnDestroy");
-    this.messageRef.dispose();
-    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
+    if (this.messageRef)this.messageRef.dispose();
+    if (this.messageSub)this.messageSub.unsubscribe();
   }
 
   remove(message: Message): void {
