@@ -29,8 +29,6 @@ export class DevicesComponent implements OnInit {
   private categories: Category[] = new Array<Category>();
   private categoryRef: FireLoopRef<Category>;
 
-  private user: User = new User();
-
   private edit: boolean = false;
 
   private lat: number = 48.86795;
@@ -71,7 +69,6 @@ export class DevicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.edit = false;
-    this.user = this.userApi.getCachedCurrent();
   }
 
   ngOnDestroy(): void {

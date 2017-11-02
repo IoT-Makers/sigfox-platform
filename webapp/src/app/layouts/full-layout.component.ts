@@ -8,7 +8,8 @@ import {UserApi, DeviceApi, MessageApi} from "../shared/sdk/services";
 })
 export class FullLayoutComponent implements OnInit, OnDestroy {
 
-  public user: User = new User();
+  public static userStatic: User = new User();
+  private user: User = new User();
   private countDevices: number = 0;
   private countMessages: number = 0;
 
@@ -22,11 +23,12 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.user = this.userApi.getCachedCurrent();
-    this.userApi.findById(this.user.id).subscribe((user: User)=>{
-      console.log(user);
-      this.user = user;
-      // this.countOrganizations = user.Organizations.length;
+    this.userApi.getAccessTokens(this.user.id).subscribe(accessTokens =>{
+      console.log(accessTokens);
+      this.user.accessTokens = accessTokens;
+      FullLayoutComponent.userStatic = this.user;
     });
+
     this.deviceApi.count().subscribe(result => {
       //console.log(deviceApi);
       //console.log("count: ", result);

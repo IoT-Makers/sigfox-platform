@@ -13,6 +13,7 @@ import {
 
 import {Subscription} from "rxjs/Subscription";
 import {DOCUMENT} from "@angular/common";
+import {FullLayoutComponent} from "../../layouts/full-layout.component";
 
 
 @Component({
@@ -20,11 +21,8 @@ import {DOCUMENT} from "@angular/common";
 })
 export class DashboardComponent implements OnInit,OnDestroy {
 
-  private callbackURL;
-
-  private subscriptions: Subscription[] = new Array<Subscription>();
-
   private message: Message = new Message();
+  private messageSub: Subscription;
   private messages: Message[] = new Array<Message>();
   private messageRef: FireLoopRef<Message>;
   private countMessages: number = 0;
@@ -32,121 +30,113 @@ export class DashboardComponent implements OnInit,OnDestroy {
   private device: Device = new Device();
   private devices: Device[] = new Array<Device>();
   private deviceRef: FireLoopRef<Device>;
+  private deviceSub: Subscription;
   private countDevices: number = 0;
 
   private parser: Parser = new Parser();
   private parsers: Parser[] = new Array<Parser>();
   private parserRef: FireLoopRef<Parser>;
+  private parserSub: Subscription;
   private countParsers: number = 0;
 
   private category: Category = new Category();
   private categories: Category[] = new Array<Category>();
   private categoryRef: FireLoopRef<Category>;
+  private categorySub: Subscription;
   private countCategories: number = 0;
-
-  private user: User = new User();
-
-
-  private organization: Organization = new Organization();
-  private organizations: Organization[] = new Array<Organization>();
-  private organizationRef: FireLoopRef<Organization>;
-  private countOrganizations: number = 0;
 
 
   public data = [];
 
-  constructor(@Inject(DOCUMENT) private document: any,
-              private rt: RealTime,
+  constructor(private rt: RealTime,
               private messageApi: MessageApi,
               private deviceApi: DeviceApi,
-              private categoryApi: CategoryApi,
               private parserApi: ParserApi,
-              private userApi: UserApi,
-              private organizationApi: OrganizationApi) {}
+              private categoryApi: CategoryApi) {}
 
   ngOnInit(): void {
-    this.user = this.userApi.getCachedCurrent();
-    //console.log(this.user);
-    this.userApi.findById(this.user.id).subscribe((user: User)=>{
-    //this.userApi.findById(this.user.id).subscribe((user: User)=>{
-      console.log(user);
-      this.user = user;
-
-      this.setup();
-    });
-
+    if (
+      this.rt.connection.isConnected() &&
+      this.rt.connection.authenticated
+    ) {
+      this.rt.onReady().subscribe(() => this.setup());
+    } else {
+      this.rt.onAuthenticated().subscribe(() => this.setup());
+      this.rt.onReady().subscribe();
+    }
   }
 
   setup(): void {
     console.log(this.rt.connection);
+    this.ngOnDestroy();
+    //Messages
+    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+    //console.log(this.organizations[0].id);
+    this.messageSub = this.messageRef.on('change').subscribe(
+      (messages: Message[]) => {
+        this.data = messages;
+        this.messages = messages;
+        console.log("Messages", this.messages);
+        this.messageApi.count().subscribe(result => {
+          //console.log(messageApi);
+          console.log("count: ", result);
+          this.countMessages = result.count;
+        });
+      });
 
-    this.subscriptions.push(
+    //Devices
+    this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+    this.deviceRef.on('change').subscribe(
+      (devices: Device[]) => {
+        this.devices = devices;
+        console.log("Devices", this.devices);
+        this.deviceApi.count().subscribe(result => {
+          //console.log(deviceApi);
+          console.log("count: ", result);
+          this.countDevices = result.count;
+        });
+      });
 
-      this.rt.onReady().subscribe(() => {
+    //Categories
+    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
+    this.categoryRef.on('change').subscribe(
+      (categories: Category[]) => {
+        this.categories = categories;
+        console.log("Categories", this.categories);
+        this.categoryApi.count().subscribe(result => {
+          //console.log(categoryApi);
+          console.log("count: ", result);
+          this.countCategories = result.count;
+        });
+      });
 
-        //Messages
-        this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-        //console.log(this.organizations[0].id);
-        this.messageRef.on('change').subscribe(
-          (messages: Message[]) => {
-            this.data = messages;
-            this.messages = messages;
-            console.log("Messages", this.messages);
-            this.messageApi.count().subscribe(result => {
-              //console.log(messageApi);
-              console.log("count: ", result);
-              this.countMessages = result.count;
-            });
-          });
+    //Parsers
+    this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
+    this.parserRef.on('change').subscribe((parsers: Parser[]) => {
+      this.parsers = parsers;
+      console.log("Parsers", this.parsers);
+      this.parserApi.count().subscribe(result => {
+        //console.log(parserApi);
+        console.log("count: ", result);
+        this.countParsers = result.count;
+      });
+    });
 
-        //Devices
-        this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-        this.deviceRef.on('change').subscribe(
-          (devices: Device[]) => {
-            this.devices = devices;
-            console.log("Devices", this.devices);
-            this.deviceApi.count().subscribe(result => {
-              //console.log(deviceApi);
-              console.log("count: ", result);
-              this.countDevices = result.count;
-            });
-          });
-
-        //Categories
-        this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-        this.categoryRef.on('change').subscribe(
-          (categories: Category[]) => {
-            this.categories = categories;
-            console.log("Categories", this.categories);
-            this.categoryApi.count().subscribe(result => {
-              //console.log(categoryApi);
-              console.log("count: ", result);
-              this.countCategories = result.count;
-            });
-          });
-
-        //Parsers
-        // this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-        // this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-        //   this.parsers = parsers;
-        //   console.log("Parsers", this.parsers);
-        //   this.parserApi.count().subscribe(result => {
-        //     //console.log(parserApi);
-        //     console.log("count: ", result);
-        //     this.countParsers = result.count;
-        //   });
-        // });
-
-      }));
   }
 
   ngOnDestroy(): void {
     console.log("Dashboard: ngOnDestroy");
-    this.messageRef.dispose();
-    //this.parserRef.dispose();
-    this.deviceRef.dispose();
-    this.categoryRef.dispose();
-    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
+    if (this.messageRef)this.messageRef.dispose();
+    if (this.messageSub)this.messageSub.unsubscribe();
+
+    if (this.deviceRef)this.deviceRef.dispose();
+    if (this.deviceSub)this.deviceSub.unsubscribe();
+
+    if (this.parserRef)this.parserRef.dispose();
+    if (this.parserSub)this.parserSub.unsubscribe();
+
+    if (this.categoryRef)this.categoryRef.dispose();
+    if (this.categorySub)this.categorySub.unsubscribe();
   }
 
 
