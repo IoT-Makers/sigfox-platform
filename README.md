@@ -1,6 +1,6 @@
 # Sigfox Platform
 
-
+**Warning: Project under active development, do not use it for production!**
 
 ## About this project
 
@@ -10,9 +10,11 @@ This project is a cloud platform to manage and visualize Sigfox devices and mess
 
 ### Demo
 
-### Try it now with Heroku
+### Try it now with [Heroku](https://heroku.com)
 
 Deploy an instance on your Heroku account to play around with it!
+
+Warning: When using the free plan, the application goes to sleep after 30 min of inactivity (checkout the [pricing](https://www.heroku.com/pricing)).
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
@@ -27,13 +29,44 @@ git push heroku master
 
 If you are not familiar with Heroku, just create an account an follow the procedure:
 
-- Create a new app:
+1. Create a new app:
 
 ![create app](doc/img/deploy-1.png)
 
-- Build & deploy app:
+2. Build & deploy app:
 
 ![build app](doc/img/deploy-2.png)
+
+3. (Optional) Link the application with a MongoDB MLab database (Free):
+
+Note that if you don't link a database to your application, all the data will be erased every time the application restarts.
+
+* Go to [https://mlab.com](https://mlab.com/login/) and create an account and login.
+
+* Create a new MongoDB Deployments:
+
+![mlab-select-service](doc/img/mlab-select-service.png)
+
+* Select your plan:
+
+![mlab-select-plan](doc/img/mlab-select-plan.png)
+
+* Select your region:
+
+![mlab-select-region](doc/img/mlab-select-region.png)
+
+* Create database:
+
+![mlab-create-db](doc/img/mlab-create-db.png)
+
+* Validate:
+
+![mlab-validate](doc/img/mlab-validate.png)
+
+* Create database user:
+
+![mlab-create-user](doc/img/mlab-create-user.png)
+
 
 ### User guide
 
