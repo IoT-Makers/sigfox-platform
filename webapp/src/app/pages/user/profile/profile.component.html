@@ -61,17 +61,6 @@
       <div class="card">
         <div class="card-header">Callback URL</div>
         <div class="card-block card-info text-center text-white font-weight-bold">{{callbackURL}}</div>
-        <div class="card-block card-outline-danger">
-          <div *ngIf="accessTokens">
-            <div *ngFor="let token of accessTokens">
-              <ul>
-                <li><strong class="text-danger">id:</strong> {{token.id}}</li>
-                <li><strong class="text-info">ttl:</strong> {{token.ttl / 60}} </li>
-                <hr>
-              </ul>
-            </div>
-          </div>
-        </div>
       </div>
 
     </div>

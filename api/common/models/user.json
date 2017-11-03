@@ -33,7 +33,7 @@
       "type": "date"
     },
     "location": {
-      "type": "object"
+      "type": "Geoloc"
     }
   },
   "validations": [],

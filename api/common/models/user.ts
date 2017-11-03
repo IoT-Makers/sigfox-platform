@@ -1,4 +1,6 @@
 import {Model} from '@mean-expert/model';
+import {User} from "../../../webapp/src/app/shared/sdk/models/User";
+import {AccessToken} from "../../../webapp/src/app/shared/sdk/models/AccessToken";
 /**
  * @module user
  * @description
@@ -31,26 +33,27 @@ class user {
     next();
   }
 
-  afterRemoteLogin(context: any, loggedUser: any, next: any) {
-
-    let now = Date.now();
-
-    let user = {
+  afterRemoteLogin(ctx: any, loggedUser: AccessToken, next: any) {
+    // TODO: check lastLogin, below does not work..
+    console.warn(loggedUser);
+    next();
+    /*let user = {
       id: loggedUser.userId,
-      lastLogin: now
+      password: loggedUser.user.password,
+      email: loggedUser.user.email,
+      lastLogin:new Date(Date.now())
     };
-
-    console.log(loggedUser);
-    this.model.app.models.user.upsert(
+    console.log(user);
+    this.model.upsert(
       user,
       (err: any, response: any) => {
         if (err) {
-          console.log(err)
+          console.log(err);
         } else {
           console.log(response);
         }
         next();
-      });
+      });*/
   }
 
   afterRemoteCreate(context: any, userInstance: any, next: any) {
@@ -70,7 +73,7 @@ class user {
 
 
     // Check if any user exists
-    this.model.app.models.user.count(
+    this.model.count(
       (err: any, countUser: any) => {
         if (err) {
           console.log(err)

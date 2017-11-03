@@ -5,6 +5,7 @@ import {DOCUMENT} from "@angular/common";
 import {OrganizationApi} from "../../../shared/sdk/services/custom/Organization";
 import {forEach} from "@angular/router/src/utils/collection";
 import {FullLayoutComponent} from "../../../layouts/full-layout.component";
+import {LoginComponent} from "../login/login.component";
 
 @Component({
   selector: 'app-profile',
@@ -14,8 +15,6 @@ import {FullLayoutComponent} from "../../../layouts/full-layout.component";
 export class ProfileComponent implements OnInit {
 
   private user: User = new User();
-  private userRef: FireLoopRef<User>;
-
   private callbackURL;
   private accessTokens;
 
@@ -25,7 +24,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
 
-    this.user = FullLayoutComponent.userStatic;
+    this.user = LoginComponent.userStatic;
     console.log(this.user);
 
     this.callbackURL = this.document.location.origin + "/api/Messages/";

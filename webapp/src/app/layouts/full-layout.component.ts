@@ -2,13 +2,13 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {User} from "../shared/sdk/models";
 import {UserApi, DeviceApi, MessageApi} from "../shared/sdk/services";
+import {LoginComponent} from "../pages/user/login/login.component";
 
 @Component({
   templateUrl: './full-layout.component.html'
 })
 export class FullLayoutComponent implements OnInit, OnDestroy {
 
-  public static userStatic: User = new User();
   private user: User = new User();
   private countDevices: number = 0;
   private countMessages: number = 0;
@@ -22,12 +22,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
               private router: Router) { }
 
   ngOnInit(): void {
-    this.user = this.userApi.getCachedCurrent();
-    this.userApi.getAccessTokens(this.user.id).subscribe(accessTokens =>{
-      console.log(accessTokens);
-      this.user.accessTokens = accessTokens;
-      FullLayoutComponent.userStatic = this.user;
-    });
+    //this.user = this.userApi.getCachedCurrent();
+    this.user = LoginComponent.userStatic;
 
     this.deviceApi.count().subscribe(result => {
       //console.log(deviceApi);

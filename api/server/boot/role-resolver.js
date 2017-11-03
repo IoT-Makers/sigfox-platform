@@ -1,4 +1,4 @@
-// import { BootScript } from '@mean-expert/boot-script';
+  // import { BootScript } from '@mean-expert/boot-script';
 //
 // @BootScript()
 // class Role {

@@ -12,29 +12,36 @@ import {Router} from "@angular/router";
 export class LoginComponent implements OnInit {
 
   private user: User = new User();
+  public static userStatic: User = new User();
   private errorMessage = "";
 
   constructor(private userApi: UserApi, private router: Router) {}
 
-  private onLogin(): void {
-
-    console.log(this.user);
+  public onLogin(): void {
+    /*console.log("beforeLogin: ", this.user);*/
     this.userApi.login(this.user).subscribe(
-      (token: AccessToken) =>{
-      console.log(token);
-      //this.user = response.user;
-      //console.log(this.user);
-      this.router.navigate(['/dashboard']);
-    }, err => {
-      console.log(err);
-      if(err.message == "login failed"){
-        this.errorMessage = "Invalid username or password.";
-      } else if(err.statusCode == 500){
-        this.errorMessage = "Internal server error";
-      } else{
-        this.errorMessage = err.message;
-      }
-    });
+      (token: AccessToken) => {
+        console.log("New token: ", token);
+        let userId = token.userId;
+
+        this.userApi.findById(userId).subscribe((user: User) => {
+          this.user = user;
+          console.log("afterLogin: ", this.user);
+          LoginComponent.userStatic = this.user;
+          // Redirect to the /dashboard
+          this.router.navigate(['/dashboard']);
+        });
+
+      }, err => {
+        console.log(err);
+        if(err.message == "Login failed"){
+          this.errorMessage = "Invalid username or password.";
+        } else if(err.statusCode == 500){
+          this.errorMessage = "Internal server error";
+        } else{
+          this.errorMessage = err.message;
+        }
+      });
   }
 
   ngOnInit(): void {
