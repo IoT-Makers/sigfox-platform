@@ -2,7 +2,7 @@
   "name": "Sigfox Platform",
   "description": "cloud platform to manage and visualize Sigfox devices and messages.",
   "repository": "https://github.com/luisomoreau/sigfox-platform",
-  "logo": "https://github.com/luisomoreau/sigfox-platform/blob/master/webapp/src/img/logo.svg",
+  "logo": "https://github.com/luisomoreau/sigfox-platform/blob/master/webapp/src/img/logo.png",
   "keywords": [
     "sigfox",
     "node",
