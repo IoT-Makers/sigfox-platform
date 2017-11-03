@@ -70,5 +70,9 @@
   "Geoloc": {
     "dataSource": "db",
     "public": true
+  },
+  "AppSetting": {
+    "dataSource": "db",
+    "public": true
   }
 }
