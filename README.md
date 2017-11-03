@@ -29,21 +29,21 @@ If you are not familiar with Heroku, just create an account an follow the proced
 
 - Create a new app:
 
-![create app](doc/deploy-1.png)
+![create app](doc/img/deploy-1.png)
 
 - Build & deploy app:
 
-![build app](doc/deploy-2.png)
+![build app](doc/img/deploy-2.png)
 
 ### User guide
 
 - Open app and register:
 
-![login](doc/login.png)
+![login](doc/img/login.png)
 
-![register](doc/register.png)
+![register](doc/img/register.png)
 
-![login-2](doc/login-2.png)
+![login-2](doc/img/login-2.png)
 
 Note that, the first user to register will be granted an admin role.
 The other users to register will be granted user roles.
