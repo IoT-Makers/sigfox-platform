@@ -18,14 +18,26 @@ export class ProfileComponent implements OnInit {
   private callbackURL;
   private accessTokens;
 
-  constructor(@Inject(DOCUMENT) private document: any,private userApi: UserApi, private organizationApi: OrganizationApi) {
+  constructor(@Inject(DOCUMENT) private document: any, private userApi: UserApi) {
 
   }
 
-  ngOnInit() {
-
-    this.user = LoginComponent.userStatic;
+  getUser(): void {
+    this.user = this.userApi.getCachedCurrent();
     console.log(this.user);
+  }
+
+/*  getUser(): void {
+    let userId = this.userApi.getCachedCurrent().id;
+    this.userApi.findById(userId).subscribe((user: User) => {
+      this.user = user;
+      console.log(this.user);
+    });
+  }*/
+
+  ngOnInit() {
+    // Get the logged in User object (avatar, email, ...)
+    this.getUser();
 
     this.callbackURL = this.document.location.origin + "/api/Messages/";
     this.accessTokens = this.user.accessTokens;

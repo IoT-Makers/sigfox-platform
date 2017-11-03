@@ -10,5 +10,6 @@ export * from './BaseStation';
 export * from './User';
 export * from './Organization';
 export * from './Geoloc';
+export * from './AppSetting';
 export * from './BaseModels';
 export * from './FireLoopRef';

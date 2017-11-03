@@ -1,5 +1,4 @@
 import {Model} from '@mean-expert/model';
-import {User} from "../../../webapp/src/app/shared/sdk/models/User";
 import {AccessToken} from "../../../webapp/src/app/shared/sdk/models/AccessToken";
 /**
  * @module user
@@ -34,17 +33,14 @@ class user {
   }
 
   afterRemoteLogin(ctx: any, loggedUser: AccessToken, next: any) {
-    // TODO: check lastLogin, below does not work..
-    console.warn(loggedUser);
     next();
-    /*let user = {
-      id: loggedUser.userId,
-      password: loggedUser.user.password,
-      email: loggedUser.user.email,
-      lastLogin:new Date(Date.now())
+    // TODO: Check below
+    /*let userId = loggedUser.userId;
+    let user = {
+      lastLogin: new Date(Date.now())
     };
-    console.log(user);
-    this.model.upsert(
+    this.model.upsertWithWhere(
+      {where: {id: userId}},
       user,
       (err: any, response: any) => {
         if (err) {
@@ -53,6 +49,25 @@ class user {
           console.log(response);
         }
         next();
+      });*/
+
+/*    this.model.app.models.user.findById(
+      userId,
+      {},
+      (err: any, userInstance: User) => { //callback
+        userInstance.lastLogin = new Date(Date.now());
+        console.log(userInstance);
+        this.model.patchAttributes(
+          userId,
+          userInstance,
+          (err: any, response: any) => {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log(response);
+            }
+            next();
+          });
       });*/
   }
 

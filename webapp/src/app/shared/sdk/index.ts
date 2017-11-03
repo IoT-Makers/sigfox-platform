@@ -59,6 +59,7 @@ import { BaseStationApi } from './services/custom/BaseStation';
 import { UserApi } from './services/custom/User';
 import { OrganizationApi } from './services/custom/Organization';
 import { GeolocApi } from './services/custom/Geoloc';
+import { AppSettingApi } from './services/custom/AppSetting';
 /**
 * @module SDKBrowserModule
 * @description
@@ -101,6 +102,7 @@ export class SDKBrowserModule {
         UserApi,
         OrganizationApi,
         GeolocApi,
+        AppSettingApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }

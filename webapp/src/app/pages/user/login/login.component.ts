@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {User, AccessToken} from "../../../shared/sdk/models";
 import {UserApi} from '../../../shared/sdk/services';
 import {Router} from "@angular/router";
+import {FullLayoutComponent} from "../../../layouts/full-layout.component";
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,6 @@ import {Router} from "@angular/router";
 export class LoginComponent implements OnInit {
 
   private user: User = new User();
-  public static userStatic: User = new User();
   private errorMessage = "";
 
   constructor(private userApi: UserApi, private router: Router) {}
@@ -22,15 +22,9 @@ export class LoginComponent implements OnInit {
     this.userApi.login(this.user).subscribe(
       (token: AccessToken) => {
         console.log("New token: ", token);
-        let userId = token.userId;
 
-        this.userApi.findById(userId).subscribe((user: User) => {
-          this.user = user;
-          console.log("afterLogin: ", this.user);
-          LoginComponent.userStatic = this.user;
-          // Redirect to the /dashboard
-          this.router.navigate(['/dashboard']);
-        });
+        // Redirect to the /dashboard
+        this.router.navigate(['/dashboard']);
 
       }, err => {
         console.log(err);

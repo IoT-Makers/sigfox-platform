@@ -21,9 +21,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
               private messageApi: MessageApi,
               private router: Router) { }
 
+  getUser(): void {
+    this.user = this.userApi.getCachedCurrent();
+    console.log(this.user);
+  }
+
   ngOnInit(): void {
-    //this.user = this.userApi.getCachedCurrent();
-    this.user = LoginComponent.userStatic;
+    // Get the logged in User object (avatar, email, ...)
+    this.getUser();
 
     this.deviceApi.count().subscribe(result => {
       //console.log(deviceApi);
