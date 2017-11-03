@@ -204,6 +204,8 @@ class Message {
                 entryGeoloc_sigfox = true;
               }
             });
+          } else {
+            deviceInstance.location = [];
           }
           if(!entryGeoloc_sigfox)
             deviceInstance.location.push(geoloc_sigfox);
