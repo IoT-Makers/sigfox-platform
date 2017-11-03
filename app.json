@@ -1,14 +1,15 @@
 {
-  "name": "FireLoop App Platform",
-  "description": "Modern Real-Time Framework by MEAN Expert",
-  "repository": "https://github.com/mean-expert-official/fireloop-starter.git",
-  "logo": "http://docs.fireloop.io/img/avatar.png",
+  "name": "Sigfox Platform",
+  "description": "cloud platform to manage and visualize Sigfox devices and messages.",
+  "repository": "https://github.com/luisomoreau/sigfox-platform",
+  "logo": "https://github.com/luisomoreau/sigfox-platform/blob/master/webapp/src/img/logo.svg",
   "keywords": [
-      "node",
-      "express",
-      "static",
-      "loopback",
-      "fireloop",
-      "realtime"
-   ]
+    "sigfox",
+    "node",
+    "express",
+    "static",
+    "loopback",
+    "fireloop",
+    "realtime"
+  ]
 }
