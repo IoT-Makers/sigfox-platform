@@ -29,17 +29,17 @@ git push heroku master
 
 If you are not familiar with Heroku, just create an account an follow the procedure:
 
-1. Create a new app:
+1. **Create a new app:**
 
 ![create app](doc/img/deploy-1.png)
 
-2. Build & deploy app:
+2. **Build & deploy app:**
 
 ![build app](doc/img/deploy-2.png)
 
-3. (Optional) Link the application with a MongoDB MLab database (Free):
+3. **(Optional) Link the application with a MongoDB MLab database (Free):**
 
-Note that if you don't link a database to your application, all the data will be erased every time the application restarts.
+*Note that if you don't link a database to your application, all the data will be erased every time the application restarts.*
 
 * Go to [https://mlab.com](https://mlab.com/login/) and create an account and login.
 
@@ -66,6 +66,22 @@ Note that if you don't link a database to your application, all the data will be
 * Create database user:
 
 ![mlab-create-user](doc/img/mlab-create-user.png)
+
+* Copy your MongoDB URI :
+
+![mlab-view-user](doc/img/mlab-view-user.png)
+
+* Go back to your Heroku Dashboard and go to the Settings tab:
+
+![heroku-show-env-variables](doc/img/heroku-show-env-variables.png)
+
+* Click on Reveal Config Vars and add your MongoDB URI:
+
+![heroku-add-MONGODB_URI](doc/img/heroku-add-MONGODB_URI.png)
+
+* Restart all dynos:
+
+![heroku-restart-dynos](doc/img/heroku-restart-dynos.png)
 
 
 ### User guide
