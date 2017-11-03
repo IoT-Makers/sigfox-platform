@@ -25,9 +25,28 @@ heroku apps:create my-project
 git push heroku master
 ```
 
+If you are not familiar with Heroku, just create an account an follow the procedure:
+
+- Create a new app:
+
+![create app](doc/deploy-1.png)
+
+- Build & deploy app:
+
+![build app](doc/deploy-2.png)
+
 ### User guide
 
+- Open app and register:
 
+![login](doc/login.png)
+
+![register](doc/register.png)
+
+![login-2](doc/login-2.png)
+
+Note that, the first user to register will be granted an admin role.
+The other users to register will be granted user roles.
 
 
 ## Development
