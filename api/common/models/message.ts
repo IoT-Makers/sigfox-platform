@@ -197,12 +197,14 @@ class Message {
 
           // Now checking where geoloc sigfox is in the location array so it can be updated
           let entryGeoloc_sigfox = false;
-          deviceInstance.location.forEach((geoloc: Geoloc, index) => {
-            if(geoloc.type === "geoloc_sigfox"){
-              deviceInstance.location[index] = geoloc_sigfox; // Replace geoloc_sigfox with new one
-              entryGeoloc_sigfox = true;
-            }
-          });
+          if(deviceInstance.location){
+            deviceInstance.location.forEach((geoloc: Geoloc, index) => {
+              if(geoloc.type === "geoloc_sigfox"){
+                deviceInstance.location[index] = geoloc_sigfox; // Replace geoloc_sigfox with new one
+                entryGeoloc_sigfox = true;
+              }
+            });
+          }
           if(!entryGeoloc_sigfox)
             deviceInstance.location.push(geoloc_sigfox);
 
