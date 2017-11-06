@@ -11,20 +11,16 @@
           My Profile
         </div>
         <div class="card-block">
-          <div><b><i class="fa fa-envelope" aria-hidden="true"></i><span style="margin-right:1em"></span> Email:</b>
-            {{user.email}}
+          <div><b><i class="fa fa-envelope" aria-hidden="true"></i><span style="margin-right:1em"></span> Email:</b> {{user.email}}
           </div>
           <hr>
-          <div><b><i class="fa fa-user" aria-hidden="true"></i><span style="margin-right:1em"></span> Avatar:</b>
-            {{user.avatar}}
+          <div><b><i class="fa fa-user" aria-hidden="true"></i><span style="margin-right:1em"></span> Avatar:</b> {{user.avatar}}
           </div>
           <hr>
-          <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Creation:</b>
-            {{user.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}
+          <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Created:</b> {{user.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}
           </div>
           <hr>
-          <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Last
-            login:</b> {{user.lastLogin | date:"yyyy/MM/dd HH:mm:ss"}}
+          <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Updated:</b> {{user.updatedAt | date:"yyyy/MM/dd HH:mm:ss"}}
           </div>
           <hr>
           <div *ngIf="user.emailVerified; then verifiedEmail else unverifiedEmail"></div>

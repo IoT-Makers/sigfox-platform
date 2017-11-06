@@ -37,7 +37,8 @@ export class TrackingComponent implements OnInit {
         this.searchResult = "Found " + messages.length + " geoloc messages for device ID: " + deviceId;
         this.allLocalizedMessages = messages;
         // Center map
-        this.initMapPosition = messages[0].geoloc[0];
+        let latestGeoloc = messages[0].geoloc;
+        this.initMapPosition = latestGeoloc[0];
         console.log(messages);
         // DEBUG
         /*console.log("initMapPosition");

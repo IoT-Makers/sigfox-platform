@@ -15,6 +15,12 @@
         <input placeholder="Enter device ID" #box (keyup.enter)="onTrack(box.value)" [required]="true">
         <button (click)="onTrack(box.value)">Track device</button>
       </div>
+      <br>
+      <div class="row">
+        <div class="col col-3">
+          Interval of markers to show: <input type="number" class="form-control" ng-model="markerInterval">
+        </div>
+      </div>
     </div>
     <div class="card-block">
       <!-- <input [ngModel]="dateBegin | date:'yyyy-MM-dd'" (ngModelChange)="dateBegin = $event" type="date" name="dateBegin"/>
@@ -57,150 +63,156 @@
           <ng-container [ngSwitch]=i>
             <!-- Start Point -->
             <ng-container *ngSwitchCase="0">
-              <ng-container *ngIf="marker.geoloc_sigfox">
-                <agm-marker
-                  [zIndex]="4"
-                  [latitude]="marker.geoloc_sigfox.lat"
-                  [longitude]="marker.geoloc_sigfox.lng"
-                  [iconUrl]="'assets/img/marker-start.png'">
-                  <agm-info-window>
-                    <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
-                    <br>
-                    <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
-                    <br>
-                    <strong><b>Position: </b> START</strong>
-                  </agm-info-window>
-                </agm-marker>
-                <!-- Circle -->
-                <agm-circle
-                  [zIndex]="1"
-                  [strokePosition]="CENTER"
-                  [strokeWeight]="1"
-                  [strokeColor]="'#8d5dd1'"
-                  [fillOpacity]="0.1"
-                  [fillColor]="'#8d5dd1'"
-                  [latitude]="marker.geoloc_sigfox.lat"
-                  [longitude]="marker.geoloc_sigfox.lng"
-                  [radius]="marker.geoloc_sigfox.precision">
-                </agm-circle>
-                <!-- End Circle -->
-              </ng-container>
-              <ng-container *ngIf="marker.GPS">
-                <agm-marker
-                  [zIndex]="4"
-                  [latitude]="marker.GPS.lat"
-                  [longitude]="marker.GPS.lng"
-                  [iconUrl]="'assets/img/marker-start.png'">
-                  <agm-info-window>
-                    <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
-                    <br>
-                    <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
-                    <br>
-                    <strong><b>Position: </b> START</strong>
-                  </agm-info-window>
-                </agm-marker>
+              <ng-container *ngFor="let geoloc of marker.geoloc">
+                <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+                  <agm-marker
+                    [zIndex]="4"
+                    [latitude]="geoloc.lat"
+                    [longitude]="geoloc.lng"
+                    [iconUrl]="'assets/img/marker-start.png'">
+                    <agm-info-window>
+                      <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
+                      <br>
+                      <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
+                      <br>
+                      <strong><b>Position: </b> START</strong>
+                    </agm-info-window>
+                  </agm-marker>
+                  <!-- Circle -->
+                  <agm-circle
+                    [zIndex]="1"
+                    [strokePosition]="CENTER"
+                    [strokeWeight]="1"
+                    [strokeColor]="'#8d5dd1'"
+                    [fillOpacity]="0.1"
+                    [fillColor]="'#8d5dd1'"
+                    [latitude]="geoloc.lat"
+                    [longitude]="geoloc.lng"
+                    [radius]="geoloc.precision">
+                  </agm-circle>
+                  <!-- End Circle -->
+                </ng-container>
+                <ng-container *ngIf="geoloc.type == 'GPS'">
+                  <agm-marker
+                    [zIndex]="4"
+                    [latitude]="geoloc.lat"
+                    [longitude]="geoloc.lng"
+                    [iconUrl]="'assets/img/marker-start.png'">
+                    <agm-info-window>
+                      <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
+                      <br>
+                      <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
+                      <br>
+                      <strong><b>Position: </b> START</strong>
+                    </agm-info-window>
+                  </agm-marker>
+                </ng-container>
               </ng-container>
             </ng-container>
             <!-- End Start Point -->
 
             <!-- Finish Point -->
             <ng-container *ngSwitchCase="allLocalizedMessages.length - 1">
-              <ng-container *ngIf="marker.geoloc_sigfox">
-                <agm-marker
-                  [zIndex]="4"
-                  [latitude]="marker.geoloc_sigfox.lat"
-                  [longitude]="marker.geoloc_sigfox.lng"
-                  [iconUrl]="'assets/img/marker-finish.png'">
-                  <agm-info-window>
-                    <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
-                    <br>
-                    <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
-                    <br>
-                    <strong><b>Position: </b> FINISH</strong>
-                  </agm-info-window>
-                </agm-marker>
-                <!-- Circle -->
-                <agm-circle
-                  [zIndex]="1"
-                  [strokePosition]="CENTER"
-                  [strokeWeight]="1"
-                  [strokeColor]="'#8d5dd1'"
-                  [fillOpacity]="0.1"
-                  [fillColor]="'#8d5dd1'"
-                  [latitude]="marker.geoloc_sigfox.lat"
-                  [longitude]="marker.geoloc_sigfox.lng"
-                  [radius]="marker.geoloc_sigfox.precision">
-                </agm-circle>
-                <!-- End Circle -->
-              </ng-container>
-              <ng-container *ngIf="marker.GPS">
-                <agm-marker
-                  [zIndex]="4"
-                  [latitude]="marker.GPS.lat"
-                  [longitude]="marker.GPS.lng"
-                  [iconUrl]="'assets/img/marker-finish.png'">
-                  <agm-info-window>
-                    <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
-                    <br>
-                    <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
-                    <br>
-                    <strong><b>Position: </b> FINISH</strong>
-                  </agm-info-window>
-                </agm-marker>
+              <ng-container *ngFor="let geoloc of marker.geoloc">
+                <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+                  <agm-marker
+                    [zIndex]="4"
+                    [latitude]="geoloc.lat"
+                    [longitude]="geoloc.lng"
+                    [iconUrl]="'assets/img/marker-finish.png'">
+                    <agm-info-window>
+                      <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
+                      <br>
+                      <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
+                      <br>
+                      <strong><b>Position: </b> FINISH</strong>
+                    </agm-info-window>
+                  </agm-marker>
+                  <!-- Circle -->
+                  <agm-circle
+                    [zIndex]="1"
+                    [strokePosition]="CENTER"
+                    [strokeWeight]="1"
+                    [strokeColor]="'#8d5dd1'"
+                    [fillOpacity]="0.1"
+                    [fillColor]="'#8d5dd1'"
+                    [latitude]="geoloc.lat"
+                    [longitude]="geoloc.lng"
+                    [radius]="geoloc.precision">
+                  </agm-circle>
+                  <!-- End Circle -->
+                </ng-container>
+                <ng-container *ngIf="geoloc.type == 'GPS'">
+                  <agm-marker
+                    [zIndex]="4"
+                    [latitude]="geoloc.lat"
+                    [longitude]="geoloc.lng"
+                    [iconUrl]="'assets/img/marker-finish.png'">
+                    <agm-info-window>
+                      <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
+                      <br>
+                      <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
+                      <br>
+                      <strong><b>Position: </b> FINISH</strong>
+                    </agm-info-window>
+                  </agm-marker>
+                </ng-container>
               </ng-container>
             </ng-container>
             <!-- End Finish Point -->
 
             <!-- Default -->
             <ng-container *ngSwitchDefault>
-              <!-- Geoloc Sigfox -->
-              <ng-container *ngIf="marker.geoloc_sigfox">
-                <agm-marker
-                  [zIndex]="3"
-                  [latitude]="marker.geoloc_sigfox.lat"
-                  [longitude]="marker.geoloc_sigfox.lng"
-                  [iconUrl]="'assets/img/marker-sigfox.png'">
-                  <agm-info-window>
-                    <strong><b>Type:</b> Sigfox</strong>
-                    <br>
-                    <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
-                    <br>
-                    <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
-                    <br>
-                    <strong><b>Position: </b> n°{{i}}</strong>
-                  </agm-info-window>
-                </agm-marker>
-                <!-- Circle -->
-                <agm-circle
-                  [zIndex]="1"
-                  [strokePosition]="CENTER"
-                  [strokeWeight]="1"
-                  [strokeColor]="'#8d5dd1'"
-                  [fillOpacity]="0.1"
-                  [fillColor]="'#8d5dd1'"
-                  [latitude]="marker.geoloc_sigfox.lat"
-                  [longitude]="marker.geoloc_sigfox.lng"
-                  [radius]="marker.geoloc_sigfox.precision">
-                </agm-circle>
-                <!-- End Circle -->
-              </ng-container>
-              <!-- Geoloc GPS -->
-              <ng-container *ngIf="marker.GPS">
-                <agm-marker
-                  [zIndex]="3"
-                  [latitude]="marker.GPS.lat"
-                  [longitude]="marker.GPS.lng"
-                  [iconUrl]="'assets/img/marker-gps.png'">
-                  <agm-info-window>
-                    <strong><b>Type:</b> GPS</strong>
-                    <br>
-                    <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
-                    <br>
-                    <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
-                    <br>
-                    <strong><b>Position: </b> n°{{i}}</strong>
-                  </agm-info-window>
-                </agm-marker>
+              <ng-container *ngFor="let geoloc of marker.geoloc">
+                <!-- Geoloc Sigfox -->
+                <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+                  <agm-marker
+                    [zIndex]="3"
+                    [latitude]="geoloc.lat"
+                    [longitude]="geoloc.lng"
+                    [iconUrl]="'assets/img/marker-sigfox.png'">
+                    <agm-info-window>
+                      <strong><b>Type:</b> Sigfox</strong>
+                      <br>
+                      <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
+                      <br>
+                      <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
+                      <br>
+                      <strong><b>Position: </b> n°{{i}}</strong>
+                    </agm-info-window>
+                  </agm-marker>
+                  <!-- Circle -->
+                  <agm-circle
+                    [zIndex]="1"
+                    [strokePosition]="CENTER"
+                    [strokeWeight]="1"
+                    [strokeColor]="'#8d5dd1'"
+                    [fillOpacity]="0.1"
+                    [fillColor]="'#8d5dd1'"
+                    [latitude]="geoloc.lat"
+                    [longitude]="geoloc.lng"
+                    [radius]="geoloc.precision">
+                  </agm-circle>
+                  <!-- End Circle -->
+                </ng-container>
+                <!-- Geoloc GPS -->
+                <ng-container *ngIf="geoloc.type == 'GPS'">
+                  <agm-marker
+                    [zIndex]="3"
+                    [latitude]="geoloc.lat"
+                    [longitude]="geoloc.lng"
+                    [iconUrl]="'assets/img/marker-gps.png'">
+                    <agm-info-window>
+                      <strong><b>Type:</b> GPS</strong>
+                      <br>
+                      <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
+                      <br>
+                      <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
+                      <br>
+                      <strong><b>Position: </b> n°{{i}}</strong>
+                    </agm-info-window>
+                  </agm-marker>
+                </ng-container>
               </ng-container>
             </ng-container>
             <!-- End Default -->
