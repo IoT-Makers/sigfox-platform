@@ -53,6 +53,7 @@ export class DevicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.edit = false;
+
     if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
@@ -75,14 +76,14 @@ export class DevicesComponent implements OnInit {
       console.log(this.devices);
     });
 
-    //Get and listen parsers
+    // Get and listen parsers
     this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
     this.parserSub = this.parserRef.on('change').subscribe((parsers: Parser[]) => {
       this.parsers = parsers;
       console.log(this.parsers);
     });
 
-    //Get and listen categories
+    // Get and listen categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
     this.categorySub = this.categoryRef.on('change'
     ).subscribe((categories: Category[]) => {

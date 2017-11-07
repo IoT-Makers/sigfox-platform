@@ -47,7 +47,7 @@ export class MessagesComponent implements OnInit,OnDestroy {
   setup(): void {
     console.log(this.rt.connection);
     this.ngOnDestroy();
-    //Messages
+    // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     //this.messageRef = this.userRef.make(this.user).child<Message>('Messages');
     this.messageSub = this.messageRef.on('change',

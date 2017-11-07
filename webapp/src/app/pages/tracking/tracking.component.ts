@@ -3,6 +3,7 @@ import {AfterViewInit, Component, Directive, ElementRef, Input, OnDestroy, OnIni
 import {DeviceApi} from '../../shared/sdk/services';
 import {Message} from "../../shared/sdk/models/Message";
 import {AgmCoreModule, AgmMap, GoogleMapsAPIWrapper} from "@agm/core";
+import {DirectionsComponent} from "./directions.component";
 
 @Component({
   selector: 'app-tracking',
@@ -12,6 +13,10 @@ import {AgmCoreModule, AgmMap, GoogleMapsAPIWrapper} from "@agm/core";
 
 export class TrackingComponent implements OnInit {
 
+  public circlePrecision: boolean = false;
+  public directionsRoutes: boolean = true;
+
+  private markerInterval: number = 1;
   private initMapPosition = {"lat": 48.86795, "lng": 2.334070};
 
   private geoloc_sigfoxMarkers: Boolean = true;
@@ -26,6 +31,15 @@ export class TrackingComponent implements OnInit {
   constructor(private elRef: ElementRef, private _googleMapsAPIWrapper: GoogleMapsAPIWrapper, private deviceApi: DeviceApi) {
   }
 
+  onDirections(){
+    if(!this.directionsRoutes){
+      for(let i in this.directionsDisplayStore) {
+        this.directionsDisplayStore[i].setMap(null);
+      }
+      this.directionsDisplayStore = [];
+    }
+  }
+
   onTrack(deviceId: string) {
     /*    dateBegin = new Date('2017-09-19T21:30:00.000Z');
         dateEnd = new Date('2017-09-20T02:45:00.000Z');*/
@@ -35,11 +49,15 @@ export class TrackingComponent implements OnInit {
     this.deviceApi.getMessages(deviceId, {where: {and: [{createdAt: {gte: this.dateBegin}}, {createdAt: {lte: this.dateEnd}}], or: [{geoloc: {neq: null}}]}, fields: ["geoloc", "createdAt"]}).subscribe((messages: Message[]) => {
       if (messages.length > 0) {
         this.searchResult = "Found " + messages.length + " geoloc messages for device ID: " + deviceId;
-        this.allLocalizedMessages = messages;
+        for(let i=0; i<messages.length; i++){
+          this.allLocalizedMessages.push(messages[i]);
+          i = i + this.markerInterval;
+        }
+        //this.allLocalizedMessages = messages;
         // Center map
         let latestGeoloc = messages[0].geoloc;
         this.initMapPosition = latestGeoloc[0];
-        console.log(messages);
+        console.log(this.allLocalizedMessages);
         // DEBUG
         /*console.log("initMapPosition");
         console.log(this.initMapPosition);
@@ -60,14 +78,14 @@ export class TrackingComponent implements OnInit {
   };
 
   getDistance(p1, p2) {
-    var R = 6378137; // Earth’s mean radius in meter
-    var dLat = this.rad(p2.lat() - p1.lat());
-    var dLong = this.rad(p2.lng() - p1.lng());
-    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    let R = 6378137; // Earth’s mean radius in meter
+    let dLat = this.rad(p2.lat() - p1.lat());
+    let dLong = this.rad(p2.lng() - p1.lng());
+    let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(this.rad(p1.lat())) * Math.cos(this.rad(p2.lat())) *
       Math.sin(dLong / 2) * Math.sin(dLong / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c;
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    let d = R * c;
     return d; // returns the distance in meter
   };
 }

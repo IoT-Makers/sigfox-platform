@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-header">
-          <i class="icon-calculator"></i> Parsers
+          <i class="fa fa-code fa-lg text-success"></i> <strong>Parsers</strong>
         </div>
 
         <div class="card-block">
@@ -27,7 +27,7 @@
 
           <div class="row">
             <div class="col col-4">
-              <button type="button" class="btn btn-success text-center" (click)="create()">
+              <button type="button" class="btn btn-success btn-round" (click)="create()">
                 Add Parser
               </button>
             </div>
@@ -48,9 +48,6 @@
                       Test
                     </button>
                 </span>
-                <button type="button" class="btn btn-success" data-toggle="modal" (click)="update(parser)">
-                  Save code
-                </button>
               </div>
               <div [hidden]="value.valid"
                    class="text-danger">
@@ -73,19 +70,22 @@
 
           </div><!--/.row-->
 
-          <!--Danger delete-->
+          <!--Save & Delete-->
           <div class="row">
             <div class="col col-4">
-              <button type="button" class="btn btn-danger text-center" data-toggle="modal" (click)="delete(i, true)">
+              <button type="button" class="btn btn-warning btn-round" data-toggle="modal" (click)="update(parser)">
+                Save code
+              </button>
+              <button type="button" class="btn btn-danger btn-round" data-toggle="modal" (click)="delete(i, true)">
                 Delete Parser
               </button>
             </div>
             <div class="col col-8" *ngIf="deleteConfirmation[i]">
               <p class="text-danger">Are you sure?</p>
-              <button type="button" class="btn btn-danger text-center" data-toggle="modal" (click)="remove(parser)" *ngIf="deleteConfirmation[i]">
+              <button type="button" class="btn btn-danger btn-round" data-toggle="modal" (click)="remove(parser)" *ngIf="deleteConfirmation[i]">
                 Delete
               </button>
-              <button type="button" class="btn text-center" data-toggle="modal" (click)="delete(i, false)" *ngIf="deleteConfirmation[i]">
+              <button type="button" class="btn btn-round" data-toggle="modal" (click)="delete(i, false)" *ngIf="deleteConfirmation[i]">
                 Cancel
               </button>
             </div>

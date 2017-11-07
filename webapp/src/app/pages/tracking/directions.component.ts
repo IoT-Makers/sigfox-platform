@@ -1,4 +1,4 @@
-import {AfterViewInit, Directive, ElementRef, Renderer, ViewChild} from '@angular/core';
+import {AfterViewInit, Directive, ElementRef, OnDestroy, Renderer, ViewChild} from '@angular/core';
 import {Message} from "../../shared/sdk/models/Message";
 import {GoogleMapsAPIWrapper} from "@agm/core";
 import {TrackingComponent} from "./tracking.component";
@@ -8,12 +8,16 @@ declare let google: any;
 @Directive({
   selector: 'agm-directions'
 })
-export class DirectionsComponent implements AfterViewInit {
+export class DirectionsComponent implements AfterViewInit, OnDestroy {
 
   constructor(private trackingComponent: TrackingComponent, private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
   }
 
   ngAfterViewInit() {
+    this.buildDirections();
+  }
+
+  public buildDirections(){
     console.log("--------------------------------");
     console.log(this.trackingComponent.directionsDisplayStore);
     for(let i in this.trackingComponent.directionsDisplayStore) {
@@ -57,9 +61,9 @@ export class DirectionsComponent implements AfterViewInit {
           this.trackingComponent.directionsDisplayStore.push(directionsDisplay);
           directionsDisplay.setOptions({
             polylineOptions: {
-              strokeWeight: 6,
+              strokeWeight: 5,
               strokeOpacity: 0.7,
-              strokeColor: '#08dedb'
+              strokeColor: '#08d7d4'
             },
             markerOptions: {
               visible: false
@@ -88,7 +92,13 @@ export class DirectionsComponent implements AfterViewInit {
       }
 
     }
+  }
 
+  ngOnDestroy(){
+    for(let i in this.trackingComponent.directionsDisplayStore) {
+      this.trackingComponent.directionsDisplayStore[i].setMap(null);
+    }
+    this.trackingComponent.directionsDisplayStore = [];
   }
 
   private getcomputeDistance(latLngA: any, latLngB: any) {

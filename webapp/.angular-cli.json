@@ -20,6 +20,7 @@
       "prefix": "app",
       "styles": [
         "scss/style.scss",
+        "assets/css/custom.css",
         "assets/css/font-awesome.min.css",
         "assets/css/simple-line-icons.css",
         "assets/css/glyphicons.css",

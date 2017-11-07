@@ -69,7 +69,7 @@ export class DashboardComponent implements OnInit,OnDestroy {
   setup(): void {
     console.log(this.rt.connection);
     this.ngOnDestroy();
-    //Messages
+    // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     //console.log(this.organizations[0].id);
     this.messageSub = this.messageRef.on('change').subscribe(
@@ -84,7 +84,7 @@ export class DashboardComponent implements OnInit,OnDestroy {
         });
       });
 
-    //Devices
+    // Devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceRef.on('change').subscribe(
       (devices: Device[]) => {
@@ -97,7 +97,7 @@ export class DashboardComponent implements OnInit,OnDestroy {
         });
       });
 
-    //Categories
+    // Categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
     this.categoryRef.on('change').subscribe(
       (categories: Category[]) => {
@@ -110,7 +110,7 @@ export class DashboardComponent implements OnInit,OnDestroy {
         });
       });
 
-    //Parsers
+    // Parsers
     this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
     this.parserRef.on('change').subscribe((parsers: Parser[]) => {
       this.parsers = parsers;

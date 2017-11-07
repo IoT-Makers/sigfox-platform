@@ -1,0 +1,24 @@
+.btn-round {
+  border-radius: 17px;
+}
+
+.text-tracking {
+  color: #ae7b0d !important; }
+a.text-tracking:focus, a.text-tracking:hover {
+  color: #9d6818 !important; }
+
+.badge-tracking {
+  background-color: #ae7b0d; }
+.badge-tracking[href]:focus, .badge-tracking[href]:hover {
+  background-color: #9d6818; }
+
+
+.text-profile {
+  color: #ae2e75 !important; }
+a.text-profile:focus, a.text-profile:hover {
+  color: #922662 !important; }
+
+.badge-profile {
+  background-color: #ae2e75; }
+.badge-profile[href]:focus, .badge-profile[href]:hover {
+  background-color: #922662; }

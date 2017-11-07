@@ -52,7 +52,9 @@
   </div>
 
   <div class="card">
-    <div class="card-header">Messages</div>
+    <div class="card-header">
+      <i class="fa fa-globe fa-lg"></i> <strong>Overview</strong>
+    </div>
     <div *ngIf="!messages.length" class="card-block">
       No message yet...
     </div>
@@ -68,63 +70,59 @@
       <table class="table table-striped table-responsive" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
         <thead>
         <tr>
-          <th style="width: 10%">
+          <th class="text-center" style="width: 10%">
             <mfDefaultSorter by="createdAt">Date</mfDefaultSorter>
           </th>
-          <th style="width: 20%">
+          <th class="text-center" style="width: 20%">
             <mfDefaultSorter by="data">Data</mfDefaultSorter>
           </th>
-          <th style="width: 10%">
+          <th class="text-center" style="width: 10%">
             <mfDefaultSorter by="deviceId">Device</mfDefaultSorter>
           </th>
-          <th style="width: 20%">
+          <th class="text-center" style="width: 20%">
             <mfDefaultSorter by="geolocation">Geoloc</mfDefaultSorter>
           </th>
-          <th style="width: 10%">
+          <th class="text-center" style="width: 10%">
             <mfDefaultSorter by="seqNumber">Seq Number</mfDefaultSorter>
           </th>
-          <th style="width: 10%">
+          <th class="text-center" style="width: 10%">
             <mfDefaultSorter by="RSSI">RSSI</mfDefaultSorter>
           </th>
-          <th style="width: 10%">
+          <th class="text-center" style="width: 10%">
             <mfDefaultSorter by="station">Base Stations</mfDefaultSorter>
           </th>
-          <th style="width: 10%">
+          <th class="text-center" style="width: 10%">
             Options
           </th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let item of mf.data">
-          <td>{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
-          <td>{{item.data}}
-            <div *ngIf="item.parsed_data">
+          <td class="text-center">{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
+          <td class="text-center">
+            <span class="text-primary">{{item.data}}</span>
+            <div class="text-justify" *ngIf="item.parsed_data">
               <div *ngFor="let object of item.parsed_data">
-                <small>{{object.key}}: {{object.value}}</small>
+                <small>{{object.key}}: <strong>{{object.value}}</strong></small>
               </div>
             </div>
           </td>
-          <td>{{item.deviceId}}</td>
-          <td>
+          <td class="text-center">{{item.deviceId}}</td>
+          <td class="text-center">
             <div *ngIf="item.geoloc">
-              <div *ngFor="let object of item.geoloc">
-                <a href=""><i class="fa fa-map-marker" style="font-size:24px"></i>
-                  <span class="small text-muted"><br>Lat: {{object.lat}}<br>Lng: {{object.lng}}</span>
+              <div *ngFor="let geoloc of item.geoloc">
+                <i class="fa fa-map-marker fa-2x text-tracking"></i>
+                <a href="">
+                  <span class="small text-tracking"><br>Type: <strong>{{geoloc.type}}</strong><br>Lat: {{geoloc.lat | number:'.1-3'}}<br>Lng: {{geoloc.lng | number:'.1-3'}}</span>
                 </a>
-                <!--<ul>
-                <li><small>type: {{object.type}}</small></li>
-                <li><small>lat: {{object.lat}}</small></li>
-                <li><small>lng: {{object.lng}}</small></li>
-                <li><small>precision: {{object.precision}}</small></li>
-                </ul>-->
               </div>
             </div>
           </td>
-          <td>{{item.seqNumber}}</td>
-          <td>{{item.RSSI}}</td>
-          <td></td>
-          <td>
-            <button type="button" class="btn btn-danger" (click)="remove(item)">
+          <td class="text-center">{{item.seqNumber}}</td>
+          <td class="text-center">{{item.RSSI}}</td>
+          <td class="text-center"></td>
+          <td class="text-center">
+            <button type="button" class="btn btn-danger btn-round" (click)="remove(item)">
               <i class="fa fa-trash"></i>
             </button>
           </td>

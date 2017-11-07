@@ -11,8 +11,6 @@ import {Subscription} from "rxjs/Subscription";
 })
 export class ParsersComponent implements OnInit,OnDestroy {
 
-  private subscriptions: Subscription[] = new Array<Subscription>();
-
   private newParser: Parser = new Parser();
   private decodedPayload = [];
   private testPayload = [];
@@ -21,44 +19,52 @@ export class ParsersComponent implements OnInit,OnDestroy {
 
   private parsers: Parser[] = new Array<Parser>();
   private parserRef: FireLoopRef<Parser>;
+  private parserSub: Subscription;
 
   private deleteConfirmation = [];
 
-  constructor(private rt: RealTime, private parserApi: ParserApi) {
-
-    this.subscriptions.push(
-
-      this.rt.onReady().subscribe(() => {
-        this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-        this.parserRef.on('change').subscribe(
-          (parsers: Parser[]) => {
-            this.parsers = parsers;
-            console.log(this.parsers);
-          });
-
-      }));
-  }
+  constructor(private rt: RealTime) { }
 
   ngOnInit(): void {
-    console.log(this.parsers);
+    if (
+      this.rt.connection.isConnected() &&
+      this.rt.connection.authenticated
+    ) {
+      this.rt.onReady().subscribe(() => this.setup());
+    } else {
+      this.rt.onAuthenticated().subscribe(() => this.setup());
+      this.rt.onReady().subscribe();
+    }
+  }
+
+  setup(): void {
+    console.log(this.rt.connection);
+    this.ngOnDestroy();
+    // Parsers
+    this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
+    this.parserSub = this.parserRef.on('change').subscribe(
+      (parsers: Parser[]) => {
+        this.parsers = parsers;
+        console.log(this.parsers);
+      });
   }
 
   ngOnDestroy(): void {
     console.log("Parsers: ngOnDestroy");
-    this.parserRef.dispose();
-    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
+    if (this.parserRef)this.parserRef.dispose();
+    if (this.parserSub)this.parserSub.unsubscribe();
   }
 
   decodePayload(i: number, parser: Parser, payload: string): void{
     this.testPayload[i] = true;
-    if(payload != ""){
-      let fn = Function("payload", parser.function);
-      this.decodedPayload[i] = fn(payload);
-    } else {
-      this.decodedPayload[i] = [{"error": "Please fill input"}];
-      setTimeout(function() {
-        this.testPayload[i] = false;
-      }.bind(this), 2000);
+    if(payload){
+        let fn = Function("payload", parser.function);
+        this.decodedPayload[i] = fn(payload);
+      } else {
+        this.decodedPayload[i] = [{"error": "Please fill input"}];
+        setTimeout(function() {
+          this.testPayload[i] = false;
+        }.bind(this), 2000);
     }
   }
 
