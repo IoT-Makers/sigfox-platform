@@ -10,7 +10,7 @@ import {Router} from "@angular/router";
 
 export class RegisterComponent {
 
-  private user: any = {};
+  private user: User = new User();
   private verifyPassword: string = "";
   private errorMessage = "";
 
@@ -18,29 +18,29 @@ export class RegisterComponent {
   }
 
   onRegister(): void {
-    console.log("registering");
-    console.log(this.user);
+    console.log("Registering");
+    // TODO: Check user default values on register
+    this.user.id = null;
+    this.user.avatar = "http://www.tresnjica.com/img/daycare.png";
+    this.user.createdAt = new Date(Date.now());
+
     this.userApi.create(this.user).subscribe(response => {
-      console.log(response);
-      //this.user = response.user;
-      console.log(this.user);
       this.router.navigate(['/login']);
     }, err => {
       if (err = "Server error")
-        this.errorMessage = "Server is not responding.";
+        this.errorMessage = "Server error.";
       else
         this.errorMessage = "Invalid username or password.";
       console.log(err);
     });
   }
 
-  private verify(): void {
+  verify(): void {
     if (this.user.password != this.verifyPassword) {
       this.errorMessage = "Passwords do not match"
     } else {
       this.errorMessage = "";
     }
   }
-
 
 }
