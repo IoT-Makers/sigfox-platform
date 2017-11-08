@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
         console.log("New token: ", token);
 
         // Redirect to the /dashboard
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/overview']);
 
       }, err => {
         console.log(err);
