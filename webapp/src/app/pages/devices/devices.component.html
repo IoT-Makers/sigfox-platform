@@ -5,15 +5,68 @@
       <i class="fa fa-map-marker fa-lg text-tracking"></i> <strong>Map</strong>
     </div>
     <div class="card-block">
-      <agm-map [latitude]="lat" [longitude]="lng" [zoom]="12">
-        <agm-marker
-          *ngFor="let device of devices; let i = index"
-          [latitude]="device.location ? device.location[0].lat : '' "
-          [longitude]="device.location ? device.location[0].lng: ''">
-          <agm-info-window>
-            <strong>{{device.name}}</strong>
-          </agm-info-window>
-        </agm-marker>
+      <agm-map [latitude]="lat"
+               [longitude]="lng"
+               [zoom]="12"
+               [fullscreenControl]="true">
+
+        <ng-container *ngFor="let device of devices; let i = index">
+          <ng-container *ngFor="let geoloc of device.location">
+            <!-- Geoloc Sigfox -->
+            <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+              <agm-marker
+                [zIndex]="3"
+                [latitude]="geoloc.lat"
+                [longitude]="geoloc.lng"
+                [iconUrl]="'assets/img/marker-sigfox.png'">
+                <agm-info-window>
+                  <strong><b>ID:</b> <span class="text-danger">{{device.id}}</span></strong>
+                  <br>
+                  <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                  <br *ngIf="device.name">
+                  <strong><b>Type:</b> Sigfox</strong>
+                  <br>
+                  <strong><b>Date:</b> {{device.createdAt | date:"dd/MM/yyyy"}}</strong>
+                  <br>
+                  <strong><b>Time:</b> {{device.createdAt | date:"HH:mm:ss"}}</strong>
+                </agm-info-window>
+              </agm-marker>
+              <!-- Circle -->
+              <agm-circle [zIndex]="1"
+                          [strokePosition]="CENTER"
+                          [strokeWeight]="1"
+                          [strokeColor]="'#8d5dd1'"
+                          [fillOpacity]="0.1"
+                          [fillColor]="'#8d5dd1'"
+                          [latitude]="geoloc.lat"
+                          [longitude]="geoloc.lng"
+                          [radius]="geoloc.precision">
+              </agm-circle>
+              <!-- End Circle -->
+            </ng-container>
+            <!-- Geoloc GPS -->
+            <ng-container *ngIf="geoloc.type == 'GPS'">
+              <agm-marker
+                [zIndex]="3"
+                [latitude]="geoloc.lat"
+                [longitude]="geoloc.lng"
+                [iconUrl]="'assets/img/marker-gps.png'">
+                <agm-info-window>
+                  <strong><b>ID:</b> <span class="text-danger">{{device.id}}</span></strong>
+                  <br>
+                  <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                  <br *ngIf="device.name">
+                  <strong><b>Type:</b> GPS</strong>
+                  <br>
+                  <strong><b>Date:</b> {{device.createdAt | date:"dd/MM/yyyy"}}</strong>
+                  <br>
+                  <strong><b>Time:</b> {{device.createdAt | date:"HH:mm:ss"}}</strong>
+                </agm-info-window>
+              </agm-marker>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+
       </agm-map>
 
     </div>
@@ -48,24 +101,53 @@
               <td class="text-center">
                 <strong>{{device.id}}</strong>
               </td>
-              <td class="text-center hidden-xs-down">
-                <div>{{device.name}}</div>
+              <td class="hidden-xs-down">
                 <div class="small">
-                  <span class="text-muted">Parser:</span> <strong class="text-primary">{{device.Parser ? device.Parser.name : "None"}}</strong>
+                  <span class="text-muted">Name: </span>
+                  <span class="text-primary">{{device.name ? device.name : "None"}}</span>
                 </div>
                 <div class="small">
-                  <span class="text-muted">Category:</span> <strong class="text-primary">{{device.Category ? device.Category.name : "None"}}</strong>
+                  <span class="text-muted">Parser: </span>
+                  <span class="text-primary">{{device.Parser ? device.Parser.name : "None"}}</span>
+                </div>
+                <div class="small">
+                  <span class="text-muted">Category: </span>
+                  <span class="text-primary">{{device.Category ? device.Category.name : "None"}}</span>
                 </div>
               </td>
               <td *ngIf="!edit" class="text-center hidden-xs-down">
                 <div *ngIf="device.location">
-                  <div class="text-center" *ngFor="let geoloc of device.location">
-                    <i class="fa fa-map-marker fa-2x text-tracking"></i>
-                    <a href="">
-                      <span class="small text-tracking"><br>Type: <strong>{{geoloc.type}}</strong><br>Lat: {{geoloc.lat| number:'.1-3'}} <br>Lng: {{geoloc.lng| number:'.1-3'}}</span>
-                    </a>
+                  <div *ngFor="let geoloc of device.location">
+                    <div class="row">
+                      <div class="col col-7">
+                        <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+                        <span class="small text-geoloc-sigfox">
+                          <i class="fa fa-map-marker fa-2x"></i>
+                          <br>
+                          <strong>Sigfox Network</strong>
+                        </span>
+                        </ng-container>
+                        <ng-container *ngIf="geoloc.type == 'GPS'">
+                        <span class="small text-geoloc-gps">
+                          <i class="fa fa-map-marker fa-2x"></i>
+                          <br>
+                          <strong>GPS</strong>
+                        </span>
+                        </ng-container>
+                      </div>
+                      <div class="col col-5 text-left">
+                        <a href="">
+                          <span class="small text-muted">
+                            Lat: {{geoloc.lat| number:'.1-3'}}
+                            <br>
+                            Lng: {{geoloc.lng| number:'.1-3'}}
+                          </span>
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </div>
+
               </td>
               <!--<td *ngIf="!edit">
               <div class="clearfix">

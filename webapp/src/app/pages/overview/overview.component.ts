@@ -17,9 +17,9 @@ import {FullLayoutComponent} from "../../layouts/full-layout.component";
 
 
 @Component({
-  templateUrl: 'dashboard.component.html'
+  templateUrl: 'overview.component.html'
 })
-export class DashboardComponent implements OnInit,OnDestroy {
+export class OverviewComponent implements OnInit,OnDestroy {
 
   private message: Message = new Message();
   private device: Device = new Device();

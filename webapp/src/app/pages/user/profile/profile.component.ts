@@ -2,10 +2,6 @@ import {Component, OnDestroy, OnInit, Inject} from '@angular/core';
 import {User, FireLoopRef} from "../../../shared/sdk/models";
 import {UserApi} from "../../../shared/sdk/services/custom/User";
 import {DOCUMENT} from "@angular/common";
-import {OrganizationApi} from "../../../shared/sdk/services/custom/Organization";
-import {forEach} from "@angular/router/src/utils/collection";
-import {FullLayoutComponent} from "../../../layouts/full-layout.component";
-import {LoginComponent} from "../login/login.component";
 
 @Component({
   selector: 'app-profile',

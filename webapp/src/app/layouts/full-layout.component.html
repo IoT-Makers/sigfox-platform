@@ -32,40 +32,47 @@
   <div class="sidebar">
     <nav class="sidebar-nav">
       <ul class="nav">
-        <li class="nav-title">
-          Dashboard
-        </li>
+        <!--<li class="nav-title">
+          Overview
+        </li>-->
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/dashboard']"><i class="fa fa-dashboard text-white"></i> Dashboard <span class="badge badge-default"></span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/overview']"><i class="fa fa-dashboard text-white"></i> Overview <span class="badge badge-default"></span></a>
         </li>
+
         <li class="divider"></li>
+
         <li class="nav-title">
-          Information
+          Dashboards
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/categories']"><i class="fa fa-tag text-danger"></i> Categories <span class="badge badge-danger"></span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/messages']"><i class="fa fa-envelope text-primary"></i> Messages <span class="badge badge-primary"></span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/devices']"><i class="fa fa-thermometer-half text-warning"></i> Devices <span class="badge badge-warning"></span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/messages']"><i class="fa fa-envelope text-primary"></i> Messages <span class="badge badge-primary"></span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/tracking']"><i class="fa fa-map-marker text-tracking"></i> Tracking <span class="badge badge-tracking"></span></a>
         </li>
+        <!--<li class="nav-item">
+        <a class="nav-link" routerLinkActive="active" [routerLink]="['/base-stations']"><i class="fa fa-server"></i> Base Stations <span class="badge badge-info"></span></a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" routerLinkActive="active" [routerLink]="['/demo']"><i class="fa fa-cube"></i> Cube <span class="badge badge-info"></span></a>
+        </li>-->
+
         <li class="nav-title">
-          More
+          Settings
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/profile']"><i class="fa fa-user text-profile"></i> Profile <span class="badge badge-profile"></span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/categories']"><i class="fa fa-tag text-danger"></i> Categories <span class="badge badge-danger"></span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/parsers']"><i class="fa fa-code text-success"></i> Parsers <span class="badge badge-success"></span></a>
         </li>
-        <!--<li class="nav-item">-->
-          <!--<a class="nav-link" routerLinkActive="active" [routerLink]="['/base-stations']"><i class="fa fa-server"></i> Base Stations <span class="badge badge-info"></span></a>-->
-        <!--</li>-->
-        <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/tracking']"><i class="fa fa-map-marker text-tracking"></i> Tracking <span class="badge badge-tracking"></span></a>
-        </li>
-        <!--<li class="nav-item">-->
-          <!--<a class="nav-link" routerLinkActive="active" [routerLink]="['/demo']"><i class="fa fa-cube"></i> Cube <span class="badge badge-info"></span></a>-->
-        <!--</li>-->
+
 
       </ul>
     </nav>

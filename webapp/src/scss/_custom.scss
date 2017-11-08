@@ -85,3 +85,54 @@ agm-map {
   width: 100%;
   height: calc(100vh - 283px);
 }
+
+.btn-round {
+  border-radius: 17px;
+}
+
+.text-profile {
+  color: $profile !important; }
+a.text-profile:focus, a.text-profile:hover {
+  color: darken($profile, 50%) !important; }
+.badge-profile {
+  background-color: $profile; }
+.badge-profile[href]:focus, .badge-profile[href]:hover {
+  background-color: darken($profile, 50%); }
+
+.text-tracking {
+  color: $tracking !important; }
+a.text-tracking:focus, a.text-tracking:hover {
+  color: darken($tracking, 50%) !important; }
+.badge-tracking {
+  background-color: $tracking; }
+.badge-tracking[href]:focus, .badge-tracking[href]:hover {
+  background-color: darken($tracking, 50%); }
+
+.text-geoloc-sigfox {
+  color: $geoloc-sigfox !important; }
+a.text-geoloc-sigfox:focus, a.text-geoloc-sigfox:hover {
+  color: darken($geoloc-sigfox, 50%) !important; }
+.badge-geoloc-sigfox {
+  background-color: $geoloc-sigfox; }
+.badge-geoloc-sigfox[href]:focus, .badge-geoloc-sigfox[href]:hover {
+  background-color: darken($geoloc-sigfox, 50%); }
+
+.text-geoloc-gps {
+  color: $geoloc-gps !important; }
+a.text-geoloc-gps:focus, a.text-geoloc-gps:hover {
+  color: darken($geoloc-gps, 50%) !important; }
+.badge-geoloc-gps {
+  background-color: $geoloc-gps; }
+.badge-geoloc-gps[href]:focus, .badge-geoloc-gps[href]:hover {
+  background-color: darken($geoloc-gps, 50%); }
+
+.text-geoloc-ble {
+  color: $geoloc-ble !important; }
+a.text-geoloc-ble:focus, a.text-geoloc-ble:hover {
+  color: darken($geoloc-ble, 50%) !important; }
+.badge-geoloc-ble {
+  background-color: $geoloc-ble; }
+.badge-geoloc-ble[href]:focus, .badge-geoloc-ble[href]:hover {
+  background-color: darken($geoloc-ble, 50%); }
+
+

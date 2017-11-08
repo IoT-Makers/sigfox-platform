@@ -1,9 +1,6 @@
 <div class="animated fadeIn">
   <h3>Welcome {{user.username}}</h3>
-
   <hr>
-
-
   <div class="row">
     <div class="col-sm-12">
       <div class="card mb-3">
@@ -34,6 +31,14 @@
           </ng-template>
         </div>
       </div>
+    </div>
+  </div>
+
+
+  <h3>Routing interfaces</h3>
+  <hr>
+  <div class="row">
+    <div class="col col-12">
 
       <!--<div class="card">-->
       <!--<div class="card-header card-default">-->
@@ -54,12 +59,78 @@
       <!--</div>-->
 
 
-      <div class="card">
-        <div class="card-header">Callback URL</div>
-        <div class="card-block card-info text-center text-white font-weight-bold">{{callbackURL}}</div>
-      </div>
+      <accordion>
+        <accordion-group>
+          <div accordion-heading>
+            <strong class="text-success">UPLINK</strong> - Sigfox Backend Callback details
+          </div>
+          <div class="card-block">
+            <p>Type: <strong>DATA</strong> | <strong>UPLINK</strong></p>
+            <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
+            <p>Use HTTP Method: <strong>POST</strong></p>
+            <p>Headers: <strong>Authorization</strong> | <strong>IST4mw7DATDMNoAnoy3Qz7XJRmKO2RMfAlYB7ERLdGuH5WjBsusKWEHuSpLX7Mhb</strong></p>
+            <p>Body: <code class="text-center">{{
+              '{
+              "deviceId": "{device}",
+              "time": {time},
+              "data": "{data}",
+              "RSSI": {rssi},
+              "seqNumber": {seqNumber},
+              "baseStationId": "{station}"
+              }'
+              }}</code>
+          </div>
+        </accordion-group>
+        <accordion-group>
+          <div accordion-heading>
+            <strong class="text-success">BIDIR</strong> - Sigfox Backend Callback details
+          </div>
+          <div class="card-block">
+            <p>Type: <strong>DATA</strong> | <strong>BIDIR</strong></p>
+            <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
+            <p>Use HTTP Method: <strong>POST</strong></p>
+            <p>Headers: <strong>Authorization</strong> | <strong>IST4mw7DATDMNoAnoy3Qz7XJRmKO2RMfAlYB7ERLdGuH5WjBsusKWEHuSpLX7Mhb</strong></p>
+            <p>Body: <code class="text-center">{{
+              '{
+              "deviceId": "{device}",
+              "time": {time},
+              "data": "{data}",
+              "RSSI": {rssi},
+              "seqNumber": {seqNumber},
+              "baseStationId": "{station}",
+              "ack": {ack}
+              }'
+              }}</code>
+          </div>
+        </accordion-group>
+        <accordion-group>
+          <div accordion-heading>
+            <strong class="text-geoloc-sigfox">GEOLOC</strong> - Sigfox Backend Callback details
+          </div>
+          <div class="card-block">
+            <p>Type: <strong>SERVICE</strong> | <strong>GEOLOC</strong></p>
+            <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
+            <p>Use HTTP Method: <strong>PUT</strong></p>
+            <p>Headers: <strong>Authorization</strong> | <strong>IST4mw7DATDMNoAnoy3Qz7XJRmKO2RMfAlYB7ERLdGuH5WjBsusKWEHuSpLX7Mhb</strong></p>
+            <p>Body: <code class="text-center">{{
+              '{
+              "deviceId": "{device}",
+              "time": {time},
+              "RSSI": {rssi},
+              "seqNumber": {seqNumber},
+              "baseStationId": "{station}",
+              "geoloc": [{
+              "type": "geoloc_sigfox",
+              "lat": {lat},
+              "lng": {lng},
+              "precision": {radius}
+              }]
+              }'
+              }}</code>
+          </div>
+        </accordion-group>
+      </accordion>
 
     </div>
-    <!-- /.col-sm-4 -->
   </div>
 </div>

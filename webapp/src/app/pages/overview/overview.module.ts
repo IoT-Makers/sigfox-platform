@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 
-import { DashboardComponent } from './dashboard.component';
-import { DashboardRoutingModule } from './dashboard-routing.module';
+import {OverviewComponent} from './overview.component';
 import { CommonModule } from "@angular/common";
 import { ChartsModule } from 'ng2-charts/ng2-charts';
 
@@ -9,18 +8,19 @@ import { ChartsModule } from 'ng2-charts/ng2-charts';
 import { DataTableModule } from 'angular2-datatable';
 import { FormsModule } from '@angular/forms';
 import {DataFilterPipe} from "./datafilterpipe";
+import {OverviewRoutingModule} from "./overview-routing.module";
 
 @NgModule({
   imports: [
-    DashboardRoutingModule,
+    OverviewRoutingModule,
     CommonModule,
     ChartsModule,
     DataTableModule,
     FormsModule
   ],
   declarations: [
-    DashboardComponent,
+    OverviewComponent,
     DataFilterPipe
   ]
 })
-export class DashboardModule { }
+export class OverviewModule { }

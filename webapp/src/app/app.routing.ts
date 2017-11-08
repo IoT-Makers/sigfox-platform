@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 // Layouts
 import { FullLayoutComponent } from './layouts/full-layout.component';
-import { SimpleLayoutComponent } from './layouts/simple-layout.component';
 import {AuthGuard} from "./_guards/auth.guard";
 
 export const routes: Routes = [
@@ -19,7 +18,7 @@ export const routes: Routes = [
       title: 'Home'
     },
     children: [
-      { path: 'dashboard', loadChildren: './pages/dashboard/dashboard.module#DashboardModule' },
+      { path: 'overview', loadChildren: './pages/overview/overview.module#OverviewModule' },
       { path: 'devices', loadChildren: './pages/devices/devices.module#DevicesModule' },
       { path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule' },
       { path: 'parsers', loadChildren: './pages/parsers/parsers.module#ParsersModule' },
