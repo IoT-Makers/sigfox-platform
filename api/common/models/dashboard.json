@@ -6,6 +6,25 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "FireLoop": true,
+    "TimeStamp": {
+      "required": false,
+      "validateUpsert": true
+    },
+    "Stats": [
+      {
+        "method": "stats",
+        "endpoint": "/stats",
+        "description": "Statistical information for Asset registers.",
+        "type": "model",
+        "count": {
+          "on": "createdAt",
+          "by": "index"
+        }
+      }
+    ]
+  },
   "properties": {
     "name": {
       "type": "string",
@@ -23,23 +42,5 @@
       "type": "belongsTo",
       "model": "user"
     }
-  },
-  "mixins": {
-    "FireLoop": true,
-    "TimeStamp": {
-      "required": false
-    },
-    "Stats": [
-      {
-        "method": "stats",
-        "endpoint": "/stats",
-        "description": "Statistical information for Dashboard registers.",
-        "type": "model",
-        "count": {
-          "on": "createdAt",
-          "by": "index"
-        }
-      }
-    ]
   }
 }
