@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import {User} from "../shared/sdk/models";
 import {UserApi, DeviceApi, MessageApi} from "../shared/sdk/services";
 import {LoginComponent} from "../pages/user/login/login.component";
+import {CategoryApi} from "../shared/sdk/services/custom/Category";
 
 @Component({
   templateUrl: './full-layout.component.html'
@@ -12,6 +13,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private user: User = new User();
   private countDevices: number = 0;
   private countMessages: number = 0;
+  private countCategories: number = 0;
 
   public disabled:boolean = false;
   public status:{isopen:boolean} = {isopen: false};
@@ -19,6 +21,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   constructor(private userApi: UserApi,
               private deviceApi: DeviceApi,
               private messageApi: MessageApi,
+              private categoryApi: CategoryApi,
               private router: Router) { }
 
   getUser(): void {
@@ -39,6 +42,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       //console.log(messageApi);
       //console.log("count: ", result);
       this.countMessages = result.count;
+    });
+    this.categoryApi.count().subscribe(result => {
+      //console.log(messageApi);
+      //console.log("count: ", result);
+      this.countCategories = result.count;
     });
   }
 
