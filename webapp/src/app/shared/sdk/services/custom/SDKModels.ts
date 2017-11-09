@@ -12,6 +12,7 @@ import { User } from '../../models/User';
 import { Organization } from '../../models/Organization';
 import { Geoloc } from '../../models/Geoloc';
 import { AppSetting } from '../../models/AppSetting';
+import { Dashboard } from '../../models/Dashboard';
 
 export interface Models { [name: string]: any }
 
@@ -31,6 +32,7 @@ export class SDKModels {
     Organization: Organization,
     Geoloc: Geoloc,
     AppSetting: AppSetting,
+    Dashboard: Dashboard,
     
   };
 

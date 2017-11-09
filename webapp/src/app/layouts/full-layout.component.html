@@ -1,6 +1,6 @@
 <header class="app-header navbar">
   <button class="navbar-toggler mobile-sidebar-toggler hidden-lg-up" type="button">&#9776;</button>
-  <a class="navbar-brand" href="#"></a>
+  <a class="navbar-brand" href="#" [routerLink]="['/overview']"></a>
 
   <ul class="nav navbar-nav hidden-md-down">
     <li class="nav-item">
@@ -30,11 +30,27 @@
 
 <div class="app-body">
   <div class="sidebar">
+    <div class="sidebar-header">
+      <img *ngIf="!user.avatar" src="assets/img/avatars/user.jpg" class="img-avatar" alt="Avatar">
+      <img *ngIf="user.avatar" src="{{user.avatar}}" class="img-avatar" alt="Avatar">
+      <div><strong>{{user.name || user.email}}</strong></div>
+      <!--<div class="text-muted"><small>Founder &amp; CEO</small></div>-->
+
+      <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+        <button type="button" class="btn btn-link" routerLinkActive="active" [routerLink]="['/profile']">
+          <i class="fa fa-user text-profile"></i>
+        </button>
+
+        <button type="button" class="btn btn-link" (click)="onLogout()">
+          <i class="fa fa-sign-out"></i>
+        </button>
+      </div>
+    </div>
     <nav class="sidebar-nav">
       <ul class="nav">
-        <!--<li class="nav-title">
-          Overview
-        </li>-->
+        <li class="nav-title">
+          Dashboards
+        </li>
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/overview']"><i class="fa fa-dashboard text-white"></i> Overview <span class="badge badge-default"></span></a>
         </li>
@@ -42,17 +58,18 @@
         <li class="divider"></li>
 
         <li class="nav-title">
-          Dashboards
+          Information
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/messages']"><i class="fa fa-envelope text-primary"></i> Messages <span class="badge badge-primary"></span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/categories']"><i class="fa fa-tag text-danger"></i> Categories <span class="badge badge-danger"></span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/devices']"><i class="fa fa-thermometer-half text-warning"></i> Devices <span class="badge badge-warning"></span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/tracking']"><i class="fa fa-map-marker text-tracking"></i> Tracking <span class="badge badge-tracking"></span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/messages']"><i class="fa fa-envelope text-primary"></i> Messages <span class="badge badge-primary"></span></a>
         </li>
+
         <!--<li class="nav-item">
         <a class="nav-link" routerLinkActive="active" [routerLink]="['/base-stations']"><i class="fa fa-server"></i> Base Stations <span class="badge badge-info"></span></a>
         </li>
@@ -61,17 +78,27 @@
         </li>-->
 
         <li class="nav-title">
-          Settings
+          Widgets
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/profile']"><i class="fa fa-user text-profile"></i> Profile <span class="badge badge-profile"></span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/tracking']"><i class="fa fa-map-marker text-tracking"></i> Tracking <span class="badge badge-tracking"></span></a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/categories']"><i class="fa fa-tag text-danger"></i> Categories <span class="badge badge-danger"></span></a>
+
+        <!--<li class="nav-title">-->
+        <!--Settings-->
+        <!--</li>-->
+        <!--<li class="nav-item">-->
+        <!--<a class="nav-link" routerLinkActive="active" [routerLink]="['/profile']"><i class="fa fa-user text-profile"></i> Profile <span class="badge badge-profile"></span></a>-->
+        <!--</li>-->
+
+        <li class="nav-title">
+          Developers
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/parsers']"><i class="fa fa-code text-success"></i> Parsers <span class="badge badge-success"></span></a>
         </li>
+
+
 
 
       </ul>

@@ -60,6 +60,7 @@ import { UserApi } from './services/custom/User';
 import { OrganizationApi } from './services/custom/Organization';
 import { GeolocApi } from './services/custom/Geoloc';
 import { AppSettingApi } from './services/custom/AppSetting';
+import { DashboardApi } from './services/custom/Dashboard';
 /**
 * @module SDKBrowserModule
 * @description
@@ -103,6 +104,7 @@ export class SDKBrowserModule {
         OrganizationApi,
         GeolocApi,
         AppSettingApi,
+        DashboardApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }

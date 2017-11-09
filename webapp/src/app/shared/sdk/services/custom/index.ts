@@ -11,5 +11,6 @@ export * from './User';
 export * from './Organization';
 export * from './Geoloc';
 export * from './AppSetting';
+export * from './Dashboard';
 export * from './SDKModels';
 export * from './logger.service';

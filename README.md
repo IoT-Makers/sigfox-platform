@@ -108,7 +108,15 @@ This project uses Loopback 3, Angular 4, Fireloop and MongoDB.
 
 ### Webapp
 
-## Contributors
+## Roadmap
+
+
+
+## Authors
 
 * [Antoine de Chassey](https://github.com/AntoinedeChassey)
 * [Louis Moreau](https://github.com/luisomoreau)
+
+## Contributors
+
+Feel free to submit a Pull Request and don't forget to add you name and your useful links ;)

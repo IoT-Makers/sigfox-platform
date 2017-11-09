@@ -74,5 +74,9 @@
   "AppSetting": {
     "dataSource": "db",
     "public": true
+  },
+  "Dashboard": {
+    "dataSource": "db",
+    "public": true
   }
 }
