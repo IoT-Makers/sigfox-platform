@@ -34,9 +34,6 @@
     },
     "location": {
       "type": "Geoloc"
-    },
-    "name": {
-      "type": "string"
     }
   },
   "validations": [],

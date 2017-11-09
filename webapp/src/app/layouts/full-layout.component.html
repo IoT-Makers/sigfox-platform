@@ -11,8 +11,8 @@
   <ul class="nav navbar-nav ml-auto" style="margin-right: 2%">
     <li class="nav-item">
       <a href class="nav-link" [routerLink]="['/profile']">
-        <img src="{{user.avatar}}" class="img-avatar" alt="{{user.email}}  ">
-        <span class="d-md-down-none">{{user.name || user.email}}  </span>
+        <img src="{{user.avatar}}" class="img-avatar">
+        <span class="d-md-down-none font-weight-bold">{{user.username || user.email}}  </span>
       </a>
       <!--<div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">-->
 
@@ -27,7 +27,7 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" href="#" role="button" (click)="onLogout()">
-        <i class="fa fa-sign-out text-info"></i>
+        <i class="fa fa-sign-out text-primary"></i>
       </a>
     </li>
   </ul>

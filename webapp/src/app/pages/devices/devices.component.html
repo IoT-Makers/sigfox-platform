@@ -7,9 +7,8 @@
     <div class="card-block">
       <agm-map [latitude]="lat"
                [longitude]="lng"
-               [zoom]="2"
+               [zoom]="3"
                [fullscreenControl]="true">
-
         <ng-container *ngFor="let device of devices; let i = index">
           <ng-container *ngFor="let geoloc of device.location">
             <!-- Geoloc Sigfox -->
@@ -17,7 +16,7 @@
               <agm-marker
                 (mouseOut)="markerOut(i)"
                 (mouseOver)="markerOver(i)"
-                [zIndex]="3"
+                [zIndex]="2"
                 [latitude]="geoloc.lat"
                 [longitude]="geoloc.lng"
                 [iconUrl]="'assets/img/marker-sigfox.png'">
@@ -28,9 +27,9 @@
                   <br *ngIf="device.name">
                   <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                   <br>
-                  <strong><b>Date:</b> {{device.createdAt | date:"dd/MM/yyyy"}}</strong>
+                  <strong><b>Date:</b> {{device.updatedAt | date:"dd/MM/yyyy"}}</strong>
                   <br>
-                  <strong><b>Time:</b> {{device.createdAt | date:"HH:mm:ss"}}</strong>
+                  <strong><b>Time:</b> {{device.updatedAt | date:"HH:mm:ss"}}</strong>
                 </agm-info-window>
               </agm-marker>
               <!-- Circle -->
@@ -61,9 +60,9 @@
                   <br *ngIf="device.name">
                   <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                   <br>
-                  <strong><b>Date:</b> {{device.createdAt | date:"dd/MM/yyyy"}}</strong>
+                  <strong><b>Date:</b> {{device.updatedAt | date:"dd/MM/yyyy"}}</strong>
                   <br>
-                  <strong><b>Time:</b> {{device.createdAt | date:"HH:mm:ss"}}</strong>
+                  <strong><b>Time:</b> {{device.updatedAt | date:"HH:mm:ss"}}</strong>
                 </agm-info-window>
               </agm-marker>
             </ng-container>
