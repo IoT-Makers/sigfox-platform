@@ -11,11 +11,11 @@
 
       <div class="row">
         <div class="col col-4">
-          Start date:
+          Start date & time:
           <owl-date-time [(ngModel)]="dateBegin"></owl-date-time>
         </div>
         <div class="col col-4">
-          End date:
+          End date & time:
           <owl-date-time [(ngModel)]="dateEnd"></owl-date-time>
         </div>
         <div class="col col-4">
@@ -112,6 +112,8 @@
                     [longitude]="geoloc.lng"
                     [iconUrl]="'assets/img/marker-start.png'">
                     <agm-info-window>
+                      <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                      <br>
                       <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
                       <br>
                       <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
@@ -120,7 +122,7 @@
                     </agm-info-window>
                   </agm-marker>
                   <!-- Circle -->
-                  <agm-circle
+                  <agm-circle *ngIf="circlePrecision"
                     [zIndex]="1"
                     [strokePosition]="CENTER"
                     [strokeWeight]="1"
@@ -140,6 +142,8 @@
                     [longitude]="geoloc.lng"
                     [iconUrl]="'assets/img/marker-start.png'">
                     <agm-info-window>
+                      <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                      <br>
                       <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
                       <br>
                       <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
@@ -162,6 +166,8 @@
                     [longitude]="geoloc.lng"
                     [iconUrl]="'assets/img/marker-finish.png'">
                     <agm-info-window>
+                      <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                      <br>
                       <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
                       <br>
                       <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
@@ -170,7 +176,7 @@
                     </agm-info-window>
                   </agm-marker>
                   <!-- Circle -->
-                  <agm-circle
+                  <agm-circle *ngIf="circlePrecision"
                     [zIndex]="1"
                     [strokePosition]="CENTER"
                     [strokeWeight]="1"
@@ -190,6 +196,8 @@
                     [longitude]="geoloc.lng"
                     [iconUrl]="'assets/img/marker-finish.png'">
                     <agm-info-window>
+                      <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                      <br>
                       <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
                       <br>
                       <strong><b>Time:</b> {{marker.createdAt | date:"HH:mm:ss"}}</strong>
@@ -213,7 +221,7 @@
                     [longitude]="geoloc.lng"
                     [iconUrl]="'assets/img/marker-sigfox.png'">
                     <agm-info-window>
-                      <strong><b>Type:</b> Sigfox</strong>
+                      <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                       <br>
                       <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
                       <br>
@@ -244,7 +252,7 @@
                     [longitude]="geoloc.lng"
                     [iconUrl]="'assets/img/marker-gps.png'">
                     <agm-info-window>
-                      <strong><b>Type:</b> GPS</strong>
+                      <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                       <br>
                       <strong><b>Date:</b> {{marker.createdAt | date:"dd/MM/yyyy"}}</strong>
                       <br>

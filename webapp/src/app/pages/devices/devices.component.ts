@@ -13,6 +13,8 @@ import {Message} from "../../shared/sdk/models/Message";
 })
 export class DevicesComponent implements OnInit {
 
+  private isCircleVisible: boolean[] = new Array<boolean>();
+
   private message: Message = new Message();
   private device: Device = new Device();
   private parser: Parser = new Parser();
@@ -43,16 +45,16 @@ export class DevicesComponent implements OnInit {
 
   private edit: boolean = false;
 
-  private lat: number = 48.86795;
-  private lng: number = 2.334070;
+  private lat: number = 48.858093;
+  private lng: number = 2.294694;
 
 
-  constructor(private rt: RealTime, private deviceApi: DeviceApi, private categoryApi: CategoryApi, private userApi: UserApi) {
-
-  }
+  constructor(private rt: RealTime, private categoryApi: CategoryApi) { }
 
   ngOnInit(): void {
     this.edit = false;
+    // Hide all circles by default
+    this.setCircles();
 
     if (
       this.rt.connection.isConnected() &&
@@ -63,6 +65,20 @@ export class DevicesComponent implements OnInit {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
     }
+  }
+
+  setCircles(){
+    for(let i=0; i<this.devices.length; i++){
+      this.isCircleVisible.push(false);
+    }
+  }
+
+  markerOut(i) {
+    this.isCircleVisible[i] = false;
+  }
+
+  markerOver(i) {
+    this.isCircleVisible[i] = true;
   }
 
   setup(): void {
