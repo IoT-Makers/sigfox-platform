@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
-import { Device, Parser, Category, User, FireLoopRef } from '../../shared/sdk/models';
-import { RealTime, DeviceApi, CategoryApi, UserApi } from '../../shared/sdk/services';
+import {Category, Device, FireLoopRef, Parser} from '../../shared/sdk/models';
+import {CategoryApi, RealTime} from '../../shared/sdk/services';
 import {Subscription} from "rxjs/Subscription";
 import {Message} from "../../shared/sdk/models/Message";
+import {DeviceApi} from "../../shared/sdk/services/custom/Device";
 
 
 @Component({
@@ -13,7 +14,6 @@ import {Message} from "../../shared/sdk/models/Message";
 })
 export class DevicesComponent implements OnInit {
 
-
   private isCircleVisible: boolean[] = new Array<boolean>();
 
   private message: Message = new Message();
@@ -21,23 +21,14 @@ export class DevicesComponent implements OnInit {
   private parser: Parser = new Parser();
   private category: Category = new Category();
 
-  private messageSub: Subscription;
   private deviceSub: Subscription;
   private parserSub: Subscription;
   private categorySub: Subscription;
 
-
-  private messages: Message[] = new Array<Message>();
   private devices: Device[] = new Array<Device>();
   private parsers: Parser[] = new Array<Parser>();
   private categories: Category[] = new Array<Category>();
 
-  private countMessages: number = 0;
-  private countDevices: number = 0;
-  private countParsers: number = 0;
-  private countCategories: number = 0;
-
-  private messageRef: FireLoopRef<Message>;
   private deviceRef: FireLoopRef<Device>;
   private parserRef: FireLoopRef<Parser>;
   private categoryRef: FireLoopRef<Category>;
@@ -51,7 +42,7 @@ export class DevicesComponent implements OnInit {
   private zoom: number = 2;
 
 
-  constructor(private rt: RealTime, private categoryApi: CategoryApi) { }
+  constructor(private rt: RealTime, private categoryApi: CategoryApi, private deviceApi: DeviceApi) { }
 
   ngOnInit(): void {
     this.edit = false;
@@ -149,9 +140,10 @@ export class DevicesComponent implements OnInit {
     //this.deviceRef.upsert(device).subscribe();
   }
 
-  zoomOnDevice(lat:number, lng:number): void {
-    this.lat=lat;
-    this.lng=lng;
+  zoomOnDevice(geoloc): void {
+    window.scrollTo(0, 0);
+    this.lat=geoloc.lat;
+    this.lng=geoloc.lng;
     this.zoom=12;
   }
 
@@ -161,7 +153,8 @@ export class DevicesComponent implements OnInit {
 
   remove(device: Device): void {
     this.deviceRef.remove(device).subscribe();
+    // Delete all messages belonging to the device
+    this.deviceApi.deleteMessages(device.id).subscribe();
   }
-
 }
 
