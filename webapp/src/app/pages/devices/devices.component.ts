@@ -47,6 +47,7 @@ export class DevicesComponent implements OnInit {
 
   private lat: number = 48.858093;
   private lng: number = 2.294694;
+  private zoom: number = 2;
 
 
   constructor(private rt: RealTime, private categoryApi: CategoryApi) { }
@@ -145,6 +146,12 @@ export class DevicesComponent implements OnInit {
 
     console.log(device);
     //this.deviceRef.upsert(device).subscribe();
+  }
+
+  zoomOnDevice(lat:number, lng:number): void {
+    this.lat=lat;
+    this.lng=lng;
+    this.zoom=12;
   }
 
   cancel(): void{
