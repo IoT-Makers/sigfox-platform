@@ -13,6 +13,7 @@ import {Message} from "../../shared/sdk/models/Message";
 })
 export class DevicesComponent implements OnInit {
 
+
   private isCircleVisible: boolean[] = new Array<boolean>();
 
   private message: Message = new Message();
