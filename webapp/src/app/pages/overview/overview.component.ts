@@ -48,6 +48,14 @@ export class OverviewComponent implements OnInit,OnDestroy {
 
   public data = [];
 
+  private isCircleVisible: boolean[] = new Array<boolean>();
+
+  private lat: number = 48.858093;
+  private lng: number = 2.294694;
+  private zoom: number = 2;
+
+  private edit: boolean = false;
+
   constructor(private rt: RealTime,
               private messageApi: MessageApi,
               private deviceApi: DeviceApi,
@@ -86,7 +94,8 @@ export class OverviewComponent implements OnInit,OnDestroy {
 
     // Devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-    this.deviceRef.on('change').subscribe(
+    this.deviceRef.on('change',
+      {limit: 10, order: 'updatedAt DESC', include: ['Parser', 'Category']}).subscribe(
       (devices: Device[]) => {
         this.devices = devices;
         console.log("Devices", this.devices);
@@ -150,6 +159,26 @@ export class OverviewComponent implements OnInit,OnDestroy {
 
   remove(message: Message): void {
     this.messageRef.remove(message).subscribe();
+  }
+
+  setCircles(){
+    for(let i=0; i<this.devices.length; i++){
+      this.isCircleVisible.push(false);
+    }
+  }
+
+  markerOut(i) {
+    this.isCircleVisible[i] = false;
+  }
+
+  markerOver(i) {
+    this.isCircleVisible[i] = true;
+  }
+
+  zoomOnDevice(lat:number, lng:number): void {
+    this.lat=lat;
+    this.lng=lng;
+    this.zoom=12;
   }
 
   // events

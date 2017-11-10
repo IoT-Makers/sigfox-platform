@@ -51,9 +51,155 @@
     </div>
   </div>
 
+  <div class="row">
+    <div class="col col-6">
+      <div *ngIf="devices.length>0" class="card">
+      <div class="card-header">
+        <i class="fa fa-map-marker fa-lg text-tracking"></i> <strong>Map</strong>
+      </div>
+      <div class="card-block">
+        <agm-map [latitude]="lat"
+                 [longitude]="lng"
+                 [zoom]="zoom"
+                 [fullscreenControl]="true">
+          <ng-container *ngFor="let device of devices; let i = index">
+            <ng-container *ngFor="let geoloc of device.location">
+              <!-- Geoloc Sigfox -->
+              <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+                <agm-marker
+                  (mouseOut)="markerOut(i)"
+                  (mouseOver)="markerOver(i)"
+                  [zIndex]="3"
+                  [latitude]="geoloc.lat"
+                  [longitude]="geoloc.lng"
+                  [iconUrl]="'assets/img/marker-sigfox.png'">
+                  <agm-info-window>
+                    <strong><b>ID:</b> <span class="text-danger">{{device.id}}</span></strong>
+                    <br>
+                    <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                    <br *ngIf="device.name">
+                    <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                    <br>
+                    <strong><b>Date:</b> {{device.updatedAt | date:"dd/MM/yyyy"}}</strong>
+                    <br>
+                    <strong><b>Time:</b> {{device.updatedAt | date:"HH:mm:ss"}}</strong>
+                  </agm-info-window>
+                </agm-marker>
+                <!-- Circle -->
+                <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                            [zIndex]="1"
+                            [strokePosition]="CENTER"
+                            [strokeWeight]="1"
+                            [strokeColor]="'#8d5dd1'"
+                            [fillOpacity]="0.1"
+                            [fillColor]="'#8d5dd1'"
+                            [latitude]="geoloc.lat"
+                            [longitude]="geoloc.lng"
+                            [radius]="geoloc.precision">
+                </agm-circle>
+                <!-- End Circle -->
+              </ng-container>
+              <!-- Geoloc GPS -->
+              <ng-container *ngIf="geoloc.type == 'GPS'">
+                <agm-marker
+                  [zIndex]="3"
+                  [latitude]="geoloc.lat"
+                  [longitude]="geoloc.lng"
+                  [iconUrl]="'assets/img/marker-gps.png'">
+                  <agm-info-window>
+                    <strong><b>ID:</b> <span class="text-danger">{{device.id}}</span></strong>
+                    <br>
+                    <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                    <br *ngIf="device.name">
+                    <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                    <br>
+                    <strong><b>Date:</b> {{device.updatedAt | date:"dd/MM/yyyy"}}</strong>
+                    <br>
+                    <strong><b>Time:</b> {{device.updatedAt | date:"HH:mm:ss"}}</strong>
+                  </agm-info-window>
+                </agm-marker>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+
+        </agm-map>
+
+      </div>
+    </div>
+    </div>
+    <div class="col col-6">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-thermometer fa-lg text-warning"></i> <strong>Devices</strong>
+        </div>
+        <div *ngIf="!devices.length" class="card-block">
+          No device yet...
+        </div>
+        <div *ngIf="devices.length>0" class="card-block">
+
+          <!--Table-->
+          <table class="table table-hover table-outline">
+            <thead class="thead-inverse">
+            <tr>
+              <th class="text-center">ID</th>
+              <th class="text-center hidden-xs-down">Geoloc</th>
+              <th class="text-center hidden-xs-down">Last Update</th>
+              <th class="text-center hidden-xs-down">Properties</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let device of devices; let i = index">
+              <td class="text-center">
+                <strong>{{device.id}}</strong>
+              </td>
+
+              <td class="text-center hidden-xs-down">
+                <div *ngIf="device.location">
+                  <div *ngFor="let geoloc of device.location">
+
+                        <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+                        <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc.lat,geoloc.lng)" class="small text-geoloc-sigfox">
+                          <i class="fa fa-map-marker fa-2x"></i>
+                          <br>
+                          <strong>Sigfox Geoloc</strong>
+                        </a>
+                        </ng-container>
+                        <ng-container *ngIf="geoloc.type == 'GPS'">
+                        <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc.lat,geoloc.lng)" class="small text-geoloc-gps">
+                          <i class="fa fa-map-marker fa-2x"></i>
+                          <br>
+                          <strong>GPS</strong>
+                        </a>
+                        </ng-container>
+                      </div>
+
+                </div>
+
+              </td>
+
+              <td class="text-center hidden-xs-down">
+                <div class="small text-muted">Last message:</div>
+                <strong>{{device.updatedAt | amTimeAgo}}</strong>
+              </td>
+              <td class="text-center hidden-xs-down">
+                <div class="small text-muted">No properties yet</div>
+                <!--<div *ngIf="device.Category">
+                  <div class="small text-muted" *ngFor="let property of device.properties; let i = index"><span>{{property.key ? property.key : ""}}:</span> {{property.value ? property.value : ""}}</div>
+                </div>-->
+              </td>
+
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-globe fa-lg"></i> <strong>Overview</strong>
+      <i class="fa fa-globe fa-lg"></i> <strong> Message Overview</strong>
     </div>
     <div *ngIf="!messages.length" class="card-block">
       No message yet...

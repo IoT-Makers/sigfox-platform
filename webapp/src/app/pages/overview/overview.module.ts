@@ -9,6 +9,8 @@ import { DataTableModule } from 'angular2-datatable';
 import { FormsModule } from '@angular/forms';
 import {DataFilterPipe} from "./datafilterpipe";
 import {OverviewRoutingModule} from "./overview-routing.module";
+import { AgmCoreModule } from '@agm/core';
+import { MomentModule } from 'angular2-moment';
 
 @NgModule({
   imports: [
@@ -16,7 +18,11 @@ import {OverviewRoutingModule} from "./overview-routing.module";
     CommonModule,
     ChartsModule,
     DataTableModule,
-    FormsModule
+    FormsModule,
+    MomentModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
+    })
   ],
   declarations: [
     OverviewComponent,
