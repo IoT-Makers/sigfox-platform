@@ -13,7 +13,6 @@ export interface UserInterface {
   "avatar"?: string;
   "lastLogin"?: Date;
   "location"?: any;
-  "name"?: string;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -31,10 +30,9 @@ export interface UserInterface {
 }
 
 export class User implements UserInterface {
-  "avatar": string = '';
+  "avatar": string = 'https://www.shareicon.net/data/128x128/2016/08/04/806683_man_512x512.png';
   "lastLogin": Date = new Date(0);
   "location": any = <any>null;
-  "name": string = '';
   "realm": string = '';
   "username": string = '';
   "email": string = '';
@@ -83,7 +81,8 @@ export class User implements UserInterface {
       properties: {
         "avatar": {
           name: 'avatar',
-          type: 'string'
+          type: 'string',
+          default: 'https://www.shareicon.net/data/128x128/2016/08/04/806683_man_512x512.png'
         },
         "lastLogin": {
           name: 'lastLogin',
@@ -92,10 +91,6 @@ export class User implements UserInterface {
         "location": {
           name: 'location',
           type: 'any'
-        },
-        "name": {
-          name: 'name',
-          type: 'string'
         },
         "realm": {
           name: 'realm',

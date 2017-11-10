@@ -144,7 +144,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Statistical information for Dashboard registers.
+   * Statistical information for Asset registers.
    *
    * @param {string} range hourly, daily, weekly, monthly, yearly, custom
    *

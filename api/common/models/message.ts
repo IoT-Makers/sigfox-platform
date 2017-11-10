@@ -1,6 +1,4 @@
 import {Model} from '@mean-expert/model';
-import {Device} from "../../../webapp/src/app/shared/sdk/models/Device";
-import {Geoloc} from "../../../webapp/src/app/shared/sdk/models/Geoloc";
 
 /**
  * @module Message
@@ -39,14 +37,26 @@ class Message {
     // Obtain the model data of ctx
     let data = ctx.args.data;
     //console.log("ctx.args.data", data);
+    let deviceNamePrefix = data.deviceNamePrefix;
 
     if (!data.deviceId && !data.data && !userId) {
       next();
     } else {
-      let device = {
-        id: data.deviceId,
-        userId: userId
-      };
+      let device;
+      if(!deviceNamePrefix) {
+        device = {
+          id: data.deviceId,
+          userId: userId
+        };
+      } else {
+        device = {
+          id: data.deviceId,
+          userId: userId,
+          name: deviceNamePrefix + "_" + data.deviceId
+        };
+        // Remove the deviceNamePrefix from the context
+        ctx.args.data.deviceNamePrefix = null;
+      }
 
       // Access another model inside the method
       this.model.app.models.Device.findOrCreate(
@@ -73,7 +83,7 @@ class Message {
                     // Here we will decode thea Sigfox payload & search for geoloc to be extracted and store in the Message
                     // @TODO: run it in another container because it can crash the app if something goes wrong...
 
-                    let geoloc = new Geoloc();
+                    let geoloc = new  this.model.app.models.Geoloc;
                     let fn = Function("payload", parserInstance.function);
                     let parsed_data = fn(data.data);
                     ctx.args.data.parsed_data = parsed_data;
@@ -139,7 +149,7 @@ class Message {
     let data = ctx.args.data;
     // If CALLBACK BIDIR - check if flag of ack is true
     if(data.ack) {
-      this.model.app.models.Device.findOne({where: {id: data.deviceId}}, function (err: any, device: Device) {
+      this.model.app.models.Device.findOne({where: {id: data.deviceId}}, function (err: any, device: any) {
         if (device.dl_payload) {
           ctx.result = {
             [data.deviceId]: {
@@ -187,7 +197,7 @@ class Message {
     this.model.app.models.Device.findOrCreate(
       {where: {id: data.deviceId}}, //find
       device, //create
-      (err: any, deviceInstance: Device, created: boolean) => { //callback
+      (err: any, deviceInstance: any, created: boolean) => { //callback
         if (err) {
           console.error("Error creating device", err);
         } else if (created) {
@@ -199,7 +209,7 @@ class Message {
           let entryGeoloc_sigfox = false;
           if(!deviceInstance.location)
             deviceInstance.location = [];
-          deviceInstance.location.forEach((geoloc: Geoloc, index) => {
+          deviceInstance.location.forEach((geoloc: any, index: number) => {
             if(geoloc.type === "geoloc_sigfox"){
               deviceInstance.location[index] = geoloc_sigfox; // Replace geoloc_sigfox with new one
               entryGeoloc_sigfox = true;

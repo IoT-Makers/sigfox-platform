@@ -8,6 +8,7 @@
       <agm-map [latitude]="lat"
                [longitude]="lng"
                [zoom]="zoom"
+               [mapTypeControl]=true
                [fullscreenControl]="true">
         <ng-container *ngFor="let device of devices; let i = index">
           <ng-container *ngFor="let geoloc of device.location">
