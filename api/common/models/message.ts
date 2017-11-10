@@ -83,7 +83,7 @@ class Message {
                     // Here we will decode thea Sigfox payload & search for geoloc to be extracted and store in the Message
                     // @TODO: run it in another container because it can crash the app if something goes wrong...
 
-                    let geoloc = new  this.model.app.models.Geoloc;
+                    let geoloc = new this.model.app.models.Geoloc;
                     let fn = Function("payload", parserInstance.function);
                     let parsed_data = fn(data.data);
                     ctx.args.data.parsed_data = parsed_data;
@@ -105,7 +105,7 @@ class Message {
                     });
 
                     // If there is geoloc in the frame, store it in the Message
-                    if(geoloc.type !== ''){
+                    if(geoloc.type !== '' && ctx.args.data.geoloc){
                       ctx.args.data.geoloc.push({
                         "type": geoloc.type,
                         "lat": geoloc.lat,
