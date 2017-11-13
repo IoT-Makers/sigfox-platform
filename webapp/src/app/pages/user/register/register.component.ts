@@ -21,7 +21,6 @@ export class RegisterComponent {
     console.log("Registering");
     // TODO: Check user default values on register
     this.user.id = null;
-    this.user.avatar = "https://www.shareicon.net/data/128x128/2016/08/04/806683_man_512x512.png";
     this.user.createdAt = new Date(Date.now());
 
     this.userApi.create(this.user).subscribe(response => {

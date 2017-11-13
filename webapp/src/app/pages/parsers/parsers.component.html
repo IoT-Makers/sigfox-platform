@@ -9,7 +9,8 @@
         <div class="card-block">
           <strong class="text-uppercase">Add a new parser</strong>
           <div class="row">
-            <div class="col col-6">
+            <div class="col col-6 mt-1">
+              <p><strong>NB:</strong> Please use the variable name <code>payload</code> as it will contain the Sigfox hexadecimal frame.</p>
               <div class="input-group">
                 <input type="text" required id="name" [(ngModel)]="newParser.name" name="parser" class="form-control" placeholder="Parser name">
                 <input type="text" required id="description" [(ngModel)]="newParser.description" name="parser" class="form-control" placeholder="Parser description">

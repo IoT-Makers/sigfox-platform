@@ -8,6 +8,7 @@
       <agm-map [latitude]="lat"
                [longitude]="lng"
                [zoom]="zoom"
+               [mapTypeControl]=true
                [fullscreenControl]="true">
         <ng-container *ngFor="let device of devices; let i = index">
           <ng-container *ngFor="let geoloc of device.location">
@@ -106,7 +107,7 @@
               <td class="hidden-xs-down">
                 <div class="small">
                   <span class="text-muted">Name: </span>
-                  <span class="text-primary">{{device.name ? device.name : "None"}}</span>
+                  <span class="text-danger">{{device.name ? device.name : "None"}}</span>
                 </div>
                 <div class="small">
                   <span class="text-muted">Parser: </span>
