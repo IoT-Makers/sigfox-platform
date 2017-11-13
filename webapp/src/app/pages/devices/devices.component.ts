@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 
-import {Category, Device, FireLoopRef, Parser} from '../../shared/sdk/models';
-import {CategoryApi, RealTime} from '../../shared/sdk/services';
+import {Category, Device, Message, FireLoopRef, Parser} from '../../shared/sdk/models';
+import {CategoryApi, DeviceApi, RealTime} from '../../shared/sdk/services';
 import {Subscription} from "rxjs/Subscription";
-import {Message} from "../../shared/sdk/models/Message";
-import {DeviceApi} from "../../shared/sdk/services/custom/Device";
+
+
 
 
 @Component({

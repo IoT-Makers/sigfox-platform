@@ -18,7 +18,7 @@ export const routes: Routes = [
       title: 'Home'
     },
     children: [
-      { path: 'overview', loadChildren: './pages/overview/overview.module#OverviewModule' },
+      { path: '', loadChildren: './pages/overview/overview.module#OverviewModule' },
       { path: 'devices', loadChildren: './pages/devices/devices.module#DevicesModule' },
       { path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule' },
       { path: 'parsers', loadChildren: './pages/parsers/parsers.module#ParsersModule' },
@@ -26,7 +26,9 @@ export const routes: Routes = [
       { path: 'base-stations', loadChildren: './pages/base-stations/base-stations.module#BaseStationsModule' },
       { path: 'profile', loadChildren: './pages/user/profile/profile.module#ProfileModule' },
       { path: 'tracking', loadChildren: './pages/tracking/tracking.module#TrackingModule' },
-      { path: 'demo', loadChildren: './pages/demo/demo.module#DemoModule' }
+      { path: 'demo', loadChildren: './pages/demo/demo.module#DemoModule' },
+      // { path: 'new-dashboard', loadChildren: './pages/new-dashboard/new-dashboard.module#NewDashboardModule' },
+      { path: 'dashboard', loadChildren: './pages/dashboard/dashboard.module#DashboardModule' }
     ]
   }/*,
   {

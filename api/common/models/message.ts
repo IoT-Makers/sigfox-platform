@@ -61,9 +61,9 @@ class Message {
           } else {
             console.log("Found device");
 
-            if (deviceInstance.ParserId || ctx.args.data.parserId) {
+            if (deviceInstance.parserId || ctx.args.data.parserId) {
               this.model.app.models.Parser.findById(
-                deviceInstance.ParserId || ctx.args.data.parserId,
+                deviceInstance.parserId || ctx.args.data.parserId,
                 (err: any, parserInstance: any) => {
                   if (err) {
                     console.log(err);

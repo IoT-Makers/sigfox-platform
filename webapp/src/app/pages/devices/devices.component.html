@@ -169,11 +169,11 @@
                 <div class="small text-muted">Last message:</div>
                 <strong>{{device.updatedAt | amTimeAgo}}</strong>
               </td>
-              <td *ngIf="!edit" class="text-center hidden-xs-down">
-                <div class="small text-muted">No properties yet</div>
-                <!--<div *ngIf="device.Category">
+              <td *ngIf="!edit" class="hidden-xs-down">
+                <div *ngIf="!device.Category" class="small text-muted">No properties yet</div>
+                <div *ngIf="device.Category">
                   <div class="small text-muted" *ngFor="let property of device.properties; let i = index"><span>{{property.key ? property.key : ""}}:</span> {{property.value ? property.value : ""}}</div>
-                </div>-->
+                </div>
               </td>
               <td *ngIf="!edit" class="text-center">
                 <div class="btn-group-sm">
@@ -212,7 +212,7 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Parser</label>
               <div class="col-md-9">
-                <select name="device.ParserId" class="form-control" size="1" [(ngModel)]="deviceToEdit.ParserId">
+                <select name="device.ParserId" class="form-control" size="1" [(ngModel)]="deviceToEdit.parserId">
                   <option [ngValue]="parser.id" *ngFor="let parser of parsers">{{parser.name}}</option>
                   <option [ngValue]="">None</option>
                 </select>
@@ -221,17 +221,17 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Category</label>
               <div class="col-md-9">
-                <select name="device.CategoryId" class="form-control" size="1" [(ngModel)]="deviceToEdit.CategoryId" (ngModelChange)="updateDeviceProperties(deviceToEdit)">
+                <select name="device.CategoryId" class="form-control" size="1" [(ngModel)]="deviceToEdit.categoryId" (ngModelChange)="updateDeviceProperties(deviceToEdit)">
                   <option [ngValue]="category.id" *ngFor="let category of categories">{{category.name}}</option>
                   <option [ngValue]=""></option>
                 </select>
               </div>
             </div>
-            <div *ngIf="deviceToEdit.CategoryId">
+            <div *ngIf="deviceToEdit.categoryId">
               <div class="form-group row" *ngFor="let property of deviceToEdit.properties; let i = index">
-                <label class="col-md-3 offset-1 form-control-label">{{property.key}}</label>
-                <div class="col-md-8">
-                  <input type="text" class="form-control" placeholder="Device name" name="deviceToEdit.property.value"
+                <!--<label class="col-md-3 offset-1 form-control-label">{{property.key}}</label>-->
+                <div class="col-md-10">
+                  <input type="text" class="form-control" placeholder="{{property.key}}" name="deviceToEdit.property.value"
                          [(ngModel)]="property.value">
                 </div>
               </div>

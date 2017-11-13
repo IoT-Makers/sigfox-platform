@@ -39,7 +39,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     NAV_DROPDOWN_DIRECTIVES,
     BreadcrumbsComponent,
     SIDEBAR_TOGGLE_DIRECTIVES,
-    AsideToggleDirective,
+    AsideToggleDirective
 
     //AssetsComponent
   ],

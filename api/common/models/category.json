@@ -33,6 +33,9 @@
       "type": [
         "object"
       ]
+    },
+    "description":{
+      "type": "string"
     }
   },
   "validations": [],

@@ -1,6 +1,6 @@
 <header class="app-header navbar">
   <button class="navbar-toggler mobile-sidebar-toggler hidden-lg-up" type="button">&#9776;</button>
-  <a class="navbar-brand hidden-xs-down" href="#" [routerLink]="['/overview']"></a>
+  <a class="navbar-brand hidden-xs-down" href="#" [routerLink]="['/']"></a>
 
   <ul class="nav navbar-nav hidden-md-down">
     <li class="nav-item">
@@ -52,13 +52,13 @@
     <nav class="sidebar-nav">
       <ul class="nav">
         <li class="nav-title">
-          Dashboards <a class="pull-right badge badge-success" routerLinkActive="active" [routerLink]="['/categories']">Add new</a>
+          Dashboards <a class="pull-right badge badge-success" routerLinkActive="active" [routerLink]="['/new-dashboard']">Add new</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/overview']"><i class="fa fa-dashboard text-white"></i> Overview </a>
+          <a class="nav-link" [routerLink]="['/']"><i class="fa fa-dashboard text-white"></i> Overview </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/test']"><i class="fa fa-car"></i> Demo 1</a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/dashboard']"><i class="fa fa-car"></i>Custom Dashboard</a>
         </li>
 
         <li class="divider"></li>

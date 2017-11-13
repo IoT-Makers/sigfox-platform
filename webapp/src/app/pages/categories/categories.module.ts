@@ -1,13 +1,16 @@
 import { NgModule } from '@angular/core';
+import {CommonModule} from "@angular/common";
+import { MomentModule } from 'angular2-moment';
 
 import { CategoriesComponent } from './categories.component';
 import { CategoriesRoutingModule } from './categories-routing.module';
-import {CommonModule} from "@angular/common";
+
 
 @NgModule({
   imports: [
     CategoriesRoutingModule,
-    CommonModule
+    CommonModule,
+    MomentModule
   ],
   declarations: [ CategoriesComponent ]
 })

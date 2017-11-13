@@ -1,5 +1,70 @@
-<div class="animated fadeIn">
-  <p>
-    categories works!
-  </p>
+<div class="animated fadeIn" xmlns="http://www.w3.org/1999/html">
+  <!--/.row-->
+  <div class="row">
+    <div class="">
+
+      <div [ngClass]="(edit)?'col-md-6 col-xs-12':'col-md-12 col-sm-12'">
+        <div class="card">
+          <div class="card-header">
+            <i class="fa fa-tag fa-lg text-danger"></i> <strong>Categories</strong>
+            <button class="pull-right btn btn-success"><i class="fa fa-plus"></i> Add new</button>
+          </div>
+          <div *ngIf="!categories.length" class="card-block">
+            No category yet...
+          </div>
+          <div *ngIf="categories.length>0" class="card-block">
+
+            <!--Table-->
+            <table class="table table-hover table-outline">
+              <thead class="thead-inverse">
+              <tr>
+                <th class="text-center">Name</th>
+                <th class="text-center hidden-xs-down">Description</th>
+                <th *ngIf="!edit" class="text-center">Static properties</th>
+                <th class="text-center hidden-xs-down">Associated devices</th>
+                <th *ngIf="!edit" class="text-center">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let category of categories; let i = index">
+                <td class="text-center">
+                  <strong>{{category.name}}</strong>
+                  <div class="small text-muted">Updated:
+                  {{category.updatedAt | amTimeAgo}}</div>
+                </td>
+                <td class="text-center hidden-xs-down">
+                  <strong>{{category.description}}</strong>
+                </td>
+                <td *ngIf="!edit" class="">
+                  <div *ngIf="!category.properties" class="small text-muted">No properties yet</div>
+                  <div *ngIf="category.properties">
+                    <div class="small text-muted" *ngFor="let property of category.properties; let i = index"><span>{{property.key ? property.key : ""}}:</span> {{property.value ? property.value : ""}}</div>
+                  </div>
+                </td>
+
+
+                <td class="">
+                  <div *ngIf="!category.Devices" class="small text-muted">No devices yet</div>
+                  <div *ngIf="category.Devices">
+                    <div class="small text-center" *ngFor="let device of category.Devices; let i = index"><strong>{{device.id}}</strong></div>
+                  </div>
+                </td>
+
+                <td *ngIf="!edit" class="text-center">
+                  <div class="btn-group-sm">
+                    <button class="btn btn-success btn-round"><i class="fa fa-pencil fa-lg"></i></button>
+                    <button class="btn btn-danger btn-round"><i class="fa fa-trash fa-lg"></i></button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
 </div>

@@ -13,7 +13,6 @@ export interface UserInterface {
   "avatar"?: string;
   "lastLogin"?: Date;
   "location"?: any;
-  "name"?: string;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -34,7 +33,6 @@ export class User implements UserInterface {
   "avatar": string = '';
   "lastLogin": Date = new Date(0);
   "location": any = <any>null;
-  "name": string = '';
   "realm": string = '';
   "username": string = '';
   "email": string = '';
@@ -92,10 +90,6 @@ export class User implements UserInterface {
         "location": {
           name: 'location',
           type: 'any'
-        },
-        "name": {
-          name: 'name',
-          type: 'string'
         },
         "realm": {
           name: 'realm',
