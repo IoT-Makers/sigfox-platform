@@ -7,8 +7,8 @@ import {DirectionsComponent} from "./directions.component";
 
 @Component({
   selector: 'app-tracking',
-  templateUrl: './tracking.component.html',
-  styleUrls: ['./tracking.component.scss']
+  templateUrl: 'tracking.component.html',
+  styleUrls: ['tracking.component.scss']
 })
 
 export class TrackingComponent implements OnInit {

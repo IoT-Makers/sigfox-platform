@@ -19,16 +19,22 @@ export const routes: Routes = [
     },
     children: [
       { path: '', loadChildren: './pages/overview/overview.module#OverviewModule' },
+
+      { path: 'dashboard', loadChildren: './pages/dashboard/dashboard.module#DashboardModule' },
+
       { path: 'devices', loadChildren: './pages/devices/devices.module#DevicesModule' },
       { path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule' },
-      { path: 'parsers', loadChildren: './pages/parsers/parsers.module#ParsersModule' },
+
       { path: 'messages', loadChildren: './pages/messages/messages.module#MessagesModule' },
       { path: 'base-stations', loadChildren: './pages/base-stations/base-stations.module#BaseStationsModule' },
       { path: 'profile', loadChildren: './pages/user/profile/profile.module#ProfileModule' },
-      { path: 'tracking', loadChildren: './pages/tracking/tracking.module#TrackingModule' },
+
       { path: 'demo', loadChildren: './pages/demo/demo.module#DemoModule' },
-      // { path: 'new-dashboard', loadChildren: './pages/new-dashboard/new-dashboard.module#NewDashboardModule' },
-      { path: 'dashboard', loadChildren: './pages/dashboard/dashboard.module#DashboardModule' }
+      { path: 'tracking', loadChildren: './widgets/tracking/tracking.module#TrackingModule' },
+      { path: 'analytics', loadChildren: './widgets/analytics/analytics.module#AnalyticsModule' },
+
+      { path: 'parsers', loadChildren: './pages/parsers/parsers.module#ParsersModule' }
+
     ]
   }/*,
   {
