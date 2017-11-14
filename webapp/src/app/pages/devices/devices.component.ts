@@ -121,16 +121,18 @@ export class DevicesComponent implements OnInit {
 
   update(device: Device): void {
     this.edit = false;
-    console.log(device.ParserId);
+    device.CategoryId = device.categoryId;
+    //@TODO change parserId to ParserID to be able to fetch devices from parser model, don't forget to update the API consequently and to test it!
+    //device.ParserId = device.parserId;
     /*if(device.ParserId.toString() == "None")*/
 
     this.deviceRef.upsert(device).subscribe();
   }
 
   updateDeviceProperties(device: Device): void {
-    console.log(device.CategoryId);
-    if(device.CategoryId){
-      this.categoryApi.findById(device.CategoryId).subscribe((category: Category) => {
+    console.log(device.categoryId);
+    if(device.categoryId){
+      this.categoryApi.findById(device.categoryId).subscribe((category: Category) => {
         console.log(category);
         this.deviceToEdit.properties = category.properties;
       });

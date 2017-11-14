@@ -151,6 +151,10 @@
             <tr *ngFor="let device of devices; let i = index">
               <td class="text-center">
                 <strong>{{device.id}}</strong>
+                <div class="small">
+                  <span class="text-muted">Category: </span>
+                  <span class="text-primary">{{device.Category ? device.Category.name : "None"}}</span>
+                </div>
               </td>
 
               <td class="text-center">
@@ -182,10 +186,10 @@
                 <strong>{{device.updatedAt | amTimeAgo}}</strong>
               </td>
               <td class="text-center hidden-xs-down">
-                <div class="small text-muted">No properties yet</div>
-                <!--<div *ngIf="device.Category">
+                <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
+                <div *ngIf="device.categoryId">
                   <div class="small text-muted" *ngFor="let property of device.properties; let i = index"><span>{{property.key ? property.key : ""}}:</span> {{property.value ? property.value : ""}}</div>
-                </div>-->
+                </div>
               </td>
 
             </tr>

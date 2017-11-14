@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import {CommonModule} from "@angular/common";
 import { MomentModule } from 'angular2-moment';
+import { FormsModule }   from '@angular/forms';
 
 import { CategoriesComponent } from './categories.component';
 import { CategoriesRoutingModule } from './categories-routing.module';
@@ -10,7 +11,8 @@ import { CategoriesRoutingModule } from './categories-routing.module';
   imports: [
     CategoriesRoutingModule,
     CommonModule,
-    MomentModule
+    MomentModule,
+    FormsModule
   ],
   declarations: [ CategoriesComponent ]
 })

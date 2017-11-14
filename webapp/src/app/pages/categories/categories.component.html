@@ -1,13 +1,12 @@
-<div class="animated fadeIn" xmlns="http://www.w3.org/1999/html">
-  <!--/.row-->
-  <div class="row">
-    <div class="">
+<div class="animated fadeIn">
+
+  <div class="card-group">
 
       <div [ngClass]="(edit)?'col-md-6 col-xs-12':'col-md-12 col-sm-12'">
         <div class="card">
           <div class="card-header">
             <i class="fa fa-tag fa-lg text-danger"></i> <strong>Categories</strong>
-            <button class="pull-right btn btn-success"><i class="fa fa-plus"></i> Add new</button>
+            <button class="pull-right btn btn-success" (click)="editCategory()"><i class="fa fa-plus"></i> Add new</button>
           </div>
           <div *ngIf="!categories.length" class="card-block">
             No category yet...
@@ -16,11 +15,11 @@
 
             <!--Table-->
             <table class="table table-hover table-outline">
-              <thead class="thead-inverse">
+              <thead class="bg-faded">
               <tr>
                 <th class="text-center">Name</th>
-                <th class="text-center hidden-xs-down">Description</th>
-                <th *ngIf="!edit" class="text-center">Static properties</th>
+                <th *ngIf="!edit" class="text-center hidden-xs-down">Description</th>
+                <th class="text-center">Static properties</th>
                 <th class="text-center hidden-xs-down">Associated devices</th>
                 <th *ngIf="!edit" class="text-center">Action</th>
               </tr>
@@ -32,13 +31,13 @@
                   <div class="small text-muted">Updated:
                   {{category.updatedAt | amTimeAgo}}</div>
                 </td>
-                <td class="text-center hidden-xs-down">
-                  <strong>{{category.description}}</strong>
+                <td class="text-center hidden-xs-down" *ngIf="!edit">
+                  <p>{{category.description}}</p>
                 </td>
-                <td *ngIf="!edit" class="">
+                <td class="">
                   <div *ngIf="!category.properties" class="small text-muted">No properties yet</div>
                   <div *ngIf="category.properties">
-                    <div class="small text-muted" *ngFor="let property of category.properties; let i = index"><span>{{property.key ? property.key : ""}}:</span> {{property.value ? property.value : ""}}</div>
+                    <div class="text-muted" *ngFor="let property of category.properties; let i = index"><span>{{property.key ? property.key : ""}}</span>{{property.type ? ": "+ property.type : ""}}</div>
                   </div>
                 </td>
 
@@ -52,7 +51,7 @@
 
                 <td *ngIf="!edit" class="text-center">
                   <div class="btn-group-sm">
-                    <button class="btn btn-success btn-round"><i class="fa fa-pencil fa-lg"></i></button>
+                    <button class="btn btn-success btn-round" (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
                     <button class="btn btn-danger btn-round"><i class="fa fa-trash fa-lg"></i></button>
                   </div>
                 </td>
@@ -63,8 +62,79 @@
         </div>
       </div>
 
-    </div>
-    <!--/.col-->
+      <div class="col-md-auto" *ngIf="edit">
+        <div class="card">
+          <div class="card-header">
+            <strong>Edit Device</strong>
+          </div>
+          <div class="card-block">
+            <form class="form-horizontal" #editForm="ngForm">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Name</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" placeholder="Device name" name="categoryToEdit.name"
+                         [(ngModel)]="categoryToEdit.name">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Description</label>
+                <div class="col-md-9">
+                  <textarea type="text" class="form-control" placeholder="Device name" name="categoryToEdit.description"
+                         [(ngModel)]="categoryToEdit.description">
+                  </textarea>
+                </div>
+              </div>
+              <div class="form-group row">
+                <strong class="col-md-3 form-control-label">Properties</strong>
+              </div>
+              <div *ngIf="categoryToEdit.properties">
+                <div *ngFor="let property of categoryToEdit.properties; let i = index">
+
+                  <div class="form-group row">
+                    <label class="col-md-3 form-control-label">Name</label>
+                    <div class="col-md-9">
+                      <input type="text" class="form-control" placeholder="Property name" [ngModelOptions]="{standalone: true}"
+                             [(ngModel)]="property.key">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label class="col-md-3 form-control-label">Type</label>
+                    <div class="col-md-9">
+                      <select [ngModelOptions]="{standalone: true}" class="form-control" size="1" [(ngModel)]="property.type">
+                        <option [ngValue]="type" *ngFor="let type of propertyType">{{type}}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label class="col-md-3 form-control-label">Default</label>
+                    <div class="col-md-9">
+                      <input type="{{property.type}}" class="form-control" placeholder="Default value" [ngModelOptions]="{standalone: true}"
+                             [(ngModel)]="property.value">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <button class="pull-right btn btn-sm btn-danger" (click)="removeProperty(categoryToEdit, i)"> Remove property</button>
+                  </div>
+                  <hr>
+
+                </div>
+              </div>
+              <button class="pull-right btn btn-sm btn-success" (click)="addProperty(categoryToEdit)"> Add static property</button>
+
+            </form>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="update(categoryToEdit)"><i
+              class="fa fa-dot-circle-o"></i>Update
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
+          </div>
+        </div>
+      </div>
+
   </div>
-  <!--/.row-->
+    <!--/.card-group-->
+
 </div>

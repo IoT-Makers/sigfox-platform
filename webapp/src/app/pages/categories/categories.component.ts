@@ -11,9 +11,6 @@ import {Subscription} from "rxjs/Subscription";
 })
 export class CategoriesComponent implements OnInit {
 
-  private edit: boolean = false;
-
-
   private device: Device = new Device();
 
   private category: Category = new Category();
@@ -23,6 +20,12 @@ export class CategoriesComponent implements OnInit {
   private categories: Category[] = new Array<Category>();
 
   private categoryRef: FireLoopRef<Category>;
+
+  private edit: boolean = false;
+  private categoryToEdit: Category = new Category();
+  private newCategory: boolean = false;
+
+  private propertyType = ["string", "number", "geoloc", "date", "boolean"];
 
 
   constructor(private rt: RealTime, private categoryApi: CategoryApi, private deviceApi: DeviceApi) { }
@@ -52,7 +55,53 @@ export class CategoriesComponent implements OnInit {
       this.categories = categories;
       console.log(this.categories);
     });
+  }
 
+  editCategory(category: Category):void{
+    this.edit = true;
+    if(category){
+      this.categoryToEdit = category;
+    }else{
+      this.categoryToEdit = new Category();
+      this.newCategory = true;
+      console.log(this.categoryToEdit)
+    }
+  }
+
+  cancel(): void{
+    this.edit = false;
+  }
+
+  update(category: Category): void {
+    this.edit = false;
+    console.log(category);
+    if(this.newCategory){
+      delete category.id;
+    }
+    this.categoryRef.upsert(category).subscribe();
+
+  }
+
+  addProperty(category: Category):void {
+
+    let property: any = {
+      key: "",
+      value: "",
+      type: "string"
+    };
+
+    category.properties.push(property);
+    this.categoryToEdit = category;
+  }
+
+  removeProperty(category: Category, index:number):void{
+    //delete category.properties[index];
+    category.properties.splice(index,1);
+    this.categoryToEdit = category;
+  }
+
+  remove(category: Category): void {
+    this.categoryRef.remove(category).subscribe();
   }
 
   ngOnDestroy(): void {
