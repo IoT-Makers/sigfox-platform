@@ -1,7 +1,8 @@
 import {Component, OnDestroy, OnInit, Inject} from '@angular/core';
-import {User, FireLoopRef} from "../../../shared/sdk/models";
+import {User, AccessToken,FireLoopRef} from "../../../shared/sdk/models";
 import {UserApi} from "../../../shared/sdk/services/custom/User";
 import {DOCUMENT} from "@angular/common";
+
 
 @Component({
   selector: 'app-profile',
@@ -11,6 +12,7 @@ import {DOCUMENT} from "@angular/common";
 export class ProfileComponent implements OnInit {
 
   private user: User = new User();
+  private devAccessToken = new AccessToken();
   private callbackURL;
   private accessTokens;
 
@@ -21,6 +23,22 @@ export class ProfileComponent implements OnInit {
   getUser(): void {
     this.user = this.userApi.getCachedCurrent();
     console.log(this.user);
+  }
+
+  getDevAccessToken(): void{
+    this.userApi.getAccessTokens(this.user.id,{where:{"ttl":-1}}).subscribe((accessToken: AccessToken) => {
+      console.log(accessToken);
+      this.devAccessToken = accessToken[0];
+    });
+  }
+
+  createDevAccessToken(): void{
+    let newAccessToken = {
+      ttl: -1
+    }
+    this.userApi.createAccessTokens(this.user.id,newAccessToken).subscribe((accessToken: AccessToken) => {
+      this.devAccessToken = accessToken;
+    });
   }
 
 /*  getUser(): void {
@@ -34,9 +52,10 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     // Get the logged in User object (avatar, email, ...)
     this.getUser();
+    this.getDevAccessToken();
 
     this.callbackURL = this.document.location.origin + "/api/Messages/";
-    this.accessTokens = this.user.accessTokens;
+    //this.accessTokens = this.user.accessTokens;
   }
 
   ngOnDestroy(){

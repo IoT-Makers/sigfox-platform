@@ -36,6 +36,7 @@
 
 
   <h3>Routing interfaces</h3>
+  <button class="btn btn-success" (click)="createDevAccessToken()">Create a Developer Access Token</button>
   <hr>
   <div class="row">
     <div class="col col-12">
@@ -68,7 +69,7 @@
             <p>Type: <strong>DATA</strong> | <strong>UPLINK</strong></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>POST</strong></p>
-            <p>Headers: <strong>Authorization</strong> | <strong>IST4mw7DATDMNoAnoy3Qz7XJRmKO2RMfAlYB7ERLdGuH5WjBsusKWEHuSpLX7Mhb</strong></p>
+            <p>Headers: <strong>Authorization</strong> | <strong>{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</strong></p>
             <p>Body: <code class="text-center">{{
               '{
               "deviceId": "{device}",
@@ -96,7 +97,7 @@
             <p>Type: <strong>DATA</strong> | <strong>BIDIR</strong></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>POST</strong></p>
-            <p>Headers: <strong>Authorization</strong> | <strong>IST4mw7DATDMNoAnoy3Qz7XJRmKO2RMfAlYB7ERLdGuH5WjBsusKWEHuSpLX7Mhb</strong></p>
+            <p>Headers: <strong>Authorization</strong> | <strong>{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</strong></p>
             <p>Body: <code class="text-center">{{
               '{
               "deviceId": "{device}",
@@ -125,7 +126,7 @@
             <p>Type: <strong>SERVICE</strong> | <strong>GEOLOC</strong></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>PUT</strong></p>
-            <p>Headers: <strong>Authorization</strong> | <strong>IST4mw7DATDMNoAnoy3Qz7XJRmKO2RMfAlYB7ERLdGuH5WjBsusKWEHuSpLX7Mhb</strong></p>
+            <p>Headers: <strong>Authorization</strong> | <strong>{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</strong></p>
             <p>Body: <code class="text-center">{{
               '{
               "deviceId": "{device}",

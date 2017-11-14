@@ -22,7 +22,14 @@
   },
   "AccessToken": {
     "dataSource": "db",
-    "public": true
+    "public": true,
+    "relations": {
+      "user": {
+        "type": "belongsTo",
+        "model": "user",
+        "foreignKey": "userId"
+      }
+    }
   },
   "ACL": {
     "dataSource": "db",
@@ -60,7 +67,8 @@
     "dataSource": "db",
     "public": true,
     "options": {
-      "emailVerificationRequired": false
+      "emailVerificationRequired": false,
+      "allowEternalTokens": true
     }
   },
   "Organization": {

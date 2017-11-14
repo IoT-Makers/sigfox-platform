@@ -4,7 +4,8 @@
   "base": "User",
   "idInjection": true,
   "options": {
-    "validateUpsert": true
+    "validateUpsert": true,
+    "allowEternalTokens": true
   },
   "mixins": {
     "FireLoop": true,
