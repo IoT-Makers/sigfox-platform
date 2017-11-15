@@ -129,7 +129,7 @@ export class DevicesComponent implements OnInit {
     this.deviceRef.upsert(device).subscribe();
   }
 
-  updateDeviceProperties(device: Device): void {
+  updateDeviceCategory(device: Device): void {
     console.log(device.categoryId);
     if(device.categoryId){
       this.categoryApi.findById(device.categoryId).subscribe((category: Category) => {

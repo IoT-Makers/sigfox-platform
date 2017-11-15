@@ -3,7 +3,7 @@
 // lat: 32, lon: 32, alt:0-8192m, spd:0-127Km/h, bat:0-100%, mode:0-7, cap: N/E/S/W
 // int is 16 bits, float is 32 bits. All little endian
 
-// Example payload: 01264442bbd3054019aaa400
+// Example payload: 01264442bbd3054019aaa400 | 0000000000000000ee0d0000
 // https://github.com/hidnseek/hidnseek/tree/master/arduino/libraries/HidnSeek/Examples/HidnSeek_v3_28
 
 var payload,
@@ -66,17 +66,28 @@ battery = (cpx >> 3) & 0xff;
 cap = (cpx >> 10) & 3;
 
 // Store objects in parsedData array
-obj.key = "geoloc";
-obj.value = "GPS";
-if(lat > 0 || lng > 0) parsedData.push(obj);
-obj = {};
-obj.key = "lat";
-obj.value = lat;
-parsedData.push(obj);
-obj = {};
-obj.key = "lng";
-obj.value = lng;
-parsedData.push(obj);
+if (mode == 4 && altitude == 0) {
+    obj = {};
+    obj.key = "temperature";
+    obj.value = lat.toFixed(2) + " °C";
+    parsedData.push(obj);
+    obj = {};
+    obj.key = "pressure";
+    obj.value = lng + " hPa";
+    parsedData.push(obj);
+} else if (lat > 0 || lng > 0) {
+    obj.key = "geoloc";
+    obj.value = "GPS";
+    parsedData.push(obj);
+    obj = {};
+    obj.key = "lat";
+    obj.value = lat;
+    parsedData.push(obj);
+    obj = {};
+    obj.key = "lng";
+    obj.value = lng;
+    parsedData.push(obj);
+}
 obj = {};
 obj.key = "altitude";
 obj.value = altitude + " m";
@@ -113,16 +124,16 @@ parsedData.push(obj);
 
 switch (cap) {
     case 0:
-        cap = "North";
+        cap = "N";
         break;
     case 1:
-        cap = "East";
+        cap = "E";
         break;
     case 2:
-        cap = "South";
+        cap = "S";
         break;
     case 3:
-        cap = "West";
+        cap = "W";
         break;
 }
 obj = {};
@@ -130,6 +141,5 @@ obj.key = "cap";
 obj.value = cap;
 parsedData.push(obj);
 
-console.log(parsedData);
-
+//console.log(parsedData);
 return parsedData;

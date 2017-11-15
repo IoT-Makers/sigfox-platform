@@ -213,7 +213,7 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Parser</label>
               <div class="col-md-9">
-                <select name="device.ParserId" class="form-control" size="1" [(ngModel)]="deviceToEdit.parserId">
+                <select name="device.parserId" class="form-control" size="1" [(ngModel)]="deviceToEdit.parserId">
                   <option [ngValue]="parser.id" *ngFor="let parser of parsers">{{parser.name}}</option>
                   <option [ngValue]="">None</option>
                 </select>
@@ -222,9 +222,9 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Category</label>
               <div class="col-md-9">
-                <select name="device.categoryId" class="form-control" size="1" [(ngModel)]="deviceToEdit.categoryId" (ngModelChange)="updateDeviceProperties(deviceToEdit)">
+                <select name="device.categoryId" class="form-control" size="1" [(ngModel)]="deviceToEdit.categoryId" (ngModelChange)="updateDeviceCategory(deviceToEdit)">
                   <option [ngValue]="category.id" *ngFor="let category of categories">{{category.name}}</option>
-                  <option [ngValue]=""></option>
+                  <option [ngValue]="">None</option>
                 </select>
               </div>
             </div>
@@ -253,7 +253,7 @@
         </div>
         <div class="card-footer">
           <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="update(deviceToEdit)"><i
-            class="fa fa-dot-circle-o"></i>Update
+            class="fa fa-dot-circle-o"></i> Update
           </button>
           <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
         </div>
