@@ -34,30 +34,39 @@
     </div>
   </div>
 
+  <h3>Developer Access Tokens</h3>
+  <hr>
+  <div class="row">
+    <div class="col col-12">
+      <div class="btn-group" data-toggle="buttons">
+        <button class="mb-1 btn btn-success" (click)="createDevAccessToken()"><i class="fa fa-plus"></i> Create new</button>
+        <button class="mb-1 btn btn-danger" (click)="deleteDevAccessToken()"><i class="fa fa-ban"></i> Delete latest</button>
+      </div>
+    </div>
+  </div>
 
   <h3>Routing interfaces</h3>
-  <button class="btn btn-success" (click)="createDevAccessToken()">Create a Developer Access Token</button>
   <hr>
   <div class="row">
     <div class="col col-12">
 
-      <!--<div class="card">-->
-      <!--<div class="card-header card-default">-->
-      <!--My organizations-->
-      <!--</div>-->
-      <!--<div *ngFor="let organization of user.Organizations;" class="card-block">-->
-      <!--<div><b><i class="fa fa-group" aria-hidden="true"></i><span style="margin-right:1em"></span> Name: </b>-->
-      <!--{{organization.name}}-->
-      <!--</div>-->
-      <!--<div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Creation: </b>-->
-      <!--{{organization.createdAt | date:"yyyy/MM/dd HH:mm:ss" }}-->
-      <!--</div>-->
-      <!--<div><b><i class="fa fa-upload" aria-hidden="true"></i><span style="margin-right:1em"></span> Callback URL: </b>-->
-      <!--{{callbackURLbase}}{{organization.id}}/Messages-->
-      <!--</div>-->
-      <!--<hr>-->
-      <!--</div>-->
-      <!--</div>-->
+      <!--<div class="card">
+      <div class="card-header card-default">
+      My organizations
+      </div>
+      <div *ngFor="let organization of user.Organizations;" class="card-block">
+      <div><b><i class="fa fa-group" aria-hidden="true"></i><span style="margin-right:1em"></span> Name: </b>
+      {{organization.name}}
+      </div>
+      <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Creation: </b>
+      {{organization.createdAt | date:"yyyy/MM/dd HH:mm:ss" }}
+      </div>
+      <div><b><i class="fa fa-upload" aria-hidden="true"></i><span style="margin-right:1em"></span> Callback URL: </b>
+      {{callbackURLbase}}{{organization.id}}/Messages
+      </div>
+      <hr>
+      </div>
+      </div>-->
 
 
       <accordion>
@@ -69,7 +78,7 @@
             <p>Type: <strong>DATA</strong> | <strong>UPLINK</strong></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>POST</strong></p>
-            <p>Headers: <strong>Authorization</strong> | <strong>{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</strong></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-warning">{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</span></p>
             <p>Body: <code class="text-center">{{
               '{
               "deviceId": "{device}",
@@ -97,7 +106,7 @@
             <p>Type: <strong>DATA</strong> | <strong>BIDIR</strong></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>POST</strong></p>
-            <p>Headers: <strong>Authorization</strong> | <strong>{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</strong></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-warning">{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</span></p>
             <p>Body: <code class="text-center">{{
               '{
               "deviceId": "{device}",
@@ -126,7 +135,8 @@
             <p>Type: <strong>SERVICE</strong> | <strong>GEOLOC</strong></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>PUT</strong></p>
-            <p>Headers: <strong>Authorization</strong> | <strong>{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</strong></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-warning
+">{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</span></p>
             <p>Body: <code class="text-center">{{
               '{
               "deviceId": "{device}",

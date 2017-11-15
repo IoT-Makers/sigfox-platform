@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit, Inject} from '@angular/core';
 import {User, AccessToken,FireLoopRef} from "../../../shared/sdk/models";
 import {UserApi} from "../../../shared/sdk/services/custom/User";
 import {DOCUMENT} from "@angular/common";
+import {AccessTokenApi} from "../../../shared/sdk/services/custom/AccessToken";
 
 
 @Component({
@@ -14,9 +15,8 @@ export class ProfileComponent implements OnInit {
   private user: User = new User();
   private devAccessToken = new AccessToken();
   private callbackURL;
-  private accessTokens;
 
-  constructor(@Inject(DOCUMENT) private document: any, private userApi: UserApi) {
+  constructor(@Inject(DOCUMENT) private document: any, private userApi: UserApi, private accessTokenApi: AccessTokenApi) {
 
   }
 
@@ -32,22 +32,27 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  createDevAccessToken(): void{
+  createDevAccessToken(): void {
     let newAccessToken = {
       ttl: -1
-    }
-    this.userApi.createAccessTokens(this.user.id,newAccessToken).subscribe((accessToken: AccessToken) => {
+    };
+    this.userApi.createAccessTokens(this.user.id, newAccessToken).subscribe((accessToken: AccessToken) => {
       this.devAccessToken = accessToken;
     });
   }
 
-/*  getUser(): void {
-    let userId = this.userApi.getCachedCurrent().id;
-    this.userApi.findById(userId).subscribe((user: User) => {
-      this.user = user;
-      console.log(this.user);
-    });
-  }*/
+  deleteDevAccessToken(): void {
+    //this.accessTokenApi.deleteById(this.devAccessToken.id).subscribe();
+    this.userApi.deleteAccessTokens(this.devAccessToken.id).subscribe();
+  }
+
+  /*  getUser(): void {
+      let userId = this.userApi.getCachedCurrent().id;
+      this.userApi.findById(userId).subscribe((user: User) => {
+        this.user = user;
+        console.log(this.user);
+      });
+    }*/
 
   ngOnInit() {
     // Get the logged in User object (avatar, email, ...)
