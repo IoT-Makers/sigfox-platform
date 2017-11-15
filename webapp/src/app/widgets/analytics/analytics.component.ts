@@ -38,25 +38,12 @@ export class AnalyticsComponent implements OnInit {
   private parsers: Parser[] = new Array<Parser>();
   private categories: Category[] = new Array<Category>();
 
-  private countMessages: number = 0;
-  private countDevices: number = 0;
-  private countParsers: number = 0;
-  private countCategories: number = 0;
-
   private messageRef: FireLoopRef<Message>;
   private deviceRef: FireLoopRef<Device>;
   private parserRef: FireLoopRef<Parser>;
   private categoryRef: FireLoopRef<Category>;
 
   public data = [];
-
-  private isCircleVisible: boolean[] = new Array<boolean>();
-
-  private lat: number = 48.858093;
-  private lng: number = 2.294694;
-  private zoom: number = 2;
-
-  private edit: boolean = false;
 
   private lineChartData:Array<any> = [];
   private lineChartLabels:Array<any> = [];
@@ -100,69 +87,49 @@ export class AnalyticsComponent implements OnInit {
     this.ngOnDestroy();
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-    //console.log(this.organizations[0].id);
-    this.messageSub = this.messageRef.on('change').subscribe(
-      (messages: Message[]) => {
-        this.data = messages;
-        this.messages = messages;
-        console.log("Messages", this.messages);
-        this.messageApi.count().subscribe(result => {
-          //console.log(messageApi);
-          console.log("count: ", result);
-          this.countMessages = result.count;
-        });
-      });
-    this.messageRef.stats().subscribe((stats: any) => {
-      console.log(stats);
-      this.lineChartLabels = new Array();
-      this.lineChartData   = new Array();
-      let data = new Array();
+
+    this.getMessagesGraph('hourly');
+
+
+  }
+
+  getMessagesGraph(option:string):void{
+
+    this.lineChartLabels = [];
+    this.lineChartData   = [];
+    this.data = [];
+
+    this.messageRef.stats({range:option}).subscribe((stats: any) => {
+
+      this.lineChartLabels = [];
+      this.lineChartData   = [];
+      this.data = [];
+
+      console.log("Stats: ",stats);
+
       stats.forEach((stat: any) => {
-        data.push(stat.count);
-        this.lineChartLabels.push(moment(stat.universal).format('DD-MMM-YYYY'));
+
+        this.data.push(stat.count);
+        if(option=='hourly'){
+          this.lineChartLabels.push(moment(stat.universal).format('h:mm:ss a'));
+        }
+        if(option=='daily'){
+          this.lineChartLabels.push(moment(stat.universal).format('ddd MMM YY'));
+        }
+        if(option=='weekly'){
+          this.lineChartLabels.push(moment(stat.universal).format('DD MMM YY'));
+        }
+        if(option=='monthly'){
+          this.lineChartLabels.push(moment(stat.universal).format('DD MMM YY'));
+        }
+        if(option=='yearly'){
+          this.lineChartLabels.push(moment(stat.universal).format('MMM YYYY'));
+        }
       });
-      this.lineChartData.push({ data: data, label: 'Messages'});
+      console.log("Data:" ,this.data);
+      console.log("Labels:",this.lineChartLabels);
+      this.lineChartData.push({ data: this.data, label: 'Messages'});
     });
-
-    // Devices
-    this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-    this.deviceRef.on('change',
-      {limit: 10, order: 'updatedAt DESC', include: ['Parser', 'Category']}).subscribe(
-      (devices: Device[]) => {
-        this.devices = devices;
-        console.log("Devices", this.devices);
-        this.deviceApi.count().subscribe(result => {
-          //console.log(deviceApi);
-          console.log("count: ", result);
-          this.countDevices = result.count;
-        });
-      });
-
-    // Categories
-    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categoryRef.on('change').subscribe(
-      (categories: Category[]) => {
-        this.categories = categories;
-        console.log("Categories", this.categories);
-        this.categoryApi.count().subscribe(result => {
-          //console.log(categoryApi);
-          console.log("count: ", result);
-          this.countCategories = result.count;
-        });
-      });
-
-    // Parsers
-    this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-    this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-      this.parsers = parsers;
-      console.log("Parsers", this.parsers);
-      this.parserApi.count().subscribe(result => {
-        //console.log(parserApi);
-        console.log("count: ", result);
-        this.countParsers = result.count;
-      });
-    });
-
   }
 
   ngOnDestroy(): void {
@@ -181,35 +148,4 @@ export class AnalyticsComponent implements OnInit {
   }
 
 
-  create(): void {
-    this.messageRef.create(this.message).subscribe(() => this.message = new Message());
-  }
-
-  update(message: Message): void {
-    this.messageRef.upsert(message).subscribe();
-  }
-
-  remove(message: Message): void {
-    this.messageRef.remove(message).subscribe();
-  }
-
-  setCircles(){
-    for(let i=0; i<this.devices.length; i++){
-      this.isCircleVisible.push(false);
-    }
-  }
-
-  markerOut(i) {
-    this.isCircleVisible[i] = false;
-  }
-
-  markerOver(i) {
-    this.isCircleVisible[i] = true;
-  }
-
-  zoomOnDevice(lat:number, lng:number): void {
-    this.lat=lat;
-    this.lng=lng;
-    this.zoom=12;
-  }
 }
