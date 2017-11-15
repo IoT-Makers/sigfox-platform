@@ -45,6 +45,12 @@ export class AnalyticsComponent implements OnInit {
 
   public data = [];
 
+  public brandPrimary:string =  '#20a8d8';
+  public brandSuccess:string =  '#4dbd74';
+  public brandInfo:string =   '#63c2de';
+  public brandWarning:string =  '#f8cb00';
+  public brandDanger:string =   '#f86c6b';
+
   private lineChartData:Array<any> = [];
   private lineChartLabels:Array<any> = [];
   // private lineChartOptions:any = {
@@ -86,7 +92,7 @@ export class AnalyticsComponent implements OnInit {
   };
   private lineChartColors:Array<any> = [
     {
-      backgroundColor: 'light-grey',
+      backgroundColor: this.brandInfo,
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
       pointBorderColor: '#fff',
