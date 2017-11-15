@@ -47,13 +47,46 @@ export class AnalyticsComponent implements OnInit {
 
   private lineChartData:Array<any> = [];
   private lineChartLabels:Array<any> = [];
-  private lineChartOptions:any = {
-    animation: false,
-    responsive: true
+  // private lineChartOptions:any = {
+  //   animation: false,
+  //   responsive: true
+  // };
+  public mainChartOptions:any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      xAxes: [{
+        gridLines: {
+          drawOnChartArea: false,
+        },
+        ticks: {
+          callback: function(value) {
+            return value.charAt(0);
+          }
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          maxTicksLimit: 5,
+        }
+      }]
+    },
+    elements: {
+      point: {
+        radius: 0,
+        hitRadius: 10,
+        hoverRadius: 4,
+        hoverBorderWidth: 3,
+      }
+    },
+    legend: {
+      display: false
+    }
   };
   private lineChartColors:Array<any> = [
     {
-      backgroundColor: 'rgba(148,159,177,0.2)',
+      backgroundColor: 'light-grey',
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
       pointBorderColor: '#fff',
@@ -62,7 +95,7 @@ export class AnalyticsComponent implements OnInit {
     }
   ];
   private lineChartLegend:boolean = true;
-  private lineChartType:string = 'line';
+  private lineChartType:string = 'bar';
 
   constructor(private rt: RealTime,
               private messageApi: MessageApi,
@@ -95,9 +128,9 @@ export class AnalyticsComponent implements OnInit {
 
   getMessagesGraph(option:string):void{
 
-    this.lineChartLabels = [];
-    this.lineChartData   = [];
-    this.data = [];
+     this.lineChartLabels = [];
+     this.lineChartData   = [];
+    // this.data = [];
 
     this.messageRef.stats({range:option}).subscribe((stats: any) => {
 
