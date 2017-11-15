@@ -233,7 +233,7 @@
                 <label class="col-md-3 offset-1 form-control-label">{{property.key}}</label>
                 <div class="col-md-8">
                   <input type="{{property.type}}" class="form-control" placeholder="{{property.key}}" name="deviceToEdit.property.value"
-                         [(ngModel)]="property.value">
+                         [(ngModel)]="property.value" [ngModelOptions]="{standalone: true}">
                 </div>
               </div>
             </div>
