@@ -173,13 +173,16 @@
               <td *ngIf="!edit" class="hidden-xs-down">
                 <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
                 <div *ngIf="device.categoryId">
-                  <div class="small text-muted" *ngFor="let property of device.properties; let i = index"><span>{{property.key ? property.key : ""}}:</span> {{property.value ? property.value : ""}}</div>
+                  <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
+                    <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>
+                    <span class="text-primary">{{property.value ? property.value : ""}}</span>
+                  </div>
                 </div>
               </td>
               <td *ngIf="!edit" class="text-center">
                 <div class="btn-group-sm">
                   <button class="btn btn-success btn-round" (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
-                  <button class="btn btn-danger btn-round" (click)="remove(device)"><i class="fa fa-trash fa-lg"></i></button>
+                  <button class="btn btn-danger btn-round" (click)="removeDevice(device)"><i class="fa fa-trash fa-lg"></i></button>
                 </div>
               </td>
             </tr>

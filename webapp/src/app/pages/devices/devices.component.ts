@@ -153,7 +153,7 @@ export class DevicesComponent implements OnInit {
     this.edit = false;
   }
 
-  remove(device: Device): void {
+  removeDevice(device: Device): void {
     this.deviceRef.remove(device).subscribe();
     // Delete all messages belonging to the device
     this.deviceApi.deleteMessages(device.id).subscribe();

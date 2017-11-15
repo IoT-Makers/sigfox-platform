@@ -57,7 +57,7 @@ export class CategoriesComponent implements OnInit {
     });
   }
 
-  editCategory(category: Category):void{
+  editCategory(category: Category):void {
     this.edit = true;
     if(category){
       this.categoryToEdit = category;
@@ -83,7 +83,6 @@ export class CategoriesComponent implements OnInit {
   }
 
   addProperty(category: Category):void {
-
     let property: any = {
       key: "",
       value: "",
@@ -100,7 +99,7 @@ export class CategoriesComponent implements OnInit {
     this.categoryToEdit = category;
   }
 
-  remove(category: Category): void {
+  removeCategory(category: Category): void {
     this.categoryRef.remove(category).subscribe();
   }
 
