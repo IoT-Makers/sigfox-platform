@@ -123,7 +123,7 @@ export class DevicesComponent implements OnInit {
     this.edit = false;
     device.CategoryId = device.categoryId;
     //@TODO change parserId to ParserID to be able to fetch devices from parser model, don't forget to update the API consequently and to test it!
-    //device.ParserId = device.parserId;
+    device.ParserId = device.parserId;
     /*if(device.ParserId.toString() == "None")*/
 
     this.deviceRef.upsert(device).subscribe();

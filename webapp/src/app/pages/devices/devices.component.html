@@ -215,7 +215,7 @@
               <div class="col-md-9">
                 <select name="device.parserId" class="form-control" size="1" [(ngModel)]="deviceToEdit.parserId">
                   <option [ngValue]="parser.id" *ngFor="let parser of parsers">{{parser.name}}</option>
-                  <option [ngValue]="">None</option>
+                  <option [ngValue]=""></option>
                 </select>
               </div>
             </div>
@@ -224,7 +224,7 @@
               <div class="col-md-9">
                 <select name="device.categoryId" class="form-control" size="1" [(ngModel)]="deviceToEdit.categoryId" (ngModelChange)="updateDeviceCategory(deviceToEdit)">
                   <option [ngValue]="category.id" *ngFor="let category of categories">{{category.name}}</option>
-                  <option [ngValue]="">None</option>
+                  <option [ngValue]=""></option>
                 </select>
               </div>
             </div>
