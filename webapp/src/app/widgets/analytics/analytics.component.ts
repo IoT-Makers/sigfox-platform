@@ -45,6 +45,8 @@ export class AnalyticsComponent implements OnInit {
 
   public data = [];
 
+  private graphRange: string = 'hourly';
+
   public brandPrimary:string =  '#20a8d8';
   public brandSuccess:string =  '#4dbd74';
   public brandInfo:string =   '#63c2de';
@@ -127,24 +129,30 @@ export class AnalyticsComponent implements OnInit {
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
 
-    this.getMessagesGraph('hourly');
+    this.messageSub = this.messageRef.on('change').subscribe(
+      (messages: Message[]) => {
+        this.getMessagesGraph(this.graphRange);
+      });
+
+
 
 
   }
 
   getMessagesGraph(option:string):void{
 
+    this.graphRange = option;
      this.lineChartLabels = [];
      this.lineChartData   = [];
     // this.data = [];
 
-    this.messageRef.stats({range:option}).subscribe((stats: any) => {
+    this.messageRef.stats({range:this.graphRange}).subscribe((stats: any) => {
 
       this.lineChartLabels = [];
       this.lineChartData   = [];
       this.data = [];
 
-      console.log("Stats: ",stats);
+      //console.log("Stats: ",stats);
 
       stats.forEach((stat: any) => {
 
@@ -165,8 +173,8 @@ export class AnalyticsComponent implements OnInit {
           this.lineChartLabels.push(moment(stat.universal).format('MMM YYYY'));
         }
       });
-      console.log("Data:" ,this.data);
-      console.log("Labels:",this.lineChartLabels);
+      // console.log("Data:" ,this.data);
+      // console.log("Labels:",this.lineChartLabels);
       this.lineChartData.push({ data: this.data, label: 'Messages'});
     });
   }
