@@ -1,7 +1,7 @@
 <div class="animated fadeIn">
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-envelope fa-lg text-primary"></i> <strong>Messages</strong>
+      <i class="fa fa-envelope fa-lg text-message"></i> <strong>Messages</strong>
     </div>
     <div *ngIf="!messages.length" class="card-block">
       No message yet...
@@ -48,14 +48,14 @@
         <tr *ngFor="let item of mf.data">
           <td class="text-center">{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
           <td class="text-center">
-            <span class="text-primary">{{item.data}}</span>
+            <span class="text-message">{{item.data}}</span>
             <div class="text-justify" *ngIf="item.parsed_data">
               <div *ngFor="let object of item.parsed_data">
                 <small>{{object.key}}: <strong>{{object.value}} {{object.unit}}</strong></small>
               </div>
             </div>
           </td>
-          <td class="text-center">{{item.deviceId}}</td>
+          <td class="text-center text-device">{{item.deviceId}}</td>
           <td class="text-center">
             <div *ngIf="item.geoloc">
               <div *ngFor="let geoloc of item.geoloc">

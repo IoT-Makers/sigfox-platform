@@ -22,7 +22,7 @@
                 [longitude]="geoloc.lng"
                 [iconUrl]="'assets/img/marker-sigfox.png'">
                 <agm-info-window>
-                  <strong><b>ID:</b> <span class="text-danger">{{device.id}}</span></strong>
+                  <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
                   <br>
                   <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
                   <br *ngIf="device.name">
@@ -55,7 +55,7 @@
                 [longitude]="geoloc.lng"
                 [iconUrl]="'assets/img/marker-gps.png'">
                 <agm-info-window>
-                  <strong><b>ID:</b> <span class="text-danger">{{device.id}}</span></strong>
+                  <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
                   <br>
                   <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
                   <br *ngIf="device.name">
@@ -80,7 +80,7 @@
     <div [ngClass]="(edit)?'col-md-6 col-xs-12':'col-12 col-sm-12'">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-thermometer fa-lg text-warning"></i> <strong>Devices</strong>
+          <i class="fa fa-thermometer fa-lg text-device"></i> <strong>Devices</strong>
         </div>
         <div *ngIf="!devices.length" class="card-block">
           No device yet...
@@ -102,20 +102,20 @@
             <tbody>
             <tr *ngFor="let device of devices; let i = index">
               <td class="text-center">
-                <strong>{{device.id}}</strong>
+                <strong class="text-device">{{device.id}}</strong>
               </td>
               <td class="hidden-xs-down">
                 <div class="small">
-                  <span class="text-muted">Name: </span>
+                  <span class="text-gray-dark">Name: </span>
                   <span class="text-danger">{{device.name ? device.name : "None"}}</span>
                 </div>
                 <div class="small">
-                  <span class="text-muted">Parser: </span>
+                  <span class="text-gray-dark">Parser: </span>
                   <span class="text-primary">{{device.Parser ? device.Parser.name : "None"}}</span>
                 </div>
                 <div class="small">
-                  <span class="text-muted">Category: </span>
-                  <span class="text-primary">{{device.Category ? device.Category.name : "None"}}</span>
+                  <span class="text-gray-dark">Category: </span>
+                  <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
                 </div>
               </td>
               <td *ngIf="!edit" class="text-center hidden-xs-down">

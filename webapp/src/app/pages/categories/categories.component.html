@@ -7,7 +7,7 @@
 
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-tag fa-lg text-danger"></i> <strong>Categories</strong>
+          <i class="fa fa-tag fa-lg text-category"></i> <strong>Categories</strong>
         </div>
         <div *ngIf="!categories.length" class="card-block">
           No category yet...
@@ -28,7 +28,7 @@
             <tbody>
             <tr *ngFor="let category of categories; let i = index">
               <td class="text-center">
-                <strong>{{category.name}}</strong>
+                <strong class="text-category">{{category.name}}</strong>
                 <div class="small text-muted">Updated:
                   {{category.updatedAt | amTimeAgo}}</div>
               </td>

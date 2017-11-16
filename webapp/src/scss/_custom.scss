@@ -90,14 +90,53 @@ agm-map {
   border-radius: 17px;
 }
 
-.text-profile {
-  color: $profile !important; }
-a.text-profile:focus, a.text-profile:hover {
-  color: darken($profile, 20%) !important; }
-.badge-profile {
-  background-color: $profile; }
-.badge-profile[href]:focus, .badge-profile[href]:hover {
-  background-color: darken($profile, 20%); }
+/***************************************
+*                                      *
+*            Custom Colors             *
+*                                      *
+****************************************/
+
+.text-category {
+  color: $category !important; }
+a.text-category:focus, a.text-category:hover {
+  color: darken($category, 20%) !important; }
+.badge-category {
+  background-color: $category; }
+.badge-category[href]:focus, .badge-category[href]:hover {
+  background-color: darken($category, 20%); }
+.bg-category {
+  color: #fff !important;
+  background-color: $category !important; }
+a.bg-category:focus, a.bg-category:hover {
+  background-color: darken($category, 20%); }
+
+.text-device {
+  color: $device !important; }
+a.text-device:focus, a.text-device:hover {
+  color: darken($device, 20%) !important; }
+.badge-device {
+  background-color: $device; }
+.badge-device[href]:focus, .badge-device[href]:hover {
+  background-color: darken($device, 20%); }
+.bg-device {
+  color: #fff !important;
+  background-color: $device !important; }
+a.bg-device:focus, a.bg-device:hover {
+  background-color: darken($device, 20%); }
+
+.text-message {
+  color: $message !important; }
+a.text-message:focus, a.text-device:hover {
+  color: darken($message, 20%) !important; }
+.badge-message {
+  background-color: $message; }
+.badge-message[href]:focus, .badge-message[href]:hover {
+  background-color: darken($message, 20%); }
+.bg-message {
+  color: #fff !important;
+  background-color: $message !important; }
+a.bg-message:focus, a.bg-message:hover {
+  background-color: darken($message, 20%); }
 
 .text-tracking {
   color: $tracking !important; }
@@ -107,6 +146,56 @@ a.text-tracking:focus, a.text-tracking:hover {
   background-color: $tracking; }
 .badge-tracking[href]:focus, .badge-tracking[href]:hover {
   background-color: darken($tracking, 20%); }
+
+.text-analytic {
+  color: $analytic !important; }
+a.text-analytic:focus, a.text-analytic:hover {
+  color: darken($analytic, 20%) !important; }
+.badge-analytic {
+  background-color: $analytic; }
+.badge-analytic[href]:focus, .badge-analytic[href]:hover {
+  background-color: darken($analytic, 20%); }
+
+.text-parser {
+  color: $parser !important; }
+a.text-parser:focus, a.text-parser:hover {
+  color: darken($parser, 20%) !important; }
+.badge-parser {
+  background-color: $parser; }
+.badge-parser[href]:focus, .badge-parser[href]:hover {
+  background-color: darken($parser, 20%); }
+.bg-parser {
+  color: #fff !important;
+  background-color: $parser !important; }
+a.bg-parser:focus, a.bg-parser:hover {
+  background-color: darken($parser, 20%); }
+btn-parser {
+  color: #fff;
+  background-color: $parser;
+  border-color: $parser; }
+.btn-parser:hover {
+  color: #fff;
+  background-color: darken($parser, 20%);
+  border-color: darken($parser, 20%); }
+.btn-parser:focus, .btn-parser.focus {
+  box-shadow: 0 0 0 2px rgba(145, 87, 73, 0.5); }
+.btn-parser:active, .btn-parser.active,
+.show > .btn-parser.dropdown-toggle {
+  color: #fff;
+  background-color: $parser;
+  background-image: none;
+  border-color: $parser; }
+
+.text-profile {
+  color: $profile !important; }
+a.text-profile:focus, a.text-profile:hover {
+  color: darken($profile, 20%) !important; }
+.badge-profile {
+  background-color: $profile; }
+.badge-profile[href]:focus, .badge-profile[href]:hover {
+  background-color: darken($profile, 20%); }
+
+// Geoloc Markers
 
 .text-geoloc-sigfox {
   color: $geoloc-sigfox !important; }

@@ -56,6 +56,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
               private deviceApi: DeviceApi,
               private messageApi: MessageApi,
               private categoryApi: CategoryApi,
+              private parserApi: ParserApi,
               private router: Router) { }
 
   getUser(): void {
@@ -91,6 +92,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       //console.log(messageApi);
       //console.log("count: ", result);
       this.countCategories = result.count;
+    });
+    this.parserApi.count().subscribe(result => {
+      //console.log(messageApi);
+      //console.log("count: ", result);
+      this.countParsers = result.count;
     });
   }
 

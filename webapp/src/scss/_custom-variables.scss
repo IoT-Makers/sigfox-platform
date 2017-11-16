@@ -7,8 +7,19 @@ $layout-transition-speed: .25s;
 
 // Custom Colors
 $sigfox: #230068;
+
+$category: #e45858;
+$device: #6AB187;
+$message: #5b9bd3;
+
+$tracking: #915749;
+$analytic: #debedf;
+
+$parser: #DBAE58;
+
 $profile: #ae2e75;
-$tracking: #44a581;
+
+// Geoloc Markers
 $geoloc-sigfox: #792faa;
 $geoloc-gps: #9b7a48;
 $geoloc-wifi: #2F2A30;

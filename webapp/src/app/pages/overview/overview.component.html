@@ -3,49 +3,49 @@
   <div class="card-group">
     <div class="card">
       <div class="card-block">
-        <div class="h1 text-danger text-right mb-2">
+        <div class="h1 text-category text-right mb-2">
           <i class="fa fa-tag"></i>
         </div>
         <div class="h4 mb-0">{{countCategories}}</div>
-        <small class="text-danger text-uppercase font-weight-bold">Categories</small>
+        <small class="text-category text-uppercase font-weight-bold">Categories</small>
         <div class="progress progress-xs mt-1 mb-0">
-          <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-category" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
       </div>
     </div>
     <div class="card">
       <div class="card-block">
-        <div class="h1 text-warning text-right mb-2">
+        <div class="h1 text-device text-right mb-2">
           <i class="fa fa-thermometer-half"></i>
         </div>
         <div class="h4 mb-0">{{countDevices}}</div>
-        <small class="text-warning text-uppercase font-weight-bold">Devices</small>
+        <small class="text-device text-uppercase font-weight-bold">Devices</small>
         <div class="progress progress-xs mt-1 mb-0">
-          <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-device" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
       </div>
     </div>
     <div class="card">
       <div class="card-block">
-        <div class="h1 text-primary text-right mb-2">
+        <div class="h1 text-message text-right mb-2">
           <i class="fa fa-envelope"></i>
         </div>
         <div class="h4 mb-0">{{countMessages}}</div>
-        <small class="text-primary text-uppercase font-weight-bold">Messages</small>
+        <small class="text-message text-uppercase font-weight-bold">Messages</small>
         <div class="progress progress-xs mt-1 mb-0">
-          <div class="progress-bar bg-primary" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-message" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
       </div>
     </div>
     <div class="card">
       <div class="card-block">
-        <div class="h1 text-success text-right mb-2">
+        <div class="h1 text-parser text-right mb-2">
           <i class="fa fa-code"></i>
         </div>
         <div class="h4 mb-0">{{countParsers}}</div>
-        <small class="text-success text-uppercase font-weight-bold">Parsers</small>
+        <small class="text-parser text-uppercase font-weight-bold">Parsers</small>
         <div class="progress progress-xs mt-1 mb-0">
-          <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-parser" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
       </div>
     </div>
@@ -131,7 +131,7 @@
     <div class="col-sm-12 col-md-6">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-thermometer fa-lg text-warning"></i> <strong>Devices</strong>
+          <i class="fa fa-thermometer fa-lg text-device"></i> <strong>Devices</strong>
         </div>
         <div *ngIf="!devices.length" class="card-block">
           No device yet...
@@ -151,10 +151,10 @@
             <tbody>
             <tr *ngFor="let device of devices; let i = index">
               <td class="text-center">
-                <strong>{{device.id}}</strong>
+                <strong class="text-device">{{device.id}}</strong>
                 <div class="small">
-                  <span class="text-muted">Category: </span>
-                  <span class="text-primary">{{device.Category ? device.Category.name : "None"}}</span>
+                  <span class="text-gray-dark">Category: </span>
+                  <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
                 </div>
               </td>
 
