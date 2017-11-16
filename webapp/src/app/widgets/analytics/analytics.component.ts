@@ -129,8 +129,9 @@ export class AnalyticsComponent implements OnInit {
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
 
-    this.messageSub = this.messageRef.on('change').subscribe(
+    this.messageSub = this.messageRef.on('value').subscribe(
       (messages: Message[]) => {
+        console.log("onChange");
         this.getMessagesGraph(this.graphRange);
       });
 
