@@ -69,36 +69,52 @@ cap = (cpx >> 10) & 3;
 if (mode == 4 && altitude == 0) {
     obj = {};
     obj.key = "temperature";
-    obj.value = lat.toFixed(2) + " °C";
+    obj.value = lat.toFixed(2);
+    obj.type = "number";
+    obj.unit = "°C";
     parsedData.push(obj);
     obj = {};
     obj.key = "pressure";
-    obj.value = lng + " hPa";
+    obj.value = lng;
+    obj.type = "number";
+    obj.unit = "hPa";
     parsedData.push(obj);
 } else if (lat > 0 || lng > 0) {
     obj.key = "geoloc";
     obj.value = "GPS";
+    obj.type = "string";
+    obj.unit = "";
     parsedData.push(obj);
     obj = {};
     obj.key = "lat";
     obj.value = lat;
+    obj.type = "number";
+    obj.unit = "";
     parsedData.push(obj);
     obj = {};
     obj.key = "lng";
     obj.value = lng;
+    obj.type = "number";
+    obj.unit = "";
     parsedData.push(obj);
 }
 obj = {};
 obj.key = "altitude";
-obj.value = altitude + " m";
+obj.value = altitude;
+obj.type = "number";
+obj.unit = "m";
 parsedData.push(obj);
 obj = {};
 obj.key = "speed";
-obj.value = speed + " km/h";
+obj.value = speed;
+obj.type = "number";
+obj.unit = "km/h";
 parsedData.push(obj);
 obj = {};
 obj.key = "battery";
-obj.value = battery + " %";
+obj.value = battery;
+obj.type = "number";
+obj.unit = "%";
 parsedData.push(obj);
 
 switch (mode) {
@@ -120,6 +136,8 @@ switch (mode) {
 obj = {};
 obj.key = "mode";
 obj.value = mode;
+obj.type = "string";
+obj.unit = "";
 parsedData.push(obj);
 
 switch (cap) {
@@ -139,6 +157,8 @@ switch (cap) {
 obj = {};
 obj.key = "cap";
 obj.value = cap;
+obj.type = "string";
+obj.unit = "";
 parsedData.push(obj);
 
 //console.log(parsedData);
