@@ -94,12 +94,14 @@ export class AnalyticsComponent implements OnInit {
 
     this.getMessagesGraph(this.graphRange);
 
-    this.messageSub = this.messageRef.on('child_added', {limit: 1, order: 'createdAt DESC'}).subscribe(
-      (messages: Message[]) => {
-        console.log(messages);
-        console.log("onChange");
-        this.getMessagesGraph(this.graphRange);
-      });
+    // Not needed because messageRef.stat is already realtime...
+
+    // this.messageSub = this.messageRef.on('child_added', {limit: 1, order: 'createdAt DESC'}).subscribe(
+    //   (messages: Message[]) => {
+    //     console.log(messages);
+    //     console.log("onChange");
+    //     this.getMessagesGraph(this.graphRange);
+    //   });
 
     // Devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
