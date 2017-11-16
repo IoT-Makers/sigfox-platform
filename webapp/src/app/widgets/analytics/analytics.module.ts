@@ -4,12 +4,14 @@ import { ChartsModule } from 'ng2-charts/ng2-charts';
 
 import { AnalyticsRoutingModule } from './analytics-routing.module';
 import { AnalyticsComponent } from './analytics.component';
+import { MomentModule } from 'angular2-moment';
 
 @NgModule({
   imports: [
     CommonModule,
     AnalyticsRoutingModule,
-    ChartsModule
+    ChartsModule,
+    MomentModule
   ],
   declarations: [ AnalyticsComponent ]
 })

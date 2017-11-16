@@ -47,63 +47,26 @@ export class AnalyticsComponent implements OnInit {
 
   private graphRange: string = 'hourly';
 
-  public brandPrimary:string =  '#20a8d8';
-  public brandSuccess:string =  '#4dbd74';
-  public brandInfo:string =   '#63c2de';
-  public brandWarning:string =  '#f8cb00';
-  public brandDanger:string =   '#f86c6b';
-
-  private lineChartData:Array<any> = [];
-  private lineChartLabels:Array<any> = [];
-  // private lineChartOptions:any = {
+  private messageChartData:Array<any> = [];
+  private messageChartLabels:Array<any> = [];
+  // private messageChartOptions:any = {
   //   animation: false,
   //   responsive: true
   // };
-  public mainChartOptions:any = {
+  public messageChartOptions:any = {
     responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      xAxes: [{
-        gridLines: {
-          drawOnChartArea: false,
-        },
-        ticks: {
-          callback: function(value) {
-            return value.charAt(0);
-          }
-        }
-      }],
-      yAxes: [{
-        ticks: {
-          beginAtZero: true,
-          maxTicksLimit: 5,
-        }
-      }]
-    },
-    elements: {
-      point: {
-        radius: 0,
-        hitRadius: 10,
-        hoverRadius: 4,
-        hoverBorderWidth: 3,
-      }
-    },
+    maintainAspectRatio: true,
     legend: {
-      display: false
+      display: true,
     }
   };
-  private lineChartColors:Array<any> = [
+  private messageChartColors:Array<any> = [
     {
-      backgroundColor: this.brandInfo,
-      borderColor: 'rgba(148,159,177,1)',
-      pointBackgroundColor: 'rgba(148,159,177,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+      backgroundColor: '#63c2de'
     }
   ];
-  private lineChartLegend:boolean = true;
-  private lineChartType:string = 'bar';
+  private messageChartLegend:boolean = true;
+  private messageChartType:string = 'bar';
 
   constructor(private rt: RealTime,
               private messageApi: MessageApi,
@@ -129,6 +92,8 @@ export class AnalyticsComponent implements OnInit {
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
 
+    this.getMessagesGraph(this.graphRange);
+
     this.messageSub = this.messageRef.on('child_added', {limit: 1, order: 'createdAt DESC'}).subscribe(
       (messages: Message[]) => {
         console.log(messages);
@@ -136,7 +101,15 @@ export class AnalyticsComponent implements OnInit {
         this.getMessagesGraph(this.graphRange);
       });
 
-    this.getMessagesGraph(this.graphRange);
+    // Devices
+    this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+    this.deviceRef.on('change',
+      {limit: 100, order: 'updatedAt DESC', include: ['Category']}).subscribe(
+      (devices: Device[]) => {
+        this.devices = devices;
+        //console.log("Devices", this.devices);
+
+      });
 
 
 
@@ -146,40 +119,40 @@ export class AnalyticsComponent implements OnInit {
   getMessagesGraph(option:string):void{
 
     this.graphRange = option;
-     this.lineChartLabels = [];
-     this.lineChartData   = [];
+     this.messageChartLabels = [];
+     this.messageChartData   = [];
     // this.data = [];
 
     this.messageRef.stats({range:this.graphRange}).subscribe((stats: any) => {
 
-      this.lineChartLabels = [];
-      this.lineChartData   = [];
+      this.messageChartLabels = [];
+      this.messageChartData   = [];
       this.data = [];
 
-      //console.log("Stats: ",stats);
+      console.log("Stats: ",stats);
 
       stats.forEach((stat: any) => {
 
         this.data.push(stat.count);
         if(option=='hourly'){
-          this.lineChartLabels.push(moment(stat.universal).format('h:mm a'));
+          this.messageChartLabels.push(moment(stat.universal).format('h:mm a'));
         }
         if(option=='daily'){
-          this.lineChartLabels.push(moment(stat.universal).format('ddd MMM YY'));
+          this.messageChartLabels.push(moment(stat.universal).format('ddd MMM YY'));
         }
         if(option=='weekly'){
-          this.lineChartLabels.push(moment(stat.universal).format('DD MMM YY'));
+          this.messageChartLabels.push(moment(stat.universal).format('DD MMM YY'));
         }
         if(option=='monthly'){
-          this.lineChartLabels.push(moment(stat.universal).format('DD MMM YY'));
+          this.messageChartLabels.push(moment(stat.universal).format('DD MMM YY'));
         }
         if(option=='yearly'){
-          this.lineChartLabels.push(moment(stat.universal).format('MMM YYYY'));
+          this.messageChartLabels.push(moment(stat.universal).format('MMM YYYY'));
         }
       });
-      console.log("Data:" ,this.data);
-      // console.log("Labels:",this.lineChartLabels);
-      this.lineChartData.push({ data: this.data, label: 'Messages'});
+      //console.log("Data:" ,this.data);
+      // console.log("Labels:",this.messageChartLabels);
+      this.messageChartData.push({ data: this.data, label: 'Messages'});
     });
   }
 

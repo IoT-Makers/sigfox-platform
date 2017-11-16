@@ -84,10 +84,10 @@ export class OverviewComponent implements OnInit,OnDestroy {
       (messages: Message[]) => {
         this.data = messages;
         this.messages = messages;
-        console.log("Messages", this.messages);
+        //console.log("Messages", this.messages);
         this.messageApi.count().subscribe(result => {
           //console.log(messageApi);
-          console.log("count: ", result);
+          //console.log("count: ", result);
           this.countMessages = result.count;
         });
       });
@@ -98,10 +98,10 @@ export class OverviewComponent implements OnInit,OnDestroy {
       {limit: 10, order: 'updatedAt DESC', include: ['Parser', 'Category']}).subscribe(
       (devices: Device[]) => {
         this.devices = devices;
-        console.log("Devices", this.devices);
+        //console.log("Devices", this.devices);
         this.deviceApi.count().subscribe(result => {
           //console.log(deviceApi);
-          console.log("count: ", result);
+          //console.log("count: ", result);
           this.countDevices = result.count;
         });
       });
@@ -111,10 +111,10 @@ export class OverviewComponent implements OnInit,OnDestroy {
     this.categoryRef.on('change').subscribe(
       (categories: Category[]) => {
         this.categories = categories;
-        console.log("Categories", this.categories);
+        //console.log("Categories", this.categories);
         this.categoryApi.count().subscribe(result => {
           //console.log(categoryApi);
-          console.log("count: ", result);
+          //console.log("count: ", result);
           this.countCategories = result.count;
         });
       });
@@ -123,10 +123,10 @@ export class OverviewComponent implements OnInit,OnDestroy {
     this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
     this.parserRef.on('change').subscribe((parsers: Parser[]) => {
       this.parsers = parsers;
-      console.log("Parsers", this.parsers);
+      //console.log("Parsers", this.parsers);
       this.parserApi.count().subscribe(result => {
         //console.log(parserApi);
-        console.log("count: ", result);
+        //console.log("count: ", result);
         this.countParsers = result.count;
       });
     });
