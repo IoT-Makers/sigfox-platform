@@ -129,11 +129,14 @@ export class AnalyticsComponent implements OnInit {
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
 
-    this.messageSub = this.messageRef.on('value').subscribe(
+    this.messageSub = this.messageRef.on('child_added', {limit: 1, order: 'createdAt DESC'}).subscribe(
       (messages: Message[]) => {
+        console.log(messages);
         console.log("onChange");
         this.getMessagesGraph(this.graphRange);
       });
+
+    this.getMessagesGraph(this.graphRange);
 
 
 
@@ -159,7 +162,7 @@ export class AnalyticsComponent implements OnInit {
 
         this.data.push(stat.count);
         if(option=='hourly'){
-          this.lineChartLabels.push(moment(stat.universal).format('h:mm:ss a'));
+          this.lineChartLabels.push(moment(stat.universal).format('h:mm a'));
         }
         if(option=='daily'){
           this.lineChartLabels.push(moment(stat.universal).format('ddd MMM YY'));
@@ -174,7 +177,7 @@ export class AnalyticsComponent implements OnInit {
           this.lineChartLabels.push(moment(stat.universal).format('MMM YYYY'));
         }
       });
-      // console.log("Data:" ,this.data);
+      console.log("Data:" ,this.data);
       // console.log("Labels:",this.lineChartLabels);
       this.lineChartData.push({ data: this.data, label: 'Messages'});
     });
