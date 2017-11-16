@@ -51,7 +51,7 @@
             <span class="text-primary">{{item.data}}</span>
             <div class="text-justify" *ngIf="item.parsed_data">
               <div *ngFor="let object of item.parsed_data">
-                <small>{{object.key}}: <strong>{{object.value}}</strong></small>
+                <small>{{object.key}}: <strong>{{object.value}} {{object.unit}}</strong></small>
               </div>
             </div>
           </td>
