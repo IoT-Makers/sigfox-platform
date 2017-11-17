@@ -55,7 +55,7 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "moment": "2.18.1",
+    "moment": "^2.18.1",
     "ng-pick-datetime": "^5.0.0-beta.11",
     "ng2-ace-editor": "^0.2.5",
     "ng2-bootstrap": "1.6.1",

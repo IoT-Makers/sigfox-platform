@@ -1,9 +1,9 @@
-import {AfterViewInit, Component, Directive, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit} from '@angular/core';
 
 import {DeviceApi} from '../../shared/sdk/services';
 import {Message} from "../../shared/sdk/models/Message";
-import {AgmCoreModule, AgmMap, GoogleMapsAPIWrapper} from "@agm/core";
-import {DirectionsComponent} from "./directions.component";
+import {GoogleMapsAPIWrapper} from "@agm/core";
+import {GeolocApi} from "../../shared/sdk/services/custom/Geoloc";
 
 @Component({
   selector: 'app-tracking',
@@ -28,7 +28,10 @@ export class TrackingComponent implements OnInit {
   public allLocalizedMessages: Message[] = new Array<Message>();
   public directionsDisplayStore = [];
 
-  constructor(private elRef: ElementRef, private _googleMapsAPIWrapper: GoogleMapsAPIWrapper, private deviceApi: DeviceApi) {
+  constructor(private elRef: ElementRef,
+              private _googleMapsAPIWrapper: GoogleMapsAPIWrapper,
+              private deviceApi: DeviceApi,
+              private geolocApi: GeolocApi) {
   }
 
   onDirections(){
@@ -41,28 +44,19 @@ export class TrackingComponent implements OnInit {
   }
 
   onTrack(deviceId: string) {
-    /*    dateBegin = new Date('2017-09-19T21:30:00.000Z');
-        dateEnd = new Date('2017-09-20T02:45:00.000Z');*/
     this.allLocalizedMessages = [];
     this.searchResult = "Searching for geolocation messages for this device ID.";
 
-    this.deviceApi.getMessages(deviceId, {where: {and: [{createdAt: {gte: this.dateBegin}}, {createdAt: {lte: this.dateEnd}}], or: [{geoloc: {neq: null}}]}, fields: ["geoloc", "createdAt"]}).subscribe((messages: Message[]) => {
+    this.geolocApi.getGeolocsByDeviceId(deviceId, this.dateBegin.toISOString(), this.dateEnd.toISOString()).subscribe((messages: Message[]) => {
       if (messages.length > 0) {
         this.searchResult = "Found " + messages.length + " geoloc messages for device ID: " + deviceId;
         for(let i=0; i<messages.length; i++){
           this.allLocalizedMessages.push(messages[i]);
           i = i + this.markerInterval;
         }
-        //this.allLocalizedMessages = messages;
         // Center map
         let latestGeoloc = messages[0].geoloc;
         this.initMapPosition = latestGeoloc[0];
-        console.log(this.allLocalizedMessages);
-        // DEBUG
-        /*console.log("initMapPosition");
-        console.log(this.initMapPosition);
-        console.log("allLocalizedMessages");
-        console.log(this.allLocalizedMessages);*/
 
       } else // -- no localized messages
         this.searchResult = "No geolocation messages found for this device ID.";

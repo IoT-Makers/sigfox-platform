@@ -26,23 +26,22 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
     this.trackingComponent.directionsDisplayStore = [];
     console.log("--------------------------------");
 
-
     let allLocalizedMessages: Message[] = this.trackingComponent.allLocalizedMessages;
     let messages: Message[] = [];
     let startCoord = allLocalizedMessages[0].geoloc[0];
     let endCoord = allLocalizedMessages[allLocalizedMessages.length - 1].geoloc[0];
 
     let routes = Math.floor(allLocalizedMessages.length / 23);
-    console.log("routes", routes);
+    console.log("Number of routes (23 geolocs per routes)", routes);
     for(let i=0; i<routes; i++){
       let waypoints = [];
-      let color = '#'+Math.floor(Math.random()*16777215).toString(16);
+      //let color = '#' + Math.floor(Math.random()*16777215).toString(16);
       messages = allLocalizedMessages.slice(i*23,(i+1)*23);
-      console.log("i*23", i*23);
+      /*console.log("i*23", i*23);
       console.log("(i+1)*23-1", (i+1)*23);
 
       console.log("messagesCount", messages.length);
-      console.log(messages);
+      console.log(messages);*/
 
       messages.forEach(message => {
         let coord = message.geoloc[0];
@@ -50,7 +49,7 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
         waypoints.push({location: latLng, stopover:true});
       });
 
-      console.log(waypoints);
+      //console.log(waypoints);
 
       if(waypoints.length<=23){
 
@@ -78,7 +77,7 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
             travelMode: 'DRIVING'
           }, function (response, status) {
             if (status === 'OK') {
-              console.log(response);
+              //console.log(response);
               directionsDisplay.setDirections(response);
             } else {
               console.log(status);
