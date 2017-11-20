@@ -66,7 +66,7 @@ battery = (cpx >> 3) & 0xff;
 cap = (cpx >> 10) & 3;
 
 // Store objects in parsedData array
-if (mode == 4 && altitude == 0) {
+if (mode === 4 && altitude === 0) {
     obj = {};
     obj.key = "temperature";
     obj.value = lat.toFixed(2);

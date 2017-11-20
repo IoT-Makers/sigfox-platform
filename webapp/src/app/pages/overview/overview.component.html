@@ -80,7 +80,7 @@
                     [zIndex]="3"
                     [latitude]="geoloc.lat"
                     [longitude]="geoloc.lng"
-                    [iconUrl]="'assets/img/marker-sigfox.png'">
+                    [iconUrl]="device.name.startsWith('Sensit') ? 'assets/img/sensit.png' : 'assets/img/marker-sigfox.png'">
                     <agm-info-window>
                       <strong><b>ID:</b> <span class="text-danger">{{device.id}}</span></strong>
                       <br>
