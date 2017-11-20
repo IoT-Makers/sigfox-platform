@@ -75,7 +75,7 @@ if (mode == 4 && altitude == 0) {
     parsedData.push(obj);
     obj = {};
     obj.key = "pressure";
-    obj.value = lng;
+    obj.value = lng.toFixed(2);
     obj.type = "number";
     obj.unit = "hPa";
     parsedData.push(obj);

@@ -1,19 +1,8 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-// import { Router } from '@angular/router';
-import {Message, Device, Category, Parser, User, Organization, FireLoopRef} from '../../shared/sdk/models';
-import {
-  RealTime,
-  MessageApi,
-  DeviceApi,
-  CategoryApi,
-  ParserApi,
-  UserApi,
-  OrganizationApi
-} from '../../shared/sdk/services';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Category, Device, FireLoopRef, Message, Parser} from '../../shared/sdk/models';
+import {CategoryApi, DeviceApi, MessageApi, ParserApi, RealTime} from '../../shared/sdk/services';
 
 import {Subscription} from "rxjs/Subscription";
-import {DOCUMENT} from "@angular/common";
-import {FullLayoutComponent} from "../../layouts/full-layout.component";
 import {DragulaService} from "ng2-dragula";
 
 
@@ -63,22 +52,24 @@ export class OverviewComponent implements OnInit,OnDestroy {
               private parserApi: ParserApi,
               private categoryApi: CategoryApi,
               private dragulaService: DragulaService) {
-
-    dragulaService.setOptions('second-bag', {
+    const bag: any = this.dragulaService.find('section-bag');
+    if (bag !== undefined )
+      this.dragulaService.destroy('section-bag');
+    this.dragulaService.setOptions('section-bag', {
       moves: function (el, container, handle) {
         return handle.className === 'card-header drag';
       }
     });
-    dragulaService.drag.subscribe((value) => {
+    this.dragulaService.drag.subscribe((value) => {
       this.onDrag(value.slice(1));
     });
-    dragulaService.drop.subscribe((value) => {
+    this.dragulaService.drop.subscribe((value) => {
       this.onDrop(value.slice(1));
     });
-    dragulaService.over.subscribe((value) => {
+    this.dragulaService.over.subscribe((value) => {
       this.onOver(value.slice(1));
     });
-    dragulaService.out.subscribe((value) => {
+    this.dragulaService.out.subscribe((value) => {
       this.onOut(value.slice(1));
     });
   }
