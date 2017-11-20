@@ -28,9 +28,9 @@
                   <br *ngIf="device.name">
                   <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                   <br>
-                  <strong><b>Date:</b> {{device.updatedAt | date:"dd/MM/yyyy"}}</strong>
+                  <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
                   <br>
-                  <strong><b>Time:</b> {{device.updatedAt | date:"HH:mm:ss"}}</strong>
+                  <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
                 </agm-info-window>
               </agm-marker>
               <!-- Circle -->
@@ -61,9 +61,9 @@
                   <br *ngIf="device.name">
                   <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                   <br>
-                  <strong><b>Date:</b> {{device.updatedAt | date:"dd/MM/yyyy"}}</strong>
+                  <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
                   <br>
-                  <strong><b>Time:</b> {{device.updatedAt | date:"HH:mm:ss"}}</strong>
+                  <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
                 </agm-info-window>
               </agm-marker>
             </ng-container>
@@ -84,6 +84,10 @@
         </div>
         <div *ngIf="!devices.length" class="card-block">
           No device yet...
+          <div class="sk-double-bounce">
+            <div class="sk-child sk-double-bounce1"></div>
+            <div class="sk-child sk-double-bounce2"></div>
+          </div>
         </div>
         <div *ngIf="devices.length>0" class="card-block">
 

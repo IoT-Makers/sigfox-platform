@@ -29,7 +29,7 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
     let allLocalizedMessages: Message[] = this.trackingComponent.allLocalizedMessages;
     let messages: Message[] = [];
     let startCoord = allLocalizedMessages[0].geoloc[0];
-    let endCoord = allLocalizedMessages[allLocalizedMessages.length - 1].geoloc[0];
+    let endCoord = allLocalizedMessages[allLocalizedMessages.length  - 1].geoloc[0];
 
     let routes = Math.floor(allLocalizedMessages.length / 23);
     console.log("Number of routes (23 geolocs per routes)", routes);

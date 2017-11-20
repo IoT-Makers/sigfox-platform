@@ -11,6 +11,7 @@ import {DataFilterPipe} from "./datafilterpipe";
 import {OverviewRoutingModule} from "./overview-routing.module";
 import { AgmCoreModule } from '@agm/core';
 import { MomentModule } from 'angular2-moment';
+import {DragulaModule} from "ng2-dragula";
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { MomentModule } from 'angular2-moment';
     MomentModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
-    })
+    }),
+    DragulaModule
   ],
   declarations: [
     OverviewComponent,

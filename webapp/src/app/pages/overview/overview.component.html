@@ -52,13 +52,20 @@
   </div>
 
 
-  <div class="row">
+  <div class="row dragdrop" [dragula]='"second-bag"'>
     <div class="col-sm-12 col-md-6">
-      <div *ngIf="devices.length>0" class="card">
-        <div class="card-header">
+      <div class="card">
+        <div class="card-header drag">
           <i class="fa fa-map-marker fa-lg text-tracking"></i> <strong>Map</strong>
         </div>
-        <div class="card-block">
+        <div *ngIf="!devices.length" class="card-block">
+          No device yet...
+          <div class="sk-double-bounce">
+            <div class="sk-child sk-double-bounce1"></div>
+            <div class="sk-child sk-double-bounce2"></div>
+          </div>
+        </div>
+        <div *ngIf="devices.length>0" class="card-block">
           <agm-map [latitude]="lat"
                    [longitude]="lng"
                    [zoom]="zoom"
@@ -81,9 +88,9 @@
                       <br *ngIf="device.name">
                       <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                       <br>
-                      <strong><b>Date:</b> {{device.updatedAt | date:"dd/MM/yyyy"}}</strong>
+                      <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
                       <br>
-                      <strong><b>Time:</b> {{device.updatedAt | date:"HH:mm:ss"}}</strong>
+                      <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
                     </agm-info-window>
                   </agm-marker>
                   <!-- Circle -->
@@ -114,9 +121,9 @@
                       <br *ngIf="device.name">
                       <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                       <br>
-                      <strong><b>Date:</b> {{device.updatedAt | date:"dd/MM/yyyy"}}</strong>
+                      <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
                       <br>
-                      <strong><b>Time:</b> {{device.updatedAt | date:"HH:mm:ss"}}</strong>
+                      <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
                     </agm-info-window>
                   </agm-marker>
                 </ng-container>
@@ -130,11 +137,15 @@
     </div>
     <div class="col-sm-12 col-md-6">
       <div class="card">
-        <div class="card-header">
+        <div class="card-header drag">
           <i class="fa fa-thermometer fa-lg text-device"></i> <strong>Devices</strong>
         </div>
         <div *ngIf="!devices.length" class="card-block">
           No device yet...
+          <div class="sk-double-bounce">
+            <div class="sk-child sk-double-bounce1"></div>
+            <div class="sk-child sk-double-bounce2"></div>
+          </div>
         </div>
         <div *ngIf="devices.length>0" class="card-block">
 
@@ -206,11 +217,15 @@
 
 
   <div class="card">
-    <div class="card-header">
+    <div class="card-header drag">
       <i class="fa fa-globe fa-lg"></i> <strong> Messages overview</strong>
     </div>
     <div *ngIf="!messages.length" class="card-block">
       No message yet...
+      <div class="sk-double-bounce">
+        <div class="sk-child sk-double-bounce1"></div>
+        <div class="sk-child sk-double-bounce2"></div>
+      </div>
     </div>
     <div *ngIf="messages.length>0" class="card-block">
       <div class="row mb-1">

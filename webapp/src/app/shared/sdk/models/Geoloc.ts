@@ -6,8 +6,8 @@ export interface GeolocInterface {
   "lat": number;
   "lng": number;
   "precision"?: number;
-  "id"?: number;
   "createdAt"?: Date;
+  "id"?: number;
   "updatedAt"?: Date;
 }
 
@@ -16,8 +16,8 @@ export class Geoloc implements GeolocInterface {
   "lat": number = 0;
   "lng": number = 0;
   "precision": number = 0;
-  "id": number = 0;
   "createdAt": Date = new Date(0);
+  "id": number = 0;
   "updatedAt": Date = new Date(0);
   constructor(data?: GeolocInterface) {
     Object.assign(this, data);
@@ -67,13 +67,13 @@ export class Geoloc implements GeolocInterface {
           name: 'precision',
           type: 'number'
         },
-        "id": {
-          name: 'id',
-          type: 'number'
-        },
         "createdAt": {
           name: 'createdAt',
           type: 'Date'
+        },
+        "id": {
+          name: 'id',
+          type: 'number'
         },
         "updatedAt": {
           name: 'updatedAt',
