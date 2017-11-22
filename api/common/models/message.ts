@@ -209,7 +209,7 @@ class Message {
           let entryGeoloc_sigfox = false;
           if(!deviceInstance.location)
             deviceInstance.location = [];
-          deviceInstance.location.forEach((geoloc: any, index: number) => {
+            deviceInstance.location.forEach((geoloc: any, index: number) => {
             if(geoloc.type === "geoloc_sigfox"){
               deviceInstance.location[index] = geoloc_sigfox; // Replace geoloc_sigfox with new one
               entryGeoloc_sigfox = true;

@@ -1,16 +1,19 @@
 <div class="animated fadeIn">
 
   <div class="row">
-  <div class="col-sm-12 col-md-6">
+  <div class="col-sm-12 col-md-12">
 
   <div class="card">
+    <div class="card-header">
+      <strong>Count messages</strong>
+    </div>
     <div class="card-block">
       <div class="row">
-        <div class="col-sm-5">
-          <h4 class="card-title mb-0">Count Messages</h4>
-          <!--<div class="small text-muted">November 2015</div>-->
-        </div><!--/.col-->
-        <div class="col-sm-7 hidden-sm-down">
+        <!--<div class="col-sm-5">-->
+          <!--<h4 class="card-title mb-0">Count Messages</h4>-->
+          <!--&lt;!&ndash;<div class="small text-muted">November 2015</div>&ndash;&gt;-->
+        <!--</div>&lt;!&ndash;/.col&ndash;&gt;-->
+        <div class="col col-12 pull-right">
           <button type="button" class="btn btn-primary float-right"><i class="fa fa-download"></i></button>
           <div class="btn-toolbar float-right" role="toolbar" aria-label="Toolbar with button groups">
             <div class="btn-group mr-1" data-toggle="buttons" aria-label="First group">
@@ -23,6 +26,7 @@
           </div>
         </div><!--/.col-->
       </div><!--/.row-->
+      <hr>
       <div class="chart-wrapper">
         <canvas *ngIf="messageChartData.length > 0" baseChart
                 [datasets]="messageChartData"
@@ -35,6 +39,45 @@
     </div>
   </div>
   <!--/.card-->
+
+    <div class="card">
+      <div class="card-header">
+        <strong>Devices data</strong>
+      </div>
+      <div class="card-block">
+        <div class="row">
+
+          <div class="col col-12 pull-right">
+            <button type="button" class="btn btn-primary float-right"><i class="fa fa-download"></i></button>
+          </div><!--/.col-->
+        </div><!--/.row-->
+        <div class="row">
+          <div class="col col-4">
+            <input type="text" required class="form-control" placeholder="Enter device ID" (keyup.enter)="getDeviceGraph()" [(ngModel)]="deviceId" [required]="true">
+          </div>
+          <div class="col col-4">
+            Start date & time:
+            <owl-date-time [(ngModel)]="dateBegin"></owl-date-time>
+          </div>
+          <div class="col col-4">
+            End date & time:
+            <owl-date-time [(ngModel)]="dateEnd"></owl-date-time>
+          </div>
+        </div>
+
+        <hr>
+        <div class="chart-wrapper">
+          <canvas *ngIf="deviceChartData.length > 0" baseChart
+                  [datasets]="deviceChartData"
+                  [labels]="deviceChartLabels"
+                  [options]="deviceChartOptions"
+                  [colors]="deviceChartColors"
+                  [legend]="deviceChartLegend"
+                  [chartType]="deviceChartType"></canvas>
+        </div>
+      </div>
+    </div>
+    <!--/.card-->
 
   </div>
   </div>

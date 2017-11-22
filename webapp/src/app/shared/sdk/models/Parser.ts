@@ -9,6 +9,7 @@ export interface ParserInterface {
   "name"?: string;
   "description"?: string;
   "function"?: string;
+  "available_properties"?: Array<any>;
   "id"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
@@ -21,6 +22,7 @@ export class Parser implements ParserInterface {
   "name": string = '';
   "description": string = '';
   "function": string = '';
+  "available_properties": Array<any> = <any>[];
   "id": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
@@ -70,6 +72,10 @@ export class Parser implements ParserInterface {
         "function": {
           name: 'function',
           type: 'string'
+        },
+        "available_properties": {
+          name: 'available_properties',
+          type: 'Array&lt;any&gt;'
         },
         "id": {
           name: 'id',
