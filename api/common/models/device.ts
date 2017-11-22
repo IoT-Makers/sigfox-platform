@@ -90,7 +90,6 @@ class Device {
       (err: any, device: any) => {
         if (err || !device ) {
           console.log(err);
-          return;
         } else {
           //console.log("device:", device);
           device = device.toJSON();
