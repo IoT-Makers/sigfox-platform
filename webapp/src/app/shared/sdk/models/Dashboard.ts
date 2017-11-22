@@ -46,6 +46,7 @@ export class Dashboard implements DashboardInterface {
       name: 'Dashboard',
       plural: 'Dashboards',
       path: 'Dashboards',
+      idName: 'id',
       properties: {
         "name": {
           name: 'name',

@@ -49,6 +49,7 @@ export class RoleMapping implements RoleMappingInterface {
       name: 'RoleMapping',
       plural: 'RoleMappings',
       path: 'RoleMappings',
+      idName: 'id',
       properties: {
         "id": {
           name: 'id',
@@ -71,7 +72,10 @@ export class RoleMapping implements RoleMappingInterface {
         role: {
           name: 'role',
           type: 'Role',
-          model: 'Role'
+          model: 'Role',
+          relationType: 'belongsTo',
+                  keyFrom: 'roleId',
+          keyTo: 'id'
         },
       }
     }

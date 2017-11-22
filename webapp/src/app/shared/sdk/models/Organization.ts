@@ -60,6 +60,7 @@ export class Organization implements OrganizationInterface {
       name: 'Organization',
       plural: 'Organizations',
       path: 'Organizations',
+      idName: 'id',
       properties: {
         "id": {
           name: 'id',
@@ -86,22 +87,36 @@ export class Organization implements OrganizationInterface {
         Members: {
           name: 'Members',
           type: 'User[]',
-          model: 'User'
+          model: 'User',
+          relationType: 'hasMany',
+          modelThrough: 'Organizationuser',
+          keyThrough: 'userId',
+          keyFrom: 'id',
+          keyTo: 'organizationId'
         },
         Messages: {
           name: 'Messages',
           type: 'Message[]',
-          model: 'Message'
+          model: 'Message',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'organizationId'
         },
         Devices: {
           name: 'Devices',
           type: 'Device[]',
-          model: 'Device'
+          model: 'Device',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'organizationId'
         },
         Categories: {
           name: 'Categories',
           type: 'Category[]',
-          model: 'Category'
+          model: 'Category',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'organizationId'
         },
       }
     }

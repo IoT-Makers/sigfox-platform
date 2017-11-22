@@ -77,6 +77,7 @@ export class Message implements MessageInterface {
       name: 'Message',
       plural: 'Messages',
       path: 'Messages',
+      idName: 'id',
       properties: {
         "deviceId": {
           name: 'deviceId',
@@ -143,17 +144,26 @@ export class Message implements MessageInterface {
         Device: {
           name: 'Device',
           type: 'Device',
-          model: 'Device'
+          model: 'Device',
+          relationType: 'belongsTo',
+                  keyFrom: 'DeviceId',
+          keyTo: 'id'
         },
         user: {
           name: 'user',
           type: 'User',
-          model: 'User'
+          model: 'User',
+          relationType: 'belongsTo',
+                  keyFrom: 'userId',
+          keyTo: 'id'
         },
         Organization: {
           name: 'Organization',
           type: 'Organization',
-          model: 'Organization'
+          model: 'Organization',
+          relationType: 'belongsTo',
+                  keyFrom: 'OrganizationId',
+          keyTo: 'id'
         },
       }
     }

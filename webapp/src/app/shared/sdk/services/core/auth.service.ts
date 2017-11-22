@@ -66,7 +66,7 @@ export class LoopBackAuth {
    * This method will set a flag in order to remember the current credentials
    **/
   public setToken(token: SDKToken): void {
-    this.token = Object.assign(this.token, token);
+    this.token = Object.assign({}, this.token, token);
     this.save();
   }
   /**
@@ -114,12 +114,14 @@ export class LoopBackAuth {
    **/
   public save(): boolean {
     if (this.token.rememberMe) {
-      this.persist('id', this.token.id);
-      this.persist('user', this.token.user);
-      this.persist('userId', this.token.userId);
-      this.persist('created', this.token.created);
-      this.persist('ttl', this.token.ttl);
-      this.persist('rememberMe', this.token.rememberMe);
+      let today = new Date();
+      let expires = new Date(today.getTime() + (this.token.ttl * 1000));
+      this.persist('id', this.token.id, expires);
+      this.persist('user', this.token.user, expires);
+      this.persist('userId', this.token.userId, expires);
+      this.persist('created', this.token.created, expires);
+      this.persist('ttl', this.token.ttl, expires);
+      this.persist('rememberMe', this.token.rememberMe, expires);
       return true;
     } else {
       return false;
@@ -151,11 +153,12 @@ export class LoopBackAuth {
    * @description
    * This method saves values to storage
    **/
-  protected persist(prop: string, value: any): void {
+  protected persist(prop: string, value: any, expires?: Date): void {
     try {
       this.storage.set(
         `${this.prefix}${prop}`,
-        (typeof value === 'object') ? JSON.stringify(value) : value
+        (typeof value === 'object') ? JSON.stringify(value) : value,
+        expires
       );
     }
     catch (err) {

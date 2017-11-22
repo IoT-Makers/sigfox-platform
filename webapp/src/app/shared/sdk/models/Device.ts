@@ -83,6 +83,7 @@ export class Device implements DeviceInterface {
       name: 'Device',
       plural: 'Devices',
       path: 'Devices',
+      idName: 'id',
       properties: {
         "id": {
           name: 'id',
@@ -149,27 +150,42 @@ export class Device implements DeviceInterface {
         Parser: {
           name: 'Parser',
           type: 'Parser',
-          model: 'Parser'
+          model: 'Parser',
+          relationType: 'belongsTo',
+                  keyFrom: 'ParserId',
+          keyTo: 'id'
         },
         Category: {
           name: 'Category',
           type: 'Category',
-          model: 'Category'
+          model: 'Category',
+          relationType: 'belongsTo',
+                  keyFrom: 'CategoryId',
+          keyTo: 'id'
         },
         Messages: {
           name: 'Messages',
           type: 'Message[]',
-          model: 'Message'
+          model: 'Message',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'deviceId'
         },
         user: {
           name: 'user',
           type: 'User',
-          model: 'User'
+          model: 'User',
+          relationType: 'belongsTo',
+                  keyFrom: 'userId',
+          keyTo: 'id'
         },
         Organization: {
           name: 'Organization',
           type: 'Organization',
-          model: 'Organization'
+          model: 'Organization',
+          relationType: 'belongsTo',
+                  keyFrom: 'OrganizationId',
+          keyTo: 'id'
         },
       }
     }

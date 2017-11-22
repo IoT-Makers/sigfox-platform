@@ -60,6 +60,7 @@ export class Parser implements ParserInterface {
       name: 'Parser',
       plural: 'Parsers',
       path: 'Parsers',
+      idName: 'id',
       properties: {
         "name": {
           name: 'name',
@@ -98,12 +99,18 @@ export class Parser implements ParserInterface {
         Devices: {
           name: 'Devices',
           type: 'Device[]',
-          model: 'Device'
+          model: 'Device',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'parserId'
         },
         Organization: {
           name: 'Organization',
           type: 'Organization',
-          model: 'Organization'
+          model: 'Organization',
+          relationType: 'belongsTo',
+                  keyFrom: 'OrganizationId',
+          keyTo: 'id'
         },
       }
     }

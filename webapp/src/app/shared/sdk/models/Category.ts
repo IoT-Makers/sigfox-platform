@@ -57,6 +57,7 @@ export class Category implements CategoryInterface {
       name: 'Category',
       plural: 'Categories',
       path: 'Categories',
+      idName: 'id',
       properties: {
         "name": {
           name: 'name',
@@ -95,7 +96,10 @@ export class Category implements CategoryInterface {
         Devices: {
           name: 'Devices',
           type: 'Device[]',
-          model: 'Device'
+          model: 'Device',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'categoryId'
         },
       }
     }

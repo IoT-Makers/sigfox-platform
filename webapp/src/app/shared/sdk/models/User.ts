@@ -78,6 +78,7 @@ export class User implements UserInterface {
       name: 'User',
       plural: 'users',
       path: 'users',
+      idName: 'id',
       properties: {
         "avatar": {
           name: 'avatar',
@@ -129,32 +130,54 @@ export class User implements UserInterface {
         accessTokens: {
           name: 'accessTokens',
           type: 'AccessToken[]',
-          model: 'AccessToken'
+          model: 'AccessToken',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
         },
         roles: {
           name: 'roles',
           type: 'Role[]',
-          model: 'Role'
+          model: 'Role',
+          relationType: 'hasMany',
+          modelThrough: 'RoleMapping',
+          keyThrough: 'roleId',
+          keyFrom: 'id',
+          keyTo: 'principalId'
         },
         Messages: {
           name: 'Messages',
           type: 'Message[]',
-          model: 'Message'
+          model: 'Message',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
         },
         Devices: {
           name: 'Devices',
           type: 'Device[]',
-          model: 'Device'
+          model: 'Device',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
         },
         Categories: {
           name: 'Categories',
           type: 'Category[]',
-          model: 'Category'
+          model: 'Category',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
         },
         Organizations: {
           name: 'Organizations',
           type: 'Organization[]',
-          model: 'Organization'
+          model: 'Organization',
+          relationType: 'hasMany',
+          modelThrough: 'Organizationuser',
+          keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'userId'
         },
       }
     }

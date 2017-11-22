@@ -6,6 +6,7 @@ export interface ReceptionInterface {
   "lat"?: number;
   "lng"?: number;
   "RSSI"?: number;
+  "SNR"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
 }
@@ -15,6 +16,7 @@ export class Reception implements ReceptionInterface {
   "lat": number = 0;
   "lng": number = 0;
   "RSSI": number = 0;
+  "SNR": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   constructor(data?: ReceptionInterface) {
@@ -48,6 +50,7 @@ export class Reception implements ReceptionInterface {
       name: 'Reception',
       plural: 'Receptions',
       path: 'Receptions',
+      idName: 'id',
       properties: {
         "id": {
           name: 'id',
@@ -63,6 +66,10 @@ export class Reception implements ReceptionInterface {
         },
         "RSSI": {
           name: 'RSSI',
+          type: 'number'
+        },
+        "SNR": {
+          name: 'SNR',
           type: 'number'
         },
         "createdAt": {

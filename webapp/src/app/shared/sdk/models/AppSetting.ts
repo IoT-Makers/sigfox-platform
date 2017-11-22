@@ -46,6 +46,7 @@ export class AppSetting implements AppSettingInterface {
       name: 'AppSetting',
       plural: 'AppSettings',
       path: 'AppSettings',
+      idName: 'id',
       properties: {
         "key": {
           name: 'key',

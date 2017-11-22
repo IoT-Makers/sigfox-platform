@@ -50,6 +50,7 @@ export class Geoloc implements GeolocInterface {
       name: 'Geoloc',
       plural: 'Geolocs',
       path: 'Geolocs',
+      idName: 'id',
       properties: {
         "type": {
           name: 'type',
