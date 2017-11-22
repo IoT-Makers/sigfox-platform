@@ -106,6 +106,10 @@ This project uses Loopback 3, Angular 4, Fireloop and MongoDB.
 
 ### API
 
+Below is the functional/sequential diagram representing the message journey.
+
+![message_journey](doc/img/message_journey.png)
+
 ### Webapp
 
 ## Roadmap

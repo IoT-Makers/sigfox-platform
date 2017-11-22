@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
@@ -19,10 +19,14 @@ export class BaseStationsComponent implements OnInit {
     let headers = new HttpHeaders({
       'Authorization': 'Basic ' + btoa(this.backendApiLogin + ':' + this.backendApiPassword),
       'Access-Control-Allow-Origin': '*',
-      'Accept': 'application/json',
-      'Content-Type': 'application/json; charset=utf-8'
+      'Access-Control-Allow-Methods': 'GET',
+      'Access-Control-Allow-Headers': 'X-Requested-With'
     });
 
+    /*
+    'Accept': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8'
+    */
     /*let headers = new HttpHeaders();
     //headers.set('Access-Control-Allow-Origin', '*');
     headers.set('Authorization', 'Basic ' + btoa(this.backendApiLogin + ':' + this.backendApiPassword));
@@ -33,8 +37,9 @@ export class BaseStationsComponent implements OnInit {
       {headers: headers}
     ).subscribe(data => {
       this.result = data;
-      console.log(data['rinfos']);
+      console.log(data);
     });
+
   }
 
 }

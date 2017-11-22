@@ -59,7 +59,7 @@
     "dataSource": "db",
     "public": true
   },
-  "BaseStation": {
+  "Reception": {
     "dataSource": "db",
     "public": true
   },

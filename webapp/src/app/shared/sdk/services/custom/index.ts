@@ -6,7 +6,7 @@ export * from './Device';
 export * from './Parser';
 export * from './Category';
 export * from './Message';
-export * from './BaseStation';
+export * from './Reception';
 export * from './User';
 export * from './Organization';
 export * from './Geoloc';

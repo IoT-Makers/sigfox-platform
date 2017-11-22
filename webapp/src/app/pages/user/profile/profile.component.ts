@@ -59,7 +59,7 @@ export class ProfileComponent implements OnInit {
     this.getUser();
     this.getDevAccessToken();
 
-    this.callbackURL = this.document.location.origin + "/api/Messages/";
+    this.callbackURL = this.document.location.origin + "/api/Messages/sigfox";
     //this.accessTokens = this.user.accessTokens;
   }
 

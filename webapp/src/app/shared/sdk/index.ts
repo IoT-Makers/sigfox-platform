@@ -55,7 +55,7 @@ import { DeviceApi } from './services/custom/Device';
 import { ParserApi } from './services/custom/Parser';
 import { CategoryApi } from './services/custom/Category';
 import { MessageApi } from './services/custom/Message';
-import { BaseStationApi } from './services/custom/BaseStation';
+import { ReceptionApi } from './services/custom/Reception';
 import { UserApi } from './services/custom/User';
 import { OrganizationApi } from './services/custom/Organization';
 import { GeolocApi } from './services/custom/Geoloc';
@@ -99,7 +99,7 @@ export class SDKBrowserModule {
         ParserApi,
         CategoryApi,
         MessageApi,
-        BaseStationApi,
+        ReceptionApi,
         UserApi,
         OrganizationApi,
         GeolocApi,

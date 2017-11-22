@@ -1,6 +1,5 @@
 {
-  "name": "Category",
-  "plural": "Categories",
+  "name": "Reception",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -16,7 +15,7 @@
       {
         "method": "stats",
         "endpoint": "/stats",
-        "description": "Statistical information for Asset registers.",
+        "description": "Statistical information for Message registers.",
         "type": "model",
         "count": {
           "on": "createdAt",
@@ -26,31 +25,44 @@
     ]
   },
   "properties": {
-    "name": {
-      "type": "string"
+    "id": {
+      "type": "string",
+      "id": true,
+      "required": true
     },
-    "properties": {
-      "type": [
-        "object"
-      ]
+    "lat": {
+      "type": "number"
     },
-    "description": {
-      "type": "string"
+    "lng": {
+      "type": "number"
+    },
+    "RSSI": {
+      "type": "number"
+    },
+    "SNR": {
+      "type": "number"
     }
   },
   "validations": [],
-  "relations": {
-    "Devices": {
-      "type": "hasMany",
-      "model": "Device"
-    }
-  },
+  "relations": {},
   "acls": [
     {
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$unauthenticated",
       "permission": "DENY"
+    },
+    {
+      "accessType": "CREATE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW"
     },
     {
       "accessType": "*",

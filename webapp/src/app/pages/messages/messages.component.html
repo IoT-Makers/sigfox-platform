@@ -41,7 +41,7 @@
             <mfDefaultSorter by="RSSI">RSSI</mfDefaultSorter>
           </th>
           <th class="text-center" style="width: 10%">
-            <mfDefaultSorter by="RSSI">Base Stations</mfDefaultSorter>
+            <mfDefaultSorter by="baseStationId">Base Station</mfDefaultSorter>
           </th>
           <th class="text-center" style="width: 10%">
             Options
@@ -59,7 +59,9 @@
               </div>
             </div>
           </td>
-          <td class="text-center text-device">{{item.deviceId}}</td>
+          <td class="text-center text-device">
+            {{item.deviceId}}
+          </td>
           <td class="text-center">
             <div *ngIf="item.geoloc">
               <div *ngFor="let geoloc of item.geoloc">
@@ -94,8 +96,16 @@
             </div>
           </td>
           <td class="text-center">{{item.seqNumber}}</td>
-          <td class="text-center">{{item.RSSI}}</td>
-          <td class="text-center"></td>
+          <td class="text-center">
+            <ng-container *ngFor="let reception of item.reception">
+              {{item.reception.RSSI}}
+            </ng-container>
+          </td>
+          <td class="text-center">
+            <ng-container *ngFor="let reception of item.reception">
+              {{item.reception.id}}
+            </ng-container>
+          </td>
           <td class="text-center">
             <button type="button" class="btn btn-danger btn-round" (click)="remove(item)">
               <i class="fa fa-trash"></i>

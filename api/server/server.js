@@ -7,7 +7,6 @@ var cookieParser = require('cookie-parser');
 var app = module.exports = loopback();
 
 app.use(cookieParser());
-
 app.start = function() {
   // start the web server
   var server = app.listen(function() {

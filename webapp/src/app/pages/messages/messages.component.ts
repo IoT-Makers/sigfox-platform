@@ -51,7 +51,7 @@ export class MessagesComponent implements OnInit,OnDestroy {
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     //this.messageRef = this.userRef.make(this.user).child<Message>('Messages');
     this.messageSub = this.messageRef.on('change',
-      {limit: 1000, order: 'id DESC'}
+      {limit: 1000, order: 'id DESC', include: ['Device']}
     ).subscribe((messages: Message[]) => {
       this.messages = messages;
       console.log(this.messages);

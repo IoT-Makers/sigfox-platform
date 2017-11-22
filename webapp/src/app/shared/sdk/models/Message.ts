@@ -1,7 +1,6 @@
 /* tslint:disable */
 import {
   Device,
-  BaseStation,
   User,
   Organization
 } from '../index';
@@ -9,10 +8,11 @@ import {
 declare var Object: any;
 export interface MessageInterface {
   "deviceId": string;
-  "data"?: string;
   "time": number;
-  "RSSI"?: number;
   "seqNumber": number;
+  "data"?: string;
+  "ack"?: boolean;
+  "reception"?: Array<any>;
   "geoloc"?: Array<any>;
   "parsed_data"?: Array<any>;
   "id"?: number;
@@ -23,17 +23,17 @@ export interface MessageInterface {
   "organizationId"?: string;
   "OrganizationId"?: string;
   Device?: Device;
-  BaseStations?: BaseStation[];
   user?: User;
   Organization?: Organization;
 }
 
 export class Message implements MessageInterface {
   "deviceId": string = '';
-  "data": string = '';
   "time": number = 0;
-  "RSSI": number = 0;
   "seqNumber": number = 0;
+  "data": string = '';
+  "ack": boolean = false;
+  "reception": Array<any> = <any>[];
   "geoloc": Array<any> = <any>[];
   "parsed_data": Array<any> = <any>[];
   "id": number = 0;
@@ -44,7 +44,6 @@ export class Message implements MessageInterface {
   "organizationId": string = '';
   "OrganizationId": string = '';
   Device: Device = null;
-  BaseStations: BaseStation[] = null;
   user: User = null;
   Organization: Organization = null;
   constructor(data?: MessageInterface) {
@@ -83,21 +82,25 @@ export class Message implements MessageInterface {
           name: 'deviceId',
           type: 'string'
         },
-        "data": {
-          name: 'data',
-          type: 'string'
-        },
         "time": {
           name: 'time',
-          type: 'number'
-        },
-        "RSSI": {
-          name: 'RSSI',
           type: 'number'
         },
         "seqNumber": {
           name: 'seqNumber',
           type: 'number'
+        },
+        "data": {
+          name: 'data',
+          type: 'string'
+        },
+        "ack": {
+          name: 'ack',
+          type: 'boolean'
+        },
+        "reception": {
+          name: 'reception',
+          type: 'Array&lt;any&gt;'
         },
         "geoloc": {
           name: 'geoloc',
@@ -141,11 +144,6 @@ export class Message implements MessageInterface {
           name: 'Device',
           type: 'Device',
           model: 'Device'
-        },
-        BaseStations: {
-          name: 'BaseStations',
-          type: 'BaseStation[]',
-          model: 'BaseStation'
         },
         user: {
           name: 'user',

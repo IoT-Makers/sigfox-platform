@@ -10,18 +10,15 @@ import { JSONSearchParams } from '../core/search.params';
 import { ErrorHandler } from '../core/error.service';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';
-import { Message } from '../../models/Message';
+import { Reception } from '../../models/Reception';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { Device } from '../../models/Device';
-import { User } from '../../models/User';
-import { Organization } from '../../models/Organization';
 
 
 /**
- * Api services for the `Message` model.
+ * Api services for the `Reception` model.
  */
 @Injectable()
-export class MessageApi extends BaseLoopBackApi {
+export class ReceptionApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(Http) protected http: Http,
@@ -32,96 +29,6 @@ export class MessageApi extends BaseLoopBackApi {
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
     super(http,  connection,  models, auth, searchParams, errorHandler);
-  }
-
-  /**
-   * Fetches belongsTo relation Device.
-   *
-   * @param {any} id Message id
-   *
-   * @param {boolean} refresh 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Message` object.)
-   * </em>
-   */
-  public getDevice(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Messages/:id/Device";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Fetches belongsTo relation user.
-   *
-   * @param {any} id Message id
-   *
-   * @param {boolean} refresh 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Message` object.)
-   * </em>
-   */
-  public getUser(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Messages/:id/user";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Fetches belongsTo relation Organization.
-   *
-   * @param {any} id Message id
-   *
-   * @param {boolean} refresh 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Message` object.)
-   * </em>
-   */
-  public getOrganization(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Messages/:id/Organization";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
   }
 
   /**
@@ -137,13 +44,13 @@ export class MessageApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Message` object.)
+   * This usually means the response is a `Reception` object.)
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Messages";
+    "/Receptions";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -156,7 +63,7 @@ export class MessageApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id Message id
+   * @param {any} id Reception id
    *
    * @param {object} data Request data.
    *
@@ -168,13 +75,13 @@ export class MessageApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Message` object.)
+   * This usually means the response is a `Reception` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Messages/:id";
+    "/Receptions/:id";
     let _routeParams: any = {
       id: id
     };
@@ -191,21 +98,25 @@ export class MessageApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @returns {object} An empty reference that will be
+   * @param {string} deviceId the device ID
+   *
+   * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * Data properties:
-   *
-   *  - `result` – `{any}` - 
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Reception` object.)
+   * </em>
    */
-  public myRemote(customHeaders?: Function): Observable<any> {
+  public getBaseStationsByDeviceId(deviceId: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Messages/my-remote";
+    "/Receptions/base-stations";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
+    if (typeof deviceId !== 'undefined' && deviceId !== null) _urlParams.deviceId = deviceId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -227,13 +138,13 @@ export class MessageApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Message` object.)
+   * This usually means the response is a `Reception` object.)
    * </em>
    */
   public stats(range: any, custom: any = {}, where: any = {}, groupBy: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Messages/stats";
+    "/Receptions/stats";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -247,9 +158,9 @@ export class MessageApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Message`.
+   * i.e. `Reception`.
    */
   public getModelName() {
-    return "Message";
+    return "Reception";
   }
 }

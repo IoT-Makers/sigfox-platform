@@ -76,17 +76,22 @@
           </div>
           <div class="card-block">
             <p>Type: <strong>DATA</strong> | <strong>UPLINK</strong></p>
+            <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see all the base stations that received a message)</i></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
-            <p>Use HTTP Method: <strong>POST</strong></p>
-            <p>Headers: <strong>Authorization</strong> : <span class="text-warning">{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</span></p>
+            <p>Use HTTP Method: <strong>PUT</strong></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</span></p>
             <p>Body: <code class="text-center">{{
               '{
               "deviceId": "{device}",
               "time": {time},
-              "data": "{data}",
-              "RSSI": {rssi},
               "seqNumber": {seqNumber},
-              "baseStationId": "{station}"
+              "data": "{data}",
+              "reception": [{
+              "id": "{station}",
+              "RSSI": {rssi},
+              "SNR": {snr}
+              }],
+              "duplicate": {duplicate}
               }'
               }}</code>
             </p>
@@ -104,17 +109,22 @@
           </div>
           <div class="card-block">
             <p>Type: <strong>DATA</strong> | <strong>BIDIR</strong></p>
+            <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see all the base stations that received a message)</i></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
-            <p>Use HTTP Method: <strong>POST</strong></p>
-            <p>Headers: <strong>Authorization</strong> : <span class="text-warning">{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</span></p>
+            <p>Use HTTP Method: <strong>PUT</strong></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</span></p>
             <p>Body: <code class="text-center">{{
               '{
               "deviceId": "{device}",
               "time": {time},
-              "data": "{data}",
-              "RSSI": {rssi},
               "seqNumber": {seqNumber},
-              "baseStationId": "{station}",
+              "data": "{data}",
+              "reception": [{
+              "id": "{station}",
+              "RSSI": {rssi},
+              "SNR": {snr}
+              }],
+              "duplicate": {duplicate},
               "ack": {ack}
               }'
               }}</code>
@@ -135,15 +145,17 @@
             <p>Type: <strong>SERVICE</strong> | <strong>GEOLOC</strong></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>PUT</strong></p>
-            <p>Headers: <strong>Authorization</strong> : <span class="text-warning
-">{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</span></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</span></p>
             <p>Body: <code class="text-center">{{
               '{
               "deviceId": "{device}",
               "time": {time},
-              "RSSI": {rssi},
               "seqNumber": {seqNumber},
-              "baseStationId": "{station}",
+              "reception": [{
+              "id": "{station}",
+              "RSSI": {rssi},
+              "SNR": {snr}
+              }],
               "geoloc": [{
               "type": "geoloc_sigfox",
               "lat": {lat},

@@ -30,19 +30,24 @@
       "type": "string",
       "required": true
     },
-    "data": {
-      "type": "string"
-    },
     "time": {
       "type": "number",
       "required": true
     },
-    "RSSI": {
-      "type": "number"
-    },
     "seqNumber": {
       "type": "number",
       "required": true
+    },
+    "data": {
+      "type": "string"
+    },
+    "ack": {
+      "type": "boolean"
+    },
+    "reception": {
+      "type": [
+        "Reception"
+      ]
     },
     "geoloc": {
       "type": [
@@ -68,10 +73,6 @@
     "Organization": {
       "type": "belongsTo",
       "model": "Organization"
-    },
-    "BaseStations": {
-      "type": "hasAndBelongsToMany",
-      "model": "BaseStation"
     }
   },
   "acls": [

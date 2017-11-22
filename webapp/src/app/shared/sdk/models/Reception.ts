@@ -1,42 +1,40 @@
 /* tslint:disable */
-import {
-  Message,
-  GeoPoint
-} from '../index';
 
 declare var Object: any;
-export interface BaseStationInterface {
-  "geolocation"?: GeoPoint;
-  "id"?: number;
+export interface ReceptionInterface {
+  "id": string;
+  "lat"?: number;
+  "lng"?: number;
+  "RSSI"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  Messages?: Message[];
 }
 
-export class BaseStation implements BaseStationInterface {
-  "geolocation": GeoPoint = <any>null;
-  "id": number = 0;
+export class Reception implements ReceptionInterface {
+  "id": string = '';
+  "lat": number = 0;
+  "lng": number = 0;
+  "RSSI": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  Messages: Message[] = null;
-  constructor(data?: BaseStationInterface) {
+  constructor(data?: ReceptionInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `BaseStation`.
+   * i.e. `Reception`.
    */
   public static getModelName() {
-    return "BaseStation";
+    return "Reception";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of BaseStation for dynamic purposes.
+  * This method creates an instance of Reception for dynamic purposes.
   **/
-  public static factory(data: BaseStationInterface): BaseStation{
-    return new BaseStation(data);
+  public static factory(data: ReceptionInterface): Reception{
+    return new Reception(data);
   }
   /**
   * @method getModelDefinition
@@ -47,16 +45,24 @@ export class BaseStation implements BaseStationInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'BaseStation',
-      plural: 'BaseStations',
-      path: 'BaseStations',
+      name: 'Reception',
+      plural: 'Receptions',
+      path: 'Receptions',
       properties: {
-        "geolocation": {
-          name: 'geolocation',
-          type: 'GeoPoint'
-        },
         "id": {
           name: 'id',
+          type: 'string'
+        },
+        "lat": {
+          name: 'lat',
+          type: 'number'
+        },
+        "lng": {
+          name: 'lng',
+          type: 'number'
+        },
+        "RSSI": {
+          name: 'RSSI',
           type: 'number'
         },
         "createdAt": {
@@ -69,11 +75,6 @@ export class BaseStation implements BaseStationInterface {
         },
       },
       relations: {
-        Messages: {
-          name: 'Messages',
-          type: 'Message[]',
-          model: 'Message'
-        },
       }
     }
   }
