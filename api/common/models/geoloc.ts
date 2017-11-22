@@ -41,6 +41,9 @@ class Geoloc {
 
   // Get all geoloc messages belonging to a device (by id and/or date)
   getGeolocsByDeviceId(deviceId: string, dateBegin: string, dateEnd: string, next: Function): void {
+
+    let messages:any;
+
     // Get messages of device ID where geoloc is defined and filtered by date
     this.model.app.models.Device.findById(
       deviceId,
@@ -62,14 +65,14 @@ class Geoloc {
       (err: any, device: any) => {
         if (err || !device){
           console.error("Error searching tracking for device " + deviceId, err);
-          return;
         } else {
           device = device.toJSON();
-          let messages =  device.Messages;
+          messages =  device.Messages;
           //console.log("device:", device);
           //console.log("messages", messages);
-          next(err, messages);
+
         }
+        next(err, messages);
       });
   }
 }

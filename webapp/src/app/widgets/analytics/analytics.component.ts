@@ -45,14 +45,13 @@ export class AnalyticsComponent implements OnInit {
 
   public data = [];
 
+  // Messages graph
+
   private graphRange: string = 'hourly';
 
   private messageChartData:Array<any> = [];
   private messageChartLabels:Array<any> = [];
-  // private messageChartOptions:any = {
-  //   animation: false,
-  //   responsive: true
-  // };
+
   public messageChartOptions:any = {
     responsive: true,
     maintainAspectRatio: true,
@@ -67,6 +66,30 @@ export class AnalyticsComponent implements OnInit {
   ];
   private messageChartLegend:boolean = true;
   private messageChartType:string = 'bar';
+
+
+  // Devices Graph
+  private deviceId: string = "";
+  private dateBegin: Date ;
+  private dateEnd: Date ;
+
+  private deviceChartData:Array<any> = [];
+  private deviceChartLabels:Array<any> = [];
+
+  public deviceChartOptions:any = {
+    responsive: true,
+    maintainAspectRatio: true,
+    legend: {
+      display: true,
+    }
+  };
+  private deviceChartColors:Array<any> = [
+    {
+      backgroundColor: '#63c2de'
+    }
+  ];
+  private deviceChartLegend:boolean = true;
+  private deviceChartType:string = 'line';
 
   constructor(private rt: RealTime,
               private messageApi: MessageApi,
@@ -94,26 +117,16 @@ export class AnalyticsComponent implements OnInit {
 
     this.getMessagesGraph(this.graphRange);
 
-    // Not needed because messageRef.stat is already realtime...
-
-    // this.messageSub = this.messageRef.on('child_added', {limit: 1, order: 'createdAt DESC'}).subscribe(
-    //   (messages: Message[]) => {
-    //     console.log(messages);
-    //     console.log("onChange");
-    //     this.getMessagesGraph(this.graphRange);
-    //   });
+    //this.dateBegin.setDate(this.dateBegin.getDate() - 7);
 
     // Devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceRef.on('change',
-      {limit: 100, order: 'updatedAt DESC', include: ['Category']}).subscribe(
+      {limit: 100, order: 'updatedAt DESC', include: ['Category', 'Messages']}).subscribe(
       (devices: Device[]) => {
         this.devices = devices;
-        //console.log("Devices", this.devices);
-
+        console.log("Devices", this.devices);
       });
-
-
 
 
   }
@@ -156,6 +169,17 @@ export class AnalyticsComponent implements OnInit {
       // console.log("Labels:",this.messageChartLabels);
       this.messageChartData.push({ data: this.data, label: 'Messages'});
     });
+  }
+
+  getDeviceGraph():void{
+
+    this.deviceChartLabels = [];
+    this.deviceChartData   = [];
+    this.deviceApi.graphData(this.deviceId, this.dateBegin ? this.dateBegin.toISOString() : null, this.dateEnd ? this.dateEnd.toISOString(): null).subscribe((result:any) => {
+      console.log(result);
+      this.deviceChartLabels = result.result.xAxis;
+      this.deviceChartData = result.result.yAxis
+    })
   }
 
   ngOnDestroy(): void {

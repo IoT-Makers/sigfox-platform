@@ -24,7 +24,7 @@ class Parser {
 
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
-    console.log('Parser: Before Save');
+    //console.log('Parser: Before Save:', ctx.instance.function);
     next();
   }
   // Example Remote Method

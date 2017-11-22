@@ -35,6 +35,11 @@
     },
     "function": {
       "type": "string"
+    },
+    "available_properties": {
+      "type": [
+        "object"
+      ]
     }
   },
   "validations": [],
