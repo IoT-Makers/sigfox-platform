@@ -36,18 +36,18 @@ class Message {
 
 
     // Obtain the userId with the access_token of ctx
-    let userId = req.accessToken.userId;
+    const userId = req.accessToken.userId;
     // Create a new message object
     let message = new this.model;
     message = data;
-    let duplicate = data.duplicate;
-    let parserId = data.parserId;
-    let categoryId = data.parserId;
+    const duplicate = data.duplicate;
+    const parserId = data.parserId;
+    const categoryId = data.parserId;
 
 
 
-    if(!message.deviceId || !message.time || !message.seqNumber)
-      next("Missing 'deviceId', 'time' and 'seqNumber'", message);
+    if (!message.deviceId || !message.time || !message.seqNumber)
+      next('Missing "deviceId", "time" and "seqNumber"', message);
     // Set the createdAt time
     message.createdAt = new Date(message.time * 1000);
 
@@ -60,30 +60,30 @@ class Message {
 
 
     // Create a new device object
-    let device = new this.model.app.models.Device;
+    const device = new this.model.app.models.Device;
     device.id = data.deviceId;
     device.userId = userId;
-    if(data.deviceNamePrefix)
-      device.name = data.deviceNamePrefix + "_" + data.deviceId;
-    if(data.parserId)
+    if (data.deviceNamePrefix)
+      device.name = data.deviceNamePrefix + '_' + data.deviceId;
+    if (data.parserId)
       device.parserId = data.parserId;
-    if(data.categoryId)
+    if (data.categoryId)
       device.categoryId = data.categoryId;
 
 
     // Check if the device exists
     this.model.app.models.Device.findOrCreate(
-      {where: {id: data.deviceId}}, //find
-      device, //create
-      (err: any, deviceInstance: any, created: boolean) => { //callback
+      {where: {id: data.deviceId}}, // find
+      device, // create
+      (err: any, deviceInstance: any, created: boolean) => { // callback
         if (err) {
-          console.error("Error creating device.", err);
+          console.error('Error creating device.', err);
           next(err, data);
         } else {
           if (created)
-            console.log("Created new device.");
+            console.log('Created new device.');
           else
-            console.log("Found an existing device.");
+            console.log('Found an existing device.');
 
 
           // If message is a duplicate
@@ -102,7 +102,7 @@ class Message {
                 next(err, data);
               } else {
                 if (messageInstance) {
-                  console.log("Found the corresponding message and storing reception in it.");
+                  console.log('Found the corresponding message and storing reception in it.');
                   messageInstance.reception.push(data.reception[0]);
                   this.model.upsert(
                     messageInstance,
@@ -111,35 +111,35 @@ class Message {
                         console.error(err);
                         next(err, messageInstance);
                       } else {
-                        console.log("Updated message as: ", messageInstance);
+                        console.log('Updated message as: ', messageInstance);
                         next(null, messageInstance);
                       }
                     });
 
                 } else {
                   // No corresponding message found
-                  let err = "Error - No corresponding message found, did you first receive a message containing duplicate = false?";
+                  const err = 'Error - No corresponding message found, did you first receive a message containing duplicate = false?';
                   console.error(err);
                   next(err, data);
                 }
               }
             });
-          } //if(duplicate)
+          } // if(duplicate)
 
 
           // If message contains sigfox geoloc
           else if (data.geoloc) {
             // Now checking where geoloc sigfox is in the location array so it can be updated
             let entryGeoloc_sigfox = false;
-            if(!deviceInstance.location)
+            if (!deviceInstance.location)
               deviceInstance.location = [];
             deviceInstance.location.forEach((geoloc: any, index: number) => {
-              if(geoloc.type === "geoloc_sigfox"){
+              if (geoloc.type === 'geoloc_sigfox') {
                 deviceInstance.location[index] = data.geoloc[0]; // Replace geoloc_sigfox with new one
                 entryGeoloc_sigfox = true;
               }
             });
-            if(!entryGeoloc_sigfox)
+            if (!entryGeoloc_sigfox)
               deviceInstance.location.push(data.geoloc[0]);
 
             // Update the device
@@ -150,10 +150,9 @@ class Message {
                   console.log(err);
                   next(err, data);
                 } else {
-                  console.log("Updated device with latest geoloc_sigfox");
+                  console.log('Updated device with latest geoloc_sigfox');
                 }
               });
-
 
 
             this.model.findOrCreate(
@@ -167,13 +166,13 @@ class Message {
                 }
               },
               message,
-              (err: any, messageInstance: any, created: boolean) => { //callback
+              (err: any, messageInstance: any, created: boolean) => { // callback
                 if (err) {
                   console.log(err);
                   next(err, data);
                 } else {
-                  if (created){
-                    console.log("Created new message.");
+                  if (created) {
+                    console.log('Created new message.');
 
                     next(null, message);
 
@@ -192,7 +191,7 @@ class Message {
                           console.log(err);
                           next(err, data);
                         } else {
-                          console.log("Updated message with latest geoloc_sigfox.");
+                          console.log('Updated message with latest geoloc_sigfox.');
 
                           next(null, messageInstance);
                         }
@@ -202,7 +201,7 @@ class Message {
               });
 
 
-          } //else if(data.geoloc)
+          } // else if(data.geoloc)
 
 
           // Parse message, create message, send result to backend with downlink payload or not
@@ -217,24 +216,24 @@ class Message {
                   } else if(parserInstance) {
                     // Here we will decode the Sigfox payload and search for geoloc to be extracted and store in the Message
                     // @TODO: run it in another container because it can crash the app if something goes wrong...
-                    let fn = Function("payload", parserInstance.function);
-                    let parsed_data = fn(data.data);
-                    let geoloc = new this.model.app.models.Geoloc;
+                    const fn = Function('payload', parserInstance.function);
+                    const parsed_data = fn(data.data);
+                    const geoloc = new this.model.app.models.Geoloc;
                     let parsed_dataHasGeoloc = false;
                     message.parsed_data = parsed_data;
 
                     // Check if the parsed data contains a "geoloc" key and store it in the message property to be stored
                     parsed_data.forEach((o: any) => {
-                      if (o.key === "geoloc") {
+                      if (o.key === 'geoloc') {
                         geoloc.type = o.value;
                         parsed_dataHasGeoloc = true
-                        console.log("There is geoloc in the parsed data.");
+                        console.log('There is geoloc in the parsed data.');
                       }
-                      else if (o.key === "lat")
+                      else if (o.key === 'lat')
                         geoloc.lat = o.value;
-                      else if (o.key === "lng")
+                      else if (o.key === 'lng')
                         geoloc.lng = o.value;
-                      else if (o.key === "precision")
+                      else if (o.key === 'precision')
                         geoloc.precision = o.value;
                     });
 
@@ -253,7 +252,7 @@ class Message {
                             console.log(err);
                             next(err, data);
                           } else {
-                            console.log("Updated device as: ", deviceInstance);
+                            console.log('Updated device as: ', deviceInstance);
                           }
                         });
                     }
@@ -261,7 +260,7 @@ class Message {
                     this.createMessageAndSendResponse(message, next);
                   }
                 });
-            } //if (deviceInstance.parserId || parserId)
+            } // if (deviceInstance.parserId || parserId)
 
             else {
               this.createMessageAndSendResponse(message, next);
@@ -281,7 +280,8 @@ class Message {
           console.error(err);
           next(err, messageInstance);
         } else {
-          console.log("Created message as: ", messageInstance);
+          console.log('Created message as: ', messageInstance);
+          // Ack from BIDIR callback
           if(message.ack) {
             let result;
             this.model.app.models.Device.findOne({where: {id: message.deviceId}}, function (err: any, device: any) {
@@ -290,7 +290,7 @@ class Message {
                   [message.deviceId]: {
                     downlinkData: device.dl_payload
                   }
-                }
+                };
               } else {
                 result = {
                   [message.deviceId]: {

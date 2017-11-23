@@ -54,17 +54,14 @@ class Device {
 
   graphData(deviceId: string, dateBegin: string, dateEnd: string, next: Function): void {
 
-    let result: any = {
+    const result: any = {
       xAxis: [],
       yAxis: []
     };
 
     let messages: any;
 
-    let arrayOfObject: Array<any> = [];
-    let groupByTimestamp: any;
-    let groupByKey: any;
-
+    const arrayOfObject: Array<any> = [];
 
     this.model.app.models.Device.findById(
       deviceId,
@@ -73,7 +70,7 @@ class Device {
           {
             relation: 'Messages',
             scope: {
-              //fields: ['parsed_data'],
+              // fields: ['parsed_data'],
               where: {
                 and: [
                   {createdAt: {gte: dateBegin ? moment(dateBegin) : new Date(0)}},
@@ -88,28 +85,28 @@ class Device {
         if (err || !device ) {
           console.log(err);
         } else {
-          //console.log("device:", device);
+          // console.log("device:", device);
           device = device.toJSON();
 
           messages = device.Messages;
-          //console.log("messages", messages.length);
+          // console.log("messages", messages.length);
 
 
           messages.forEach((message: any, messageIndex: number) => {
             if (message.parsed_data) {
-              result.xAxis.push(moment(message.createdAt).format("DD MMM YY h:mm a"));
-              message.parsed_data.forEach((data: any, dataIndex: number)=> {
+              result.xAxis.push(moment(message.createdAt).format('DD MMM YY h:mm a'));
+              message.parsed_data.forEach((data: any, dataIndex: number) => {
                 data.timestamp = message.createdAt;
                 arrayOfObject.push(data);
 
-                //console.log(data.key);
+                // console.log(data.key);
               });
             }
           });
 
-          result.yAxis = _.groupBy(arrayOfObject, "key");
-          //groupByKey = _.groupBy(arrayOfObject, "key");
-          //console.log(groupByKey);
+          result.yAxis = _.groupBy(arrayOfObject, 'key');
+          // groupByKey = _.groupBy(arrayOfObject, "key");
+          // console.log(groupByKey);
 
           // for (var key in groupByKey) {
           //   let obj: any;

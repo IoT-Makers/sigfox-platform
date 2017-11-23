@@ -7,7 +7,7 @@ import { Model } from '@mean-expert/model';
  * Model Decorator
  **/
 
-let request = require('request');
+const request = require('request');
 
 @Model({
   hooks: {
@@ -27,10 +27,10 @@ let request = require('request');
   }
 })
 
-class reception {
-  private sigfoxBackendBaseApiUrl: string = 'https://backend.sigfox.com/api/';
-  private backendApiLogin: string = "";
-  private backendApiPassword: string = "";
+class Reception {
+  private sigfoxBackendBaseApiUrl: String = 'https://backend.sigfox.com/api/';
+  private backendApiLogin: String = '';
+  private backendApiPassword: String = '';
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {}
@@ -47,7 +47,7 @@ class reception {
 
   // Get all base stations reached by the latest message belonging to a device
   getBaseStationsByDeviceId(deviceId: string, next: Function): void {
-    let options = {
+    const options = {
       url: this.sigfoxBackendBaseApiUrl + 'devices/' + deviceId + '/messages?limit=1',
       headers: {
         'Authorization': 'Basic ' + new Buffer(this.backendApiLogin + ':' + this.backendApiPassword).toString('base64'),
@@ -56,8 +56,8 @@ class reception {
     };
 
     function callback(error: any, response: any, body: any) {
-      if (!error && response.statusCode == 200) {
-        let res = JSON.parse(body);
+      if (!error && response.statusCode === 200) {
+        const res = JSON.parse(body);
         console.log(res.data[0].rinfos);
       }
     }
@@ -66,4 +66,4 @@ class reception {
   }
 }
 
-module.exports = reception;
+module.exports = Reception;

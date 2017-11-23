@@ -1,5 +1,5 @@
 import {Model} from '@mean-expert/model';
-import {AccessToken} from "../../../webapp/src/app/shared/sdk/models/AccessToken";
+import {AccessToken} from '../../../webapp/src/app/shared/sdk/models/AccessToken';
 /**
  * @module user
  * @description
@@ -78,12 +78,12 @@ class user {
     //   ownerId: userInstance.id,
     // };
 
-    let adminRole = {
-      name: "admin"
+    const adminRole = {
+      name: 'admin'
     };
 
-    let userRole = {
-      name: "user"
+    const userRole = {
+      name: 'user'
     };
 
 
@@ -91,16 +91,16 @@ class user {
     this.model.count(
       (err: any, countUser: any) => {
         if (err) {
-          console.log(err)
+          console.log(err);
         } else {
           console.log(countUser);
-          if(countUser==1){
+          if (countUser === 1) {
 
             // Create admin
             this.model.app.models.Role.findOrCreate(
-              {where: {name: "admin"}}, // Find
+              {where: {name: 'admin'}}, // Find
               adminRole, // Create
-              (err: any, instance: any, created: boolean) => { //Callback
+              (err: any, instance: any, created: boolean) => { // Callback
                 if (err) {
                   console.error('error creating device', err);
                 } else if (created) {
@@ -110,12 +110,12 @@ class user {
                     principalId: userInstance.id
                   }, (err: any, principalInstance: any) => {
                     if (err) {
-                      console.log(err)
+                      console.log(err);
                     } else {
                       console.log(principalInstance);
                       next();
                     }
-                  })
+                  });
 
                 } else {
                   console.log('found role', instance);
@@ -124,21 +124,21 @@ class user {
                     principalId: userInstance.id
                   }, (err: any, principalInstance: any) => {
                     if (err) {
-                      console.log(err)
+                      console.log(err);
                     } else {
                       console.log(principalInstance);
                       next();
                     }
-                  })
+                  });
                 }
               });
           }else{
 
             // Create user
             this.model.app.models.Role.findOrCreate(
-              {where: {name: "user"}}, // Find
+              {where: {name: 'user'}}, // Find
               userRole, // Create
-              (err: any, instance: any, created: boolean) => { //Callback
+              (err: any, instance: any, created: boolean) => { // Callback
                 if (err) {
                   console.error('error creating device', err);
                 } else if (created) {
@@ -148,12 +148,12 @@ class user {
                     principalId: userInstance.id
                   }, (err: any, principalInstance: any) => {
                     if (err) {
-                      console.log(err)
+                      console.log(err);
                     } else {
                       console.log(principalInstance);
                       next();
                     }
-                  })
+                  });
 
                 } else {
                   console.log('found role', instance);
@@ -162,12 +162,12 @@ class user {
                     principalId: userInstance.id
                   }, (err: any, principalInstance: any) => {
                     if (err) {
-                      console.log(err)
+                      console.log(err);
                     } else {
                       console.log(principalInstance);
                       next();
                     }
-                  })
+                  });
                 }
               });
           }
