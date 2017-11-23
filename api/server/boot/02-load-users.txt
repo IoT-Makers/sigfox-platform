@@ -2,18 +2,14 @@
 
 module.exports = function(app){
 
-  if (app.dataSources.db.name !== 'Memory') {
-    return;
-  }
-
   var Role = app.models.Role;
   var User = app.models.user;
   var RoleMapping = app.models.RoleMapping;
 
   User.create([
-    {username: 'Antoine', email: 'antoine@admin.com', password: 'password', emailVerified: 'true', avatar: 'http://www.tresnjica.com/img/daycare.png', createdAt: new Date()},
-    {username: 'Louis', email: 'louis@admin.com', password: 'password', emailVerified: 'true', avatar: 'http://www.tresnjica.com/img/daycare.png', createdAt: new Date()},
-    {username: 'Bob', email: 'bob@user.com', password: 'password', emailVerified: 'true', avatar: 'http://www.tresnjica.com/img/daycare.png', createdAt: new Date()}
+    {username: 'Antoine', email: 'antoine@admin.com', password: 'password', emailVerified: 'true', avatar: 'https://i.pinimg.com/originals/7c/c7/a6/7cc7a630624d20f7797cb4c8e93c09c1.png', createdAt: new Date()},
+    {username: 'Louis', email: 'louis@admin.com', password: 'password', emailVerified: 'true', avatar: 'https://i.pinimg.com/originals/7c/c7/a6/7cc7a630624d20f7797cb4c8e93c09c1.png', createdAt: new Date()},
+    {username: 'Bob', email: 'bob@user.com', password: 'password', emailVerified: 'true', avatar: 'https://i.pinimg.com/originals/7c/c7/a6/7cc7a630624d20f7797cb4c8e93c09c1.png', createdAt: new Date()}
   ], function (err, users) {
     if (err) throw err;
 
