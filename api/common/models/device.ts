@@ -54,9 +54,6 @@ class Device {
 
   graphData(deviceId: string, dateBegin: string, dateEnd: string, next: Function): void {
 
-    console.log("begin", dateBegin);
-    console.log("end", dateEnd);
-
     let result: any = {
       xAxis: [],
       yAxis: []
@@ -100,7 +97,7 @@ class Device {
 
           messages.forEach((message: any, messageIndex: number) => {
             if (message.parsed_data) {
-              result.xAxis.push(message.createdAt);
+              result.xAxis.push(moment(message.createdAt).format("DD MMM YY h:mm a"));
               message.parsed_data.forEach((data: any, dataIndex: number)=> {
                 data.timestamp = message.createdAt;
                 arrayOfObject.push(data);
@@ -110,25 +107,36 @@ class Device {
             }
           });
 
-          groupByKey = _.groupBy(arrayOfObject, "key");
+          result.yAxis = _.groupBy(arrayOfObject, "key");
+          //groupByKey = _.groupBy(arrayOfObject, "key");
           //console.log(groupByKey);
 
-          for (var key in groupByKey) {
-            let obj: any;
-            obj = {
-              label: "",
-              data: []
-            };
-            // check also if property is not inherited from prototype
-            if (groupByKey.hasOwnProperty(key)) {
-              obj.label = key;
-              groupByKey[key].forEach((item: any) => {
-                obj.data.push(item.value);
-              });
-
-              result.yAxis.push(obj);
-            }
-          }
+          // for (var key in groupByKey) {
+          //   let obj: any;
+          //   obj = {
+          //     label: "",
+          //     data: []
+          //   };
+          //   let info: any;
+          //   info = {
+          //     property: "",
+          //     type: "",
+          //     unit: ""
+          //   };
+          //   // check also if property is not inherited from prototype
+          //   if (groupByKey.hasOwnProperty(key)) {
+          //     obj.label = key;
+          //     info.property = key;
+          //     groupByKey[key].forEach((item: any) => {
+          //       obj.data.push(item.value);
+          //       info.type = item.type;
+          //       info.unit = item.unit;
+          //     });
+          //
+          //     result.yAxis.push(obj);
+          //     result.info.push(info);
+          //   }
+          // }
 
 
           // result.yAxis = _.groupBy(result.yAxis, "key");

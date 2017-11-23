@@ -52,16 +52,30 @@
           </div><!--/.col-->
         </div><!--/.row-->
         <div class="row">
-          <div class="col col-4">
-            <input type="text" required class="form-control" placeholder="Enter device ID" (keyup.enter)="getDeviceGraph()" [(ngModel)]="deviceId" [required]="true">
-          </div>
-          <div class="col col-4">
+
+          <div class="col col-6">
             Start date & time:
             <owl-date-time [(ngModel)]="dateBegin"></owl-date-time>
           </div>
-          <div class="col col-4">
+          <div class="col col-6">
             End date & time:
             <owl-date-time [(ngModel)]="dateEnd"></owl-date-time>
+          </div>
+
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col col-2"><label>Device:</label></div>
+          <div class="col col-4">
+            <!--<input type="text" required class="form-control" placeholder="Enter device ID" (keyup.enter)="getDeviceGraph()" [(ngModel)]="deviceId">-->
+
+            <select  class="form-control" size="1" [(ngModel)]="deviceId">
+              <option [ngValue]="device.id" *ngFor="let device of devices">{{device.id}} {{device.name ? " - " + device.name : ""}}</option>
+
+            </select>
+          </div>
+          <div class="col col-4">
+            <button class="btn btn-success" (click)="getDeviceGraph()"><i class="fa fa-search"></i> Search</button>
           </div>
         </div>
 

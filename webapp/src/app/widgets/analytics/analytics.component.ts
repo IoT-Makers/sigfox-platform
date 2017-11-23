@@ -70,8 +70,9 @@ export class AnalyticsComponent implements OnInit {
 
   // Devices Graph
   private deviceId: string = "";
-  private dateBegin: Date ;
-  private dateEnd: Date ;
+
+  private dateEnd: Date = new Date();
+  private dateBegin: Date = new Date();
 
   private deviceChartData:Array<any> = [];
   private deviceChartLabels:Array<any> = [];
@@ -83,11 +84,7 @@ export class AnalyticsComponent implements OnInit {
       display: true,
     }
   };
-  private deviceChartColors:Array<any> = [
-    {
-      backgroundColor: '#63c2de'
-    }
-  ];
+  private deviceChartColors:Array<any> = [];
   private deviceChartLegend:boolean = true;
   private deviceChartType:string = 'line';
 
@@ -117,8 +114,6 @@ export class AnalyticsComponent implements OnInit {
 
     this.getMessagesGraph(this.graphRange);
 
-    //this.dateBegin.setDate(this.dateBegin.getDate() - 7);
-
     // Devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceRef.on('change',
@@ -127,6 +122,8 @@ export class AnalyticsComponent implements OnInit {
         this.devices = devices;
         console.log("Devices", this.devices);
       });
+
+    this.dateBegin.setDate(this.dateBegin.getDate() - 7);
 
 
   }
@@ -177,9 +174,55 @@ export class AnalyticsComponent implements OnInit {
     this.deviceChartData   = [];
     this.deviceApi.graphData(this.deviceId, this.dateBegin ? this.dateBegin.toISOString() : null, this.dateEnd ? this.dateEnd.toISOString(): null).subscribe((result:any) => {
       console.log(result);
+
       this.deviceChartLabels = result.result.xAxis;
-      this.deviceChartData = result.result.yAxis
+
+      let groupByKey:any = result.result.yAxis;
+      for (var key in groupByKey) {
+        let obj: any;
+        obj = {
+          label: "",
+          data: []
+        };
+
+        let colorOption:any = {
+          //backgroundColor: 'transparent',
+          borderColor: "",
+          pointHoverBackgroundColor: '#fff',
+          borderWidth: 1,
+          pointRadius: 0
+        }
+
+        // check also if property is not inherited from prototype
+        if (groupByKey.hasOwnProperty(key)) {
+
+          groupByKey[key].forEach((item: any) => {
+            if(typeof item.value === "number" || item.type == "number"){
+              obj.label = key;
+              obj.data.push(item.value);
+            }else{
+              obj.data.push(null);
+            }
+          });
+
+          if(obj.label){
+            this.deviceChartData.push(obj);
+          }
+
+          this.deviceChartColors.push(colorOption);
+
+        }
+      }
+
+      console.log(this.deviceChartLabels);
+      console.log(this.deviceChartData);
+
+      //this.deviceChartData = result.result.yAxis
     })
+  }
+
+  searchDevice(context:any):void{
+    console.log("search", context);
   }
 
   ngOnDestroy(): void {
