@@ -92,7 +92,7 @@
         <div *ngIf="devices.length>0" class="card-block">
 
           <!--Table-->
-          <table class="table table-hover table-outline">
+          <table class="table d-lg-table table-hover table-outline">
             <thead class="thead-inverse">
             <tr>
               <th class="text-center">ID</th>
@@ -260,7 +260,7 @@
         </div>
         <div class="card-footer">
           <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="update(deviceToEdit)"><i
-            class="fa fa-dot-circle-o"></i> Update
+            class="fa fa-check"></i> Update
           </button>
           <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
         </div>

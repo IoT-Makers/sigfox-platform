@@ -5,8 +5,6 @@ import {CategoryApi, DeviceApi, RealTime} from '../../shared/sdk/services';
 import {Subscription} from "rxjs/Subscription";
 
 
-
-
 @Component({
   selector: 'app-devices',
   templateUrl: './devices.component.html',

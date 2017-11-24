@@ -80,7 +80,7 @@
                     [zIndex]="3"
                     [latitude]="geoloc.lat"
                     [longitude]="geoloc.lng"
-                    [iconUrl]="device.name.startsWith('Sensit') ? 'assets/img/sensit.png' : 'assets/img/marker-sigfox.png'">
+                    [iconUrl]="device.name ? (device.name.startsWith('Sensit') ? 'assets/img/sensit.png' : 'assets/img/marker-sigfox.png') : 'assets/img/marker-sigfox.png'">
                     <agm-info-window>
                       <strong><b>ID:</b> <span class="text-danger">{{device.id}}</span></strong>
                       <br>
@@ -150,7 +150,7 @@
         <div *ngIf="devices.length>0" class="card-block">
 
           <!--Table-->
-          <table class="table table-hover table-outline">
+          <table class="table d-lg-table table-hover table-outline">
             <thead class="thead-inverse">
             <tr>
               <th class="text-center">ID</th>
@@ -236,28 +236,28 @@
           </div>
         </div>
       </div>
-      <table class="table table-striped table-responsive" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+      <table class="table d-lg-table table-striped table-responsive" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
         <thead class="thead-inverse">
         <tr>
-          <th class="text-center" style="width: 10%">
+          <th class="text-center">
             <mfDefaultSorter by="createdAt">Date</mfDefaultSorter>
           </th>
-          <th class="text-center" style="width: 20%">
+          <th class="text-center">
             <mfDefaultSorter by="data">Data</mfDefaultSorter>
           </th>
-          <th class="text-center" style="width: 10%">
+          <th class="text-center">
             <mfDefaultSorter by="deviceId">Device</mfDefaultSorter>
           </th>
-          <th class="text-center" style="width: 20%">
+          <th class="text-center">
             <mfDefaultSorter by="geoloc">Geoloc</mfDefaultSorter>
           </th>
-          <th class="text-center" style="width: 10%">
+          <th class="text-center">
             <mfDefaultSorter by="seqNumber">Seq Number</mfDefaultSorter>
           </th>
-          <th class="text-center" style="width: 20%">
+          <th class="text-center">
             <mfDefaultSorter by="reception">Reception</mfDefaultSorter>
           </th>
-          <th class="text-center" style="width: 10%">
+          <th class="text-center">
             Options
           </th>
         </tr>
@@ -302,7 +302,7 @@
           <td class="text-center">
             <p *ngFor="let reception of item.reception">
               <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success" aria-hidden="true"></i>
-              <i *ngIf="reception.RSSI <= -120" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
+              <i *ngIf="reception.RSSI < -120" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
               {{reception.RSSI}}
               <span>&nbsp;</span>
               <i title="Base Station" class="fa fa-podcast text-primary" aria-hidden="true"></i>

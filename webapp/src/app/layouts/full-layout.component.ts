@@ -1,8 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 
-import {LoginComponent} from "../pages/user/login/login.component";
-
 import {Message, Device, Category, Parser, User, Organization, FireLoopRef} from '../shared/sdk/models';
 import {
   RealTime,

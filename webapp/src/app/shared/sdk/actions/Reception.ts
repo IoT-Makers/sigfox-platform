@@ -20,7 +20,9 @@ Object.assign(BaseLoopbackActionsFactory<Reception>(ReceptionActionTypes), {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId the device ID
+   * @param {object} data Request data.
+   *
+   *  - `data` – `{object}` - the userId and deviceId
    * @param {any} meta (optional).
    * 
    */

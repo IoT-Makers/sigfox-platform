@@ -16,11 +16,11 @@ const request = require('request');
   remotes: {
     getBaseStationsByDeviceId: {
       accepts: [
-        {arg: 'deviceId', type: 'string', required: true, description: 'the device ID'}
+        {arg: 'data', type: 'object', required: true, description: 'the userId and deviceId', http: { source: 'body' }}
       ],
       http: {
         path: '/base-stations',
-        verb: 'get'
+        verb: 'post'
       },
       returns: {type: [], root: true}
     }
@@ -29,8 +29,6 @@ const request = require('request');
 
 class Reception {
   private sigfoxBackendBaseApiUrl: String = 'https://backend.sigfox.com/api/';
-  private backendApiLogin: String = '';
-  private backendApiPassword: String = '';
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {}
@@ -46,23 +44,38 @@ class Reception {
   }
 
   // Get all base stations reached by the latest message belonging to a device
-  getBaseStationsByDeviceId(deviceId: string, next: Function): void {
-    const options = {
-      url: this.sigfoxBackendBaseApiUrl + 'devices/' + deviceId + '/messages?limit=1',
-      headers: {
-        'Authorization': 'Basic ' + new Buffer(this.backendApiLogin + ':' + this.backendApiPassword).toString('base64'),
-        'Content-Type': 'application/json'
-      }
-    };
+  getBaseStationsByDeviceId(data: any, next: Function): void {
 
-    function callback(error: any, response: any, body: any) {
-      if (!error && response.statusCode === 200) {
-        const res = JSON.parse(body);
-        console.log(res.data[0].rinfos);
-      }
-    }
+    this.model.app.models.user.findById(
+      data.userId,
+      {},
+      (err: any, userInstance: any) => {
+        if (err) {
+          console.error(err);
+          next(err, userInstance);
+        } else {
+          const sigfoxBackendApiLogin = userInstance.sigfoxBackendApiLogin;
+          const sigfoxBackendApiPassword = userInstance.sigfoxBackendApiPassword;
 
-    request(options, callback);
+          const options = {
+            url: this.sigfoxBackendBaseApiUrl + 'devices/' + data.deviceId + '/messages?limit=1',
+            headers: {
+              'Authorization': 'Basic ' + new Buffer(sigfoxBackendApiLogin + ':' + sigfoxBackendApiPassword).toString('base64')
+            }
+          };
+
+          request(options, function (error: any, response: any, body: any) {
+            let res: any = [];
+            if (!error && response.statusCode === 200) {
+              body = JSON.parse(body);
+              res = body.data[0].rinfos;
+            } else {
+              console.error(options.url + ' ' + response.statusCode);
+            }
+            next(null, res);
+          });
+        }
+      });
   }
 }
 

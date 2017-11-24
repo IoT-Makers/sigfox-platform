@@ -8,40 +8,116 @@
           My Profile
         </div>
         <div class="card-block">
-          <div><b><i class="fa fa-envelope" aria-hidden="true"></i><span style="margin-right:1em"></span> Email:</b> {{user.email}}
+          <div>
+            <b>
+              <i class="fa fa-user" aria-hidden="true"></i>
+              <span class="mr-1"></span> Username:
+            </b> {{user.username}}
           </div>
           <hr>
-          <div class="embed-responsive"><b><i class="fa fa-user" aria-hidden="true"></i><span style="margin-right:1em"></span> Avatar:</b> {{user.avatar}}
+          <div>
+            <b>
+              <i class="fa fa-envelope" aria-hidden="true"></i>
+              <span class="mr-1"></span> Email:
+            </b> {{user.email}}
           </div>
           <hr>
-          <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Created:</b> {{user.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}
+          <div class="embed-responsive">
+            <b>
+              <i class="fa fa-id-card-o" aria-hidden="true"></i>
+              <span class="mr-1"></span> Avatar:
+            </b> {{user.avatar}}
           </div>
           <hr>
-          <div><b><i class="fa fa-calendar" aria-hidden="true"></i><span style="margin-right:1em"></span> Updated:</b> {{user.updatedAt | date:"yyyy/MM/dd HH:mm:ss"}}
+          <div>
+            <b>
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+              <span class="mr-1"></span> Created:
+            </b> {{user.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}
+          </div>
+          <hr>
+          <div>
+            <b>
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+              <span class="mr-1"></span> Updated:
+            </b> {{user.updatedAt | date:"yyyy/MM/dd HH:mm:ss"}}
           </div>
           <hr>
           <div *ngIf="user.emailVerified; then verifiedEmail else unverifiedEmail"></div>
           <ng-template #verifiedEmail>
-            <div style='color:green'><b><i class="fa fa-check-circle" aria-hidden="true"></i><span
-              style="margin-right:1em"></span> Email verified</b></div>
+            <div class="text-success">
+              <b>
+                <i class="fa fa-check-circle" aria-hidden="true"></i>
+                <span class="mr-1"></span> Email verified
+              </b>
+            </div>
           </ng-template>
           <ng-template #unverifiedEmail>
-            <div style='color:red'><b><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span
-              style="margin-right:1em"></span> Please verify your email</b></div>
+            <div class="text-danger">
+              <b>
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                <span class="mr-1"></span> Please verify your email
+              </b>
+            </div>
           </ng-template>
         </div>
+        <div class="card-footer mt-1">
+          <button class="btn btn-sm btn-info" (click)="updateUserModal.show()">Modify</button>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <h3>Sigfox Backend API Access</h3>
+  <hr>
+  <div class="row">
+    <div class="col-12">
+      <accordion>
+        <accordion-group>
+          <div accordion-heading>
+            Edit Access
+          </div>
+          <div class="card-block">
+            <form (ngSubmit)="saveSigfoxBackendApiAccess()" class="form-horizontal" #editSigfoxBackendApiAccessForm="ngForm">
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label font-weight-bold">Login</label>
+                <div class="col-md-10">
+                  <input type="text" class="form-control" placeholder="{{user.sigfoxBackendApiLogin ? user.sigfoxBackendApiLogin : 'Sigfox Backend API login'}}" name="sigfoxBackendApiLogin" [(ngModel)]="user.sigfoxBackendApiLogin">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label font-weight-bold">Password</label>
+                <div class="col-md-10">
+                  <input type="text" class="form-control" placeholder="{{user.sigfoxBackendApiPassword ? user.sigfoxBackendApiPassword : 'Sigfox Backend API password'}}" name="sigfoxBackendApiPassword" [(ngModel)]="user.sigfoxBackendApiPassword">
+                </div>
+              </div>
+            </form>
+          </div>
+          <button class="btn btn-sm btn-primary" [disabled]="!editSigfoxBackendApiAccessForm.form.valid" (click)="saveSigfoxBackendApiAccess()"><i
+            class="fa fa-check"></i> Save
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="removeSigfoxBackendApiAccess()"><i class="fa fa-ban"></i> Clear</button>
+        </accordion-group>
+      </accordion>
     </div>
   </div>
 
   <h3>Developer Access Tokens</h3>
   <hr>
   <div class="row">
-    <div class="col col-12">
-      <div class="btn-group" data-toggle="buttons">
-        <button class="mb-1 btn btn-success" (click)="createDevAccessToken()"><i class="fa fa-plus"></i> Create new</button>
-        <button class="mb-1 btn btn-danger" (click)="deleteDevAccessToken()"><i class="fa fa-ban"></i> Delete latest</button>
-      </div>
+    <div class="col-12">
+      <accordion>
+        <accordion-group>
+          <div accordion-heading>
+            Edit Access
+          </div>
+          <div class="card-block">
+            <p><span class="font-weight-bold">Current token: </span>{{devAccessToken ? devAccessToken.id : "Please create a developer access token bellow." }}</p>
+          </div>
+          <button class="btn btn-sm btn-success" (click)="createDevAccessToken()"><i class="fa fa-plus"></i> Create new</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteDevAccessToken()"><i class="fa fa-ban"></i> Delete latest</button>
+        </accordion-group>
+      </accordion>
     </div>
   </div>
 
@@ -74,9 +150,9 @@
           <div accordion-heading>
             <strong class="text-success">UPLINK</strong> - Sigfox Backend Callback details
           </div>
-          <div class="card-block">
+          <div>
             <p>Type: <strong>DATA</strong> | <strong>UPLINK</strong></p>
-            <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see all the base stations that received a message)</i></p>
+            <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see all the base stations that received the message)</i></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>PUT</strong></p>
             <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</span></p>
@@ -109,7 +185,7 @@
           </div>
           <div class="card-block">
             <p>Type: <strong>DATA</strong> | <strong>BIDIR</strong></p>
-            <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see all the base stations that received a message)</i></p>
+            <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see all the base stations that received the message)</i></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>PUT</strong></p>
             <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{devAccessToken ? devAccessToken.id : "Please create a developer access token first" }}</span></p>
@@ -172,3 +248,37 @@
     </div>
   </div>
 </div>
+
+
+<div bsModal #updateUserModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="updateUserModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Update your profile</h4>
+        <button type="button" class="close" (click)="updateUserModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="updateUser()" class="form-horizontal" #editForm="ngForm">
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Username</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" placeholder="{{user.username}}" name="user.username" [(ngModel)]="user.username">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Avatar</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" placeholder="{{user.avatar}}" name="user.avatar" [(ngModel)]="user.avatar">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="updateUserModal.hide()">Close</button>
+        <button type="button" class="btn btn-success" (click)="updateUser()">Update</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

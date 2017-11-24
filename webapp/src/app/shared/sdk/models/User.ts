@@ -13,6 +13,8 @@ export interface UserInterface {
   "avatar"?: string;
   "lastLogin"?: Date;
   "location"?: any;
+  "sigfoxBackendApiLogin"?: string;
+  "sigfoxBackendApiPassword"?: string;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -33,6 +35,8 @@ export class User implements UserInterface {
   "avatar": string = 'https://www.shareicon.net/data/128x128/2016/08/04/806683_man_512x512.png';
   "lastLogin": Date = new Date(0);
   "location": any = <any>null;
+  "sigfoxBackendApiLogin": string = '';
+  "sigfoxBackendApiPassword": string = '';
   "realm": string = '';
   "username": string = '';
   "email": string = '';
@@ -92,6 +96,14 @@ export class User implements UserInterface {
         "location": {
           name: 'location',
           type: 'any'
+        },
+        "sigfoxBackendApiLogin": {
+          name: 'sigfoxBackendApiLogin',
+          type: 'string'
+        },
+        "sigfoxBackendApiPassword": {
+          name: 'sigfoxBackendApiPassword',
+          type: 'string'
         },
         "realm": {
           name: 'realm',

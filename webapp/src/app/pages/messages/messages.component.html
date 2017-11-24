@@ -19,34 +19,34 @@
           </div>
         </div>
       </div>
-      <table class="table table-striped table-responsive" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+      <table class="table d-lg-table table-hover table-responsive" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
         <thead class="thead-inverse">
         <tr>
-          <th class="text-center" style="width: 10%">
+          <th class="text-center">
             <mfDefaultSorter by="createdAt">Date</mfDefaultSorter>
           </th>
-          <th class="text-center" style="width: 20%">
+          <th class="text-center">
             <mfDefaultSorter by="data">Data</mfDefaultSorter>
           </th>
-          <th class="text-center" style="width: 10%">
+          <th class="text-center">
             <mfDefaultSorter by="deviceId">Device</mfDefaultSorter>
           </th>
-          <th class="text-center" style="width: 20%">
+          <th class="text-center">
             <mfDefaultSorter by="geoloc">Geoloc</mfDefaultSorter>
           </th>
-          <th class="text-center" style="width: 10%">
+          <th class="text-center">
             <mfDefaultSorter by="seqNumber">Seq Number</mfDefaultSorter>
           </th>
-          <th class="text-center" style="width: 20%">
+          <th class="text-center">
             <mfDefaultSorter by="reception">Reception</mfDefaultSorter>
           </th>
-          <th class="text-center" style="width: 10%">
+          <th class="text-center">
             Options
           </th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let item of mf.data">
+        <tr *ngFor="let item of mf.data" (click)="showBaseStations(item.deviceId)">
           <td class="text-center">{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
           <td class="text-center">
             <span class="text-message">{{item.data}}</span>
@@ -96,7 +96,7 @@
           <td class="text-center">
             <p *ngFor="let reception of item.reception">
               <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success" aria-hidden="true"></i>
-              <i *ngIf="reception.RSSI <= -120" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
+              <i *ngIf="reception.RSSI < -120" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
               {{reception.RSSI}}
               <span>&nbsp;</span>
               <i title="Base Station" class="fa fa-podcast text-primary" aria-hidden="true"></i>
@@ -124,3 +124,51 @@
     </div>
   </div>
 </div>
+
+
+
+<div bsModal #baseStationMap="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="baseStationMap" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Base Stations that received the message</h4>
+        <button type="button" class="close" (click)="baseStationMap.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <agm-map [latitude]="receptions[0] ? toInt(receptions[0].lat) : 49"
+                 [longitude]="receptions[0] ? toInt(receptions[0].lng) : 2"
+                 [zoom]="7">
+          <ng-container *ngFor="let reception of receptions">
+            <agm-marker
+              [zIndex]="3"
+              [latitude]="toInt(reception.lat)"
+              [longitude]="toInt(reception.lng)"
+              [iconUrl]="'assets/img/marker-base-station.png'">
+              <agm-info-window>
+                <strong><b>ID:</b> {{reception.tap}}</strong>
+              </agm-info-window>
+            </agm-marker>
+            <!-- Circle -->
+            <agm-circle [zIndex]="1"
+                        [strokePosition]="CENTER"
+                        [strokeWeight]="1"
+                        [strokeColor]="'#2333d1'"
+                        [fillOpacity]="0.15"
+                        [fillColor]="'#2333d1'"
+                        [latitude]="toInt(reception.lat)"
+                        [longitude]="toInt(reception.lng)"
+                        [radius]="50000">
+            </agm-circle>
+            <!-- End Circle -->
+          </ng-container>
+        </agm-map>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="baseStationMap.hide()">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+

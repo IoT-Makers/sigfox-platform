@@ -98,7 +98,9 @@ export class ReceptionApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId the device ID
+   * @param {object} data Request data.
+   *
+   *  - `data` – `{object}` - the userId and deviceId
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -109,14 +111,15 @@ export class ReceptionApi extends BaseLoopBackApi {
    * This usually means the response is a `Reception` object.)
    * </em>
    */
-  public getBaseStationsByDeviceId(deviceId: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
+  public getBaseStationsByDeviceId(data: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Receptions/base-stations";
     let _routeParams: any = {};
-    let _postBody: any = {};
+    let _postBody: any = {
+      data: data
+    };
     let _urlParams: any = {};
-    if (typeof deviceId !== 'undefined' && deviceId !== null) _urlParams.deviceId = deviceId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

@@ -1,15 +1,23 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
-import { Message, User, FireLoopRef } from '../../shared/sdk/models';
-import { RealTime, MessageApi, UserApi } from '../../shared/sdk/services';
-import {Subscription} from "rxjs/Subscription";
+import {FireLoopRef, Message} from '../../shared/sdk/models';
+import {MessageApi, RealTime, UserApi} from '../../shared/sdk/services';
+import {Subscription} from 'rxjs/Subscription';
+import {Reception} from '../../shared/sdk/models/Reception';
+import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
+import {AgmMap} from '@agm/core';
 
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
   styleUrls: ['./messages.component.scss']
 })
-export class MessagesComponent implements OnInit,OnDestroy {
+export class MessagesComponent implements OnInit, OnDestroy {
+
+  @ViewChild('baseStationMap') baseStationMap: any;
+  @ViewChild(AgmMap) agmMap: AgmMap;
+
+  private receptions: any[] = new Array<any>();
 
   private message: Message = new Message();
   private messageSub: Subscription;
@@ -19,18 +27,18 @@ export class MessagesComponent implements OnInit,OnDestroy {
 
   public filterQuery = '';
 
-  public toInt(num:string) {
+  public toInt(num: string) {
     return +num;
   }
 
-  public sortByWordLength = (a:any) => {
+  public sortByWordLength = (a: any) => {
     return a.name.length;
-  };
-
-
-  constructor(private rt: RealTime, private messageApi: MessageApi, private userApi: UserApi) {
-
   }
+
+  constructor(private rt: RealTime,
+              private messageApi: MessageApi,
+              private userApi: UserApi,
+              private receptionApi: ReceptionApi) { }
 
   ngOnInit(): void {
     if (
@@ -49,7 +57,7 @@ export class MessagesComponent implements OnInit,OnDestroy {
     this.ngOnDestroy();
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-    //this.messageRef = this.userRef.make(this.user).child<Message>('Messages');
+    // this.messageRef = this.userRef.make(this.user).child<Message>('Messages');
     this.messageSub = this.messageRef.on('change',
       {limit: 1000, order: 'id DESC', include: ['Device']}
     ).subscribe((messages: Message[]) => {
@@ -59,7 +67,7 @@ export class MessagesComponent implements OnInit,OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log("Messages: ngOnDestroy");
+    console.log('Messages: ngOnDestroy');
     if (this.messageRef)this.messageRef.dispose();
     if (this.messageSub)this.messageSub.unsubscribe();
   }
@@ -68,5 +76,23 @@ export class MessagesComponent implements OnInit,OnDestroy {
     this.messageRef.remove(message).subscribe();
   }
 
-}
+  showBaseStations(deviceId: string): void {
+    this.baseStationMap.show();
 
+    const user = this.userApi.getCachedCurrent();
+
+    if (user.sigfoxBackendApiLogin && user.sigfoxBackendApiPassword) {
+      const data = {
+        userId: this.userApi.getCachedCurrent().id,
+        deviceId: deviceId
+      };
+
+      this.receptionApi.getBaseStationsByDeviceId(data).subscribe((receptionsResult: Reception[]) => {
+        this.receptions = receptionsResult;
+        console.log(this.receptions);
+        if (this.receptions.length > 0)
+          this.agmMap.triggerResize();
+      });
+    }
+  }
+}

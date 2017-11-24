@@ -7,6 +7,7 @@ import {AccessToken} from '../../../webapp/src/app/shared/sdk/models/AccessToken
  * Register hooks and remote methods within the
  * Model Decorator
  **/
+
 @Model({
   hooks: {
     beforeSave: {name: 'before save', type: 'operation'},
@@ -22,6 +23,7 @@ import {AccessToken} from '../../../webapp/src/app/shared/sdk/models/AccessToken
 })
 
 class user {
+
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
   }
@@ -35,40 +37,40 @@ class user {
   afterRemoteLogin(ctx: any, loggedUser: AccessToken, next: any) {
     next();
     // TODO: Check below
-    /*let userId = loggedUser.userId;
-    let user = {
-      lastLogin: new Date(Date.now())
+    /*const userId = loggedUser.userId;
+    const user = {
+      lastLogin: new Date()
     };
     this.model.upsertWithWhere(
       {where: {id: userId}},
       user,
       (err: any, response: any) => {
         if (err) {
-          console.log(err);
+          console.error(err);
         } else {
           console.log(response);
         }
         next();
       });*/
 
-/*    this.model.app.models.user.findById(
-      userId,
-      {},
-      (err: any, userInstance: User) => { //callback
-        userInstance.lastLogin = new Date(Date.now());
-        console.log(userInstance);
-        this.model.patchAttributes(
+    /*    this.model.app.models.user.findById(
           userId,
-          userInstance,
-          (err: any, response: any) => {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log(response);
-            }
-            next();
-          });
-      });*/
+          {},
+          (err: any, userInstance: User) => { //callback
+            userInstance.lastLogin = new Date(Date.now());
+            console.log(userInstance);
+            this.model.patchAttributes(
+              userId,
+              userInstance,
+              (err: any, response: any) => {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log(response);
+                }
+                next();
+              });
+          });*/
   }
 
   afterRemoteCreate(context: any, userInstance: any, next: any) {
