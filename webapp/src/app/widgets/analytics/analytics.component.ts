@@ -1,5 +1,4 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-// import { Router } from '@angular/router';
 import {Message, Device, Category, Parser, User, Organization, FireLoopRef} from '../../shared/sdk/models';
 import {
   RealTime,
@@ -14,7 +13,6 @@ import {
 import {Subscription} from "rxjs/Subscription";
 
 import * as moment from 'moment';
-
 
 @Component({
   selector: 'app-analytics',
@@ -49,8 +47,8 @@ export class AnalyticsComponent implements OnInit {
 
   private graphRange: string = 'hourly';
 
-  private messageChartData:Array<any> = [];
-  private messageChartLabels:Array<any> = [];
+  private messageChartData: Array<any> = [];
+  private messageChartLabels: Array<any> = [];
 
   public messageChartOptions:any = {
     responsive: true,
@@ -59,9 +57,9 @@ export class AnalyticsComponent implements OnInit {
       display: true,
     }
   };
-  private messageChartColors:Array<any> = [
+  private messageChartColors: Array<any> = [
     {
-      backgroundColor: '#63c2de'
+      backgroundColor: '#5b9bd3'
     }
   ];
   private messageChartLegend:boolean = true;
@@ -74,19 +72,19 @@ export class AnalyticsComponent implements OnInit {
   private dateEnd: Date = new Date();
   private dateBegin: Date = new Date();
 
-  private deviceChartData:Array<any> = [];
-  private deviceChartLabels:Array<any> = [];
+  private deviceChartData: Array<any> = [];
+  private deviceChartLabels: Array<any> = [];
 
-  public deviceChartOptions:any = {
+  public deviceChartOptions: any = {
     responsive: true,
     maintainAspectRatio: true,
     legend: {
       display: true,
     }
   };
-  private deviceChartColors:Array<any> = [];
-  private deviceChartLegend:boolean = true;
-  private deviceChartType:string = 'line';
+  private deviceChartColors: Array<any> = [];
+  private deviceChartLegend: boolean = true;
+  private deviceChartType: string = 'line';
 
   constructor(private rt: RealTime,
               private messageApi: MessageApi,
@@ -120,7 +118,7 @@ export class AnalyticsComponent implements OnInit {
       {limit: 100, order: 'updatedAt DESC', include: ['Category', 'Messages']}).subscribe(
       (devices: Device[]) => {
         this.devices = devices;
-        console.log("Devices", this.devices);
+        console.log('Devices', this.devices);
       });
 
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
@@ -128,42 +126,42 @@ export class AnalyticsComponent implements OnInit {
 
   }
 
-  getMessagesGraph(option:string):void{
+  getMessagesGraph(option: string): void{
 
     this.graphRange = option;
      this.messageChartLabels = [];
      this.messageChartData   = [];
     // this.data = [];
 
-    this.messageRef.stats({range:this.graphRange}).subscribe((stats: any) => {
+    this.messageRef.stats({range: this.graphRange}).subscribe((stats: any) => {
 
       this.messageChartLabels = [];
       this.messageChartData   = [];
       this.data = [];
 
-      console.log("Stats: ",stats);
+      console.log('Stats: ', stats);
 
       stats.forEach((stat: any) => {
 
         this.data.push(stat.count);
-        if(option=='hourly'){
+        if (option == 'hourly'){
           this.messageChartLabels.push(moment(stat.universal).format('h:mm a'));
         }
-        if(option=='daily'){
+        if (option == 'daily'){
           this.messageChartLabels.push(moment(stat.universal).format('ddd MMM YY'));
         }
-        if(option=='weekly'){
+        if (option == 'weekly'){
           this.messageChartLabels.push(moment(stat.universal).format('DD MMM YY'));
         }
-        if(option=='monthly'){
+        if (option == 'monthly'){
           this.messageChartLabels.push(moment(stat.universal).format('DD MMM YY'));
         }
-        if(option=='yearly'){
+        if (option == 'yearly'){
           this.messageChartLabels.push(moment(stat.universal).format('MMM YYYY'));
         }
       });
-      //console.log("Data:" ,this.data);
-      // console.log("Labels:",this.messageChartLabels);
+      //console.log('Data:' ,this.data);
+      // console.log('Labels:',this.messageChartLabels);
       this.messageChartData.push({ data: this.data, label: 'Messages'});
     });
   }
@@ -181,13 +179,13 @@ export class AnalyticsComponent implements OnInit {
       for (var key in groupByKey) {
         let obj: any;
         obj = {
-          label: "",
+          label: '',
           data: []
         };
 
         let colorOption:any = {
           //backgroundColor: 'transparent',
-          borderColor: "",
+          borderColor: '',
           pointHoverBackgroundColor: '#fff',
           borderWidth: 1,
           pointRadius: 0
@@ -197,7 +195,7 @@ export class AnalyticsComponent implements OnInit {
         if (groupByKey.hasOwnProperty(key)) {
 
           groupByKey[key].forEach((item: any) => {
-            if(typeof item.value === "number" || item.type == "number"){
+            if(typeof item.value === 'number' || item.type == 'number'){
               obj.label = key;
               obj.data.push(item.value);
             }else{
@@ -222,11 +220,11 @@ export class AnalyticsComponent implements OnInit {
   }
 
   searchDevice(context:any):void{
-    console.log("search", context);
+    console.log('search', context);
   }
 
   ngOnDestroy(): void {
-    console.log("Dashboard: ngOnDestroy");
+    console.log('Analytics: ngOnDestroy');
     if (this.messageRef)this.messageRef.dispose();
     if (this.messageSub)this.messageSub.unsubscribe();
 

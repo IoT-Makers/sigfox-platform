@@ -302,7 +302,8 @@
           <td class="text-center">
             <p *ngFor="let reception of item.reception">
               <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success" aria-hidden="true"></i>
-              <i *ngIf="reception.RSSI < -120" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
+              <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
+              <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger" aria-hidden="true"></i>
               {{reception.RSSI}}
               <span>&nbsp;</span>
               <i title="Base Station" class="fa fa-podcast text-primary" aria-hidden="true"></i>
