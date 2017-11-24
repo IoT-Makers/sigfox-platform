@@ -77,11 +77,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   showBaseStations(deviceId: string): void {
-    this.baseStationMap.show();
-
     const user = this.userApi.getCachedCurrent();
 
     if (user.sigfoxBackendApiLogin && user.sigfoxBackendApiPassword) {
+      this.baseStationMap.show();
       const data = {
         userId: this.userApi.getCachedCurrent().id,
         deviceId: deviceId
