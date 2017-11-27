@@ -227,7 +227,6 @@ class Message {
                       if (o.key === 'geoloc') {
                         geoloc.type = o.value;
                         parsed_dataHasGeoloc = true
-                        console.log('There is geoloc in the parsed data.');
                       }
                       else if (o.key === 'lat')
                         geoloc.lat = o.value;
@@ -239,8 +238,12 @@ class Message {
 
 
                     if (parsed_dataHasGeoloc) {
+                      console.log('There is geoloc in the parsed data, storing it in message.');
+                      if (!message.geoloc)
+                        message.geoloc = [];
+                      message.geoloc.push(geoloc);
                       // Update the device location geoloc array
-                      let device = {
+                      const device = {
                         id: data.deviceId,
                         userId: userId,
                         location: [geoloc]
