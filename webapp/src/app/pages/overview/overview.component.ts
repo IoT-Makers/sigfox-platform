@@ -1,15 +1,19 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Category, Device, FireLoopRef, Message, Parser} from '../../shared/sdk/models';
 import {CategoryApi, DeviceApi, MessageApi, ParserApi, RealTime} from '../../shared/sdk/services';
 
-import {Subscription} from "rxjs/Subscription";
-import {DragulaService} from "ng2-dragula";
+import {Subscription} from 'rxjs/Subscription';
+import {DragulaService} from 'ng2-dragula';
+import {Geoloc} from '../../shared/sdk/models/Geoloc';
+import {AgmInfoWindow} from '@agm/core';
 
 
 @Component({
   templateUrl: 'overview.component.html'
 })
 export class OverviewComponent implements OnInit,OnDestroy {
+
+  @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
 
   private message: Message = new Message();
   private device: Device = new Device();
@@ -40,9 +44,9 @@ export class OverviewComponent implements OnInit,OnDestroy {
 
   private isCircleVisible: boolean[] = new Array<boolean>();
 
-  private lat: number = 48.858093;
-  private lng: number = 2.294694;
-  private zoom: number = 2;
+  private mapLat: number = 48.858093;
+  private mapLng: number = 2.294694;
+  private mapZoom: number = 2;
 
   private edit: boolean = false;
 
@@ -209,8 +213,8 @@ export class OverviewComponent implements OnInit,OnDestroy {
     this.messageRef.remove(message).subscribe();
   }
 
-  setCircles(){
-    for(let i=0; i<this.devices.length; i++){
+  setCircles() {
+    for(let i = 0; i < this.devices.length; i++) {
       this.isCircleVisible.push(false);
     }
   }
@@ -223,10 +227,18 @@ export class OverviewComponent implements OnInit,OnDestroy {
     this.isCircleVisible[i] = true;
   }
 
-  zoomOnDevice(lat:number, lng:number): void {
-    this.lat=lat;
-    this.lng=lng;
-    this.zoom=12;
+  zoomOnDevice(elementId: string, geoloc: Geoloc): void {
+    this.agmInfoWindow.forEach((child) => {
+      // console.log(child['_el'].nativeElement.id);
+      if (child['_el'].nativeElement.id === elementId)
+        child.open();
+      else
+        child.close();
+    });
+
+    this.mapLat = geoloc.lat;
+    this.mapLng = geoloc.lng;
+    this.mapZoom = 12;
   }
 
 }

@@ -1,8 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
 
-import {Category, Device, Message, FireLoopRef, Parser} from '../../shared/sdk/models';
+import {Category, Device, FireLoopRef, Message, Parser} from '../../shared/sdk/models';
 import {CategoryApi, DeviceApi, RealTime} from '../../shared/sdk/services';
-import {Subscription} from "rxjs/Subscription";
+import {Subscription} from 'rxjs/Subscription';
+import {Geoloc} from '../../shared/sdk/models/Geoloc';
+import {AgmInfoWindow} from "@agm/core";
 
 
 @Component({
@@ -11,6 +13,8 @@ import {Subscription} from "rxjs/Subscription";
   styleUrls: ['./devices.component.scss']
 })
 export class DevicesComponent implements OnInit {
+
+  @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
 
   private isCircleVisible: boolean[] = new Array<boolean>();
 
@@ -33,14 +37,17 @@ export class DevicesComponent implements OnInit {
 
   private deviceToEdit: Device = new Device();
 
-  private edit: boolean = false;
+  private edit = false;
 
-  private lat: number = 48.858093;
-  private lng: number = 2.294694;
-  private zoom: number = 2;
+  private mapLat = 48.858093;
+  private mapLng = 2.294694;
+  private mapZoom = 2;
 
 
-  constructor(private rt: RealTime, private categoryApi: CategoryApi, private deviceApi: DeviceApi) { }
+  constructor(private rt: RealTime,
+              private categoryApi: CategoryApi,
+              private deviceApi: DeviceApi,
+              private elRef: ElementRef) { }
 
   ngOnInit(): void {
     this.edit = false;
@@ -58,8 +65,8 @@ export class DevicesComponent implements OnInit {
     }
   }
 
-  setCircles(){
-    for(let i=0; i<this.devices.length; i++){
+  setCircles() {
+    for(let i = 0; i < this.devices.length; i++) {
       this.isCircleVisible.push(false);
     }
   }
@@ -74,7 +81,7 @@ export class DevicesComponent implements OnInit {
 
   setup(): void {
     console.log(this.rt.connection);
-    this.ngOnDestroy();//Get and listen devices
+    this.ngOnDestroy();// Get and listen devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceSub = this.deviceRef.on('change',
       {limit: 1000, order: 'updatedAt DESC', include: ['Parser', 'Category']}
@@ -101,7 +108,7 @@ export class DevicesComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    console.log("Devices: ngOnDestroy");
+    console.log('Devices: ngOnDestroy');
     if (this.deviceRef)this.deviceRef.dispose();
     if (this.deviceSub)this.deviceSub.unsubscribe();
 
@@ -120,9 +127,9 @@ export class DevicesComponent implements OnInit {
   update(device: Device): void {
     this.edit = false;
     device.CategoryId = device.categoryId;
-    //@TODO change parserId to ParserID to be able to fetch devices from parser model, don't forget to update the API consequently and to test it!
+    // @TODO change parserId to ParserID to be able to fetch devices from parser model, don't forget to update the API consequently and to test it!
     device.ParserId = device.parserId;
-    /*if(device.ParserId.toString() == "None")*/
+    /*if(device.ParserId.toString() == 'None')*/
 
     this.deviceRef.upsert(device).subscribe();
   }
@@ -137,14 +144,22 @@ export class DevicesComponent implements OnInit {
     }
 
     console.log(device);
-    //this.deviceRef.upsert(device).subscribe();
+    // this.deviceRef.upsert(device).subscribe();
   }
 
-  zoomOnDevice(geoloc): void {
+  zoomOnDevice(elementId: string, geoloc: Geoloc): void {
     window.scrollTo(0, 0);
-    this.lat=geoloc.lat;
-    this.lng=geoloc.lng;
-    this.zoom=12;
+    this.agmInfoWindow.forEach((child) => {
+      // console.log(child['_el'].nativeElement.id);
+      if (child['_el'].nativeElement.id === elementId)
+        child.open();
+      else
+        child.close();
+    });
+
+    this.mapLat = geoloc.lat;
+    this.mapLng = geoloc.lng;
+    this.mapZoom = 12;
   }
 
   cancel(): void{

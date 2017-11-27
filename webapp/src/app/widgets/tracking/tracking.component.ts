@@ -17,7 +17,7 @@ export class TrackingComponent implements OnInit {
   public directionsRoutes: boolean = true;
 
   private markerInterval: number = 1;
-  private initMapPosition = {"lat": 48.86795, "lng": 2.334070};
+  private initMapPosition = {'lat': 48.86795, 'lng': 2.334070};
 
   private geoloc_sigfoxMarkers: Boolean = true;
   private GPSMarkers: Boolean = true;
@@ -45,21 +45,21 @@ export class TrackingComponent implements OnInit {
 
   onTrack(deviceId: string) {
     this.allLocalizedMessages = [];
-    this.searchResult = "Searching for geolocation messages for this device ID.";
+    this.searchResult = 'Searching for geolocation messages for this device ID.';
 
     this.geolocApi.getGeolocsByDeviceId(deviceId, this.dateBegin.toISOString(), this.dateEnd.toISOString()).subscribe((messages: Message[]) => {
       if (messages.length > 0) {
-        this.searchResult = "Found " + messages.length + " geoloc messages for device ID: " + deviceId;
-        for(let i=0; i<messages.length; i++){
+        this.searchResult = 'Found ' + messages.length + ' geoloc messages for device ID: ' + deviceId;
+        for (let i = 0; i < messages.length; i++) {
           this.allLocalizedMessages.push(messages[i]);
           i = i + this.markerInterval;
         }
         // Center map
-        let latestGeoloc = messages[0].geoloc;
+        const latestGeoloc = messages[0].geoloc;
         this.initMapPosition = latestGeoloc[0];
 
       } else // -- no localized messages
-        this.searchResult = "No geolocation messages found for this device ID.";
+        this.searchResult = 'No geolocation messages found for this device ID.';
     }, (error: Error) => this.searchResult = error.message);
   }
 

@@ -1,17 +1,16 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
 import {OverviewComponent} from './overview.component';
-import { CommonModule } from "@angular/common";
-import { ChartsModule } from 'ng2-charts/ng2-charts';
-
+import {CommonModule} from '@angular/common';
+import {ChartsModule} from 'ng2-charts/ng2-charts';
 // DataTable
-import { DataTableModule } from 'angular2-datatable';
-import { FormsModule } from '@angular/forms';
-import {DataFilterPipe} from "./datafilterpipe";
-import {OverviewRoutingModule} from "./overview-routing.module";
-import { AgmCoreModule } from '@agm/core';
-import { MomentModule } from 'angular2-moment';
-import {DragulaModule} from "ng2-dragula";
+import {DataTableModule} from 'angular2-datatable';
+import {FormsModule} from '@angular/forms';
+import {DataFilterPipe} from './datafilterpipe';
+import {OverviewRoutingModule} from './overview-routing.module';
+import {AgmCoreModule} from '@agm/core';
+import {MomentModule} from 'angular2-moment';
+import {DragulaModule} from 'ng2-dragula';
 
 @NgModule({
   imports: [

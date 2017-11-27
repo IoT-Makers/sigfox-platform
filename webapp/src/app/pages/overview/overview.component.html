@@ -66,9 +66,9 @@
           </div>
         </div>
         <div *ngIf="devices.length>0" class="card-block">
-          <agm-map [latitude]="lat"
-                   [longitude]="lng"
-                   [zoom]="zoom"
+          <agm-map [latitude]="mapLat"
+                   [longitude]="mapLng"
+                   [zoom]="mapZoom"
                    [fullscreenControl]="true">
             <ng-container *ngFor="let device of devices; let i = index">
               <ng-container *ngFor="let geoloc of device.location">
@@ -81,8 +81,9 @@
                     [latitude]="geoloc.lat"
                     [longitude]="geoloc.lng"
                     [iconUrl]="device.name ? (device.name.startsWith('Sensit') ? 'assets/img/sensit.png' : 'assets/img/marker-sigfox.png') : 'assets/img/marker-sigfox.png'">
-                    <agm-info-window>
-                      <strong><b>ID:</b> <span class="text-danger">{{device.id}}</span></strong>
+                    <agm-info-window
+                      id="{{geoloc.type + '_' + device.id}}">
+                      <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
                       <br>
                       <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
                       <br *ngIf="device.name">
@@ -91,6 +92,8 @@
                       <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
                       <br>
                       <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                      <br>
+                      <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
                     </agm-info-window>
                   </agm-marker>
                   <!-- Circle -->
@@ -114,8 +117,9 @@
                     [latitude]="geoloc.lat"
                     [longitude]="geoloc.lng"
                     [iconUrl]="'assets/img/marker-gps.png'">
-                    <agm-info-window>
-                      <strong><b>ID:</b> <span class="text-danger">{{device.id}}</span></strong>
+                    <agm-info-window
+                      id="{{geoloc.type + '_' + device.id}}">
+                      <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
                       <br>
                       <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
                       <br *ngIf="device.name">
@@ -174,14 +178,14 @@
                   <div *ngFor="let geoloc of device.location">
 
                     <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
-                      <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc.lat,geoloc.lng)" class="small text-geoloc-sigfox">
+                      <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-sigfox">
                         <i class="fa fa-map-marker fa-2x"></i>
                         <br>
                         <strong>Sigfox Geoloc</strong>
                       </a>
                     </ng-container>
                     <ng-container *ngIf="geoloc.type == 'GPS'">
-                      <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc.lat,geoloc.lng)" class="small text-geoloc-gps">
+                      <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-gps">
                         <i class="fa fa-map-marker fa-2x"></i>
                         <br>
                         <strong>GPS</strong>
