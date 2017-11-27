@@ -7,6 +7,7 @@ import { AgmCoreModule } from '@agm/core';
 
 import { DevicesComponent } from './devices.component';
 import { DevicesRoutingModule } from './devices-routing.module';
+import {ModalModule} from "ng2-bootstrap";
 
 
 
@@ -16,6 +17,7 @@ import { DevicesRoutingModule } from './devices-routing.module';
     CommonModule,
     MomentModule,
     FormsModule,
+    ModalModule.forRoot(),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
     })

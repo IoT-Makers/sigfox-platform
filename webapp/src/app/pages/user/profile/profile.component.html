@@ -262,15 +262,21 @@
       <div class="modal-body">
         <form (ngSubmit)="updateUser()" class="form-horizontal" #editForm="ngForm">
           <div class="form-group row">
+            <label class="col-md-3 form-control-label">Email</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.email}}" name="user.email" [(ngModel)]="user.email">
+            </div>
+          </div>
+          <div class="form-group row">
             <label class="col-md-3 form-control-label">Username</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" placeholder="{{user.username}}" name="user.username" [(ngModel)]="user.username">
+              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.username}}" name="user.username" [(ngModel)]="user.username">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Avatar</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" placeholder="{{user.avatar}}" name="user.avatar" [(ngModel)]="user.avatar">
+              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.avatar}}" name="user.avatar" [(ngModel)]="user.avatar">
             </div>
           </div>
         </form>

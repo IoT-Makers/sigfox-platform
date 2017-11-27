@@ -1,16 +1,8 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {Message, Device, Category, Parser, User, Organization, FireLoopRef} from '../../shared/sdk/models';
-import {
-  RealTime,
-  MessageApi,
-  DeviceApi,
-  CategoryApi,
-  ParserApi,
-  UserApi,
-  OrganizationApi
-} from '../../shared/sdk/services';
+import {Component, OnInit} from '@angular/core';
+import {Category, Device, FireLoopRef, Message} from '../../shared/sdk/models';
+import {DeviceApi, RealTime} from '../../shared/sdk/services';
 
-import {Subscription} from "rxjs/Subscription";
+import {Subscription} from 'rxjs/Subscription';
 
 import * as moment from 'moment';
 
@@ -21,36 +13,24 @@ import * as moment from 'moment';
 })
 export class AnalyticsComponent implements OnInit {
 
-  private message: Message = new Message();
-  private device: Device = new Device();
-  private parser: Parser = new Parser();
-  private category: Category = new Category();
-
   private messageSub: Subscription;
   private deviceSub: Subscription;
-  private parserSub: Subscription;
-  private categorySub: Subscription;
 
-  private messages: Message[] = new Array<Message>();
   private devices: Device[] = new Array<Device>();
-  private parsers: Parser[] = new Array<Parser>();
-  private categories: Category[] = new Array<Category>();
 
   private messageRef: FireLoopRef<Message>;
   private deviceRef: FireLoopRef<Device>;
-  private parserRef: FireLoopRef<Parser>;
-  private categoryRef: FireLoopRef<Category>;
 
   public data = [];
 
   // Messages graph
 
-  private graphRange: string = 'hourly';
+  private graphRange = 'hourly';
 
   private messageChartData: Array<any> = [];
   private messageChartLabels: Array<any> = [];
 
-  public messageChartOptions:any = {
+  public messageChartOptions = {
     responsive: true,
     maintainAspectRatio: true,
     legend: {
@@ -62,12 +42,13 @@ export class AnalyticsComponent implements OnInit {
       backgroundColor: '#5b9bd3'
     }
   ];
-  private messageChartLegend:boolean = true;
-  private messageChartType:string = 'bar';
+  private messageChartLegend = true;
+  private messageChartType = 'bar';
 
 
   // Devices Graph
-  private deviceId: string = "";
+  private selectedDevice: Device = new Device();
+
 
   private dateEnd: Date = new Date();
   private dateBegin: Date = new Date();
@@ -83,14 +64,11 @@ export class AnalyticsComponent implements OnInit {
     }
   };
   private deviceChartColors: Array<any> = [];
-  private deviceChartLegend: boolean = true;
-  private deviceChartType: string = 'line';
+  private deviceChartLegend = true;
+  private deviceChartType = 'line';
 
   constructor(private rt: RealTime,
-              private messageApi: MessageApi,
-              private deviceApi: DeviceApi,
-              private parserApi: ParserApi,
-              private categoryApi: CategoryApi) {}
+              private deviceApi: DeviceApi) {}
 
   ngOnInit(): void {
     if (
@@ -122,8 +100,6 @@ export class AnalyticsComponent implements OnInit {
       });
 
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
-
-
   }
 
   getMessagesGraph(option: string): void{
@@ -144,19 +120,19 @@ export class AnalyticsComponent implements OnInit {
       stats.forEach((stat: any) => {
 
         this.data.push(stat.count);
-        if (option == 'hourly'){
+        if (option === 'hourly') {
           this.messageChartLabels.push(moment(stat.universal).format('h:mm a'));
         }
-        if (option == 'daily'){
+        if (option === 'daily') {
           this.messageChartLabels.push(moment(stat.universal).format('ddd MMM YY'));
         }
-        if (option == 'weekly'){
+        if (option === 'weekly') {
           this.messageChartLabels.push(moment(stat.universal).format('DD MMM YY'));
         }
-        if (option == 'monthly'){
+        if (option === 'monthly') {
           this.messageChartLabels.push(moment(stat.universal).format('DD MMM YY'));
         }
-        if (option == 'yearly'){
+        if (option === 'yearly') {
           this.messageChartLabels.push(moment(stat.universal).format('MMM YYYY'));
         }
       });
@@ -166,24 +142,24 @@ export class AnalyticsComponent implements OnInit {
     });
   }
 
-  getDeviceGraph():void{
-
+  getDeviceGraph(): void {
+    console.log(this.selectedDevice.id);
     this.deviceChartLabels = [];
     this.deviceChartData   = [];
-    this.deviceApi.graphData(this.deviceId, this.dateBegin ? this.dateBegin.toISOString() : null, this.dateEnd ? this.dateEnd.toISOString(): null).subscribe((result:any) => {
+    this.deviceApi.graphData(this.selectedDevice.id, this.dateBegin ? this.dateBegin.toISOString() : null, this.dateEnd ? this.dateEnd.toISOString(): null).subscribe((result:any) => {
       console.log(result);
 
       this.deviceChartLabels = result.result.xAxis;
 
-      let groupByKey:any = result.result.yAxis;
-      for (var key in groupByKey) {
+      const groupByKey: any = result.result.yAxis;
+      for (const key in groupByKey) {
         let obj: any;
         obj = {
           label: '',
           data: []
         };
 
-        let colorOption:any = {
+        const colorOption: any = {
           //backgroundColor: 'transparent',
           borderColor: '',
           pointHoverBackgroundColor: '#fff',
@@ -195,15 +171,15 @@ export class AnalyticsComponent implements OnInit {
         if (groupByKey.hasOwnProperty(key)) {
 
           groupByKey[key].forEach((item: any) => {
-            if(typeof item.value === 'number' || item.type == 'number'){
+            if (typeof item.value === 'number' || item.type === 'number') {
               obj.label = key;
               obj.data.push(item.value);
-            }else{
+            } else {
               obj.data.push(null);
             }
           });
 
-          if(obj.label){
+          if (obj.label) {
             this.deviceChartData.push(obj);
           }
 
@@ -216,10 +192,10 @@ export class AnalyticsComponent implements OnInit {
       console.log(this.deviceChartData);
 
       //this.deviceChartData = result.result.yAxis
-    })
+    });
   }
 
-  searchDevice(context:any):void{
+  searchDevice(context: any): void {
     console.log('search', context);
   }
 
@@ -230,12 +206,6 @@ export class AnalyticsComponent implements OnInit {
 
     if (this.deviceRef)this.deviceRef.dispose();
     if (this.deviceSub)this.deviceSub.unsubscribe();
-
-    if (this.parserRef)this.parserRef.dispose();
-    if (this.parserSub)this.parserSub.unsubscribe();
-
-    if (this.categoryRef)this.categoryRef.dispose();
-    if (this.categorySub)this.categorySub.unsubscribe();
   }
 
 

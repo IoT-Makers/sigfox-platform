@@ -206,7 +206,7 @@ class Message {
 
           // Parse message, create message, send result to backend with downlink payload or not
           else {
-            if (deviceInstance.parserId || parserId) {
+            if ((deviceInstance.parserId || parserId) && message.data) {
               this.model.app.models.Parser.findById(
                 deviceInstance.parserId || parserId,
                 (err: any, parserInstance: any) => {

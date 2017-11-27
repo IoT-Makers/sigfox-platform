@@ -27,22 +27,34 @@
       <br>
 
       <div class="row">
-        <div class="col col-2">
-          Precision circles:
-        </div>
-        <div class="col col-2">
+        <div class="col-2">
+          <label>Precision circles: </label>
           <label class="switch switch-text switch-primary">
             <input type="checkbox" [checked]="circlePrecision" (change)="circlePrecision = !circlePrecision" class="switch-input" checked="">
             <span class="switch-label" data-on="On" data-off="Off"></span>
             <span class="switch-handle"></span>
           </label>
         </div>
-        <div class="col col-2">
-          Directions routes:
-        </div>
-        <div class="col col-2">
+        <div class="col-2">
+          <label>Directions routes: </label>
           <label class="switch switch-text switch-primary">
             <input type="checkbox" [checked]="directionsRoutes" (click)="onDirections()" (change)="directionsRoutes = !directionsRoutes" class="switch-input" checked="">
+            <span class="switch-label" data-on="On" data-off="Off"></span>
+            <span class="switch-handle"></span>
+          </label>
+        </div>
+        <div class="col-2">
+          <label>GPS only: </label>
+          <label class="switch switch-text switch-primary">
+            <input type="checkbox" [checked]="gpsOnly" (change)="gpsOnly = !gpsOnly" class="switch-input" checked="">
+            <span class="switch-label" data-on="On" data-off="Off"></span>
+            <span class="switch-handle"></span>
+          </label>
+        </div>
+        <div class="col-2">
+          <label>Sigfox only: </label>
+          <label class="switch switch-text switch-primary">
+            <input type="checkbox" [checked]="sigfoxOnly" (change)="sigfoxOnly = !sigfoxOnly" class="switch-input" checked="">
             <span class="switch-label" data-on="On" data-off="Off"></span>
             <span class="switch-handle"></span>
           </label>
@@ -52,11 +64,13 @@
       <br>
 
       <div class="row">
-        <div class="col col-4">
-          <input type="text" required class="form-control" placeholder="Enter device ID" #box (keyup.enter)="onTrack(box.value)" [required]="true">
+        <div class="col-4">
+          <select  class="form-control" size="1" [(ngModel)]="selectedDevice">
+            <option [ngValue]="device" *ngFor="let device of devices">{{device.id}} {{device.name ? " - " + device.name : ""}}</option>
+          </select>
         </div>
-        <div class="col col-4">
-          <button type="button" class="btn btn-success" data-toggle="modal" (click)="onTrack(box.value)">
+        <div class="col-4">
+          <button type="button" class="btn btn-success" data-toggle="modal" (click)="onTrack(selectedDevice)">
             Track device
           </button>
         </div>

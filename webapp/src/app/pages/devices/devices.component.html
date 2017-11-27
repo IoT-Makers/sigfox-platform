@@ -190,7 +190,7 @@
               <td *ngIf="!edit" class="text-center">
                 <div class="btn-group-sm">
                   <button class="btn btn-success btn-round" (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
-                  <button class="btn btn-danger btn-round" (click)="removeDevice(device)"><i class="fa fa-trash fa-lg"></i></button>
+                  <button class="btn btn-danger btn-round" (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
                 </div>
               </td>
             </tr>
@@ -263,10 +263,8 @@
           </form>
         </div>
         <div class="card-footer">
-          <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="update(deviceToEdit)"><i
-            class="fa fa-check"></i> Update
-          </button>
           <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
+          <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="update(deviceToEdit)"><i class="fa fa-check"></i> Update</button>
         </div>
       </div>
     </div>
@@ -274,6 +272,27 @@
 
 </div>
 
+
+
+<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm removal of <b>{{deviceToRemove.id}}</b></h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are your sure you wish to delete this device (id: <b>{{deviceToRemove.id}}</b>) and all its corresponding messages ?
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
+        <button class="btn btn-sm btn-danger" (click)="remove()">Delete</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 

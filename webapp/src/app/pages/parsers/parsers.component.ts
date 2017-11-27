@@ -1,15 +1,17 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
 import {FireLoopRef, Parser} from '../../shared/sdk/models';
-import {ParserApi, RealTime} from '../../shared/sdk/services';
-import {Subscription} from "rxjs/Subscription";
+import {RealTime} from '../../shared/sdk/services';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
 
   templateUrl: './parsers.component.html',
   styleUrls: ['./parsers.component.scss']
 })
-export class ParsersComponent implements OnInit,OnDestroy {
+export class ParsersComponent implements OnInit, OnDestroy {
+
+  @ViewChild('confirmModal') confirmModal: any;
 
   private newParser: Parser = new Parser();
   private decodedPayload = [];
@@ -21,7 +23,7 @@ export class ParsersComponent implements OnInit,OnDestroy {
   private parserRef: FireLoopRef<Parser>;
   private parserSub: Subscription;
 
-  private deleteConfirmation = [];
+  private parserToRemove: Parser = new Parser();
 
   constructor(private rt: RealTime) { }
 
@@ -50,18 +52,18 @@ export class ParsersComponent implements OnInit,OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log("Parsers: ngOnDestroy");
+    console.log('Parsers: ngOnDestroy');
     if (this.parserRef)this.parserRef.dispose();
     if (this.parserSub)this.parserSub.unsubscribe();
   }
 
   decodePayload(i: number, parser: Parser, payload: string): void{
     this.testPayload[i] = true;
-    if(payload){
-        let fn = Function("payload", parser.function);
+    if (payload) {
+        const fn = Function('payload', parser.function);
         this.decodedPayload[i] = fn(payload);
       } else {
-        this.decodedPayload[i] = [{"error": "Please fill input"}];
+        this.decodedPayload[i] = [{'error': 'Please fill input'}];
         setTimeout(function() {
           this.testPayload[i] = false;
         }.bind(this), 2000);
@@ -82,12 +84,14 @@ export class ParsersComponent implements OnInit,OnDestroy {
     this.parserRef.upsert(parser).subscribe();
   }
 
-  delete(i: number, value: boolean): void{
-    this.deleteConfirmation[i] = value;
+  showRemoveModal(parser: Parser): void {
+    this.confirmModal.show();
+    this.parserToRemove = parser;
   }
 
-  remove(parser: Parser): void {
-    this.parserRef.remove(parser).subscribe();
+  remove(): void {
+    this.parserRef.remove(this.parserToRemove).subscribe();
+    this.confirmModal.hide();
   }
 }
 

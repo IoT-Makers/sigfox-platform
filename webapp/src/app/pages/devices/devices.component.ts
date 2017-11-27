@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 
 import {Category, Device, FireLoopRef, Message, Parser} from '../../shared/sdk/models';
 import {CategoryApi, DeviceApi, RealTime} from '../../shared/sdk/services';
@@ -15,6 +15,7 @@ import {AgmInfoWindow} from "@agm/core";
 export class DevicesComponent implements OnInit {
 
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
+  @ViewChild('confirmModal') confirmModal: any;
 
   private isCircleVisible: boolean[] = new Array<boolean>();
 
@@ -36,6 +37,7 @@ export class DevicesComponent implements OnInit {
   private categoryRef: FireLoopRef<Category>;
 
   private deviceToEdit: Device = new Device();
+  private deviceToRemove: Device = new Device();
 
   private edit = false;
 
@@ -166,10 +168,16 @@ export class DevicesComponent implements OnInit {
     this.edit = false;
   }
 
-  removeDevice(device: Device): void {
-    this.deviceRef.remove(device).subscribe();
+  showRemoveModal(device: Device): void {
+    this.confirmModal.show();
+    this.deviceToRemove = device;
+  }
+
+  remove(): void {
+    this.deviceRef.remove(this.deviceToRemove).subscribe();
     // Delete all messages belonging to the device
-    this.deviceApi.deleteMessages(device.id).subscribe();
+    this.deviceApi.deleteMessages(this.deviceToRemove.id).subscribe();
+    this.confirmModal.hide();
   }
 }
 

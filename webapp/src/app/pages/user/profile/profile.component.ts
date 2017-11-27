@@ -77,6 +77,7 @@ export class ProfileComponent implements OnInit {
     this.userApi.patchAttributes(
       this.user.id,
       {
+        'email': this.user.email,
         'username': this.user.username,
         'avatar': this.user.avatar
       }

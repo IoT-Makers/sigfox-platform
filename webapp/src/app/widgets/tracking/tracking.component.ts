@@ -4,6 +4,10 @@ import {DeviceApi} from '../../shared/sdk/services';
 import {Message} from "../../shared/sdk/models/Message";
 import {GoogleMapsAPIWrapper} from "@agm/core";
 import {GeolocApi} from "../../shared/sdk/services/custom/Geoloc";
+import {Device} from "../../shared/sdk/models/Device";
+import {FireLoopRef} from "../../shared/sdk/models/FireLoopRef";
+import {Subscription} from "rxjs/Subscription";
+import {RealTime} from "../../shared/sdk/services/core/real.time";
 
 @Component({
   selector: 'app-tracking',
@@ -13,43 +17,63 @@ import {GeolocApi} from "../../shared/sdk/services/custom/Geoloc";
 
 export class TrackingComponent implements OnInit {
 
-  public circlePrecision: boolean = false;
-  public directionsRoutes: boolean = true;
+  private deviceSub: Subscription;
+  private deviceRef: FireLoopRef<Device>;
 
-  private markerInterval: number = 1;
+  private devices: Device[] = new Array<Device>();
+
+  public circlePrecision = false;
+  public directionsRoutes = true;
+
+  private markerInterval = 1;
   private initMapPosition = {'lat': 48.86795, 'lng': 2.334070};
-
-  private geoloc_sigfoxMarkers: Boolean = true;
-  private GPSMarkers: Boolean = true;
 
   private dateBegin: Date = new Date(Date.now());
   private dateEnd: Date = new Date(Date.now());
-  private searchResult: String = '';
+  private searchResult = '';
   public allLocalizedMessages: Message[] = new Array<Message>();
   public directionsDisplayStore = [];
 
-  constructor(private elRef: ElementRef,
-              private _googleMapsAPIWrapper: GoogleMapsAPIWrapper,
-              private deviceApi: DeviceApi,
-              private geolocApi: GeolocApi) {
+  private selectedDevice: Device = new Device();
+
+  constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper,
+              private geolocApi: GeolocApi,
+              private rt: RealTime) {
   }
 
+  setup(): void {
+    console.log(this.rt.connection);
+    this.ngOnDestroy();
+
+    // Devices
+    this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+    this.deviceRef.on('change',
+      {limit: 100, order: 'updatedAt DESC', include: ['Category', 'Messages']}).subscribe(
+      (devices: Device[]) => {
+        this.devices = devices;
+        console.log('Devices', this.devices);
+      });
+
+    this.dateBegin.setDate(this.dateBegin.getDate() - 7);
+  }
+
+
   onDirections(){
-    if(!this.directionsRoutes){
-      for(let i in this.directionsDisplayStore) {
+    if (!this.directionsRoutes) {
+      for (const i in this.directionsDisplayStore) {
         this.directionsDisplayStore[i].setMap(null);
       }
       this.directionsDisplayStore = [];
     }
   }
 
-  onTrack(deviceId: string) {
+  onTrack() {
     this.allLocalizedMessages = [];
     this.searchResult = 'Searching for geolocation messages for this device ID.';
 
-    this.geolocApi.getGeolocsByDeviceId(deviceId, this.dateBegin.toISOString(), this.dateEnd.toISOString()).subscribe((messages: Message[]) => {
+    this.geolocApi.getGeolocsByDeviceId(this.selectedDevice.id, this.dateBegin.toISOString(), this.dateEnd.toISOString()).subscribe((messages: Message[]) => {
       if (messages.length > 0) {
-        this.searchResult = 'Found ' + messages.length + ' geoloc messages for device ID: ' + deviceId;
+        this.searchResult = 'Found ' + messages.length + ' geoloc messages for device ID: ' + this.selectedDevice.id;
         for (let i = 0; i < messages.length; i++) {
           this.allLocalizedMessages.push(messages[i]);
           i = i + this.markerInterval;
@@ -65,6 +89,22 @@ export class TrackingComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
+    if (
+      this.rt.connection.isConnected() &&
+      this.rt.connection.authenticated
+    ) {
+      this.rt.onReady().subscribe(() => this.setup());
+    } else {
+      this.rt.onAuthenticated().subscribe(() => this.setup());
+      this.rt.onReady().subscribe();
+    }
+  }
+
+  ngOnDestroy(): void {
+    console.log('Tracking: ngOnDestroy');
+
+    if (this.deviceRef)this.deviceRef.dispose();
+    if (this.deviceSub)this.deviceSub.unsubscribe();
   }
 
   rad(x) {

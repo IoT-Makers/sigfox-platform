@@ -74,21 +74,10 @@
                 <button type="button" class="btn btn-success" data-toggle="modal" (click)="update(parser)">
                   Save code
                 </button>
-                <button type="button" class="btn btn-danger" data-toggle="modal" (click)="delete(i, true)">
+                <button type="button" class="btn btn-danger" data-toggle="modal" (click)="showRemoveModal(parser)">
                   Delete Parser
                 </button>
               </div>
-
-              <div class="mt-1" *ngIf="deleteConfirmation[i]">
-                <p class="text-danger">Are you sure?</p>
-                <button type="button" class="btn btn-danger" data-toggle="modal" (click)="remove(parser)" *ngIf="deleteConfirmation[i]">
-                  Delete
-                </button>
-                <button type="button" class="btn" data-toggle="modal" (click)="delete(i, false)" *ngIf="deleteConfirmation[i]">
-                  Cancel
-                </button>
-              </div>
-
             </div>
           </div><!--/.row-->
 
@@ -99,3 +88,24 @@
     </div><!--/.row-->
   </div>
 </div>
+
+
+<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm removal</h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are your sure you wish to delete this parser (name: <b>{{parserToRemove.name}}</b>) ?
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
+        <button class="btn btn-sm btn-danger" (click)="remove()">Delete</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
