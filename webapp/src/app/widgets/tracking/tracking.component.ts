@@ -1,13 +1,13 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Message} from '../../shared/sdk/models/Message';
+import {GoogleMapsAPIWrapper} from '@agm/core';
+import {GeolocApi} from '../../shared/sdk/services/custom/Geoloc';
+import {Device} from '../../shared/sdk/models/Device';
+import {FireLoopRef} from '../../shared/sdk/models/FireLoopRef';
+import {Subscription} from 'rxjs/Subscription';
+import {RealTime} from '../../shared/sdk/services/core/real.time';
 
-import {DeviceApi} from '../../shared/sdk/services';
-import {Message} from "../../shared/sdk/models/Message";
-import {GoogleMapsAPIWrapper} from "@agm/core";
-import {GeolocApi} from "../../shared/sdk/services/custom/Geoloc";
-import {Device} from "../../shared/sdk/models/Device";
-import {FireLoopRef} from "../../shared/sdk/models/FireLoopRef";
-import {Subscription} from "rxjs/Subscription";
-import {RealTime} from "../../shared/sdk/services/core/real.time";
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-tracking',
@@ -24,8 +24,10 @@ export class TrackingComponent implements OnInit {
 
   public circlePrecision = false;
   public directionsRoutes = true;
+  public sigfoxOnly = false;
+  public gpsOnly = false;
 
-  private markerInterval = 1;
+  private markerInterval = 0;
   private initMapPosition = {'lat': 48.86795, 'lng': 2.334070};
 
   private dateBegin: Date = new Date(Date.now());
@@ -57,8 +59,33 @@ export class TrackingComponent implements OnInit {
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
   }
 
+  onGpsOnly(): void {
+    if (this.sigfoxOnly) {
+      this.sigfoxOnly = false;
+      // console.log('Not allowed');
+    } else if (!this.gpsOnly) {
+      // console.log('Show only GPS');
+    } else {
+      // console.log('Show all');
+      // this.onTrack();
+    }
+  }
 
-  onDirections(){
+  onSigfoxOnly(): void {
+    if (this.gpsOnly) {
+      this.gpsOnly = false;
+      // console.log('Not allowed');
+    }
+    if (!this.sigfoxOnly) {
+      // console.log('Show only Sigfox');
+    } else {
+      // console.log('Show all');
+      // this.onTrack();
+    }
+  }
+
+
+  onDirections(): void {
     if (!this.directionsRoutes) {
       for (const i in this.directionsDisplayStore) {
         this.directionsDisplayStore[i].setMap(null);
@@ -71,6 +98,9 @@ export class TrackingComponent implements OnInit {
     this.allLocalizedMessages = [];
     this.searchResult = 'Searching for geolocation messages for this device ID.';
 
+    /*this.sigfoxOnly = false;
+    this.gpsOnly = false;*/
+
     this.geolocApi.getGeolocsByDeviceId(this.selectedDevice.id, this.dateBegin.toISOString(), this.dateEnd.toISOString()).subscribe((messages: Message[]) => {
       if (messages.length > 0) {
         this.searchResult = 'Found ' + messages.length + ' geoloc messages for device ID: ' + this.selectedDevice.id;
@@ -78,12 +108,30 @@ export class TrackingComponent implements OnInit {
           this.allLocalizedMessages.push(messages[i]);
           i = i + this.markerInterval;
         }
+
+        if (this.sigfoxOnly) {
+          const filteredMessages = _.filter(this.allLocalizedMessages, {geoloc: [{type: 'sigfox'}] });
+          if (filteredMessages.length > 0) {
+            this.allLocalizedMessages = filteredMessages;
+            this.searchResult = 'There are ' + this.allLocalizedMessages.length + ' sigfox geoloc messages.';
+          } else {
+            this.searchResult = 'There are no sigfox geoloc messages.';
+          }
+        } else if (this.gpsOnly) {
+          const filteredMessages = _.filter(this.allLocalizedMessages, {geoloc: [{type: 'GPS'}] });
+          if (filteredMessages.length > 0) {
+            this.allLocalizedMessages = filteredMessages;
+            this.searchResult = 'There are ' + this.allLocalizedMessages.length + ' GPS messages. Showing others.';
+          } else {
+            this.searchResult = 'There are no GPS messages.';
+          }
+        }
+
         // Center map
-        const latestGeoloc = messages[0].geoloc;
-        this.initMapPosition = latestGeoloc[0];
+        this.initMapPosition = this.allLocalizedMessages[0].geoloc[0];
 
       } else // -- no localized messages
-        this.searchResult = 'No geolocation messages found for this device ID.';
+        this.searchResult = 'No geolocation messages found for this device ID. Showing others.';
     }, (error: Error) => this.searchResult = error.message);
   }
 

@@ -136,7 +136,7 @@ export class AnalyticsComponent implements OnInit {
           this.messageChartLabels.push(moment(stat.universal).format('MMM YYYY'));
         }
       });
-      //console.log('Data:' ,this.data);
+      // console.log('Data:' ,this.data);
       // console.log('Labels:',this.messageChartLabels);
       this.messageChartData.push({ data: this.data, label: 'Messages'});
     });

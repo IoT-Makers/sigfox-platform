@@ -10,25 +10,23 @@
       <hr>
 
       <div class="row">
-        <div class="col col-4">
-          Start date & time:
+        <div class="col-4">
+          <span>Start date & time:</span>
           <owl-date-time [(ngModel)]="dateBegin"></owl-date-time>
         </div>
-        <div class="col col-4">
-          End date & time:
+        <div class="col-4">
+          <span>End date & time:</span>
           <owl-date-time [(ngModel)]="dateEnd"></owl-date-time>
         </div>
-        <div class="col col-4">
-          Interval of markers to show:
-          <input type="number" value="1" class="form-control" [(ngModel)]="markerInterval">
+        <div class="col-4">
+          <span>Interval of markers to show:</span>
+          <input type="number" value="0" class="form-control" [(ngModel)]="markerInterval">
         </div>
       </div>
 
-      <br>
-
-      <div class="row">
+      <div class="row mt-1">
         <div class="col-2">
-          <label>Precision circles: </label>
+          <label class="mr-1">Precision circles:</label>
           <label class="switch switch-text switch-primary">
             <input type="checkbox" [checked]="circlePrecision" (change)="circlePrecision = !circlePrecision" class="switch-input" checked="">
             <span class="switch-label" data-on="On" data-off="Off"></span>
@@ -36,7 +34,7 @@
           </label>
         </div>
         <div class="col-2">
-          <label>Directions routes: </label>
+          <label class="mr-1">Directions routes:</label>
           <label class="switch switch-text switch-primary">
             <input type="checkbox" [checked]="directionsRoutes" (click)="onDirections()" (change)="directionsRoutes = !directionsRoutes" class="switch-input" checked="">
             <span class="switch-label" data-on="On" data-off="Off"></span>
@@ -44,26 +42,24 @@
           </label>
         </div>
         <div class="col-2">
-          <label>GPS only: </label>
+          <label class="mr-1">GPS only:</label>
           <label class="switch switch-text switch-primary">
-            <input type="checkbox" [checked]="gpsOnly" (change)="gpsOnly = !gpsOnly" class="switch-input" checked="">
+            <input type="checkbox" [checked]="gpsOnly" (click)="onGpsOnly()" (change)="gpsOnly = !gpsOnly" class="switch-input" checked="gpsOnly">
             <span class="switch-label" data-on="On" data-off="Off"></span>
             <span class="switch-handle"></span>
           </label>
         </div>
         <div class="col-2">
-          <label>Sigfox only: </label>
+          <label class="mr-1">Sigfox only:</label>
           <label class="switch switch-text switch-primary">
-            <input type="checkbox" [checked]="sigfoxOnly" (change)="sigfoxOnly = !sigfoxOnly" class="switch-input" checked="">
+            <input type="checkbox" [checked]="sigfoxOnly" (click)="onSigfoxOnly()" (change)="sigfoxOnly = !sigfoxOnly" class="switch-input" checked="sigfoxOnly">
             <span class="switch-label" data-on="On" data-off="Off"></span>
             <span class="switch-handle"></span>
           </label>
         </div>
       </div>
 
-      <br>
-
-      <div class="row">
+      <div class="row mt-1">
         <div class="col-4">
           <select  class="form-control" size="1" [(ngModel)]="selectedDevice">
             <option [ngValue]="device" *ngFor="let device of devices">{{device.id}} {{device.name ? " - " + device.name : ""}}</option>
@@ -82,7 +78,7 @@
       <!-- <input [ngModel]="dateBegin | date:'yyyy-MM-dd'" (ngModelChange)="dateBegin = $event" type="date" name="dateBegin"/>
        <input [ngModel]="dateEnd | date:'yyyy-MM-dd'" (ngModelChange)="dateEnd = $event" type="date" name="dateEnd"/>-->
 
-      <p>{{searchResult}}</p>
+      <blockquote *ngIf="searchResult != ''" class="blockquote">{{searchResult}}</blockquote>
 
       <agm-map
         [latitude]="initMapPosition.lat"
@@ -98,9 +94,9 @@
           [strokeOpacity] = 0.5>
           <ng-container *ngFor="let marker of allLocalizedMessages; let i = index">
             <agm-polyline-point
-              *ngIf="marker.geoloc_sigfox"
-              [latitude]="marker.geoloc_sigfox.lat"
-              [longitude]="marker.geoloc_sigfox.lng">
+              *ngIf="marker.sigfox"
+              [latitude]="marker.sigfox.lat"
+              [longitude]="marker.sigfox.lng">
             </agm-polyline-point>
             <agm-polyline-point
               *ngIf="marker.GPS"
@@ -120,7 +116,7 @@
             <!-- Start Point -->
             <ng-container *ngSwitchCase="0">
               <ng-container *ngFor="let geoloc of marker.geoloc">
-                <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+                <ng-container *ngIf="geoloc.type == 'sigfox'">
                   <agm-marker
                     [zIndex]="4"
                     [latitude]="geoloc.lat"
@@ -174,7 +170,7 @@
             <!-- Finish Point -->
             <ng-container *ngSwitchCase="allLocalizedMessages.length - 1">
               <ng-container *ngFor="let geoloc of marker.geoloc">
-                <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+                <ng-container *ngIf="geoloc.type == 'sigfox'">
                   <agm-marker
                     [zIndex]="4"
                     [latitude]="geoloc.lat"
@@ -187,7 +183,7 @@
                       <br>
                       <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
                       <br>
-                      <strong><b>Position: </b> FINISH</strong>
+                      <strong><b>Position: </b> n°{{i}} - FINISH</strong>
                     </agm-info-window>
                   </agm-marker>
                   <!-- Circle -->
@@ -229,7 +225,7 @@
             <ng-container *ngSwitchDefault>
               <ng-container *ngFor="let geoloc of marker.geoloc">
                 <!-- Geoloc Sigfox -->
-                <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+                <ng-container *ngIf="geoloc.type == 'sigfox'">
                   <agm-marker
                     [zIndex]="3"
                     [latitude]="geoloc.lat"

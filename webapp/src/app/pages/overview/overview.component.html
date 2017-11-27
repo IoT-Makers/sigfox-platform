@@ -73,7 +73,7 @@
             <ng-container *ngFor="let device of devices; let i = index">
               <ng-container *ngFor="let geoloc of device.location">
                 <!-- Geoloc Sigfox -->
-                <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+                <ng-container *ngIf="geoloc.type == 'sigfox'">
                   <agm-marker
                     (mouseOut)="markerOut(i)"
                     (mouseOver)="markerOver(i)"
@@ -177,7 +177,7 @@
                 <div *ngIf="device.location">
                   <div *ngFor="let geoloc of device.location">
 
-                    <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+                    <ng-container *ngIf="geoloc.type == 'sigfox'">
                       <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-sigfox">
                         <i class="fa fa-map-marker fa-2x"></i>
                         <br>
@@ -283,7 +283,7 @@
               <div *ngFor="let geoloc of item.geoloc">
                 <div class="row">
                   <div class="col col-12">
-                    <ng-container *ngIf="geoloc.type == 'geoloc_sigfox'">
+                    <ng-container *ngIf="geoloc.type == 'sigfox'">
                         <span class="small text-geoloc-sigfox">
                           <i class="fa fa-map-marker fa-2x"></i>
                           <br>

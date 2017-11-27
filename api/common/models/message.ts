@@ -134,7 +134,7 @@ class Message {
             if (!deviceInstance.location)
               deviceInstance.location = [];
             deviceInstance.location.forEach((geoloc: any, index: number) => {
-              if (geoloc.type === 'geoloc_sigfox') {
+              if (geoloc.type === 'sigfox') {
                 deviceInstance.location[index] = data.geoloc[0]; // Replace geoloc_sigfox with new one
                 entryGeoloc_sigfox = true;
               }
@@ -177,9 +177,9 @@ class Message {
                     next(null, message);
 
                   } else {
-                    console.log("Found an existing message.");
+                    console.log('Found an existing message.');
 
-                    if(!messageInstance.geoloc)
+                    if (!messageInstance.geoloc)
                       messageInstance.geoloc = [];
                     messageInstance.geoloc.push(data.geoloc[0]);
 
@@ -191,7 +191,7 @@ class Message {
                           console.log(err);
                           next(err, data);
                         } else {
-                          console.log('Updated message with latest geoloc_sigfox.');
+                          console.log('Updated message with latest sigfox geoloc.');
 
                           next(null, messageInstance);
                         }
@@ -226,7 +226,7 @@ class Message {
                     parsed_data.forEach((o: any) => {
                       if (o.key === 'geoloc') {
                         geoloc.type = o.value;
-                        parsed_dataHasGeoloc = true
+                        parsed_dataHasGeoloc = true;
                       }
                       else if (o.key === 'lat')
                         geoloc.lat = o.value;

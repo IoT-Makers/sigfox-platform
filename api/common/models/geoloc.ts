@@ -68,6 +68,7 @@ class Geoloc {
         } else {
           device = device.toJSON();
           messages =  device.Messages;
+
           // console.log("device:", device);
           // console.log("messages", messages);
 
