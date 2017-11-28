@@ -26,6 +26,7 @@ export class TrackingComponent implements OnInit {
   public directionsRoutes = true;
   public sigfoxOnly = false;
   public gpsOnly = false;
+  public gpsPrefer = true;
 
   private markerInterval = 0;
   private initMapPosition = {'lat': 48.86795, 'lng': 2.334070};
@@ -109,24 +110,51 @@ export class TrackingComponent implements OnInit {
           i = i + this.markerInterval;
         }
 
-        if (this.sigfoxOnly) {
-          const filteredMessages = _.filter(this.allLocalizedMessages, {geoloc: [{type: 'sigfox'}] });
-          if (filteredMessages.length > 0) {
-            this.allLocalizedMessages = filteredMessages;
-            this.searchResult = 'There are ' + this.allLocalizedMessages.length + ' sigfox geoloc messages.';
-          } else {
-            this.searchResult = 'There are no sigfox geoloc messages.';
-          }
-        } else if (this.gpsOnly) {
-          const filteredMessages = _.filter(this.allLocalizedMessages, {geoloc: [{type: 'GPS'}] });
-          if (filteredMessages.length > 0) {
-            this.allLocalizedMessages = filteredMessages;
-            this.searchResult = 'There are ' + this.allLocalizedMessages.length + ' GPS messages. Showing others.';
-          } else {
-            this.searchResult = 'There are no GPS messages.';
-          }
-        }
+        if (this.gpsPrefer) {
+          this.allLocalizedMessages.forEach((message, i) => {
+            let hasSigfox = false;
+            if (message.geoloc.length > 1) {
+              message.geoloc.forEach((geoloc, j) => {
+                if (geoloc.type === 'sigfox')
+                  hasSigfox = true;
+                if (hasSigfox)
+                  this.allLocalizedMessages[i].geoloc[j] = {};
+              });
+            }
+          });
 
+          console.log('filteredMessages', this.allLocalizedMessages);
+
+        }
+        if (this.gpsOnly) {
+          // Message contains GPS
+          this.allLocalizedMessages = _.filter(this.allLocalizedMessages, {geoloc: [{type: 'GPS'}]});
+          // Filter others
+          this.allLocalizedMessages.forEach((message, i) => {
+            message.geoloc.forEach((geoloc, j) => {
+              if (geoloc.type !== 'GPS') {
+                this.allLocalizedMessages[i].geoloc[j] = {};
+              }
+            });
+          });
+
+          console.log('filteredMessages', this.allLocalizedMessages);
+
+        } else if (this.sigfoxOnly) {
+          // Message contains Sigfox
+          this.allLocalizedMessages = _.filter(this.allLocalizedMessages, {geoloc: [{type: 'sigfox'}]});
+          // Filter others
+          this.allLocalizedMessages.forEach((message, i) => {
+            message.geoloc.forEach((geoloc, j) => {
+              if (geoloc.type !== 'sigfox') {
+                this.allLocalizedMessages[i].geoloc[j] = {};
+              }
+            });
+          });
+
+          console.log('filteredMessages', this.allLocalizedMessages);
+
+        }
         // Center map
         this.initMapPosition = this.allLocalizedMessages[0].geoloc[0];
 

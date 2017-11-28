@@ -57,6 +57,14 @@
             <span class="switch-handle"></span>
           </label>
         </div>
+        <div class="col-2">
+          <label class="mr-1">Prefer GPS:</label>
+          <label class="switch switch-text switch-primary">
+            <input type="checkbox" [checked]="gpsPrefer" (change)="gpsPrefer = !gpsPrefer" class="switch-input" checked="gpsPrefer">
+            <span class="switch-label" data-on="On" data-off="Off"></span>
+            <span class="switch-handle"></span>
+          </label>
+        </div>
       </div>
 
       <div class="row mt-1">
