@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
 import {FireLoopRef, Message} from '../../shared/sdk/models';
-import {MessageApi, RealTime, UserApi} from '../../shared/sdk/services';
+import {RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
 import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
@@ -19,10 +19,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   private receptions: any[] = new Array<any>();
 
-  private message: Message = new Message();
   private messageSub: Subscription;
   private messages: Message[] = new Array<Message>();
-  private countMessages: number = 0;
   private messageRef: FireLoopRef<Message>;
 
   public filterQuery = '';
@@ -31,12 +29,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     return +num;
   }
 
-  public sortByWordLength = (a: any) => {
-    return a.name.length;
-  }
-
   constructor(private rt: RealTime,
-              private messageApi: MessageApi,
               private userApi: UserApi,
               private receptionApi: ReceptionApi) { }
 

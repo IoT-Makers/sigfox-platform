@@ -236,7 +236,7 @@
         <div class="col-md-4 offset-md-8">
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-search"></i></span>
-            <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search by name"/>
+            <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
           </div>
         </div>
       </div>
@@ -277,7 +277,7 @@
               </div>
             </div>
           </td>
-          <td class="text-center">{{item.deviceId}}</td>
+          <td class="text-device">{{item.deviceId}}</td>
           <td class="text-center">
             <div *ngIf="item.geoloc">
               <div *ngFor="let geoloc of item.geoloc">

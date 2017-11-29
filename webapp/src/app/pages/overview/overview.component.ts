@@ -11,14 +11,11 @@ import {AgmInfoWindow} from '@agm/core';
 @Component({
   templateUrl: 'overview.component.html'
 })
-export class OverviewComponent implements OnInit,OnDestroy {
+export class OverviewComponent implements OnInit, OnDestroy {
 
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
 
   private message: Message = new Message();
-  private device: Device = new Device();
-  private parser: Parser = new Parser();
-  private category: Category = new Category();
 
   private messageSub: Subscription;
   private deviceSub: Subscription;
@@ -30,10 +27,10 @@ export class OverviewComponent implements OnInit,OnDestroy {
   private parsers: Parser[] = new Array<Parser>();
   private categories: Category[] = new Array<Category>();
 
-  private countMessages: number = 0;
-  private countDevices: number = 0;
-  private countParsers: number = 0;
-  private countCategories: number = 0;
+  private countMessages = 0;
+  private countDevices = 0;
+  private countParsers = 0;
+  private countCategories = 0;
 
   private messageRef: FireLoopRef<Message>;
   private deviceRef: FireLoopRef<Device>;
@@ -44,11 +41,11 @@ export class OverviewComponent implements OnInit,OnDestroy {
 
   private isCircleVisible: boolean[] = new Array<boolean>();
 
-  private mapLat: number = 48.858093;
-  private mapLng: number = 2.294694;
-  private mapZoom: number = 2;
+  private mapLat = 48.858093;
+  private mapLng = 2.294694;
+  private mapZoom = 2;
 
-  private edit: boolean = false;
+  public filterQuery = '';
 
   constructor(private rt: RealTime,
               private messageApi: MessageApi,
