@@ -303,7 +303,7 @@ class Message {
                   [message.deviceId]: {
                     noData: true
                   }
-                }
+                };
               }
               // ack is true
               next(null, result);
