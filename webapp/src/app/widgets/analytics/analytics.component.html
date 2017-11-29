@@ -1,150 +1,150 @@
 <div class="animated fadeIn">
 
   <div class="row">
-  <div class="col-sm-12 col-md-12">
+    <div class="col-sm-12 col-md-12">
 
-  <div class="card">
-    <div class="card-header">
-      <strong>Count messages</strong>
-    </div>
-    <div class="card-block">
-      <div class="row">
-        <!--<div class="col-sm-5">-->
-          <!--<h4 class="card-title mb-0">Count Messages</h4>-->
-          <!--&lt;!&ndash;<div class="small text-muted">November 2015</div>&ndash;&gt;-->
-        <!--</div>&lt;!&ndash;/.col&ndash;&gt;-->
-        <div class="col col-12 pull-right">
-          <button type="button" class="btn btn-primary float-right"><i class="fa fa-download"></i></button>
-          <div class="btn-toolbar float-right" role="toolbar" aria-label="Toolbar with button groups">
-            <div class="btn-group mr-1" data-toggle="buttons" aria-label="First group">
-              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('hourly')">Hour</button>
-              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('daily')">Day</button>
-              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('weekly')">Week</button>
-              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('monthly')">Month</button>
-              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('yearly')">Year</button>
+      <div class="card">
+        <div class="card-header">
+          <strong>Count messages</strong>
+        </div>
+        <div class="card-block">
+          <div class="row">
+            <!--<div class="col-sm-5">-->
+            <!--<h4 class="card-title mb-0">Count Messages</h4>-->
+            <!--&lt;!&ndash;<div class="small text-muted">November 2015</div>&ndash;&gt;-->
+            <!--</div>&lt;!&ndash;/.col&ndash;&gt;-->
+            <div class="col col-12 pull-right">
+              <button type="button" class="btn btn-primary float-right"><i class="fa fa-download"></i></button>
+              <div class="btn-toolbar float-right" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group mr-1" data-toggle="buttons" aria-label="First group">
+                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('hourly')">Hour</button>
+                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('daily')">Day</button>
+                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('weekly')">Week</button>
+                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('monthly')">Month</button>
+                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('yearly')">Year</button>
+                </div>
+              </div>
+            </div><!--/.col-->
+          </div><!--/.row-->
+          <hr>
+          <div class="chart-wrapper">
+            <canvas *ngIf="messageChartData.length > 0" baseChart
+                    [datasets]="messageChartData"
+                    [labels]="messageChartLabels"
+                    [options]="messageChartOptions"
+                    [colors]="messageChartColors"
+                    [legend]="messageChartLegend"
+                    [chartType]="messageChartType"></canvas>
+          </div>
+        </div>
+      </div>
+      <!--/.card-->
+
+      <div class="card">
+        <div class="card-header">
+          <strong>Devices data</strong>
+        </div>
+        <div class="card-block">
+          <div class="row">
+
+            <div class="col col-12 pull-right">
+              <button type="button" class="btn btn-primary float-right"><i class="fa fa-download"></i></button>
+            </div><!--/.col-->
+          </div><!--/.row-->
+          <div class="row">
+
+            <div class="col col-6">
+              Start date & time:
+              <owl-date-time [(ngModel)]="dateBegin"></owl-date-time>
+            </div>
+            <div class="col col-6">
+              End date & time:
+              <owl-date-time [(ngModel)]="dateEnd"></owl-date-time>
+            </div>
+
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col col-2"><label>Device:</label></div>
+            <div class="col col-4">
+              <!--<input type="text" required class="form-control" placeholder="Enter device ID" (keyup.enter)="getDeviceGraph()" [(ngModel)]="deviceId">-->
+
+              <select  class="form-control" size="1" [(ngModel)]="selectedDevice">
+                <option [ngValue]="device" *ngFor="let device of devices">{{device.id}} {{device.name ? " - " + device.name : ""}}</option>
+              </select>
+            </div>
+            <div class="col col-4">
+              <button class="btn btn-success" (click)="getDeviceGraph()"><i class="fa fa-search"></i> Search</button>
             </div>
           </div>
-        </div><!--/.col-->
-      </div><!--/.row-->
-      <hr>
-      <div class="chart-wrapper">
-        <canvas *ngIf="messageChartData.length > 0" baseChart
-                [datasets]="messageChartData"
-                [labels]="messageChartLabels"
-                [options]="messageChartOptions"
-                [colors]="messageChartColors"
-                [legend]="messageChartLegend"
-                [chartType]="messageChartType"></canvas>
+
+          <hr>
+          <div class="chart-wrapper">
+            <canvas *ngIf="deviceChartData.length > 0" baseChart
+                    [datasets]="deviceChartData"
+                    [labels]="deviceChartLabels"
+                    [options]="deviceChartOptions"
+                    [colors]="deviceChartColors"
+                    [legend]="deviceChartLegend"
+                    [chartType]="deviceChartType"></canvas>
+          </div>
+        </div>
       </div>
+      <!--/.card-->
+
     </div>
-  </div>
-  <!--/.card-->
-
-    <div class="card">
-      <div class="card-header">
-        <strong>Devices data</strong>
-      </div>
-      <div class="card-block">
-        <div class="row">
-
-          <div class="col col-12 pull-right">
-            <button type="button" class="btn btn-primary float-right"><i class="fa fa-download"></i></button>
-          </div><!--/.col-->
-        </div><!--/.row-->
-        <div class="row">
-
-          <div class="col col-6">
-            Start date & time:
-            <owl-date-time [(ngModel)]="dateBegin"></owl-date-time>
-          </div>
-          <div class="col col-6">
-            End date & time:
-            <owl-date-time [(ngModel)]="dateEnd"></owl-date-time>
-          </div>
-
-        </div>
-        <hr>
-        <div class="row">
-          <div class="col col-2"><label>Device:</label></div>
-          <div class="col col-4">
-            <!--<input type="text" required class="form-control" placeholder="Enter device ID" (keyup.enter)="getDeviceGraph()" [(ngModel)]="deviceId">-->
-
-            <select  class="form-control" size="1" [(ngModel)]="selectedDevice">
-              <option [ngValue]="device" *ngFor="let device of devices">{{device.id}} {{device.name ? " - " + device.name : ""}}</option>
-            </select>
-          </div>
-          <div class="col col-4">
-            <button class="btn btn-success" (click)="getDeviceGraph()"><i class="fa fa-search"></i> Search</button>
-          </div>
-        </div>
-
-        <hr>
-        <div class="chart-wrapper">
-          <canvas *ngIf="deviceChartData.length > 0" baseChart
-                  [datasets]="deviceChartData"
-                  [labels]="deviceChartLabels"
-                  [options]="deviceChartOptions"
-                  [colors]="deviceChartColors"
-                  [legend]="deviceChartLegend"
-                  [chartType]="deviceChartType"></canvas>
-        </div>
-      </div>
-    </div>
-    <!--/.card-->
-
-  </div>
   </div>
   <!--/.row-->
 
   <!--<div class="row">-->
-    <!--<div class="col-sm-12 col-md-6">-->
-      <!--<div class="card">-->
-        <!--<div class="card-header">-->
-          <!--<i class="fa fa-thermometer fa-lg text-warning"></i> <strong>Devices</strong>-->
-        <!--</div>-->
-        <!--<div *ngIf="!devices.length" class="card-block">-->
-          <!--No device yet...-->
-        <!--</div>-->
-        <!--<div *ngIf="devices.length>0" class="card-block">-->
+  <!--<div class="col-sm-12 col-md-6">-->
+  <!--<div class="card">-->
+  <!--<div class="card-header">-->
+  <!--<i class="fa fa-thermometer fa-lg text-warning"></i> <strong>Devices</strong>-->
+  <!--</div>-->
+  <!--<div *ngIf="!devices.length" class="card-block">-->
+  <!--No device yet...-->
+  <!--</div>-->
+  <!--<div *ngIf="devices.length>0" class="card-block">-->
 
-          <!--&lt;!&ndash;Table&ndash;&gt;-->
-          <!--<table class="table table-hover table-outline">-->
-            <!--<thead class="thead-inverse">-->
-            <!--<tr>-->
-              <!--<th class="text-center">ID</th>-->
-              <!--<th class="text-center hidden-xs-down">Last Update</th>-->
-              <!--<th class="text-center hidden-xs-down">Properties</th>-->
-            <!--</tr>-->
-            <!--</thead>-->
-            <!--<tbody>-->
-            <!--<tr *ngFor="let device of devices; let i = index">-->
-              <!--<td class="text-center">-->
-                <!--<strong>{{device.id}}</strong>-->
-                <!--<div class="small">-->
-                  <!--<span class="text-muted">Category: </span>-->
-                  <!--<span class="text-primary">{{device.Category ? device.Category.name : "None"}}</span>-->
-                <!--</div>-->
-              <!--</td>-->
-              <!--<td class="text-center hidden-xs-down">-->
-                <!--<div class="small text-muted">Last message:</div>-->
-                <!--<strong>{{device.updatedAt | amTimeAgo}}</strong>-->
-              <!--</td>-->
-              <!--<td class="text-center hidden-xs-down">-->
-                <!--<div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>-->
-                <!--<div *ngIf="device.categoryId">-->
-                  <!--<div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">-->
-                    <!--<span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>-->
-                    <!--<span class="text-primary">{{property.value ? property.value : ""}}</span>-->
-                  <!--</div>-->
-                <!--</div>-->
-              <!--</td>-->
+  <!--&lt;!&ndash;Table&ndash;&gt;-->
+  <!--<table class="table table-hover table-outline">-->
+  <!--<thead class="thead-inverse">-->
+  <!--<tr>-->
+  <!--<th class="text-center">ID</th>-->
+  <!--<th class="text-center hidden-xs-down">Last Update</th>-->
+  <!--<th class="text-center hidden-xs-down">Properties</th>-->
+  <!--</tr>-->
+  <!--</thead>-->
+  <!--<tbody>-->
+  <!--<tr *ngFor="let device of devices; let i = index">-->
+  <!--<td class="text-center">-->
+  <!--<strong>{{device.id}}</strong>-->
+  <!--<div class="small">-->
+  <!--<span class="text-muted">Category: </span>-->
+  <!--<span class="text-primary">{{device.Category ? device.Category.name : "None"}}</span>-->
+  <!--</div>-->
+  <!--</td>-->
+  <!--<td class="text-center hidden-xs-down">-->
+  <!--<div class="small text-muted">Last message:</div>-->
+  <!--<strong>{{device.updatedAt | amTimeAgo}}</strong>-->
+  <!--</td>-->
+  <!--<td class="text-center hidden-xs-down">-->
+  <!--<div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>-->
+  <!--<div *ngIf="device.categoryId">-->
+  <!--<div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">-->
+  <!--<span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>-->
+  <!--<span class="text-primary">{{property.value ? property.value : ""}}</span>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</td>-->
 
-            <!--</tr>-->
-            <!--</tbody>-->
-          <!--</table>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
+  <!--</tr>-->
+  <!--</tbody>-->
+  <!--</table>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
   <!--</div>-->
 
 

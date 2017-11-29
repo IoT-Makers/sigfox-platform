@@ -105,8 +105,8 @@ export class AnalyticsComponent implements OnInit {
   getMessagesGraph(option: string): void{
 
     this.graphRange = option;
-     this.messageChartLabels = [];
-     this.messageChartData   = [];
+    this.messageChartLabels = [];
+    this.messageChartData   = [];
     // this.data = [];
 
     this.messageRef.stats({range: this.graphRange}).subscribe((stats: any) => {
@@ -143,55 +143,83 @@ export class AnalyticsComponent implements OnInit {
   }
 
   getDeviceGraph(): void {
-    console.log(this.selectedDevice.id);
+    this.deviceChartColors = [];
     this.deviceChartLabels = [];
-    this.deviceChartData   = [];
+    this.deviceChartData = [];
+
     this.deviceApi.graphData(this.selectedDevice.id, this.dateBegin ? this.dateBegin.toISOString() : null, this.dateEnd ? this.dateEnd.toISOString(): null).subscribe((result:any) => {
       console.log(result);
 
       this.deviceChartLabels = result.result.xAxis;
-
       const groupByKey: any = result.result.yAxis;
+
+      let firstNumericalKey = true;
+
       for (const key in groupByKey) {
-        let obj: any;
-        obj = {
-          label: '',
-          data: []
-        };
-
-        const colorOption: any = {
-          //backgroundColor: 'transparent',
-          borderColor: '',
-          pointHoverBackgroundColor: '#fff',
-          borderWidth: 1,
-          pointRadius: 0
-        }
-
-        // check also if property is not inherited from prototype
-        if (groupByKey.hasOwnProperty(key)) {
-
+        // Check if values are numerical for this key
+        if (typeof groupByKey[key][0].value === 'number' || groupByKey[key][0].type === 'number') {
+          let obj: any;
+          obj = {
+            label: key,
+            data: []
+          };
           groupByKey[key].forEach((item: any) => {
-            if (typeof item.value === 'number' || item.type === 'number') {
-              obj.label = key;
-              obj.data.push(item.value);
-            } else {
-              obj.data.push(null);
-            }
+            obj.data.push(item.value);
           });
+          const colorOption: any = {
+            borderColor: '',
+            borderWidth: 1,
+            pointRadius: 4,
+            pointBorderWidth: 0.2,
+            pointBackgroundColor: 'rgba(255, 255, 255, 0.1)',
+            pointHoverBackgroundColor: 'rgba(255, 255, 255, 0.8)',
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 2
+          };
 
-          if (obj.label) {
-            this.deviceChartData.push(obj);
+          if (groupByKey[key].length > 15)
+            colorOption.pointRadius = 2;
+          if (groupByKey[key].length > 30)
+            colorOption.pointRadius = 0;
+
+          if (key === 'battery') {
+            colorOption.borderColor = '#ff4349';
+            colorOption.backgroundColor = 'rgba(215, 44, 44, 0.1)';
+          } else if (key === 'temperature') {
+            colorOption.borderColor = '#44c35c';
+            colorOption.backgroundColor = 'rgba(64, 175, 44, 0.1)';
+          } else if (key === 'humidity') {
+            colorOption.borderColor = '#5388ff';
+            colorOption.backgroundColor = 'rgba(64, 117, 165, 0.3)';
+          } else if (key === 'altitude') {
+            colorOption.borderColor = '#7f4edb';
+            colorOption.backgroundColor = 'rgba(133, 108, 163, 0.3)';
+          } else if (key === 'light') {
+            colorOption.borderColor = '#dbdb24';
+            colorOption.backgroundColor = 'rgba(219, 212, 93, 0.3)';
+          } else if (key === 'lat') {
+            colorOption.borderColor = '#d3946a';
+            colorOption.backgroundColor = 'rgba(200, 145, 93, 0.3)';
+          } else if (key === 'lng') {
+            colorOption.borderColor = '#d3946a';
+            colorOption.backgroundColor = 'rgba(200, 145, 93, 0.3)';
           }
 
-          this.deviceChartColors.push(colorOption);
 
+          if (firstNumericalKey)
+            obj.hidden = false;
+          else
+            obj.hidden = true;
+
+          firstNumericalKey = false;
+
+          this.deviceChartData.push(obj);
+          this.deviceChartColors.push(colorOption);
         }
       }
-
       console.log(this.deviceChartLabels);
       console.log(this.deviceChartData);
-
-      //this.deviceChartData = result.result.yAxis
+      // this.deviceChartData = result.result.yAxis
     });
   }
 

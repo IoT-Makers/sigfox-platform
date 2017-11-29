@@ -27,6 +27,7 @@ export class TrackingComponent implements OnInit {
   public sigfoxOnly = false;
   public gpsOnly = false;
   public gpsPrefer = true;
+  public polylines = false;
 
   private markerInterval = 0;
   private mapPosition = {'lat': 48.86795, 'lng': 2.334070};
@@ -118,7 +119,7 @@ export class TrackingComponent implements OnInit {
                 if (geoloc.type === 'sigfox')
                   hasSigfox = true;
                 if (hasSigfox)
-                  this.allLocalizedMessages[i].geoloc[j] = {};
+                  this.allLocalizedMessages[i].geoloc.splice(j, 1);
               });
             }
           });
@@ -130,7 +131,7 @@ export class TrackingComponent implements OnInit {
           this.allLocalizedMessages.forEach((message, i) => {
             message.geoloc.forEach((geoloc, j) => {
               if (geoloc.type !== 'GPS') {
-                this.allLocalizedMessages[i].geoloc[j] = {};
+                this.allLocalizedMessages[i].geoloc.splice(j, 1);
               }
             });
           });
@@ -142,7 +143,7 @@ export class TrackingComponent implements OnInit {
           this.allLocalizedMessages.forEach((message, i) => {
             message.geoloc.forEach((geoloc, j) => {
               if (geoloc.type !== 'sigfox') {
-                this.allLocalizedMessages[i].geoloc[j] = {};
+                this.allLocalizedMessages[i].geoloc.splice(j, 1);
               }
             });
           });
@@ -154,6 +155,8 @@ export class TrackingComponent implements OnInit {
           this.searchResult = 'Showing ' + this.allLocalizedMessages.length + ' markers for device ID: ' + this.selectedDevice.id;
         } else
           this.searchResult = 'No markers to show with these filters for device ID: ' + this.selectedDevice.id;
+
+        console.log(this.allLocalizedMessages);
       } else // -- no localized messages
         this.searchResult = 'No geolocation messages found for this device ID.';
     }, (error: Error) => this.searchResult = error.message);
