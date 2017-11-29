@@ -127,20 +127,28 @@ class Message {
           } // if(duplicate)
 
 
-          // If message contains sigfox geoloc
-          else if (data.geoloc) {
-            // Now checking where geoloc sigfox is in the location array so it can be updated
+          // If message contains Sigfox geoloc
+          else if (message.geoloc) {
+            // Build the formatted geoloc object
+            const geolocSigfox = new this.model.app.models.Geoloc;
+            geolocSigfox.type = message.geoloc[0].type;
+            geolocSigfox.lat = message.geoloc[0].lat;
+            geolocSigfox.lng = message.geoloc[0].lng;
+            geolocSigfox.precision = message.geoloc[0].precision;
+            // Store the formatted geoloc in the message to be saved
+            message.geoloc[0] = geolocSigfox;
+            // Now checking where Sigfox geoloc is in the location array so it can be updated
             let entryGeoloc_sigfox = false;
             if (!deviceInstance.location)
               deviceInstance.location = [];
             deviceInstance.location.forEach((geoloc: any, index: number) => {
               if (geoloc.type === 'sigfox') {
-                deviceInstance.location[index] = data.geoloc[0]; // Replace geoloc_sigfox with new one
+                deviceInstance.location[index] = geolocSigfox; // Replace Sigfox geoloc with new one
                 entryGeoloc_sigfox = true;
               }
             });
             if (!entryGeoloc_sigfox)
-              deviceInstance.location.push(data.geoloc[0]);
+              deviceInstance.location.push(geolocSigfox);
 
             // Update the device
             this.model.app.models.Device.upsert(
@@ -150,7 +158,7 @@ class Message {
                   console.log(err);
                   next(err, data);
                 } else {
-                  console.log('Updated device with latest geoloc_sigfox');
+                  console.log('Updated device with latest Sigfox geoloc');
                 }
               });
 
@@ -159,9 +167,9 @@ class Message {
               {
                 where: {
                   and: [
-                    {deviceId: data.deviceId},
-                    {time: data.time},
-                    {seqNumber: data.seqNumber}
+                    {deviceId: message.deviceId},
+                    {time: message.time},
+                    {seqNumber: message.seqNumber}
                   ]
                 }
               },
@@ -181,7 +189,7 @@ class Message {
 
                     if (!messageInstance.geoloc)
                       messageInstance.geoloc = [];
-                    messageInstance.geoloc.push(data.geoloc[0]);
+                    messageInstance.geoloc.push(geolocSigfox);
 
                     // Update the device
                     this.model.upsert(
@@ -191,7 +199,7 @@ class Message {
                           console.log(err);
                           next(err, data);
                         } else {
-                          console.log('Updated message with latest sigfox geoloc.');
+                          console.log('Updated message with latest Sigfox geoloc.');
 
                           next(null, messageInstance);
                         }
@@ -213,21 +221,18 @@ class Message {
                   if (err) {
                     console.log(err);
                     next(err, data);
-                  } else if(parserInstance) {
+                  } else if (parserInstance) {
                     // Here we will decode the Sigfox payload and search for geoloc to be extracted and store in the Message
                     // @TODO: run it in another container because it can crash the app if something goes wrong...
                     const fn = Function('payload', parserInstance.function);
-                    const parsed_data = fn(data.data);
+                    const parsed_data = fn(message.data);
                     const geoloc = new this.model.app.models.Geoloc;
-                    let parsed_dataHasGeoloc = false;
                     message.parsed_data = parsed_data;
 
                     // Check if the parsed data contains a "geoloc" key and store it in the message property to be stored
                     parsed_data.forEach((o: any) => {
-                      if (o.key === 'geoloc') {
+                      if (o.key === 'geoloc')
                         geoloc.type = o.value;
-                        parsed_dataHasGeoloc = true;
-                      }
                       else if (o.key === 'lat')
                         geoloc.lat = o.value;
                       else if (o.key === 'lng')
@@ -236,9 +241,8 @@ class Message {
                         geoloc.precision = o.value;
                     });
 
-
-                    if (parsed_dataHasGeoloc) {
-                      console.log('There is geoloc in the parsed data, storing it in message.');
+                    if (geoloc.type) {
+                      console.warn('There is geoloc in the parsed data: storing it in message & updating device location.');
                       if (!message.geoloc)
                         message.geoloc = [];
                       message.geoloc.push(geoloc);
@@ -285,7 +289,7 @@ class Message {
         } else {
           console.log('Created message as: ', messageInstance);
           // Ack from BIDIR callback
-          if(message.ack) {
+          if (message.ack) {
             let result;
             this.model.app.models.Device.findOne({where: {id: message.deviceId}}, function (err: any, device: any) {
               if (device.dl_payload) {

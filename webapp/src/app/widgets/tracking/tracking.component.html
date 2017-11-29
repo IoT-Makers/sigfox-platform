@@ -89,9 +89,9 @@
       <blockquote *ngIf="searchResult != ''" class="blockquote">{{searchResult}}</blockquote>
 
       <agm-map
-        [latitude]="initMapPosition.lat"
-        [longitude]="initMapPosition.lng"
-        [zoom]="7"
+        [latitude]="mapPosition.lat"
+        [longitude]="mapPosition.lng"
+        [zoom]="mapZoom"
         [mapTypeControl]=true
         [fullscreenControl]="true">
 

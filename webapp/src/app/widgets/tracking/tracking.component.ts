@@ -29,7 +29,8 @@ export class TrackingComponent implements OnInit {
   public gpsPrefer = true;
 
   private markerInterval = 0;
-  private initMapPosition = {'lat': 48.86795, 'lng': 2.334070};
+  private mapPosition = {'lat': 48.86795, 'lng': 2.334070};
+  private mapZoom = 3;
 
   private dateBegin: Date = new Date(Date.now());
   private dateEnd: Date = new Date(Date.now());
@@ -104,12 +105,11 @@ export class TrackingComponent implements OnInit {
 
     this.geolocApi.getGeolocsByDeviceId(this.selectedDevice.id, this.dateBegin.toISOString(), this.dateEnd.toISOString()).subscribe((messages: Message[]) => {
       if (messages.length > 0) {
-        this.searchResult = 'Found ' + messages.length + ' geoloc messages for device ID: ' + this.selectedDevice.id;
+        // this.searchResult = 'Found ' + messages.length + ' geoloc messages for device ID: ' + this.selectedDevice.id;
         for (let i = 0; i < messages.length; i++) {
           this.allLocalizedMessages.push(messages[i]);
           i = i + this.markerInterval;
         }
-
         if (this.gpsPrefer) {
           this.allLocalizedMessages.forEach((message, i) => {
             let hasSigfox = false;
@@ -122,9 +122,6 @@ export class TrackingComponent implements OnInit {
               });
             }
           });
-
-          console.log('filteredMessages', this.allLocalizedMessages);
-
         }
         if (this.gpsOnly) {
           // Message contains GPS
@@ -138,8 +135,6 @@ export class TrackingComponent implements OnInit {
             });
           });
 
-          console.log('filteredMessages', this.allLocalizedMessages);
-
         } else if (this.sigfoxOnly) {
           // Message contains Sigfox
           this.allLocalizedMessages = _.filter(this.allLocalizedMessages, {geoloc: [{type: 'sigfox'}]});
@@ -151,15 +146,16 @@ export class TrackingComponent implements OnInit {
               }
             });
           });
-
-          console.log('filteredMessages', this.allLocalizedMessages);
-
         }
-        // Center map
-        this.initMapPosition = this.allLocalizedMessages[0].geoloc[0];
-
+        if (this.allLocalizedMessages.length > 0) {
+          // Center map
+          this.mapPosition = this.allLocalizedMessages[this.allLocalizedMessages.length - 1].geoloc[0];
+          this.mapZoom = 14;
+          this.searchResult = 'Showing ' + this.allLocalizedMessages.length + ' markers for device ID: ' + this.selectedDevice.id;
+        } else
+          this.searchResult = 'No markers to show with these filters for device ID: ' + this.selectedDevice.id;
       } else // -- no localized messages
-        this.searchResult = 'No geolocation messages found for this device ID. Showing others.';
+        this.searchResult = 'No geolocation messages found for this device ID.';
     }, (error: Error) => this.searchResult = error.message);
   }
 
