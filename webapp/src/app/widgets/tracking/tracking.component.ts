@@ -24,6 +24,7 @@ export class TrackingComponent implements OnInit {
 
   public circlePrecision = false;
   public directionsRoutes = true;
+  public travelMode = 'DRIVING';
   public sigfoxOnly = false;
   public gpsOnly = false;
   public gpsPrefer = true;
@@ -33,8 +34,8 @@ export class TrackingComponent implements OnInit {
   private mapPosition = {'lat': 48.86795, 'lng': 2.334070};
   private mapZoom = 3;
 
-  private dateBegin: Date = new Date(Date.now());
-  private dateEnd: Date = new Date(Date.now());
+  private dateBegin: Date = new Date();
+  private dateEnd: Date = new Date();
   private searchResult = '';
   public allLocalizedMessages: Message[] = new Array<Message>();
   public directionsDisplayStore = [];
@@ -47,7 +48,6 @@ export class TrackingComponent implements OnInit {
   }
 
   setup(): void {
-    console.log(this.rt.connection);
     this.ngOnDestroy();
 
     // Devices
@@ -58,8 +58,10 @@ export class TrackingComponent implements OnInit {
         this.devices = devices;
         console.log('Devices', this.devices);
       });
+  }
 
-    this.dateBegin.setDate(this.dateBegin.getDate() - 7);
+  selectedTravelMode(mode: any): void {
+    this.travelMode = mode.text;
   }
 
   onGpsOnly(): void {

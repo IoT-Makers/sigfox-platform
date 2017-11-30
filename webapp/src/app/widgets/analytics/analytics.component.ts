@@ -42,9 +42,6 @@ export class AnalyticsComponent implements OnInit {
       backgroundColor: '#5b9bd3'
     }
   ];
-  private messageChartLegend = true;
-  private messageChartType = 'bar';
-
 
   // Devices Graph
   private selectedDevice: Device = new Device();
@@ -64,13 +61,12 @@ export class AnalyticsComponent implements OnInit {
     }
   };
   private deviceChartColors: Array<any> = [];
-  private deviceChartLegend = true;
-  private deviceChartType = 'line';
 
   constructor(private rt: RealTime,
               private deviceApi: DeviceApi) {}
 
   ngOnInit(): void {
+    this.dateBegin.setDate(this.dateBegin.getDate() - 7);
     if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
@@ -83,7 +79,6 @@ export class AnalyticsComponent implements OnInit {
   }
 
   setup(): void {
-    console.log(this.rt.connection);
     this.ngOnDestroy();
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
@@ -98,8 +93,6 @@ export class AnalyticsComponent implements OnInit {
         this.devices = devices;
         console.log('Devices', this.devices);
       });
-
-    this.dateBegin.setDate(this.dateBegin.getDate() - 7);
   }
 
   getMessagesGraph(option: string): void{
@@ -147,12 +140,18 @@ export class AnalyticsComponent implements OnInit {
     this.deviceChartLabels = [];
     this.deviceChartData = [];
 
-    this.deviceApi.graphData(this.selectedDevice.id, this.dateBegin ? this.dateBegin.toISOString() : null, this.dateEnd ? this.dateEnd.toISOString(): null).subscribe((result:any) => {
-      console.log(result);
+    this.deviceApi.graphData(this.selectedDevice.id, this.dateBegin.toISOString(), this.dateEnd.toISOString()).subscribe((result: any) => {
 
       this.deviceChartLabels = result.result.xAxis;
       const groupByKey: any = result.result.yAxis;
 
+      // Transform the labels in the user local time zone format
+      this.deviceChartLabels.forEach((label: any, index) => {
+        const offset = moment().utcOffset();
+        this.deviceChartLabels[index] = moment.utc(label).utcOffset(offset).format('ddd MMM h:mm a');
+      });
+
+      // This boolean permits to activate (make visible) the first key graph only
       let firstNumericalKey = true;
 
       for (const key in groupByKey) {
@@ -205,7 +204,6 @@ export class AnalyticsComponent implements OnInit {
             colorOption.backgroundColor = 'rgba(200, 145, 93, 0.3)';
           }
 
-
           if (firstNumericalKey)
             obj.hidden = false;
           else
@@ -235,6 +233,4 @@ export class AnalyticsComponent implements OnInit {
     if (this.deviceRef)this.deviceRef.dispose();
     if (this.deviceSub)this.deviceSub.unsubscribe();
   }
-
-
 }

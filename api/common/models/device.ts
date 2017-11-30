@@ -22,12 +22,8 @@ let moment = require('moment');
     graphData: {
       accepts: [
         {arg: 'deviceId', type: 'string', required: true, description: 'Device ID'},
-        {
-          arg: 'dateBegin',
-          type: 'string',
-          description: 'the starting date-time'
-        },
-        {arg: 'dateEnd', type: 'string', description: 'the ending date-time'}
+        {arg: 'dateBegin', type: 'string', default: moment().subtract(1, 'hours'), description: 'the starting date-time'},
+        {arg: 'dateEnd', type: 'string', default: moment(), description: 'the ending date-time'}
       ],
       returns: {arg: 'result', type: 'array'},
       http: {path: '/dataStats', verb: 'get'}
@@ -73,8 +69,8 @@ class Device {
               // fields: ['parsed_data'],
               where: {
                 and: [
-                  {createdAt: {gte: dateBegin ? moment(dateBegin) : new Date(0)}},
-                  {createdAt: {lte: dateEnd ? moment(dateEnd) : new Date() }},
+                  {createdAt: {gte: dateBegin}},
+                  {createdAt: {lte: dateEnd}},
                   {parsed_data: {neq: null}}
                 ]
               }
@@ -94,7 +90,7 @@ class Device {
 
           messages.forEach((message: any, messageIndex: number) => {
             if (message.parsed_data) {
-              result.xAxis.push(moment(message.createdAt).format('DD MMM YY h:mm a'));
+              result.xAxis.push(message.createdAt);
               message.parsed_data.forEach((data: any, dataIndex: number) => {
                 data.timestamp = message.createdAt;
                 arrayOfObject.push(data);

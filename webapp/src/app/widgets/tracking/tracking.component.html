@@ -41,6 +41,16 @@
                 <span class="switch-handle"></span>
               </label>
             </div>
+            <div class="col-2">
+              <label class="mr-1">Mode:</label>
+              <label>
+                <ng-select [allowClear]="false"
+                           [items]="['DRIVING', 'WALKING', 'BICYCLING', 'TRANSIT']"
+                           [active]="['DRIVING']"
+                           (selected)="selectedTravelMode($event)">
+                </ng-select>
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -129,10 +139,10 @@
           [strokeOpacity]="0.5">
           <ng-container *ngFor="let marker of allLocalizedMessages">
             <ng-container *ngFor="let geoloc of marker.geoloc">
-            <agm-polyline-point
-              [latitude]="geoloc.lat"
-              [longitude]="geoloc.lng">
-            </agm-polyline-point>
+              <agm-polyline-point
+                [latitude]="geoloc.lat"
+                [longitude]="geoloc.lng">
+              </agm-polyline-point>
             </ng-container>
           </ng-container>
         </agm-polyline>

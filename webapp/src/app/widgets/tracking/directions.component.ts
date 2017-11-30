@@ -31,7 +31,7 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
     const startCoord = allLocalizedMessages[0].geoloc[0];
     const endCoord = allLocalizedMessages[allLocalizedMessages.length  - 1].geoloc[0];
 
-    const routes = Math.floor(allLocalizedMessages.length / 23);
+    const routes = Math.floor(allLocalizedMessages.length / 23) !== 0 ? Math.floor(allLocalizedMessages.length / 23) : 1;
     console.log('Number of routes (23 geolocs per routes)', routes);
     for (let i = 0; i < routes; i++) {
       const waypoints = [];
@@ -74,7 +74,7 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
             waypoints: waypoints,
             optimizeWaypoints: false,
             avoidHighways: false,
-            travelMode: 'DRIVING'
+            travelMode: this.trackingComponent.travelMode
           }, function (response, status) {
             if (status === 'OK') {
               //console.log(response);
