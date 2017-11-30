@@ -34,7 +34,7 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
     const routes = Math.floor(allLocalizedMessages.length / 23) !== 0 ? Math.floor(allLocalizedMessages.length / 23) : 1;
     console.log('Number of routes (23 geolocs per routes)', routes);
     for (let i = 0; i < routes; i++) {
-      const waypoints = [];
+      let waypoints = [];
       //let color = '#' + Math.floor(Math.random()*16777215).toString(16);
       messages = allLocalizedMessages.slice(i * 23, (i + 1) * 23);
       /*console.log("i*23", i*23);
@@ -51,7 +51,7 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
 
       //console.log(waypoints);
 
-      if(waypoints.length<=23){
+      if (waypoints.length <= 23) {
 
         this._googleMapsAPIWrapper.getNativeMap().then((map) => {
           const directionsService = new google.maps.DirectionsService;
@@ -68,6 +68,12 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
               visible: false
             }
           });
+
+          // If travel mode is TRANSIT, then only use the starting and ending coordinates
+          if (this.trackingComponent.travelMode === 'TRANSIT') {
+            waypoints = [];
+          }
+
           directionsService.route({
             origin: {lat: startCoord.lat, lng: startCoord.lng},
             destination: {lat: endCoord.lat, lng: endCoord.lng},
