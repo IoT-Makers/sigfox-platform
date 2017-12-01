@@ -58,6 +58,8 @@
           </td>
           <td class="text-center text-device">
             {{item.deviceId}}
+            <br>
+            <small *ngIf="item.Device">{{item.Device.name}}</small>
           </td>
           <td class="text-center">
             <div *ngIf="item.geoloc">

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 
 import {Message, Device, Category, Parser, User, Organization, FireLoopRef} from '../shared/sdk/models';
 import {
@@ -12,14 +12,14 @@ import {
   OrganizationApi
 } from '../shared/sdk/services';
 
-import {Subscription} from "rxjs/Subscription";
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   templateUrl: './full-layout.component.html'
 })
 export class FullLayoutComponent implements OnInit, OnDestroy {
 
-  private user: User = new User();
+  private user: User;
 
   private message: Message = new Message();
   private device: Device = new Device();
@@ -36,18 +36,18 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private parsers: Parser[] = new Array<Parser>();
   private categories: Category[] = new Array<Category>();
 
-  private countMessages: number = 0;
-  private countDevices: number = 0;
-  private countParsers: number = 0;
-  private countCategories: number = 0;
+  private countMessages = 0;
+  private countDevices = 0;
+  private countParsers = 0;
+  private countCategories = 0;
 
   private messageRef: FireLoopRef<Message>;
   private deviceRef: FireLoopRef<Device>;
   private parserRef: FireLoopRef<Parser>;
   private categoryRef: FireLoopRef<Category>;
 
-  public disabled:boolean = false;
-  public status:{isopen:boolean} = {isopen: false};
+  public disabled = false;
+  public status: {isopen: boolean} = {isopen: false};
 
   constructor(private rt: RealTime,
               private userApi: UserApi,

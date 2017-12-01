@@ -40,6 +40,10 @@
   },
   "validations": [],
   "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "user"
+    },
     "Devices": {
       "type": "hasMany",
       "model": "Device"

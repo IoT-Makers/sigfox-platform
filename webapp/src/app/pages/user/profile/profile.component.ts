@@ -12,8 +12,8 @@ export class ProfileComponent implements OnInit {
 
   @ViewChild('updateUserModal') updateUserModal: any;
 
-  private user: User = new User();
-  private devAccessToken = new AccessToken();
+  private user: User;
+  private devAccessToken;
 
   private callbackURL;
 

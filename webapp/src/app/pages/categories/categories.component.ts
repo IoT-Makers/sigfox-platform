@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-
-import {Category, Device, Message, FireLoopRef, Parser} from '../../shared/sdk/models';
-import {CategoryApi, DeviceApi, RealTime} from '../../shared/sdk/services';
-import {Subscription} from "rxjs/Subscription";
+import {Component, OnInit} from '@angular/core';
+import {Category, Device, FireLoopRef, User} from '../../shared/sdk/models';
+import {CategoryApi, DeviceApi, RealTime, UserApi} from '../../shared/sdk/services';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-categories',
@@ -10,6 +9,8 @@ import {Subscription} from "rxjs/Subscription";
   styleUrls: ['./categories.component.scss']
 })
 export class CategoriesComponent implements OnInit {
+
+  private user: User;
 
   private device: Device = new Device();
 
@@ -21,14 +22,17 @@ export class CategoriesComponent implements OnInit {
 
   private categoryRef: FireLoopRef<Category>;
 
-  private edit: boolean = false;
+  private edit = false;
   private categoryToEdit: Category = new Category();
-  private newCategory: boolean = false;
+  private newCategory = false;
 
-  private propertyType = ["string", "number", "geoloc", "date", "boolean"];
+  private propertyType = ['string', 'number', 'geoloc', 'date', 'boolean'];
 
 
-  constructor(private rt: RealTime, private categoryApi: CategoryApi, private deviceApi: DeviceApi) { }
+  constructor(private rt: RealTime,
+              private categoryApi: CategoryApi,
+              private deviceApi: DeviceApi,
+              private userApi: UserApi) { }
 
   ngOnInit() {
     this.edit = false;
@@ -46,11 +50,19 @@ export class CategoriesComponent implements OnInit {
 
   setup(): void {
     console.log(this.rt.connection);
-    this.ngOnDestroy();//Get and listen devices
+    this.ngOnDestroy();
+
+    this.user = this.userApi.getCachedCurrent();
 
     // Get and listen categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categorySub = this.categoryRef.on('change', {include: 'Devices'}
+    this.categorySub = this.categoryRef.on('change',
+      {
+        include: ['Devices'],
+        where: {
+          userId: this.user.id
+        }
+      }
     ).subscribe((categories: Category[]) => {
       this.categories = categories;
       console.log(this.categories);
@@ -84,18 +96,18 @@ export class CategoriesComponent implements OnInit {
 
   addProperty(category: Category):void {
     let property: any = {
-      key: "",
-      value: "",
-      type: "string"
+      key: '',
+      value: '',
+      type: 'string'
     };
 
     category.properties.push(property);
     this.categoryToEdit = category;
   }
 
-  removeProperty(category: Category, index:number):void{
+  removeProperty(category: Category, index: number): void {
     //delete category.properties[index];
-    category.properties.splice(index,1);
+    category.properties.splice(index, 1);
     this.categoryToEdit = category;
   }
 
@@ -104,7 +116,7 @@ export class CategoriesComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    console.log("Devices: ngOnDestroy");
+    console.log('Categories: ngOnDestroy');
 
     if (this.categoryRef)this.categoryRef.dispose();
     if (this.categorySub)this.categorySub.unsubscribe();

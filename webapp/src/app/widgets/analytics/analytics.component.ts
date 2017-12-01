@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {Category, Device, FireLoopRef, Message} from '../../shared/sdk/models';
-import {DeviceApi, RealTime} from '../../shared/sdk/services';
+import {Category, Device, FireLoopRef, Message, User} from '../../shared/sdk/models';
+import {DeviceApi, RealTime, UserApi} from '../../shared/sdk/services';
 
 import {Subscription} from 'rxjs/Subscription';
 
@@ -12,6 +12,8 @@ import * as moment from 'moment';
   styleUrls: ['analytics.component.scss']
 })
 export class AnalyticsComponent implements OnInit {
+
+  private user: User;
 
   private messageSub: Subscription;
   private deviceSub: Subscription;
@@ -63,7 +65,8 @@ export class AnalyticsComponent implements OnInit {
   private deviceChartColors: Array<any> = [];
 
   constructor(private rt: RealTime,
-              private deviceApi: DeviceApi) {}
+              private deviceApi: DeviceApi,
+              private userApi: UserApi) {}
 
   ngOnInit(): void {
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
@@ -83,12 +86,20 @@ export class AnalyticsComponent implements OnInit {
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
 
+    this.user = this.userApi.getCachedCurrent();
+
     this.getMessagesGraph(this.graphRange);
 
     // Devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceRef.on('change',
-      {limit: 100, order: 'updatedAt DESC', include: ['Category', 'Messages']}).subscribe(
+      {limit: 100,
+        order: 'updatedAt DESC',
+        where: {
+          userId: this.user.id
+        }
+      }
+    ).subscribe(
       (devices: Device[]) => {
         this.devices = devices;
         console.log('Devices', this.devices);
@@ -102,7 +113,14 @@ export class AnalyticsComponent implements OnInit {
     this.messageChartData   = [];
     // this.data = [];
 
-    this.messageRef.stats({range: this.graphRange}).subscribe((stats: any) => {
+    this.messageRef.stats(
+      {
+        range: this.graphRange,
+        where: {
+          userId: this.user.id
+        }
+      }
+    ).subscribe((stats: any) => {
 
       this.messageChartLabels = [];
       this.messageChartData   = [];

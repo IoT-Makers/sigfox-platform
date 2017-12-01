@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
-import {FireLoopRef, Message} from '../../shared/sdk/models';
+import {FireLoopRef, Message, User} from '../../shared/sdk/models';
 import {RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
@@ -13,6 +13,8 @@ import {AgmMap} from '@agm/core';
   styleUrls: ['./messages.component.scss']
 })
 export class MessagesComponent implements OnInit, OnDestroy {
+
+  private user: User;
 
   @ViewChild('baseStationMap') baseStationMap: any;
   @ViewChild(AgmMap) agmMap: AgmMap;
@@ -48,11 +50,21 @@ export class MessagesComponent implements OnInit, OnDestroy {
   setup(): void {
     console.log(this.rt.connection);
     this.ngOnDestroy();
+
+    this.user = this.userApi.getCachedCurrent();
+
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     // this.messageRef = this.userRef.make(this.user).child<Message>('Messages');
     this.messageSub = this.messageRef.on('change',
-      {limit: 1000, order: 'id DESC', include: ['Device']}
+      {
+        limit: 1000,
+        order: 'updatedAt DESC',
+        include: ['Device'],
+        where: {
+          userId: this.user.id
+        }
+      }
     ).subscribe((messages: Message[]) => {
       this.messages = messages;
       console.log(this.messages);

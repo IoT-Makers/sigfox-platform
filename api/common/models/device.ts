@@ -1,7 +1,7 @@
 import {Model} from '@mean-expert/model';
 import * as _ from 'lodash';
 
-let moment = require('moment');
+const moment = require('moment');
 
 /**
  * @module Device

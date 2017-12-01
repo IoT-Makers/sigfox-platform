@@ -1,10 +1,10 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-
-import {Category, Device, FireLoopRef, Message, Parser} from '../../shared/sdk/models';
+import {Category, Device, FireLoopRef, Message, Parser, User} from '../../shared/sdk/models';
 import {CategoryApi, DeviceApi, RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
-import {AgmInfoWindow} from "@agm/core";
+import {AgmInfoWindow} from '@agm/core';
+import {UserApi} from '../../shared/sdk/services/custom';
 
 
 @Component({
@@ -13,6 +13,8 @@ import {AgmInfoWindow} from "@agm/core";
   styleUrls: ['./devices.component.scss']
 })
 export class DevicesComponent implements OnInit {
+
+  private user: User;
 
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
   @ViewChild('confirmModal') confirmModal: any;
@@ -45,10 +47,10 @@ export class DevicesComponent implements OnInit {
   private mapLng = 2.294694;
   private mapZoom = 2;
 
-
   constructor(private rt: RealTime,
               private categoryApi: CategoryApi,
               private deviceApi: DeviceApi,
+              private userApi: UserApi,
               private elRef: ElementRef) { }
 
   ngOnInit(): void {
@@ -68,7 +70,7 @@ export class DevicesComponent implements OnInit {
   }
 
   setCircles() {
-    for(let i = 0; i < this.devices.length; i++) {
+    for (let i = 0; i < this.devices.length; i++) {
       this.isCircleVisible.push(false);
     }
   }
@@ -83,10 +85,21 @@ export class DevicesComponent implements OnInit {
 
   setup(): void {
     console.log(this.rt.connection);
-    this.ngOnDestroy();// Get and listen devices
+    this.ngOnDestroy();
+
+    this.user = this.userApi.getCachedCurrent();
+
+    // Get and listen devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceSub = this.deviceRef.on('change',
-      {limit: 1000, order: 'updatedAt DESC', include: ['Parser', 'Category']}
+      {
+        limit: 1000,
+        order: 'updatedAt DESC',
+        include: ['Parser', 'Category'],
+        where: {
+          userId: this.user.id
+        }
+      }
     ).subscribe((devices: Device[]) => {
       this.devices = devices;
       console.log(this.devices);
@@ -101,7 +114,12 @@ export class DevicesComponent implements OnInit {
 
     // Get and listen categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categorySub = this.categoryRef.on('change'
+    this.categorySub = this.categoryRef.on('change',
+      {
+        where: {
+          userId: this.user.id
+        }
+      }
     ).subscribe((categories: Category[]) => {
       this.categories = categories;
       console.log(this.categories);

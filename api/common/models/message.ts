@@ -34,16 +34,18 @@ class Message {
 
   putMessage(req: any, data: any, next: Function): void {
 
-
     // Obtain the userId with the access_token of ctx
     const userId = req.accessToken.userId;
     // Create a new message object
     let message = new this.model;
     message = data;
-    const duplicate = data.duplicate;
-    const parserId = data.parserId;
-    const categoryId = data.parserId;
-
+    // Store the userId in the message
+    message.userId = userId;
+    // Get useful parameters that have to be removed from the message
+    const duplicate = message.duplicate;
+    const deviceNamePrefix = message.deviceNamePrefix;
+    const parserId = message.parserId;
+    const categoryId = message.categoryId;
 
 
     if (!message.deviceId || !message.time || !message.seqNumber)
@@ -61,14 +63,14 @@ class Message {
 
     // Create a new device object
     const device = new this.model.app.models.Device;
-    device.id = data.deviceId;
+    device.id = message.deviceId;
     device.userId = userId;
-    if (data.deviceNamePrefix)
-      device.name = data.deviceNamePrefix + '_' + data.deviceId;
-    if (data.parserId)
-      device.parserId = data.parserId;
-    if (data.categoryId)
-      device.categoryId = data.categoryId;
+    if (deviceNamePrefix)
+      device.name = deviceNamePrefix + '_' + message.deviceId;
+    if (parserId)
+      device.parserId = parserId;
+    if (categoryId)
+      device.categoryId = categoryId;
 
 
     // Check if the device exists

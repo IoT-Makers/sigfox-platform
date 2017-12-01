@@ -6,8 +6,9 @@ import {Device} from '../../shared/sdk/models/Device';
 import {FireLoopRef} from '../../shared/sdk/models/FireLoopRef';
 import {Subscription} from 'rxjs/Subscription';
 import {RealTime} from '../../shared/sdk/services/core/real.time';
-
 import * as _ from 'lodash';
+import {User} from '../../shared/sdk/models';
+import {UserApi} from '../../shared/sdk/services/custom';
 
 @Component({
   selector: 'app-tracking',
@@ -16,6 +17,9 @@ import * as _ from 'lodash';
 })
 
 export class TrackingComponent implements OnInit {
+
+  private user: User;
+
 
   private deviceSub: Subscription;
   private deviceRef: FireLoopRef<Device>;
@@ -44,16 +48,26 @@ export class TrackingComponent implements OnInit {
 
   constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper,
               private geolocApi: GeolocApi,
+              private userApi: UserApi,
               private rt: RealTime) {
   }
 
   setup(): void {
     this.ngOnDestroy();
 
+    this.user = this.userApi.getCachedCurrent();
+
     // Devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceRef.on('change',
-      {limit: 100, order: 'updatedAt DESC', include: ['Category', 'Messages']}).subscribe(
+      {
+        limit: 100,
+        order: 'updatedAt DESC',
+        where: {
+          userId: this.user.id
+        }
+      }
+    ).subscribe(
       (devices: Device[]) => {
         this.devices = devices;
         console.log('Devices', this.devices);

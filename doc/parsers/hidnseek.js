@@ -3,7 +3,7 @@
 // lat: 32, lon: 32, alt:0-8192m, spd:0-127Km/h, bat:0-100%, mode:0-7, cap: N/E/S/W
 // int is 16 bits, float is 32 bits. All little endian
 
-// Example payload: 01264442bbd3054019aaa400 | 0000000000000000ee0d0000
+// Example payload: 6b89434295621340e43ed042 | 0000000000000000ee0d0000
 // https://github.com/hidnseek/hidnseek/tree/master/arduino/libraries/HidnSeek/Examples/HidnSeek_v3_28
 
 var payload,
