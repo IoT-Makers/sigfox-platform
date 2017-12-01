@@ -1,7 +1,8 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {AccessToken, User} from '../../../shared/sdk/models';
+import {AccessToken, Device, User} from '../../../shared/sdk/models';
 import {UserApi} from '../../../shared/sdk/services/custom/User';
 import {DOCUMENT} from '@angular/common';
+import {AccessTokenApi} from "../../../shared/sdk/services/custom";
 
 @Component({
   selector: 'app-profile',
@@ -10,29 +11,38 @@ import {DOCUMENT} from '@angular/common';
 })
 export class ProfileComponent implements OnInit {
 
-  @ViewChild('updateUserModal') updateUserModal: any;
-
   private user: User;
-  private devAccessToken;
 
+  @ViewChild('updateUserModal') updateUserModal: any;
+  @ViewChild('confirmModal') confirmModal: any;
+
+  private devAccessTokens = [];
+  private devAccessTokenToRemove: AccessToken = new AccessToken();
   private callbackURL;
 
   constructor(@Inject(DOCUMENT) private document: any,
-              private userApi: UserApi) {
+              private userApi: UserApi,
+              private accessTokenApi: AccessTokenApi) {
   }
 
   getUser(): void {
-    this.userApi.findById(this.userApi.getCachedCurrent().id).subscribe((user: User) => {
+    this.user = this.userApi.getCachedCurrent();
+    /*this.userApi.findById(this.userApi.getCachedCurrent().id).subscribe((user: User) => {
       this.user = user;
       console.log(this.user);
-    });
+    });*/
   }
 
   getDevAccessToken(): void {
-    this.userApi.getAccessTokens(this.userApi.getCachedCurrent().id, {where: {'ttl': -1}}).subscribe((accessTokens: AccessToken[]) => {
-      if (accessTokens[0]) {
+    this.userApi.getAccessTokens(this.user.id, {
+      where: {
+        ttl: -1,
+        userId: this.user.id
+      }
+    }).subscribe((accessTokens: AccessToken[]) => {
+      if (accessTokens) {
         console.log(accessTokens);
-        this.devAccessToken = accessTokens[0];
+        this.devAccessTokens = accessTokens;
       }
     });
   }
@@ -41,14 +51,28 @@ export class ProfileComponent implements OnInit {
     const newAccessToken = {
       ttl: -1
     };
-    this.userApi.createAccessTokens(this.userApi.getCachedCurrent().id, newAccessToken).subscribe((accessToken: AccessToken) => {
-      this.devAccessToken = accessToken;
+    this.userApi.createAccessTokens(this.user.id, newAccessToken).subscribe((accessToken: AccessToken) => {
+      this.devAccessTokens.push(accessToken);
     });
   }
 
-  deleteDevAccessToken(): void {
-    // this.accessTokenApi.deleteById(this.devAccessToken.id).subscribe();
-    this.userApi.deleteAccessTokens(this.devAccessToken.id).subscribe();
+  showRemoveModal(devAccessToken: AccessToken): void {
+    this.confirmModal.show();
+    this.devAccessTokenToRemove = devAccessToken;
+  }
+
+  remove(): void {
+    this.accessTokenApi.deleteById(this.devAccessTokenToRemove.id).subscribe(value => {
+        const index = this.devAccessTokens.indexOf(this.devAccessTokenToRemove);
+        this.devAccessTokens.splice(index, 1);
+      }
+    );/*
+    this.userApi.deleteAccessTokens(this.devAccessTokenToRemove.id).subscribe(value => {
+        const index = this.devAccessTokens.indexOf(this.devAccessTokenToRemove);
+        this.devAccessTokens.splice(index, 1);
+      }
+    );*/
+    this.confirmModal.hide();
   }
 
   saveSigfoxBackendApiAccess(): void {

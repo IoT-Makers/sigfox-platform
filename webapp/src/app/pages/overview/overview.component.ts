@@ -37,8 +37,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private parserRef: FireLoopRef<Parser>;
   private categoryRef: FireLoopRef<Category>;
 
-  public data = [];
-
   private isCircleVisible: boolean[] = new Array<boolean>();
 
   private mapLat = 48.858093;
@@ -131,7 +129,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     //console.log(this.organizations[0].id);
     this.messageSub = this.messageRef.on('change').subscribe(
       (messages: Message[]) => {
-        this.data = messages;
         this.messages = messages;
         //console.log("Messages", this.messages);
         this.messageApi.count().subscribe(result => {

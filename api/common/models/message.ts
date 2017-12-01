@@ -321,7 +321,7 @@ class Message {
 
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
-    console.log('Device: Before Save');
+    console.log('Message: Before Save');
     next();
   }
 

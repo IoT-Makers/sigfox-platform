@@ -57,14 +57,10 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
               private parserApi: ParserApi,
               private router: Router) { }
 
-  getUser(): void {
-    this.user = this.userApi.getCachedCurrent();
-    console.log(this.user);
-  }
 
   ngOnInit(): void {
     // Get the logged in User object (avatar, email, ...)
-    this.getUser();
+    this.user = this.userApi.getCachedCurrent();
 
     if (
       this.rt.connection.isConnected() &&
@@ -76,17 +72,23 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       this.rt.onReady().subscribe();
     }
 
-    this.deviceApi.count().subscribe(result => {
+    this.deviceApi.count({
+      userId: this.user.id
+    }).subscribe(result => {
       //console.log(deviceApi);
       //console.log("count: ", result);
       this.countDevices = result.count;
     });
-    this.messageApi.count().subscribe(result => {
+    this.messageApi.count({
+      userId: this.user.id
+    }).subscribe(result => {
       //console.log(messageApi);
       //console.log("count: ", result);
       this.countMessages = result.count;
     });
-    this.categoryApi.count().subscribe(result => {
+    this.categoryApi.count({
+      userId: this.user.id
+    }).subscribe(result => {
       //console.log(messageApi);
       //console.log("count: ", result);
       this.countCategories = result.count;
@@ -133,7 +135,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log("Dashboard: ngOnDestroy");
+    console.log('Dashboard: ngOnDestroy');
     if (this.messageRef)this.messageRef.dispose();
     if (this.messageSub)this.messageSub.unsubscribe();
 
@@ -147,7 +149,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     if (this.categorySub)this.categorySub.unsubscribe();
   }
 
-  public toggled(open:boolean):void {
+  public toggled(open: boolean): void {
     console.log('Dropdown is now: ', open);
   }
 
@@ -159,7 +161,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   onLogout(): void {
     this.userApi.logout().subscribe(() => {
-      console.log("is authenticated: ", this.userApi.isAuthenticated());
+      console.log('is authenticated: ', this.userApi.isAuthenticated());
       // some actions on logout
       this.router.navigate(['/login']);
     });

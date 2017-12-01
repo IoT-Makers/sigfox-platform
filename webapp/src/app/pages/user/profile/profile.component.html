@@ -109,13 +109,48 @@
       <accordion>
         <accordion-group>
           <div accordion-heading>
-            Edit Access
+            Manage
           </div>
           <div class="card-block">
-            <p><span class="font-weight-bold">Current token: </span>{{devAccessToken ? devAccessToken.id : "Please create a developer access token bellow." }}</p>
+            <table class="table d-lg-table table-hover table-responsive" [mfData]="devAccessTokens | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+              <thead class="thead-inverse">
+              <tr>
+                <th class="text-center">
+                  <mfDefaultSorter by="created">Date</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="id">ID</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="userId">User ID</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  Remove
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of mf.data">
+                <td class="text-center">{{item.created | date:"yyyy/MM/dd HH:mm:ss"}}</td>
+                <td class="text-center">{{item.id}}</td>
+                <td class="text-center">{{item.userId}}</td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-danger btn-round" (click)="showRemoveModal(item)">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+              <tfoot>
+              <tr>
+                <td colspan="4">
+                  <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                </td>
+              </tr>
+              </tfoot>
+            </table>
           </div>
           <button class="btn btn-sm btn-success" (click)="createDevAccessToken()"><i class="fa fa-plus"></i> Create new</button>
-          <button class="btn btn-sm btn-danger" (click)="deleteDevAccessToken()"><i class="fa fa-ban"></i> Delete latest</button>
         </accordion-group>
       </accordion>
     </div>
@@ -284,6 +319,28 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="updateUserModal.hide()">Close</button>
         <button type="button" class="btn btn-success" (click)="updateUser()">Update</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm removal of access token</h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are your sure you wish to delete this access token (id: <small><b>{{devAccessTokenToRemove.id}}</b></small>)?</p>
+        <p>Be aware the Sigfox Backend callbacks you configured with this token will then be <u>unauthorized</u>!</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
+        <button class="btn btn-sm btn-danger" (click)="remove()">Delete</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

@@ -29,7 +29,16 @@
         "model": "user",
         "foreignKey": "userId"
       }
-    }
+    },
+    "acls": [
+      {
+        "accessType": "*",
+        "principalType": "ROLE",
+        "principalId": "$owner",
+        "permission": "ALLOW",
+        "property": "deleteById"
+      }
+    ]
   },
   "ACL": {
     "dataSource": "db",
