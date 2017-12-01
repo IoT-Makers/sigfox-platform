@@ -12,7 +12,8 @@ const moment = require('moment');
  **/
 @Model({
   hooks: {
-    beforeSave: {name: 'before save', type: 'operation'}
+    beforeSave: {name: 'before save', type: 'operation'}/*,
+    access: {name: 'access', type: 'operation'}*/
   },
   remotes: {
     myRemote: {
@@ -35,6 +36,12 @@ class Device {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
   }
+
+  /*access(ctx: any, next: Function): void {
+    // Filter the request with the sent user Id
+    ctx.query.where.userId = ctx.args.options.accessToken.userId;
+    next();
+  }*/
 
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
