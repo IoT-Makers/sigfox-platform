@@ -192,9 +192,10 @@ export class DevicesComponent implements OnInit {
   }
 
   remove(): void {
-    this.deviceRef.remove(this.deviceToRemove).subscribe();
     // Delete all messages belonging to the device
-    this.deviceApi.deleteMessages(this.deviceToRemove.id).subscribe();
+    this.deviceApi.deleteMessages(this.deviceToRemove.id).subscribe(value => {
+      this.deviceRef.remove(this.deviceToRemove).subscribe();
+    });
     this.confirmModal.hide();
   }
 }

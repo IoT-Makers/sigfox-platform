@@ -28,7 +28,7 @@ const request = require('request');
 })
 
 class Reception {
-  private sigfoxBackendBaseApiUrl: String = 'https://backend.sigfox.com/api/';
+  private sigfoxBackendBaseApiUrl = 'https://backend.sigfox.com/api/';
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {}
@@ -58,17 +58,21 @@ class Reception {
           const sigfoxBackendApiPassword = userInstance.sigfoxBackendApiPassword;
 
           const options = {
-            url: this.sigfoxBackendBaseApiUrl + 'devices/' + data.deviceId + '/messages?limit=1',
+            url: this.sigfoxBackendBaseApiUrl + 'devices/' + data.deviceId + '/messages?limit=1&before=' + data.time + 1,
             headers: {
               'Authorization': 'Basic ' + new Buffer(sigfoxBackendApiLogin + ':' + sigfoxBackendApiPassword).toString('base64')
             }
           };
+
+          console.log(data.deviceId);
+          console.log(data.time);
 
           request(options, function (error: any, response: any, body: any) {
             let res: any = [];
             if (!error && response.statusCode === 200) {
               body = JSON.parse(body);
               res = body.data[0].rinfos;
+              console.log(res.length);
             } else {
               console.error(options.url + ' ' + response.statusCode);
             }

@@ -1,29 +1,31 @@
 <div class="animated fadeIn">
 
-  <div class="card">
+  <div class="card collapse">
     <div class="card-header">
       <i class="fa fa-map-marker fa-lg text-tracking"></i> <strong>Map</strong>
     </div>
     <div class="card-block">
-      <p><u><b>Period</b></u></p>
-      <div class="row">
-        <div class="col-4">
-          <span>Start date & time:</span>
-          <owl-date-time [(ngModel)]="dateBegin"></owl-date-time>
-        </div>
-        <div class="col-4">
-          <span>End date & time:</span>
-          <owl-date-time [(ngModel)]="dateEnd"></owl-date-time>
-        </div>
-        <div class="col-4">
-          <span>Interval of markers to show:</span>
-          <input type="number" value="0" class="form-control" [(ngModel)]="markerInterval">
-        </div>
-      </div>
+      <accordion>
+        <accordion-group [isOpen]="true">
+          <div accordion-heading>
+            <strong class="text-geoloc-sigfox">Period</strong>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <span>Start date & time:</span>
+              <owl-date-time [(ngModel)]="dateBegin"></owl-date-time>
+            </div>
+            <div class="col-6">
+              <span>End date & time:</span>
+              <owl-date-time [(ngModel)]="dateEnd"></owl-date-time>
+            </div>
+          </div>
+        </accordion-group>
 
-      <div class="row mt-1">
-        <div class="col-12">
-          <p><u><b>Routes</b></u></p>
+        <accordion-group>
+          <div accordion-heading>
+            <strong class="text-geoloc-sigfox">Routes</strong>
+          </div>
           <div class="row">
             <div class="col-2">
               <label class="mr-1">Directions routes:</label>
@@ -52,12 +54,13 @@
               </label>
             </div>
           </div>
-        </div>
-      </div>
+        </accordion-group>
 
-      <div class="row mt-1">
-        <div class="col-12">
-          <p><u><b>Precision</b></u></p>
+
+        <accordion-group>
+          <div accordion-heading>
+            <strong class="text-geoloc-sigfox">Precision</strong>
+          </div>
           <div class="row">
             <div class="col-2">
               <label class="mr-1">GPS only:</label>
@@ -84,12 +87,12 @@
               </label>
             </div>
           </div>
-        </div>
-      </div>
+        </accordion-group>
 
-      <div class="row mt-1">
-        <div class="col-12">
-          <p><u><b>Display</b></u></p>
+        <accordion-group>
+          <div accordion-heading>
+            <strong class="text-geoloc-sigfox">Display</strong>
+          </div>
           <div class="row">
             <div class="col-2">
               <label class="mr-1">Precision circles:</label>
@@ -99,9 +102,15 @@
                 <span class="switch-handle"></span>
               </label>
             </div>
+            <div class="col-10">
+              <label class="mr-1">Interval of markers to show:</label>
+              <label>
+                <input type="number" value="0" class="form-control" [(ngModel)]="markerInterval">
+              </label>
+            </div>
           </div>
-        </div>
-      </div>
+        </accordion-group>
+      </accordion>
 
       <div class="row mt-1">
         <div class="col-4">
@@ -117,7 +126,7 @@
       </div>
 
 
-    </div>
+    </div> <!--card-block-->
     <div class="card-block">
       <!-- <input [ngModel]="dateBegin | date:'yyyy-MM-dd'" (ngModelChange)="dateBegin = $event" type="date" name="dateBegin"/>
        <input [ngModel]="dateEnd | date:'yyyy-MM-dd'" (ngModelChange)="dateEnd = $event" type="date" name="dateEnd"/>-->

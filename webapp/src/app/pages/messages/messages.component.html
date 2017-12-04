@@ -49,7 +49,8 @@
         <tr *ngFor="let item of mf.data">
           <td class="text-center">{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
           <td class="text-center">
-            <span class="text-message">{{item.data}}</span>
+            <span class="text-message" *ngIf="item.data">{{item.data}}</span>
+            <span class="text-danger" *ngIf="item.downlinkData">{{item.downlinkData}}</span>
             <div class="text-justify" *ngIf="item.parsed_data">
               <div *ngFor="let object of item.parsed_data">
                 <small>{{object.key}}: <strong>{{object.value}} {{object.unit}}</strong></small>
@@ -93,7 +94,7 @@
             </div>
           </td>
           <td class="text-center">{{item.seqNumber}}</td>
-          <td class="text-center" (click)="showBaseStations(item.deviceId)">
+          <td class="text-center" (click)="showBaseStations(item.deviceId, item.time)">
             <p *ngFor="let reception of item.reception">
               <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success" aria-hidden="true"></i>
               <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>

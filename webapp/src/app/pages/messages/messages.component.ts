@@ -80,14 +80,16 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.messageRef.remove(message).subscribe();
   }
 
-  showBaseStations(deviceId: string): void {
+  showBaseStations(deviceId: string, time: number): void {
+    this.receptions = [];
     const user = this.userApi.getCachedCurrent();
 
     if (user.sigfoxBackendApiLogin && user.sigfoxBackendApiPassword) {
       this.baseStationMap.show();
       const data = {
         userId: this.userApi.getCachedCurrent().id,
-        deviceId: deviceId
+        deviceId: deviceId,
+        time: time
       };
 
       this.receptionApi.getBaseStationsByDeviceId(data).subscribe((receptionsResult: Reception[]) => {

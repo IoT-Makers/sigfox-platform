@@ -41,6 +41,9 @@
     "data": {
       "type": "string"
     },
+    "downlinkData": {
+      "type": "string"
+    },
     "ack": {
       "type": "boolean"
     },
