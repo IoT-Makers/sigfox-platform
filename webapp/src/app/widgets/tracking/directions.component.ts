@@ -20,7 +20,7 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
   public buildDirections() {
     console.log('--------------------------------');
     console.log(this.trackingComponent.directionsDisplayStore);
-    for (let i in this.trackingComponent.directionsDisplayStore) {
+    for (const i in this.trackingComponent.directionsDisplayStore) {
       this.trackingComponent.directionsDisplayStore[i].setMap(null);
     }
     this.trackingComponent.directionsDisplayStore = [];

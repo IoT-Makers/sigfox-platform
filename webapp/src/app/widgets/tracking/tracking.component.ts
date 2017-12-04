@@ -20,7 +20,6 @@ export class TrackingComponent implements OnInit {
 
   private user: User;
 
-
   private deviceSub: Subscription;
   private deviceRef: FireLoopRef<Device>;
 
