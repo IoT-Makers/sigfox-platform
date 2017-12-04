@@ -31,7 +31,6 @@ class Message {
   constructor(public model: any) { }
 
 
-
   putMessage(req: any, data: any, next: Function): void {
 
     // Obtain the userId with the access_token of ctx

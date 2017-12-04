@@ -62,6 +62,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     // Get the logged in User object (avatar, email, ...)
     this.user = this.userApi.getCachedCurrent();
 
+    console.log(this.user);
+
     if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
@@ -153,7 +155,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     console.log('Dropdown is now: ', open);
   }
 
-  public toggleDropdown($event:MouseEvent):void {
+  public toggleDropdown($event: MouseEvent): void {
     $event.preventDefault();
     $event.stopPropagation();
     this.status.isopen = !this.status.isopen;
@@ -162,7 +164,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   onLogout(): void {
     this.userApi.logout().subscribe(() => {
       console.log('is authenticated: ', this.userApi.isAuthenticated());
-      // some actions on logout
+      // Some actions on logout
       this.router.navigate(['/login']);
     });
   }

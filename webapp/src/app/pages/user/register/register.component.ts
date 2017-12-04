@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
-import {User} from "../../../shared/sdk/models";
+import {User} from '../../../shared/sdk/models';
 import {UserApi} from '../../../shared/sdk/services';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -11,34 +11,38 @@ import {Router} from "@angular/router";
 export class RegisterComponent {
 
   private user: User = new User();
-  private verifyPassword: string = "";
-  private errorMessage = "";
+  private verifyPassword = '';
+  private errorMessage = '';
 
   constructor(private userApi: UserApi, private router: Router) {
   }
 
   onRegister(): void {
-    console.log("Registering");
-    // TODO: Check user default values on register
+    console.log('Registering');
+    if (this.user.password !== this.verifyPassword) {
+      this.errorMessage = 'Passwords do not match';
+      return;
+    }
+
     this.user.id = null;
-    this.user.createdAt = new Date(Date.now());
+    this.user.createdAt = new Date();
 
     this.userApi.create(this.user).subscribe(response => {
       this.router.navigate(['/login']);
     }, err => {
-      if (err = "Server error")
-        this.errorMessage = "Server error.";
+      // console.log(err);
+      if (err.statusCode === 422)
+        this.errorMessage = 'Email already taken.';
       else
-        this.errorMessage = "Invalid username or password.";
-      console.log(err);
+        this.errorMessage = 'Invalid username or password.';
     });
   }
 
   verify(): void {
-    if (this.user.password != this.verifyPassword) {
-      this.errorMessage = "Passwords do not match"
+    if (this.user.password !== this.verifyPassword) {
+      this.errorMessage = 'Passwords do not match';
     } else {
-      this.errorMessage = "";
+      this.errorMessage = '';
     }
   }
 
