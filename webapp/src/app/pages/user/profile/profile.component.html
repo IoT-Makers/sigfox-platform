@@ -119,10 +119,10 @@
             Manage
           </div>
           <div class="card-block">
-            <p *ngIf="!devAccessTokens" class="text-danger">
+            <p *ngIf="!devAccessTokens.length" class="text-danger">
               Please create a developer access token first
             </p>
-            <table *ngIf="devAccessTokens" class="table d-lg-table table-hover table-responsive" [mfData]="devAccessTokens | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+            <table *ngIf="devAccessTokens.length>0" class="table d-lg-table table-hover table-responsive" [mfData]="devAccessTokens | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">
