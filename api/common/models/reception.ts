@@ -64,15 +64,12 @@ class Reception {
             }
           };
 
-          console.log(data.deviceId);
-          console.log(data.time);
-
+          // @TODO there seems to be an error when retrieving the base station list... Sometimes not the good ones
           request(options, function (error: any, response: any, body: any) {
             let res: any = [];
             if (!error && response.statusCode === 200) {
               body = JSON.parse(body);
               res = body.data[0].rinfos;
-              console.log(res.length);
             } else {
               console.error(options.url + ' ' + response.statusCode);
             }
