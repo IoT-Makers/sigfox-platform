@@ -37,7 +37,7 @@
     "name": {
       "type": "string"
     },
-    "dl_payload": {
+    "downlinkData": {
       "type": "string"
     },
     "location": {

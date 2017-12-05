@@ -5,7 +5,7 @@ export interface DeviceInterface {
   "id": string;
   "creation"?: Date;
   "name"?: string;
-  "dl_payload"?: string;
+  "downlinkData"?: string;
   "location"?: Array<any>;
   "properties"?: Array<any>;
   "createdAt"?: Date;
@@ -28,7 +28,7 @@ export class Device implements DeviceInterface {
   "id": string = '';
   "creation": Date = new Date(0);
   "name": string = '';
-  "dl_payload": string = '';
+  "downlinkData": string = '';
   "location": Array<any> = <any>[];
   "properties": Array<any> = <any>[];
   "createdAt": Date = new Date(0);
@@ -90,8 +90,8 @@ export class Device implements DeviceInterface {
           name: 'name',
           type: 'string'
         },
-        "dl_payload": {
-          name: 'dl_payload',
+        "downlinkData": {
+          name: 'downlinkData',
           type: 'string'
         },
         "location": {

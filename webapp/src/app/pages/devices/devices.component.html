@@ -251,10 +251,10 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Downlink payload</label>
               <div class="col-md-9">
-                <input #dl_payload="ngModel" type="text" class="form-control" placeholder="Downlink payload in HEX"
-                       name="dl_payload" maxlength="16" pattern="([a-fA-F0-9]{16})$"
-                       [(ngModel)]="deviceToEdit.dl_payload">
-                <div [hidden]="dl_payload.valid || dl_payload.pristine"
+                <input #downlinkData="ngModel" type="text" class="form-control" placeholder="Downlink payload in HEX"
+                       name="downlinkData" maxlength="16" pattern="([a-fA-F0-9]{16})$"
+                       [(ngModel)]="deviceToEdit.downlinkData">
+                <div [hidden]="downlinkData.valid || downlinkData.pristine"
                      class="text-danger">
                   Length must be 8 bytes, in hexadecimal
                 </div>

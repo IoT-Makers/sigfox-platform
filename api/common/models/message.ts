@@ -279,66 +279,63 @@ class Message {
 
 
   private createMessageAndSendResponse(message: any, next: Function, messageModel: any) {
-    // Creating new message
-    this.model.create(
-      message,
-      (err: any, messageInstance: any) => {
-        if (err) {
-          console.error(err);
-          next(err, messageInstance);
-        } else {
-          console.log('Created message as: ', messageInstance);
-          // Ack from BIDIR callback
-          if (message.ack) {
-            let result;
-            this.model.app.models.Device.findOne({where: {id: message.deviceId}}, function (err: any, device: any) {
-              if (device.dl_payload) {
-                // Save a message containing the downlink payload sent back to the device
-                const downlinkMessage = message;
-                delete downlinkMessage.reception;
-                delete downlinkMessage.geoloc;
-                delete downlinkMessage.data;
-                downlinkMessage.downlinkData = device.dl_payload;
-                messageModel.create(
-                  downlinkMessage,
-                  (err: any, messageInstance: any) => {
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      console.log('Created new message with its downlink data as: ', messageInstance);
-                    }
-                  });
-                result = {
-                  [message.deviceId]: {
-                    downlinkData: device.dl_payload
-                  }
-                };
+    // Ack from BIDIR callback
+    if (message.ack) {
+      let result;
+      this.model.app.models.Device.findOne({where: {id: message.deviceId}}, function (err: any, device: any) {
+        if (device.downlinkData) {
+          message.downlinkData = device.downlinkData;
+          // Creating new message
+          messageModel.create(
+            message,
+            (err: any, messageInstance: any) => {
+              if (err) {
+                console.error(err);
+                next(err, messageInstance);
               } else {
-                result = {
-                  [message.deviceId]: {
-                    noData: true
-                  }
-                };
+                console.log('Created message as: ', messageInstance);
               }
-              // ack is true
-              next(null, result);
             });
+          result = {
+            [message.deviceId]: {
+              downlinkData: device.downlinkData
+            }
+          };
+        } else {
+          result = {
+            [message.deviceId]: {
+              noData: true
+            }
+          };
+        }
+        // ack is true
+        next(null, result);
+      });
+    } else {
+      // ack is false
+      // Creating new message
+      messageModel.create(
+        message,
+        (err: any, messageInstance: any) => {
+          if (err) {
+            console.error(err);
+            next(err, messageInstance);
           } else {
-            // ack is false
+            console.log('Created message as: ', messageInstance);
             next(null, messageInstance);
           }
-        }
-      });
+        });
+    }
   }
 
 
-// Example Operation Hook
+  // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('Message: Before Save');
     next();
   }
 
-// Example Remote Method
+  // Example Remote Method
   myRemote(next: Function): void {
     this.model.find(next);
   }
