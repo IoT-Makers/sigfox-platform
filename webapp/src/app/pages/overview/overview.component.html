@@ -167,11 +167,11 @@
             <tr *ngFor="let device of devices; let i = index">
               <td class="text-center">
                 <strong class="text-device">{{device.id}}</strong>
-                <div class="small">
+                <div class="small" *ngIf="device.name">
                   <span class="text-gray-dark">Name: </span>
-                  <span class="text-category">{{device.name ? device.name : ""}}</span>
+                  <span class="text-device">{{device.name ? device.name : "None"}}</span>
                 </div>
-                <div class="small">
+                <div class="small" *ngIf="device.Category">
                   <span class="text-gray-dark">Category: </span>
                   <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
                 </div>
