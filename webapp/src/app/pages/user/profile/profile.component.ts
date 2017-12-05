@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {AccessToken, User} from '../../../shared/sdk/models';
 import {UserApi} from '../../../shared/sdk/services/custom/User';
 import {DOCUMENT} from '@angular/common';
+import {AccessToken, User} from '../../../shared/sdk/models';
 
 @Component({
   selector: 'app-profile',
