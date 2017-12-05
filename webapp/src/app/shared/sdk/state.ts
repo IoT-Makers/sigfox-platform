@@ -4,6 +4,7 @@ import { SDKToken } from './models/BaseModels';
 import * as reducers from './reducers/index';
 
 import { LoopbackAuthEffects } from './effects/auth';
+import { AccessTokenEffects } from './effects/AccessToken';
 import { DeviceEffects } from './effects/Device';
 import { ParserEffects } from './effects/Parser';
 import { CategoryEffects } from './effects/Category';
@@ -17,6 +18,7 @@ import { DashboardEffects } from './effects/Dashboard';
 
 export interface LoopbackStateInterface {
   LoopbackAuth: SDKToken;
+  AccessTokens: reducers.AccessTokensState;
   Devices: reducers.DevicesState;
   Parsers: reducers.ParsersState;
   Categorys: reducers.CategorysState;
@@ -31,6 +33,7 @@ export interface LoopbackStateInterface {
 
 export const LoopbackReducer = {
   LoopbackAuth: reducers.LoopbackAuthReducer,
+	AccessTokens: reducers.AccessTokensReducer,
 	Devices: reducers.DevicesReducer,
 	Parsers: reducers.ParsersReducer,
 	Categorys: reducers.CategorysReducer,
@@ -45,6 +48,7 @@ export const LoopbackReducer = {
 
 export const LoopbackEffects = [
   LoopbackAuthEffects,
+  AccessTokenEffects,
   DeviceEffects,
   ParserEffects,
   CategoryEffects,

@@ -1,5 +1,6 @@
 /* tslint:disable */
 import {
+  AccessToken,
   Message,
   Device,
   Category,
@@ -21,7 +22,7 @@ export interface UserInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "password"?: string;
-  accessTokens?: any[];
+  accessTokens?: AccessToken[];
   roles?: any[];
   Messages?: Message[];
   Devices?: Device[];
@@ -43,7 +44,7 @@ export class User implements UserInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "password": string = '';
-  accessTokens: any[] = null;
+  accessTokens: AccessToken[] = null;
   roles: any[] = null;
   Messages: Message[] = null;
   Devices: Device[] = null;
@@ -139,8 +140,8 @@ export class User implements UserInterface {
       relations: {
         accessTokens: {
           name: 'accessTokens',
-          type: 'any[]',
-          model: '',
+          type: 'AccessToken[]',
+          model: 'AccessToken',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'userId'

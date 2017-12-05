@@ -22,7 +22,14 @@
   },
   "AccessToken": {
     "dataSource": "db",
-    "public": false,
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false
+        }
+      }
+    },
     "relations": {
       "user": {
         "type": "belongsTo",

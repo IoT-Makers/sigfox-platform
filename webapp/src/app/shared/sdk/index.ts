@@ -49,6 +49,7 @@ import { SocketBrowser } from './sockets/socket.browser';
 import { SocketDriver } from './sockets/socket.driver';
 import { SocketConnection } from './sockets/socket.connections';
 import { RealTime } from './services/core/real.time';
+import { AccessTokenApi } from './services/custom/AccessToken';
 import { DeviceApi } from './services/custom/Device';
 import { ParserApi } from './services/custom/Parser';
 import { CategoryApi } from './services/custom/Category';
@@ -90,6 +91,7 @@ export class SDKBrowserModule {
         JSONSearchParams,
         SDKModels,
         RealTime,
+        AccessTokenApi,
         DeviceApi,
         ParserApi,
         CategoryApi,

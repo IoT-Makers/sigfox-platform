@@ -21,7 +21,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.FIND_BY_ID_ACCESSTOKENS).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.findByIdAccessTokens(action.payload.id, action.payload.fk).pipe(
-          map((response: any) => new UserActions.findByIdAccessTokensSuccess(action.payload.id, response, action.meta)),
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'AccessToken', 'findByIdSuccess'),
+            of(new UserActions.findByIdAccessTokensSuccess(action.payload.id, response, action.meta))
+          )),
           catchError((error: any) => concat(
             of(new UserActions.findByIdAccessTokensFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
@@ -35,7 +38,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.DESTROY_BY_ID_ACCESSTOKENS).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.destroyByIdAccessTokens(action.payload.id, action.payload.fk).pipe(
-          map((response: any) => new UserActions.destroyByIdAccessTokensSuccess(action.payload.id, action.payload.fk, action.meta)),
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'AccessToken', 'deleteByIdSuccess'),
+            of(new UserActions.destroyByIdAccessTokensSuccess(action.payload.id, response, action.meta))
+          )),
           catchError((error: any) => concat(
             of(new UserActions.destroyByIdAccessTokensFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
@@ -49,7 +55,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.UPDATE_BY_ID_ACCESSTOKENS).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.updateByIdAccessTokens(action.payload.id, action.payload.fk, action.payload.data).pipe(
-          map((response: any) => new UserActions.updateByIdAccessTokensSuccess(action.payload.id, response, action.meta)),
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'AccessToken', 'findByIdSuccess'),
+            of(new UserActions.updateByIdAccessTokensSuccess(action.payload.id, response, action.meta))
+          )),
           catchError((error: any) => concat(
             of(new UserActions.updateByIdAccessTokensFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
@@ -371,7 +380,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.GET_ACCESSTOKENS).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.getAccessTokens(action.payload.id, action.payload.filter).pipe(
-          map((response: any) => new UserActions.getAccessTokensSuccess(action.payload.id, response, action.meta)),
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'AccessToken', 'findSuccess'),
+            of(new UserActions.getAccessTokensSuccess(action.payload.id, response, action.meta))
+          )),
           catchError((error: any) => concat(
             of(new UserActions.getAccessTokensFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
@@ -385,7 +397,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.CREATE_ACCESSTOKENS).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.createAccessTokens(action.payload.id, action.payload.data).pipe(
-          map((response: any) => new UserActions.createAccessTokensSuccess(action.payload.id, response, action.meta)),
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'AccessToken', 'findSuccess'),
+            of(new UserActions.createAccessTokensSuccess(action.payload.id, response, action.meta))
+          )),
           catchError((error: any) => concat(
             of(new UserActions.createAccessTokensFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
@@ -745,7 +760,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.CREATE_MANY_ACCESSTOKENS).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.createManyAccessTokens(action.payload.id, action.payload.data).pipe(
-          map((response: any) => new UserActions.createManyAccessTokensSuccess(action.payload.id, response, action.meta)),
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'AccessToken', 'findSuccess'),
+            of(new UserActions.createManyAccessTokensSuccess(action.payload.id, response, action.meta))
+          )),
           catchError((error: any) => concat(
             of(new UserActions.createManyAccessTokensFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))

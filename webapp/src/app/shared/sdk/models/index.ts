@@ -1,4 +1,5 @@
 /* tslint:disable */
+export * from './AccessToken';
 export * from './Device';
 export * from './Parser';
 export * from './Category';
