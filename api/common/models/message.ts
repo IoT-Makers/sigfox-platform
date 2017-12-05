@@ -14,8 +14,8 @@ import {Model} from '@mean-expert/model';
   remotes: {
     putMessage: {
       accepts: [
-        {arg: 'data', type: 'object', required: true, http: { source: 'body' }},
-        {arg: 'req', type: 'object', http: {source: 'req'}}
+        {arg: 'req', type: 'object', http: {source: 'req'}},
+        {arg: 'data', type: 'object', required: true, http: { source: 'body' }}
       ],
       http: {
         path: '/sigfox',
