@@ -28,6 +28,17 @@ const moment = require('moment');
       ],
       returns: {arg: 'result', type: 'array'},
       http: {path: '/dataStats', verb: 'get'}
+    },
+    deleteDeviceAndMessages: {
+      accepts: [
+        {arg: 'deviceId', type: 'string', required: true},
+        {arg: 'req', type: 'object', http: {source: 'req'}}
+      ],
+      http: {
+        path: '/Messages',
+        verb: 'delete'
+      },
+      returns: {root: true}
     }
   }
 })
@@ -35,6 +46,38 @@ const moment = require('moment');
 class Device {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
+  }
+
+  deleteDeviceAndMessages(deviceId: string, req: any, next: Function): void {
+    // Obtain the userId with the access_token of ctx
+    const userId = req.accessToken.userId;
+    // Find device
+    this.model.findOne(
+      {
+        where: {
+          and: [
+            {id: deviceId},
+            {userId: userId}
+          ]
+        }
+      }, (err: any, deviceInstance: any) => {
+        if (err || !deviceInstance) {
+          console.error('Device not found for suppression.');
+          next(err, 'Device not found for suppression.');
+        } else if (deviceInstance) {
+          console.log('Deleting device ' + deviceId + ' and all its corresponding messages.');
+
+          this.model.app.models.Message.deleteAll({deviceId: deviceId}, (err: any, result: any) => {
+            if (!err) {
+              this.model.destroyById(deviceId, (error: any, result: any) => {
+                next(null, result);
+              });
+            } else {
+              next(err, 'Error for messages suppression with device ID ' + deviceId);
+            }
+          });
+        }
+      });
   }
 
   /*access(ctx: any, next: Function): void {

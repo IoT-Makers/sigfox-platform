@@ -30,6 +30,20 @@ export class DeviceEffects extends BaseLoopbackEffects {
       )
     );
 
+  @Effect()
+  public deleteDeviceAndMessages$ = this.actions$
+    .ofType(DeviceActionTypes.DELETE_DEVICE_AND_MESSAGES).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.device.deleteDeviceAndMessages(action.payload.deviceId, action.payload.req).pipe(
+          map((response: any) => new DeviceActions.deleteDeviceAndMessagesSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new DeviceActions.deleteDeviceAndMessagesFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
     /**
    * @author João Ribeiro <@JonnyBGod> <github:JonnyBGod>
    * @description

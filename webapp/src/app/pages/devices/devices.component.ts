@@ -4,7 +4,7 @@ import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
-import {UserApi} from '../../shared/sdk/services/custom';
+import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
 
 
 @Component({
@@ -49,6 +49,7 @@ export class DevicesComponent implements OnInit {
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
+              private deviceApi: DeviceApi,
               private elRef: ElementRef) { }
 
   ngOnInit(): void {
@@ -191,9 +192,13 @@ export class DevicesComponent implements OnInit {
 
   remove(): void {
     // Delete all messages belonging to the device
-    this.userApi.deleteMessages(this.deviceToRemove.id).subscribe(value => {
-      this.deviceRef.remove(this.deviceToRemove).subscribe();
+    this.deviceApi.deleteDeviceAndMessages(this.deviceToRemove.id).subscribe(value => {
+      const index = this.devices.indexOf(this.deviceToRemove);
+      this.devices.splice(index, 1);
     });
+    /*this.userApi.deleteMessages().subscribe(value => {
+      this.deviceRef.remove(this.deviceToRemove).subscribe();
+    });*/
     this.confirmModal.hide();
   }
 }

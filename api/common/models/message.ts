@@ -14,8 +14,8 @@ import {Model} from '@mean-expert/model';
   remotes: {
     putMessage: {
       accepts: [
-        {arg: 'req', type: 'object', http: {source: 'req'}},
-        {arg: 'data', type: 'object', required: true, http: { source: 'body' }}
+        {arg: 'data', type: 'object', required: true, http: { source: 'body' }},
+        {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
       http: {
         path: '/sigfox',
@@ -29,7 +29,6 @@ import {Model} from '@mean-expert/model';
 class Message {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) { }
-
 
   putMessage(req: any, data: any, next: Function): void {
 
@@ -333,13 +332,13 @@ class Message {
   }
 
 
-  // Example Operation Hook
+// Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('Message: Before Save');
     next();
   }
 
-  // Example Remote Method
+// Example Remote Method
   myRemote(next: Function): void {
     this.model.find(next);
   }
