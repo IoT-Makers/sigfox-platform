@@ -85,6 +85,7 @@ export class CategoriesComponent implements OnInit {
   }
 
   update(category: Category): void {
+    category.userId = this.user.id;
     this.edit = false;
     console.log(category);
     if(this.newCategory){
