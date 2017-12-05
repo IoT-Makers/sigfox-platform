@@ -60,23 +60,22 @@ export class ParsersComponent implements OnInit, OnDestroy {
   decodePayload(i: number, parser: Parser, payload: string): void{
     this.testPayload[i] = true;
     if (payload) {
-        const fn = Function('payload', parser.function);
-        this.decodedPayload[i] = fn(payload);
-      } else {
-        this.decodedPayload[i] = [{'error': 'Please fill input'}];
-        setTimeout(function() {
-          this.testPayload[i] = false;
-        }.bind(this), 2000);
+      const fn = Function('payload', parser.function);
+      this.decodedPayload[i] = fn(payload);
+    } else {
+      this.decodedPayload[i] = [{'error': 'Please fill input'}];
+      setTimeout(function() {
+        this.testPayload[i] = false;
+      }.bind(this), 2000);
     }
   }
 
-  closeDecodedPayload(i: number){
+  closeDecodedPayload(i: number) {
     this.testPayload[i] = false;
   }
 
-  create(): void{
+  create(): void {
     this.newParser.id = null;
-    console.log(this.newParser);
     this.parserRef.create(this.newParser).subscribe(() => this.newParser = new Parser());
   }
 

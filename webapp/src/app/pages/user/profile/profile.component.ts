@@ -1,8 +1,7 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {AccessToken, Device, User} from '../../../shared/sdk/models';
+import {AccessToken, User} from '../../../shared/sdk/models';
 import {UserApi} from '../../../shared/sdk/services/custom/User';
 import {DOCUMENT} from '@angular/common';
-import {AccessTokenApi} from "../../../shared/sdk/services/custom";
 
 @Component({
   selector: 'app-profile',
@@ -21,8 +20,7 @@ export class ProfileComponent implements OnInit {
   private callbackURL;
 
   constructor(@Inject(DOCUMENT) private document: any,
-              private userApi: UserApi,
-              private accessTokenApi: AccessTokenApi) {
+              private userApi: UserApi) {
   }
 
   getUser(): void {
@@ -62,7 +60,7 @@ export class ProfileComponent implements OnInit {
   }
 
   remove(): void {
-    this.accessTokenApi.deleteById(this.devAccessTokenToRemove.id).subscribe(value => {
+    this.userApi.destroyByIdAccessTokens(this.user.id, this.devAccessTokenToRemove.id).subscribe(value => {
         const index = this.devAccessTokens.indexOf(this.devAccessTokenToRemove);
         this.devAccessTokens.splice(index, 1);
       }

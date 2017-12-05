@@ -1,10 +1,4 @@
 /* tslint:disable */
-import {
-  User,
-  Message,
-  Device,
-  Category
-} from '../index';
 
 declare var Object: any;
 export interface OrganizationInterface {
@@ -13,10 +7,10 @@ export interface OrganizationInterface {
   "ownerId": string;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  Members?: User[];
-  Messages?: Message[];
-  Devices?: Device[];
-  Categories?: Category[];
+  Members?: any[];
+  Messages?: any[];
+  Devices?: any[];
+  Categories?: any[];
 }
 
 export class Organization implements OrganizationInterface {
@@ -25,10 +19,10 @@ export class Organization implements OrganizationInterface {
   "ownerId": string = '';
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  Members: User[] = null;
-  Messages: Message[] = null;
-  Devices: Device[] = null;
-  Categories: Category[] = null;
+  Members: any[] = null;
+  Messages: any[] = null;
+  Devices: any[] = null;
+  Categories: any[] = null;
   constructor(data?: OrganizationInterface) {
     Object.assign(this, data);
   }
@@ -86,8 +80,8 @@ export class Organization implements OrganizationInterface {
       relations: {
         Members: {
           name: 'Members',
-          type: 'User[]',
-          model: 'User',
+          type: 'any[]',
+          model: '',
           relationType: 'hasMany',
           modelThrough: 'Organizationuser',
           keyThrough: 'userId',
@@ -96,24 +90,24 @@ export class Organization implements OrganizationInterface {
         },
         Messages: {
           name: 'Messages',
-          type: 'Message[]',
-          model: 'Message',
+          type: 'any[]',
+          model: '',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'organizationId'
         },
         Devices: {
           name: 'Devices',
-          type: 'Device[]',
-          model: 'Device',
+          type: 'any[]',
+          model: '',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'organizationId'
         },
         Categories: {
           name: 'Categories',
-          type: 'Category[]',
-          model: 'Category',
+          type: 'any[]',
+          model: '',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'organizationId'

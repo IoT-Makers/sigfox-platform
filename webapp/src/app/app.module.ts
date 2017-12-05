@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NAV_DROPDOWN_DIRECTIVES} from './shared/nav-dropdown.directive';
 import {AppComponent} from './app.component';
 import {BsDropdownModule} from 'ng2-bootstrap/dropdown';
@@ -17,8 +17,8 @@ import {FullLayoutComponent} from './layouts/full-layout.component';
 import {SimpleLayoutComponent} from './layouts/simple-layout.component';
 // SDK
 import {SDKBrowserModule} from './shared/sdk/index';
-import {AuthGuard} from "./_guards/auth.guard";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {AuthGuard} from './_guards/auth.guard';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   imports: [

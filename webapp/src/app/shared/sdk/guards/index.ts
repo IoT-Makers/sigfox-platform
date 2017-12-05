@@ -1,8 +1,5 @@
 /* tslint:disable */
 import { AuthGuard } from './auth.guard';
-import { AccessTokenExistsGuard } from './AccessToken';
-import { RoleMappingExistsGuard } from './RoleMapping';
-import { RoleExistsGuard } from './Role';
 import { DeviceExistsGuard } from './Device';
 import { ParserExistsGuard } from './Parser';
 import { CategoryExistsGuard } from './Category';
@@ -16,9 +13,6 @@ import { DashboardExistsGuard } from './Dashboard';
 
 export const LOOPBACK_GUARDS_PROVIDERS = [
   AuthGuard,
-	AccessTokenExistsGuard,
-	RoleMappingExistsGuard,
-	RoleExistsGuard,
 	DeviceExistsGuard,
 	ParserExistsGuard,
 	CategoryExistsGuard,
@@ -32,9 +26,6 @@ export const LOOPBACK_GUARDS_PROVIDERS = [
 ];
 
 export * from './auth.guard';
-export * from './AccessToken';
-export * from './RoleMapping';
-export * from './Role';
 export * from './Device';
 export * from './Parser';
 export * from './Category';

@@ -1,18 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-
-import {Message, Device, Category, Parser, User, Organization, FireLoopRef} from '../shared/sdk/models';
-import {
-  RealTime,
-  MessageApi,
-  DeviceApi,
-  CategoryApi,
-  ParserApi,
-  UserApi,
-  OrganizationApi
-} from '../shared/sdk/services';
-
+import {Category, Device, FireLoopRef, Message, Parser, User} from '../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
+import {ParserApi, UserApi} from '../shared/sdk/services/custom';
+import {RealTime} from '../shared/sdk/services/core';
 
 @Component({
   templateUrl: './full-layout.component.html'
@@ -51,15 +42,12 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
-              private deviceApi: DeviceApi,
-              private messageApi: MessageApi,
-              private categoryApi: CategoryApi,
               private parserApi: ParserApi,
               private router: Router) { }
 
 
   ngOnInit(): void {
-    // Get the logged in User object (avatar, email, ...)
+    // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
     console.log(this.user);
@@ -74,30 +62,16 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       this.rt.onReady().subscribe();
     }
 
-    this.deviceApi.count({
-      userId: this.user.id
-    }).subscribe(result => {
-      //console.log(deviceApi);
-      //console.log("count: ", result);
+    this.userApi.countDevices(this.user.id).subscribe(result => {
       this.countDevices = result.count;
     });
-    this.messageApi.count({
-      userId: this.user.id
-    }).subscribe(result => {
-      //console.log(messageApi);
-      //console.log("count: ", result);
+    this.userApi.countMessages(this.user.id).subscribe(result => {
       this.countMessages = result.count;
     });
-    this.categoryApi.count({
-      userId: this.user.id
-    }).subscribe(result => {
-      //console.log(messageApi);
-      //console.log("count: ", result);
+    this.userApi.countCategories(this.user.id).subscribe(result => {
       this.countCategories = result.count;
     });
     this.parserApi.count().subscribe(result => {
-      //console.log(messageApi);
-      //console.log("count: ", result);
       this.countParsers = result.count;
     });
   }
@@ -110,7 +84,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     //console.log(this.organizations[0].id);
     this.messageSub = this.messageRef.on('child_added', {limit: 1, order: 'createdAt DESC'}).subscribe(
       (messages: Message[]) => {
-        this.messageApi.count().subscribe(result => {
+        this.userApi.countMessages(this.user.id).subscribe(result => {
           this.countMessages = result.count;
         });
       });
@@ -119,7 +93,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceRef.on('child_added', {limit: 1, order: 'createdAt DESC'}).subscribe(
       (devices: Device[]) => {
-        this.deviceApi.count().subscribe(result => {
+        this.userApi.countDevices(this.user.id).subscribe(result => {
           this.countDevices = result.count;
         });
       });
@@ -128,7 +102,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
     this.categoryRef.on('child_added', {limit: 1, order: 'createdAt DESC'}).subscribe(
       (categories: Category[]) => {
-        this.categoryApi.count().subscribe(result => {
+        this.userApi.countCategories(this.user.id).subscribe(result => {
           this.countCategories = result.count;
         });
       });
@@ -137,7 +111,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Dashboard: ngOnDestroy');
+    console.log('Full Layout: ngOnDestroy');
     if (this.messageRef)this.messageRef.dispose();
     if (this.messageSub)this.messageSub.unsubscribe();
 

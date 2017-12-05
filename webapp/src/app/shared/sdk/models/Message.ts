@@ -1,9 +1,4 @@
 /* tslint:disable */
-import {
-  Device,
-  User,
-  Organization
-} from '../index';
 
 declare var Object: any;
 export interface MessageInterface {
@@ -11,6 +6,7 @@ export interface MessageInterface {
   "time": number;
   "seqNumber": number;
   "data"?: string;
+  "downlinkData"?: string;
   "ack"?: boolean;
   "reception"?: Array<any>;
   "geoloc"?: Array<any>;
@@ -22,9 +18,9 @@ export interface MessageInterface {
   "userId"?: number;
   "organizationId"?: string;
   "OrganizationId"?: string;
-  Device?: Device;
-  user?: User;
-  Organization?: Organization;
+  Device?: any;
+  user?: any;
+  Organization?: any;
 }
 
 export class Message implements MessageInterface {
@@ -32,6 +28,7 @@ export class Message implements MessageInterface {
   "time": number = 0;
   "seqNumber": number = 0;
   "data": string = '';
+  "downlinkData": string = '';
   "ack": boolean = false;
   "reception": Array<any> = <any>[];
   "geoloc": Array<any> = <any>[];
@@ -43,9 +40,9 @@ export class Message implements MessageInterface {
   "userId": number = 0;
   "organizationId": string = '';
   "OrganizationId": string = '';
-  Device: Device = null;
-  user: User = null;
-  Organization: Organization = null;
+  Device: any = null;
+  user: any = null;
+  Organization: any = null;
   constructor(data?: MessageInterface) {
     Object.assign(this, data);
   }
@@ -93,6 +90,10 @@ export class Message implements MessageInterface {
         },
         "data": {
           name: 'data',
+          type: 'string'
+        },
+        "downlinkData": {
+          name: 'downlinkData',
           type: 'string'
         },
         "ack": {
@@ -143,24 +144,24 @@ export class Message implements MessageInterface {
       relations: {
         Device: {
           name: 'Device',
-          type: 'Device',
-          model: 'Device',
+          type: 'any',
+          model: '',
           relationType: 'belongsTo',
                   keyFrom: 'DeviceId',
           keyTo: 'id'
         },
         user: {
           name: 'user',
-          type: 'User',
-          model: 'User',
+          type: 'any',
+          model: '',
           relationType: 'belongsTo',
                   keyFrom: 'userId',
           keyTo: 'id'
         },
         Organization: {
           name: 'Organization',
-          type: 'Organization',
-          model: 'Organization',
+          type: 'any',
+          model: '',
           relationType: 'belongsTo',
                   keyFrom: 'OrganizationId',
           keyTo: 'id'

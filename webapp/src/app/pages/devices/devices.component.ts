@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Category, Device, FireLoopRef, Message, Parser, User} from '../../shared/sdk/models';
-import {CategoryApi, DeviceApi, RealTime} from '../../shared/sdk/services';
+import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
@@ -48,8 +48,6 @@ export class DevicesComponent implements OnInit {
   private mapZoom = 2;
 
   constructor(private rt: RealTime,
-              private categoryApi: CategoryApi,
-              private deviceApi: DeviceApi,
               private userApi: UserApi,
               private elRef: ElementRef) { }
 
@@ -156,8 +154,8 @@ export class DevicesComponent implements OnInit {
 
   updateDeviceCategory(device: Device): void {
     console.log(device.categoryId);
-    if(device.categoryId){
-      this.categoryApi.findById(device.categoryId).subscribe((category: Category) => {
+    if (device.categoryId) {
+      this.userApi.findByIdCategories(this.user.id, device.categoryId).subscribe((category: Category) => {
         console.log(category);
         this.deviceToEdit.properties = category.properties;
       });
@@ -193,7 +191,7 @@ export class DevicesComponent implements OnInit {
 
   remove(): void {
     // Delete all messages belonging to the device
-    this.deviceApi.deleteMessages(this.deviceToRemove.id).subscribe(value => {
+    this.userApi.deleteMessages(this.deviceToRemove.id).subscribe(value => {
       this.deviceRef.remove(this.deviceToRemove).subscribe();
     });
     this.confirmModal.hide();

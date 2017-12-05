@@ -1,17 +1,19 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {Category, Device, FireLoopRef, Message, Parser} from '../../shared/sdk/models';
-import {CategoryApi, DeviceApi, MessageApi, ParserApi, RealTime} from '../../shared/sdk/services';
-
+import {Category, Device, FireLoopRef, Message, Parser, User} from '../../shared/sdk/models';
+import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {DragulaService} from 'ng2-dragula';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
+import {ParserApi, UserApi} from '../../shared/sdk/services/custom';
 
 
 @Component({
   templateUrl: 'overview.component.html'
 })
 export class OverviewComponent implements OnInit, OnDestroy {
+
+  private user: User;
 
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
 
@@ -46,11 +48,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
   public filterQuery = '';
 
   constructor(private rt: RealTime,
-              private messageApi: MessageApi,
-              private deviceApi: DeviceApi,
+              private userApi: UserApi,
               private parserApi: ParserApi,
-              private categoryApi: CategoryApi,
               private dragulaService: DragulaService) {
+
     const bag: any = this.dragulaService.find('section-bag');
     if (bag !== undefined )
       this.dragulaService.destroy('section-bag');
@@ -110,6 +111,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Get the logged in User object
+    this.user = this.userApi.getCachedCurrent();
+
     if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
@@ -130,10 +134,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.messageSub = this.messageRef.on('change').subscribe(
       (messages: Message[]) => {
         this.messages = messages;
-        //console.log("Messages", this.messages);
-        this.messageApi.count().subscribe(result => {
-          //console.log(messageApi);
-          //console.log("count: ", result);
+        this.userApi.countMessages(this.user.id).subscribe(result => {
           this.countMessages = result.count;
         });
       });
@@ -144,10 +145,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       {limit: 10, order: 'updatedAt DESC', include: ['Parser', 'Category']}).subscribe(
       (devices: Device[]) => {
         this.devices = devices;
-        //console.log("Devices", this.devices);
-        this.deviceApi.count().subscribe(result => {
-          //console.log(deviceApi);
-          //console.log("count: ", result);
+        this.userApi.countDevices(this.user.id).subscribe(result => {
           this.countDevices = result.count;
         });
       });
@@ -157,10 +155,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.categoryRef.on('change').subscribe(
       (categories: Category[]) => {
         this.categories = categories;
-        //console.log("Categories", this.categories);
-        this.categoryApi.count().subscribe(result => {
-          //console.log(categoryApi);
-          //console.log("count: ", result);
+        this.userApi.countCategories(this.user.id).subscribe(result => {
           this.countCategories = result.count;
         });
       });
@@ -169,10 +164,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
     this.parserRef.on('change').subscribe((parsers: Parser[]) => {
       this.parsers = parsers;
-      //console.log("Parsers", this.parsers);
       this.parserApi.count().subscribe(result => {
-        //console.log(parserApi);
-        //console.log("count: ", result);
         this.countParsers = result.count;
       });
     });
@@ -180,7 +172,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log("Dashboard: ngOnDestroy");
+    console.log('Overview: ngOnDestroy');
     if (this.messageRef)this.messageRef.dispose();
     if (this.messageSub)this.messageSub.unsubscribe();
 

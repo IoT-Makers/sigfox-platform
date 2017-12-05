@@ -1,8 +1,5 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
-import { AccessToken } from '../../models/AccessToken';
-import { RoleMapping } from '../../models/RoleMapping';
-import { Role } from '../../models/Role';
 import { Device } from '../../models/Device';
 import { Parser } from '../../models/Parser';
 import { Category } from '../../models/Category';
@@ -20,9 +17,6 @@ export interface Models { [name: string]: any }
 export class SDKModels {
 
   private models: Models = {
-    AccessToken: AccessToken,
-    RoleMapping: RoleMapping,
-    Role: Role,
     Device: Device,
     Parser: Parser,
     Category: Category,

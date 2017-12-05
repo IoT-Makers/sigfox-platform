@@ -22,7 +22,7 @@
   },
   "AccessToken": {
     "dataSource": "db",
-    "public": true,
+    "public": false,
     "relations": {
       "user": {
         "type": "belongsTo",
@@ -46,15 +46,23 @@
   },
   "RoleMapping": {
     "dataSource": "db",
-    "public": true
+    "public": false
   },
   "Role": {
     "dataSource": "db",
-    "public": true
+    "public": false
   },
   "Device": {
     "dataSource": "db",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "graphData": true
+        }
+      }
+    }
   },
   "Parser": {
     "dataSource": "db",
@@ -62,15 +70,38 @@
   },
   "Category": {
     "dataSource": "db",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false
+        }
+      }
+    }
   },
   "Message": {
     "dataSource": "db",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "putMessage": true
+        }
+      }
+    }
   },
   "Reception": {
     "dataSource": "db",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "getBaseStationsByDeviceId": true
+        }
+      }
+    }
   },
   "user": {
     "dataSource": "db",
@@ -82,11 +113,26 @@
   },
   "Organization": {
     "dataSource": "db",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false
+        }
+      }
+    }
   },
   "Geoloc": {
     "dataSource": "db",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "getGeolocsByDeviceId": true
+        }
+      }
+    }
   },
   "AppSetting": {
     "dataSource": "db",

@@ -6,7 +6,7 @@ import {
 
 declare var Object: any;
 export interface ParserInterface {
-  "name"?: string;
+  "name": string;
   "description"?: string;
   "function"?: string;
   "available_properties"?: Array<any>;

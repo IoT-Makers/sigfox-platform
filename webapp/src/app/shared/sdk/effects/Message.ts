@@ -17,57 +17,6 @@ import { MessageApi } from '../services/index';
 @Injectable()
 export class MessageEffects extends BaseLoopbackEffects {
   @Effect()
-  public getDevice$ = this.actions$
-    .ofType(MessageActionTypes.GET_DEVICE).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.message.getDevice(action.payload.id, action.payload.refresh).pipe(
-          mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Device', 'findSuccess'),
-            of(new MessageActions.getDeviceSuccess(action.payload.id, response, action.meta))
-          )),
-          catchError((error: any) => concat(
-            of(new MessageActions.getDeviceFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
-  public getUser$ = this.actions$
-    .ofType(MessageActionTypes.GET_USER).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.message.getUser(action.payload.id, action.payload.refresh).pipe(
-          mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'User', 'findSuccess'),
-            of(new MessageActions.getUserSuccess(action.payload.id, response, action.meta))
-          )),
-          catchError((error: any) => concat(
-            of(new MessageActions.getUserFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
-  public getOrganization$ = this.actions$
-    .ofType(MessageActionTypes.GET_ORGANIZATION).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.message.getOrganization(action.payload.id, action.payload.refresh).pipe(
-          mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Organization', 'findSuccess'),
-            of(new MessageActions.getOrganizationSuccess(action.payload.id, response, action.meta))
-          )),
-          catchError((error: any) => concat(
-            of(new MessageActions.getOrganizationFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
   public putMessage$ = this.actions$
     .ofType(MessageActionTypes.PUT_MESSAGE).pipe(
       mergeMap((action: LoopbackAction) =>
