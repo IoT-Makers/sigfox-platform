@@ -45,7 +45,7 @@ function getDecimalCoord(sigfoxFrame) {
 }
 
 //Main
-console.log(payload.length);
+//console.log(message.data.length);
 
 var parsedData = [];
 var obj = {};
@@ -53,6 +53,8 @@ var obj = {};
 if (payload.length == 24) {
     obj.key = "message_type";
     obj.value = 'Normal';
+    obj.type = "string";
+    obj.unit = "";
     parsedData.push(obj);
     obj = {};
 
@@ -66,6 +68,8 @@ if (payload.length == 24) {
 
     obj.key = "lat";
     obj.value = lat;
+    obj.type = "number";
+    obj.unit = "";
     parsedData.push(obj);
     obj = {};
 
@@ -74,6 +78,8 @@ if (payload.length == 24) {
 
     obj.key = "lng";
     obj.value = lng;
+    obj.type = "number";
+    obj.unit = "";
     parsedData.push(obj);
     obj = {};
 
@@ -95,11 +101,15 @@ if (payload.length == 24) {
             obj.value =  0;
             break;
     }
+    obj.type = "number";
+    obj.unit = "";
     parsedData.push(obj);
     obj = {};
 
     obj.key = "geoloc";
-    obj.value = "GPS"
+    obj.value = "GPS";
+    obj.type = "string";
+    obj.unit = "";
     parsedData.push(obj);
     obj = {};
 
@@ -108,6 +118,8 @@ if (payload.length == 24) {
     //console.log('nbSat:', sat);
     obj.key = "sat";
     obj.value = sat * 2 + 2;
+    obj.type = "number";
+    obj.unit = "";
     parsedData.push(obj);
     obj = {};
 
@@ -115,6 +127,8 @@ if (payload.length == 24) {
     //console.log('gps_acq:', frame[8]);
     //console.log('gps_acq:', gps_acq);
     obj.key = "gps_acq";
+    obj.type = "number";
+    obj.unit = "seconds";
     obj.value = gps_acq * 5;
     parsedData.push(obj);
     obj = {};
@@ -124,6 +138,8 @@ if (payload.length == 24) {
     //console.log('speed:', speed);
     obj.key = "speed";
     obj.value = speed * 5;
+    obj.type = "number";
+    obj.unit = "km/h";
     parsedData.push(obj);
     obj = {};
 
@@ -132,6 +148,8 @@ if (payload.length == 24) {
     //console.log('battery', battery);
     obj.key = "battery";
     obj.value = battery * 15 / 1000;
+    obj.type = "number";
+    obj.unit = "V";
     parsedData.push(obj);
     obj = {};
 
@@ -141,28 +159,37 @@ if (payload.length == 24) {
     //console.log('alert', alert);
     obj.key = "alert";
     obj.value = alert;
+    obj.type = "number";
+    obj.unit = "";
     parsedData.push(obj);
     obj = {};
 
-    return parsedData;
+
 }
 
-if (payload.length == 2 || payload.length == 4) {
+if (payload.length <= 4) {
     obj.key = "message_type";
     obj.value = "Timeout";
+    obj.type = "number";
+    obj.unit = "seconds";
     parsedData.push(obj);
     obj = {};
+    var battery = null;
     if(payload.length == 4){
-        var battery = parseInt(payload.substring(0,2), 16);
+        battery = parseInt(payload.substring(0,2), 16);
     }else{
-        var battery = parseInt(payload, 16);
+        battery = parseInt(payload, 16);
     }
     //console.log('battery', message.data);
     //console.log('battery', battery);
     obj.key = "battery";
     obj.value = battery * 15 / 1000;
+    obj.type = "number";
+    obj.unit = "V";
     parsedData.push(obj);
 
     //console.log(parsedData);
-    return parsedData;
+
 }
+
+return parsedData;
