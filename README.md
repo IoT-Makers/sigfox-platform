@@ -8,7 +8,7 @@ This project is a cloud platform to manage and visualize Sigfox devices and mess
 
 ## Get started
 
-### [Demo](https://sigfox-platform.herokuapp.com)
+### [Demo](https://sigfox-platform.thenorthweb.com)
 
 ### Try it now with [Heroku](https://heroku.com)
 
