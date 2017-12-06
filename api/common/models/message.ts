@@ -285,17 +285,6 @@ class Message {
       this.model.app.models.Device.findOne({where: {id: message.deviceId}}, function (err: any, device: any) {
         if (device.downlinkData) {
           message.downlinkData = device.downlinkData;
-          // Creating new message
-          messageModel.create(
-            message,
-            (err: any, messageInstance: any) => {
-              if (err) {
-                console.error(err);
-                next(err, messageInstance);
-              } else {
-                console.log('Created message as: ', messageInstance);
-              }
-            });
           result = {
             [message.deviceId]: {
               downlinkData: device.downlinkData
@@ -308,12 +297,23 @@ class Message {
             }
           };
         }
+        // Creating new message with its downlink data
+        messageModel.create(
+          message,
+          (err: any, messageInstance: any) => {
+            if (err) {
+              console.error(err);
+              next(err, messageInstance);
+            } else {
+              console.log('Created message as: ', messageInstance);
+            }
+          });
         // ack is true
         next(null, result);
       });
     } else {
       // ack is false
-      // Creating new message
+      // Creating new message with no downlink data
       messageModel.create(
         message,
         (err: any, messageInstance: any) => {
