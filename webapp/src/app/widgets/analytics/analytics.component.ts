@@ -243,6 +243,10 @@ export class AnalyticsComponent implements OnInit {
     console.log('search', context);
   }
 
+  // download(): void {
+  //   console.log("Data:", this.deviceChartData);
+  // }
+
   ngOnDestroy(): void {
     console.log('Analytics: ngOnDestroy');
     if (this.messageRef)this.messageRef.dispose();
