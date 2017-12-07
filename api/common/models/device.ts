@@ -67,7 +67,7 @@ class Device {
         } else if (deviceInstance) {
           console.log('Deleting device ' + deviceId + ' and all its corresponding messages.');
 
-          this.model.app.models.Message.deleteAll({deviceId: deviceId}, (err: any, result: any) => {
+          this.model.app.models.Message.destroyAll({deviceId: deviceId}, (err: any, result: any) => {
             if (!err) {
               this.model.destroyById(deviceId, (error: any, result: any) => {
                 next(null, result);
