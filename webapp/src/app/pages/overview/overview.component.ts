@@ -131,7 +131,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     //console.log(this.organizations[0].id);
-    this.messageSub = this.messageRef.on('change').subscribe(
+    this.messageSub = this.messageRef.on('change',{
+      limit: 1000,
+      order: 'createdAt DESC',
+      include: ['Device'],
+      where: {
+        userId: this.user.id
+      }
+    }).subscribe(
       (messages: Message[]) => {
         this.messages = messages;
         this.userApi.countMessages(this.user.id).subscribe(result => {
@@ -142,7 +149,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
     // Devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceRef.on('change',
-      {limit: 10, order: 'updatedAt DESC', include: ['Parser', 'Category']}).subscribe(
+      {
+        limit: 10,
+        order: 'updatedAt DESC',
+        include: ['Parser', 'Category'],
+        where: {
+          userId: this.user.id
+        }
+        }).subscribe(
       (devices: Device[]) => {
         this.devices = devices;
         this.userApi.countDevices(this.user.id).subscribe(result => {
@@ -187,17 +201,17 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
 
-  create(): void {
-    this.messageRef.create(this.message).subscribe(() => this.message = new Message());
-  }
+  // create(): void {
+  //   this.messageRef.create(this.message).subscribe(() => this.message = new Message());
+  // }
 
-  update(message: Message): void {
-    this.messageRef.upsert(message).subscribe();
-  }
+  // update(message: Message): void {
+  //   this.messageRef.upsert(message).subscribe();
+  // }
 
-  remove(message: Message): void {
-    this.messageRef.remove(message).subscribe();
-  }
+  // remove(message: Message): void {
+  //   this.messageRef.remove(message).subscribe();
+  // }
 
   setCircles() {
     for(let i = 0; i < this.devices.length; i++) {
