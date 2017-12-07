@@ -233,8 +233,8 @@ export class AnalyticsComponent implements OnInit {
           this.deviceChartColors.push(colorOption);
         }
       }
-      console.log(this.deviceChartLabels);
-      console.log(this.deviceChartData);
+      // console.log(this.deviceChartLabels);
+      // console.log(this.deviceChartData);
       // this.deviceChartData = result.result.yAxis
     });
   }
@@ -243,9 +243,9 @@ export class AnalyticsComponent implements OnInit {
     console.log('search', context);
   }
 
-  download(): void {
-    console.log("Data:", this.deviceChartData);
-  }
+  // download(): void {
+  //   console.log("Data:", this.deviceChartData);
+  // }
 
   ngOnDestroy(): void {
     console.log('Analytics: ngOnDestroy');
