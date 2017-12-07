@@ -50,6 +50,13 @@
             </b> {{user.lastLogin | date:"yyyy/MM/dd HH:mm:ss"}}
           </div>
           <hr>
+          <div>
+            <b>
+              <i class="fa fa-key" aria-hidden="true"></i>
+              <span class="mr-1"></span> Password:
+            </b> <button class="btn btn-sm btn-success btn-round" (click)="updatePasswordModal.show()">Change password</button>
+          </div>
+          <hr>
           <div *ngIf="user.emailVerified; then verifiedEmail else unverifiedEmail"></div>
           <ng-template #verifiedEmail>
             <div class="text-success">
@@ -294,6 +301,54 @@
 </div>
 
 
+<div bsModal #updatePasswordModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="updatePasswordModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Update your password</h4>
+        <button type="button" class="close" (click)="updateUserModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="updatePassword()" class="form-horizontal" #editForm="ngForm">
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Current password</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" placeholder="Your current password" name="user.username" [(ngModel)]="oldPassword">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">New password</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" placeholder="New password" name="user.email" [(ngModel)]="newPassword">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Retype new password</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" placeholder="Retype new password" name="user.avatar" [(ngModel)]="newPasswordConfirm">
+            </div>
+          </div>
+          <div *ngIf="successMessage" class="text-success">
+            <hr>
+            <p>{{successMessage}}</p>
+          </div>
+          <div *ngIf="errorMessage" class="text-danger">
+            <hr>
+            <p>{{errorMessage}}</p>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="updatePasswordModal.hide()">Close</button>
+        <button type="button" class="btn btn-success" (click)="updatePassword()">Update</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 <div bsModal #updateUserModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="updateUserModal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -335,7 +390,7 @@
 
 
 <div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Confirm removal of access token</h4>

@@ -12,12 +12,19 @@ export class ProfileComponent implements OnInit {
 
   private user: User;
 
+  @ViewChild('updatePasswordModal') updatePasswordModal: any;
   @ViewChild('updateUserModal') updateUserModal: any;
   @ViewChild('confirmModal') confirmModal: any;
 
   private devAccessTokens = [];
   private devAccessTokenToRemove: AccessToken = new AccessToken();
   private callbackURL;
+
+  private oldPassword;
+  private newPassword;
+  private newPasswordConfirm;
+  private successMessage;
+  private errorMessage;
 
   constructor(@Inject(DOCUMENT) private document: any,
               private userApi: UserApi) {
@@ -93,6 +100,22 @@ export class ProfileComponent implements OnInit {
     ).subscribe((user: User) => {
       this.user = user;
     });
+  }
+
+  updatePassword(): void {
+    this.errorMessage = '';
+    this.successMessage = '';
+    if (this.newPassword === this.newPasswordConfirm) {
+      this.userApi.changePassword(this.oldPassword, this.newPassword).subscribe((result: any) => {
+        console.log(result.message);
+        this.successMessage = 'Password was modified successfully.';
+        this.updatePasswordModal.hide();
+      }, (error: any) => {
+        this.errorMessage = error.message;
+      });
+    } else {
+      this.errorMessage = 'Please make sure the passwords match.';
+    }
   }
 
   updateUser(): void {
