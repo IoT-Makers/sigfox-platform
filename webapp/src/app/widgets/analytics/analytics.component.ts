@@ -106,7 +106,7 @@ export class AnalyticsComponent implements OnInit {
       });
   }
 
-  getMessagesGraph(option: string): void{
+  getMessagesGraph(option: string): void {
 
     this.graphRange = option;
     this.messageChartLabels = [];

@@ -111,9 +111,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Get the logged in User object
-    this.user = this.userApi.getCachedCurrent();
-
     if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
@@ -126,12 +123,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    console.log(this.rt.connection);
     this.ngOnDestroy();
+    // Get the logged in User object
+    this.user = this.userApi.getCachedCurrent();
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     //console.log(this.organizations[0].id);
-    this.messageSub = this.messageRef.on('change',{
+    this.messageSub = this.messageRef.on('change', {
       limit: 1000,
       order: 'createdAt DESC',
       include: ['Device'],

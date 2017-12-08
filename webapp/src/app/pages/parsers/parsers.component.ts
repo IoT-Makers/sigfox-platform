@@ -1,8 +1,9 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
-import {FireLoopRef, Parser} from '../../shared/sdk/models';
+import {FireLoopRef, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
+import {UserApi} from '../../shared/sdk/services/custom';
 
 @Component({
 
@@ -10,6 +11,8 @@ import {Subscription} from 'rxjs/Subscription';
   styleUrls: ['./parsers.component.scss']
 })
 export class ParsersComponent implements OnInit, OnDestroy {
+
+  private user: User;
 
   @ViewChild('confirmModal') confirmModal: any;
 
@@ -25,7 +28,8 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   private parserToRemove: Parser = new Parser();
 
-  constructor(private rt: RealTime) { }
+  constructor(private rt: RealTime,
+              private userApi: UserApi) { }
 
   ngOnInit(): void {
     if (
@@ -40,8 +44,9 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    console.log(this.rt.connection);
     this.ngOnDestroy();
+    // Get the logged in User object
+    this.user = this.userApi.getCachedCurrent();
     // Parsers
     this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
     this.parserSub = this.parserRef.on('change').subscribe(

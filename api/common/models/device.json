@@ -41,14 +41,10 @@
       "type": "string"
     },
     "location": {
-      "type": [
-        "Geoloc"
-      ]
+      "type": ["Geoloc"]
     },
     "properties": {
-      "type": [
-        "object"
-      ]
+      "type": ["object"]
     }
   },
   "validations": [],

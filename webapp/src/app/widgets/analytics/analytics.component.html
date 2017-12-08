@@ -7,7 +7,14 @@
         <div class="card-header">
           <strong>Count messages</strong>
         </div>
-        <div class="card-block">
+        <div *ngIf="!messageChartData.length" class="card-block">
+          No messages yet...
+          <div class="sk-double-bounce">
+            <div class="sk-child sk-double-bounce1"></div>
+            <div class="sk-child sk-double-bounce2"></div>
+          </div>
+        </div>
+        <div *ngIf="messageChartData.length>0" class="card-block">
           <div class="row">
             <!--<div class="col-sm-5">-->
             <!--<h4 class="card-title mb-0">Count Messages</h4>-->

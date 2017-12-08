@@ -67,8 +67,7 @@
         "sharedMethods": {
           "*": false,
           "graphData": true,
-          "deleteDeviceAndMessages": true,
-          "count":true
+          "deleteDeviceAndMessages": true
         }
       }
     }
@@ -83,8 +82,7 @@
     "options": {
       "remoting": {
         "sharedMethods": {
-          "*": false,
-          "count":true
+          "*": false
         }
       }
     }
@@ -96,8 +94,7 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
-          "putMessage": true,
-          "count":true
+          "putMessage": true
         }
       }
     }

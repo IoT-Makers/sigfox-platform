@@ -83,9 +83,8 @@ export class DevicesComponent implements OnInit {
   }
 
   setup(): void {
-    console.log(this.rt.connection);
     this.ngOnDestroy();
-
+    // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
     // Get and listen devices

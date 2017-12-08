@@ -16,7 +16,6 @@ export class ProfileComponent implements OnInit {
   @ViewChild('updateUserModal') updateUserModal: any;
   @ViewChild('confirmModal') confirmModal: any;
 
-  private devAccessTokens = [];
   private devAccessTokenToRemove: AccessToken = new AccessToken();
   private callbackURL;
 
@@ -32,13 +31,12 @@ export class ProfileComponent implements OnInit {
 
   getUser(): void {
     this.user = this.userApi.getCachedCurrent();
-    /*this.userApi.findById(this.userApi.getCachedCurrent().id).subscribe((user: User) => {
+    this.userApi.findById(this.user.id, {}).subscribe((user: User) => {
       this.user = user;
-      console.log(this.user);
-    });*/
-  }
+    });
 
-  getDevAccessToken(): void {
+    // TODO: REMOVE BELLOW AFTER HAVING IT RAN ONCE (AFTER UPDATING) !!!
+    // Retrocompatibilty
     this.userApi.getAccessTokens(this.user.id, {
       where: {
         ttl: -1,
@@ -46,8 +44,9 @@ export class ProfileComponent implements OnInit {
       }
     }).subscribe((accessTokens: AccessToken[]) => {
       if (accessTokens) {
-        console.log(accessTokens);
-        this.devAccessTokens = accessTokens;
+        this.userApi.patchAttributes(this.user.id, {devAccessTokens: accessTokens}).subscribe((user: User) => {
+          this.user = user;
+        });
       }
     });
   }
@@ -57,7 +56,10 @@ export class ProfileComponent implements OnInit {
       ttl: -1
     };
     this.userApi.createAccessTokens(this.user.id, newAccessToken).subscribe((accessToken: AccessToken) => {
-      this.devAccessTokens.push(accessToken);
+      this.user.devAccessTokens.push(accessToken);
+      this.userApi.patchAttributes(this.user.id, {devAccessTokens: this.user.devAccessTokens}).subscribe((user: User) => {
+        this.user = user;
+      });
     });
   }
 
@@ -68,15 +70,13 @@ export class ProfileComponent implements OnInit {
 
   remove(): void {
     this.userApi.destroyByIdAccessTokens(this.user.id, this.devAccessTokenToRemove.id).subscribe(value => {
-        const index = this.devAccessTokens.indexOf(this.devAccessTokenToRemove);
-        this.devAccessTokens.splice(index, 1);
+        const index = this.user.devAccessTokens.indexOf(this.devAccessTokenToRemove);
+        this.user.devAccessTokens.splice(index, 1);
+        this.userApi.patchAttributes(this.user.id, {devAccessTokens: this.user.devAccessTokens}).subscribe((user: User) => {
+          this.user = user;
+        });
       }
-    );/*
-    this.userApi.deleteAccessTokens(this.devAccessTokenToRemove.id).subscribe(value => {
-        const index = this.devAccessTokens.indexOf(this.devAccessTokenToRemove);
-        this.devAccessTokens.splice(index, 1);
-      }
-    );*/
+    );
     this.confirmModal.hide();
   }
 
@@ -109,6 +109,10 @@ export class ProfileComponent implements OnInit {
       this.userApi.changePassword(this.oldPassword, this.newPassword).subscribe((result: any) => {
         console.log(result.message);
         this.successMessage = 'Password was modified successfully.';
+        // TODO: find a better way to not destroy the dev access token
+        /*this.userApi.createAccessTokens(this.user.id, this.user.devAccessTokens).subscribe((result: any) => {
+          console.log('Created access tokens back again.');
+        });*/
         this.updatePasswordModal.hide();
       }, (error: any) => {
         this.errorMessage = error.message;
@@ -135,9 +139,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     // Get the logged in User object (avatar, email, ...)
     this.getUser();
-    this.getDevAccessToken();
     this.callbackURL = this.document.location.origin + '/api/Messages/sigfox';
-    //this.accessTokens = this.user.accessTokens;
   }
 
   ngOnDestroy() {
