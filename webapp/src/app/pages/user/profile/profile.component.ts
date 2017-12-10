@@ -1,14 +1,15 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {UserApi} from '../../../shared/sdk/services/custom/User';
 import {DOCUMENT} from '@angular/common';
 import {AccessToken, User} from '../../../shared/sdk/models';
+import {ToasterConfig, ToasterService} from "angular2-toaster";
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
 
   private user: User;
 
@@ -22,11 +23,19 @@ export class ProfileComponent implements OnInit {
   private oldPassword;
   private newPassword;
   private newPasswordConfirm;
-  private successMessage;
-  private errorMessage;
+
+  // Notifications
+  private toasterService: ToasterService;
+  public toasterconfig: ToasterConfig =
+    new ToasterConfig({
+      tapToDismiss: true,
+      timeout: 5000
+    });
 
   constructor(@Inject(DOCUMENT) private document: any,
-              private userApi: UserApi) {
+              private userApi: UserApi,
+              toasterService: ToasterService) {
+    this.toasterService = toasterService;
   }
 
   getUser(): void {
@@ -87,7 +96,9 @@ export class ProfileComponent implements OnInit {
         'sigfoxBackendApiLogin': this.user.sigfoxBackendApiLogin,
         'sigfoxBackendApiPassword': this.user.sigfoxBackendApiPassword
       }
-    ).subscribe();
+    ).subscribe(value => {
+      this.toasterService.pop('success', 'Success', 'Credentials were updated successfully.');
+    });
   }
 
   removeSigfoxBackendApiAccess(): void {
@@ -99,26 +110,20 @@ export class ProfileComponent implements OnInit {
       }
     ).subscribe((user: User) => {
       this.user = user;
+      this.toasterService.pop('success', 'Success', 'Credentials were removed successfully.');
     });
   }
 
   updatePassword(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
     if (this.newPassword === this.newPasswordConfirm) {
       this.userApi.changePassword(this.oldPassword, this.newPassword).subscribe((result: any) => {
-        console.log(result.message);
-        this.successMessage = 'Password was modified successfully.';
-        // TODO: find a better way to not destroy the dev access token
-        /*this.userApi.createAccessTokens(this.user.id, this.user.devAccessTokens).subscribe((result: any) => {
-          console.log('Created access tokens back again.');
-        });*/
+        this.toasterService.pop('success', 'Success', 'Password was modified successfully.');
         this.updatePasswordModal.hide();
       }, (error: any) => {
-        this.errorMessage = error.message;
+        this.toasterService.pop('error', 'Error', error.message);
       });
     } else {
-      this.errorMessage = 'Please make sure the passwords match.';
+      this.toasterService.pop('error', 'Error', 'Please make sure the passwords match.');
     }
   }
 
@@ -132,6 +137,7 @@ export class ProfileComponent implements OnInit {
       }
     ).subscribe((user: User) => {
       this.user = user;
+      this.toasterService.pop('success', 'Success', 'Profile was updated successfully.');
       this.updateUserModal.hide();
     });
   }

@@ -84,6 +84,12 @@ battery = (parseInt(battery, 2) * 0.05 + 2.7).toFixed(2);
 
 // Store objects in parsedData array
 obj = {};
+obj.key = "battery";
+obj.value = battery;
+obj.type = "number";
+obj.unit = "V";
+parsedData.push(obj);
+obj = {};
 obj.key = "type";
 obj.value = type;
 obj.type = "string";
@@ -116,7 +122,7 @@ if (mode === 'Temperature & Humidity') {
         byte = "0" + byte;
     }
     temperature += byte.slice(2, 8);
-    temperature = (parseInt(temperature, 2) - 200) / 8;
+    temperature = ((parseInt(temperature, 2) - 200) / 8).toFixed(2);
 
     // Byte #4
     humidity = parseInt(payload.slice(6, 8), 16) * 0.5;
@@ -165,13 +171,6 @@ if (mode === 'Door' || mode === 'Move' || mode === 'Reed switch') {
     obj.unit = "";
     parsedData.push(obj);
 }
-
-obj = {};
-obj.key = "battery";
-obj.value = battery;
-obj.type = "number";
-obj.unit = "V";
-parsedData.push(obj);
 
 //console.log(parsedData);
 return parsedData;

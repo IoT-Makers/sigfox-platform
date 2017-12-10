@@ -329,14 +329,6 @@
               <input type="password" class="form-control" (keyup.enter)="updatePassword()" placeholder="Retype new password" name="newPasswordConfirm" [(ngModel)]="newPasswordConfirm">
             </div>
           </div>
-          <div *ngIf="successMessage" class="text-success">
-            <hr>
-            <p>{{successMessage}}</p>
-          </div>
-          <div *ngIf="errorMessage" class="text-danger">
-            <hr>
-            <p>{{errorMessage}}</p>
-          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -408,3 +400,5 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

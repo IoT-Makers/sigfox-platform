@@ -100,7 +100,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     }
   }
 
-  download(): void{
+  download(): void {
 
   }
 }

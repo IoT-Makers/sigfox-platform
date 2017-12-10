@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 // Layouts
 import { FullLayoutComponent } from './layouts/full-layout.component';
-import {AuthGuard} from "./_guards/auth.guard";
+import {AuthGuard} from './_guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'login', loadChildren: './pages/user/login/login.module#LoginModule' },

@@ -114,9 +114,12 @@
 
       <div class="row mt-1">
         <div class="col-4">
-          <select  class="form-control" size="1" [(ngModel)]="selectedDevice">
-            <option [ngValue]="device" *ngFor="let device of devices">{{device.id}} {{device.name ? " - " + device.name : ""}}</option>
-          </select>
+          <ng-select #devicesSelect
+                     [placeholder]="'Select a device'"
+                     [allowClear]="false"
+                     [items]="devices"
+                     (selected)="deviceSelected($event)">
+          </ng-select>
         </div>
         <div class="col-4">
           <button type="button" class="btn btn-success" data-toggle="modal" (click)="onTrack(selectedDevice)">

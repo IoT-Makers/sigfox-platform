@@ -74,11 +74,12 @@
           <div class="row">
             <div class="col col-2"><label>Device:</label></div>
             <div class="col col-4">
-              <!--<input type="text" required class="form-control" placeholder="Enter device ID" (keyup.enter)="getDeviceGraph()" [(ngModel)]="deviceId">-->
-
-              <select  class="form-control" size="1" [(ngModel)]="selectedDevice">
-                <option [ngValue]="device" *ngFor="let device of devices">{{device.id}} {{device.name ? " - " + device.name : ""}}</option>
-              </select>
+              <ng-select #devicesSelect
+                         [placeholder]="'Select a device'"
+                         [allowClear]="false"
+                         [items]="devices"
+                         (selected)="deviceSelected($event)">
+              </ng-select>
             </div>
             <div class="col col-4">
               <button class="btn btn-success" (click)="getDeviceGraph()"><i class="fa fa-search"></i> Search</button>
