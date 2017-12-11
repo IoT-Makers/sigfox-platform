@@ -142,7 +142,7 @@ class Message {
             if (!deviceInstance.location)
               deviceInstance.location = [];
             deviceInstance.location.forEach((geoloc: any, index: number) => {
-              if (geoloc.type === 'sigfox' || geoloc.type === 'geoloc_sigfox') {
+              if (geoloc.type === 'sigfox') {
                 deviceInstance.location[index] = geolocSigfox; // Replace Sigfox geoloc with new one
                 entryGeoloc_sigfox = true;
               }

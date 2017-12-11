@@ -20,7 +20,7 @@ const moment = require('moment');
       returns: {arg: 'result', type: 'array'},
       http: {path: '/my-remote', verb: 'get'}
     },
-    graphData: {
+    timeSeries: {
       accepts: [
         {arg: 'deviceId', type: 'string', required: true, description: 'Device ID'},
         {arg: 'dateBegin', type: 'string', default: moment().subtract(1, 'hours'), description: 'the starting date-time'},
@@ -39,6 +39,16 @@ const moment = require('moment');
         verb: 'delete'
       },
       returns: {root: true}
+    },
+    getMessagesFromSigfoxBackend: {
+      accepts: [
+        {arg: 'data', type: 'object', required: true, description: 'the userId and deviceId', http: { source: 'body' }}
+      ],
+      http: {
+        path: '/:deviceId/messagesFromSigfoxBackend',
+        verb: 'get'
+      },
+      returns: {type: [], root: true}
     }
   }
 })
@@ -98,7 +108,7 @@ class Device {
   }
 
 
-  graphData(deviceId: string, dateBegin: string, dateEnd: string, next: Function): void {
+  timeSeries(deviceId: string, dateBegin: string, dateEnd: string, next: Function): void {
 
     const result: any = {
       xAxis: [],
@@ -188,6 +198,12 @@ class Device {
         }
         next(err, result);
       });
+  }
+
+  getMessagesFromSigfoxBackend(deviceId: string, next: Function): void {
+
+
+
   }
 
 

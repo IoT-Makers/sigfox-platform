@@ -17,13 +17,13 @@ import { DeviceApi } from '../services/index';
 @Injectable()
 export class DeviceEffects extends BaseLoopbackEffects {
   @Effect()
-  public graphData$ = this.actions$
-    .ofType(DeviceActionTypes.GRAPH_DATA).pipe(
+  public timeSeries$ = this.actions$
+    .ofType(DeviceActionTypes.TIME_SERIES).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.device.graphData(action.payload.deviceId, action.payload.dateBegin, action.payload.dateEnd).pipe(
-          map((response: any) => new DeviceActions.graphDataSuccess(action.payload.id, response, action.meta)),
+        this.device.timeSeries(action.payload.deviceId, action.payload.dateBegin, action.payload.dateEnd).pipe(
+          map((response: any) => new DeviceActions.timeSeriesSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
-            of(new DeviceActions.graphDataFail(error, action.meta)),
+            of(new DeviceActions.timeSeriesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

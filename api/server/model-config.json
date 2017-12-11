@@ -66,7 +66,7 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
-          "graphData": true,
+          "timeSeries": true,
           "deleteDeviceAndMessages": true
         }
       }
