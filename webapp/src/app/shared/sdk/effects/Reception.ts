@@ -20,7 +20,7 @@ export class ReceptionEffects extends BaseLoopbackEffects {
   public getBaseStationsByDeviceId$ = this.actions$
     .ofType(ReceptionActionTypes.GET_BASE_STATIONS_BY_DEVICE_ID).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.reception.getBaseStationsByDeviceId(action.payload.data).pipe(
+        this.reception.getBaseStationsByDeviceId(action.payload.deviceId, action.payload.time, action.payload.req).pipe(
           map((response: any) => new ReceptionActions.getBaseStationsByDeviceIdSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
             of(new ReceptionActions.getBaseStationsByDeviceIdFail(error, action.meta)),

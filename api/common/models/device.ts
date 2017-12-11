@@ -22,12 +22,12 @@ const moment = require('moment');
     },
     timeSeries: {
       accepts: [
-        {arg: 'deviceId', type: 'string', required: true, description: 'Device ID'},
+        {arg: 'deviceId', type: 'string', required: true, description: 'the deviceId'},
         {arg: 'dateBegin', type: 'string', default: moment().subtract(1, 'hours'), description: 'the starting date-time'},
         {arg: 'dateEnd', type: 'string', default: moment(), description: 'the ending date-time'}
       ],
       returns: {arg: 'result', type: 'array'},
-      http: {path: '/dataStats', verb: 'get'}
+      http: {path: '/time-series', verb: 'get'}
     },
     deleteDeviceAndMessages: {
       accepts: [
@@ -42,10 +42,10 @@ const moment = require('moment');
     },
     getMessagesFromSigfoxBackend: {
       accepts: [
-        {arg: 'data', type: 'object', required: true, description: 'the userId and deviceId', http: { source: 'body' }}
+        {arg: 'deviceId', type: 'string', required: true, description: 'the deviceId'}
       ],
       http: {
-        path: '/:deviceId/messagesFromSigfoxBackend',
+        path: '/:deviceId/messages-from-sigfox-backend',
         verb: 'get'
       },
       returns: {type: [], root: true}

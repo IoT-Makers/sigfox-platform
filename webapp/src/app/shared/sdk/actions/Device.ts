@@ -24,7 +24,7 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId Device ID
+   * @param {string} deviceId the deviceId
    * @param {string} dateBegin the starting date-time
    * @param {string} dateEnd the ending date-time
    * @param {any} meta (optional).

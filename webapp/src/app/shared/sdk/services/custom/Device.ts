@@ -36,7 +36,7 @@ export class DeviceApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId Device ID
+   * @param {string} deviceId the deviceId
    *
    * @param {string} dateBegin the starting date-time
    *
@@ -53,7 +53,7 @@ export class DeviceApi extends BaseLoopBackApi {
   public timeSeries(deviceId: any, dateBegin: any = {}, dateEnd: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Devices/dataStats";
+    "/Devices/time-series";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};

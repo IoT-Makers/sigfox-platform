@@ -16,11 +16,13 @@ const request = require('request');
   remotes: {
     getBaseStationsByDeviceId: {
       accepts: [
-        {arg: 'data', type: 'object', required: true, description: 'the userId and deviceId', http: { source: 'body' }}
+        {arg: 'deviceId', type: 'string', required: true, description: 'the deviceId'},
+        {arg: 'time', type: 'number', required: true, description: 'the message time'},
+        {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
       http: {
         path: '/base-stations',
-        verb: 'post'
+        verb: 'get'
       },
       returns: {type: [], root: true}
     }
@@ -44,10 +46,12 @@ class Reception {
   }
 
   // Get all base stations reached by the latest message belonging to a device
-  getBaseStationsByDeviceId(data: any, next: Function): void {
+  getBaseStationsByDeviceId(deviceId: string, messageTime: number, req: any, next: Function): void {
+    // Obtain the userId with the access_token of ctx
+    const userId = req.accessToken.userId;
 
     this.model.app.models.user.findById(
-      data.userId,
+      userId,
       {},
       (err: any, userInstance: any) => {
         if (err) {
@@ -58,7 +62,7 @@ class Reception {
           const sigfoxBackendApiPassword = userInstance.sigfoxBackendApiPassword;
 
           const options = {
-            url: this.sigfoxBackendBaseApiUrl + 'devices/' + data.deviceId + '/messages?limit=1&before=' + data.time + 1,
+            url: this.sigfoxBackendBaseApiUrl + 'devices/' + deviceId + '/messages?limit=1&before=' + messageTime + 1,
             headers: {
               'Authorization': 'Basic ' + new Buffer(sigfoxBackendApiLogin + ':' + sigfoxBackendApiPassword).toString('base64')
             }

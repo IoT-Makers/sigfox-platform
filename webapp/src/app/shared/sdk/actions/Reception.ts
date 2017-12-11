@@ -20,16 +20,19 @@ Object.assign(BaseLoopbackActionsFactory<Reception>(ReceptionActionTypes), {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {object} data Request data.
-   *
-   *  - `data` – `{object}` - the userId and deviceId
+   * @param {string} deviceId the deviceId
+   * @param {number} time the message time
+   * @param {object} req 
    * @param {any} meta (optional).
    * 
    */
   getBaseStationsByDeviceId: class implements Action {
     public readonly type = ReceptionActionTypes.GET_BASE_STATIONS_BY_DEVICE_ID;
-      
-    constructor(public payload: any, public meta?: any) {}
+      public payload: {deviceId: any, time: any, req: any};
+
+    constructor(deviceId: any, time: any, req: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {deviceId, time, req};
+    }
   },
   /**
    * getBaseStationsByDeviceIdSuccess Action.

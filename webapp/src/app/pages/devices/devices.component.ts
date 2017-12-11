@@ -1,10 +1,11 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Category, Device, FireLoopRef, Message, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
 import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
+import {ToasterConfig, ToasterService} from "angular2-toaster";
 
 
 @Component({
@@ -12,7 +13,7 @@ import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
   templateUrl: './devices.component.html',
   styleUrls: ['./devices.component.scss']
 })
-export class DevicesComponent implements OnInit {
+export class DevicesComponent implements OnInit, OnDestroy {
 
   private user: User;
 
@@ -21,7 +22,6 @@ export class DevicesComponent implements OnInit {
 
   private isCircleVisible: boolean[] = new Array<boolean>();
 
-  private message: Message = new Message();
   private device: Device = new Device();
   private parser: Parser = new Parser();
   private category: Category = new Category();
@@ -47,10 +47,21 @@ export class DevicesComponent implements OnInit {
   private mapLng = 2.294694;
   private mapZoom = 2;
 
+  // Notifications
+  private toasterService: ToasterService;
+  public toasterconfig: ToasterConfig =
+    new ToasterConfig({
+      tapToDismiss: true,
+      timeout: 5000
+    });
+
   constructor(private rt: RealTime,
               private userApi: UserApi,
               private deviceApi: DeviceApi,
-              private elRef: ElementRef) { }
+              private elRef: ElementRef,
+              toasterService: ToasterService) {
+    this.toasterService = toasterService;
+  }
 
   ngOnInit(): void {
     this.edit = false;
@@ -149,7 +160,9 @@ export class DevicesComponent implements OnInit {
     device.ParserId = device.parserId;
     /*if(device.ParserId.toString() == 'None')*/
 
-    this.deviceRef.upsert(device).subscribe();
+    this.deviceRef.upsert(device).subscribe(value => {
+      this.toasterService.pop('success', 'Success', 'The device was successfully updated.');
+    });
   }
 
   updateDeviceCategory(device: Device): void {
@@ -158,6 +171,7 @@ export class DevicesComponent implements OnInit {
       this.userApi.findByIdCategories(this.user.id, device.categoryId).subscribe((category: Category) => {
         console.log(category);
         this.deviceToEdit.properties = category.properties;
+        this.toasterService.pop('success', 'Success', 'The category was successfully updated.');
       });
     }
 
@@ -194,6 +208,7 @@ export class DevicesComponent implements OnInit {
     this.deviceApi.deleteDeviceAndMessages(this.deviceToRemove.id).subscribe(value => {
       const index = this.devices.indexOf(this.deviceToRemove);
       this.devices.splice(index, 1);
+      this.toasterService.pop('success', 'Success', 'The device and its messages were successfully deleted.');
     });
     /*this.userApi.deleteMessages().subscribe(value => {
       this.deviceRef.remove(this.deviceToRemove).subscribe();

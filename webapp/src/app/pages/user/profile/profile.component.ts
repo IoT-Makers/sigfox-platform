@@ -97,7 +97,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         'sigfoxBackendApiPassword': this.user.sigfoxBackendApiPassword
       }
     ).subscribe(value => {
-      this.toasterService.pop('success', 'Success', 'Credentials were updated successfully.');
+      this.toasterService.pop('success', 'Success', 'Credentials were successfully updated.');
     });
   }
 
@@ -110,14 +110,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
     ).subscribe((user: User) => {
       this.user = user;
-      this.toasterService.pop('success', 'Success', 'Credentials were removed successfully.');
+      this.toasterService.pop('success', 'Success', 'Credentials were successfully removed.');
     });
   }
 
   updatePassword(): void {
     if (this.newPassword === this.newPasswordConfirm) {
       this.userApi.changePassword(this.oldPassword, this.newPassword).subscribe((result: any) => {
-        this.toasterService.pop('success', 'Success', 'Password was modified successfully.');
+        this.toasterService.pop('success', 'Success', 'Password was successfully modified.');
         this.updatePasswordModal.hide();
       }, (error: any) => {
         this.toasterService.pop('error', 'Error', error.message);
