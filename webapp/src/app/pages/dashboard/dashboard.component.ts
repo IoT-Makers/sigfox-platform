@@ -109,11 +109,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.devicesSelect.items = this.devices;
     });
 
-    // Messages
-    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+
   }
 
   deviceSelected(device: any): void {
+    // Reset real time
+    // Messages
+    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+
     // Used to trigger notifications
     this.isFirstSubscribe = true;
 

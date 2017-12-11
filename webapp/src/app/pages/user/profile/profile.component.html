@@ -1,5 +1,6 @@
 <div class="animated fadeIn">
-  <h3>Welcome {{user.username}}</h3>
+  <h3 *ngIf="user.username">Welcome {{user.username}}</h3>
+  <h3 *ngIf="!user.username">Welcome</h3>
   <hr>
   <div class="row">
     <div class="col-sm-12">
@@ -12,7 +13,9 @@
             <b>
               <i class="fa fa-user" aria-hidden="true"></i>
               <span class="mr-1"></span> Username:
-            </b> {{user.username}}
+            </b>
+            <span *ngIf="user.username">{{user.username}}</span>
+            <span *ngIf="!user.username" class="small text-danger"><i>Please set your username by clicking on the "Modify" button below.</i></span>
           </div>
           <hr>
           <div>
