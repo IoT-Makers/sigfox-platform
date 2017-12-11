@@ -3,8 +3,8 @@ import {RealTime, UserApi} from '../../shared/sdk/services';
 import {Device, FireLoopRef, Message, User} from '../../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import * as _ from 'lodash';
-import {SelectComponent} from "ng2-select";
-import {ToasterConfig, ToasterService} from "angular2-toaster";
+import {SelectComponent} from 'ng2-select';
+import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 @Component({
   selector: 'app-dashboard',
@@ -142,6 +142,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     ).subscribe((messages: Message[]) => {
       const message = messages[0];
+      console.log(message);
+      // Used for geoloc
       this.message = message;
 
       if (this.lastMessage.time !== this.message.time) {
