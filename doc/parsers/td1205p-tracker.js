@@ -164,21 +164,20 @@ if (payload.length == 24) {
     parsedData.push(obj);
     obj = {};
 
-
+    return parsedData;
 }
 
-if (payload.length <= 4) {
+if (payload.length == 2 || payload.length == 4) {
     obj.key = "message_type";
     obj.value = "Timeout";
-    obj.type = "number";
-    obj.unit = "seconds";
+    obj.type = "string";
+    obj.unit = "";
     parsedData.push(obj);
     obj = {};
-    var battery = null;
     if(payload.length == 4){
-        battery = parseInt(payload.substring(0,2), 16);
+        var battery = parseInt(payload.substring(0,2), 16);
     }else{
-        battery = parseInt(payload, 16);
+        var battery = parseInt(payload, 16);
     }
     //console.log('battery', message.data);
     //console.log('battery', battery);
@@ -189,7 +188,5 @@ if (payload.length <= 4) {
     parsedData.push(obj);
 
     //console.log(parsedData);
-
+    return parsedData;
 }
-
-return parsedData;

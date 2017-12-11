@@ -161,7 +161,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     this.deviceChartLabels = [];
     this.deviceChartData = [];
 
-    this.deviceApi.graphData(this.selectedDevice.id, this.dateBegin.toISOString(), this.dateEnd.toISOString()).subscribe((result: any) => {
+    this.deviceApi.timeSeries(this.selectedDevice.id, this.dateBegin.toISOString(), this.dateEnd.toISOString()).subscribe((result: any) => {
 
       this.deviceChartLabels = result.result.xAxis;
       const groupByKey: any = result.result.yAxis;

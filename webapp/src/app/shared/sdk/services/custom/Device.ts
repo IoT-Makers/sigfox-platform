@@ -50,7 +50,7 @@ export class DeviceApi extends BaseLoopBackApi {
    *
    *  - `result` – `{any}` - 
    */
-  public graphData(deviceId: any, dateBegin: any = {}, dateEnd: any = {}, customHeaders?: Function): Observable<any> {
+  public timeSeries(deviceId: any, dateBegin: any = {}, dateEnd: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Devices/dataStats";
