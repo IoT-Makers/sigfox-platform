@@ -49,9 +49,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-
     console.log(this.user);
-
     if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
@@ -61,7 +59,16 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
     }
+  }
 
+  setup(): void {
+    console.log(this.rt.connection);
+    this.ngOnDestroy();
+    // Get the logged in User object
+    this.user = this.userApi.getCachedCurrent();
+    console.log(this.user);
+
+    // Counts
     this.userApi.countDevices(this.user.id).subscribe(result => {
       this.countDevices = result.count;
     });
@@ -74,11 +81,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.parserApi.count().subscribe(result => {
       this.countParsers = result.count;
     });
-  }
 
-  setup(): void {
-    console.log(this.rt.connection);
-    this.ngOnDestroy();
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     //console.log(this.organizations[0].id);
@@ -106,8 +109,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.countCategories = result.count;
         });
       });
-
-
   }
 
   ngOnDestroy(): void {
@@ -136,9 +137,13 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   onLogout(): void {
-    this.userApi.logout().subscribe(() => {
+    this.rt.connection.disconnect();
+    this.userApi.logout().subscribe((result: any) => {
       console.log('is authenticated: ', this.userApi.isAuthenticated());
       // Some actions on logout
+      this.router.navigate(['/login']);
+    }, (error: any) => {
+      console.log(error);
       this.router.navigate(['/login']);
     });
   }

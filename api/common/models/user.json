@@ -42,6 +42,9 @@
     },
     "sigfoxBackendApiPassword": {
       "type": "string"
+    },
+    "devAccessTokens": {
+      "type": ["AccessToken"]
     }
   },
   "validations": [],

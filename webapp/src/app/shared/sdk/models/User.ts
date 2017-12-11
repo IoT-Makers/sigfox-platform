@@ -14,6 +14,7 @@ export interface UserInterface {
   "location"?: any;
   "sigfoxBackendApiLogin"?: string;
   "sigfoxBackendApiPassword"?: string;
+  "devAccessTokens"?: Array<any>;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -36,6 +37,7 @@ export class User implements UserInterface {
   "location": any = <any>null;
   "sigfoxBackendApiLogin": string = '';
   "sigfoxBackendApiPassword": string = '';
+  "devAccessTokens": Array<any> = <any>[];
   "realm": string = '';
   "username": string = '';
   "email": string = '';
@@ -103,6 +105,10 @@ export class User implements UserInterface {
         "sigfoxBackendApiPassword": {
           name: 'sigfoxBackendApiPassword',
           type: 'string'
+        },
+        "devAccessTokens": {
+          name: 'devAccessTokens',
+          type: 'Array&lt;any&gt;'
         },
         "realm": {
           name: 'realm',

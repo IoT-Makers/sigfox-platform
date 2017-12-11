@@ -1,5 +1,78 @@
 <div class="animated fadeIn">
-  <p>
-    Dashboard works!
-  </p>
+
+  <div class="row mb-1">
+    <div class="col-sm-12 col-md-12">
+      <ng-select #devicesSelect
+                 [placeholder]="'Select a device'"
+                 [allowClear]="false"
+                 [items]="devices"
+                 (selected)="deviceSelected($event)">
+      </ng-select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12 col-md-6">
+      <div class="card card-">
+        <div class="card-header">
+          <i class="fa fa-tint fa-lg"></i> <strong> Humidity</strong>
+        </div>
+        <div *ngIf="!humidity" class="card-block">
+          No humidity yet...
+          <div class="sk-wave">
+            <div class="sk-rect sk-rect1"></div>
+            <div class="sk-rect sk-rect2"></div>
+            <div class="sk-rect sk-rect3"></div>
+            <div class="sk-rect sk-rect4"></div>
+            <div class="sk-rect sk-rect5"></div>
+          </div>
+        </div>
+        <div *ngIf="humidity" class="card-block mx-auto hidden-xs">
+          <ngx-gauge [type]="'arch'"
+                     [size]="mobile ? 200 : 300"
+                     [cap]="'round'"
+                     [thick]="15"
+                     [value]="humidity"
+                     [label]="'Humidity'"
+                     [append]="'%'"
+                     [thresholds]="thresholdHumidity">
+          </ngx-gauge>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-12 col-md-6">
+      <div class="card card-">
+        <div class="card-header">
+          <i class="fa fa-thermometer fa-lg"></i> <strong> Temperature</strong>
+        </div>
+        <div *ngIf="!temperature" class="card-block">
+          No temperature yet...
+          <div class="sk-wave">
+            <div class="sk-rect sk-rect1"></div>
+            <div class="sk-rect sk-rect2"></div>
+            <div class="sk-rect sk-rect3"></div>
+            <div class="sk-rect sk-rect4"></div>
+            <div class="sk-rect sk-rect5"></div>
+          </div>
+        </div>
+        <div *ngIf="temperature" class="card-block mx-auto">
+          <ngx-gauge [type]="'arch'"
+                     [size]="mobile ? 200 : 300"
+                     [cap]="'round'"
+                     [min]="-50"
+                     [max]="50"
+                     [thick]="15"
+                     [value]="temperature"
+                     [label]="'Temperature'"
+                     [append]="'°C'"
+                     [thresholds]="thresholdTemperature">
+          </ngx-gauge>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

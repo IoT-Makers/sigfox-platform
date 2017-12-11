@@ -1,5 +1,6 @@
 import {Model} from '@mean-expert/model';
 import {AccessToken} from '../../../webapp/src/app/shared/sdk/models/AccessToken';
+
 /**
  * @module user
  * @description
@@ -12,7 +13,8 @@ import {AccessToken} from '../../../webapp/src/app/shared/sdk/models/AccessToken
   hooks: {
     beforeSave: {name: 'before save', type: 'operation'},
     afterRemoteLogin: {name: 'login', type: 'afterRemote'},
-    afterRemoteCreate: {name: 'create', type: 'afterRemote'}
+    afterRemoteCreate: {name: 'create', type: 'afterRemote'},
+    afterRemoteChangePassword: {name: 'changePassword', type: 'afterRemote'}
   },
   remotes: {
     myRemote: {
@@ -26,6 +28,33 @@ class user {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
+  }
+
+  afterRemoteChangePassword(ctx: any, reuslt: any, next: Function): void {
+    const userId = ctx.args.id;
+    this.model.findById(
+      userId,
+      {},
+      (err: any, userInstance: any) => {
+        if (err) {
+          console.error(err);
+          next(err, userInstance);
+        } else {
+          // Found user
+          const devAccessTokens = userInstance.devAccessTokens;
+          if (devAccessTokens) {
+            this.model.app.models.AccessToken.create(devAccessTokens, (error: any, result: any) => {
+              if (err)
+                next(error, result);
+              else
+                next();
+              console.log('Successfully restored devAccessTokens in AccessToken db table.');
+            });
+          } else {
+            next();
+          }
+        }
+      });
   }
 
   // Example Operation Hook
@@ -73,7 +102,7 @@ class user {
           });*/
   }
 
-  afterRemoteCreate(context: any, userInstance: any, next: any) {
+  afterRemoteCreate(ctx: any, userInstance: any, next: any) {
 
     // let organization = {
     //   name: userInstance.email,

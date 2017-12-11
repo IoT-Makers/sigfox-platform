@@ -1,14 +1,15 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {UserApi} from '../../../shared/sdk/services/custom/User';
 import {DOCUMENT} from '@angular/common';
 import {AccessToken, User} from '../../../shared/sdk/models';
+import {ToasterConfig, ToasterService} from "angular2-toaster";
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
 
   private user: User;
 
@@ -16,29 +17,35 @@ export class ProfileComponent implements OnInit {
   @ViewChild('updateUserModal') updateUserModal: any;
   @ViewChild('confirmModal') confirmModal: any;
 
-  private devAccessTokens = [];
   private devAccessTokenToRemove: AccessToken = new AccessToken();
   private callbackURL;
 
   private oldPassword;
   private newPassword;
   private newPasswordConfirm;
-  private successMessage;
-  private errorMessage;
+
+  // Notifications
+  private toasterService: ToasterService;
+  public toasterconfig: ToasterConfig =
+    new ToasterConfig({
+      tapToDismiss: true,
+      timeout: 5000
+    });
 
   constructor(@Inject(DOCUMENT) private document: any,
-              private userApi: UserApi) {
+              private userApi: UserApi,
+              toasterService: ToasterService) {
+    this.toasterService = toasterService;
   }
 
   getUser(): void {
     this.user = this.userApi.getCachedCurrent();
-    /*this.userApi.findById(this.userApi.getCachedCurrent().id).subscribe((user: User) => {
+    this.userApi.findById(this.user.id, {}).subscribe((user: User) => {
       this.user = user;
-      console.log(this.user);
-    });*/
-  }
+    });
 
-  getDevAccessToken(): void {
+    // TODO: REMOVE BELLOW AFTER HAVING IT RAN ONCE (AFTER UPDATING) !!!
+    // Retrocompatibilty
     this.userApi.getAccessTokens(this.user.id, {
       where: {
         ttl: -1,
@@ -46,8 +53,9 @@ export class ProfileComponent implements OnInit {
       }
     }).subscribe((accessTokens: AccessToken[]) => {
       if (accessTokens) {
-        console.log(accessTokens);
-        this.devAccessTokens = accessTokens;
+        this.userApi.patchAttributes(this.user.id, {devAccessTokens: accessTokens}).subscribe((user: User) => {
+          this.user = user;
+        });
       }
     });
   }
@@ -57,7 +65,10 @@ export class ProfileComponent implements OnInit {
       ttl: -1
     };
     this.userApi.createAccessTokens(this.user.id, newAccessToken).subscribe((accessToken: AccessToken) => {
-      this.devAccessTokens.push(accessToken);
+      this.user.devAccessTokens.push(accessToken);
+      this.userApi.patchAttributes(this.user.id, {devAccessTokens: this.user.devAccessTokens}).subscribe((user: User) => {
+        this.user = user;
+      });
     });
   }
 
@@ -68,15 +79,13 @@ export class ProfileComponent implements OnInit {
 
   remove(): void {
     this.userApi.destroyByIdAccessTokens(this.user.id, this.devAccessTokenToRemove.id).subscribe(value => {
-        const index = this.devAccessTokens.indexOf(this.devAccessTokenToRemove);
-        this.devAccessTokens.splice(index, 1);
+        const index = this.user.devAccessTokens.indexOf(this.devAccessTokenToRemove);
+        this.user.devAccessTokens.splice(index, 1);
+        this.userApi.patchAttributes(this.user.id, {devAccessTokens: this.user.devAccessTokens}).subscribe((user: User) => {
+          this.user = user;
+        });
       }
-    );/*
-    this.userApi.deleteAccessTokens(this.devAccessTokenToRemove.id).subscribe(value => {
-        const index = this.devAccessTokens.indexOf(this.devAccessTokenToRemove);
-        this.devAccessTokens.splice(index, 1);
-      }
-    );*/
+    );
     this.confirmModal.hide();
   }
 
@@ -87,7 +96,9 @@ export class ProfileComponent implements OnInit {
         'sigfoxBackendApiLogin': this.user.sigfoxBackendApiLogin,
         'sigfoxBackendApiPassword': this.user.sigfoxBackendApiPassword
       }
-    ).subscribe();
+    ).subscribe(value => {
+      this.toasterService.pop('success', 'Success', 'Credentials were updated successfully.');
+    });
   }
 
   removeSigfoxBackendApiAccess(): void {
@@ -99,22 +110,20 @@ export class ProfileComponent implements OnInit {
       }
     ).subscribe((user: User) => {
       this.user = user;
+      this.toasterService.pop('success', 'Success', 'Credentials were removed successfully.');
     });
   }
 
   updatePassword(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
     if (this.newPassword === this.newPasswordConfirm) {
       this.userApi.changePassword(this.oldPassword, this.newPassword).subscribe((result: any) => {
-        console.log(result.message);
-        this.successMessage = 'Password was modified successfully.';
+        this.toasterService.pop('success', 'Success', 'Password was modified successfully.');
         this.updatePasswordModal.hide();
       }, (error: any) => {
-        this.errorMessage = error.message;
+        this.toasterService.pop('error', 'Error', error.message);
       });
     } else {
-      this.errorMessage = 'Please make sure the passwords match.';
+      this.toasterService.pop('error', 'Error', 'Please make sure the passwords match.');
     }
   }
 
@@ -128,6 +137,7 @@ export class ProfileComponent implements OnInit {
       }
     ).subscribe((user: User) => {
       this.user = user;
+      this.toasterService.pop('success', 'Success', 'Profile was updated successfully.');
       this.updateUserModal.hide();
     });
   }
@@ -135,9 +145,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     // Get the logged in User object (avatar, email, ...)
     this.getUser();
-    this.getDevAccessToken();
     this.callbackURL = this.document.location.origin + '/api/Messages/sigfox';
-    //this.accessTokens = this.user.accessTokens;
   }
 
   ngOnDestroy() {

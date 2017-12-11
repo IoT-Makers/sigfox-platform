@@ -38,9 +38,7 @@
       "type": "string"
     },
     "available_properties": {
-      "type": [
-        "object"
-      ]
+      "type": ["object"]
     }
   },
   "validations": [],
@@ -62,18 +60,6 @@
       "permission": "DENY"
     },
     {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "admin",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "user",
-      "permission": "ALLOW"
-    },
-    {
       "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "$authenticated",
@@ -82,8 +68,14 @@
     {
       "accessType": "*",
       "principalType": "ROLE",
-      "principalId": "teamMember",
+      "principalId": "admin",
       "permission": "ALLOW"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "user",
+      "permission": "DENY"
     }
   ],
   "methods": {}

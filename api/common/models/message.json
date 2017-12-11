@@ -53,14 +53,10 @@
       ]
     },
     "geoloc": {
-      "type": [
-        "Geoloc"
-      ]
+      "type": ["Geoloc"]
     },
     "parsed_data": {
-      "type": [
-        "object"
-      ]
+      "type": ["object"]
     }
   },
   "validations": [],

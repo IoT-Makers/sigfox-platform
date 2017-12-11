@@ -19,6 +19,7 @@ import {SimpleLayoutComponent} from './layouts/simple-layout.component';
 import {SDKBrowserModule} from './shared/sdk/index';
 import {AuthGuard} from './_guards/auth.guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ToasterModule} from "angular2-toaster";
 
 @NgModule({
   imports: [

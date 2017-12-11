@@ -1,27 +1,27 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Category, Device, FireLoopRef, Message, User} from '../../shared/sdk/models';
 import {DeviceApi, RealTime, UserApi} from '../../shared/sdk/services';
 
 import {Subscription} from 'rxjs/Subscription';
 
 import * as moment from 'moment';
+import {SelectComponent} from "ng2-select";
 
 @Component({
   selector: 'app-analytics',
   templateUrl: 'analytics.component.html',
   styleUrls: ['analytics.component.scss']
 })
-export class AnalyticsComponent implements OnInit {
+export class AnalyticsComponent implements OnInit, OnDestroy {
 
   private user: User;
 
+  @ViewChild('devicesSelect') devicesSelect: SelectComponent;
+
+  public devices: Array<any> = new Array<any>();
+
   private messageSub: Subscription;
-  private deviceSub: Subscription;
-
-  private devices: Device[] = new Array<Device>();
-
   private messageRef: FireLoopRef<Message>;
-  private deviceRef: FireLoopRef<Device>;
 
   public data = [];
 
@@ -79,6 +79,20 @@ export class AnalyticsComponent implements OnInit {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
     }
+
+    this.user = this.userApi.getCachedCurrent();
+
+    // Get devices
+    this.userApi.getDevices(this.user.id).subscribe((devices: Device[]) => {
+      devices.forEach(device => {
+        const item = {
+          id: device.id,
+          text: device.name ? device.id + ' - ' + device.name : device.id
+        };
+        this.devices.push(item);
+      });
+      this.devicesSelect.items = this.devices;
+    });
   }
 
   setup(): void {
@@ -89,24 +103,9 @@ export class AnalyticsComponent implements OnInit {
     this.user = this.userApi.getCachedCurrent();
 
     this.getMessagesGraph(this.graphRange);
-
-    // Devices
-    this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-    this.deviceRef.on('change',
-      {limit: 100,
-        order: 'updatedAt DESC',
-        where: {
-          userId: this.user.id
-        }
-      }
-    ).subscribe(
-      (devices: Device[]) => {
-        this.devices = devices;
-        console.log('Devices', this.devices);
-      });
   }
 
-  getMessagesGraph(option: string): void{
+  getMessagesGraph(option: string): void {
 
     this.graphRange = option;
     this.messageChartLabels = [];
@@ -151,6 +150,10 @@ export class AnalyticsComponent implements OnInit {
       // console.log('Labels:',this.messageChartLabels);
       this.messageChartData.push({ data: this.data, label: 'Messages'});
     });
+  }
+
+  deviceSelected(device: any) {
+    this.selectedDevice = device;
   }
 
   getDeviceGraph(): void {
@@ -233,8 +236,8 @@ export class AnalyticsComponent implements OnInit {
           this.deviceChartColors.push(colorOption);
         }
       }
-      // console.log(this.deviceChartLabels);
-      // console.log(this.deviceChartData);
+      console.log(this.deviceChartLabels);
+      console.log(this.deviceChartData);
       // this.deviceChartData = result.result.yAxis
     });
   }
@@ -243,16 +246,13 @@ export class AnalyticsComponent implements OnInit {
     console.log('search', context);
   }
 
-  // download(): void {
-  //   console.log("Data:", this.deviceChartData);
-  // }
+  download(): void {
+    console.log('Data:', this.deviceChartData);
+  }
 
   ngOnDestroy(): void {
     console.log('Analytics: ngOnDestroy');
     if (this.messageRef)this.messageRef.dispose();
     if (this.messageSub)this.messageSub.unsubscribe();
-
-    if (this.deviceRef)this.deviceRef.dispose();
-    if (this.deviceSub)this.deviceSub.unsubscribe();
   }
 }

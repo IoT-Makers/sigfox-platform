@@ -14,7 +14,8 @@ export class LoginComponent implements OnInit {
   private user: User = new User();
   private errorMessage = '';
 
-  constructor(private userApi: UserApi, private router: Router) {}
+  constructor(private userApi: UserApi,
+              private router: Router) { }
 
   public onLogin(): void {
     this.userApi.login(this.user).subscribe(
@@ -30,7 +31,6 @@ export class LoginComponent implements OnInit {
         ).subscribe();
         // Redirect to the /dashboard
         this.router.navigate(['/']);
-
       }, err => {
         // console.log(err);
         if (err.statusCode === 401) {
@@ -44,7 +44,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
   }
 
 }

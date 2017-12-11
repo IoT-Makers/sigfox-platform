@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Message} from '../../shared/sdk/models/Message';
 import {GoogleMapsAPIWrapper} from '@agm/core';
 import {GeolocApi} from '../../shared/sdk/services/custom/Geoloc';
@@ -9,6 +9,7 @@ import {RealTime} from '../../shared/sdk/services/core/real.time';
 import * as _ from 'lodash';
 import {User} from '../../shared/sdk/models';
 import {UserApi} from '../../shared/sdk/services/custom';
+import {SelectComponent} from "ng2-select";
 
 @Component({
   selector: 'app-tracking',
@@ -16,14 +17,13 @@ import {UserApi} from '../../shared/sdk/services/custom';
   styleUrls: ['tracking.component.scss']
 })
 
-export class TrackingComponent implements OnInit {
+export class TrackingComponent implements OnInit, OnDestroy {
 
   private user: User;
 
-  private deviceSub: Subscription;
-  private deviceRef: FireLoopRef<Device>;
+  @ViewChild('devicesSelect') devicesSelect: SelectComponent;
 
-  private devices: Device[] = new Array<Device>();
+  public devices: Array<any> = new Array<any>();
 
   public circlePrecision = false;
   public directionsRoutes = true;
@@ -47,30 +47,11 @@ export class TrackingComponent implements OnInit {
 
   constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper,
               private geolocApi: GeolocApi,
-              private userApi: UserApi,
-              private rt: RealTime) {
+              private userApi: UserApi) {
   }
 
-  setup(): void {
-    this.ngOnDestroy();
-
-    this.user = this.userApi.getCachedCurrent();
-
-    // Devices
-    this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-    this.deviceRef.on('change',
-      {
-        limit: 100,
-        order: 'updatedAt DESC',
-        where: {
-          userId: this.user.id
-        }
-      }
-    ).subscribe(
-      (devices: Device[]) => {
-        this.devices = devices;
-        console.log('Devices', this.devices);
-      });
+  deviceSelected(device: any) {
+    this.selectedDevice = device;
   }
 
   selectedTravelMode(mode: any): void {
@@ -179,27 +160,29 @@ export class TrackingComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
-    if (
-      this.rt.connection.isConnected() &&
-      this.rt.connection.authenticated
-    ) {
-      this.rt.onReady().subscribe(() => this.setup());
-    } else {
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-      this.rt.onReady().subscribe();
-    }
+
+    this.user = this.userApi.getCachedCurrent();
+
+    // Get devices
+    this.userApi.getDevices(this.user.id).subscribe((devices: Device[]) => {
+      devices.forEach(device => {
+        const item = {
+          id: device.id,
+          text: device.name ? device.id + ' - ' + device.name : device.id
+        };
+        this.devices.push(item);
+      });
+      this.devicesSelect.items = this.devices;
+    });
   }
 
   ngOnDestroy(): void {
     console.log('Tracking: ngOnDestroy');
-
-    if (this.deviceRef)this.deviceRef.dispose();
-    if (this.deviceSub)this.deviceSub.unsubscribe();
   }
 
   rad(x) {
     return x * Math.PI / 180;
-  };
+  }
 
   getDistance(p1, p2) {
     let R = 6378137; // Earth’s mean radius in meter
@@ -211,6 +194,6 @@ export class TrackingComponent implements OnInit {
     let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     let d = R * c;
     return d; // returns the distance in meter
-  };
+  }
 }
 

@@ -49,9 +49,8 @@ export class CategoriesComponent implements OnInit {
   }
 
   setup(): void {
-    console.log(this.rt.connection);
     this.ngOnDestroy();
-
+    // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
     // Get and listen categories
@@ -69,14 +68,14 @@ export class CategoriesComponent implements OnInit {
     });
   }
 
-  editCategory(category: Category):void {
+  editCategory(category: Category): void {
     this.edit = true;
-    if(category){
+    if (category) {
       this.categoryToEdit = category;
-    }else{
+    } else {
       this.categoryToEdit = new Category();
       this.newCategory = true;
-      console.log(this.categoryToEdit)
+      console.log(this.categoryToEdit);
     }
   }
 
@@ -95,8 +94,8 @@ export class CategoriesComponent implements OnInit {
 
   }
 
-  addProperty(category: Category):void {
-    let property: any = {
+  addProperty(category: Category): void {
+    const property: any = {
       key: '',
       value: '',
       type: 'string'

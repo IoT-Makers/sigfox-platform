@@ -126,10 +126,10 @@
             Manage
           </div>
           <div class="card-block">
-            <p *ngIf="!devAccessTokens.length" class="text-danger">
+            <p *ngIf="!user.devAccessTokens.length" class="text-danger">
               Please create a developer access token first
             </p>
-            <table *ngIf="devAccessTokens.length>0" class="table d-lg-table table-hover table-responsive" [mfData]="devAccessTokens | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+            <table *ngIf="user.devAccessTokens.length>0" class="table d-lg-table table-hover table-responsive" [mfData]="user.devAccessTokens | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">
@@ -192,7 +192,6 @@
       </div>
       </div>-->
 
-
       <accordion>
         <accordion-group>
           <div accordion-heading>
@@ -203,7 +202,7 @@
             <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see all the base stations that received the message)</i></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>PUT</strong></p>
-            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{devAccessTokens[0] ? devAccessTokens[0].id : "Please create a developer access token first" }}</span></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span></p>
             <p>Content Type: <strong>application/json</strong></p>
             <p>Body: <code class="text-center">{{
               '{
@@ -237,7 +236,7 @@
             <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see all the base stations that received the message)</i></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>PUT</strong></p>
-            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{devAccessTokens[0] ? devAccessTokens[0].id : "Please create a developer access token first" }}</span></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span></p>
             <p>Content Type: <strong>application/json</strong></p>
             <p>Body: <code class="text-center">{{
               '{
@@ -271,7 +270,7 @@
             <p>Type: <strong>SERVICE</strong> | <strong>GEOLOC</strong></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>PUT</strong></p>
-            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{devAccessTokens[0] ? devAccessTokens[0].id : "Please create a developer access token first" }}</span></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span></p>
             <p>Content Type: <strong>application/json</strong></p>
             <p>Body: <code class="text-center">{{
               '{
@@ -315,28 +314,20 @@
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Current password</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" placeholder="Your current password" name="user.username" [(ngModel)]="oldPassword">
+              <input type="password" class="form-control" (keyup.enter)="updatePassword()" placeholder="Your current password" name="oldPassword" [(ngModel)]="oldPassword">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">New password</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" placeholder="New password" name="user.email" [(ngModel)]="newPassword">
+              <input type="password" class="form-control" (keyup.enter)="updatePassword()" placeholder="New password" name="newPassword" [(ngModel)]="newPassword">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Retype new password</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" placeholder="Retype new password" name="user.avatar" [(ngModel)]="newPasswordConfirm">
+              <input type="password" class="form-control" (keyup.enter)="updatePassword()" placeholder="Retype new password" name="newPasswordConfirm" [(ngModel)]="newPasswordConfirm">
             </div>
-          </div>
-          <div *ngIf="successMessage" class="text-success">
-            <hr>
-            <p>{{successMessage}}</p>
-          </div>
-          <div *ngIf="errorMessage" class="text-danger">
-            <hr>
-            <p>{{errorMessage}}</p>
           </div>
         </form>
       </div>
@@ -409,3 +400,5 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
