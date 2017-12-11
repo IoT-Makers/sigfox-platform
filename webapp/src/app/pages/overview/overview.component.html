@@ -73,7 +73,7 @@
             <ng-container *ngFor="let device of devices; let i = index">
               <ng-container *ngFor="let geoloc of device.location">
                 <!-- Geoloc Sigfox -->
-                <ng-container *ngIf="geoloc.type == 'sigfox'">
+                <ng-container *ngIf="geoloc.type === 'sigfox'">
                   <agm-marker
                     (mouseOut)="markerOut(i)"
                     (mouseOver)="markerOver(i)"
@@ -111,7 +111,7 @@
                   <!-- End Circle -->
                 </ng-container>
                 <!-- Geoloc GPS -->
-                <ng-container *ngIf="geoloc.type == 'GPS'">
+                <ng-container *ngIf="geoloc.type === 'GPS'">
                   <agm-marker
                     [zIndex]="3"
                     [latitude]="geoloc.lat"
@@ -181,14 +181,14 @@
                 <div *ngIf="device.location">
                   <div *ngFor="let geoloc of device.location">
 
-                    <ng-container *ngIf="geoloc.type == 'sigfox'">
+                    <ng-container *ngIf="geoloc.type === 'sigfox'">
                       <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-sigfox">
                         <i class="fa fa-map-marker fa-2x"></i>
                         <br>
                         <strong>Sigfox Geoloc</strong>
                       </a>
                     </ng-container>
-                    <ng-container *ngIf="geoloc.type == 'GPS'">
+                    <ng-container *ngIf="geoloc.type === 'GPS'">
                       <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-gps">
                         <i class="fa fa-map-marker fa-2x"></i>
                         <br>
@@ -290,14 +290,14 @@
               <div *ngFor="let geoloc of item.geoloc">
                 <div class="row">
                   <div class="col col-12">
-                    <ng-container *ngIf="geoloc.type == 'sigfox'">
+                    <ng-container *ngIf="geoloc.type === 'sigfox'">
                         <span class="small text-geoloc-sigfox">
                           <i class="fa fa-map-marker fa-2x"></i>
                           <br>
                           <strong>Sigfox Network</strong>
                         </span>
                     </ng-container>
-                    <ng-container *ngIf="geoloc.type == 'GPS'">
+                    <ng-container *ngIf="geoloc.type === 'GPS'">
                         <span class="small text-geoloc-gps">
                           <i class="fa fa-map-marker fa-2x"></i>
                           <br>
