@@ -8,12 +8,12 @@
       <agm-map [latitude]="mapLat"
                [longitude]="mapLng"
                [zoom]="mapZoom"
-               [mapTypeControl]=true
+               [mapTypeControl]="true"
                [fullscreenControl]="true">
         <ng-container *ngFor="let device of devices; let i = index">
           <ng-container *ngFor="let geoloc of device.location">
             <!-- Geoloc Sigfox -->
-            <ng-container *ngIf="geoloc.type == 'sigfox'">
+            <ng-container *ngIf="geoloc.type === 'sigfox'">
               <agm-marker
                 (mouseOut)="markerOut(i)"
                 (mouseOver)="markerOver(i)"
@@ -51,7 +51,7 @@
               <!-- End Circle -->
             </ng-container>
             <!-- Geoloc GPS -->
-            <ng-container *ngIf="geoloc.type == 'GPS'">
+            <ng-container *ngIf="geoloc.type === 'GPS'">
               <agm-marker
                 [zIndex]="3"
                 [latitude]="geoloc.lat"
@@ -131,14 +131,14 @@
                   <div *ngFor="let geoloc of device.location">
                     <div class="row">
                       <div class="col col-7">
-                        <ng-container *ngIf="geoloc.type == 'sigfox'">
+                        <ng-container *ngIf="geoloc.type === 'sigfox'">
                           <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-sigfox">
                             <i class="fa fa-map-marker fa-2x"></i>
                             <br>
                             <strong>Sigfox Geoloc</strong>
                           </a>
                         </ng-container>
-                        <ng-container *ngIf="geoloc.type == 'GPS'">
+                        <ng-container *ngIf="geoloc.type === 'GPS'">
                           <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-gps">
                             <i class="fa fa-map-marker fa-2x"></i>
                             <br>

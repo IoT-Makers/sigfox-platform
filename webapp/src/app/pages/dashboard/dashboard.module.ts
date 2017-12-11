@@ -5,6 +5,7 @@ import {DashboardComponent} from './dashboard.component';
 import {NgxGaugeModule} from 'ngx-gauge';
 import {SelectModule} from 'ng2-select';
 import {ToasterModule} from 'angular2-toaster';
+import {AgmCoreModule} from '@agm/core';
 
 @NgModule({
   imports: [
@@ -12,7 +13,10 @@ import {ToasterModule} from 'angular2-toaster';
     DashboardRoutingModule,
     NgxGaugeModule,
     SelectModule,
-    ToasterModule
+    ToasterModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
+    })
   ],
   declarations: [ DashboardComponent ]
 })
