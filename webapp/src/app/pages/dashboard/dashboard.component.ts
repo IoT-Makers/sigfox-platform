@@ -6,6 +6,8 @@ import * as _ from 'lodash';
 import {SelectComponent} from "ng2-select";
 import {ToasterConfig, ToasterService} from "angular2-toaster";
 import {AgmInfoWindow, AgmMap} from "@agm/core";
+import {NgxGauge} from "ngx-gauge/gauge/gauge";
+import {getAppInitializer} from "@angular/router/src/router_module";
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +19,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private user: User;
 
   @ViewChild('devicesSelect') devicesSelect: SelectComponent;
+  @ViewChildren('gauge') gauges: QueryList<NgxGauge>;
 
   public devices: Array<any> = new Array<any>();
 
@@ -60,7 +63,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private messageRef: FireLoopRef<Message>;
 
   // Notifications
-  private isFirstSubscribe = true;
+  private isFirstSubscribe;
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
@@ -108,6 +111,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   deviceSelected(device: any): void {
+    // Used to trigger notifications
+    this.isFirstSubscribe = true;
+
+    // Reset all widget values on device change
     this.humidity = undefined;
     this.temperature = undefined;
     this.altitude = undefined;
@@ -119,10 +126,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.battery = undefined;
     this.message = undefined;
 
-    this.messageSub = this.messageRef.on('value',
+    this.messageSub = this.messageRef.on('change',
       {
         limit: 1,
-        order: 'updatedAt DESC',
+        order: 'createdAt DESC',
         include: ['Device'],
         where: {
           userId: this.user.id,
@@ -142,32 +149,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.alert = _.filter(message.parsed_data, {key: 'alert'})[0];
       this.mode = _.filter(message.parsed_data, {key: 'mode'})[0];
       this.battery = _.filter(message.parsed_data, {key: 'battery'})[0];
-    });
-
-    this.messageSub = this.messageRef.on('child_added',
-      {
-        order: 'updatedAt DESC',
-        include: ['Device'],
-        where: {
-          userId: this.user.id,
-          deviceId: device.id
-        }
-      }
-    ).subscribe((message: Message) => {
-      this.message = message;
-
-      this.humidity = _.filter(message.parsed_data, {key: 'humidity'})[0];
-      this.temperature = _.filter(message.parsed_data, {key: 'temperature'})[0];
-      this.altitude = _.filter(message.parsed_data, {key: 'altitude'})[0];
-      this.pressure = _.filter(message.parsed_data, {key: 'pressure'})[0];
-      this.speed = _.filter(message.parsed_data, {key: 'speed'})[0];
-      this.light = _.filter(message.parsed_data, {key: 'light'})[0];
-      this.alert = _.filter(message.parsed_data, {key: 'alert'})[0];
-      this.mode = _.filter(message.parsed_data, {key: 'mode'})[0];
-      this.battery = _.filter(message.parsed_data, {key: 'battery'})[0];
 
       // Notification
-      this.toasterService.pop('info', 'New message', 'New message received for this device.');
+      if (this.isFirstSubscribe)
+        this.isFirstSubscribe = false;
+      else
+        this.toasterService.pop('info', 'New message', 'New message received for this device.');
     });
   }
 
