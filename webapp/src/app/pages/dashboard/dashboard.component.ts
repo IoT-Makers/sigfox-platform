@@ -168,7 +168,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       // Notification
       if (this.isFirstSubscribe)
         this.isFirstSubscribe = false;
-      else {
+      else if (message.deviceId === device.id) {
         if (this.isFirstArrivedMessage) {
           this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
           this.isFirstArrivedMessage = false;
