@@ -19,7 +19,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private user: User;
 
   @ViewChild('devicesSelect') devicesSelect: SelectComponent;
-  @ViewChildren('gauge') gauges: QueryList<NgxGauge>;
 
   public devices: Array<any> = new Array<any>();
 
@@ -114,6 +113,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   deviceSelected(device: any): void {
     // Reset real time
+    if (this.messageRef && this.messageSub) {
+      this.messageRef.dispose();
+      this.messageSub.unsubscribe();
+    }
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
 
