@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('devicesSelect') devicesSelect: SelectComponent;
 
   public devices: Array<any> = new Array<any>();
+  private selectedDevice: any;
 
   // Widgets
   private message: Message;
@@ -107,11 +108,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
       this.devicesSelect.items = this.devices;
     });
-
-
   }
 
   deviceSelected(device: any): void {
+    this.selectedDevice = device;
     // Reset real time
     if (this.messageRef && this.messageSub) {
       this.messageRef.dispose();
@@ -142,7 +142,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         include: ['Device'],
         where: {
           userId: this.user.id,
-          deviceId: device.id
+          deviceId: this.selectedDevice.id
         }
       }
     ).subscribe((messages: Message[]) => {
@@ -168,12 +168,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       // Notification
       if (this.isFirstSubscribe)
         this.isFirstSubscribe = false;
-      else if (message.deviceId === device.id) {
+      else {
         if (this.isFirstArrivedMessage) {
-          this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
+          this.toasterService.pop('primary', 'New message', 'New message received for device ' + this.selectedDevice.id + '.');
           this.isFirstArrivedMessage = false;
         } else if (message.geoloc && this.isFirstArrivedMessageGeoloc) {
-          this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + message.deviceId + '.');
+          this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + this.selectedDevice.id + '.');
           this.isFirstArrivedMessageGeoloc = false;
         }
       }
