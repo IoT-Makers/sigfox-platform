@@ -25,7 +25,8 @@
           <i class="fa fa-tint fa-lg"></i> <strong> Humidity</strong>
         </div>
         <div class="card-block mx-auto">
-          <ngx-gauge [type]="'arch'"
+          <ngx-gauge #gauge
+                     [type]="'arch'"
                      [size]="200"
                      [cap]="'round'"
                      [thick]="15"
@@ -44,7 +45,8 @@
           <i class="fa fa-thermometer fa-lg"></i> <strong> Temperature</strong>
         </div>
         <div class="card-block mx-auto">
-          <ngx-gauge [type]="'arch'"
+          <ngx-gauge #gauge
+                     [type]="'arch'"
                      [size]="200"
                      [cap]="'round'"
                      [min]="-50"
@@ -65,7 +67,8 @@
           <i class="fa fa-road fa-lg"></i> <strong> Speed</strong>
         </div>
         <div class="card-block mx-auto">
-          <ngx-gauge [type]="'arch'"
+          <ngx-gauge #gauge
+                     [type]="'arch'"
                      [size]="200"
                      [cap]="'round'"
                      [min]="0"
@@ -86,7 +89,8 @@
           <i class="fa fa-battery-three-quarters fa-lg"></i> <strong> Battery</strong>
         </div>
         <div class="card-block mx-auto">
-          <ngx-gauge *ngIf="battery.unit === '%'"
+          <ngx-gauge #gauge
+                     *ngIf="battery.unit === '%'"
                      [type]="'arch'"
                      [size]="200"
                      [cap]="'round'"

@@ -57,7 +57,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.messageSub = this.messageRef.on('change',
       {
         limit: 1000,
-        order: 'updatedAt DESC',
+        order: 'createdAt DESC',
         include: ['Device'],
         where: {
           userId: this.user.id
