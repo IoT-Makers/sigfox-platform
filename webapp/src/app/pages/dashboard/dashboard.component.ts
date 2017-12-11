@@ -63,7 +63,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private messageRef: FireLoopRef<Message>;
 
   // Notifications
+  private lastMessage: Message = new Message;
   private isFirstSubscribe;
+  private isFirstArrivedMessageGeoloc;
+  private isFirstArrivedMessage;
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
@@ -140,6 +143,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       const message = messages[0];
       this.message = message;
 
+      if (this.lastMessage.time !== this.message.time) {
+        this.isFirstArrivedMessageGeoloc = true;
+        this.isFirstArrivedMessage = true;
+        this.lastMessage = message;
+      }
+
       this.humidity = _.filter(message.parsed_data, {key: 'humidity'})[0];
       this.temperature = _.filter(message.parsed_data, {key: 'temperature'})[0];
       this.altitude = _.filter(message.parsed_data, {key: 'altitude'})[0];
@@ -153,8 +162,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
       // Notification
       if (this.isFirstSubscribe)
         this.isFirstSubscribe = false;
-      else
-        this.toasterService.pop('info', 'New message', 'New message received for this device.');
+      else {
+        if (this.isFirstArrivedMessage) {
+          this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
+          this.isFirstArrivedMessage = false;
+        } else if (message.geoloc && this.isFirstArrivedMessageGeoloc) {
+          this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + message.deviceId + '.');
+          this.isFirstArrivedMessageGeoloc = false;
+        }
+      }
     });
   }
 
