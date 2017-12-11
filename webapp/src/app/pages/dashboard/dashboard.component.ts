@@ -1,13 +1,10 @@
-import {Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {RealTime, UserApi} from '../../shared/sdk/services';
-import {Device, FireLoopRef, Geoloc, Message, User} from '../../shared/sdk/models';
+import {Device, FireLoopRef, Message, User} from '../../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import * as _ from 'lodash';
 import {SelectComponent} from "ng2-select";
 import {ToasterConfig, ToasterService} from "angular2-toaster";
-import {AgmInfoWindow, AgmMap} from "@agm/core";
-import {NgxGauge} from "ngx-gauge/gauge/gauge";
-import {getAppInitializer} from "@angular/router/src/router_module";
 
 @Component({
   selector: 'app-dashboard',
@@ -21,7 +18,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('devicesSelect') devicesSelect: SelectComponent;
 
   public devices: Array<any> = new Array<any>();
-  private selectedDevice: any;
 
   // Widgets
   private message: Message;
@@ -111,7 +107,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   deviceSelected(device: any): void {
-    this.selectedDevice = device;
     // Reset real time
     if (this.messageRef && this.messageSub) {
       this.messageRef.dispose();
@@ -142,7 +137,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         include: ['Device'],
         where: {
           userId: this.user.id,
-          deviceId: this.selectedDevice.id
+          deviceId: device.id
         }
       }
     ).subscribe((messages: Message[]) => {
@@ -168,12 +163,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       // Notification
       if (this.isFirstSubscribe)
         this.isFirstSubscribe = false;
-      else {
+      else if (message.deviceId === device.id) {
         if (this.isFirstArrivedMessage) {
-          this.toasterService.pop('primary', 'New message', 'New message received for device ' + this.selectedDevice.id + '.');
+          this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
           this.isFirstArrivedMessage = false;
         } else if (message.geoloc && this.isFirstArrivedMessageGeoloc) {
-          this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + this.selectedDevice.id + '.');
+          this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + message.deviceId + '.');
           this.isFirstArrivedMessageGeoloc = false;
         }
       }
