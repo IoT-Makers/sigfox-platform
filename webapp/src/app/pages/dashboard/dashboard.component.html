@@ -204,11 +204,6 @@
                   [longitude]="geoloc.lng"
                   [iconUrl]="'assets/img/marker-gps.png'">
                   <agm-info-window
-                    id="{{geoloc.type + '_' + device.id}}">
-                    <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
-                    <br>
-                    <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
-                    <br *ngIf="device.name">
                     <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                     <br>
                     <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
