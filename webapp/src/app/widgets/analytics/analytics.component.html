@@ -60,21 +60,19 @@
           </div><!--/.row-->
           <div class="row">
 
-            <div class="col col-6">
-              Start date & time:
+            <div class="col-sm-12 col-md-6">
+              <span>End date & time:</span>
               <owl-date-time [(ngModel)]="dateBegin"></owl-date-time>
             </div>
-            <div class="col col-6">
-              End date & time:
+            <div class="col-sm-12 col-md-6">
+              <span>End date & time:</span>
               <owl-date-time [(ngModel)]="dateEnd"></owl-date-time>
             </div>
 
           </div>
-          <hr>
-          <div class="row">
-            <div class="col col-2"><label>Device:</label></div>
-            <div class="col col-4">
-              <div *ngIf="!devices.length" class="card-block">
+          <div class="row mt-1">
+            <div class="col-sm-12 col-md-8">
+              <div *ngIf="!devices.length">
                 Loading devices...
                 <div class="sk-double-bounce">
                   <div class="sk-child sk-double-bounce1"></div>
@@ -88,7 +86,7 @@
                          (selected)="deviceSelected($event)">
               </ng-select>
             </div>
-            <div class="col col-4">
+            <div class="col-sm-12 col-md-4">
               <button class="btn btn-success" (click)="getDeviceGraph()"><i class="fa fa-search"></i> Search</button>
               <!--<button *ngIf="deviceChartData.length > 0" class="btn btn-info" (click)="download()"><i class="fa fa-download"></i> Download</button>-->
             </div>

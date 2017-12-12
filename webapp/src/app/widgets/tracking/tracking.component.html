@@ -11,11 +11,11 @@
             <strong class="text-geoloc-sigfox">Period</strong>
           </div>
           <div class="row">
-            <div class="col-6">
+            <div class="col-sm-12 col-md-6">
               <span>Start date & time:</span>
               <owl-date-time [(ngModel)]="dateBegin"></owl-date-time>
             </div>
-            <div class="col-6">
+            <div class="col-sm-12 col-md-6">
               <span>End date & time:</span>
               <owl-date-time [(ngModel)]="dateEnd"></owl-date-time>
             </div>
@@ -27,7 +27,7 @@
             <strong class="text-geoloc-sigfox">Routes</strong>
           </div>
           <div class="row">
-            <div class="col-2">
+            <div class="col-sm-12 col-md-4">
               <label class="mr-1">Directions routes:</label>
               <label class="switch switch-text switch-primary">
                 <input type="checkbox" [checked]="directionsRoutes" (click)="onDirections()" (change)="directionsRoutes = !directionsRoutes" class="switch-input" checked="">
@@ -35,7 +35,7 @@
                 <span class="switch-handle"></span>
               </label>
             </div>
-            <div class="col-2">
+            <div class="col-sm-12 col-md-4">
               <label class="mr-1">Polylines:</label>
               <label class="switch switch-text switch-primary">
                 <input type="checkbox" [checked]="polylines" (change)="polylines = !polylines" class="switch-input" checked="">
@@ -43,7 +43,7 @@
                 <span class="switch-handle"></span>
               </label>
             </div>
-            <div class="col-2">
+            <div class="col-sm-12 col-md-4">
               <label class="mr-1">Mode:</label>
               <label>
                 <ng-select [allowClear]="false"
@@ -62,7 +62,7 @@
             <strong class="text-geoloc-sigfox">Precision</strong>
           </div>
           <div class="row">
-            <div class="col-2">
+            <div class="col-sm-12 col-md-4">
               <label class="mr-1">GPS only:</label>
               <label class="switch switch-text switch-primary">
                 <input type="checkbox" [checked]="gpsOnly" (click)="onGpsOnly()" (change)="gpsOnly = !gpsOnly" class="switch-input" checked="">
@@ -70,7 +70,7 @@
                 <span class="switch-handle"></span>
               </label>
             </div>
-            <div class="col-2">
+            <div class="col-sm-12 col-md-4">
               <label class="mr-1">Sigfox only:</label>
               <label class="switch switch-text switch-primary">
                 <input type="checkbox" [checked]="sigfoxOnly" (click)="onSigfoxOnly()" (change)="sigfoxOnly = !sigfoxOnly" class="switch-input" checked="">
@@ -78,7 +78,7 @@
                 <span class="switch-handle"></span>
               </label>
             </div>
-            <div class="col-2">
+            <div class="col-sm-12 col-md-4">
               <label class="mr-1">Prefer GPS:</label>
               <label class="switch switch-text switch-primary">
                 <input type="checkbox" [checked]="gpsPrefer" (change)="gpsPrefer = !gpsPrefer" class="switch-input" checked="">
@@ -94,7 +94,7 @@
             <strong class="text-geoloc-sigfox">Display</strong>
           </div>
           <div class="row">
-            <div class="col-2">
+            <div class="col-sm-12 col-md-4">
               <label class="mr-1">Precision circles:</label>
               <label class="switch switch-text switch-primary">
                 <input type="checkbox" [checked]="circlePrecision" (change)="circlePrecision = !circlePrecision" class="switch-input" checked="">
@@ -102,7 +102,7 @@
                 <span class="switch-handle"></span>
               </label>
             </div>
-            <div class="col-10">
+            <div class="col-sm-12 col-md-8">
               <label class="mr-1">Interval of markers to show:</label>
               <label>
                 <input type="number" value="0" class="form-control" [(ngModel)]="markerInterval">
@@ -113,8 +113,8 @@
       </accordion>
 
       <div class="row mt-1">
-        <div class="col-4">
-          <div *ngIf="!devices.length" class="card-block">
+        <div class="col-sm-12 col-md-8">
+          <div *ngIf="!devices.length">
             Loading devices...
             <div class="sk-double-bounce">
               <div class="sk-child sk-double-bounce1"></div>
@@ -128,7 +128,7 @@
                      (selected)="deviceSelected($event)">
           </ng-select>
         </div>
-        <div class="col-4">
+        <div class="col-sm-12 col-md-4">
           <button type="button" class="btn btn-success" data-toggle="modal" (click)="onTrack(selectedDevice)">
             Track device
           </button>
@@ -137,6 +137,7 @@
 
 
     </div> <!--card-block-->
+
     <div class="card-block">
       <!-- <input [ngModel]="dateBegin | date:'yyyy-MM-dd'" (ngModelChange)="dateBegin = $event" type="date" name="dateBegin"/>
        <input [ngModel]="dateEnd | date:'yyyy-MM-dd'" (ngModelChange)="dateEnd = $event" type="date" name="dateEnd"/>-->
