@@ -170,7 +170,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.battery = _.filter(message.parsed_data, {key: 'battery'})[0];
 
       // Notification
-      if ((message.time !== this.lastMessage.time) && (!this.isFirstSubscribeMessage))
+      if ((message.time !== this.lastMessage.time) && !this.isFirstSubscribeMessage)
         this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
 
       this.lastMessage = message;
@@ -194,12 +194,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.device = devices[0];
 
       // Notification
-      if (this.isFirstSubscribeDevice)
-        this.isFirstSubscribeDevice = false;
-      else if (this.device.location !== this.lastDevice.location)
+      if (this.device.location !== this.lastDevice.location && !this.isFirstSubscribeDevice)
         this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + this.device.id + '.');
 
       this.lastDevice = this.device;
+      this.isFirstSubscribeDevice = false;
     });
   }
 
