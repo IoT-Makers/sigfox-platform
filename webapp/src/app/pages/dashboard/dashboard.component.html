@@ -19,6 +19,18 @@
   </div>
 
   <div class="row">
+
+    <div *ngIf="message" class="col-sm-12 col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-clock-o fa-lg"></i> <strong> Latest message date & time</strong>
+        </div>
+        <div class="card-block mx-auto text-center">
+          <p>{{message.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</p>
+        </div>
+      </div>
+    </div>
+
     <div *ngIf="humidity" class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
@@ -156,20 +168,20 @@
       </div>
     </div>
 
-    <div *ngIf="message && message.geoloc" class="col-sm-12 col-md-6">
+    <div *ngIf="device && device.location" class="col-sm-12 col-md-6">
       <div class="card">
         <div class="card-header">
           <i class="fa fa-map-marker fa-lg"></i> <strong> Location</strong>
         </div>
         <div class="card-block">
-          <agm-map [latitude]="message.geoloc[0].lat"
-                   [longitude]="message.geoloc[0].lng"
+          <agm-map [latitude]="device.location[0].lat"
+                   [longitude]="device.location[0].lng"
                    [zoom]="10"
                    [zoomControl]="false"
                    [streetViewControl]="false"
                    [mapTypeControl]="false"
                    [fullscreenControl]="false">
-            <ng-container *ngFor="let geoloc of message.geoloc">
+            <ng-container *ngFor="let geoloc of device.location">
               <!-- Geoloc Sigfox -->
               <ng-container *ngIf="geoloc.type === 'sigfox'">
                 <agm-marker

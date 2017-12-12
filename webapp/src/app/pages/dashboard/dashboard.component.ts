@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // Widgets
   private message: Message;
+  private device: Device;
   private humidity;
   private temperature;
   private altitude;
@@ -57,12 +58,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Real time
   private messageSub: Subscription;
   private messageRef: FireLoopRef<Message>;
+  private deviceSub: Subscription;
+  private deviceRef: FireLoopRef<Device>;
 
   // Notifications
-  private lastMessage: Message = new Message;
-  private isFirstSubscribe;
-  private isFirstArrivedMessageGeoloc;
-  private isFirstArrivedMessage;
+  private lastMessage: Message;
+  private isFirstSubscribeMessage;
+  private isFirstSubscribeDevice;
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
@@ -112,11 +114,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.messageRef.dispose();
       this.messageSub.unsubscribe();
     }
-    // Messages
+    if (this.deviceRef && this.deviceSub) {
+      this.deviceRef.dispose();
+      this.deviceSub.unsubscribe();
+    }
+    // Message & Device refs
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+    this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
 
     // Used to trigger notifications
-    this.isFirstSubscribe = true;
+    this.lastMessage = new Message;
+    this.isFirstSubscribeMessage = true;
+    this.isFirstSubscribeDevice = true;
 
     // Reset all widget values on device change
     this.humidity = undefined;
@@ -130,27 +139,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.battery = undefined;
     this.message = undefined;
 
-    this.messageSub = this.messageRef.on('change',
+    // Message real time
+    this.messageSub = this.messageRef.on('value',
       {
         limit: 1,
         order: 'createdAt DESC',
-        include: ['Device'],
         where: {
-          userId: this.user.id,
-          deviceId: device.id
+          and: [
+            {userId: this.user.id},
+            {deviceId: device.id}
+          ]
         }
       }
     ).subscribe((messages: Message[]) => {
       const message = messages[0];
-      console.log(message);
-      // Used for geoloc
-      this.message = message;
 
-      if (this.lastMessage.time !== this.message.time) {
-        this.isFirstArrivedMessageGeoloc = true;
-        this.isFirstArrivedMessage = true;
-        this.lastMessage = message;
-      }
+      // Used for time
+      this.message = message;
 
       this.humidity = _.filter(message.parsed_data, {key: 'humidity'})[0];
       this.temperature = _.filter(message.parsed_data, {key: 'temperature'})[0];
@@ -163,17 +168,34 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.battery = _.filter(message.parsed_data, {key: 'battery'})[0];
 
       // Notification
-      if (this.isFirstSubscribe)
-        this.isFirstSubscribe = false;
-      else if (message.deviceId === device.id) {
-        if (this.isFirstArrivedMessage) {
-          this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
-          this.isFirstArrivedMessage = false;
-        } else if (message.geoloc && this.isFirstArrivedMessageGeoloc) {
-          this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + message.deviceId + '.');
-          this.isFirstArrivedMessageGeoloc = false;
+      if (message.time !== this.lastMessage.time && !this.isFirstSubscribeMessage)
+        this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
+
+      this.lastMessage = message;
+      this.isFirstSubscribeMessage = false;
+    });
+
+
+    // Device real time (used for geoloc map)
+    this.deviceSub = this.deviceRef.on('change',
+      {
+        limit: 1,
+        where: {
+          and: [
+            {userId: this.user.id},
+            {id: device.id}
+          ]
         }
       }
+    ).subscribe((devices: Device[]) => {
+      // Used for geoloc
+      this.device = devices[0];
+
+      // Notification
+      if (this.isFirstSubscribeDevice)
+        this.isFirstSubscribeDevice = false;
+      else
+        this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + this.device.id + '.');
     });
   }
 
@@ -181,6 +203,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     console.log('Dashboard: ngOnDestroy');
     if (this.messageRef)this.messageRef.dispose();
     if (this.messageSub)this.messageSub.unsubscribe();
+    if (this.deviceRef)this.deviceRef.dispose();
+    if (this.deviceSub)this.deviceSub.unsubscribe();
   }
 
 }
