@@ -89,10 +89,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
     }
-  }
 
-  setup(): void {
-    this.ngOnDestroy();
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
@@ -107,6 +104,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
       this.devicesSelect.items = this.devices;
     });
+  }
+
+  setup(): void {
+    this.ngOnDestroy();
   }
 
   deviceSelected(device: any): void {
@@ -191,13 +192,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ).subscribe((devices: Device[]) => {
       // Used for geoloc
       this.device = devices[0];
+      console.log(this.device);
+      console.log(this.message.deviceId);
 
-      // Notification
-      if ((this.device.id !== this.lastDevice.id) && !this.isFirstSubscribeDevice)
-        this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + this.device.id + '.');
+      if (this.message.deviceId) {
+        // Notification
+        if ((this.device.id === this.message.deviceId) && !this.isFirstSubscribeDevice)
+          this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + this.device.id + '.');
 
-      this.lastDevice = this.device;
-      this.isFirstSubscribeDevice = false;
+        this.lastDevice = this.device;
+        this.isFirstSubscribeDevice = false;
+      }
     });
   }
 
