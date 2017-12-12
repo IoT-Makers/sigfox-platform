@@ -179,7 +179,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
     // Device real time (used for geoloc map)
-    this.deviceSub = this.deviceRef.on('change',
+    this.deviceSub = this.deviceRef.on('child_changed',
       {
         limit: 1,
         where: {
@@ -189,20 +189,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
           ]
         }
       }
-    ).subscribe((devices: Device[]) => {
+    ).subscribe((updatedDevice: Device) => {
       // Used for geoloc
-      this.device = devices[0];
-      console.log(this.device);
-      console.log(this.message.deviceId);
+      this.message.geoloc = updatedDevice.location;
 
-      if (this.message.deviceId) {
-        // Notification
-        if ((this.device.id === this.message.deviceId) && !this.isFirstSubscribeDevice)
-          this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + this.device.id + '.');
+      // Notification
+      //if (!this.isFirstSubscribeDevice)
+        this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + updatedDevice.id + '.');
 
-        this.lastDevice = this.device;
-        this.isFirstSubscribeDevice = false;
-      }
+      //this.isFirstSubscribeDevice = false;
     });
   }
 
