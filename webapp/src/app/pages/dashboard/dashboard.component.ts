@@ -174,8 +174,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if ((this.lastMessage.time !== message.time) && !this.isFirstSubscribeMessage) {
         this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
         this.lastMessage = message;
-        this.isFirstSubscribeMessage = false;
       }
+      this.isFirstSubscribeMessage = false;
     });
 
 
