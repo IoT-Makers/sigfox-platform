@@ -155,8 +155,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     ).subscribe((messages: Message[]) => {
       const message = messages[0];
+      console.log('message', message);
 
-      // Used for time
+      // Used for time & geoloc
       this.message = message;
 
       this.humidity = _.filter(message.parsed_data, {key: 'humidity'})[0];
@@ -179,6 +180,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
     // Device real time (used for geoloc map)
+    this.deviceSub = this.deviceRef.on('value',
+      {
+        limit: 1,
+        where: {
+          and: [
+            {userId: this.user.id},
+            {id: device.id}
+          ]
+        }
+      }
+    ).subscribe((devices: Device[]) => {
+      const updatedDevice = devices[0];
+      console.log('updatedDevice - value', updatedDevice);
+      // Used for geoloc
+      this.message.geoloc = updatedDevice.location;
+      this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + updatedDevice.id + '.');
+    });
+
+    // Device real time (used for geoloc map)
     this.deviceSub = this.deviceRef.on('child_changed',
       {
         limit: 1,
@@ -190,13 +210,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       }
     ).subscribe((updatedDevice: Device) => {
+      console.log('updatedDevice - child_changed', updatedDevice);
       // Used for geoloc
       this.message.geoloc = updatedDevice.location;
 
       // Notification
       //if (!this.isFirstSubscribeDevice)
-        this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + updatedDevice.id + '.');
-
+      this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + updatedDevice.id + '.');
       //this.isFirstSubscribeDevice = false;
     });
   }
