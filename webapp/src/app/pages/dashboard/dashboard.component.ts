@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public devices: Array<any> = new Array<any>();
 
   // Widgets
-  private message: Message;
+  private message: any;
   private device: Device;
   private humidity;
   private temperature;
@@ -142,7 +142,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.message = undefined;
 
     // Message real time
-    this.messageSub = this.messageRef.on('value',
+    this.messageSub = this.messageRef.on('change',
       {
         limit: 1,
         order: 'createdAt DESC',
@@ -171,15 +171,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.battery = _.filter(message.parsed_data, {key: 'battery'})[0];
 
       // Notification
-      if ((message.time !== this.lastMessage.time) && !this.isFirstSubscribeMessage)
+      if ((this.lastMessage.time !== message.time) && !this.isFirstSubscribeMessage) {
         this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
-
-      this.lastMessage = message;
-      this.isFirstSubscribeMessage = false;
+        this.lastMessage = message;
+        this.isFirstSubscribeMessage = false;
+      }
     });
 
 
-    // Device real time (used for geoloc map)
+    /*// Device real time (used for geoloc map)
     this.deviceSub = this.deviceRef.on('value',
       {
         limit: 1,
@@ -193,9 +193,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ).subscribe((devices: Device[]) => {
       const updatedDevice = devices[0];
       console.log('updatedDevice - value', updatedDevice);
-      // Used for geoloc
       this.message.geoloc = updatedDevice.location;
-      this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + updatedDevice.id + '.');
     });
 
     // Device real time (used for geoloc map)
@@ -218,7 +216,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       //if (!this.isFirstSubscribeDevice)
       this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + updatedDevice.id + '.');
       //this.isFirstSubscribeDevice = false;
-    });
+    });*/
   }
 
   ngOnDestroy(): void {
