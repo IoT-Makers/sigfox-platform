@@ -63,7 +63,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // Notifications
   private lastMessage: Message;
-  private lastDevice: Device;
   private isFirstSubscribeMessage;
   private isFirstSubscribeDevice;
   private toasterService: ToasterService;
@@ -125,7 +124,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // Used to trigger notifications
     this.lastMessage = new Message;
-    this.lastDevice = new Device;
     this.isFirstSubscribeMessage = true;
     this.isFirstSubscribeDevice = true;
 
@@ -194,10 +192,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.device = devices[0];
 
       // Notification
-      if (this.device.location !== this.lastDevice.location && !this.isFirstSubscribeDevice)
+      if ((this.device.id === this.message.deviceId) && !this.isFirstSubscribeDevice)
         this.toasterService.pop('info', 'New location', 'Sigfox geolocation received for this device ' + this.device.id + '.');
 
-      this.lastDevice = this.device;
       this.isFirstSubscribeDevice = false;
     });
   }
