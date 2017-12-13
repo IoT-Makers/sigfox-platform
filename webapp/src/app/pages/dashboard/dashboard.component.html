@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div *ngIf="humidity.value" class="col-sm-12 col-md-4">
+    <div *ngIf="humidity && humidity.value" class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
           <i class="fa fa-tint fa-lg"></i> <strong> Humidity</strong>
@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <div *ngIf="temperature.value" class="col-sm-12 col-md-4">
+    <div *ngIf="temperature && temperature.value" class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
           <i class="fa fa-thermometer fa-lg"></i> <strong> Temperature</strong>
@@ -73,7 +73,7 @@
       </div>
     </div>
 
-    <div *ngIf="speed.value" class="col-sm-12 col-md-4">
+    <div *ngIf="speed && speed.value" class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
           <i class="fa fa-road fa-lg"></i> <strong> Speed</strong>
@@ -95,7 +95,7 @@
       </div>
     </div>
 
-    <div *ngIf="battery.value" class="col-sm-12 col-md-4">
+    <div *ngIf="battery && battery.value" class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
           <i class="fa fa-battery-three-quarters fa-lg"></i> <strong> Battery</strong>
@@ -117,7 +117,7 @@
       </div>
     </div>
 
-    <div *ngIf="altitude.value" class="col-sm-12 col-md-4">
+    <div *ngIf="altitude && altitude.value" class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
           <i class="fa fa-cloud fa-lg"></i> <strong> Altitude</strong>
@@ -128,7 +128,7 @@
       </div>
     </div>
 
-    <div *ngIf="pressure.value" class="col-sm-12 col-md-4">
+    <div *ngIf="pressure && pressure.value" class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
           <i class="fa fa-sun-o fa-lg"></i> <strong> Pressure</strong>
@@ -139,7 +139,7 @@
       </div>
     </div>
 
-    <div *ngIf="light.value" class="col-sm-12 col-md-4">
+    <div *ngIf="light && light.value" class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
           <i class="fa fa-lightbulb-o fa-lg"></i> <strong> Lux</strong>
@@ -150,7 +150,7 @@
       </div>
     </div>
 
-    <div *ngIf="alert.value" class="col-sm-12 col-md-4">
+    <div *ngIf="alert && alert.value" class="col-sm-12 col-md-4">
       <div class="card">
         <div class="card-header">
           <i class="fa fa-bell fa-lg"></i> <strong> Alert <ng-container *ngIf="mode">- <span class="text-primary">{{mode.value | lowercase}}</span></ng-container></strong>
