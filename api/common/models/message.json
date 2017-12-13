@@ -55,7 +55,7 @@
     "geoloc": {
       "type": ["Geoloc"]
     },
-    "parsed_data": {
+    "data_parsed": {
       "type": ["object"]
     }
   },

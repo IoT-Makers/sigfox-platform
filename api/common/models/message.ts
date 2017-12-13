@@ -225,12 +225,18 @@ class Message {
                     // Here we will decode the Sigfox payload and search for geoloc to be extracted and store in the Message
                     // @TODO: run it in another container because it can crash the app if something goes wrong...
                     const fn = Function('payload', parserInstance.function);
-                    const parsed_data = fn(message.data);
+                    const data_parsed = fn(message.data);
                     const geoloc = new this.model.app.models.Geoloc;
-                    message.parsed_data = parsed_data;
+                    message.data_parsed = data_parsed;
 
-                    // Check if the parsed data contains a "geoloc" key and store it in the message property to be stored
-                    parsed_data.forEach((o: any) => {
+                    const deviceToUpdate = new this.model.app.models.Device;
+                    deviceToUpdate.id = data.deviceId;
+                    deviceToUpdate.userId = data.userId;
+                    deviceToUpdate.properties_dynamic = [];
+
+                    // Check if the parsed data contains a 'geoloc' key and store it in the message property to be stored
+                    data_parsed.forEach((o: any) => {
+                      deviceToUpdate.properties_dynamic.push(o.key);
                       if (o.key === 'geoloc')
                         geoloc.type = o.value;
                       else if (o.key === 'lat')
@@ -247,22 +253,20 @@ class Message {
                         message.geoloc = [];
                       message.geoloc.push(geoloc);
                       // Update the device location geoloc array
-                      const device = {
-                        id: data.deviceId,
-                        userId: userId,
-                        location: [geoloc]
-                      };
-                      this.model.app.models.Device.upsert(
-                        device,
-                        (err: any, deviceInstance: any) => {
-                          if (err) {
-                            console.log(err);
-                            next(err, data);
-                          } else {
-                            console.log('Updated device as: ', deviceInstance);
-                          }
-                        });
+                      deviceToUpdate.location = [geoloc];
                     }
+
+                    // Update the device with parsed data objects keys & geoloc if present
+                    this.model.app.models.Device.upsert(
+                      deviceToUpdate,
+                      (err: any, deviceInstance: any) => {
+                        if (err) {
+                          console.log(err);
+                          next(err, data);
+                        } else {
+                          console.log('Updated device as: ', deviceInstance);
+                        }
+                      });
 
                     this.createMessageAndSendResponse(message, next, this.model);
                   }

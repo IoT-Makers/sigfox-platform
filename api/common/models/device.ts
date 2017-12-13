@@ -126,12 +126,12 @@ class Device {
           {
             relation: 'Messages',
             scope: {
-              // fields: ['parsed_data'],
+              // fields: ['data_parsed'],
               where: {
                 and: [
                   {createdAt: {gte: dateBegin}},
                   {createdAt: {lte: dateEnd}},
-                  {parsed_data: {neq: null}}
+                  {data_parsed: {neq: null}}
                 ]
               }
             }
@@ -149,9 +149,9 @@ class Device {
 
 
           messages.forEach((message: any, messageIndex: number) => {
-            if (message.parsed_data) {
+            if (message.data_parsed) {
               result.xAxis.push(message.createdAt);
-              message.parsed_data.forEach((data: any, dataIndex: number) => {
+              message.data_parsed.forEach((data: any, dataIndex: number) => {
                 data.timestamp = message.createdAt;
                 arrayOfObject.push(data);
 

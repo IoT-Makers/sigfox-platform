@@ -54,8 +54,8 @@
           <td class="text-center">{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
           <td class="text-center">
             <span class="text-message">{{item.data}}</span>
-            <div class="text-justify" *ngIf="item.parsed_data">
-              <div *ngFor="let object of item.parsed_data">
+            <div class="text-justify" *ngIf="item.data_parsed">
+              <div *ngFor="let object of item.data_parsed">
                 <small>{{object.key}}: <strong>{{object.value}} {{object.unit}}</strong></small>
               </div>
             </div>

@@ -1,0 +1,304 @@
+<div class="animated fadeIn">
+  <h3>Developer Access Tokens</h3>
+  <hr>
+  <div class="row">
+    <div class="col-12">
+      <accordion>
+        <accordion-group>
+          <div accordion-heading>
+            Manage
+          </div>
+          <div class="card-block">
+            <p *ngIf="!user.devAccessTokens.length" class="text-danger">
+              Please create a developer access token first
+            </p>
+            <table *ngIf="user.devAccessTokens.length>0" class="table d-lg-table table-hover table-responsive" [mfData]="user.devAccessTokens | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+              <thead class="thead-inverse">
+              <tr>
+                <th class="text-center">
+                  <mfDefaultSorter by="created">Date</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="id">ID</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  Remove
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of mf.data">
+                <td class="text-center">{{item.created | date:"yyyy/MM/dd HH:mm:ss"}}</td>
+                <td class="text-center">{{item.id}}</td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-danger btn-round" (click)="showRemoveModal(item)">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+              <tfoot>
+              <tr>
+                <td colspan="4">
+                  <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                </td>
+              </tr>
+              </tfoot>
+            </table>
+          </div>
+          <button class="btn btn-sm btn-success" (click)="createDevAccessToken()"><i class="fa fa-plus"></i> Create new</button>
+        </accordion-group>
+      </accordion>
+    </div>
+  </div>
+
+  <h3>Sigfox Backend Callbacks</h3>
+  <hr>
+  <div class="row">
+    <div class="col col-12">
+
+      <accordion>
+        <accordion-group>
+          <div accordion-heading>
+            <strong class="text-success">UPLINK</strong> - Sigfox Backend Callback details
+          </div>
+          <div>
+            <p>Type: <strong>DATA</strong> | <strong>UPLINK</strong></p>
+            <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see all the base stations that received the message)</i></p>
+            <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
+            <p>Use HTTP Method: <strong>PUT</strong></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span></p>
+            <p>Content Type: <strong>application/json</strong></p>
+            <p>Body: <code class="text-center">{{
+              '{
+              "deviceId": "{device}",
+              "time": {time},
+              "seqNumber": {seqNumber},
+              "data": "{data}",
+              "reception": [{
+              "id": "{station}",
+              "RSSI": {rssi},
+              "SNR": {snr}
+              }],
+              "duplicate": {duplicate}
+              }'
+              }}</code>
+            </p>
+            <p><u>Optional parameters:</u>
+              <code>
+                <div>"parserId": <small><kbd>String</kbd> The ID of the parser you wish to decode the "data" (payload) with ("Parsers" tab)</small></div>
+                <div>"deviceNamePrefix": <small><kbd>String</kbd> The prefix to give for the device name</small></div>
+              </code>
+            </p>
+          </div>
+        </accordion-group>
+        <accordion-group>
+          <div accordion-heading>
+            <strong class="text-success">BIDIR</strong> - Sigfox Backend Callback details
+          </div>
+          <div class="card-block">
+            <p>Type: <strong>DATA</strong> | <strong>BIDIR</strong></p>
+            <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see all the base stations that received the message)</i></p>
+            <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
+            <p>Use HTTP Method: <strong>PUT</strong></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span></p>
+            <p>Content Type: <strong>application/json</strong></p>
+            <p>Body: <code class="text-center">{{
+              '{
+              "deviceId": "{device}",
+              "time": {time},
+              "seqNumber": {seqNumber},
+              "data": "{data}",
+              "reception": [{
+              "id": "{station}",
+              "RSSI": {rssi},
+              "SNR": {snr}
+              }],
+              "duplicate": {duplicate},
+              "ack": {ack}
+              }'
+              }}</code>
+            </p>
+            <p><u>Optional parameters:</u>
+              <code>
+                <div>"parserId": <small><kbd>String</kbd> The ID of the parser you wish to decode the "data" (payload) with ("Parsers" tab)</small></div>
+                <div>"deviceNamePrefix": <small><kbd>String</kbd> The prefix to give for the device name</small></div>
+              </code>
+            </p>
+          </div>
+        </accordion-group>
+        <accordion-group>
+          <div accordion-heading>
+            <strong class="text-geoloc-sigfox">GEOLOC</strong> - Sigfox Backend Callback details
+          </div>
+          <div class="card-block">
+            <p>Type: <strong>SERVICE</strong> | <strong>GEOLOC</strong></p>
+            <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
+            <p>Use HTTP Method: <strong>PUT</strong></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span></p>
+            <p>Content Type: <strong>application/json</strong></p>
+            <p>Body: <code class="text-center">{{
+              '{
+              "deviceId": "{device}",
+              "time": {time},
+              "seqNumber": {seqNumber},
+              "reception": [{
+              "id": "{station}",
+              "RSSI": {rssi},
+              "SNR": {snr}
+              }],
+              "geoloc": [{
+              "type": "sigfox",
+              "lat": {lat},
+              "lng": {lng},
+              "precision": {radius}
+              }]
+              }'
+              }}</code>
+            </p>
+          </div>
+        </accordion-group>
+      </accordion>
+    </div>
+  </div>
+
+  <h3>Sigfox Backend API Access</h3>
+  <hr>
+  <div class="row">
+    <div class="col-12">
+      <accordion>
+        <accordion-group>
+          <div accordion-heading>
+            Edit Access
+          </div>
+          <div class="card-block">
+            <form (ngSubmit)="saveSigfoxBackendApiAccess()" class="form-horizontal" #editSigfoxBackendApiAccessForm="ngForm">
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label font-weight-bold">Login</label>
+                <div class="col-md-10">
+                  <input type="text" class="form-control" placeholder="{{user.sigfoxBackendApiLogin ? user.sigfoxBackendApiLogin : 'Sigfox Backend API login'}}" name="sigfoxBackendApiLogin" [(ngModel)]="user.sigfoxBackendApiLogin">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label font-weight-bold">Password</label>
+                <div class="col-md-10">
+                  <input type="text" class="form-control" placeholder="{{user.sigfoxBackendApiPassword ? user.sigfoxBackendApiPassword : 'Sigfox Backend API password'}}" name="sigfoxBackendApiPassword" [(ngModel)]="user.sigfoxBackendApiPassword">
+                </div>
+              </div>
+            </form>
+          </div>
+          <button class="btn btn-sm btn-primary" [disabled]="!editSigfoxBackendApiAccessForm.form.valid" (click)="saveSigfoxBackendApiAccess()"><i
+            class="fa fa-check"></i> Save
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="removeSigfoxBackendApiAccess()"><i class="fa fa-ban"></i> Clear</button>
+        </accordion-group>
+      </accordion>
+    </div>
+  </div>
+
+
+</div>
+
+
+<div bsModal #updatePasswordModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="updatePasswordModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Update your password</h4>
+        <button type="button" class="close" (click)="updateUserModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="updatePassword()" class="form-horizontal" #editForm="ngForm">
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Current password</label>
+            <div class="col-md-9">
+              <input type="password" class="form-control" (keyup.enter)="updatePassword()" placeholder="Your current password" name="oldPassword" [(ngModel)]="oldPassword">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">New password</label>
+            <div class="col-md-9">
+              <input type="password" class="form-control" (keyup.enter)="updatePassword()" placeholder="New password" name="newPassword" [(ngModel)]="newPassword">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Retype new password</label>
+            <div class="col-md-9">
+              <input type="password" class="form-control" (keyup.enter)="updatePassword()" placeholder="Retype new password" name="newPasswordConfirm" [(ngModel)]="newPasswordConfirm">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="updatePasswordModal.hide()">Close</button>
+        <button type="button" class="btn btn-success" (click)="updatePassword()">Update</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div bsModal #updateUserModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="updateUserModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Update your profile</h4>
+        <button type="button" class="close" (click)="updateUserModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="updateUser()" class="form-horizontal" #editForm="ngForm">
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Username</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.username ? user.username : 'How do you want us to call you?'}}" name="user.username" [(ngModel)]="user.username">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Email</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.email}}" name="user.email" [(ngModel)]="user.email">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Avatar</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.avatar}}" name="user.avatar" [(ngModel)]="user.avatar">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="updateUserModal.hide()">Close</button>
+        <button type="button" class="btn btn-success" (click)="updateUser()">Update</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm removal of access token</h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are your sure you wish to delete this access token (id: <small><b>{{devAccessTokenToRemove.id}}</b></small>)?</p>
+        <p>Be aware the Sigfox Backend callbacks you configured with this token will then be <u>unauthorized</u>!</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
+        <button class="btn btn-sm btn-danger" (click)="remove()">Delete</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

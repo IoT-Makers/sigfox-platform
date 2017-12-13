@@ -43,8 +43,11 @@
     "location": {
       "type": ["Geoloc"]
     },
-    "properties": {
+    "properties_static": {
       "type": ["object"]
+    },
+    "properties_dynamic": {
+      "type": ["string"]
     }
   },
   "validations": [],

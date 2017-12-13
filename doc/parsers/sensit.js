@@ -8,7 +8,6 @@ var payload,
     light,
     alert,
     firmwareVersion,
-
     parsedData = [],
     obj = {};
 
@@ -82,13 +81,50 @@ while (byte.length < 8)
 battery += byte.slice(4, 8);
 battery = (parseInt(battery, 2) * 0.05 + 2.7).toFixed(2);
 
+// Temperature & Humidity
+if (mode === 'Temperature & Humidity') {
+    // Byte #2
+    var byte = parseInt(payload.slice(2, 4), 16).toString(2);
+    while (byte.length < 8)
+        byte = '0' + byte;
+    temperature = byte.slice(0, 4);
+    // Byte #3
+    var byte = parseInt(payload.slice(4, 6), 16).toString(2);
+    while (byte.length < 8)
+        byte = '0' + byte;
+    temperature += byte.slice(2, 8);
+    temperature = ((parseInt(temperature, 2) - 200) / 8).toFixed(2);
+
+    if (type !== 'Button')
+    // Byte #4
+        humidity = parseInt(payload.slice(6, 8), 16) * 0.5;
+    else {
+        // Byte #4
+        var byte = parseInt(payload.slice(6, 8), 16).toString(2);
+        while (byte.length < 8)
+            byte = '0' + byte;
+        firmwareVersion = parseInt(byte.slice(0, 3), 2) + '.' + parseInt(byte.slice(4, 8), 2);
+    }
+}
+
+// Light
+if (mode === 'Light') {
+    // Byte #3
+    var byte = parseInt(payload.slice(4, 6), 16).toString(2);
+    while (byte.length < 8)
+        byte = '0' + byte;
+    var multiplier = parseInt(byte.slice(0, 2), 2) * 8;
+    light = parseInt(byte.slice(2, 8), 2);
+    light = multiplier * light * 0.01;
+}
+
+// Alert (Door - Move - Reed switch)
+if (mode === 'Door' || mode === 'Move' || mode === 'Reed switch')
+// Byte #4
+    alert = parseInt(payload.slice(6, 8), 16) === 0 ? false : true;
+
+
 // Store objects in parsedData array
-obj = {};
-obj.key = 'battery';
-obj.value = battery;
-obj.type = 'number';
-obj.unit = 'V';
-parsedData.push(obj);
 obj = {};
 obj.key = 'type';
 obj.value = type;
@@ -107,81 +143,42 @@ obj.value = mode;
 obj.type = 'string';
 obj.unit = '';
 parsedData.push(obj);
-
-// Temperature & Humidity
-if (mode === 'Temperature & Humidity') {
-    // Byte #2
-    var byte = parseInt(payload.slice(2, 4), 16).toString(2);
-    while (byte.length < 8)
-        byte = '0' + byte;
-    temperature = byte.slice(0, 4);
-    // Byte #3
-    var byte = parseInt(payload.slice(4, 6), 16).toString(2);
-    while (byte.length < 8)
-        byte = '0' + byte;
-    temperature += byte.slice(2, 8);
-    temperature = ((parseInt(temperature, 2) - 200) / 8).toFixed(2);
-
-    if (type !== 'Button') {
-        // Byte #4
-        humidity = parseInt(payload.slice(6, 8), 16) * 0.5;
-        obj = {};
-        obj.key = 'humidity';
-        obj.value = humidity;
-        obj.type = 'number';
-        obj.unit = '%';
-        parsedData.push(obj);
-    } else {
-        // Byte #4
-        var byte = parseInt(payload.slice(6, 8), 16).toString(2);
-        while (byte.length < 8)
-            byte = '0' + byte;
-        firmwareVersion = parseInt(byte.slice(0, 3), 2) + '.' + parseInt(byte.slice(4, 8), 2);
-        obj = {};
-        obj.key = 'firmwareVersion';
-        obj.value = firmwareVersion;
-        obj.type = 'string';
-        obj.unit = '';
-        parsedData.push(obj);
-    }
-    obj = {};
-    obj.key = 'temperature';
-    obj.value = temperature;
-    obj.type = 'number';
-    obj.unit = '°C';
-    parsedData.push(obj);
-
-}
-
-// Light
-if (mode === 'Light') {
-    // Byte #3
-    var byte = parseInt(payload.slice(4, 6), 16).toString(2);
-    while (byte.length < 8)
-        byte = '0' + byte;
-    var multiplier = parseInt(byte.slice(0, 2), 2) * 8;
-    light = parseInt(byte.slice(2, 8), 2);
-    light = multiplier * light * 0.01;
-
-    obj = {};
-    obj.key = 'light';
-    obj.value = light;
-    obj.type = 'number';
-    obj.unit = 'lux';
-    parsedData.push(obj);
-}
-
-// Alert (Door - Move - Reed switch)
-if (mode === 'Door' || mode === 'Move' || mode === 'Reed switch') {
-    // Byte #4
-    alert = parseInt(payload.slice(6, 8), 16) === 0 ? false : true;
-    obj = {};
-    obj.key = 'alert';
-    obj.value = alert;
-    obj.type = 'boolean';
-    obj.unit = '';
-    parsedData.push(obj);
-}
+obj = {};
+obj.key = 'firmwareVersion';
+obj.value = firmwareVersion;
+obj.type = 'string';
+obj.unit = '';
+parsedData.push(obj);
+obj = {};
+obj.key = 'temperature';
+obj.value = temperature;
+obj.type = 'number';
+obj.unit = '°C';
+parsedData.push(obj);
+obj = {};
+obj.key = 'humidity';
+obj.value = humidity;
+obj.type = 'number';
+obj.unit = '%';
+parsedData.push(obj);
+obj = {};
+obj.key = 'light';
+obj.value = light;
+obj.type = 'number';
+obj.unit = 'lux';
+parsedData.push(obj);
+obj = {};
+obj.key = 'alert';
+obj.value = alert;
+obj.type = 'boolean';
+obj.unit = '';
+parsedData.push(obj);
+obj = {};
+obj.key = 'battery';
+obj.value = battery;
+obj.type = 'number';
+obj.unit = 'V';
+parsedData.push(obj);
 
 //console.log(parsedData);
 return parsedData;

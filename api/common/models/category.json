@@ -29,7 +29,7 @@
     "name": {
       "type": "string"
     },
-    "properties": {
+    "properties_static": {
       "type": ["object"]
     },
     "description": {

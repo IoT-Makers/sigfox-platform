@@ -26,6 +26,7 @@ class Parser {
   beforeSave(ctx: any, next: Function): void {
     next();
   }
+
   // Example Remote Method
   myRemote(next: Function): void {
     this.model.find(next);

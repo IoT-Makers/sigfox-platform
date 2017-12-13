@@ -150,15 +150,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
       // Used for time & geoloc
       this.message = message;
 
-      this.humidity = _.filter(message.parsed_data, {key: 'humidity'})[0];
-      this.temperature = _.filter(message.parsed_data, {key: 'temperature'})[0];
-      this.altitude = _.filter(message.parsed_data, {key: 'altitude'})[0];
-      this.pressure = _.filter(message.parsed_data, {key: 'pressure'})[0];
-      this.speed = _.filter(message.parsed_data, {key: 'speed'})[0];
-      this.light = _.filter(message.parsed_data, {key: 'light'})[0];
-      this.alert = _.filter(message.parsed_data, {key: 'alert'})[0];
-      this.mode = _.filter(message.parsed_data, {key: 'mode'})[0];
-      this.battery = _.filter(message.parsed_data, {key: 'battery'})[0];
+      this.humidity = _.filter(message.data_parsed, {key: 'humidity'})[0];
+      this.temperature = _.filter(message.data_parsed, {key: 'temperature'})[0];
+      this.altitude = _.filter(message.data_parsed, {key: 'altitude'})[0];
+      this.pressure = _.filter(message.data_parsed, {key: 'pressure'})[0];
+      this.speed = _.filter(message.data_parsed, {key: 'speed'})[0];
+      this.light = _.filter(message.data_parsed, {key: 'light'})[0];
+      this.alert = _.filter(message.data_parsed, {key: 'alert'})[0];
+      this.mode = _.filter(message.data_parsed, {key: 'mode'})[0];
+      this.battery = _.filter(message.data_parsed, {key: 'battery'})[0];
 
       // Notification
       if (this.isFirstSubscribeMessage)

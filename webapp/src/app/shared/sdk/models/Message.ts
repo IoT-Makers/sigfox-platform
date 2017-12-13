@@ -10,7 +10,7 @@ export interface MessageInterface {
   "ack"?: boolean;
   "reception"?: Array<any>;
   "geoloc"?: Array<any>;
-  "parsed_data"?: Array<any>;
+  "data_parsed"?: Array<any>;
   "id"?: number;
   "DeviceId"?: string;
   "createdAt"?: Date;
@@ -32,7 +32,7 @@ export class Message implements MessageInterface {
   "ack": boolean = false;
   "reception": Array<any> = <any>[];
   "geoloc": Array<any> = <any>[];
-  "parsed_data": Array<any> = <any>[];
+  "data_parsed": Array<any> = <any>[];
   "id": number = 0;
   "DeviceId": string = '';
   "createdAt": Date = new Date(0);
@@ -108,8 +108,8 @@ export class Message implements MessageInterface {
           name: 'geoloc',
           type: 'Array&lt;any&gt;'
         },
-        "parsed_data": {
-          name: 'parsed_data',
+        "data_parsed": {
+          name: 'data_parsed',
           type: 'Array&lt;any&gt;'
         },
         "id": {

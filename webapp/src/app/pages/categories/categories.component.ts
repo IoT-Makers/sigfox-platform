@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Category, Device, FireLoopRef, User} from '../../shared/sdk/models';
 import {CategoryApi, DeviceApi, RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
@@ -8,7 +8,7 @@ import {Subscription} from 'rxjs/Subscription';
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.scss']
 })
-export class CategoriesComponent implements OnInit {
+export class CategoriesComponent implements OnInit, OnDestroy {
 
   private user: User;
 
@@ -101,13 +101,13 @@ export class CategoriesComponent implements OnInit {
       type: 'string'
     };
 
-    category.properties.push(property);
+    category.properties_static.push(property);
     this.categoryToEdit = category;
   }
 
   removeProperty(category: Category, index: number): void {
-    //delete category.properties[index];
-    category.properties.splice(index, 1);
+    //delete category.properties_static[index];
+    category.properties_static.splice(index, 1);
     this.categoryToEdit = category;
   }
 
