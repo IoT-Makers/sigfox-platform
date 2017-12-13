@@ -55,8 +55,8 @@
           <td class="text-center">
             <span class="text-message">{{item.data}}</span>
             <div class="text-justify" *ngIf="item.data_parsed">
-              <div *ngFor="let object of item.data_parsed">
-                <small>{{object.key}}: <strong>{{object.value}} {{object.unit}}</strong></small>
+              <div *ngFor="let o of item.data_parsed">
+                <small *ngIf="o.value">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
               </div>
             </div>
             <div class="mt-1" *ngIf="item.downlinkData">
