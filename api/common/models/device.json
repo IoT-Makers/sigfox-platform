@@ -41,13 +41,24 @@
       "type": "string"
     },
     "location": {
-      "type": ["Geoloc"]
+      "type": [
+        "Geoloc"
+      ]
+    },
+    "alerts": {
+      "type": [
+        "Alert"
+      ]
     },
     "properties_static": {
-      "type": ["object"]
+      "type": [
+        "object"
+      ]
     },
     "properties_dynamic": {
-      "type": ["string"]
+      "type": [
+        "string"
+      ]
     }
   },
   "validations": [],
@@ -67,6 +78,10 @@
     "Messages": {
       "type": "hasMany",
       "model": "Message"
+    },
+    "Alerts": {
+      "type": "hasMany",
+      "model": "Alert"
     },
     "Category": {
       "type": "belongsTo",

@@ -9,12 +9,13 @@ import { DeviceEffects } from './effects/Device';
 import { ParserEffects } from './effects/Parser';
 import { CategoryEffects } from './effects/Category';
 import { MessageEffects } from './effects/Message';
-import { ReceptionEffects } from './effects/Reception';
+import { AppSettingEffects } from './effects/AppSetting';
+import { DashboardEffects } from './effects/Dashboard';
 import { UserEffects } from './effects/User';
 import { OrganizationEffects } from './effects/Organization';
 import { GeolocEffects } from './effects/Geoloc';
-import { AppSettingEffects } from './effects/AppSetting';
-import { DashboardEffects } from './effects/Dashboard';
+import { AlertEffects } from './effects/Alert';
+import { ReceptionEffects } from './effects/Reception';
 
 export interface LoopbackStateInterface {
   LoopbackAuth: SDKToken;
@@ -23,12 +24,13 @@ export interface LoopbackStateInterface {
   Parsers: reducers.ParsersState;
   Categorys: reducers.CategorysState;
   Messages: reducers.MessagesState;
-  Receptions: reducers.ReceptionsState;
+  AppSettings: reducers.AppSettingsState;
+  Dashboards: reducers.DashboardsState;
   Users: reducers.UsersState;
   Organizations: reducers.OrganizationsState;
   Geolocs: reducers.GeolocsState;
-  AppSettings: reducers.AppSettingsState;
-  Dashboards: reducers.DashboardsState;
+  Alerts: reducers.AlertsState;
+  Receptions: reducers.ReceptionsState;
 };
 
 export const LoopbackReducer = {
@@ -38,12 +40,13 @@ export const LoopbackReducer = {
 	Parsers: reducers.ParsersReducer,
 	Categorys: reducers.CategorysReducer,
 	Messages: reducers.MessagesReducer,
-	Receptions: reducers.ReceptionsReducer,
+	AppSettings: reducers.AppSettingsReducer,
+	Dashboards: reducers.DashboardsReducer,
 	Users: reducers.UsersReducer,
 	Organizations: reducers.OrganizationsReducer,
 	Geolocs: reducers.GeolocsReducer,
-	AppSettings: reducers.AppSettingsReducer,
-	Dashboards: reducers.DashboardsReducer,
+	Alerts: reducers.AlertsReducer,
+	Receptions: reducers.ReceptionsReducer,
 };
 
 export const LoopbackEffects = [
@@ -53,10 +56,11 @@ export const LoopbackEffects = [
   ParserEffects,
   CategoryEffects,
   MessageEffects,
-  ReceptionEffects,
+  AppSettingEffects,
+  DashboardEffects,
   UserEffects,
   OrganizationEffects,
   GeolocEffects,
-  AppSettingEffects,
-  DashboardEffects,
+  AlertEffects,
+  ReceptionEffects,
 ];

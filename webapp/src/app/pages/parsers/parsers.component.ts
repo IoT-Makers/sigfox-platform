@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-
 import {FireLoopRef, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
@@ -41,6 +40,25 @@ export class ParsersComponent implements OnInit, OnDestroy {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
     }
+
+    this.newParser.function = 'var payload,\n' +
+      '  temperature,\n' +
+      '  parsedData = [],\n' +
+      '  obj = {};\n' +
+      '\n' +
+      '// If byte #1 of the payload is temperature\n' +
+      'var temperature = parseInt(payload.slice(0, 2), 2);\n' +
+      '\n' +
+      '// Store objects in parsedData array\n' +
+      'obj = {};\n' +
+      'obj.key = \'temperature\';\n' +
+      'obj.value = temperature;\n' +
+      'obj.type = \'number\';\n' +
+      'obj.unit = \'°C\';\n' +
+      'parsedData.push(obj);\n' +
+      '\n' +
+      '//console.log(parsedData);\n' +
+      'return parsedData;';
   }
 
   setup(): void {

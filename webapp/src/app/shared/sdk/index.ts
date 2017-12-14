@@ -54,12 +54,13 @@ import { DeviceApi } from './services/custom/Device';
 import { ParserApi } from './services/custom/Parser';
 import { CategoryApi } from './services/custom/Category';
 import { MessageApi } from './services/custom/Message';
-import { ReceptionApi } from './services/custom/Reception';
+import { AppSettingApi } from './services/custom/AppSetting';
+import { DashboardApi } from './services/custom/Dashboard';
 import { UserApi } from './services/custom/User';
 import { OrganizationApi } from './services/custom/Organization';
 import { GeolocApi } from './services/custom/Geoloc';
-import { AppSettingApi } from './services/custom/AppSetting';
-import { DashboardApi } from './services/custom/Dashboard';
+import { AlertApi } from './services/custom/Alert';
+import { ReceptionApi } from './services/custom/Reception';
 /**
 * @module SDKBrowserModule
 * @description
@@ -96,12 +97,13 @@ export class SDKBrowserModule {
         ParserApi,
         CategoryApi,
         MessageApi,
-        ReceptionApi,
+        AppSettingApi,
+        DashboardApi,
         UserApi,
         OrganizationApi,
         GeolocApi,
-        AppSettingApi,
-        DashboardApi,
+        AlertApi,
+        ReceptionApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }

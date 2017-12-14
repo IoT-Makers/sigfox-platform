@@ -7,12 +7,13 @@ import { DeviceActionTypes, DeviceActions } from './Device';
 import { ParserActionTypes, ParserActions } from './Parser';
 import { CategoryActionTypes, CategoryActions } from './Category';
 import { MessageActionTypes, MessageActions } from './Message';
-import { ReceptionActionTypes, ReceptionActions } from './Reception';
+import { AppSettingActionTypes, AppSettingActions } from './AppSetting';
+import { DashboardActionTypes, DashboardActions } from './Dashboard';
 import { UserActionTypes, UserActions } from './User';
 import { OrganizationActionTypes, OrganizationActions } from './Organization';
 import { GeolocActionTypes, GeolocActions } from './Geoloc';
-import { AppSettingActionTypes, AppSettingActions } from './AppSetting';
-import { DashboardActionTypes, DashboardActions } from './Dashboard';
+import { AlertActionTypes, AlertActions } from './Alert';
+import { ReceptionActionTypes, ReceptionActions } from './Reception';
 
 export {
   LoopbackAuthActionTypes, LoopbackAuthActions,
@@ -22,10 +23,11 @@ export {
 	ParserActionTypes, ParserActions,
 	CategoryActionTypes, CategoryActions,
 	MessageActionTypes, MessageActions,
-	ReceptionActionTypes, ReceptionActions,
+	AppSettingActionTypes, AppSettingActions,
+	DashboardActionTypes, DashboardActions,
 	UserActionTypes, UserActions,
 	OrganizationActionTypes, OrganizationActions,
 	GeolocActionTypes, GeolocActions,
-	AppSettingActionTypes, AppSettingActions,
-	DashboardActionTypes, DashboardActions,
+	AlertActionTypes, AlertActions,
+	ReceptionActionTypes, ReceptionActions,
 };

@@ -27,10 +27,13 @@
   },
   "properties": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "properties_static": {
-      "type": ["object"]
+      "type": [
+        "object"
+      ]
     },
     "description": {
       "type": "string"

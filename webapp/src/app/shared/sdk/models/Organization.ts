@@ -1,28 +1,34 @@
 /* tslint:disable */
+import {
+  User,
+  Message,
+  Device,
+  Category
+} from '../index';
 
 declare var Object: any;
 export interface OrganizationInterface {
-  "id"?: string;
   "name": string;
   "ownerId": string;
+  "id"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  Members?: any[];
-  Messages?: any[];
-  Devices?: any[];
-  Categories?: any[];
+  Members?: User[];
+  Messages?: Message[];
+  Devices?: Device[];
+  Categories?: Category[];
 }
 
 export class Organization implements OrganizationInterface {
-  "id": string = '';
-  "name": string = '';
+  "name": string = 'New organization';
   "ownerId": string = '';
+  "id": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  Members: any[] = null;
-  Messages: any[] = null;
-  Devices: any[] = null;
-  Categories: any[] = null;
+  Members: User[] = null;
+  Messages: Message[] = null;
+  Devices: Device[] = null;
+  Categories: Category[] = null;
   constructor(data?: OrganizationInterface) {
     Object.assign(this, data);
   }
@@ -56,17 +62,18 @@ export class Organization implements OrganizationInterface {
       path: 'Organizations',
       idName: 'id',
       properties: {
-        "id": {
-          name: 'id',
-          type: 'string'
-        },
         "name": {
           name: 'name',
-          type: 'string'
+          type: 'string',
+          default: 'New organization'
         },
         "ownerId": {
           name: 'ownerId',
           type: 'string'
+        },
+        "id": {
+          name: 'id',
+          type: 'number'
         },
         "createdAt": {
           name: 'createdAt',
@@ -80,8 +87,8 @@ export class Organization implements OrganizationInterface {
       relations: {
         Members: {
           name: 'Members',
-          type: 'any[]',
-          model: '',
+          type: 'User[]',
+          model: 'User',
           relationType: 'hasMany',
           modelThrough: 'Organizationuser',
           keyThrough: 'userId',
@@ -90,24 +97,24 @@ export class Organization implements OrganizationInterface {
         },
         Messages: {
           name: 'Messages',
-          type: 'any[]',
-          model: '',
+          type: 'Message[]',
+          model: 'Message',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'organizationId'
         },
         Devices: {
           name: 'Devices',
-          type: 'any[]',
-          model: '',
+          type: 'Device[]',
+          model: 'Device',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'organizationId'
         },
         Categories: {
           name: 'Categories',
-          type: 'any[]',
-          model: '',
+          type: 'Category[]',
+          model: 'Category',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'organizationId'

@@ -1,7 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Category, Device, FireLoopRef, User} from '../../shared/sdk/models';
 import {CategoryApi, DeviceApi, RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
+import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 @Component({
   selector: 'app-categories',
@@ -12,9 +13,12 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   private user: User;
 
+  @ViewChild('confirmModal') confirmModal: any;
+
   private device: Device = new Device();
 
   private category: Category = new Category();
+  private categoryToRemove: Category = new Category();
   private categorySub: Subscription;
 
   private devices: Device[] = new Array<Device>();
@@ -26,13 +30,23 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   private categoryToEdit: Category = new Category();
   private newCategory = false;
 
-  private propertyType = ['string', 'number', 'geoloc', 'date', 'boolean'];
+  public propertyType = ['string', 'number', 'geoloc', 'date', 'boolean'];
 
+  // Notifications
+  private toasterService: ToasterService;
+  public toasterconfig: ToasterConfig =
+    new ToasterConfig({
+      tapToDismiss: true,
+      timeout: 5000
+    });
 
   constructor(private rt: RealTime,
               private categoryApi: CategoryApi,
               private deviceApi: DeviceApi,
-              private userApi: UserApi) { }
+              private userApi: UserApi,
+              toasterService: ToasterService) {
+    this.toasterService = toasterService;
+  }
 
   ngOnInit() {
     this.edit = false;
@@ -79,7 +93,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     }
   }
 
-  cancel(): void{
+  cancel(): void {
     this.edit = false;
   }
 
@@ -87,11 +101,13 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     category.userId = this.user.id;
     this.edit = false;
     console.log(category);
-    if(this.newCategory){
+    if (this.newCategory)
       delete category.id;
-    }
-    this.categoryRef.upsert(category).subscribe();
-
+    this.categoryRef.upsert(category).subscribe(value => {
+      this.toasterService.pop('success', 'Success', 'Category was successfully updated.');
+    }, error => {
+      this.toasterService.pop('error', 'Error', 'Please fill in the category name.');
+    });
   }
 
   addProperty(category: Category): void {
@@ -111,8 +127,18 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.categoryToEdit = category;
   }
 
-  removeCategory(category: Category): void {
-    this.categoryRef.remove(category).subscribe();
+  showRemoveModal(category: Category): void {
+    this.confirmModal.show();
+    this.categoryToRemove = category;
+  }
+
+  remove(): void {
+    this.categoryRef.remove(this.categoryToRemove).subscribe(value => {
+      this.toasterService.pop('success', 'Success', 'Category was successfully removed.');
+    }, error => {
+      this.toasterService.pop('error', 'Error', error.message);
+    });
+    this.confirmModal.hide();
   }
 
   ngOnDestroy(): void {

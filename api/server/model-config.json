@@ -99,17 +99,13 @@
       }
     }
   },
-  "Reception": {
+  "AppSetting": {
     "dataSource": "db",
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "*": false,
-          "getBaseStationsByDeviceId": true
-        }
-      }
-    }
+    "public": true
+  },
+  "Dashboard": {
+    "dataSource": "db",
+    "public": true
   },
   "user": {
     "dataSource": "db",
@@ -121,33 +117,18 @@
   },
   "Organization": {
     "dataSource": "db",
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "*": false
-        }
-      }
-    }
+    "public": true
   },
   "Geoloc": {
-    "dataSource": "db",
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "*": false,
-          "getGeolocsByDeviceId": true
-        }
-      }
-    }
+    "dataSource": null,
+    "public": true
   },
-  "AppSetting": {
+  "Alert": {
     "dataSource": "db",
     "public": true
   },
-  "Dashboard": {
-    "dataSource": "db",
+  "Reception": {
+    "dataSource": null,
     "public": true
   }
 }

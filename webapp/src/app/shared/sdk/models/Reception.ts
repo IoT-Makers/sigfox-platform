@@ -7,8 +7,6 @@ export interface ReceptionInterface {
   "lng"?: number;
   "RSSI"?: number;
   "SNR"?: number;
-  "createdAt"?: Date;
-  "updatedAt"?: Date;
 }
 
 export class Reception implements ReceptionInterface {
@@ -17,8 +15,6 @@ export class Reception implements ReceptionInterface {
   "lng": number = 0;
   "RSSI": number = 0;
   "SNR": number = 0;
-  "createdAt": Date = new Date(0);
-  "updatedAt": Date = new Date(0);
   constructor(data?: ReceptionInterface) {
     Object.assign(this, data);
   }
@@ -71,14 +67,6 @@ export class Reception implements ReceptionInterface {
         "SNR": {
           name: 'SNR',
           type: 'number'
-        },
-        "createdAt": {
-          name: 'createdAt',
-          type: 'Date'
-        },
-        "updatedAt": {
-          name: 'updatedAt',
-          type: 'Date'
         },
       },
       relations: {

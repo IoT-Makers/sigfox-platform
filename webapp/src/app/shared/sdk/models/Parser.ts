@@ -13,7 +13,7 @@ export interface ParserInterface {
   "id"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "OrganizationId"?: string;
+  "OrganizationId"?: number;
   Devices?: Device[];
   Organization?: Organization;
 }
@@ -26,7 +26,7 @@ export class Parser implements ParserInterface {
   "id": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "OrganizationId": string = '';
+  "OrganizationId": number = 0;
   Devices: Device[] = null;
   Organization: Organization = null;
   constructor(data?: ParserInterface) {
@@ -92,7 +92,7 @@ export class Parser implements ParserInterface {
         },
         "OrganizationId": {
           name: 'OrganizationId',
-          type: 'string'
+          type: 'number'
         },
       },
       relations: {

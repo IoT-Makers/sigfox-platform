@@ -1,12 +1,12 @@
 {
-  "name": "Reception",
+  "name": "Alert",
   "base": "Model",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "mixins": {
-    "FireLoop": false,
+    "FireLoop": true,
     "TimeStamp": {
       "required": false,
       "validateUpsert": true
@@ -25,26 +25,43 @@
     ]
   },
   "properties": {
-    "id": {
+    "name": {
       "type": "string",
-      "id": true,
       "required": true
     },
-    "lat": {
+    "type": {
+      "type": "string",
+      "required": true
+    },
+    "key": {
+      "type": "string",
+      "required": true
+    },
+    "value_min": {
       "type": "number"
     },
-    "lng": {
+    "value_max": {
       "type": "number"
     },
-    "RSSI": {
-      "type": "number"
-    },
-    "SNR": {
-      "type": "number"
+    "message": {
+      "type": "string"
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "Device": {
+      "type": "belongsTo",
+      "model": "Device"
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user"
+    },
+    "Organization": {
+      "type": "belongsTo",
+      "model": "Organization"
+    }
+  },
   "acls": [
     {
       "accessType": "*",
@@ -55,12 +72,6 @@
     {
       "accessType": "CREATE",
       "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW"
     },
@@ -68,12 +79,6 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "user",
       "permission": "ALLOW"
     },
     {

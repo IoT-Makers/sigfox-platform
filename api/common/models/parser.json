@@ -38,7 +38,9 @@
       "type": "string"
     },
     "available_properties": {
-      "type": ["object"]
+      "type": [
+        "object"
+      ]
     }
   },
   "validations": [],

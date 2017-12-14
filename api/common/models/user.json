@@ -44,7 +44,9 @@
       "type": "string"
     },
     "devAccessTokens": {
-      "type": ["AccessToken"]
+      "type": [
+        "AccessToken"
+      ]
     }
   },
   "validations": [],

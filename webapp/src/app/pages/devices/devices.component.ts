@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {Category, Device, FireLoopRef, Message, Parser, User} from '../../shared/sdk/models';
+import {Alert, Category, Device, FireLoopRef, Message, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
@@ -153,6 +153,16 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.deviceToEdit = device;
   }
 
+  addAlert(): void {
+    if (!this.deviceToEdit.alerts)
+      this.deviceToEdit.alerts = [];
+    this.deviceToEdit.alerts.push(new Alert());
+  }
+
+  cancelAlert(index: number): void {
+    this.deviceToEdit.alerts.splice(index, 1);
+  }
+
   update(device: Device): void {
     this.edit = false;
     device.CategoryId = device.categoryId;
@@ -162,6 +172,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
     this.deviceRef.upsert(device).subscribe(value => {
       this.toasterService.pop('success', 'Success', 'The device was successfully updated.');
+    }, error => {
+      this.toasterService.pop('error', 'Error', error.message);
     });
   }
 

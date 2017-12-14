@@ -7,6 +7,7 @@ export interface DeviceInterface {
   "name"?: string;
   "downlinkData"?: string;
   "location"?: Array<any>;
+  "alerts"?: Array<any>;
   "properties_static"?: Array<any>;
   "properties_dynamic"?: Array<any>;
   "createdAt"?: Date;
@@ -16,13 +17,14 @@ export interface DeviceInterface {
   "categoryId"?: number;
   "CategoryId"?: number;
   "userId"?: number;
-  "organizationId"?: string;
-  "OrganizationId"?: string;
+  "organizationId"?: number;
+  "OrganizationId"?: number;
   Parser?: any;
   Category?: any;
   Messages?: any[];
   user?: any;
   Organization?: any;
+  Alerts?: any[];
 }
 
 export class Device implements DeviceInterface {
@@ -31,6 +33,7 @@ export class Device implements DeviceInterface {
   "name": string = '';
   "downlinkData": string = '';
   "location": Array<any> = <any>[];
+  "alerts": Array<any> = <any>[];
   "properties_static": Array<any> = <any>[];
   "properties_dynamic": Array<any> = <any>[];
   "createdAt": Date = new Date(0);
@@ -40,13 +43,14 @@ export class Device implements DeviceInterface {
   "categoryId": number = 0;
   "CategoryId": number = 0;
   "userId": number = 0;
-  "organizationId": string = '';
-  "OrganizationId": string = '';
+  "organizationId": number = 0;
+  "OrganizationId": number = 0;
   Parser: any = null;
   Category: any = null;
   Messages: any[] = null;
   user: any = null;
   Organization: any = null;
+  Alerts: any[] = null;
   constructor(data?: DeviceInterface) {
     Object.assign(this, data);
   }
@@ -100,6 +104,10 @@ export class Device implements DeviceInterface {
           name: 'location',
           type: 'Array&lt;any&gt;'
         },
+        "alerts": {
+          name: 'alerts',
+          type: 'Array&lt;any&gt;'
+        },
         "properties_static": {
           name: 'properties_static',
           type: 'Array&lt;any&gt;'
@@ -138,11 +146,11 @@ export class Device implements DeviceInterface {
         },
         "organizationId": {
           name: 'organizationId',
-          type: 'string'
+          type: 'number'
         },
         "OrganizationId": {
           name: 'OrganizationId',
-          type: 'string'
+          type: 'number'
         },
       },
       relations: {
@@ -185,6 +193,14 @@ export class Device implements DeviceInterface {
           relationType: 'belongsTo',
                   keyFrom: 'OrganizationId',
           keyTo: 'id'
+        },
+        Alerts: {
+          name: 'Alerts',
+          type: 'any[]',
+          model: '',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'deviceId'
         },
       }
     }

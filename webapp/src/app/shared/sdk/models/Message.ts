@@ -16,8 +16,8 @@ export interface MessageInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: number;
-  "organizationId"?: string;
-  "OrganizationId"?: string;
+  "organizationId"?: number;
+  "OrganizationId"?: number;
   Device?: any;
   user?: any;
   Organization?: any;
@@ -38,8 +38,8 @@ export class Message implements MessageInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": number = 0;
-  "organizationId": string = '';
-  "OrganizationId": string = '';
+  "organizationId": number = 0;
+  "OrganizationId": number = 0;
   Device: any = null;
   user: any = null;
   Organization: any = null;
@@ -134,11 +134,11 @@ export class Message implements MessageInterface {
         },
         "organizationId": {
           name: 'organizationId',
-          type: 'string'
+          type: 'number'
         },
         "OrganizationId": {
           name: 'OrganizationId',
-          type: 'string'
+          type: 'number'
         },
       },
       relations: {

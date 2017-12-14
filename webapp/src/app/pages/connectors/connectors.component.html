@@ -6,7 +6,7 @@
       <accordion>
         <accordion-group>
           <div accordion-heading>
-            Manage
+            Manage Tokens
           </div>
           <div class="card-block">
             <p *ngIf="!user.devAccessTokens.length" class="text-danger">
@@ -60,7 +60,7 @@
       <accordion>
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-primary">UPLINK</strong> - Sigfox Backend Callback details
+            <strong class="text-primary">UPLINK</strong>
           </div>
           <div>
             <p>Type: <strong>DATA</strong> | <strong>UPLINK</strong></p>
@@ -94,7 +94,7 @@
         </accordion-group>
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-primary">BIDIR</strong> - Sigfox Backend Callback details
+            <strong class="text-primary">BIDIR</strong>
           </div>
           <div class="card-block">
             <p>Type: <strong>DATA</strong> | <strong>BIDIR</strong></p>
@@ -129,7 +129,7 @@
         </accordion-group>
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-geoloc-sigfox">GEOLOC</strong> - Sigfox Backend Callback details
+            <strong class="text-geoloc-sigfox">GEOLOC</strong>
           </div>
           <div class="card-block">
             <p>Type: <strong>SERVICE</strong> | <strong>GEOLOC</strong></p>
@@ -169,7 +169,7 @@
       <accordion>
         <accordion-group>
           <div accordion-heading>
-            Edit Access
+            Edit Credentials
           </div>
           <div class="card-block">
             <form (ngSubmit)="saveSigfoxBackendApiAccess()" class="form-horizontal" #editSigfoxBackendApiAccessForm="ngForm">

@@ -5,12 +5,13 @@ import { Device } from '../../models/Device';
 import { Parser } from '../../models/Parser';
 import { Category } from '../../models/Category';
 import { Message } from '../../models/Message';
-import { Reception } from '../../models/Reception';
+import { AppSetting } from '../../models/AppSetting';
+import { Dashboard } from '../../models/Dashboard';
 import { User } from '../../models/User';
 import { Organization } from '../../models/Organization';
 import { Geoloc } from '../../models/Geoloc';
-import { AppSetting } from '../../models/AppSetting';
-import { Dashboard } from '../../models/Dashboard';
+import { Alert } from '../../models/Alert';
+import { Reception } from '../../models/Reception';
 
 export interface Models { [name: string]: any }
 
@@ -23,12 +24,13 @@ export class SDKModels {
     Parser: Parser,
     Category: Category,
     Message: Message,
-    Reception: Reception,
+    AppSetting: AppSetting,
+    Dashboard: Dashboard,
     User: User,
     Organization: Organization,
     Geoloc: Geoloc,
-    AppSetting: AppSetting,
-    Dashboard: Dashboard,
+    Alert: Alert,
+    Reception: Reception,
     
   };
 
