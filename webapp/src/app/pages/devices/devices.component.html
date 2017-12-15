@@ -281,17 +281,24 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 offset-1 form-control-label">Min value</label>
-                <div class="col-md-8">
-                  <input type="number" class="form-control" placeholder="Min value" name="deviceToEdit.alerts[i].value_min"
+                <label class="col-md-4 offset-1 form-control-label">Min value</label>
+                <div class="col-md-7">
+                    <input type="number" class="form-control" name="deviceToEdit.alerts[i].value_min"
                          [(ngModel)]="deviceToEdit.alerts[i].value_min" [ngModelOptions]="{standalone: true}">
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 offset-1 form-control-label">Max value</label>
-                <div class="col-md-8">
-                  <input type="number" class="form-control" placeholder="Min value" name="deviceToEdit.alerts[i].value_max"
+                <label class="col-md-4 offset-1 form-control-label">Max value</label>
+                <div class="col-md-7">
+                  <input type="number" class="form-control" name="deviceToEdit.alerts[i].value_max"
                          [(ngModel)]="deviceToEdit.alerts[i].value_max" [ngModelOptions]="{standalone: true}">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4 offset-1 form-control-label">Exact value</label>
+                <div class="col-md-7">
+                  <input type="text" class="form-control" placeholder="Exact value" name="deviceToEdit.alerts[i].value_exact"
+                         [(ngModel)]="deviceToEdit.alerts[i].value_exact" [ngModelOptions]="{standalone: true}">
                 </div>
               </div>
               <div class="form-group row">

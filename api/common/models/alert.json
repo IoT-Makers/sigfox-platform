@@ -43,6 +43,9 @@
     "value_max": {
       "type": "number"
     },
+    "value_exact": {
+      "type": "any"
+    },
     "message": {
       "type": "string"
     }

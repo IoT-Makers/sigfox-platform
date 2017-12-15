@@ -7,6 +7,7 @@ export interface AlertInterface {
   "key": string;
   "value_min"?: number;
   "value_max"?: number;
+  "value_exact"?: any;
   "message"?: string;
   "id"?: number;
 }
@@ -17,6 +18,7 @@ export class Alert implements AlertInterface {
   "key": string = '';
   "value_min": number = 0;
   "value_max": number = 0;
+  "value_exact": any = <any>null;
   "message": string = '';
   "id": number = 0;
   constructor(data?: AlertInterface) {
@@ -71,6 +73,10 @@ export class Alert implements AlertInterface {
         "value_max": {
           name: 'value_max',
           type: 'number'
+        },
+        "value_exact": {
+          name: 'value_exact',
+          type: 'any'
         },
         "message": {
           name: 'message',

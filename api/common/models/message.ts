@@ -243,7 +243,7 @@ class Message {
                       if (deviceInstance.alerts) {
                         deviceInstance.alerts.forEach( (alert: any, index: any) => {
                           if (alert.key === o.key) {
-                            if (o.value <= alert.value_max && o.value >= alert.value_min) {
+                            if ((o.value === alert.value_exact) || (o.value <= alert.value_max && o.value >= alert.value_min)) {
                               // Trigger alert
                               if (alert.type === 'free') {
                                 console.error('Free SMS alert!');
