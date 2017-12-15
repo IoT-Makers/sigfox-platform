@@ -234,9 +234,29 @@ class Message {
                     deviceToUpdate.userId = data.userId;
                     deviceToUpdate.properties_dynamic = [];
 
+
+
                     // Check if the parsed data contains a 'geoloc' key and store it in the message property to be stored
                     data_parsed.forEach((o: any) => {
                       deviceToUpdate.properties_dynamic.push(o.key);
+                      // Look if an alert has to be sent
+                      if (deviceInstance.alerts) {
+                        deviceInstance.alerts.forEach( (alert: any, index: any) => {
+                          if (alert.key === o.key) {
+                            if (o.value <= alert.value_max && o.value >= alert.value_min) {
+                              // Trigger alert
+                              if (alert.type === 'free') {
+                                console.error('Free SMS alert!');
+                                // TODO: Store credentials in a... good spot :P
+                                this.model.app.dataSources.free.sendSMS('39828514', 'dv2KygtNmBKS3K', 'Loopback');
+                                // Alert has been triggered, removing it from array
+                                deviceInstance.alerts.splice(index, 1);
+                              }
+                            }
+                          }
+                        });
+                      }
+                      // Check if there is geoloc in parsed data
                       if (o.key === 'geoloc')
                         geoloc.type = o.value;
                       else if (o.key === 'lat')
