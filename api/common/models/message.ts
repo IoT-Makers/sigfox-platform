@@ -248,7 +248,7 @@ class Message {
                               if (alert.type === 'free') {
                                 console.error('Free SMS alert!');
                                 // TODO: Store credentials in a... good spot :P
-                                this.model.app.dataSources.free.sendSMS('39828514', 'dv2KygtNmBKS3K', 'Loopback');
+                                this.model.app.dataSources.free.sendSMS('39828514', 'dv2KygtNmBKS3K', o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit);
                                 // Alert has been triggered, removing it from array
                                 deviceInstance.alerts.splice(index, 1);
                               }
