@@ -32,6 +32,15 @@
     },
     "description": {
       "type": "string"
+    },
+    "icon":{
+      "type": "string"
+    },
+    "options":{
+      "type": "object"
+    },
+    "widgets":{
+      "type": ["object"]
     }
   },
   "validations": [],

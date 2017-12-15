@@ -72,6 +72,10 @@
     "Categories": {
       "type": "hasMany",
       "model": "Category"
+    },
+    "Dashboards": {
+      "type": "hasMany",
+      "model": "Dashboard"
     }
   },
   "acls": [

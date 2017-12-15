@@ -74,6 +74,18 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   UPDATE_BY_ID_CATEGORIES_SUCCESS: type('[User] updateByIdCategories success'),
   UPDATE_BY_ID_CATEGORIES_FAIL: type('[User] updateByIdCategories fail'),
 
+  FIND_BY_ID_DASHBOARDS: type('[User] findByIdDashboards'),
+  FIND_BY_ID_DASHBOARDS_SUCCESS: type('[User] findByIdDashboards success'),
+  FIND_BY_ID_DASHBOARDS_FAIL: type('[User] findByIdDashboards fail'),
+
+  DESTROY_BY_ID_DASHBOARDS: type('[User] destroyByIdDashboards'),
+  DESTROY_BY_ID_DASHBOARDS_SUCCESS: type('[User] destroyByIdDashboards success'),
+  DESTROY_BY_ID_DASHBOARDS_FAIL: type('[User] destroyByIdDashboards fail'),
+
+  UPDATE_BY_ID_DASHBOARDS: type('[User] updateByIdDashboards'),
+  UPDATE_BY_ID_DASHBOARDS_SUCCESS: type('[User] updateByIdDashboards success'),
+  UPDATE_BY_ID_DASHBOARDS_FAIL: type('[User] updateByIdDashboards fail'),
+
   FIND_BY_ID_ORGANIZATIONS: type('[User] findByIdOrganizations'),
   FIND_BY_ID_ORGANIZATIONS_SUCCESS: type('[User] findByIdOrganizations success'),
   FIND_BY_ID_ORGANIZATIONS_FAIL: type('[User] findByIdOrganizations fail'),
@@ -154,6 +166,18 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   DELETE_CATEGORIES_SUCCESS: type('[User] deleteCategories success'),
   DELETE_CATEGORIES_FAIL: type('[User] deleteCategories fail'),
 
+  GET_DASHBOARDS: type('[User] getDashboards'),
+  GET_DASHBOARDS_SUCCESS: type('[User] getDashboards success'),
+  GET_DASHBOARDS_FAIL: type('[User] getDashboards fail'),
+
+  CREATE_DASHBOARDS: type('[User] createDashboards'),
+  CREATE_DASHBOARDS_SUCCESS: type('[User] createDashboards success'),
+  CREATE_DASHBOARDS_FAIL: type('[User] createDashboards fail'),
+
+  DELETE_DASHBOARDS: type('[User] deleteDashboards'),
+  DELETE_DASHBOARDS_SUCCESS: type('[User] deleteDashboards success'),
+  DELETE_DASHBOARDS_FAIL: type('[User] deleteDashboards fail'),
+
   GET_ORGANIZATIONS: type('[User] getOrganizations'),
   GET_ORGANIZATIONS_SUCCESS: type('[User] getOrganizations success'),
   GET_ORGANIZATIONS_FAIL: type('[User] getOrganizations fail'),
@@ -213,6 +237,10 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   CREATE_MANY_CATEGORIES: type('[User] createManyCategories'),
   CREATE_MANY_CATEGORIES_SUCCESS: type('[User] createManyCategories success'),
   CREATE_MANY_CATEGORIES_FAIL: type('[User] createManyCategories fail'),
+
+  CREATE_MANY_DASHBOARDS: type('[User] createManyDashboards'),
+  CREATE_MANY_DASHBOARDS_SUCCESS: type('[User] createManyDashboards success'),
+  CREATE_MANY_DASHBOARDS_FAIL: type('[User] createManyDashboards fail'),
 
   CREATE_MANY_ORGANIZATIONS: type('[User] createManyOrganizations'),
   CREATE_MANY_ORGANIZATIONS_SUCCESS: type('[User] createManyOrganizations success'),
@@ -1027,6 +1055,147 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   updateByIdCategoriesFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_CATEGORIES_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * findByIdDashboards Action.
+   * Find a related item by id for Dashboards.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Dashboards
+   * @param {any} meta (optional).
+   * 
+   */
+  findByIdDashboards: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_DASHBOARDS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * findByIdDashboardsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  findByIdDashboardsSuccess: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_DASHBOARDS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * findByIdDashboardsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  findByIdDashboardsFail: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_DASHBOARDS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * destroyByIdDashboards Action.
+   * Delete a related item by id for Dashboards.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Dashboards
+   * @param {any} meta (optional).
+   * 
+   */
+  destroyByIdDashboards: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_DASHBOARDS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * destroyByIdDashboardsSuccess Action.
+   * 
+   * @param {any} id 
+   * This method returns no data.
+   * @param {any} meta (optional).
+   * 
+   */
+  destroyByIdDashboardsSuccess: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_DASHBOARDS_SUCCESS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * destroyByIdDashboardsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  destroyByIdDashboardsFail: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_DASHBOARDS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * updateByIdDashboards Action.
+   * Update a related item by id for Dashboards.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Dashboards
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  updateByIdDashboards: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_DASHBOARDS;
+      public payload: {id: any, fk: any, data: any};
+
+    constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk, data};
+    }
+  },
+  /**
+   * updateByIdDashboardsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  updateByIdDashboardsSuccess: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_DASHBOARDS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * updateByIdDashboardsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  updateByIdDashboardsFail: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_DASHBOARDS_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },
@@ -1933,6 +2102,139 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
 
   /**
+   * getDashboards Action.
+   * Queries Dashboards of user.
+   *
+   * @param {any} id user id
+   * @param {object} filter 
+   * @param {any} meta (optional).
+   * 
+   */
+  getDashboards: class implements Action {
+    public readonly type = UserActionTypes.GET_DASHBOARDS;
+      public payload: {id: any, filter: LoopBackFilter};
+
+    constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, filter};
+    }
+  },
+  /**
+   * getDashboardsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  getDashboardsSuccess: class implements Action {
+    public readonly type = UserActionTypes.GET_DASHBOARDS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * getDashboardsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  getDashboardsFail: class implements Action {
+    public readonly type = UserActionTypes.GET_DASHBOARDS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * createDashboards Action.
+   * Creates a new instance in Dashboards of this model.
+   *
+   * @param {any} id user id
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  createDashboards: class implements Action {
+    public readonly type = UserActionTypes.CREATE_DASHBOARDS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createDashboardsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  createDashboardsSuccess: class implements Action {
+    public readonly type = UserActionTypes.CREATE_DASHBOARDS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createDashboardsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  createDashboardsFail: class implements Action {
+    public readonly type = UserActionTypes.CREATE_DASHBOARDS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * deleteDashboards Action.
+   * Deletes all Dashboards of this model.
+   *
+   * @param {any} id user id
+   * @param {any} meta (optional).
+   * 
+   */
+  deleteDashboards: class implements Action {
+    public readonly type = UserActionTypes.DELETE_DASHBOARDS;
+      
+    constructor(public payload: any, public meta?: any) {}
+  },
+  /**
+   * deleteDashboardsSuccess Action.
+   * 
+   * @param {any} id 
+   * This method returns no data.
+   * @param {any} meta (optional).
+   * 
+   */
+  deleteDashboardsSuccess: class implements Action {
+    public readonly type = UserActionTypes.DELETE_DASHBOARDS_SUCCESS;
+  
+    constructor(public payload: any, public meta?: any) {}
+  },
+  /**
+   * deleteDashboardsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  deleteDashboardsFail: class implements Action {
+    public readonly type = UserActionTypes.DELETE_DASHBOARDS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
    * getOrganizations Action.
    * Queries Organizations of user.
    *
@@ -2092,10 +2394,10 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * loginSuccess Action.
    * 
    * @param {any} id 
-   * Le corps de réponse contient les propriétés de AccessToken créées lors de la connexion.
-   * En fonction de la valeur du paramètre `include`, le corps peut contenir des propriétés supplémentaires :
+   * The response body contains properties of the AccessToken created on login.
+   * Depending on the value of `include` parameter, the body may contain additional properties:
    * 
-   *   - `user` - `U+007BUserU+007D` - Données de l'utilisateur connecté. (`include=user`)
+   *   - `user` - `U+007BUserU+007D` - Data of the currently logged in user. (`include=user`)
    * 
    *
    * @param {any} meta (optional).
@@ -2625,6 +2927,54 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   createManyCategoriesFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_CATEGORIES_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * createManyDashboards Action.
+   * Creates a new instance in Dashboards of this model.
+   *
+   * @param {any} id user id
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  createManyDashboards: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_DASHBOARDS;
+      public payload: {id: any, data: any[]};
+
+    constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createManyDashboardsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  createManyDashboardsSuccess: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_DASHBOARDS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createManyDashboardsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  createManyDashboardsFail: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_DASHBOARDS_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

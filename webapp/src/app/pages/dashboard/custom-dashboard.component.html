@@ -1,0 +1,138 @@
+<div class="animated fadeIn">
+
+
+  <div class="row" *ngIf="!dashboardReady">
+    Loading dashboard...
+  </div>
+  <div class="row" *ngIf="dashboardReady">
+
+    <div class="col-md-12">
+      <button *ngIf="!edit" class="btn btn-info pull-right" (click)="editDashboard()"><i class="fa fa-pencil"></i> Edit</button>
+      <button *ngIf="edit" class="btn btn-success pull-right" (click)="saveDashboard()"><i class="fa fa-save"></i> Save</button>
+      <h2 class=""><i class="fa {{dashboard.icon}}"></i> {{dashboard.name}}</h2>
+    </div>
+
+    <!--Edit Dashboard-->
+    <div class="col-md-12" *ngIf="edit">
+      <div class="card">
+        <div class="card-header">
+          <strong>Edit Dashboard</strong>
+        </div>
+        <div class="card-block">
+          <h4 class="text-center">Dashboard information</h4>
+          <hr>
+
+          <!--Form Begin-->
+          <form class="form-horizontal" #editForm="ngForm">
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Name</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control" placeholder="Device name" name="dashboard.name"
+                       [(ngModel)]="dashboard.name">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Description</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control" placeholder="Dashboard description" name="dashboard.description"
+                       [(ngModel)]="dashboard.description">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Icon <i class="fa {{dashboard.icon}}"></i></label>
+              <div class="col-md-9">
+                <ng-select #devicesSelect
+                           [placeholder]="dashboard.icon ? dashboard.icon : 'Select an icon'"
+                           [allowClear]="true"
+                           [items]="fontAwesomeList"
+                           (selected)="selectIcon($event)">
+                </ng-select>
+              </div>
+            </div>
+            <hr>
+            <h4 class="text-center">New widget</h4>
+            <hr>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Name</label>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" placeholder="Widget name" name="newWidget.name"
+                         [(ngModel)]="newWidget.name">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Description</label>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" placeholder="Widget description" name="newWidget.description"
+                         [(ngModel)]="newWidget.description">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Icon <i class="fa {{newWidget.icon}}"></i></label>
+                <div class="col-md-6">
+                  <ng-select #devicesSelect
+                             [placeholder]="newWidget.icon ? newWidget.icon : 'Select an icon'"
+                             [allowClear]="true"
+                             [items]="fontAwesomeList"
+                             (selected)="newWidgetIcon($event)">
+                  </ng-select>
+                </div>
+              </div>
+
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Type</label>
+              <div class="col-md-6">
+                <ng-select #devicesSelect
+                           [placeholder]="newWidget.type ? newWidget.type : 'Select a type'"
+                           [allowClear]="true"
+                           [items]="widgetType"
+                           (selected)="newWidgetType($event)">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row" *ngIf="newWidget.type === 'gauge'">
+              <label class="col-md-3 form-control-label">Device</label>
+
+                <div class="col-md-6">
+                  <ng-select #devicesSelect
+                             [placeholder]="newWidget.type ? newWidget.type : 'Select a type'"
+                             [allowClear]="true"
+                             [items]="widgetType"
+                             (selected)="newWidgetType($event)">
+                  </ng-select>
+                </div>
+
+            </div>
+
+
+
+            <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="addWidget()"><i class="fa fa-check"></i> Add widget</button>
+
+            <!--<div class="form-group row">-->
+              <!--<label class="col-md-3 form-control-label">Widget name</label>-->
+              <!--<div class="col-md-9">-->
+                <!--<input type="text" class="form-control" placeholder="Widget name" name="dashboard.widget"-->
+                       <!--[(ngModel)]="dashboard.widget">-->
+              <!--</div>-->
+            <!--</div>-->
+
+            <!--<button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="saveDashboard()"><i class="fa fa-check"></i> Update</button>-->
+          </form>
+
+        </div>
+      </div>
+    </div>
+    <!--End Edit dashboard-->
+
+    <!--Show widgets-->
+    <div class="row" *ngIf="dashboard.widgets">
+
+    </div>
+    <!--End Show widgets-->
+
+  </div>
+
+
+
+</div>
+

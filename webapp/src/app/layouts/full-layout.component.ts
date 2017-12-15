@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {Category, Device, FireLoopRef, Message, Parser, User} from '../shared/sdk/models';
+import {Category, Dashboard, Device, FireLoopRef, Message, Parser, User} from '../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import {ParserApi, UserApi} from '../shared/sdk/services/custom';
 import {RealTime} from '../shared/sdk/services/core';
@@ -16,16 +16,19 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private device: Device = new Device();
   private parser: Parser = new Parser();
   private category: Category = new Category();
+  private dashboard: Dashboard = new Dashboard();
 
   private messageSub: Subscription;
   private deviceSub: Subscription;
   private parserSub: Subscription;
   private categorySub: Subscription;
+  private dashboardSub: Subscription;
 
   private messages: Message[] = new Array<Message>();
   private devices: Device[] = new Array<Device>();
   private parsers: Parser[] = new Array<Parser>();
   private categories: Category[] = new Array<Category>();
+  private dashboards: Dashboard[] = new Array<Dashboard>();
 
   private countMessages = 0;
   private countDevices = 0;
@@ -36,6 +39,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private deviceRef: FireLoopRef<Device>;
   private parserRef: FireLoopRef<Parser>;
   private categoryRef: FireLoopRef<Category>;
+  private dashboardRef: FireLoopRef<Dashboard>;
+
 
   public disabled = false;
   public status: {isopen: boolean} = {isopen: false};
@@ -81,6 +86,9 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.parserApi.count().subscribe(result => {
       this.countParsers = result.count;
     });
+    this.userApi.getDashboards(this.user.id).subscribe(result => {
+      this.dashboards = result;
+    });
 
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
@@ -109,6 +117,15 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.countCategories = result.count;
         });
       });
+
+    // Dashboards
+    this.dashboardRef = this.rt.FireLoop.ref<Dashboard>(Dashboard);
+    this.dashboardSub = this.dashboardRef.on('change', {where: {userId: this.user.id}, order: 'createdAt DESC'}).subscribe(
+      (dashboards: Dashboard[]) => {
+        console.log("dashboard changed");
+        this.dashboards = dashboards;
+
+      });
   }
 
   ngOnDestroy(): void {
@@ -124,6 +141,9 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     if (this.categoryRef)this.categoryRef.dispose();
     if (this.categorySub)this.categorySub.unsubscribe();
+
+    if (this.dashboardRef)this.dashboardRef.dispose();
+    if (this.dashboardSub)this.dashboardSub.unsubscribe();
   }
 
   public toggled(open: boolean): void {

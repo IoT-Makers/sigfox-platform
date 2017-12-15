@@ -4,6 +4,7 @@ import {
   Message,
   Device,
   Category,
+  Dashboard,
   Organization
 } from '../index';
 
@@ -28,6 +29,7 @@ export interface UserInterface {
   Messages?: Message[];
   Devices?: Device[];
   Categories?: Category[];
+  Dashboards?: Dashboard[];
   Organizations?: Organization[];
 }
 
@@ -51,6 +53,7 @@ export class User implements UserInterface {
   Messages: Message[] = null;
   Devices: Device[] = null;
   Categories: Category[] = null;
+  Dashboards: Dashboard[] = null;
   Organizations: Organization[] = null;
   constructor(data?: UserInterface) {
     Object.assign(this, data);
@@ -182,6 +185,14 @@ export class User implements UserInterface {
           name: 'Categories',
           type: 'Category[]',
           model: 'Category',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
+        },
+        Dashboards: {
+          name: 'Dashboards',
+          type: 'Dashboard[]',
+          model: 'Dashboard',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'userId'
