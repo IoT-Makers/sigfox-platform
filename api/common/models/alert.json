@@ -48,51 +48,7 @@
     }
   },
   "validations": [],
-  "relations": {
-    "Device": {
-      "type": "belongsTo",
-      "model": "Device"
-    },
-    "user": {
-      "type": "belongsTo",
-      "model": "user"
-    },
-    "Organization": {
-      "type": "belongsTo",
-      "model": "Organization"
-    }
-  },
-  "acls": [
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "$unauthenticated",
-      "permission": "DENY"
-    },
-    {
-      "accessType": "CREATE",
-      "principalType": "ROLE",
-      "principalId": "$authenticated",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "admin",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "organizationMember",
-      "permission": "ALLOW"
-    }
-  ],
+  "relations": {},
+  "acls": [],
   "methods": {}
 }

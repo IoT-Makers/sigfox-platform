@@ -124,7 +124,7 @@
     "public": true
   },
   "Alert": {
-    "dataSource": "db",
+    "dataSource": null,
     "public": true
   },
   "Reception": {

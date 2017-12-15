@@ -3,7 +3,7 @@
 declare var Object: any;
 export interface CategoryInterface {
   "name": string;
-  "properties_static": Array<any>;
+  "properties_static"?: Array<any>;
   "description"?: string;
   "id"?: number;
   "createdAt"?: Date;
