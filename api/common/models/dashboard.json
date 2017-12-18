@@ -7,23 +7,11 @@
     "validateUpsert": true
   },
   "mixins": {
-    "FireLoop": true,
+    "FireLoop": false,
     "TimeStamp": {
       "required": false,
       "validateUpsert": true
-    },
-    "Stats": [
-      {
-        "method": "stats",
-        "endpoint": "/stats",
-        "description": "Statistical information for Asset registers.",
-        "type": "model",
-        "count": {
-          "on": "createdAt",
-          "by": "index"
-        }
-      }
-    ]
+    }
   },
   "properties": {
     "name": {
@@ -33,23 +21,24 @@
     "description": {
       "type": "string"
     },
-    "icon":{
+    "icon": {
       "type": "string"
     },
-    "options":{
+    "options": {
       "type": "object"
-    },
-    "widgets":{
-      "type": ["object"]
     }
   },
   "validations": [],
-  "relations": {},
-  "acls": [],
-  "methods": {
+  "relations": {
     "user": {
       "type": "belongsTo",
       "model": "user"
+    },
+    "Widgets": {
+      "type": "hasMany",
+      "model": "Widget"
     }
-  }
+  },
+  "acls": [],
+  "methods": {}
 }

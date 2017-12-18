@@ -12,6 +12,7 @@ import { Organization } from '../../models/Organization';
 import { Geoloc } from '../../models/Geoloc';
 import { Alert } from '../../models/Alert';
 import { Reception } from '../../models/Reception';
+import { Widget } from '../../models/Widget';
 
 export interface Models { [name: string]: any }
 
@@ -31,6 +32,7 @@ export class SDKModels {
     Geoloc: Geoloc,
     Alert: Alert,
     Reception: Reception,
+    Widget: Widget,
     
   };
 

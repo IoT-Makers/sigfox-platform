@@ -130,5 +130,9 @@
   "Reception": {
     "dataSource": null,
     "public": true
+  },
+  "Widget": {
+    "dataSource": "db",
+    "public": true
   }
 }

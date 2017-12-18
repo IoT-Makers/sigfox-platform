@@ -4,21 +4,28 @@
     "connector": "memory"
   },
   "free": {
+    "name": "free",
     "connector": "rest",
     "debug": "false",
-    "operations": [{
-      "template": {
-        "method": "GET",
-        "url": "https://smsapi.free-mobile.fr/sendmsg",
-        "query": {
-          "user": "{user}",
-          "pass": "{pass}",
-          "msg": "{msg}"
+    "operations": [
+      {
+        "template": {
+          "method": "GET",
+          "url": "https://smsapi.free-mobile.fr/sendmsg",
+          "query": {
+            "user": "{user}",
+            "pass": "{pass}",
+            "msg": "{msg}"
+          }
+        },
+        "functions": {
+          "sendSMS": [
+            "user",
+            "pass",
+            "msg"
+          ]
         }
-      },
-      "functions": {
-        "sendSMS": ["user", "pass", "msg"]
       }
-    }]
+    ]
   }
 }

@@ -1,52 +1,62 @@
 /* tslint:disable */
 import {
   User,
-  Widget
+  Dashboard
 } from '../index';
 
 declare var Object: any;
-export interface DashboardInterface {
+export interface WidgetInterface {
   "name": string;
-  "description"?: string;
   "icon"?: string;
+  "description"?: string;
+  "type": string;
+  "width"?: string;
+  "filter"?: any;
   "options"?: any;
   "id"?: number;
+  "userId"?: number;
+  "DashboardId"?: number;
+  "dashboardId"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "userId"?: number;
   user?: User;
-  Widgets?: Widget[];
+  Dashboard?: Dashboard;
 }
 
-export class Dashboard implements DashboardInterface {
+export class Widget implements WidgetInterface {
   "name": string = '';
-  "description": string = '';
   "icon": string = '';
+  "description": string = '';
+  "type": string = '';
+  "width": string = '';
+  "filter": any = <any>null;
   "options": any = <any>null;
   "id": number = 0;
+  "userId": number = 0;
+  "DashboardId": number = 0;
+  "dashboardId": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "userId": number = 0;
   user: User = null;
-  Widgets: Widget[] = null;
-  constructor(data?: DashboardInterface) {
+  Dashboard: Dashboard = null;
+  constructor(data?: WidgetInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Dashboard`.
+   * i.e. `Widget`.
    */
   public static getModelName() {
-    return "Dashboard";
+    return "Widget";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of Dashboard for dynamic purposes.
+  * This method creates an instance of Widget for dynamic purposes.
   **/
-  public static factory(data: DashboardInterface): Dashboard{
-    return new Dashboard(data);
+  public static factory(data: WidgetInterface): Widget{
+    return new Widget(data);
   }
   /**
   * @method getModelDefinition
@@ -57,22 +67,34 @@ export class Dashboard implements DashboardInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'Dashboard',
-      plural: 'Dashboards',
-      path: 'Dashboards',
+      name: 'Widget',
+      plural: 'Widgets',
+      path: 'Widgets',
       idName: 'id',
       properties: {
         "name": {
           name: 'name',
           type: 'string'
         },
+        "icon": {
+          name: 'icon',
+          type: 'string'
+        },
         "description": {
           name: 'description',
           type: 'string'
         },
-        "icon": {
-          name: 'icon',
+        "type": {
+          name: 'type',
           type: 'string'
+        },
+        "width": {
+          name: 'width',
+          type: 'string'
+        },
+        "filter": {
+          name: 'filter',
+          type: 'any'
         },
         "options": {
           name: 'options',
@@ -82,6 +104,18 @@ export class Dashboard implements DashboardInterface {
           name: 'id',
           type: 'number'
         },
+        "userId": {
+          name: 'userId',
+          type: 'number'
+        },
+        "DashboardId": {
+          name: 'DashboardId',
+          type: 'number'
+        },
+        "dashboardId": {
+          name: 'dashboardId',
+          type: 'number'
+        },
         "createdAt": {
           name: 'createdAt',
           type: 'Date'
@@ -89,10 +123,6 @@ export class Dashboard implements DashboardInterface {
         "updatedAt": {
           name: 'updatedAt',
           type: 'Date'
-        },
-        "userId": {
-          name: 'userId',
-          type: 'number'
         },
       },
       relations: {
@@ -104,13 +134,13 @@ export class Dashboard implements DashboardInterface {
                   keyFrom: 'userId',
           keyTo: 'id'
         },
-        Widgets: {
-          name: 'Widgets',
-          type: 'Widget[]',
-          model: 'Widget',
-          relationType: 'hasMany',
-                  keyFrom: 'id',
-          keyTo: 'dashboardId'
+        Dashboard: {
+          name: 'Dashboard',
+          type: 'Dashboard',
+          model: 'Dashboard',
+          relationType: 'belongsTo',
+                  keyFrom: 'DashboardId',
+          keyTo: 'id'
         },
       }
     }
