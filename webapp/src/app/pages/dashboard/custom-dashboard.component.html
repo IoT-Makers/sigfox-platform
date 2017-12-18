@@ -61,6 +61,8 @@
             <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="saveDashboard()"><i
               class="fa fa-check"></i> Save Dashboard
             </button>
+            <button class="btn btn-sm btn-danger" (click)="deleteDashboard()"><i class="fa fa-trash"></i> Delete Dashboard
+            </button>
           </form>
         </div>
       </div>
@@ -129,22 +131,12 @@
 
               <div class="col-md-6">
 
-                <select name="categoryId" class="form-control" size="1" (ngModelChange)="addFilter(category.id)">
+                <select name="categoryId" class="form-control" size="1" [ngModel]="selectedCategory" (ngModelChange)="addFilter($event)">
                   <option [ngValue]="category.id" *ngFor="let category of categories">{{category.name}}</option>
                   <option [ngValue]=""></option>
                 </select>
               </div>
-              <!--<label class="col-md-3 form-control-label">Device</label>-->
 
-              <!--<div class="col-md-6">-->
-              <!--<ng-select #deviceSelect-->
-              <!--[placeholder]="'Select a category'"-->
-              <!--[allowClear]="true"-->
-              <!--bindLabel="name"-->
-              <!--[items]="devices"-->
-              <!--(selected)="addFilter($event)">-->
-              <!--</ng-select>-->
-              <!--</div>-->
 
             </div>
 
@@ -173,7 +165,10 @@
 
 
   <!--Show widgets-->
-  <div class="row" *ngIf="widgets">
+  <div class="row" *ngIf="widgets.length == 0">
+    Loading widgets...
+  </div>
+  <div class="row" *ngIf="widgets.length>0">
     <!--For each widget-->
 
     <div *ngFor="let widget of widgets" class="col col-md-{{widget.width}}">
@@ -182,13 +177,89 @@
         <div class="card-header">
           <i class="fa {{widget.icon}} fa-lg"></i> <strong>{{widget.name}}</strong>
           <button class="btn btn-info pull-right" *ngIf="editFlag" (click)="editWidget()"><i class="fa fa-pencil"></i></button>
-          <button class="btn btn-danger pull-right" *ngIf="editFlag" (click)="deleteWidget()"><i class="fa fa-trash"></i></button>
+          <button class="btn btn-danger pull-right" *ngIf="editFlag" (click)="deleteWidget(widget)"><i class="fa fa-trash"></i></button>
         </div>
         <!--end header-->
 
         <!--card body-->
         <div class="card-block">
-          {{widget.type}}
+          <ng-container *ngIf="widget.type=='map'">
+            <ng-container *ngIf="widget.devices">
+              <agm-map [latitude]=0
+                       [longitude]=0
+                       [zoom]="2"
+                       [fullscreenControl]="true">
+                <ng-container *ngFor="let device of widget.devices; let i = index">
+                  <ng-container *ngFor="let geoloc of device.location">
+                    <!-- Geoloc Sigfox -->
+                    <ng-container *ngIf="geoloc.type === 'sigfox'">
+                      <agm-marker
+                        (mouseOut)="markerOut(i)"
+                        (mouseOver)="markerOver(i)"
+                        [zIndex]="3"
+                        [latitude]="geoloc.lat"
+                        [longitude]="geoloc.lng"
+                        [iconUrl]="'assets/img/marker-sigfox.png'">
+                        <agm-info-window
+                          id="{{geoloc.type + '_' + device.id}}">
+                          <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                          <br>
+                          <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                          <br *ngIf="device.name">
+                          <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                          <br>
+                          <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                          <br>
+                          <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                          <br>
+                          <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                        </agm-info-window>
+                      </agm-marker>
+                      <!-- Circle -->
+                      <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                                  [zIndex]="1"
+                                  [strokePosition]="CENTER"
+                                  [strokeWeight]="1"
+                                  [strokeColor]="'#8d5dd1'"
+                                  [fillOpacity]="0.1"
+                                  [fillColor]="'#8d5dd1'"
+                                  [latitude]="geoloc.lat"
+                                  [longitude]="geoloc.lng"
+                                  [radius]="geoloc.precision">
+                      </agm-circle>
+                      <!-- End Circle -->
+                    </ng-container>
+                    <!-- Geoloc GPS -->
+                    <ng-container *ngIf="geoloc.type === 'GPS'">
+                      <agm-marker
+                        [zIndex]="3"
+                        [latitude]="geoloc.lat"
+                        [longitude]="geoloc.lng"
+                        [iconUrl]="'assets/img/marker-gps.png'">
+                        <agm-info-window
+                          id="{{geoloc.type + '_' + device.id}}">
+                          <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                          <br>
+                          <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                          <br *ngIf="device.name">
+                          <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                          <br>
+                          <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                          <br>
+                          <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                        </agm-info-window>
+                      </agm-marker>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+
+              </agm-map>
+
+            </ng-container>
+          </ng-container>
+
+
+          <ng-container *ngIf="widget.type!='map'">{{widget.type}}</ng-container>
         </div>
       </div>
     </div>

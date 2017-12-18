@@ -30,6 +30,11 @@
     },
     "options": {
       "type": "object"
+    },
+    "devices":{
+      "type": [
+        "Device"
+      ]
     }
   },
   "validations": [],

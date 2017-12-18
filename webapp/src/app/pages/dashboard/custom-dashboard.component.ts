@@ -1,7 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 import {RealTime, DashboardApi, UserApi} from '../../shared/sdk/services/index';
 import {Dashboard, Device, Category, Widget, User} from '../../shared/sdk/models/index';
+import {Geoloc} from "../../shared/sdk/models/Geoloc";
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +18,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   private category: Category;
   private categories: Array<Category> = [];
+  private selectedCategory: Category;
 
   private widget: Widget;
   private widgets: Array<Widget> = [];
@@ -38,17 +40,21 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     width: '',
     filter: {},
     options: {},
+    device: [],
     //DashboardId:this.dashboard.id
     };
 
   private widgetType = ['map', 'tracking', 'gauge', 'table', 'time serie'];
+
+  private isCircleVisible: boolean[] = new Array<boolean>();
 
 
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
               private dashboardApi: DashboardApi,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private router:Router) {
   }
 
   ngOnInit(): void {
@@ -72,7 +78,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.userApi.findByIdDashboards(this.user.id, params.id).subscribe(result =>{
         console.log(result);
         this.dashboard = result;
-        this.dashboardReady = true;
         this.loadWidgets();
       });
     });
@@ -99,6 +104,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  deleteDashboard():void{
+    this.userApi.destroyByIdDashboards(this.user.id, this.dashboard.id).subscribe(result=>{
+      this.router.navigate(['/']);
+    })
+  }
+
   selectIcon(icon: any): void {
     console.log(icon);
     this.dashboard.icon = icon.id;
@@ -120,6 +131,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
     this.dashboardApi.createWidgets(this.dashboard.id,this.newWidget).subscribe(widget=>{
       console.log(widget);
+      this.loadWidgets();
     });
 
     this.newWidgetFlag = false;
@@ -132,10 +144,17 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       width: '',
       filter: {},
       options: {},
+      device: [],
       DashboardId:this.dashboard.id
     };
 
-    this.loadWidgets();
+
+  }
+
+  deleteWidget(widget: Widget): void{
+    this.dashboardApi.destroyByIdWidgets(this.dashboard.id, widget.id).subscribe(()=>{
+      this.loadWidgets();
+    })
   }
 
   getDevices(filter: any): void{
@@ -150,19 +169,30 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  addFilter(id:any):void {
-    console.log("added filter");
+  addFilter($event):void {
+
     this.newWidget.filter = {
       where: {
-        categoryId: id
+        categoryId: $event
       }
     }
+    console.log("added filter", this.newWidget.filter);
   }
 
   loadWidgets():void{
     this.dashboardApi.getWidgets(this.dashboard.id).subscribe(widgets=>{
       this.widgets = widgets;
-      console.log(widgets);
+      //console.log(widgets);
+      this.dashboardReady = true;
+      if(this.widgets){
+        this.widgets.forEach(widget=>{
+          this.userApi.getDevices(this.user.id, widget.filter).subscribe(devices=>{
+            widget.devices = devices;
+            console.log(this.widgets);
+          })
+        })
+      }
+
     })
   }
 
@@ -170,6 +200,23 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.editFlag= false;
     this.newWidgetFlag = false;
   }
+
+
+  //Map functions
+  setCircles() {
+    for(let i = 0; i < this.devices.length; i++) {
+      this.isCircleVisible.push(false);
+    }
+  }
+
+  markerOut(i) {
+    this.isCircleVisible[i] = false;
+  }
+
+  markerOver(i) {
+    this.isCircleVisible[i] = true;
+  }
+
 
 
 }

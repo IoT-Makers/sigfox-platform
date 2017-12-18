@@ -62,7 +62,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       this.rt.onReady().subscribe(() => this.setup());
     } else {
       this.rt.onAuthenticated().subscribe(() => this.setup());
-      this.rt.onReady().subscribe();
+      this.rt.onReady().subscribe(() => this.setup());
     }
   }
 
@@ -130,20 +130,20 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Full Layout: ngOnDestroy');
-    if (this.messageRef)this.messageRef.dispose();
-    if (this.messageSub)this.messageSub.unsubscribe();
-
-    if (this.deviceRef)this.deviceRef.dispose();
-    if (this.deviceSub)this.deviceSub.unsubscribe();
-
-    if (this.parserRef)this.parserRef.dispose();
-    if (this.parserSub)this.parserSub.unsubscribe();
-
-    if (this.categoryRef)this.categoryRef.dispose();
-    if (this.categorySub)this.categorySub.unsubscribe();
-
-    if (this.dashboardRef)this.dashboardRef.dispose();
-    if (this.dashboardSub)this.dashboardSub.unsubscribe();
+    // if (this.messageRef)this.messageRef.dispose();
+    // if (this.messageSub)this.messageSub.unsubscribe();
+    //
+    // if (this.deviceRef)this.deviceRef.dispose();
+    // if (this.deviceSub)this.deviceSub.unsubscribe();
+    //
+    // if (this.parserRef)this.parserRef.dispose();
+    // if (this.parserSub)this.parserSub.unsubscribe();
+    //
+    // if (this.categoryRef)this.categoryRef.dispose();
+    // if (this.categorySub)this.categorySub.unsubscribe();
+    //
+    // if (this.dashboardRef)this.dashboardRef.dispose();
+    // if (this.dashboardSub)this.dashboardSub.unsubscribe();
   }
 
   public toggled(open: boolean): void {
@@ -166,5 +166,15 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       console.log(error);
       this.router.navigate(['/login']);
     });
+  }
+
+  newDashboard(): void {
+    const dashboard = {
+      name:"New Dashboard"
+    };
+    this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard=>{
+      console.log(dashboard);
+      this.setup();
+    })
   }
 }
