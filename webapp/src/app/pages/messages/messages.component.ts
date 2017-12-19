@@ -1,10 +1,11 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FireLoopRef, Message, User} from '../../shared/sdk/models';
+import {Connector, FireLoopRef, Message, User} from '../../shared/sdk/models';
 import {RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
 import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
 import {AgmMap} from '@agm/core';
+import {ConnectorApi} from '../../shared/sdk/services/custom';
 
 @Component({
   selector: 'app-messages',
@@ -84,16 +85,18 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.receptions = [];
     const user = this.userApi.getCachedCurrent();
 
-    if (user.sigfoxBackendApiLogin && user.sigfoxBackendApiPassword) {
-      this.baseStationMap.show();
+    this.userApi.getConnectors(this.user.id, {where: {name: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
+      if (connectors[0].login && connectors[0].password) {
+        this.baseStationMap.show();
 
-      this.receptionApi.getBaseStationsByDeviceId(deviceId, time).subscribe((receptionsResult: Reception[]) => {
-        this.receptions = receptionsResult;
-        console.log(this.receptions);
-        if (this.receptions.length > 0)
-          this.agmMap.triggerResize();
-      });
-    }
+        this.receptionApi.getBaseStationsByDeviceId(deviceId, time).subscribe((receptionsResult: Reception[]) => {
+          this.receptions = receptionsResult;
+          console.log(this.receptions);
+          if (this.receptions.length > 0)
+            this.agmMap.triggerResize();
+        });
+      }
+    });
   }
 
   download(): void {

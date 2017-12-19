@@ -1,7 +1,4 @@
 /* tslint:disable */
-import {
-  User
-} from '../index';
 
 declare var Object: any;
 export interface ConnectorInterface {
@@ -13,7 +10,7 @@ export interface ConnectorInterface {
   "userId"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  user?: User;
+  user?: any;
 }
 
 export class Connector implements ConnectorInterface {
@@ -25,7 +22,7 @@ export class Connector implements ConnectorInterface {
   "userId": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  user: User = null;
+  user: any = null;
   constructor(data?: ConnectorInterface) {
     Object.assign(this, data);
   }
@@ -95,8 +92,8 @@ export class Connector implements ConnectorInterface {
       relations: {
         user: {
           name: 'user',
-          type: 'User',
-          model: 'User',
+          type: 'any',
+          model: '',
           relationType: 'belongsTo',
                   keyFrom: 'userId',
           keyTo: 'id'

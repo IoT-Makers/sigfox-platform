@@ -50,24 +50,33 @@ class Reception {
     // Obtain the userId with the access_token of ctx
     const userId = req.accessToken.userId;
 
-    this.model.app.models.user.findById(
-      userId,
-      {},
-      (err: any, userInstance: any) => {
+    this.model.app.models.Connector.findOne(
+      {
+        where: {
+          userId: userId,
+          name: 'sigfox-api'
+        }
+      },
+      (err: any, connector: any) => {
         if (err) {
-          console.error(err);
-          next(err, userInstance);
+          console.log(err);
+          next(err, null);
         } else {
-          const sigfoxBackendApiLogin = userInstance.sigfoxBackendApiLogin;
-          const sigfoxBackendApiPassword = userInstance.sigfoxBackendApiPassword;
+          console.log(connector);
+          if (connector) {
+            const sigfoxApiLogin = connector.login;
+            const sigfoxApiPassword = connector.password;
 
-          const credentials = new Buffer(sigfoxBackendApiLogin + ':' + sigfoxBackendApiPassword).toString('base64');
+            const credentials = new Buffer(sigfoxApiLogin + ':' + sigfoxApiPassword).toString('base64');
 
-          this.model.app.dataSources.sigfox.getBaseStations(credentials, deviceId, 1, messageTime + 1).then((result: any) => {
-            next(null, result.data[0].rinfos);
-          }).catch((err: any) => {
-            next(err, null);
-          });
+            this.model.app.dataSources.sigfox.getBaseStations(credentials, deviceId, 1, messageTime + 1).then((result: any) => {
+              next(null, result.data[0].rinfos);
+            }).catch((err: any) => {
+              next(err, null);
+            });
+          } else {
+            next(err, 'Please refer your Sigfox API connector first');
+          }
         }
       });
   }

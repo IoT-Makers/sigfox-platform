@@ -18,7 +18,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   @ViewChild('confirmModal') confirmModal: any;
 
   private newConnector: Connector = new Connector();
-  private connectorNames = [{id: 'sigfox', text: 'Sigfox API'}, {id: 'free-mobile', text: 'Free Mobile'}];
+  private connectorNames = [{id: 'sigfox-api', text: 'Sigfox API'}, {id: 'free-mobile', text: 'Free Mobile'}];
 
   private connectorSub: Subscription;
   private connectorRef: FireLoopRef<Connector>;

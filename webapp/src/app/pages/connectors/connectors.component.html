@@ -60,7 +60,7 @@
       <accordion>
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-primary">UPLINK</strong>
+            <strong class="text-primary">UPLINK</strong> <i class="fa fa-arrow-up" aria-hidden="true"></i>
           </div>
           <div>
             <p>Type: <strong>DATA</strong> | <strong>UPLINK</strong></p>
@@ -94,7 +94,7 @@
         </accordion-group>
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-primary">BIDIR</strong>
+            <strong class="text-primary">BIDIR</strong> <i class="fa fa-arrow-up" aria-hidden="true"></i><i class="fa fa-arrow-down" aria-hidden="true"></i>
           </div>
           <div class="card-block">
             <p>Type: <strong>DATA</strong> | <strong>BIDIR</strong></p>
@@ -129,7 +129,7 @@
         </accordion-group>
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-geoloc-sigfox">GEOLOC</strong>
+            <strong class="text-geoloc-sigfox">GEOLOC</strong> <i class="fa fa-map-marker" aria-hidden="true"></i>
           </div>
           <div class="card-block">
             <p>Type: <strong>SERVICE</strong> | <strong>GEOLOC</strong></p>
@@ -162,6 +162,10 @@
     </div>
   </div>
 
+  <div class="col-12 text-center">
+    <i class="fa fa-connectdevelop fa-5x" aria-hidden="true"></i>
+  </div>
+
   <!-- Create a new connector -->
   <h3>Add Connector</h3>
   <hr>
@@ -192,7 +196,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label font-weight-bold">User</label>
+                <label class="col-md-3 form-control-label font-weight-bold">Login</label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" placeholder="Connector login" [(ngModel)]="newConnector.login">
                 </div>
@@ -212,47 +216,43 @@
   </div>
 
 
-  <ng-container *ngFor="let connector of connectors; let i = index">
-
-    <h3>{{connector.name}}</h3>
-    <hr>
-    <div class="row">
-      <div class="col-12">
-        <accordion>
-          <accordion-group>
-            <div accordion-heading>
-              Edit Credentials
-            </div>
-            <div class="card-block">
-              <form (ngSubmit)="saveConnector(connector)" class="form-horizontal">
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label font-weight-bold">Description</label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" value="{{connector.description}}" placeholder="{{connector.description ? connector.description : 'No description yet'}}" [(ngModel)]="connector.description" [ngModelOptions]="{standalone: true}">
-                  </div>
+  <h3>Connectors</h3>
+  <hr>
+  <div class="row">
+    <div class="col-md-4" *ngFor="let connector of connectors; let i = index">
+      <accordion>
+        <accordion-group>
+          <div accordion-heading>
+            <b>{{connector.name}}</b>
+          </div>
+          <div class="card-block">
+            <form class="form-horizontal">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label font-weight-bold">Description</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" value="{{connector.description}}" placeholder="{{connector.description ? connector.description : 'No description yet'}}" [(ngModel)]="connector.description" [ngModelOptions]="{standalone: true}">
                 </div>
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label font-weight-bold">Login</label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" value="{{connector.login}}" [(ngModel)]="connector.login" [ngModelOptions]="{standalone: true}">
-                  </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label font-weight-bold">Login</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" value="{{connector.login}}" [(ngModel)]="connector.login" [ngModelOptions]="{standalone: true}">
                 </div>
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label font-weight-bold">Password</label>
-                  <div class="col-md-9">
-                    <input type="password" class="form-control" value="{{connector.password}}" [(ngModel)]="connector.password" [ngModelOptions]="{standalone: true}">
-                  </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label font-weight-bold">Password</label>
+                <div class="col-md-9">
+                  <input type="password" class="form-control" value="{{connector.password}}" [(ngModel)]="connector.password" [ngModelOptions]="{standalone: true}">
                 </div>
-              </form>
-            </div>
-            <button class="btn btn-sm btn-primary" (click)="saveConnector(connector)"><i class="fa fa-check"></i> Save</button>
-            <button class="btn btn-sm btn-danger" (click)="clearConnector(connector)"><i class="fa fa-ban"></i> Clear</button>
-          </accordion-group>
-        </accordion>
-      </div>
+              </div>
+            </form>
+          </div>
+          <button class="btn btn-sm btn-primary" (click)="saveConnector(connector)"><i class="fa fa-check"></i> Save</button>
+          <button class="btn btn-sm btn-danger" (click)="clearConnector(connector)"><i class="fa fa-ban"></i> Clear</button>
+        </accordion-group>
+      </accordion>
     </div>
-
-  </ng-container>
+  </div>
 
 </div>
 
