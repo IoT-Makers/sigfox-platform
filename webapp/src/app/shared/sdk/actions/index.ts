@@ -14,8 +14,8 @@ import { OrganizationActionTypes, OrganizationActions } from './Organization';
 import { GeolocActionTypes, GeolocActions } from './Geoloc';
 import { AlertActionTypes, AlertActions } from './Alert';
 import { ReceptionActionTypes, ReceptionActions } from './Reception';
-import { WidgetActionTypes, WidgetActions } from './Widget';
 import { ConnectorActionTypes, ConnectorActions } from './Connector';
+import { WidgetActionTypes, WidgetActions } from './Widget';
 
 export {
   LoopbackAuthActionTypes, LoopbackAuthActions,

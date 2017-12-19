@@ -11,7 +11,7 @@ export * from './Organization';
 export * from './Geoloc';
 export * from './Alert';
 export * from './Reception';
-export * from './Widget';
 export * from './Connector';
+export * from './Widget';
 export * from './SDKModels';
 export * from './logger.service';

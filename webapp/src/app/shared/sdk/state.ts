@@ -33,8 +33,8 @@ export interface LoopbackStateInterface {
   Geolocs: reducers.GeolocsState;
   Alerts: reducers.AlertsState;
   Receptions: reducers.ReceptionsState;
-  Widgets: reducers.WidgetsState;
   Connectors: reducers.ConnectorsState;
+  Widgets: reducers.WidgetsState;
 };
 
 export const LoopbackReducer = {

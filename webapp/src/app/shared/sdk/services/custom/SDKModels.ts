@@ -35,7 +35,7 @@ export class SDKModels {
     Reception: Reception,
     Connector: Connector,
     Widget: Widget,
-
+    
   };
 
   public get(modelName: string): any {
