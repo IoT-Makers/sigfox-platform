@@ -35,6 +35,9 @@ export class MessagesComponent implements OnInit, OnDestroy {
               private receptionApi: ReceptionApi) { }
 
   ngOnInit(): void {
+    // Get the logged in User object
+    this.user = this.userApi.getCachedCurrent();
+
     if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
@@ -48,8 +51,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.ngOnDestroy();
-    // Get the logged in User object
-    this.user = this.userApi.getCachedCurrent();
 
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);

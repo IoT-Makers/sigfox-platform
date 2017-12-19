@@ -61,23 +61,12 @@ class Reception {
           const sigfoxBackendApiLogin = userInstance.sigfoxBackendApiLogin;
           const sigfoxBackendApiPassword = userInstance.sigfoxBackendApiPassword;
 
-          const options = {
-            url: this.sigfoxBackendBaseApiUrl + 'devices/' + deviceId + '/messages?limit=1&before=' + messageTime + 1,
-            headers: {
-              'Authorization': 'Basic ' + new Buffer(sigfoxBackendApiLogin + ':' + sigfoxBackendApiPassword).toString('base64')
-            }
-          };
+          const credentials = new Buffer(sigfoxBackendApiLogin + ':' + sigfoxBackendApiPassword).toString('base64');
 
-          // @TODO there seems to be an error when retrieving the base station list... Sometimes not the good ones
-          request(options, function (error: any, response: any, body: any) {
-            let res: any = [];
-            if (!error && response.statusCode === 200) {
-              body = JSON.parse(body);
-              res = body.data[0].rinfos;
-            } else {
-              console.error(options.url + ' ' + response.statusCode);
-            }
-            next(null, res);
+          this.model.app.dataSources.sigfox.getBaseStations(credentials, deviceId, 1, messageTime + 1).then((result: any) => {
+            next(null, result.data[0].rinfos);
+          }).catch((err: any) => {
+            next(err, null);
           });
         }
       });

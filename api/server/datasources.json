@@ -3,22 +3,57 @@
     "name": "db",
     "connector": "memory"
   },
-  "free": {
+  "freeMobile": {
+    "name": "freeMobile",
     "connector": "rest",
     "debug": "false",
-    "operations": [{
-      "template": {
-        "method": "GET",
-        "url": "https://smsapi.free-mobile.fr/sendmsg",
-        "query": {
-          "user": "{user}",
-          "pass": "{pass}",
-          "msg": "{msg}"
+    "operations": [
+      {
+        "template": {
+          "method": "GET",
+          "url": "https://smsapi.free-mobile.fr/sendmsg",
+          "query": {
+            "user": "{!user:string}",
+            "pass": "{!pass:string}",
+            "msg": "{!msg:string}"
+          }
+        },
+        "functions": {
+          "sendSMS": [
+            "user",
+            "pass",
+            "msg"
+          ]
         }
-      },
-      "functions": {
-        "sendSMS": ["user", "pass", "msg"]
       }
-    }]
+    ]
+  },
+  "sigfox": {
+    "name": "sigfox",
+    "connector": "rest",
+    "debug": "true",
+    "operations": [
+      {
+        "template": {
+          "method": "GET",
+          "url": "https://backend.sigfox.com/api/devices/{deviceId:string}/messages",
+          "headers": {
+            "Authorization": "Basic {credentials:string}"
+          },
+          "query": {
+            "limit": "{!limit=1:number}",
+            "before": "{!before:number}"
+          }
+        },
+        "functions": {
+          "getBaseStations": [
+            "credentials",
+            "deviceId",
+            "limit",
+            "before"
+          ]
+        }
+      }
+    ]
   }
 }

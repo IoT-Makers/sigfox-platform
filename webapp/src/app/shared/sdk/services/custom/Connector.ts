@@ -10,15 +10,16 @@ import { JSONSearchParams } from '../core/search.params';
 import { ErrorHandler } from '../core/error.service';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';
-import { AppSetting } from '../../models/AppSetting';
+import { Connector } from '../../models/Connector';
 import { SocketConnection } from '../../sockets/socket.connections';
+import { User } from '../../models/User';
 
 
 /**
- * Api services for the `AppSetting` model.
+ * Api services for the `Connector` model.
  */
 @Injectable()
-export class AppSettingApi extends BaseLoopBackApi {
+export class ConnectorApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(Http) protected http: Http,
@@ -29,6 +30,36 @@ export class AppSettingApi extends BaseLoopBackApi {
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
     super(http,  connection,  models, auth, searchParams, errorHandler);
+  }
+
+  /**
+   * Fetches belongsTo relation user.
+   *
+   * @param {any} id Connector id
+   *
+   * @param {boolean} refresh 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Connector` object.)
+   * </em>
+   */
+  public getUser(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Connectors/:id/user";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
   }
 
   /**
@@ -44,13 +75,13 @@ export class AppSettingApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `AppSetting` object.)
+   * This usually means the response is a `Connector` object.)
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/AppSettings";
+    "/Connectors";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -63,7 +94,7 @@ export class AppSettingApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id AppSetting id
+   * @param {any} id Connector id
    *
    * @param {object} data Request data.
    *
@@ -75,13 +106,13 @@ export class AppSettingApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `AppSetting` object.)
+   * This usually means the response is a `Connector` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/AppSettings/:id";
+    "/Connectors/:id";
     let _routeParams: any = {
       id: id
     };
@@ -109,7 +140,7 @@ export class AppSettingApi extends BaseLoopBackApi {
   public myRemote(customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/AppSettings/my-remote";
+    "/Connectors/my-remote";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -118,7 +149,7 @@ export class AppSettingApi extends BaseLoopBackApi {
   }
 
   /**
-   * Statistical information for AppSetting registers.
+   * Statistical information for Connector registers.
    *
    * @param {string} range hourly, daily, weekly, monthly, yearly, custom
    *
@@ -134,13 +165,13 @@ export class AppSettingApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `AppSetting` object.)
+   * This usually means the response is a `Connector` object.)
    * </em>
    */
   public stats(range: any, custom: any = {}, where: any = {}, groupBy: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/AppSettings/stats";
+    "/Connectors/stats";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -154,9 +185,9 @@ export class AppSettingApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `AppSetting`.
+   * i.e. `Connector`.
    */
   public getModelName() {
-    return "AppSetting";
+    return "Connector";
   }
 }

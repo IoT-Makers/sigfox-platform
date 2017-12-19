@@ -245,13 +245,28 @@ class Message {
                           if (alert.key === o.key) {
                             if ((o.value === alert.value_exact) || (o.value <= alert.value_max && o.value >= alert.value_min)) {
                               // Trigger alert
-                              if (alert.type === 'free') {
-                                console.error('Free SMS alert!');
-                                // TODO: Store credentials in a... good spot :P
-                                this.model.app.dataSources.free.sendSMS('39828514', 'dv2KygtNmBKS3K', o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit);
-                                // Alert has been triggered, removing it from array
-                                deviceInstance.alerts.splice(index, 1);
-                              }
+                              this.model.app.models.Connector.findById(alert.connectorId,
+                                (err: any, connector: any) => {
+                                  if (err) {
+                                    console.log(err);
+                                    next(err, data);
+                                  } else {
+                                    if (connector.name === 'free-mobile') {
+                                      console.error('Free Mobile SMS alert!');
+                                      this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit).then((result: any) => {
+                                        // Alert has been triggered, removing it from array
+                                        deviceInstance.alerts.splice(index, 1);
+                                      }).catch((err: any) => {
+                                        console.error('Free Mobile error');
+                                      });
+                                    } else if (connector.name === 'twilio') {
+                                      console.error('Twilio SMS alert!');
+                                      // TODO: implement twilio connector
+                                      // Alert has been triggered, removing it from array
+                                      deviceInstance.alerts.splice(index, 1);
+                                    }
+                                  }
+                                });
                             }
                           }
                         });

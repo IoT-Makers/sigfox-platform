@@ -49,6 +49,9 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Get the logged in User object
+    this.user = this.userApi.getCachedCurrent();
+
     this.edit = false;
 
     if (
@@ -64,9 +67,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.ngOnDestroy();
-    // Get the logged in User object
-    this.user = this.userApi.getCachedCurrent();
-
+   
     // Get and listen categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
     this.categorySub = this.categoryRef.on('change',

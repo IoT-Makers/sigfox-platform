@@ -1,11 +1,11 @@
 import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {Alert, Category, Device, FireLoopRef, Message, Parser, User} from '../../shared/sdk/models';
+import {Alert, Category, Connector, Device, FireLoopRef, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
 import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
-import {ToasterConfig, ToasterService} from "angular2-toaster";
+import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 
 @Component({
@@ -25,6 +25,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   private device: Device = new Device();
   private parser: Parser = new Parser();
   private category: Category = new Category();
+  private connectors: Connector[] = new Array<Connector>();
 
   private deviceSub: Subscription;
   private parserSub: Subscription;
@@ -64,6 +65,14 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Get the logged in User object
+    this.user = this.userApi.getCachedCurrent();
+
+    // Get the user connectors
+    this.userApi.getConnectors(this.user.id).subscribe((connectors: Connector[]) => {
+      this.connectors = connectors;
+    });
+
     this.edit = false;
     // Hide all circles by default
     this.setCircles();
@@ -95,8 +104,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.ngOnDestroy();
-    // Get the logged in User object
-    this.user = this.userApi.getCachedCurrent();
 
     // Get and listen devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
@@ -159,35 +166,35 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.deviceToEdit.alerts.push(new Alert());
   }
 
-  cancelAlert(index: number): void {
+  removeAlert(index: number): void {
     this.deviceToEdit.alerts.splice(index, 1);
   }
 
-  update(device: Device): void {
+  updateDevice(): void {
     this.edit = false;
-    device.CategoryId = device.categoryId;
+    this.deviceToEdit.CategoryId = this.deviceToEdit.categoryId;
     // @TODO change parserId to ParserID to be able to fetch devices from parser model, don't forget to update the API consequently and to test it!
-    device.ParserId = device.parserId;
+    this.deviceToEdit.ParserId = this.deviceToEdit.parserId;
     /*if(device.ParserId.toString() == 'None')*/
 
-    this.deviceRef.upsert(device).subscribe(value => {
+    this.deviceRef.upsert(this.deviceToEdit).subscribe(value => {
       this.toasterService.pop('success', 'Success', 'The device was successfully updated.');
     }, error => {
       this.toasterService.pop('error', 'Error', error.message);
     });
   }
 
-  updateDeviceCategory(device: Device): void {
-    console.log(device.categoryId);
-    if (device.categoryId) {
-      this.userApi.findByIdCategories(this.user.id, device.categoryId).subscribe((category: Category) => {
+  updateDeviceCategory(): void {
+    console.log(this.deviceToEdit.categoryId);
+    if (this.deviceToEdit.categoryId) {
+      this.userApi.findByIdCategories(this.user.id, this.deviceToEdit.categoryId).subscribe((category: Category) => {
         console.log(category);
         this.deviceToEdit.properties_static = category.properties_static;
         this.toasterService.pop('success', 'Success', 'The category was successfully updated.');
       });
     }
 
-    console.log(device);
+    console.log(this.deviceToEdit);
     // this.deviceRef.upsert(device).subscribe();
   }
 

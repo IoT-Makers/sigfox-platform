@@ -1051,7 +1051,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Statistical information for organization registers.
+   * Statistical information for Organization registers.
    *
    * @param {string} range hourly, daily, weekly, monthly, yearly, custom
    *

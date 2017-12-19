@@ -1,6 +1,6 @@
 {
-  "name": "Category",
-  "plural": "Categories",
+  "name": "Connector",
+  "plural": "Connectors",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -16,7 +16,7 @@
       {
         "method": "stats",
         "endpoint": "/stats",
-        "description": "Statistical information for Category registers.",
+        "description": "Statistical information for Connector registers.",
         "type": "model",
         "count": {
           "on": "createdAt",
@@ -30,13 +30,16 @@
       "type": "string",
       "required": true
     },
-    "properties_static": {
-      "type": [
-        "object"
-      ]
-    },
     "description": {
       "type": "string"
+    },
+    "login": {
+      "type": "any",
+      "required": true
+    },
+    "password": {
+      "type": "any",
+      "required": true
     }
   },
   "validations": [],
@@ -44,10 +47,6 @@
     "user": {
       "type": "belongsTo",
       "model": "user"
-    },
-    "Devices": {
-      "type": "hasMany",
-      "model": "Device"
     }
   },
   "acls": [

@@ -130,5 +130,9 @@
   "Reception": {
     "dataSource": null,
     "public": true
+  },
+  "Connector": {
+    "dataSource": "db",
+    "public": true
   }
 }

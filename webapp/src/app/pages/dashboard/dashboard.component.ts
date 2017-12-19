@@ -75,16 +75,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (
-      this.rt.connection.isConnected() &&
-      this.rt.connection.authenticated
-    ) {
-      this.rt.onReady().subscribe(() => this.setup());
-    } else {
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-      this.rt.onReady().subscribe();
-    }
-
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
@@ -99,6 +89,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
       this.devicesSelect.items = this.devices;
     });
+
+    if (
+      this.rt.connection.isConnected() &&
+      this.rt.connection.authenticated
+    ) {
+      this.rt.onReady().subscribe(() => this.setup());
+    } else {
+      this.rt.onAuthenticated().subscribe(() => this.setup());
+      this.rt.onReady().subscribe();
+    }
   }
 
   setup(): void {

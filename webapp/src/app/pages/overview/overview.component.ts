@@ -111,6 +111,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Get the logged in User object
+    this.user = this.userApi.getCachedCurrent();
+
     if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
@@ -124,8 +127,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.ngOnDestroy();
-    // Get the logged in User object
-    this.user = this.userApi.getCachedCurrent();
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     //console.log(this.organizations[0].id);
@@ -212,7 +213,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   // }
 
   setCircles() {
-    for(let i = 0; i < this.devices.length; i++) {
+    for (let i = 0; i < this.devices.length; i++) {
       this.isCircleVisible.push(false);
     }
   }

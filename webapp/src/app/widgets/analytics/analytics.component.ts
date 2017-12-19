@@ -80,6 +80,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
       this.rt.onReady().subscribe();
     }
 
+    // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
     // Get devices
@@ -99,8 +100,6 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     this.ngOnDestroy();
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-
-    this.user = this.userApi.getCachedCurrent();
 
     this.getMessagesGraph(this.graphRange);
   }

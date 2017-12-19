@@ -5,7 +5,8 @@ import {
   Device,
   Category,
   Dashboard,
-  Organization
+  Organization,
+  Connector
 } from '../index';
 
 declare var Object: any;
@@ -31,6 +32,7 @@ export interface UserInterface {
   Categories?: Category[];
   Dashboards?: Dashboard[];
   Organizations?: Organization[];
+  Connectors?: Connector[];
 }
 
 export class User implements UserInterface {
@@ -55,6 +57,7 @@ export class User implements UserInterface {
   Categories: Category[] = null;
   Dashboards: Dashboard[] = null;
   Organizations: Organization[] = null;
+  Connectors: Connector[] = null;
   constructor(data?: UserInterface) {
     Object.assign(this, data);
   }
@@ -205,6 +208,14 @@ export class User implements UserInterface {
           modelThrough: 'Organizationuser',
           keyThrough: 'organizationId',
           keyFrom: 'id',
+          keyTo: 'userId'
+        },
+        Connectors: {
+          name: 'Connectors',
+          type: 'Connector[]',
+          model: 'Connector',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
           keyTo: 'userId'
         },
       }

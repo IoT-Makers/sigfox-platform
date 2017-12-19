@@ -16,7 +16,7 @@
       {
         "method": "stats",
         "endpoint": "/stats",
-        "description": "Statistical information for organization registers.",
+        "description": "Statistical information for Organization registers.",
         "type": "model",
         "count": {
           "on": "createdAt",

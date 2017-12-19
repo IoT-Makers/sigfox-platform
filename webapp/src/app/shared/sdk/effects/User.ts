@@ -427,6 +427,57 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public findByIdConnectors$ = this.actions$
+    .ofType(UserActionTypes.FIND_BY_ID_CONNECTORS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.findByIdConnectors(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Connector', 'findByIdSuccess'),
+            of(new UserActions.findByIdConnectorsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.findByIdConnectorsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public destroyByIdConnectors$ = this.actions$
+    .ofType(UserActionTypes.DESTROY_BY_ID_CONNECTORS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.destroyByIdConnectors(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Connector', 'deleteByIdSuccess'),
+            of(new UserActions.destroyByIdConnectorsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.destroyByIdConnectorsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public updateByIdConnectors$ = this.actions$
+    .ofType(UserActionTypes.UPDATE_BY_ID_CONNECTORS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.updateByIdConnectors(action.payload.id, action.payload.fk, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Connector', 'findByIdSuccess'),
+            of(new UserActions.updateByIdConnectorsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.updateByIdConnectorsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public getAccessTokens$ = this.actions$
     .ofType(UserActionTypes.GET_ACCESSTOKENS).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -757,6 +808,54 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public getConnectors$ = this.actions$
+    .ofType(UserActionTypes.GET_CONNECTORS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.getConnectors(action.payload.id, action.payload.filter).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Connector', 'findSuccess'),
+            of(new UserActions.getConnectorsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.getConnectorsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createConnectors$ = this.actions$
+    .ofType(UserActionTypes.CREATE_CONNECTORS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createConnectors(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Connector', 'findSuccess'),
+            of(new UserActions.createConnectorsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createConnectorsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public deleteConnectors$ = this.actions$
+    .ofType(UserActionTypes.DELETE_CONNECTORS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.deleteConnectors(action.payload.id).pipe(
+          map((response: any) => new UserActions.deleteConnectorsSuccess(action.payload, action.meta)),
+          catchError((error: any) => concat(
+            of(new UserActions.deleteConnectorsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public login$ = this.actions$
     .ofType(UserActionTypes.LOGIN).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -964,6 +1063,23 @@ export class UserEffects extends BaseLoopbackEffects {
           )),
           catchError((error: any) => concat(
             of(new UserActions.createManyOrganizationsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createManyConnectors$ = this.actions$
+    .ofType(UserActionTypes.CREATE_MANY_CONNECTORS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createManyConnectors(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Connector', 'findSuccess'),
+            of(new UserActions.createManyConnectorsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createManyConnectorsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

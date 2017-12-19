@@ -206,7 +206,7 @@
           <strong>Edit Device</strong>
         </div>
         <div class="card-block">
-          <form (ngSubmit)="update(deviceToEdit)" class="form-horizontal" #editForm="ngForm">
+          <form (ngSubmit)="updateDevice()" class="form-horizontal" #editForm="ngForm">
             <!-- ID -->
             <div class="form-group row">
               <label class="col-md-3 form-control-label">ID</label>
@@ -237,7 +237,7 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Category</label>
               <div class="col-md-9">
-                <select name="deviceToEdit.categoryId" class="form-control" size="1" [(ngModel)]="deviceToEdit.categoryId" (ngModelChange)="updateDeviceCategory(deviceToEdit)">
+                <select name="deviceToEdit.categoryId" class="form-control" size="1" [(ngModel)]="deviceToEdit.categoryId" (ngModelChange)="updateDeviceCategory()">
                   <option [ngValue]="category.id" *ngFor="let category of categories">{{category.name}}</option>
                   <option [ngValue]=""></option>
                 </select>
@@ -256,17 +256,16 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Alerts</label>
               <div class="col-md-9">
-                <button class="btn btn-sm btn-success" (click)="$event.preventDefault(); addAlert()"> Add alert</button>
+                <button class="btn btn-sm btn-outline-success" (click)="$event.preventDefault(); addAlert()"> Add alert</button>
               </div>
             </div>
 
             <div *ngFor="let alert of deviceToEdit.alerts; let i = index">
               <div class="form-group row">
-                <label class="col-md-3 offset-1 form-control-label">Type</label>
+                <label class="col-md-3 offset-1 form-control-label">Connector</label>
                 <div class="col-md-8 mb-0">
-                  <select name="deviceToEdit.alerts[i].type" class="form-control" size="1" [(ngModel)]="deviceToEdit.alerts[i].type">
-                    <option [ngValue]="'twilio'">Twilio</option>
-                    <option [ngValue]="'free'">Free</option>
+                  <select name="alert.connectorId" class="form-control" size="1" [(ngModel)]="alert.connectorId">
+                    <option *ngFor="let connector of connectors" [ngValue]="connector.id">{{connector.name}}</option>
                     <option [ngValue]=""></option>
                   </select>
                 </div>
@@ -274,7 +273,7 @@
               <div class="form-group row">
                 <label class="col-md-3 offset-1 form-control-label">Key</label>
                 <div class="col-md-8">
-                  <select name="deviceToEdit.alerts[i].key" class="form-control" size="1" [(ngModel)]="deviceToEdit.alerts[i].key">
+                  <select name="alert.key" class="form-control" size="1" [(ngModel)]="alert.key">
                     <option [ngValue]="key" *ngFor="let key of deviceToEdit.properties_dynamic">{{key}}</option>
                     <option [ngValue]=""></option>
                   </select>
@@ -283,27 +282,34 @@
               <div class="form-group row">
                 <label class="col-md-4 offset-1 form-control-label">Min value</label>
                 <div class="col-md-7">
-                    <input type="number" class="form-control" name="deviceToEdit.alerts[i].value_min"
-                         [(ngModel)]="deviceToEdit.alerts[i].value_min" [ngModelOptions]="{standalone: true}">
+                    <input type="number" class="form-control" name="alert.value_min"
+                         [(ngModel)]="alert.value_min" [ngModelOptions]="{standalone: true}">
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-md-4 offset-1 form-control-label">Max value</label>
                 <div class="col-md-7">
-                  <input type="number" class="form-control" name="deviceToEdit.alerts[i].value_max"
-                         [(ngModel)]="deviceToEdit.alerts[i].value_max" [ngModelOptions]="{standalone: true}">
+                  <input type="number" class="form-control" name="alert.value_max"
+                         [(ngModel)]="alert.value_max" [ngModelOptions]="{standalone: true}">
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-md-4 offset-1 form-control-label">Exact value</label>
                 <div class="col-md-7">
-                  <input type="text" class="form-control" placeholder="Exact value" name="deviceToEdit.alerts[i].value_exact"
-                         [(ngModel)]="deviceToEdit.alerts[i].value_exact" [ngModelOptions]="{standalone: true}">
+                  <input type="text" class="form-control" placeholder="Exact value" name="alert.value_exact"
+                         [(ngModel)]="alert.value_exact" [ngModelOptions]="{standalone: true}">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4 offset-1 form-control-label">Custom message (optional)</label>
+                <div class="col-md-7">
+                  <input type="text" class="form-control" placeholder="Custom message" name="alert.message"
+                         [(ngModel)]="alert.message" [ngModelOptions]="{standalone: true}">
                 </div>
               </div>
               <div class="form-group row">
                 <div class="col-md-12">
-                  <button class="btn pull-right btn-sm btn-danger" (click)="cancelAlert(i)"><i class="fa fa-ban"></i> Cancel</button>
+                  <button class="btn pull-right btn-sm btn-outline-danger" (click)="removeAlert(i)"><i class="fa fa-trash"></i> Remove</button>
                 </div>
               </div>
             </div>
@@ -325,7 +331,7 @@
         </div>
         <div class="card-footer">
           <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
-          <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="update(deviceToEdit)"><i class="fa fa-check"></i> Update</button>
+          <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="updateDevice()"><i class="fa fa-check"></i> Update</button>
         </div>
       </div>
     </div>

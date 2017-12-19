@@ -16,7 +16,7 @@
       {
         "method": "stats",
         "endpoint": "/stats",
-        "description": "Statistical information for BaseStation registers.",
+        "description": "Statistical information for AppSetting registers.",
         "type": "model",
         "count": {
           "on": "createdAt",

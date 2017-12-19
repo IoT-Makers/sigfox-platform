@@ -33,14 +33,16 @@
     "description": {
       "type": "string"
     },
-    "icon":{
+    "icon": {
       "type": "string"
     },
-    "options":{
+    "options": {
       "type": "object"
     },
-    "widgets":{
-      "type": ["object"]
+    "widgets": {
+      "type": [
+        "object"
+      ]
     }
   },
   "validations": [],

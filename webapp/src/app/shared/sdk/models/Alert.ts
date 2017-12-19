@@ -2,8 +2,7 @@
 
 declare var Object: any;
 export interface AlertInterface {
-  "name": string;
-  "type": string;
+  "connectorId": string;
   "key": string;
   "value_min"?: number;
   "value_max"?: number;
@@ -13,8 +12,7 @@ export interface AlertInterface {
 }
 
 export class Alert implements AlertInterface {
-  "name": string = '';
-  "type": string = '';
+  "connectorId": string = '';
   "key": string = '';
   "value_min": number = 0;
   "value_max": number = 0;
@@ -54,12 +52,8 @@ export class Alert implements AlertInterface {
       path: 'Alerts',
       idName: 'id',
       properties: {
-        "name": {
-          name: 'name',
-          type: 'string'
-        },
-        "type": {
-          name: 'type',
+        "connectorId": {
+          name: 'connectorId',
           type: 'string'
         },
         "key": {

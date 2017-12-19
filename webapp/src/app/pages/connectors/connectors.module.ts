@@ -7,6 +7,7 @@ import {FormsModule} from '@angular/forms';
 import {DataTableModule} from 'angular2-datatable';
 import {DataFilterPipe} from './datafilterpipe';
 import {ToasterModule} from 'angular2-toaster';
+import {SelectModule} from 'ng2-select';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import {ToasterModule} from 'angular2-toaster';
     ModalModule.forRoot(),
     AccordionModule.forRoot(),
     FormsModule,
-    ToasterModule
+    ToasterModule,
+    SelectModule,
   ],
   declarations: [
     ConnectorsComponent,

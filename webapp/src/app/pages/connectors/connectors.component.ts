@@ -1,8 +1,10 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {AccessToken, User} from '../../shared/sdk/models';
-import {UserApi} from '../../shared/sdk/services/custom';
+import {AccessToken, Connector, FireLoopRef, User} from '../../shared/sdk/models';
+import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
+import {Subscription} from 'rxjs/Subscription';
+import {RealTime} from '../../shared/sdk/services/core';
 
 @Component({
   selector: 'app-profile',
@@ -14,6 +16,13 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   private user: User;
 
   @ViewChild('confirmModal') confirmModal: any;
+
+  private newConnector: Connector = new Connector();
+  private connectorNames = [{id: 'sigfox', text: 'Sigfox API'}, {id: 'free-mobile', text: 'Free Mobile'}];
+
+  private connectorSub: Subscription;
+  private connectorRef: FireLoopRef<Connector>;
+  private connectors: Connector[] = new Array<Connector>();
 
   private devAccessTokenToRemove: AccessToken = new AccessToken();
   private callbackURL;
@@ -28,30 +37,60 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(DOCUMENT) private document: any,
               private userApi: UserApi,
+              private rt: RealTime,
+              private connectorApi: ConnectorApi,
               toasterService: ToasterService) {
     this.toasterService = toasterService;
   }
 
+  ngOnInit(): void {
+    // Get the logged in User object (avatar, email, ...)
+    this.getUser();
+    this.callbackURL = this.document.location.origin + '/api/Messages/sigfox';
+
+    // Remove the new connector id (created server side) and set the createdAt date
+    this.newConnector.id = null;
+    this.newConnector.createdAt = new Date();
+
+    if (
+      this.rt.connection.isConnected() &&
+      this.rt.connection.authenticated
+    ) {
+      this.rt.onReady().subscribe(() => this.setup());
+    } else {
+      this.rt.onAuthenticated().subscribe(() => this.setup());
+      this.rt.onReady().subscribe();
+    }
+  }
+
   getUser(): void {
+    // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     this.userApi.findById(this.user.id, {}).subscribe((user: User) => {
       this.user = user;
     });
+  }
 
-    // TODO: REMOVE BELLOW AFTER HAVING IT RAN ONCE (AFTER UPDATING) !!!
-    // Retrocompatibilty
-    this.userApi.getAccessTokens(this.user.id, {
-      where: {
-        ttl: -1,
-        userId: this.user.id
+  setup(): void {
+    this.ngOnDestroy();
+
+    // Get and listen categories
+    this.connectorRef = this.rt.FireLoop.ref<Connector>(Connector);
+    this.connectorSub = this.connectorRef.on('change',
+      {
+        where: {
+          userId: this.user.id
+        }
       }
-    }).subscribe((accessTokens: AccessToken[]) => {
-      if (accessTokens) {
-        this.userApi.patchAttributes(this.user.id, {devAccessTokens: accessTokens}).subscribe((user: User) => {
-          this.user = user;
-        });
-      }
+    ).subscribe((connectors: Connector[]) => {
+      this.connectors = connectors;
+      this.connectors.forEach(connector => {
+      });
     });
+  }
+
+  nameSelected(name: any) {
+    this.newConnector.name = name.id;
   }
 
   createDevAccessToken(): void {
@@ -71,7 +110,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     this.devAccessTokenToRemove = devAccessToken;
   }
 
-  remove(): void {
+  removeDevAccessToken(): void {
     this.userApi.destroyByIdAccessTokens(this.user.id, this.devAccessTokenToRemove.id).subscribe(value => {
         const index = this.user.devAccessTokens.indexOf(this.devAccessTokenToRemove);
         this.user.devAccessTokens.splice(index, 1);
@@ -83,39 +122,25 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     this.confirmModal.hide();
   }
 
-  saveSigfoxBackendApiAccess(): void {
-    this.userApi.patchAttributes(
-      this.user.id,
-      {
-        'sigfoxBackendApiLogin': this.user.sigfoxBackendApiLogin,
-        'sigfoxBackendApiPassword': this.user.sigfoxBackendApiPassword
-      }
-    ).subscribe(value => {
-      this.toasterService.pop('success', 'Success', 'Credentials were successfully updated.');
+  saveConnector(connector: Connector): void {
+    connector.userId = this.user.id;
+
+    this.connectorRef.upsert(connector).subscribe(value => {
+      this.toasterService.pop('success', 'Success', 'The connector was successfully updated.');
+    }, err => {
+      this.toasterService.pop('warning', 'Oupsi', 'Have you filled all the required fields?');
     });
   }
 
-  removeSigfoxBackendApiAccess(): void {
-    this.userApi.patchAttributes(
-      this.user.id,
-      {
-        'sigfoxBackendApiLogin': null,
-        'sigfoxBackendApiPassword': null
-      }
-    ).subscribe((user: User) => {
-      this.user = user;
-      this.toasterService.pop('success', 'Success', 'Credentials were successfully removed.');
+  clearConnector(connector: Connector) {
+    this.connectorRef.remove(connector).subscribe(value => {
+      this.toasterService.pop('success', 'Success', 'The connector was successfully cleared.');
     });
   }
 
-
-  ngOnInit() {
-    // Get the logged in User object (avatar, email, ...)
-    this.getUser();
-    this.callbackURL = this.document.location.origin + '/api/Messages/sigfox';
-  }
-
-  ngOnDestroy() {
-
+  ngOnDestroy(): void {
+    console.log('Connector: ngOnDestroy');
+    if (this.connectorRef)this.connectorRef.dispose();
+    if (this.connectorSub)this.connectorSub.unsubscribe();
   }
 }

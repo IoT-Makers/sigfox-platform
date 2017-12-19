@@ -162,40 +162,97 @@
     </div>
   </div>
 
-  <h3>Sigfox Backend API Access</h3>
+  <!-- Create a new connector -->
+  <h3>Add Connector</h3>
   <hr>
   <div class="row">
     <div class="col-12">
       <accordion>
         <accordion-group>
           <div accordion-heading>
-            Edit Credentials
+            Enter Credentials
           </div>
           <div class="card-block">
-            <form (ngSubmit)="saveSigfoxBackendApiAccess()" class="form-horizontal" #editSigfoxBackendApiAccessForm="ngForm">
+            <div class="form-horizontal">
               <div class="form-group row">
-                <label class="col-md-2 form-control-label font-weight-bold">Login</label>
-                <div class="col-md-10">
-                  <input type="text" class="form-control" placeholder="{{user.sigfoxBackendApiLogin ? user.sigfoxBackendApiLogin : 'Sigfox Backend API login'}}" name="sigfoxBackendApiLogin" [(ngModel)]="user.sigfoxBackendApiLogin">
+                <label class="col-md-3 form-control-label font-weight-bold">Name</label>
+                <div class="col-md-9">
+                  <ng-select #namesSelected
+                             [placeholder]="'Select a connector'"
+                             [allowClear]="false"
+                             [items]="connectorNames"
+                             (selected)="nameSelected($event)">
+                  </ng-select>
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-2 form-control-label font-weight-bold">Password</label>
-                <div class="col-md-10">
-                  <input type="text" class="form-control" placeholder="{{user.sigfoxBackendApiPassword ? user.sigfoxBackendApiPassword : 'Sigfox Backend API password'}}" name="sigfoxBackendApiPassword" [(ngModel)]="user.sigfoxBackendApiPassword">
+                <label class="col-md-3 form-control-label font-weight-bold">Description <small>(optional)</small></label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" placeholder="Connector description" [(ngModel)]="newConnector.description">
                 </div>
               </div>
-            </form>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label font-weight-bold">User</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" placeholder="Connector login" [(ngModel)]="newConnector.login">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label font-weight-bold">Password</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" placeholder="Connector password" [(ngModel)]="newConnector.password">
+                </div>
+              </div>
+            </div>
           </div>
-          <button class="btn btn-sm btn-primary" [disabled]="!editSigfoxBackendApiAccessForm.form.valid" (click)="saveSigfoxBackendApiAccess()"><i
-            class="fa fa-check"></i> Save
-          </button>
-          <button class="btn btn-sm btn-danger" (click)="removeSigfoxBackendApiAccess()"><i class="fa fa-ban"></i> Clear</button>
+          <button class="btn btn-sm btn-outline-success" (click)="saveConnector(newConnector)"><i class="fa fa-plus"></i> Add</button>
         </accordion-group>
       </accordion>
     </div>
   </div>
 
+
+  <ng-container *ngFor="let connector of connectors; let i = index">
+
+    <h3>{{connector.name}}</h3>
+    <hr>
+    <div class="row">
+      <div class="col-12">
+        <accordion>
+          <accordion-group>
+            <div accordion-heading>
+              Edit Credentials
+            </div>
+            <div class="card-block">
+              <form (ngSubmit)="saveConnector(connector)" class="form-horizontal">
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Description</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" value="{{connector.description}}" placeholder="{{connector.description ? connector.description : 'No description yet'}}" [(ngModel)]="connector.description" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Login</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" value="{{connector.login}}" [(ngModel)]="connector.login" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Password</label>
+                  <div class="col-md-9">
+                    <input type="password" class="form-control" value="{{connector.password}}" [(ngModel)]="connector.password" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <button class="btn btn-sm btn-primary" (click)="saveConnector(connector)"><i class="fa fa-check"></i> Save</button>
+            <button class="btn btn-sm btn-danger" (click)="clearConnector(connector)"><i class="fa fa-ban"></i> Clear</button>
+          </accordion-group>
+        </accordion>
+      </div>
+    </div>
+
+  </ng-container>
 
 </div>
 
@@ -295,7 +352,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
-        <button class="btn btn-sm btn-danger" (click)="remove()">Delete</button>
+        <button class="btn btn-sm btn-danger" (click)="removeDevAccessToken()">Delete</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

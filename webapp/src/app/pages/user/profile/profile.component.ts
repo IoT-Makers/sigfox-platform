@@ -70,7 +70,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Get the logged in User object (avatar, email, ...)
+    // Get the logged in User object
     this.getUser();
   }
 

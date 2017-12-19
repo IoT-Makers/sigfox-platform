@@ -161,6 +161,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
 
+    // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
     // Get devices

@@ -106,6 +106,18 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   UNLINK_ORGANIZATIONS_SUCCESS: type('[User] unlinkOrganizations success'),
   UNLINK_ORGANIZATIONS_FAIL: type('[User] unlinkOrganizations fail'),
 
+  FIND_BY_ID_CONNECTORS: type('[User] findByIdConnectors'),
+  FIND_BY_ID_CONNECTORS_SUCCESS: type('[User] findByIdConnectors success'),
+  FIND_BY_ID_CONNECTORS_FAIL: type('[User] findByIdConnectors fail'),
+
+  DESTROY_BY_ID_CONNECTORS: type('[User] destroyByIdConnectors'),
+  DESTROY_BY_ID_CONNECTORS_SUCCESS: type('[User] destroyByIdConnectors success'),
+  DESTROY_BY_ID_CONNECTORS_FAIL: type('[User] destroyByIdConnectors fail'),
+
+  UPDATE_BY_ID_CONNECTORS: type('[User] updateByIdConnectors'),
+  UPDATE_BY_ID_CONNECTORS_SUCCESS: type('[User] updateByIdConnectors success'),
+  UPDATE_BY_ID_CONNECTORS_FAIL: type('[User] updateByIdConnectors fail'),
+
   GET_ACCESSTOKENS: type('[User] getAccessTokens'),
   GET_ACCESSTOKENS_SUCCESS: type('[User] getAccessTokens success'),
   GET_ACCESSTOKENS_FAIL: type('[User] getAccessTokens fail'),
@@ -190,6 +202,18 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   DELETE_ORGANIZATIONS_SUCCESS: type('[User] deleteOrganizations success'),
   DELETE_ORGANIZATIONS_FAIL: type('[User] deleteOrganizations fail'),
 
+  GET_CONNECTORS: type('[User] getConnectors'),
+  GET_CONNECTORS_SUCCESS: type('[User] getConnectors success'),
+  GET_CONNECTORS_FAIL: type('[User] getConnectors fail'),
+
+  CREATE_CONNECTORS: type('[User] createConnectors'),
+  CREATE_CONNECTORS_SUCCESS: type('[User] createConnectors success'),
+  CREATE_CONNECTORS_FAIL: type('[User] createConnectors fail'),
+
+  DELETE_CONNECTORS: type('[User] deleteConnectors'),
+  DELETE_CONNECTORS_SUCCESS: type('[User] deleteConnectors success'),
+  DELETE_CONNECTORS_FAIL: type('[User] deleteConnectors fail'),
+
   LOGIN: type('[User] login'),
   LOGIN_SUCCESS: type('[User] login success'),
   LOGIN_FAIL: type('[User] login fail'),
@@ -245,6 +269,10 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   CREATE_MANY_ORGANIZATIONS: type('[User] createManyOrganizations'),
   CREATE_MANY_ORGANIZATIONS_SUCCESS: type('[User] createManyOrganizations success'),
   CREATE_MANY_ORGANIZATIONS_FAIL: type('[User] createManyOrganizations fail'),
+
+  CREATE_MANY_CONNECTORS: type('[User] createManyConnectors'),
+  CREATE_MANY_CONNECTORS_SUCCESS: type('[User] createManyConnectors success'),
+  CREATE_MANY_CONNECTORS_FAIL: type('[User] createManyConnectors fail'),
 
 }, {
   /**
@@ -1437,6 +1465,147 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
 
   /**
+   * findByIdConnectors Action.
+   * Find a related item by id for Connectors.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Connectors
+   * @param {any} meta (optional).
+   * 
+   */
+  findByIdConnectors: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_CONNECTORS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * findByIdConnectorsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  findByIdConnectorsSuccess: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_CONNECTORS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * findByIdConnectorsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  findByIdConnectorsFail: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_CONNECTORS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * destroyByIdConnectors Action.
+   * Delete a related item by id for Connectors.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Connectors
+   * @param {any} meta (optional).
+   * 
+   */
+  destroyByIdConnectors: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_CONNECTORS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * destroyByIdConnectorsSuccess Action.
+   * 
+   * @param {any} id 
+   * This method returns no data.
+   * @param {any} meta (optional).
+   * 
+   */
+  destroyByIdConnectorsSuccess: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_CONNECTORS_SUCCESS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * destroyByIdConnectorsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  destroyByIdConnectorsFail: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_CONNECTORS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * updateByIdConnectors Action.
+   * Update a related item by id for Connectors.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Connectors
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  updateByIdConnectors: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_CONNECTORS;
+      public payload: {id: any, fk: any, data: any};
+
+    constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk, data};
+    }
+  },
+  /**
+   * updateByIdConnectorsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  updateByIdConnectorsSuccess: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_CONNECTORS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * updateByIdConnectorsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  updateByIdConnectorsFail: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_CONNECTORS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
    * getAccessTokens Action.
    * Queries accessTokens of user.
    *
@@ -2368,6 +2537,139 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
 
   /**
+   * getConnectors Action.
+   * Queries Connectors of user.
+   *
+   * @param {any} id user id
+   * @param {object} filter 
+   * @param {any} meta (optional).
+   * 
+   */
+  getConnectors: class implements Action {
+    public readonly type = UserActionTypes.GET_CONNECTORS;
+      public payload: {id: any, filter: LoopBackFilter};
+
+    constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, filter};
+    }
+  },
+  /**
+   * getConnectorsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  getConnectorsSuccess: class implements Action {
+    public readonly type = UserActionTypes.GET_CONNECTORS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * getConnectorsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  getConnectorsFail: class implements Action {
+    public readonly type = UserActionTypes.GET_CONNECTORS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * createConnectors Action.
+   * Creates a new instance in Connectors of this model.
+   *
+   * @param {any} id user id
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  createConnectors: class implements Action {
+    public readonly type = UserActionTypes.CREATE_CONNECTORS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createConnectorsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  createConnectorsSuccess: class implements Action {
+    public readonly type = UserActionTypes.CREATE_CONNECTORS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createConnectorsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  createConnectorsFail: class implements Action {
+    public readonly type = UserActionTypes.CREATE_CONNECTORS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * deleteConnectors Action.
+   * Deletes all Connectors of this model.
+   *
+   * @param {any} id user id
+   * @param {any} meta (optional).
+   * 
+   */
+  deleteConnectors: class implements Action {
+    public readonly type = UserActionTypes.DELETE_CONNECTORS;
+      
+    constructor(public payload: any, public meta?: any) {}
+  },
+  /**
+   * deleteConnectorsSuccess Action.
+   * 
+   * @param {any} id 
+   * This method returns no data.
+   * @param {any} meta (optional).
+   * 
+   */
+  deleteConnectorsSuccess: class implements Action {
+    public readonly type = UserActionTypes.DELETE_CONNECTORS_SUCCESS;
+  
+    constructor(public payload: any, public meta?: any) {}
+  },
+  /**
+   * deleteConnectorsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  deleteConnectorsFail: class implements Action {
+    public readonly type = UserActionTypes.DELETE_CONNECTORS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
    * login Action.
    * Login a user with username/email and password.
    *
@@ -3023,6 +3325,54 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   createManyOrganizationsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ORGANIZATIONS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * createManyConnectors Action.
+   * Creates a new instance in Connectors of this model.
+   *
+   * @param {any} id user id
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  createManyConnectors: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_CONNECTORS;
+      public payload: {id: any, data: any[]};
+
+    constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createManyConnectorsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  createManyConnectorsSuccess: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_CONNECTORS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createManyConnectorsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  createManyConnectorsFail: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_CONNECTORS_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

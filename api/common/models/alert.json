@@ -1,12 +1,12 @@
 {
   "name": "Alert",
   "base": "Model",
-  "idInjection": true,
+  "idInjection": false,
   "options": {
     "validateUpsert": true
   },
   "mixins": {
-    "FireLoop": true,
+    "FireLoop": false,
     "TimeStamp": {
       "required": false,
       "validateUpsert": true
@@ -25,11 +25,7 @@
     ]
   },
   "properties": {
-    "name": {
-      "type": "string",
-      "required": true
-    },
-    "type": {
+    "connectorId": {
       "type": "string",
       "required": true
     },

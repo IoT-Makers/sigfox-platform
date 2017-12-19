@@ -73,6 +73,10 @@
       "type": "hasMany",
       "model": "Category"
     },
+    "Connectors": {
+      "type": "hasMany",
+      "model": "Connector"
+    },
     "Dashboards": {
       "type": "hasMany",
       "model": "Dashboard"

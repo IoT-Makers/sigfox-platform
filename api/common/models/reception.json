@@ -15,7 +15,7 @@
       {
         "method": "stats",
         "endpoint": "/stats",
-        "description": "Statistical information for Message registers.",
+        "description": "Statistical information for Reception registers.",
         "type": "model",
         "count": {
           "on": "createdAt",
