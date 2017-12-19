@@ -17,6 +17,7 @@ import { GeolocEffects } from './effects/Geoloc';
 import { AlertEffects } from './effects/Alert';
 import { ReceptionEffects } from './effects/Reception';
 import { ConnectorEffects } from './effects/Connector';
+import { WidgetEffects } from './effects/Widget';
 
 export interface LoopbackStateInterface {
   LoopbackAuth: SDKToken;
@@ -32,6 +33,7 @@ export interface LoopbackStateInterface {
   Geolocs: reducers.GeolocsState;
   Alerts: reducers.AlertsState;
   Receptions: reducers.ReceptionsState;
+  Widgets: reducers.WidgetsState;
   Connectors: reducers.ConnectorsState;
 };
 
@@ -50,6 +52,7 @@ export const LoopbackReducer = {
 	Alerts: reducers.AlertsReducer,
 	Receptions: reducers.ReceptionsReducer,
 	Connectors: reducers.ConnectorsReducer,
+	Widgets: reducers.WidgetsReducer,
 };
 
 export const LoopbackEffects = [
@@ -67,4 +70,5 @@ export const LoopbackEffects = [
   AlertEffects,
   ReceptionEffects,
   ConnectorEffects,
+  WidgetEffects,
 ];

@@ -13,6 +13,7 @@ import { Geoloc } from '../../models/Geoloc';
 import { Alert } from '../../models/Alert';
 import { Reception } from '../../models/Reception';
 import { Connector } from '../../models/Connector';
+import { Widget } from '../../models/Widget';
 
 export interface Models { [name: string]: any }
 
@@ -33,7 +34,8 @@ export class SDKModels {
     Alert: Alert,
     Reception: Reception,
     Connector: Connector,
-    
+    Widget: Widget,
+
   };
 
   public get(modelName: string): any {

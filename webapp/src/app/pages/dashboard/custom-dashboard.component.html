@@ -7,13 +7,21 @@
   <div class="row" *ngIf="dashboardReady">
 
     <div class="col-md-12">
-      <button *ngIf="!edit" class="btn btn-info pull-right" (click)="editDashboard()"><i class="fa fa-pencil"></i> Edit</button>
-      <button *ngIf="edit" class="btn btn-success pull-right" (click)="saveDashboard()"><i class="fa fa-save"></i> Save</button>
+      <button *ngIf="!editFlag && !newWidgetFlag" class="btn btn-info pull-right" (click)="editDashboard()"><i class="fa fa-pencil"></i> Edit
+        Dashboard
+      </button>
+      <button *ngIf="!editFlag && !newWidgetFlag" class="btn btn-success pull-right" (click)="addNewWidget()"><i class="fa fa-plus"></i> Add
+        widget
+      </button>
+      <button *ngIf="editFlag || newWidgetFlag" class="btn btn-danger pull-right" (click)="cancel()"><i class="fa fa-"></i> Cancel
+      </button>
+
       <h2 class=""><i class="fa {{dashboard.icon}}"></i> {{dashboard.name}}</h2>
+      <hr>
     </div>
 
     <!--Edit Dashboard-->
-    <div class="col-md-12" *ngIf="edit">
+    <div class="col-md-12" *ngIf="editFlag">
       <div class="card">
         <div class="card-header">
           <strong>Edit Dashboard</strong>
@@ -41,7 +49,7 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Icon <i class="fa {{dashboard.icon}}"></i></label>
               <div class="col-md-9">
-                <ng-select #devicesSelect
+                <ng-select #iconDashboardSelect
                            [placeholder]="dashboard.icon ? dashboard.icon : 'Select an icon'"
                            [allowClear]="true"
                            [items]="fontAwesomeList"
@@ -49,71 +57,100 @@
                 </ng-select>
               </div>
             </div>
-            <hr>
-            <h4 class="text-center">New widget</h4>
-            <hr>
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Name</label>
-                <div class="col-md-6">
-                  <input type="text" class="form-control" placeholder="Widget name" name="newWidget.name"
-                         [(ngModel)]="newWidget.name">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Description</label>
-                <div class="col-md-6">
-                  <input type="text" class="form-control" placeholder="Widget description" name="newWidget.description"
-                         [(ngModel)]="newWidget.description">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Icon <i class="fa {{newWidget.icon}}"></i></label>
-                <div class="col-md-6">
-                  <ng-select #devicesSelect
-                             [placeholder]="newWidget.icon ? newWidget.icon : 'Select an icon'"
-                             [allowClear]="true"
-                             [items]="fontAwesomeList"
-                             (selected)="newWidgetIcon($event)">
-                  </ng-select>
-                </div>
-              </div>
+
+            <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="saveDashboard()"><i
+              class="fa fa-check"></i> Save Dashboard
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="deleteDashboard()"><i class="fa fa-trash"></i> Delete Dashboard
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--End Edit dashboard-->
+
+    <div class="col-md-12" *ngIf="newWidgetFlag">
+      <div class="card">
+        <div class="card-header">
+          <strong>Add new widget</strong>
+        </div>
+        <div class="card-block">
+
+          <!--Form Begin-->
+          <form class="form-horizontal" #newWidgetForm="ngForm">
 
             <div class="form-group row">
-              <label class="col-md-3 form-control-label">Type</label>
+              <label class="col-md-3 form-control-label">Name (required) </label>
               <div class="col-md-6">
-                <ng-select #devicesSelect
-                           [placeholder]="newWidget.type ? newWidget.type : 'Select a type'"
+                <input type="text" class="form-control" placeholder="Widget name" name="newWidget.name" required
+                       [(ngModel)]="newWidget.name">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Description</label>
+              <div class="col-md-6">
+                <input type="text" class="form-control" placeholder="Widget description" name="newWidget.description"
+                       [(ngModel)]="newWidget.description">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Icon <i class="fa {{newWidget.icon}}"></i></label>
+              <div class="col-md-6">
+                <ng-select #iconWidgetSelect
+                           [placeholder]="newWidget.icon ? newWidget.icon : 'Select an icon'"
                            [allowClear]="true"
-                           [items]="widgetType"
-                           (selected)="newWidgetType($event)">
+                           [items]="fontAwesomeList"
+                           (selected)="newWidgetIcon($event)">
                 </ng-select>
               </div>
             </div>
 
-            <div class="form-group row" *ngIf="newWidget.type === 'gauge'">
-              <label class="col-md-3 form-control-label">Device</label>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Width (required)</label>
+              <div class="col-md-6">
+                <input type="number" min="1" max="12" class="form-control" placeholder="Widget width" name="newWidget.width" required
+                       [(ngModel)]="newWidget.width">
+              </div>
+            </div>
 
-                <div class="col-md-6">
-                  <ng-select #devicesSelect
-                             [placeholder]="newWidget.type ? newWidget.type : 'Select a type'"
-                             [allowClear]="true"
-                             [items]="widgetType"
-                             (selected)="newWidgetType($event)">
-                  </ng-select>
-                </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Type (required)</label>
+              <div class="col-md-6">
+                <ng-select #widgetTypeSelect
+                           [placeholder]="newWidget.type ? newWidget.type : 'Select a type'"
+                           [allowClear]="true"
+                           [items]="widgetType"
+                           (selected)="newWidgetType($event)"
+                           required>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row" *ngIf="newWidget.type === 'map'">
+              <label class="col-md-3 form-control-label">Category</label>
+
+              <div class="col-md-6">
+
+                <select name="categoryId" class="form-control" size="1" [ngModel]="selectedCategory" (ngModelChange)="addFilter($event)">
+                  <option [ngValue]="category.id" *ngFor="let category of categories">{{category.name}}</option>
+                  <option [ngValue]=""></option>
+                </select>
+              </div>
+
 
             </div>
 
 
-
-            <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="addWidget()"><i class="fa fa-check"></i> Add widget</button>
+            <button class="btn btn-sm btn-primary" [disabled]="!newWidgetForm.form.valid" (click)="addWidget()"><i
+              class="fa fa-check"></i> Add widget
+            </button>
 
             <!--<div class="form-group row">-->
-              <!--<label class="col-md-3 form-control-label">Widget name</label>-->
-              <!--<div class="col-md-9">-->
-                <!--<input type="text" class="form-control" placeholder="Widget name" name="dashboard.widget"-->
-                       <!--[(ngModel)]="dashboard.widget">-->
-              <!--</div>-->
+            <!--<label class="col-md-3 form-control-label">Widget name</label>-->
+            <!--<div class="col-md-9">-->
+            <!--<input type="text" class="form-control" placeholder="Widget name" name="dashboard.widget"-->
+            <!--[(ngModel)]="dashboard.widget">-->
+            <!--</div>-->
             <!--</div>-->
 
             <!--<button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="saveDashboard()"><i class="fa fa-check"></i> Update</button>-->
@@ -122,16 +159,114 @@
         </div>
       </div>
     </div>
-    <!--End Edit dashboard-->
-
-    <!--Show widgets-->
-    <div class="row" *ngIf="dashboard.widgets">
-
-    </div>
-    <!--End Show widgets-->
-
   </div>
 
+
+
+
+  <!--Show widgets-->
+  <div class="row" *ngIf="widgets.length == 0">
+    Loading widgets...
+  </div>
+  <div class="row" *ngIf="widgets.length>0">
+    <!--For each widget-->
+
+    <div *ngFor="let widget of widgets" class="col col-md-{{widget.width}}">
+      <div class="card">
+        <!--card header-->
+        <div class="card-header">
+          <i class="fa {{widget.icon}} fa-lg"></i> <strong>{{widget.name}}</strong>
+          <button class="btn btn-info pull-right" *ngIf="editFlag" (click)="editWidget()"><i class="fa fa-pencil"></i></button>
+          <button class="btn btn-danger pull-right" *ngIf="editFlag" (click)="deleteWidget(widget)"><i class="fa fa-trash"></i></button>
+        </div>
+        <!--end header-->
+
+        <!--card body-->
+        <div class="card-block">
+          <ng-container *ngIf="widget.type=='map'">
+            <ng-container *ngIf="widget.devices">
+              <agm-map [latitude]=0
+                       [longitude]=0
+                       [zoom]="2"
+                       [fullscreenControl]="true">
+                <ng-container *ngFor="let device of widget.devices; let i = index">
+                  <ng-container *ngFor="let geoloc of device.location">
+                    <!-- Geoloc Sigfox -->
+                    <ng-container *ngIf="geoloc.type === 'sigfox'">
+                      <agm-marker
+                        (mouseOut)="markerOut(i)"
+                        (mouseOver)="markerOver(i)"
+                        [zIndex]="3"
+                        [latitude]="geoloc.lat"
+                        [longitude]="geoloc.lng"
+                        [iconUrl]="'assets/img/marker-sigfox.png'">
+                        <agm-info-window
+                          id="{{geoloc.type + '_' + device.id}}">
+                          <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                          <br>
+                          <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                          <br *ngIf="device.name">
+                          <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                          <br>
+                          <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                          <br>
+                          <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                          <br>
+                          <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                        </agm-info-window>
+                      </agm-marker>
+                      <!-- Circle -->
+                      <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                                  [zIndex]="1"
+                                  [strokePosition]="CENTER"
+                                  [strokeWeight]="1"
+                                  [strokeColor]="'#8d5dd1'"
+                                  [fillOpacity]="0.1"
+                                  [fillColor]="'#8d5dd1'"
+                                  [latitude]="geoloc.lat"
+                                  [longitude]="geoloc.lng"
+                                  [radius]="geoloc.precision">
+                      </agm-circle>
+                      <!-- End Circle -->
+                    </ng-container>
+                    <!-- Geoloc GPS -->
+                    <ng-container *ngIf="geoloc.type === 'GPS'">
+                      <agm-marker
+                        [zIndex]="3"
+                        [latitude]="geoloc.lat"
+                        [longitude]="geoloc.lng"
+                        [iconUrl]="'assets/img/marker-gps.png'">
+                        <agm-info-window
+                          id="{{geoloc.type + '_' + device.id}}">
+                          <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                          <br>
+                          <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                          <br *ngIf="device.name">
+                          <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                          <br>
+                          <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                          <br>
+                          <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                        </agm-info-window>
+                      </agm-marker>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+
+              </agm-map>
+
+            </ng-container>
+          </ng-container>
+
+
+          <ng-container *ngIf="widget.type!='map'">{{widget.type}}</ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!--end of for each widget-->
+  </div>
+  <!--End Show widgets-->
 
 
 </div>

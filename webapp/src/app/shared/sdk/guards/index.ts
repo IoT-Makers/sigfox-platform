@@ -13,6 +13,7 @@ import { GeolocExistsGuard } from './Geoloc';
 import { AlertExistsGuard } from './Alert';
 import { ReceptionExistsGuard } from './Reception';
 import { ConnectorExistsGuard } from './Connector';
+import { WidgetExistsGuard } from './Widget';
 
 export const LOOPBACK_GUARDS_PROVIDERS = [
   AuthGuard,
@@ -29,6 +30,7 @@ export const LOOPBACK_GUARDS_PROVIDERS = [
 	AlertExistsGuard,
 	ReceptionExistsGuard,
 	ConnectorExistsGuard,
+	WidgetExistsGuard,
 ];
 
 export * from './auth.guard';
@@ -44,4 +46,5 @@ export * from './Organization';
 export * from './Geoloc';
 export * from './Alert';
 export * from './Reception';
+export * from './Widget';
 export * from './Connector';

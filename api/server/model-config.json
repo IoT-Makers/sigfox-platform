@@ -134,5 +134,9 @@
   "Connector": {
     "dataSource": "db",
     "public": true
+  },
+  "Widget": {
+    "dataSource": "db",
+    "public": true
   }
 }

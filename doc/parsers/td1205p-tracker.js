@@ -179,6 +179,60 @@ if (payload.length == 2 || payload.length == 4) {
     }else{
         var battery = parseInt(payload, 16);
     }
+
+    obj.key = "lat";
+    obj.value = null;
+    obj.type = "number";
+    obj.unit = "";
+    parsedData.push(obj);
+    obj = {};
+
+
+    obj.key = "lng";
+    obj.value = null;
+    obj.type = "number";
+    obj.unit = "";
+    parsedData.push(obj);
+    obj = {};
+
+
+    obj.key = "hdop";
+    obj.value = null;
+    obj.type = "number";
+    obj.unit = "";
+    parsedData.push(obj);
+    obj = {};
+
+    obj.key = "geoloc";
+    obj.value = "";
+    obj.type = "string";
+    obj.unit = "";
+    parsedData.push(obj);
+    obj = {};
+
+
+    obj.key = "sat";
+    obj.value = null;
+    obj.type = "number";
+    obj.unit = "";
+    parsedData.push(obj);
+    obj = {};
+
+
+    obj.key = "gps_acq";
+    obj.type = "number";
+    obj.unit = "seconds";
+    obj.value = null;
+    parsedData.push(obj);
+    obj = {};
+
+    obj.key = "speed";
+    obj.value = null;
+    obj.type = "number";
+    obj.unit = "km/h";
+    parsedData.push(obj);
+    obj = {};
+
     //console.log('battery', message.data);
     //console.log('battery', battery);
     obj.key = "battery";

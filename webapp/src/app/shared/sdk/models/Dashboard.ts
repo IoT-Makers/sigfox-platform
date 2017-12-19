@@ -1,4 +1,8 @@
 /* tslint:disable */
+import {
+  User,
+  Widget
+} from '../index';
 
 declare var Object: any;
 export interface DashboardInterface {
@@ -6,11 +10,12 @@ export interface DashboardInterface {
   "description"?: string;
   "icon"?: string;
   "options"?: any;
-  "widgets"?: Array<any>;
   "id"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: number;
+  user?: User;
+  Widgets?: Widget[];
 }
 
 export class Dashboard implements DashboardInterface {
@@ -18,11 +23,12 @@ export class Dashboard implements DashboardInterface {
   "description": string = '';
   "icon": string = '';
   "options": any = <any>null;
-  "widgets": Array<any> = <any>[];
   "id": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": number = 0;
+  user: User = null;
+  Widgets: Widget[] = null;
   constructor(data?: DashboardInterface) {
     Object.assign(this, data);
   }
@@ -72,10 +78,6 @@ export class Dashboard implements DashboardInterface {
           name: 'options',
           type: 'any'
         },
-        "widgets": {
-          name: 'widgets',
-          type: 'Array&lt;any&gt;'
-        },
         "id": {
           name: 'id',
           type: 'number'
@@ -94,6 +96,22 @@ export class Dashboard implements DashboardInterface {
         },
       },
       relations: {
+        user: {
+          name: 'user',
+          type: 'User',
+          model: 'User',
+          relationType: 'belongsTo',
+                  keyFrom: 'userId',
+          keyTo: 'id'
+        },
+        Widgets: {
+          name: 'Widgets',
+          type: 'Widget[]',
+          model: 'Widget',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'dashboardId'
+        },
       }
     }
   }

@@ -16,7 +16,7 @@
 * ============================================================================
 * import { NgModule }       from '@angular/core';
 * import { BrowserModule }  from '@angular/platform-browser';
-* // App Root 
+* // App Root
 * import { AppComponent }   from './app.component';
 * // Feature Modules
 * import { SDK[Browser|Node|Native]Module } from './shared/sdk/sdk.module';
@@ -62,6 +62,7 @@ import { GeolocApi } from './services/custom/Geoloc';
 import { AlertApi } from './services/custom/Alert';
 import { ReceptionApi } from './services/custom/Reception';
 import { ConnectorApi } from './services/custom/Connector';
+import { WidgetApi } from './services/custom/Widget';
 /**
 * @module SDKBrowserModule
 * @description
@@ -105,7 +106,6 @@ export class SDKBrowserModule {
         GeolocApi,
         AlertApi,
         ReceptionApi,
-        ConnectorApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }
