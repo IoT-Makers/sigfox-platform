@@ -238,7 +238,7 @@ class Message {
 
                     // Check if the parsed data contains a 'geoloc' key and store it in the message property to be stored
                     data_parsed.forEach((o: any) => {
-                      deviceToUpdate.properties_dynamic.push(o.key);
+                      deviceToUpdate.properties_dynamic.push(o);
                       // Look if an alert has to be sent
                       if (deviceInstance.alerts) {
                         deviceInstance.alerts.forEach( (alert: any, index: any) => {

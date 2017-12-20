@@ -274,7 +274,7 @@
                 <label class="col-md-3 offset-1 form-control-label">Key</label>
                 <div class="col-md-8">
                   <select name="alert.key" class="form-control" size="1" [(ngModel)]="alert.key">
-                    <option [ngValue]="key" *ngFor="let key of deviceToEdit.properties_dynamic">{{key}}</option>
+                    <option [ngValue]="item.key" *ngFor="let item of deviceToEdit.properties_dynamic">{{item.key}}</option>
                     <option [ngValue]=""></option>
                   </select>
                 </div>

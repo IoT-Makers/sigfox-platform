@@ -77,7 +77,7 @@
       "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "user",
-      "permission": "DENY"
+      "permission": "ALLOW"
     }
   ],
   "methods": {}

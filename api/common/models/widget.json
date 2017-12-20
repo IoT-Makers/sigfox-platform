@@ -31,9 +31,9 @@
     "options": {
       "type": "object"
     },
-    "devices":{
+    "data":{
       "type": [
-        "Device"
+        "object"
       ]
     }
   },

@@ -213,7 +213,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.mapZoom = 12;
   }
 
-  cancel(): void{
+  cancel(): void {
     this.edit = false;
   }
 
