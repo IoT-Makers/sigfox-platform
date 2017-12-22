@@ -259,12 +259,13 @@ class Message {
                                         user: connector.login,
                                         pass: connector.password
                                       };
+                                      const title = deviceInstance.name ? deviceInstance.name : deviceInstance.id;
                                       this.model.app.models.Email.send({
                                         to: connector.login,
                                         from: connector.login,
-                                        subject: '[Sigfox Platform] - Alert for '.concat(deviceInstance.name ? deviceInstance.name : deviceInstance.id),
+                                        subject: '[Sigfox Platform] - Alert for ' + title,
                                         text: alert.message,
-                                        html: 'Hey! <p>An alert has been triggered for the device: <b>'.concat(deviceInstance.name ? deviceInstance.name : deviceInstance.id) + '</b></p><p>' + alert.message + '</p>'
+                                        html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alert.message + '</p>'
                                       }, function (err: any, mail: any) {
                                         if (err) console.error(err);
                                         else console.log('Email sent!');
