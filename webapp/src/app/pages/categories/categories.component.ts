@@ -67,7 +67,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.ngOnDestroy();
-   
+
     // Get and listen categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
     this.categorySub = this.categoryRef.on('change',
@@ -118,13 +118,13 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       type: 'string'
     };
 
-    category.properties_static.push(property);
+    category.properties.push(property);
     this.categoryToEdit = category;
   }
 
   removeProperty(category: Category, index: number): void {
-    //delete category.properties_static[index];
-    category.properties_static.splice(index, 1);
+    //delete category.properties[index];
+    category.properties.splice(index, 1);
     this.categoryToEdit = category;
   }
 

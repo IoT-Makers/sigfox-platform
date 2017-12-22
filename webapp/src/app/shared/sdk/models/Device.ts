@@ -5,11 +5,11 @@ export interface DeviceInterface {
   "id": string;
   "creation"?: Date;
   "name"?: string;
+  "data_parsed"?: Array<any>;
   "downlinkData"?: string;
   "location"?: Array<any>;
   "alerts"?: Array<any>;
-  "properties_static"?: Array<any>;
-  "properties_dynamic"?: Array<any>;
+  "properties"?: Array<any>;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "parserId"?: number;
@@ -30,11 +30,11 @@ export class Device implements DeviceInterface {
   "id": string = '';
   "creation": Date = new Date(0);
   "name": string = '';
+  "data_parsed": Array<any> = <any>[];
   "downlinkData": string = '';
   "location": Array<any> = <any>[];
   "alerts": Array<any> = <any>[];
-  "properties_static": Array<any> = <any>[];
-  "properties_dynamic": Array<any> = <any>[];
+  "properties": Array<any> = <any>[];
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "parserId": number = 0;
@@ -94,6 +94,10 @@ export class Device implements DeviceInterface {
           name: 'name',
           type: 'string'
         },
+        "data_parsed": {
+          name: 'data_parsed',
+          type: 'Array&lt;any&gt;'
+        },
         "downlinkData": {
           name: 'downlinkData',
           type: 'string'
@@ -106,12 +110,8 @@ export class Device implements DeviceInterface {
           name: 'alerts',
           type: 'Array&lt;any&gt;'
         },
-        "properties_static": {
-          name: 'properties_static',
-          type: 'Array&lt;any&gt;'
-        },
-        "properties_dynamic": {
-          name: 'properties_dynamic',
+        "properties": {
+          name: 'properties',
           type: 'Array&lt;any&gt;'
         },
         "createdAt": {

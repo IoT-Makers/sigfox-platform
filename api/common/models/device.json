@@ -37,6 +37,11 @@
     "name": {
       "type": "string"
     },
+    "data_parsed": {
+      "type": [
+        "object"
+      ]
+    },
     "downlinkData": {
       "type": "string"
     },
@@ -50,14 +55,9 @@
         "Alert"
       ]
     },
-    "properties_static": {
+    "properties": {
       "type": [
         "object"
-      ]
-    },
-    "properties_dynamic": {
-      "type": [
-        "string"
       ]
     }
   },

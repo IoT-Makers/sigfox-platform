@@ -6,11 +6,11 @@ export interface MessageInterface {
   "time": number;
   "seqNumber": number;
   "data"?: string;
+  "data_parsed"?: Array<any>;
   "downlinkData"?: string;
   "ack"?: boolean;
   "reception"?: Array<any>;
   "geoloc"?: Array<any>;
-  "data_parsed"?: Array<any>;
   "id"?: number;
   "DeviceId"?: string;
   "createdAt"?: Date;
@@ -28,11 +28,11 @@ export class Message implements MessageInterface {
   "time": number = 0;
   "seqNumber": number = 0;
   "data": string = '';
+  "data_parsed": Array<any> = <any>[];
   "downlinkData": string = '';
   "ack": boolean = false;
   "reception": Array<any> = <any>[];
   "geoloc": Array<any> = <any>[];
-  "data_parsed": Array<any> = <any>[];
   "id": number = 0;
   "DeviceId": string = '';
   "createdAt": Date = new Date(0);
@@ -92,6 +92,10 @@ export class Message implements MessageInterface {
           name: 'data',
           type: 'string'
         },
+        "data_parsed": {
+          name: 'data_parsed',
+          type: 'Array&lt;any&gt;'
+        },
         "downlinkData": {
           name: 'downlinkData',
           type: 'string'
@@ -106,10 +110,6 @@ export class Message implements MessageInterface {
         },
         "geoloc": {
           name: 'geoloc',
-          type: 'Array&lt;any&gt;'
-        },
-        "data_parsed": {
-          name: 'data_parsed',
           type: 'Array&lt;any&gt;'
         },
         "id": {

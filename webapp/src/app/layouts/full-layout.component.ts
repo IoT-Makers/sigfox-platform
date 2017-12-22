@@ -122,9 +122,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.dashboardRef = this.rt.FireLoop.ref<Dashboard>(Dashboard);
     this.dashboardSub = this.dashboardRef.on('change', {where: {userId: this.user.id}, order: 'createdAt DESC'}).subscribe(
       (dashboards: Dashboard[]) => {
-        console.log("dashboard changed");
+        console.log('Dashboard changed');
         this.dashboards = dashboards;
-
       });
   }
 
@@ -170,11 +169,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   newDashboard(): void {
     const dashboard = {
-      name:"New Dashboard"
+      name: 'New Dashboard'
     };
-    this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard=>{
+    this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard => {
       console.log(dashboard);
       this.setup();
-    })
+    });
   }
 }

@@ -112,6 +112,16 @@ Below is the functional/sequential diagram representing the message journey.
 
 ### Webapp
 
+#### Developers
+
+##### Linking a Sigfox device to the platform
+
+Once the application is deployed, head over to the 'connectors'. You can then copy & paste the callback information you need in the device type new callback on the Sigfox Backend.
+
+##### Adding a custom parser
+
+A short wiki can be found [here](https://github.com/luisomoreau/sigfox-platform/wiki/Adding-a-custom-parser).
+
 ## Roadmap
 
 

@@ -232,13 +232,11 @@ class Message {
                     const deviceToUpdate = new this.model.app.models.Device;
                     deviceToUpdate.id = data.deviceId;
                     deviceToUpdate.userId = data.userId;
-                    deviceToUpdate.properties_dynamic = [];
-
+                    deviceToUpdate.data_parsed = data_parsed;
 
 
                     // Check if the parsed data contains a 'geoloc' key and store it in the message property to be stored
                     data_parsed.forEach((o: any) => {
-                      deviceToUpdate.properties_dynamic.push(o);
                       // Look if an alert has to be sent
                       if (deviceInstance.alerts) {
                         deviceInstance.alerts.forEach( (alert: any, index: any) => {
@@ -253,6 +251,7 @@ class Message {
                                   } else {
                                     if (connector.name === 'free-mobile') {
                                       console.error('Free Mobile SMS alert!');
+                                      console.log(this.model.app.dataSources);
                                       this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit).then((result: any) => {
                                         // Alert has been triggered, removing it from array
                                         deviceInstance.alerts.splice(index, 1);

@@ -3,7 +3,7 @@
 declare var Object: any;
 export interface CategoryInterface {
   "name": string;
-  "properties_static"?: Array<any>;
+  "properties"?: Array<any>;
   "description"?: string;
   "id"?: number;
   "createdAt"?: Date;
@@ -16,7 +16,7 @@ export interface CategoryInterface {
 
 export class Category implements CategoryInterface {
   "name": string = '';
-  "properties_static": Array<any> = <any>[];
+  "properties": Array<any> = <any>[];
   "description": string = '';
   "id": number = 0;
   "createdAt": Date = new Date(0);
@@ -62,8 +62,8 @@ export class Category implements CategoryInterface {
           name: 'name',
           type: 'string'
         },
-        "properties_static": {
-          name: 'properties_static',
+        "properties": {
+          name: 'properties',
           type: 'Array&lt;any&gt;'
         },
         "description": {

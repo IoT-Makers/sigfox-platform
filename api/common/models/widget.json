@@ -31,7 +31,7 @@
     "options": {
       "type": "object"
     },
-    "data":{
+    "data": {
       "type": [
         "object"
       ]

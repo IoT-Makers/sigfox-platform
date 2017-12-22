@@ -1,6 +1,6 @@
 import { Model } from '@mean-expert/model';
 
-let moment = require('moment');
+const moment = require('moment');
 
 /**
  * @module Geoloc

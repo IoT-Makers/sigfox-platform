@@ -181,7 +181,7 @@
               <td *ngIf="!edit" class="hidden-xs-down">
                 <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
                 <div *ngIf="device.categoryId">
-                  <div class="small text-gray-dark" *ngFor="let property of device.properties_static; let i = index">
+                  <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
                     <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>
                     <span class="text-primary">{{property.value ? property.value : ""}}</span>
                   </div>
@@ -244,7 +244,7 @@
               </div>
             </div>
             <div *ngIf="deviceToEdit.categoryId">
-              <div class="form-group row" *ngFor="let property of deviceToEdit.properties_static; let i = index">
+              <div class="form-group row" *ngFor="let property of deviceToEdit.properties; let i = index">
                 <label class="col-md-3 offset-1 form-control-label">{{property.key}}</label>
                 <div class="col-md-8">
                   <input type="{{property.type}}" class="form-control" placeholder="{{property.key}}" name="deviceToEdit.property.value"
@@ -274,7 +274,7 @@
                 <label class="col-md-3 offset-1 form-control-label">Key</label>
                 <div class="col-md-8">
                   <select name="alert.key" class="form-control" size="1" [(ngModel)]="alert.key">
-                    <option [ngValue]="item.key" *ngFor="let item of deviceToEdit.properties_dynamic">{{item.key}}</option>
+                    <option [ngValue]="item.key" *ngFor="let item of deviceToEdit.data_parsed">{{item.key}}</option>
                     <option [ngValue]=""></option>
                   </select>
                 </div>

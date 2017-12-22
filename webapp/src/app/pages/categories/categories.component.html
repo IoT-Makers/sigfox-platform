@@ -24,7 +24,7 @@
             <tr>
               <th class="text-center">Name</th>
               <th *ngIf="!edit" class="text-center hidden-xs-down">Description</th>
-              <th class="text-center">Static properties</th>
+              <th class="text-center">Properties</th>
               <th class="text-center hidden-xs-down">Associated devices</th>
               <th *ngIf="!edit" class="text-center">Action</th>
             </tr>
@@ -40,9 +40,9 @@
                 <p>{{category.description}}</p>
               </td>
               <td class="">
-                <div *ngIf="!category.properties_static" class="small text-muted">No properties yet</div>
-                <div *ngIf="category.properties_static">
-                  <div class="text-muted" *ngFor="let property of category.properties_static; let i = index"><span>{{property.key ? property.key : ""}}</span>{{property.type ? ": "+ property.type : ""}}</div>
+                <div *ngIf="!category.properties" class="small text-muted">No properties yet</div>
+                <div *ngIf="category.properties">
+                  <div class="text-muted" *ngFor="let property of category.properties; let i = index"><span>{{property.key ? property.key : ""}}</span>{{property.type ? ": "+ property.type : ""}}</div>
                 </div>
               </td>
 
@@ -92,8 +92,8 @@
             <div class="form-group row">
               <strong class="col-md-3 form-control-label">Properties</strong>
             </div>
-            <div *ngIf="categoryToEdit.properties_static">
-              <div *ngFor="let property of categoryToEdit.properties_static; let i = index">
+            <div *ngIf="categoryToEdit.properties">
+              <div *ngFor="let property of categoryToEdit.properties; let i = index">
 
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label">Name</label>

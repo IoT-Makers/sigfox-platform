@@ -5,7 +5,6 @@ import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
 import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
 import {AgmMap} from '@agm/core';
-import {ConnectorApi} from '../../shared/sdk/services/custom';
 
 @Component({
   selector: 'app-messages',

@@ -189,7 +189,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     if (this.deviceToEdit.categoryId) {
       this.userApi.findByIdCategories(this.user.id, this.deviceToEdit.categoryId).subscribe((category: Category) => {
         console.log(category);
-        this.deviceToEdit.properties_static = category.properties_static;
+        this.deviceToEdit.properties = category.properties;
         this.toasterService.pop('success', 'Success', 'The category was successfully updated.');
       });
     }

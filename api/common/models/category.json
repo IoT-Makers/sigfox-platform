@@ -30,7 +30,7 @@
       "type": "string",
       "required": true
     },
-    "properties_static": {
+    "properties": {
       "type": [
         "object"
       ]

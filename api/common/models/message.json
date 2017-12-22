@@ -41,6 +41,11 @@
     "data": {
       "type": "string"
     },
+    "data_parsed": {
+      "type": [
+        "object"
+      ]
+    },
     "downlinkData": {
       "type": "string"
     },
@@ -55,11 +60,6 @@
     "geoloc": {
       "type": [
         "Geoloc"
-      ]
-    },
-    "data_parsed": {
-      "type": [
-        "object"
       ]
     }
   },
