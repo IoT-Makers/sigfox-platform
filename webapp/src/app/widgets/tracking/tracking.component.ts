@@ -3,13 +3,10 @@ import {Message} from '../../shared/sdk/models/Message';
 import {GoogleMapsAPIWrapper} from '@agm/core';
 import {GeolocApi} from '../../shared/sdk/services/custom/Geoloc';
 import {Device} from '../../shared/sdk/models/Device';
-import {FireLoopRef} from '../../shared/sdk/models/FireLoopRef';
-import {Subscription} from 'rxjs/Subscription';
-import {RealTime} from '../../shared/sdk/services/core/real.time';
 import * as _ from 'lodash';
 import {User} from '../../shared/sdk/models';
 import {UserApi} from '../../shared/sdk/services/custom';
-import {SelectComponent} from "ng2-select";
+import {SelectComponent} from 'ng2-select';
 
 @Component({
   selector: 'app-tracking',

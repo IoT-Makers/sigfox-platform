@@ -72,8 +72,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Messages: ngOnDestroy');
-    if (this.messageRef)this.messageRef.dispose();
-    if (this.messageSub)this.messageSub.unsubscribe();
+    if (this.messageRef) this.messageRef.dispose();
+    if (this.messageSub) this.messageSub.unsubscribe();
   }
 
   remove(message: Message): void {

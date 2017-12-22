@@ -79,8 +79,8 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Parsers: ngOnDestroy');
-    if (this.parserRef)this.parserRef.dispose();
-    if (this.parserSub)this.parserSub.unsubscribe();
+    if (this.parserRef) this.parserRef.dispose();
+    if (this.parserSub) this.parserSub.unsubscribe();
   }
 
   decodePayload(i: number, parser: Parser, payload: string): void {

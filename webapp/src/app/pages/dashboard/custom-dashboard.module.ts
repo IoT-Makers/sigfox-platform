@@ -6,7 +6,7 @@ import {NgxGaugeModule} from 'ngx-gauge';
 import {SelectModule} from 'ng2-select';
 import {ToasterModule} from 'angular2-toaster';
 import {AgmCoreModule} from '@agm/core';
-import { FormsModule }   from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   imports: [

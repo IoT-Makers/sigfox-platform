@@ -47,6 +47,9 @@
       "type": [
         "AccessToken"
       ]
+    },
+    "Email": {
+      "dataSource": "Email"
     }
   },
   "validations": [],

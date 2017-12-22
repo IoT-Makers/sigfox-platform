@@ -145,8 +145,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     console.log('Categories: ngOnDestroy');
 
-    if (this.categoryRef)this.categoryRef.dispose();
-    if (this.categorySub)this.categorySub.unsubscribe();
+    if (this.categoryRef) this.categoryRef.dispose();
+    if (this.categorySub) this.categorySub.unsubscribe();
   }
 
 }

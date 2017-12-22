@@ -186,17 +186,17 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Overview: ngOnDestroy');
-    if (this.messageRef)this.messageRef.dispose();
-    if (this.messageSub)this.messageSub.unsubscribe();
+    if (this.messageRef) this.messageRef.dispose();
+    if (this.messageSub) this.messageSub.unsubscribe();
 
-    if (this.deviceRef)this.deviceRef.dispose();
-    if (this.deviceSub)this.deviceSub.unsubscribe();
+    if (this.deviceRef) this.deviceRef.dispose();
+    if (this.deviceSub) this.deviceSub.unsubscribe();
 
-    if (this.parserRef)this.parserRef.dispose();
-    if (this.parserSub)this.parserSub.unsubscribe();
+    if (this.parserRef) this.parserRef.dispose();
+    if (this.parserSub) this.parserSub.unsubscribe();
 
-    if (this.categoryRef)this.categoryRef.dispose();
-    if (this.categorySub)this.categorySub.unsubscribe();
+    if (this.categoryRef) this.categoryRef.dispose();
+    if (this.categorySub) this.categorySub.unsubscribe();
   }
 
 

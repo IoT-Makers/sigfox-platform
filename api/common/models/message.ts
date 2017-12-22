@@ -248,11 +248,34 @@ class Message {
                                   if (err) {
                                     console.log(err);
                                     next(err, data);
-                                  } else {
-                                    if (connector.name === 'free-mobile') {
+                                  } else if (connector) {
+
+                                    if (connector.name === 'office-365') {
+                                      console.error('Office 365 Email alert!');
+                                      if (!alert.message) alert.message = o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit;
+
+                                      // Set the connector user and pass
+                                      this.model.app.models.Email.dataSource.connector.transports[0].transporter.options.auth = {
+                                        user: connector.login,
+                                        pass: connector.password
+                                      };
+                                      this.model.app.models.Email.send({
+                                        to: connector.login,
+                                        from: connector.login,
+                                        subject: '[Sigfox Platform] - Alert for '.concat(deviceInstance.name ? deviceInstance.name : deviceInstance.id),
+                                        text: alert.message,
+                                        html: 'Hey! <p>An alert has been triggered for the device: <b>'.concat(deviceInstance.name ? deviceInstance.name : deviceInstance.id) + '</b></p><p>' + alert.message + '</p>'
+                                      }, function (err: any, mail: any) {
+                                        if (err) console.error(err);
+                                        else console.log('Email sent!');
+                                      });
+
+
+                                    } else if (connector.name === 'free-mobile') {
                                       console.error('Free Mobile SMS alert!');
-                                      console.log(this.model.app.dataSources);
-                                      this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit).then((result: any) => {
+                                      if (!alert.message) alert.message = o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit;
+
+                                      this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, alert.message).then((result: any) => {
                                         // Alert has been triggered, removing it from array
                                         deviceInstance.alerts.splice(index, 1);
                                       }).catch((err: any) => {

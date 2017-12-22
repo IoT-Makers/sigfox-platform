@@ -145,14 +145,14 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Devices: ngOnDestroy');
-    if (this.deviceRef)this.deviceRef.dispose();
-    if (this.deviceSub)this.deviceSub.unsubscribe();
+    if (this.deviceRef) this.deviceRef.dispose();
+    if (this.deviceSub) this.deviceSub.unsubscribe();
 
-    if (this.parserRef)this.parserRef.dispose();
-    if (this.parserSub)this.parserSub.unsubscribe();
+    if (this.parserRef) this.parserRef.dispose();
+    if (this.parserSub) this.parserSub.unsubscribe();
 
-    if (this.categoryRef)this.categoryRef.dispose();
-    if (this.categorySub)this.categorySub.unsubscribe();
+    if (this.categoryRef) this.categoryRef.dispose();
+    if (this.categorySub) this.categorySub.unsubscribe();
   }
 
   editDevice(device): void{

@@ -55,5 +55,19 @@
         }
       }
     ]
+  },
+  "email": {
+    "name": "email",
+    "connector": "mail",
+    "transports": [{
+      "type": "SMTP",
+      "host": "smtp.office365.com",
+      "secure": false,
+      "port": 587,
+      "auth": {
+        "user": "",
+        "pass": ""
+      }
+    }]
   }
 }

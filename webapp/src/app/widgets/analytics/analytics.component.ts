@@ -1,11 +1,9 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Category, Device, FireLoopRef, Message, User} from '../../shared/sdk/models';
+import {Device, FireLoopRef, Message, User} from '../../shared/sdk/models';
 import {DeviceApi, RealTime, UserApi} from '../../shared/sdk/services';
-
 import {Subscription} from 'rxjs/Subscription';
-
+import {SelectComponent} from 'ng2-select';
 import * as moment from 'moment';
-import {SelectComponent} from "ng2-select";
 
 @Component({
   selector: 'app-analytics',
@@ -251,7 +249,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Analytics: ngOnDestroy');
-    if (this.messageRef)this.messageRef.dispose();
-    if (this.messageSub)this.messageSub.unsubscribe();
+    if (this.messageRef) this.messageRef.dispose();
+    if (this.messageSub) this.messageSub.unsubscribe();
   }
 }

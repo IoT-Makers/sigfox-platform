@@ -18,7 +18,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   @ViewChild('confirmModal') confirmModal: any;
 
   private newConnector: Connector = new Connector();
-  private connectorNames = [{id: 'sigfox-api', text: 'Sigfox API'}, {id: 'free-mobile', text: 'Free Mobile'}];
+  public connectorNames = [{id: 'sigfox-api', text: 'Sigfox API'}, {id: 'free-mobile', text: 'Free Mobile'}, {id: 'office-365', text: 'Outlook (Office 365)'}];
 
   private connectorSub: Subscription;
   private connectorRef: FireLoopRef<Connector>;
@@ -140,7 +140,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Connector: ngOnDestroy');
-    if (this.connectorRef)this.connectorRef.dispose();
-    if (this.connectorSub)this.connectorSub.unsubscribe();
+    if (this.connectorRef) this.connectorRef.dispose();
+    if (this.connectorSub) this.connectorSub.unsubscribe();
   }
 }
