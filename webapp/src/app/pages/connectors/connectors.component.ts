@@ -132,7 +132,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     });
   }
 
-  clearConnector(connector: Connector) {
+  removeConnector(connector: Connector) {
     this.connectorRef.remove(connector).subscribe(value => {
       this.toasterService.pop('success', 'Success', 'The connector was successfully cleared.');
     });

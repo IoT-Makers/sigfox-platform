@@ -85,15 +85,21 @@ export class MessagesComponent implements OnInit, OnDestroy {
     const user = this.userApi.getCachedCurrent();
 
     this.userApi.getConnectors(this.user.id, {where: {name: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
-      if (connectors[0].login && connectors[0].password) {
+      if (connectors.length > 0) {
+
         this.baseStationMap.show();
 
         this.receptionApi.getBaseStationsByDeviceId(deviceId, time).subscribe((receptionsResult: Reception[]) => {
-          this.receptions = receptionsResult;
-          console.log(this.receptions);
-          if (this.receptions.length > 0)
-            this.agmMap.triggerResize();
-        });
+            this.receptions = receptionsResult;
+            console.log(this.receptions);
+            if (this.receptions.length > 0)
+              this.agmMap.triggerResize();
+          }, error => {
+            console.log(error);
+          }
+        );
+      } else {
+        console.log('No Sigfox API connector');
       }
     });
   }

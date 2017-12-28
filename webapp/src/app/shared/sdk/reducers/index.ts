@@ -1,6 +1,7 @@
 /* tslint:disable */
 export * from './auth';
 
+export * from './Email';
 export * from './AccessToken';
 export * from './Device';
 export * from './Parser';

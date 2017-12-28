@@ -1,5 +1,6 @@
 /* tslint:disable */
 import { AuthGuard } from './auth.guard';
+import { EmailExistsGuard } from './Email';
 import { AccessTokenExistsGuard } from './AccessToken';
 import { DeviceExistsGuard } from './Device';
 import { ParserExistsGuard } from './Parser';
@@ -17,6 +18,7 @@ import { WidgetExistsGuard } from './Widget';
 
 export const LOOPBACK_GUARDS_PROVIDERS = [
   AuthGuard,
+	EmailExistsGuard,
 	AccessTokenExistsGuard,
 	DeviceExistsGuard,
 	ParserExistsGuard,
@@ -34,6 +36,7 @@ export const LOOPBACK_GUARDS_PROVIDERS = [
 ];
 
 export * from './auth.guard';
+export * from './Email';
 export * from './AccessToken';
 export * from './Device';
 export * from './Parser';

@@ -5,7 +5,6 @@ export interface ConnectorInterface {
   "name": string;
   "description"?: string;
   "login": any;
-  "password": any;
   "id"?: number;
   "userId"?: number;
   "createdAt"?: Date;
@@ -17,7 +16,6 @@ export class Connector implements ConnectorInterface {
   "name": string = '';
   "description": string = '';
   "login": any = <any>null;
-  "password": any = <any>null;
   "id": number = 0;
   "userId": number = 0;
   "createdAt": Date = new Date(0);
@@ -66,10 +64,6 @@ export class Connector implements ConnectorInterface {
         },
         "login": {
           name: 'login',
-          type: 'any'
-        },
-        "password": {
-          name: 'password',
           type: 'any'
         },
         "id": {

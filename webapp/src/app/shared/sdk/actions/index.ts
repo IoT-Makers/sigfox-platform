@@ -2,6 +2,7 @@
 import { LoopbackAuthActionTypes, LoopbackAuthActions } from './auth';
 import { LoopbackErrorActionTypes, LoopbackErrorActions } from './error';
 
+import { EmailActionTypes, EmailActions } from './Email';
 import { AccessTokenActionTypes, AccessTokenActions } from './AccessToken';
 import { DeviceActionTypes, DeviceActions } from './Device';
 import { ParserActionTypes, ParserActions } from './Parser';
@@ -20,6 +21,7 @@ import { WidgetActionTypes, WidgetActions } from './Widget';
 export {
   LoopbackAuthActionTypes, LoopbackAuthActions,
   LoopbackErrorActionTypes, LoopbackErrorActions,
+	EmailActionTypes, EmailActions,
 	AccessTokenActionTypes, AccessTokenActions,
 	DeviceActionTypes, DeviceActions,
 	ParserActionTypes, ParserActions,

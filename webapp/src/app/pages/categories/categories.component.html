@@ -3,7 +3,8 @@
   <div class="card-group">
 
     <div [ngClass]="(edit)?'col-md-6 col-xs-12':'col-md-12 col-sm-12'">
-      <button class="mb-1 btn btn-success" (click)="editCategory()"><i class="fa fa-plus"></i> Add new</button>
+      <button class="mb-1 btn btn-success" (click)="editCategory()"><i class="fa fa-plus-circle"></i> Create a new category</button>
+
 
       <div class="card">
         <div class="card-header">
@@ -128,13 +129,13 @@
 
               </div>
             </div>
-            <button class="pull-right btn btn-sm btn-success" (click)="addProperty(categoryToEdit)"> Add static property</button>
+            <button class="pull-right btn btn-sm btn-outline-success" (click)="addProperty(categoryToEdit)"><i class="fa fa-plus-circle"></i> Add property</button>
 
           </form>
         </div>
         <div class="card-footer">
-          <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
           <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="update(categoryToEdit)"><i class="fa fa-check"></i> Update</button>
+          <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
         </div>
       </div>
     </div>
@@ -157,8 +158,8 @@
         Are your sure you wish to delete this category?
       </div>
       <div class="modal-footer">
-        <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
         <button class="btn btn-sm btn-danger" (click)="remove()">Delete</button>
+        <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

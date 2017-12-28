@@ -112,18 +112,23 @@ Below is the functional/sequential diagram representing the message journey.
 
 ### Webapp
 
+#### Color code
+
+| GPS | Sigfox | WiFi | BLE |
+| :-------: | :-------: | :-------:	| :-------: |
+| ![#9B7A48](https://placehold.it/15/9B7A48/000000?text=+) `#9B7A48` | ![#792FAA](https://placehold.it/15/792FAA/000000?text=+) `#792FAA` | ![#2F2A30](https://placehold.it/15/2f2A30/000000?text=+) `#2F2A30` | ![#3C58CE](https://placehold.it/15/3C58CE/000000?text=+) `#3C58CE` |
+
 #### Developers
 
 ##### Linking a Sigfox device to the platform
 
-Once the application is deployed, head over to the 'connectors'. You can then copy & paste the callback information you need in the device type new callback on the Sigfox Backend.
+Once the application is deployed, head over to the 'connectors'. You will need to create a developer access token in order to secure the API calls. You can then copy & paste the callback information you need in the device type new callback onto the [Sigfox Backend](https://backend.sigfox.com/).
 
 ##### Adding a custom parser
 
 A short wiki can be found [here](https://github.com/luisomoreau/sigfox-platform/wiki/Adding-a-custom-parser).
 
 ## Roadmap
-
 
 
 ## Authors
@@ -134,3 +139,5 @@ A short wiki can be found [here](https://github.com/luisomoreau/sigfox-platform/
 ## Contributors
 
 Feel free to submit a Pull Request and don't forget to add you name and your useful links ;)
+
+> Made with :heart: by Antoine de Chassey & Louis Moreau

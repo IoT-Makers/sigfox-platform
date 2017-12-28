@@ -1,17 +1,4 @@
-# About this project
-
-## Color code
-
-|   GPS   	|  Sigfox 	|   WiFi  	|   BLE   	|
-|:-------:	|:-------:	|:-------:	|:-------:	|
-| #E1372F 	| #8F39CA 	| #2F2A30 	| #6644EA 	|
-
-
-> Made with :heart: by Antoine de Chassey & Louis Moreau
-
--------------------------------------------------
-
-# Bananas
+# Sigfox Platform Webapp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.3.2.
 

@@ -256,7 +256,7 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Alerts</label>
               <div class="col-md-9">
-                <button class="btn btn-sm btn-outline-success" (click)="$event.preventDefault(); addAlert()"> Add alert</button>
+                <button class="btn btn-sm btn-outline-success" (click)="$event.preventDefault(); addAlert()"><i class="fa fa-plus-circle"></i> Add alert</button>
               </div>
             </div>
 
@@ -330,8 +330,8 @@
           </form>
         </div>
         <div class="card-footer">
-          <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
           <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="updateDevice()"><i class="fa fa-check"></i> Update</button>
+          <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
         </div>
       </div>
     </div>
@@ -354,8 +354,8 @@
         Are your sure you wish to delete this device (id: <b>{{deviceToRemove.id}}</b>) and <span class="text-danger">all its corresponding <b>messages</b></span> ?
       </div>
       <div class="modal-footer">
-        <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
         <button class="btn btn-sm btn-danger" (click)="remove()">Delete</button>
+        <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

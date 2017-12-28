@@ -46,7 +46,7 @@
               </tfoot>
             </table>
           </div>
-          <button class="btn btn-sm btn-success" (click)="createDevAccessToken()"><i class="fa fa-plus"></i> Create new</button>
+          <button class="btn btn-success" (click)="createDevAccessToken()"><i class="fa fa-plus-circle"></i> Create new</button>
         </accordion-group>
       </accordion>
     </div>
@@ -209,7 +209,8 @@
               </div>
             </div>
           </div>
-          <button class="btn btn-sm btn-outline-success" (click)="saveConnector(newConnector)"><i class="fa fa-plus-circle"></i> Add</button>
+          <hr>
+          <button class="btn btn-success" (click)="saveConnector(newConnector)"><i class="fa fa-plus-circle"></i> Add</button>
         </accordion-group>
       </accordion>
     </div>
@@ -248,7 +249,7 @@
             </form>
           </div>
           <button class="btn btn-sm btn-primary" (click)="saveConnector(connector)"><i class="fa fa-check"></i> Save</button>
-          <button class="btn btn-sm btn-danger" (click)="clearConnector(connector)"><i class="fa fa-ban"></i> Clear</button>
+          <button class="btn btn-sm btn-danger" (click)="removeConnector(connector)"><i class="fa fa-ban"></i> Remove</button>
         </accordion-group>
       </accordion>
     </div>
@@ -351,8 +352,8 @@
         <p>Be aware the Sigfox Backend callbacks you configured with this token will then be <u>unauthorized</u>!</p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
         <button class="btn btn-sm btn-danger" (click)="removeDevAccessToken()">Delete</button>
+        <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
