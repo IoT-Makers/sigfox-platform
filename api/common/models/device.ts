@@ -2,6 +2,7 @@ import {Model} from '@mean-expert/model';
 import * as _ from 'lodash';
 
 const moment = require('moment');
+const request = require('request');
 
 /**
  * @module Device
@@ -23,7 +24,12 @@ const moment = require('moment');
     timeSeries: {
       accepts: [
         {arg: 'deviceId', type: 'string', required: true, description: 'the deviceId'},
-        {arg: 'dateBegin', type: 'string', default: moment().subtract(1, 'hours'), description: 'the starting date-time'},
+        {
+          arg: 'dateBegin',
+          type: 'string',
+          default: moment().subtract(1, 'hours'),
+          description: 'the starting date-time'
+        },
         {arg: 'dateEnd', type: 'string', default: moment(), description: 'the ending date-time'}
       ],
       returns: {arg: 'result', type: 'array'},
@@ -42,10 +48,13 @@ const moment = require('moment');
     },
     getMessagesFromSigfoxBackend: {
       accepts: [
-        {arg: 'deviceId', type: 'string', required: true, description: 'the deviceId'}
+        {arg: 'id', type: 'string', required: true, description: 'Device Id'},
+        {arg: 'limit', type: 'number', required: false, description: 'Limit retrieved messages'},
+        {arg: 'before', type: 'number', description: 'Before'},
+        {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
       http: {
-        path: '/:deviceId/messages-from-sigfox-backend',
+        path: '/:id/messages-from-sigfox-backend',
         verb: 'get'
       },
       returns: {type: [], root: true}
@@ -54,6 +63,9 @@ const moment = require('moment');
 })
 
 class Device {
+
+  private sigfoxBackendBaseApiUrl = 'https://backend.sigfox.com/api/';
+
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
   }
@@ -132,7 +144,7 @@ class Device {
           }]
       },
       (err: any, device: any) => {
-        if (err || !device ) {
+        if (err || !device) {
           console.log(err);
         } else {
           // console.log("device:", device);
@@ -194,9 +206,126 @@ class Device {
       });
   }
 
-  getMessagesFromSigfoxBackend(deviceId: string, next: Function): void {
+  getMessagesFromSigfoxBackend(deviceId: string, limit: number, before: number, req: any, next: Function): void {
+    const userId = req.accessToken.userId;
+
+    if (!limit) {
+      limit = 100;
+    }
+
+    this.model.app.models.Connector.findOne(
+      {
+        where: {
+          userId: userId,
+          name: 'sigfox-api'
+        }
+      },
+      (err: any, connector: any) => {
+        if (err) {
+          console.log(err);
+          next(err, null);
+        } else {
+          console.log(connector);
+          if (connector) {
+            const sigfoxApiLogin = connector.login;
+            const sigfoxApiPassword = connector.password;
 
 
+            let messages: any[] = [];
+            let message: any;
+            let reception: any[] = [];
+            let geoloc: any[] = [];
+
+            const credentials = new Buffer(sigfoxApiLogin + ':' + sigfoxApiPassword).toString('base64');
+
+            // while(limit>0){
+
+            this.model.app.dataSources.sigfox.getMessages(credentials, deviceId, (limit < 100) ? limit : 100, before ? before : new Date()).then((result: any) => {
+              console.log("Length: ", result.data.length);
+              console.log("Next: ", result.paging.next);
+              result.data.forEach((messageInstance: any) => {
+
+                reception = [];
+                messageInstance.rinfos.forEach((o: any) => {
+                  let rinfo: any = {
+                    id: o.tap,
+                    lat: o.lat,
+                    lng: o.lng,
+                    RSSI: o.rssi,
+                    SNR: o.snr
+                  };
+                  reception.push(rinfo);
+                });
+                geoloc = [{
+                  type:"sigfox",
+                  lat:messageInstance.computedLocation.lat,
+                  lng:messageInstance.computedLocation.lng,
+                  precision:messageInstance.computedLocation.radius,
+                }];
+
+                message = {
+                  userId: userId,
+                  deviceId: messageInstance.device,
+                  time: messageInstance.time,
+                  seqNumber: messageInstance.seqNumber,
+                  data: messageInstance.data,
+                  reception: reception,
+                  geoloc:geoloc
+                };
+                messages.push(message);
+
+                // this.model.app.models.Message.putMessage(req, message);
+
+                this.model.app.models.Message.findOrCreate(
+                  {
+                    where: {
+                      and: [
+                        {deviceId: message.deviceId},
+                        {time: message.time},
+                        {seqNumber: message.seqNumber}
+                      ]
+                    }
+                  },
+                  message,
+                  (err: any, messagePostProcess: any, created: boolean) => { // callback
+                    if (err) {
+                      console.log(err);
+                      //next(err, err);
+                    } else {
+                      if (created) {
+                        console.log('Created new message.');
+                      } else {
+                        console.log('Found an existing message: ', messagePostProcess);
+                      }
+                    }
+                  });
+
+                message = {};
+              });
+
+              // before = result.paging.next.substring(result.paging.next.indexOf("before=") + 7);
+              // limit = limit - 100;
+              // console.log("Before: ", before);
+              // console.log("Limit: ", limit);
+
+              //console.log(messages);
+
+              next(null, messages);
+            }).catch((err: any) => {
+              next(err, null);
+            });
+            // }
+
+
+          } else {
+            next(err, 'Please refer your Sigfox API connector first');
+          }
+        }
+      });
+
+    // function getAndProcessMessages():void{
+    //
+    // }
 
   }
 
