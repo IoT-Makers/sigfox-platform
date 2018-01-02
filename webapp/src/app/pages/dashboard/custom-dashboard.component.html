@@ -213,7 +213,7 @@
               <label class="col-md-3 form-control-label">Select property</label>
               <div class="col-md-6">
                 <select name="categoryId" class="form-control" size="1" [ngModel]="">
-                  <option [ngValue]="item" *ngFor="let item of selectedDevice.properties_dynamic">{{item}}</option>
+                  <option [ngValue]="item" *ngFor="let o of selectedDevice.data_parsed">{{o.key}}</option>
                   <option [ngValue]=""></option>
                 </select>
               </div>

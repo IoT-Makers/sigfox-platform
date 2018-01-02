@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AccessToken, User} from '../../../shared/sdk/models';
 import {UserApi} from '../../../shared/sdk/services';
 import {Router} from '@angular/router';
@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./login.component.scss']
 })
 
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   private user: User = new User();
   private errorMessage = '';
@@ -44,6 +44,11 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.warn('Login: ngOnInit');
+  }
+
+  ngOnDestroy(): void {
+    console.warn('Login: ngOnDestroy');
   }
 
 }

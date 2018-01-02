@@ -19,11 +19,11 @@ export class DemoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('Demo: ngOnInit');
+    console.warn('Demo: ngOnInit');
   }
 
   ngOnDestroy(): void {
-    console.log('Messages: ngOnDestroy');
+    console.warn('Demo: ngOnDestroy');
   }
 
 }

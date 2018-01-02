@@ -76,8 +76,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
-    if (
+    console.warn('Custom Dashboard: ngOnInit');
+    this.setup();
+    /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
     ) {
@@ -85,11 +86,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     } else {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
-    }
+    }*/
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    // this.ngOnDestroy();
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     this.route.params.subscribe(params => {
@@ -103,6 +104,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.warn('Custom Dashboard: ngOnDestroy');
     if (this.messageRef) this.messageRef.dispose();
     //if (this.messageSub) this.messageSub.unsubscribe();
 
@@ -144,12 +146,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  addNewWidget(): void{
-
+  addNewWidget(): void {
     this.getDevices(null);
     this.getCategories(null);
     this.newWidgetFlag = true;
-
   }
 
   selectIcon(icon: any): void {
@@ -167,14 +167,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   addFilter($event, model: string): void {
 
-    if( model === 'category' ) {
+    if (model === 'category') {
       this.newWidget.filter = {
         where: {
           categoryId: $event.id
         }
       };
     }
-    if (model === 'device' ) {
+    if (model === 'device') {
       this.selectedDevice = $event;
       console.log(this.selectedDevice);
       this.newWidget.filter = {
@@ -207,7 +207,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         filter: {},
         options: {},
         device: [],
-        DashboardId:this.dashboard.id
+        DashboardId: this.dashboard.id
       };
     });
 
@@ -269,7 +269,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   loadWidgets(): void {
     this.dashboardApi.getWidgets(this.dashboard.id).subscribe(widgets => {
       this.widgets = widgets;
-      //console.log(widgets);
+      // console.log(widgets);
       this.dashboardReady = true;
       if (this.widgets) {
         this.widgets.forEach(widget => {
@@ -282,10 +282,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
-
-  //Map functions
+  // Map functions
   setCircles() {
     for (let i = 0; i < this.devices.length; i++) {
       this.isCircleVisible.push(false);
@@ -299,7 +296,5 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   markerOver(i) {
     this.isCircleVisible[i] = true;
   }
-
-
 
 }

@@ -44,6 +44,8 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.warn('Connector: ngOnInit');
+
     // Get the logged in User object (avatar, email, ...)
     this.getUser();
     this.callbackURL = this.document.location.origin + '/api/Messages/sigfox';
@@ -52,7 +54,9 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     this.newConnector.id = null;
     this.newConnector.createdAt = new Date();
 
-    if (
+    this.setup();
+    
+    /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
     ) {
@@ -60,7 +64,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     } else {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
-    }
+    }*/
   }
 
   getUser(): void {
@@ -72,7 +76,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    // this.ngOnDestroy();
 
     // Get and listen categories
     this.connectorRef = this.rt.FireLoop.ref<Connector>(Connector);
@@ -139,7 +143,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Connector: ngOnDestroy');
+    console.warn('Connector: ngOnDestroy');
     if (this.connectorRef) this.connectorRef.dispose();
     if (this.connectorSub) this.connectorSub.unsubscribe();
   }

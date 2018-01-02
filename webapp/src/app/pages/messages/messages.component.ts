@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
 import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
 import {AgmMap} from '@agm/core';
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-messages',
@@ -35,10 +36,13 @@ export class MessagesComponent implements OnInit, OnDestroy {
               private receptionApi: ReceptionApi) { }
 
   ngOnInit(): void {
+    console.warn('Messages: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
-    if (
+    this.setup();
+
+    /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
     ) {
@@ -46,12 +50,11 @@ export class MessagesComponent implements OnInit, OnDestroy {
     } else {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
-    }
+    }*/
   }
 
   setup(): void {
-    this.ngOnDestroy();
-
+    // this.ngOnDestroy();
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     // this.messageRef = this.userRef.make(this.user).child<Message>('Messages');
@@ -71,7 +74,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Messages: ngOnDestroy');
+    console.warn('Messages: ngOnDestroy');
     if (this.messageRef) this.messageRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
   }

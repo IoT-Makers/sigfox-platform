@@ -156,6 +156,8 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.warn('Tracking: ngOnInit');
+
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
 
     // Get the logged in User object
@@ -175,7 +177,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Tracking: ngOnDestroy');
+    console.warn('Tracking: ngOnDestroy');
   }
 
   rad(x) {

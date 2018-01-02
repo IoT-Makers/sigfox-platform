@@ -65,6 +65,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.warn('Devices: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
@@ -77,7 +78,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
     // Hide all circles by default
     this.setCircles();
 
-    if (
+    this.setup();
+
+    /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
     ) {
@@ -85,7 +88,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     } else {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
-    }
+    }*/
   }
 
   setCircles() {
@@ -103,7 +106,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    // this.ngOnDestroy();
 
     // Get and listen devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
@@ -144,7 +147,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Devices: ngOnDestroy');
+    console.warn('Devices: ngOnDestroy');
     if (this.deviceRef) this.deviceRef.dispose();
     if (this.deviceSub) this.deviceSub.unsubscribe();
 
@@ -155,7 +158,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     if (this.categorySub) this.categorySub.unsubscribe();
   }
 
-  editDevice(device): void{
+  editDevice(device): void {
     this.edit = true;
     this.deviceToEdit = device;
   }

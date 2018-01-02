@@ -70,11 +70,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.warn('Profile: ngOnInit');
+
     // Get the logged in User object
     this.getUser();
   }
 
   ngOnDestroy() {
-
+    console.warn('Profile: ngOnDestroy');
   }
 }

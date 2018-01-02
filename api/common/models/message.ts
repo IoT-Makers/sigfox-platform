@@ -237,10 +237,13 @@ class Message {
 
                     // Check if the parsed data contains a 'geoloc' key and store it in the message property to be stored
                     data_parsed.forEach((o: any) => {
-                      // Look if an alert has to be sent
+                      // Look if an alert has been set for the device
                       if (deviceInstance.alerts) {
+                        // Loop in all the alerts
                         deviceInstance.alerts.forEach( (alert: any, index: any) => {
+                          // If the key being read is set for an alert
                           if (alert.key === o.key) {
+                            // Verify conditions for the alert to be triggered
                             if ((o.value === alert.value_exact) || (o.value <= alert.value_max && o.value >= alert.value_min)) {
                               // Trigger alert
                               this.model.app.models.Connector.findById(alert.connectorId,

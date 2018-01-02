@@ -111,6 +111,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.warn('Overview: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
@@ -185,7 +186,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Overview: ngOnDestroy');
+    console.warn('Overview: ngOnDestroy');
     if (this.messageRef) this.messageRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
 

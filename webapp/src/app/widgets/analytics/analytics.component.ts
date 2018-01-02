@@ -67,8 +67,13 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
               private userApi: UserApi) {}
 
   ngOnInit(): void {
+    console.warn('Analytics: ngOnInit');
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
-    if (
+    // Get the logged in User object
+    this.user = this.userApi.getCachedCurrent();
+
+    this.setup();
+    /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
     ) {
@@ -76,10 +81,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     } else {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
-    }
-
-    // Get the logged in User object
-    this.user = this.userApi.getCachedCurrent();
+    }*/
 
     // Get devices
     this.userApi.getDevices(this.user.id).subscribe((devices: Device[]) => {
@@ -95,7 +97,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    // this.ngOnDestroy();
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
 
@@ -248,7 +250,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Analytics: ngOnDestroy');
+    console.warn('Analytics: ngOnDestroy');
     if (this.messageRef) this.messageRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
   }

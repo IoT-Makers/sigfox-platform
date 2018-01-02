@@ -31,7 +31,9 @@ export class ParsersComponent implements OnInit, OnDestroy {
               private userApi: UserApi) { }
 
   ngOnInit(): void {
-    if (
+    console.warn('Parsers: ngOnInit');
+    this.setup();
+    /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
     ) {
@@ -39,7 +41,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
     } else {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
-    }
+    }*/
 
     this.newParser.function = 'var payload,\n' +
       '  temperature,\n' +
@@ -64,7 +66,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    // this.ngOnDestroy();
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     // Parsers
@@ -78,7 +80,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Parsers: ngOnDestroy');
+    console.warn('Parsers: ngOnDestroy');
     if (this.parserRef) this.parserRef.dispose();
     if (this.parserSub) this.parserSub.unsubscribe();
   }

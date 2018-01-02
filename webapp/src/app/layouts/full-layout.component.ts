@@ -52,6 +52,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    console.warn('Full Layout: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     console.log(this.user);
@@ -67,11 +68,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    console.log(this.rt.connection);
+    // console.log(this.rt.connection);
     this.ngOnDestroy();
-    // Get the logged in User object
-    this.user = this.userApi.getCachedCurrent();
-    console.log(this.user);
 
     // Counts
     this.userApi.countDevices(this.user.id).subscribe(result => {
@@ -128,7 +126,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Full Layout: ngOnDestroy');
+    console.warn('Full Layout: ngOnDestroy');
     // if (this.messageRef) this.messageRef.dispose();
     // if (this.messageSub) this.messageSub.unsubscribe();
     //

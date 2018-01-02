@@ -49,6 +49,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.warn('Categories: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
@@ -143,7 +144,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Categories: ngOnDestroy');
+    console.warn('Categories: ngOnDestroy');
 
     if (this.categoryRef) this.categoryRef.dispose();
     if (this.categorySub) this.categorySub.unsubscribe();

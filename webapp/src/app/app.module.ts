@@ -14,12 +14,10 @@ import {BreadcrumbsComponent} from './shared/breadcrumb.component';
 import {AppRoutingModule} from './app.routing';
 // Layouts
 import {FullLayoutComponent} from './layouts/full-layout.component';
-import {SimpleLayoutComponent} from './layouts/simple-layout.component';
 // SDK
 import {SDKBrowserModule} from './shared/sdk/index';
 import {AuthGuard} from './_guards/auth.guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {ToasterModule} from "angular2-toaster";
 
 @NgModule({
   imports: [
@@ -36,7 +34,7 @@ import {ToasterModule} from "angular2-toaster";
   declarations: [
     AppComponent,
     FullLayoutComponent,
-    SimpleLayoutComponent,
+    //SimpleLayoutComponent,
     NAV_DROPDOWN_DIRECTIVES,
     BreadcrumbsComponent,
     SIDEBAR_TOGGLE_DIRECTIVES,
