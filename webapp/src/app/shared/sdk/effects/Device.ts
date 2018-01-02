@@ -44,6 +44,20 @@ export class DeviceEffects extends BaseLoopbackEffects {
       )
     );
 
+  @Effect()
+  public getMessagesFromSigfoxBackend$ = this.actions$
+    .ofType(DeviceActionTypes.GET_MESSAGES_FROM_SIGFOX_BACKEND).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.device.getMessagesFromSigfoxBackend(action.payload.id, action.payload.limit, action.payload.before, action.payload.req).pipe(
+          map((response: any) => new DeviceActions.getMessagesFromSigfoxBackendSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new DeviceActions.getMessagesFromSigfoxBackendFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
     /**
    * @author João Ribeiro <@JonnyBGod> <github:JonnyBGod>
    * @description

@@ -14,6 +14,10 @@ Object.assign(BaseLoopbackActionTypesFactory('Device'), {
   DELETE_DEVICE_AND_MESSAGES_SUCCESS: type('[Device] deleteDeviceAndMessages success'),
   DELETE_DEVICE_AND_MESSAGES_FAIL: type('[Device] deleteDeviceAndMessages fail'),
 
+  GET_MESSAGES_FROM_SIGFOX_BACKEND: type('[Device] getMessagesFromSigfoxBackend'),
+  GET_MESSAGES_FROM_SIGFOX_BACKEND_SUCCESS: type('[Device] getMessagesFromSigfoxBackend success'),
+  GET_MESSAGES_FROM_SIGFOX_BACKEND_FAIL: type('[Device] getMessagesFromSigfoxBackend fail'),
+
 });
 export const DeviceActions =
 Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
@@ -113,6 +117,56 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    */
   deleteDeviceAndMessagesFail: class implements Action {
     public readonly type = DeviceActionTypes.DELETE_DEVICE_AND_MESSAGES_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * getMessagesFromSigfoxBackend Action.
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id Device Id
+   * @param {number} limit Limit retrieved messages
+   * @param {number} before Before
+   * @param {object} req 
+   * @param {any} meta (optional).
+   * 
+   */
+  getMessagesFromSigfoxBackend: class implements Action {
+    public readonly type = DeviceActionTypes.GET_MESSAGES_FROM_SIGFOX_BACKEND;
+      public payload: {id: any, limit: any, before: any, req: any};
+
+    constructor(id: any, limit: any = {}, before: any = {}, req: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, limit, before, req};
+    }
+  },
+  /**
+   * getMessagesFromSigfoxBackendSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  getMessagesFromSigfoxBackendSuccess: class implements Action {
+    public readonly type = DeviceActionTypes.GET_MESSAGES_FROM_SIGFOX_BACKEND_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * getMessagesFromSigfoxBackendFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  getMessagesFromSigfoxBackendFail: class implements Action {
+    public readonly type = DeviceActionTypes.GET_MESSAGES_FROM_SIGFOX_BACKEND_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

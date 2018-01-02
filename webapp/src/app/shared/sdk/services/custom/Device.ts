@@ -95,6 +95,43 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id Device Id
+   *
+   * @param {number} limit Limit retrieved messages
+   *
+   * @param {number} before Before
+   *
+   * @param {object} req 
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Device` object.)
+   * </em>
+   */
+  public getMessagesFromSigfoxBackend(id: any, limit: any = {}, before: any = {}, req: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Devices/:id/messages-from-sigfox-backend";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof limit !== 'undefined' && limit !== null) _urlParams.limit = limit;
+    if (typeof before !== 'undefined' && before !== null) _urlParams.before = before;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `Device`.
    */
