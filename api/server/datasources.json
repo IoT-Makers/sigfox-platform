@@ -51,6 +51,12 @@
             "deviceId",
             "limit",
             "before"
+          ],
+          "getMessages": [
+            "credentials",
+            "deviceId",
+            "limit",
+            "before"
           ]
         }
       }
