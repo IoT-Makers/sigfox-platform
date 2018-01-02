@@ -83,6 +83,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
       this.rt.onReady().subscribe();
     }*/
 
+
     // Get devices
     this.userApi.getDevices(this.user.id).subscribe((devices: Device[]) => {
       devices.forEach(device => {

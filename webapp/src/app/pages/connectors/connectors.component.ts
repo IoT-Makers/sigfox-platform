@@ -28,11 +28,13 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   private callbackURL;
 
   // Notifications
+  private toast;
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
       tapToDismiss: true,
-      timeout: 5000
+      timeout: 5000,
+      animation: 'fade'
     });
 
   constructor(@Inject(DOCUMENT) private document: any,
@@ -55,7 +57,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     this.newConnector.createdAt = new Date();
 
     this.setup();
-    
+
     /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
@@ -130,7 +132,9 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     connector.userId = this.user.id;
 
     this.connectorRef.upsert(connector).subscribe(value => {
-      this.toasterService.pop('success', 'Success', 'The connector was successfully updated.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The connector was successfully updated.');
     }, err => {
       this.toasterService.pop('warning', 'Oupsi', 'Have you filled all the required fields?');
     });

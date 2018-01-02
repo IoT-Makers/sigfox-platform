@@ -10,60 +10,63 @@
         <div class="card-header">
           <i class="fa fa-tag fa-lg text-category"></i> <strong>Categories</strong>
         </div>
-        <div *ngIf="!categories.length" class="card-block">
-          No category yet...
-          <div class="sk-double-bounce">
-            <div class="sk-child sk-double-bounce1"></div>
-            <div class="sk-child sk-double-bounce2"></div>
-          </div>
-        </div>
-        <div *ngIf="categories.length>0" class="card-block">
 
-          <!--Table-->
-          <table class="table d-lg-table table-hover table-outline">
-            <thead class="thead-inverse">
-            <tr>
-              <th class="text-center">Name</th>
-              <th *ngIf="!edit" class="text-center hidden-xs-down">Description</th>
-              <th class="text-center">Properties</th>
-              <th class="text-center hidden-xs-down">Associated devices</th>
-              <th *ngIf="!edit" class="text-center">Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let category of categories; let i = index">
-              <td class="text-center">
-                <strong class="text-category">{{category.name}}</strong>
-                <div class="small text-muted">Updated:
-                  {{category.updatedAt | amTimeAgo}}</div>
-              </td>
-              <td class="text-center hidden-xs-down" *ngIf="!edit">
-                <p>{{category.description}}</p>
-              </td>
-              <td class="">
-                <div *ngIf="!category.properties" class="small text-muted">No properties yet</div>
-                <div *ngIf="category.properties">
-                  <div class="text-muted" *ngFor="let property of category.properties; let i = index"><span>{{property.key ? property.key : ""}}</span>{{property.type ? ": "+ property.type : ""}}</div>
-                </div>
-              </td>
+        <div class="card-block">
+          <ng-container *ngIf="!categories.length">
+            No categories yet...
+            <div class="sk-double-bounce">
+              <div class="sk-child sk-double-bounce1"></div>
+              <div class="sk-child sk-double-bounce2"></div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="categories.length > 0">
+
+            <!--Table-->
+            <table class="table d-lg-table table-hover table-outline">
+              <thead class="thead-inverse">
+              <tr>
+                <th class="text-center">Name</th>
+                <th *ngIf="!edit" class="text-center hidden-xs-down">Description</th>
+                <th class="text-center">Properties</th>
+                <th class="text-center hidden-xs-down">Associated devices</th>
+                <th *ngIf="!edit" class="text-center">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let category of categories; let i = index">
+                <td class="text-center">
+                  <strong class="text-category">{{category.name}}</strong>
+                  <div class="small text-muted">Updated:
+                    {{category.updatedAt | amTimeAgo}}</div>
+                </td>
+                <td class="text-center hidden-xs-down" *ngIf="!edit">
+                  <p>{{category.description}}</p>
+                </td>
+                <td class="">
+                  <div *ngIf="!category.properties" class="small text-muted">No properties yet</div>
+                  <div *ngIf="category.properties">
+                    <div class="text-muted" *ngFor="let property of category.properties; let i = index"><span>{{property.key ? property.key : ""}}</span>{{property.type ? ": "+ property.type : ""}}</div>
+                  </div>
+                </td>
 
 
-              <td class="">
-                <div *ngIf="!category.Devices" class="small text-muted">No devices yet</div>
-                <div *ngIf="category.Devices">
-                  <div class="small text-center" *ngFor="let device of category.Devices; let i = index"><strong>{{device.id}}</strong></div>
-                </div>
-              </td>
+                <td class="">
+                  <div *ngIf="!category.Devices" class="small text-muted">No devices yet</div>
+                  <div *ngIf="category.Devices">
+                    <div class="small text-center" *ngFor="let device of category.Devices; let i = index"><strong>{{device.id}}</strong></div>
+                  </div>
+                </td>
 
-              <td *ngIf="!edit" class="text-center">
-                <div class="btn-group-sm">
-                  <button class="btn btn-success btn-round" (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
-                  <button class="btn btn-danger btn-round" (click)="showRemoveModal(category)"><i class="fa fa-trash fa-lg"></i></button>
-                </div>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+                <td *ngIf="!edit" class="text-center">
+                  <div class="btn-group-sm">
+                    <button class="btn btn-success btn-round" (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
+                    <button class="btn btn-danger btn-round" (click)="showRemoveModal(category)"><i class="fa fa-trash fa-lg"></i></button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </ng-container>
         </div>
       </div>
     </div>

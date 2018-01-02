@@ -5,9 +5,8 @@ import {MomentModule} from 'angular2-moment';
 import {AgmCoreModule} from '@agm/core';
 import {DevicesComponent} from './devices.component';
 import {DevicesRoutingModule} from './devices-routing.module';
-import {ModalModule} from 'ng2-bootstrap';
+import {ModalModule, TabsModule} from 'ng2-bootstrap';
 import {ToasterModule} from 'angular2-toaster';
-
 
 @NgModule({
   imports: [
@@ -15,6 +14,7 @@ import {ToasterModule} from 'angular2-toaster';
     CommonModule,
     MomentModule,
     FormsModule,
+    TabsModule.forRoot(),
     ModalModule.forRoot(),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'

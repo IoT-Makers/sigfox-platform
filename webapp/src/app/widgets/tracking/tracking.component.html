@@ -114,13 +114,6 @@
 
       <div class="row mt-1">
         <div class="col-sm-12 col-md-8">
-          <div *ngIf="!devices.length">
-            Loading devices...
-            <div class="sk-double-bounce">
-              <div class="sk-child sk-double-bounce1"></div>
-              <div class="sk-child sk-double-bounce2"></div>
-            </div>
-          </div>
           <ng-select #devicesSelect
                      [placeholder]="'Select a device'"
                      [allowClear]="false"

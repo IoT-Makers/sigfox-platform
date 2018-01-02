@@ -1,11 +1,10 @@
-import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {Alert, Category, Connector, Device, FireLoopRef, Parser, User} from '../../shared/sdk/models';
+import {Geoloc, Alert, Category, Connector, Device, FireLoopRef, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
-import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
 import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 
 
 @Component({
@@ -23,6 +22,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   private isCircleVisible: boolean[] = new Array<boolean>();
 
   private device: Device = new Device();
+  private newAlert: Alert = new Alert();
   private parser: Parser = new Parser();
   private category: Category = new Category();
   private connectors: Connector[] = new Array<Connector>();
@@ -49,11 +49,13 @@ export class DevicesComponent implements OnInit, OnDestroy {
   private mapZoom = 2;
 
   // Notifications
+  private toast;
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
       tapToDismiss: true,
-      timeout: 5000
+      timeout: 5000,
+      animation: 'fade'
     });
 
   constructor(private rt: RealTime,
@@ -163,10 +165,16 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.deviceToEdit = device;
   }
 
-  addAlert(): void {
-    if (!this.deviceToEdit.alerts)
-      this.deviceToEdit.alerts = [];
-    this.deviceToEdit.alerts.push(new Alert());
+  addAlert(newAlert: Alert): void {
+    if (newAlert.connectorId === '' || newAlert.key === '') {
+      this.toasterService.pop('error', 'Error', 'Please select a connector and a key.');
+    } else {
+      if (!this.deviceToEdit.alerts)
+        this.deviceToEdit.alerts = [];
+      this.deviceToEdit.alerts.push(newAlert);
+
+      this.newAlert = new Alert();
+    }
   }
 
   removeAlert(index: number): void {
@@ -179,9 +187,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
     // @TODO change parserId to ParserID to be able to fetch devices from parser model, don't forget to update the API consequently and to test it!
     this.deviceToEdit.ParserId = this.deviceToEdit.parserId;
     /*if(device.ParserId.toString() == 'None')*/
-
     this.deviceRef.upsert(this.deviceToEdit).subscribe(value => {
-      this.toasterService.pop('success', 'Success', 'The device was successfully updated.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The device was successfully updated.');
     }, error => {
       this.toasterService.pop('error', 'Error', error.message);
     });

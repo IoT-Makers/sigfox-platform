@@ -58,84 +58,86 @@
         <div class="card-header drag">
           <i class="fa fa-map-marker fa-lg text-tracking"></i> <strong>Map</strong>
         </div>
-        <div *ngIf="!devices.length" class="card-block">
-          No device yet...
-          <div class="sk-double-bounce">
-            <div class="sk-child sk-double-bounce1"></div>
-            <div class="sk-child sk-double-bounce2"></div>
-          </div>
-        </div>
-        <div *ngIf="devices.length>0" class="card-block">
-          <agm-map [latitude]="mapLat"
-                   [longitude]="mapLng"
-                   [zoom]="mapZoom"
-                   [fullscreenControl]="true">
-            <ng-container *ngFor="let device of devices; let i = index">
-              <ng-container *ngFor="let geoloc of device.location">
-                <!-- Geoloc Sigfox -->
-                <ng-container *ngIf="geoloc.type === 'sigfox'">
-                  <agm-marker
-                    (mouseOut)="markerOut(i)"
-                    (mouseOver)="markerOver(i)"
-                    [zIndex]="3"
-                    [latitude]="geoloc.lat"
-                    [longitude]="geoloc.lng"
-                    [iconUrl]="device.name ? (device.name.startsWith('Sensit') ? 'assets/img/sensit.png' : 'assets/img/marker-sigfox.png') : 'assets/img/marker-sigfox.png'">
-                    <agm-info-window
-                      id="{{geoloc.type + '_' + device.id}}">
-                      <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
-                      <br>
-                      <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
-                      <br *ngIf="device.name">
-                      <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
-                      <br>
-                      <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
-                      <br>
-                      <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
-                      <br>
-                      <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
-                    </agm-info-window>
-                  </agm-marker>
-                  <!-- Circle -->
-                  <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
-                              [zIndex]="1"
-                              [strokePosition]="CENTER"
-                              [strokeWeight]="1"
-                              [strokeColor]="'#8d5dd1'"
-                              [fillOpacity]="0.1"
-                              [fillColor]="'#8d5dd1'"
-                              [latitude]="geoloc.lat"
-                              [longitude]="geoloc.lng"
-                              [radius]="geoloc.precision">
-                  </agm-circle>
-                  <!-- End Circle -->
-                </ng-container>
-                <!-- Geoloc GPS -->
-                <ng-container *ngIf="geoloc.type === 'GPS'">
-                  <agm-marker
-                    [zIndex]="3"
-                    [latitude]="geoloc.lat"
-                    [longitude]="geoloc.lng"
-                    [iconUrl]="'assets/img/marker-gps.png'">
-                    <agm-info-window
-                      id="{{geoloc.type + '_' + device.id}}">
-                      <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
-                      <br>
-                      <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
-                      <br *ngIf="device.name">
-                      <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
-                      <br>
-                      <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
-                      <br>
-                      <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
-                    </agm-info-window>
-                  </agm-marker>
+        <div class="card-block">
+          <ng-container *ngIf="!devices.length" class="card-block">
+            No device yet...
+            <div class="sk-double-bounce">
+              <div class="sk-child sk-double-bounce1"></div>
+              <div class="sk-child sk-double-bounce2"></div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="devices.length > 0">
+            <agm-map [latitude]="mapLat"
+                     [longitude]="mapLng"
+                     [zoom]="mapZoom"
+                     [fullscreenControl]="true">
+              <ng-container *ngFor="let device of devices; let i = index">
+                <ng-container *ngFor="let geoloc of device.location">
+                  <!-- Geoloc Sigfox -->
+                  <ng-container *ngIf="geoloc.type === 'sigfox'">
+                    <agm-marker
+                      (mouseOut)="markerOut(i)"
+                      (mouseOver)="markerOver(i)"
+                      [zIndex]="3"
+                      [latitude]="geoloc.lat"
+                      [longitude]="geoloc.lng"
+                      [iconUrl]="device.name ? (device.name.startsWith('Sensit') ? 'assets/img/sensit.png' : 'assets/img/marker-sigfox.png') : 'assets/img/marker-sigfox.png'">
+                      <agm-info-window
+                        id="{{geoloc.type + '_' + device.id}}">
+                        <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                        <br>
+                        <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                        <br *ngIf="device.name">
+                        <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                        <br>
+                        <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                        <br>
+                        <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                        <br>
+                        <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                      </agm-info-window>
+                    </agm-marker>
+                    <!-- Circle -->
+                    <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                                [zIndex]="1"
+                                [strokePosition]="CENTER"
+                                [strokeWeight]="1"
+                                [strokeColor]="'#8d5dd1'"
+                                [fillOpacity]="0.1"
+                                [fillColor]="'#8d5dd1'"
+                                [latitude]="geoloc.lat"
+                                [longitude]="geoloc.lng"
+                                [radius]="geoloc.precision">
+                    </agm-circle>
+                    <!-- End Circle -->
+                  </ng-container>
+                  <!-- Geoloc GPS -->
+                  <ng-container *ngIf="geoloc.type === 'GPS'">
+                    <agm-marker
+                      [zIndex]="3"
+                      [latitude]="geoloc.lat"
+                      [longitude]="geoloc.lng"
+                      [iconUrl]="'assets/img/marker-gps.png'">
+                      <agm-info-window
+                        id="{{geoloc.type + '_' + device.id}}">
+                        <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                        <br>
+                        <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                        <br *ngIf="device.name">
+                        <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                        <br>
+                        <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                        <br>
+                        <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                      </agm-info-window>
+                    </agm-marker>
+                  </ng-container>
                 </ng-container>
               </ng-container>
-            </ng-container>
 
-          </agm-map>
+            </agm-map>
 
+          </ng-container>
         </div>
       </div>
     </div>
@@ -144,80 +146,82 @@
         <div class="card-header drag">
           <i class="fa fa-thermometer fa-lg text-device"></i> <strong>Devices</strong>
         </div>
-        <div *ngIf="!devices.length" class="card-block">
-          No device yet...
-          <div class="sk-double-bounce">
-            <div class="sk-child sk-double-bounce1"></div>
-            <div class="sk-child sk-double-bounce2"></div>
-          </div>
-        </div>
-        <div *ngIf="devices.length>0" class="card-block">
+        <div class="card-block">
+          <ng-container *ngIf="!devices.length">
+            No device yet...
+            <div class="sk-double-bounce">
+              <div class="sk-child sk-double-bounce1"></div>
+              <div class="sk-child sk-double-bounce2"></div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="devices.length > 0">
 
-          <!--Table-->
-          <table class="table d-lg-table table-hover table-outline">
-            <thead class="thead-inverse">
-            <tr>
-              <th class="text-center">ID</th>
-              <th class="text-center">Geoloc</th>
-              <th class="text-center hidden-xs-down">Last Update</th>
-              <th class="text-center hidden-xs-down">Properties</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let device of devices; let i = index">
-              <td class="text-center">
-                <strong class="text-device">{{device.id}}</strong>
-                <div class="small" *ngIf="device.name">
-                  <span class="text-gray-dark">Name: </span>
-                  <span class="text-device">{{device.name ? device.name : "None"}}</span>
-                </div>
-                <div class="small" *ngIf="device.Category">
-                  <span class="text-gray-dark">Category: </span>
-                  <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
-                </div>
-              </td>
+            <!--Table-->
+            <table class="table d-lg-table table-hover table-outline">
+              <thead class="thead-inverse">
+              <tr>
+                <th class="text-center">ID</th>
+                <th class="text-center">Geoloc</th>
+                <th class="text-center hidden-xs-down">Last Update</th>
+                <th class="text-center hidden-xs-down">Properties</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let device of devices; let i = index">
+                <td class="text-center">
+                  <strong class="text-device">{{device.id}}</strong>
+                  <div class="small" *ngIf="device.name">
+                    <span class="text-gray-dark">Name: </span>
+                    <span class="text-device">{{device.name ? device.name : "None"}}</span>
+                  </div>
+                  <div class="small" *ngIf="device.Category">
+                    <span class="text-gray-dark">Category: </span>
+                    <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
+                  </div>
+                </td>
 
-              <td class="text-center">
-                <div *ngIf="device.location">
-                  <div *ngFor="let geoloc of device.location">
+                <td class="text-center">
+                  <div *ngIf="device.location">
+                    <div *ngFor="let geoloc of device.location">
 
-                    <ng-container *ngIf="geoloc.type === 'sigfox'">
-                      <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-sigfox">
-                        <i class="fa fa-map-marker fa-2x"></i>
-                        <br>
-                        <strong>Sigfox Geoloc</strong>
-                      </a>
-                    </ng-container>
-                    <ng-container *ngIf="geoloc.type === 'GPS'">
-                      <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-gps">
-                        <i class="fa fa-map-marker fa-2x"></i>
-                        <br>
-                        <strong>GPS</strong>
-                      </a>
-                    </ng-container>
+                      <ng-container *ngIf="geoloc.type === 'sigfox'">
+                        <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-sigfox">
+                          <i class="fa fa-map-marker fa-2x"></i>
+                          <br>
+                          <strong>Sigfox Geoloc</strong>
+                        </a>
+                      </ng-container>
+                      <ng-container *ngIf="geoloc.type === 'GPS'">
+                        <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-gps">
+                          <i class="fa fa-map-marker fa-2x"></i>
+                          <br>
+                          <strong>GPS</strong>
+                        </a>
+                      </ng-container>
+                    </div>
+
                   </div>
 
-                </div>
+                </td>
 
-              </td>
-
-              <td class="text-center hidden-xs-down">
-                <div class="small text-muted">Last message:</div>
-                <strong>{{device.updatedAt | amTimeAgo}}</strong>
-              </td>
-              <td class="text-center hidden-xs-down">
-                <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
-                <div *ngIf="device.categoryId">
-                  <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
-                    <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>
-                    <span class="text-primary">{{property.value ? property.value : ""}}</span>
+                <td class="text-center hidden-xs-down">
+                  <div class="small text-muted">Last message:</div>
+                  <strong>{{device.updatedAt | amTimeAgo}}</strong>
+                </td>
+                <td class="text-center hidden-xs-down">
+                  <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
+                  <div *ngIf="device.categoryId">
+                    <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
+                      <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>
+                      <span class="text-primary">{{property.value ? property.value : ""}}</span>
+                    </div>
                   </div>
-                </div>
-              </td>
+                </td>
 
-            </tr>
-            </tbody>
-          </table>
+              </tr>
+              </tbody>
+            </table>
+          </ng-container>
         </div>
       </div>
     </div>
@@ -228,117 +232,119 @@
     <div class="card-header drag">
       <i class="fa fa-globe fa-lg"></i> <strong> Messages overview</strong>
     </div>
-    <div *ngIf="!messages.length" class="card-block">
-      No message yet...
-      <div class="sk-double-bounce">
-        <div class="sk-child sk-double-bounce1"></div>
-        <div class="sk-child sk-double-bounce2"></div>
-      </div>
-    </div>
-    <div *ngIf="messages.length>0" class="card-block">
-      <div class="row mb-1">
-        <div class="col-md-4 offset-md-8">
-          <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-search"></i></span>
-            <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
+    <div class="card-block">
+      <ng-container *ngIf="!messages.length">
+        No message yet...
+        <div class="sk-double-bounce">
+          <div class="sk-child sk-double-bounce1"></div>
+          <div class="sk-child sk-double-bounce2"></div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="messages.length > 0">
+        <div class="row mb-1">
+          <div class="col-md-4 offset-md-8">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
+            </div>
           </div>
         </div>
-      </div>
-      <table class="table d-lg-table table-striped table-responsive" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
-        <thead class="thead-inverse">
-        <tr>
-          <th class="text-center">
-            <mfDefaultSorter by="createdAt">Date</mfDefaultSorter>
-          </th>
-          <th class="text-center">
-            <mfDefaultSorter by="data">Data</mfDefaultSorter>
-          </th>
-          <th class="text-center">
-            <mfDefaultSorter by="deviceId">Device</mfDefaultSorter>
-          </th>
-          <th class="text-center">
-            <mfDefaultSorter by="geoloc">Geoloc</mfDefaultSorter>
-          </th>
-          <th class="text-center">
-            <mfDefaultSorter by="seqNumber">Seq Number</mfDefaultSorter>
-          </th>
-          <th class="text-center">
-            <mfDefaultSorter by="reception">Reception</mfDefaultSorter>
-          </th>
-          <!--<th class="text-center">-->
+        <table class="table d-lg-table table-striped table-responsive" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+          <thead class="thead-inverse">
+          <tr>
+            <th class="text-center">
+              <mfDefaultSorter by="createdAt">Date</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="data">Data</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="deviceId">Device</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="geoloc">Geoloc</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="seqNumber">Seq Number</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="reception">Reception</mfDefaultSorter>
+            </th>
+            <!--<th class="text-center">-->
             <!--Options-->
-          <!--</th>-->
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let item of mf.data">
-          <td class="text-center">{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
-          <td class="text-center">
-            <span class="text-message">{{item.data}}</span>
-            <div class="text-justify" *ngIf="item.data_parsed">
-              <div *ngFor="let o of item.data_parsed">
-                <small *ngIf="o.value">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
+            <!--</th>-->
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of mf.data">
+            <td class="text-center">{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
+            <td class="text-center">
+              <span class="text-message">{{item.data}}</span>
+              <div class="text-justify" *ngIf="item.data_parsed">
+                <div *ngFor="let o of item.data_parsed">
+                  <small *ngIf="o.value">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
+                </div>
               </div>
-            </div>
-            <div class="mt-1" *ngIf="item.downlinkData">
-              Downlink: <span class="text-danger" title="Downlink payload">{{item.downlinkData}}</span>
-            </div>
-          </td>
-          <td class="text-device">{{item.deviceId}}</td>
-          <td class="text-center">
-            <div *ngIf="item.geoloc">
-              <div *ngFor="let geoloc of item.geoloc">
-                <div class="row">
-                  <div class="col col-12">
-                    <ng-container *ngIf="geoloc.type === 'sigfox'">
+              <div class="mt-1" *ngIf="item.downlinkData">
+                Downlink: <span class="text-danger" title="Downlink payload">{{item.downlinkData}}</span>
+              </div>
+            </td>
+            <td class="text-device">{{item.deviceId}}</td>
+            <td class="text-center">
+              <div *ngIf="item.geoloc">
+                <div *ngFor="let geoloc of item.geoloc">
+                  <div class="row">
+                    <div class="col col-12">
+                      <ng-container *ngIf="geoloc.type === 'sigfox'">
                         <span class="small text-geoloc-sigfox">
                           <i class="fa fa-map-marker fa-2x"></i>
                           <br>
                           <strong>Sigfox Network</strong>
                         </span>
-                    </ng-container>
-                    <ng-container *ngIf="geoloc.type === 'GPS'">
+                      </ng-container>
+                      <ng-container *ngIf="geoloc.type === 'GPS'">
                         <span class="small text-geoloc-gps">
                           <i class="fa fa-map-marker fa-2x"></i>
                           <br>
                           <strong>GPS</strong>
                         </span>
-                    </ng-container>
+                      </ng-container>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </td>
-          <td class="text-center">{{item.seqNumber}}</td>
-          <td class="text-center">
-            <p *ngFor="let reception of item.reception">
-              <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success" aria-hidden="true"></i>
-              <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
-              <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger" aria-hidden="true"></i>
-              {{reception.RSSI}}
-              <span>&nbsp;</span>
-              <i title="Base Station" class="fa fa-podcast text-primary" aria-hidden="true"></i>
-              {{reception.id}}
-              <span>&nbsp;</span>
-              <i title="SNR" class="fa fa-feed" aria-hidden="true"></i>
-              {{reception.SNR}}
-            </p>
-          </td>
-          <!--<td class="text-center">-->
+            </td>
+            <td class="text-center">{{item.seqNumber}}</td>
+            <td class="text-center">
+              <p *ngFor="let reception of item.reception">
+                <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success" aria-hidden="true"></i>
+                <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
+                <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger" aria-hidden="true"></i>
+                {{reception.RSSI}}
+                <span>&nbsp;</span>
+                <i title="Base Station" class="fa fa-podcast text-primary" aria-hidden="true"></i>
+                {{reception.id}}
+                <span>&nbsp;</span>
+                <i title="SNR" class="fa fa-feed" aria-hidden="true"></i>
+                {{reception.SNR}}
+              </p>
+            </td>
+            <!--<td class="text-center">-->
             <!--<button type="button" class="btn btn-danger btn-round" (click)="remove(item)">-->
-              <!--<i class="fa fa-trash"></i>-->
+            <!--<i class="fa fa-trash"></i>-->
             <!--</button>-->
-          <!--</td>-->
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-          <td colspan="4">
-            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
-          </td>
-        </tr>
-        </tfoot>
-      </table>
+            <!--</td>-->
+          </tr>
+          </tbody>
+          <tfoot>
+          <tr>
+            <td colspan="4">
+              <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </ng-container>
     </div>
   </div>
 

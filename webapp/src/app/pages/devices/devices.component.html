@@ -1,81 +1,83 @@
 <div class="animated fadeIn">
 
-  <div *ngIf="devices.length>0" class="card">
-    <div class="card-header">
-      <i class="fa fa-map-marker fa-lg text-tracking"></i> <strong>Map</strong>
-    </div>
-    <div class="card-block">
-      <agm-map [latitude]="mapLat"
-               [longitude]="mapLng"
-               [zoom]="mapZoom"
-               [mapTypeControl]="true"
-               [fullscreenControl]="true">
-        <ng-container *ngFor="let device of devices; let i = index">
-          <ng-container *ngFor="let geoloc of device.location">
-            <!-- Geoloc Sigfox -->
-            <ng-container *ngIf="geoloc.type === 'sigfox'">
-              <agm-marker
-                (mouseOut)="markerOut(i)"
-                (mouseOver)="markerOver(i)"
-                [zIndex]="3"
-                [latitude]="geoloc.lat"
-                [longitude]="geoloc.lng"
-                [iconUrl]="device.name ? (device.name.startsWith('Sensit') ? 'assets/img/sensit.png' : 'assets/img/marker-sigfox.png') : 'assets/img/marker-sigfox.png'">
-                <agm-info-window
-                  id="{{geoloc.type + '_' + device.id}}">
-                  <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
-                  <br>
-                  <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
-                  <br *ngIf="device.name">
-                  <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
-                  <br>
-                  <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
-                  <br>
-                  <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
-                  <br>
-                  <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
-                </agm-info-window>
-              </agm-marker>
-              <!-- Circle -->
-              <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
-                          [zIndex]="1"
-                          [strokePosition]="CENTER"
-                          [strokeWeight]="1"
-                          [strokeColor]="'#8d5dd1'"
-                          [fillOpacity]="0.1"
-                          [fillColor]="'#8d5dd1'"
-                          [latitude]="geoloc.lat"
-                          [longitude]="geoloc.lng"
-                          [radius]="geoloc.precision">
-              </agm-circle>
-              <!-- End Circle -->
-            </ng-container>
-            <!-- Geoloc GPS -->
-            <ng-container *ngIf="geoloc.type === 'GPS'">
-              <agm-marker
-                [zIndex]="3"
-                [latitude]="geoloc.lat"
-                [longitude]="geoloc.lng"
-                [iconUrl]="'assets/img/marker-gps.png'">
-                <agm-info-window
-                  id="{{geoloc.type + '_' + device.id}}">
-                  <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
-                  <br>
-                  <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
-                  <br *ngIf="device.name">
-                  <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
-                  <br>
-                  <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
-                  <br>
-                  <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
-                </agm-info-window>
-              </agm-marker>
+  <div *ngIf="devices.length > 0" class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <i class="fa fa-map-marker fa-lg text-tracking"></i> <strong>Map</strong>
+      </div>
+      <div class="card-block">
+        <agm-map [latitude]="mapLat"
+                 [longitude]="mapLng"
+                 [zoom]="mapZoom"
+                 [mapTypeControl]="true"
+                 [fullscreenControl]="true">
+          <ng-container *ngFor="let device of devices; let i = index">
+            <ng-container *ngFor="let geoloc of device.location">
+              <!-- Geoloc Sigfox -->
+              <ng-container *ngIf="geoloc.type === 'sigfox'">
+                <agm-marker
+                  (mouseOut)="markerOut(i)"
+                  (mouseOver)="markerOver(i)"
+                  [zIndex]="3"
+                  [latitude]="geoloc.lat"
+                  [longitude]="geoloc.lng"
+                  [iconUrl]="device.name ? (device.name.startsWith('Sensit') ? 'assets/img/sensit.png' : 'assets/img/marker-sigfox.png') : 'assets/img/marker-sigfox.png'">
+                  <agm-info-window
+                    id="{{geoloc.type + '_' + device.id}}">
+                    <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                    <br>
+                    <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                    <br *ngIf="device.name">
+                    <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                    <br>
+                    <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                    <br>
+                    <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                    <br>
+                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                  </agm-info-window>
+                </agm-marker>
+                <!-- Circle -->
+                <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                            [zIndex]="1"
+                            [strokePosition]="CENTER"
+                            [strokeWeight]="1"
+                            [strokeColor]="'#8d5dd1'"
+                            [fillOpacity]="0.1"
+                            [fillColor]="'#8d5dd1'"
+                            [latitude]="geoloc.lat"
+                            [longitude]="geoloc.lng"
+                            [radius]="geoloc.precision">
+                </agm-circle>
+                <!-- End Circle -->
+              </ng-container>
+              <!-- Geoloc GPS -->
+              <ng-container *ngIf="geoloc.type === 'GPS'">
+                <agm-marker
+                  [zIndex]="3"
+                  [latitude]="geoloc.lat"
+                  [longitude]="geoloc.lng"
+                  [iconUrl]="'assets/img/marker-gps.png'">
+                  <agm-info-window
+                    id="{{geoloc.type + '_' + device.id}}">
+                    <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                    <br>
+                    <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                    <br *ngIf="device.name">
+                    <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                    <br>
+                    <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                    <br>
+                    <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                  </agm-info-window>
+                </agm-marker>
+              </ng-container>
             </ng-container>
           </ng-container>
-        </ng-container>
 
-      </agm-map>
+        </agm-map>
 
+      </div>
     </div>
   </div>
 
@@ -86,248 +88,317 @@
         <div class="card-header">
           <i class="fa fa-thermometer fa-lg text-device"></i> <strong>Devices</strong>
         </div>
-        <div *ngIf="!devices.length" class="card-block">
-          No device yet...
-          <div class="sk-double-bounce">
-            <div class="sk-child sk-double-bounce1"></div>
-            <div class="sk-child sk-double-bounce2"></div>
-          </div>
-        </div>
-        <div *ngIf="devices.length>0" class="card-block">
+        <div class="card-block">
+          <ng-container *ngIf="!devices.length">
+            No device yet...
+            <div class="sk-double-bounce">
+              <div class="sk-child sk-double-bounce1"></div>
+              <div class="sk-child sk-double-bounce2"></div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="devices.length > 0">
 
-          <!--Table-->
-          <table class="table d-lg-table table-hover table-outline">
-            <thead class="thead-inverse">
-            <tr>
-              <th class="text-center">ID</th>
-              <th class="text-center hidden-xs-down">Info</th>
-              <th *ngIf="!edit" class="text-center hidden-xs-down">Geoloc</th>
-              <th class="text-center hidden-xs-down">Last Update</th>
-              <th *ngIf="!edit" class="text-center hidden-xs-down">Properties</th>
-              <th *ngIf="!edit" class="text-center">Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let device of devices; let i = index">
-              <td class="text-center">
-                <strong class="text-device">{{device.id}}</strong>
-              </td>
-              <td class="hidden-xs-down">
-                <div class="small">
-                  <span class="text-gray-dark">Name: </span>
-                  <span class="text-device">{{device.name ? device.name : "None"}}</span>
-                </div>
-                <div class="small">
-                  <span class="text-gray-dark">Parser: </span>
-                  <span class="text-parser">{{device.Parser ? device.Parser.name : "None"}}</span>
-                </div>
-                <div class="small">
-                  <span class="text-gray-dark">Category: </span>
-                  <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
-                </div>
-              </td>
-              <td *ngIf="!edit" class="text-center hidden-xs-down">
-                <div *ngIf="device.location">
-                  <div *ngFor="let geoloc of device.location">
-                    <div class="row">
-                      <div class="col col-7">
-                        <ng-container *ngIf="geoloc.type === 'sigfox'">
-                          <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-sigfox">
-                            <i class="fa fa-map-marker fa-2x"></i>
-                            <br>
-                            <strong>Sigfox Geoloc</strong>
-                          </a>
-                        </ng-container>
-                        <ng-container *ngIf="geoloc.type === 'GPS'">
-                          <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-gps">
-                            <i class="fa fa-map-marker fa-2x"></i>
-                            <br>
-                            <strong>GPS</strong>
-                          </a>
-                        </ng-container>
-                      </div>
-                      <div class="col col-5 text-left">
-                        <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)">
+            <!--Table-->
+            <table class="table d-lg-table table-hover table-outline">
+              <thead class="thead-inverse">
+              <tr>
+                <th class="text-center">ID</th>
+                <th class="text-center hidden-xs-down">Info</th>
+                <th *ngIf="!edit" class="text-center hidden-xs-down">Geoloc</th>
+                <th class="text-center hidden-xs-down">Last Update</th>
+                <th *ngIf="!edit" class="text-center hidden-xs-down">Properties</th>
+                <th *ngIf="!edit" class="text-center">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let device of devices; let i = index">
+                <td class="text-center">
+                  <strong class="text-device">{{device.id}}</strong>
+                </td>
+                <td class="hidden-xs-down">
+                  <div class="small">
+                    <span class="text-gray-dark">Name: </span>
+                    <span class="text-device">{{device.name ? device.name : "None"}}</span>
+                  </div>
+                  <div class="small">
+                    <span class="text-gray-dark">Parser: </span>
+                    <span class="text-parser">{{device.Parser ? device.Parser.name : "None"}}</span>
+                  </div>
+                  <div class="small">
+                    <span class="text-gray-dark">Category: </span>
+                    <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
+                  </div>
+                </td>
+                <td *ngIf="!edit" class="text-center hidden-xs-down">
+                  <div *ngIf="device.location">
+                    <div *ngFor="let geoloc of device.location">
+                      <div class="row">
+                        <div class="col col-7">
+                          <ng-container *ngIf="geoloc.type === 'sigfox'">
+                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-sigfox">
+                              <i class="fa fa-map-marker fa-2x"></i>
+                              <br>
+                              <strong>Sigfox Geoloc</strong>
+                            </a>
+                          </ng-container>
+                          <ng-container *ngIf="geoloc.type === 'GPS'">
+                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-gps">
+                              <i class="fa fa-map-marker fa-2x"></i>
+                              <br>
+                              <strong>GPS</strong>
+                            </a>
+                          </ng-container>
+                        </div>
+                        <div class="col col-5 text-left">
+                          <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)">
                           <span class="small text-muted">
                             Lat: {{geoloc.lat| number:'.1-3'}}
                             <br>
                             Lng: {{geoloc.lng| number:'.1-3'}}
                           </span>
-                        </a>
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-              </td>
-              <!--<td *ngIf="!edit">
-              <div class="clearfix">
-              <div class="float-left">
-              <strong>50%</strong>
-              </div>
-              <div class="float-right">
-              <small class="text-muted">3,321V</small>
-              </div>
-              </div>
-              <div class="progress progress-xs">
-              <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50"
-              aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-              </td>-->
-              <td class="text-center hidden-xs-down">
-                <div class="small text-muted">Last message:</div>
-                <strong>{{device.updatedAt | amTimeAgo}}</strong>
-              </td>
-              <td *ngIf="!edit" class="hidden-xs-down">
-                <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
-                <div *ngIf="device.categoryId">
-                  <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
-                    <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>
-                    <span class="text-primary">{{property.value ? property.value : ""}}</span>
+                </td>
+                <!--<td *ngIf="!edit">
+                <div class="clearfix">
+                <div class="float-left">
+                <strong>50%</strong>
+                </div>
+                <div class="float-right">
+                <small class="text-muted">3,321V</small>
+                </div>
+                </div>
+                <div class="progress progress-xs">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50"
+                aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                </td>-->
+                <td class="text-center hidden-xs-down">
+                  <div class="small text-muted">Last message:</div>
+                  <strong>{{device.updatedAt | amTimeAgo}}</strong>
+                </td>
+                <td *ngIf="!edit" class="hidden-xs-down">
+                  <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
+                  <div *ngIf="device.categoryId">
+                    <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
+                      <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>
+                      <span class="text-primary">{{property.value ? property.value : ""}}</span>
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td *ngIf="!edit" class="text-center">
-                <div class="btn-group-sm">
-                  <button class="btn btn-primary btn-round" (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
-                  <button class="btn btn-danger btn-round" (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
-                </div>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+                </td>
+                <td *ngIf="!edit" class="text-center">
+                  <div class="btn-group-sm">
+                    <button class="btn btn-primary btn-round" (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
+                    <button class="btn btn-danger btn-round" (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </ng-container>
         </div>
       </div>
     </div>
 
-    <div class="col-md-auto" *ngIf="edit">
+
+    <div class="col-md-6" *ngIf="edit">
       <div class="card">
         <div class="card-header">
-          <strong>Edit Device</strong>
+          <i class="fa fa-wrench fa-lg"></i> <strong>Edit Device</strong>
+          <button class="mt-0 btn btn-outline-secondary pull-right" (click)="cancel()"><i class="fa fa-close text-danger"></i></button>
         </div>
         <div class="card-block">
+
           <form (ngSubmit)="updateDevice()" class="form-horizontal" #editForm="ngForm">
-            <!-- ID -->
-            <div class="form-group row">
-              <label class="col-md-3 form-control-label">ID</label>
-              <div class="col-md-9">
-                <input type="text" class="form-control" placeholder="Device ID" name="deviceToEdit.id" disabled
-                       [(ngModel)]="deviceToEdit.id">
-              </div>
-            </div>
-            <!-- Name -->
-            <div class="form-group row">
-              <label class="col-md-3 form-control-label">Name</label>
-              <div class="col-md-9">
-                <input type="text" class="form-control" placeholder="Device name" name="deviceToEdit.name"
-                       [(ngModel)]="deviceToEdit.name">
-              </div>
-            </div>
-            <!-- Parser -->
-            <div class="form-group row">
-              <label class="col-md-3 form-control-label">Parser</label>
-              <div class="col-md-9">
-                <select name="device.parserId" class="form-control" size="1" [(ngModel)]="deviceToEdit.parserId">
-                  <option [ngValue]="parser.id" *ngFor="let parser of parsers">{{parser.name}}</option>
-                  <option [ngValue]=""></option>
-                </select>
-              </div>
-            </div>
-            <!-- Category -->
-            <div class="form-group row">
-              <label class="col-md-3 form-control-label">Category</label>
-              <div class="col-md-9">
-                <select name="deviceToEdit.categoryId" class="form-control" size="1" [(ngModel)]="deviceToEdit.categoryId" (ngModelChange)="updateDeviceCategory()">
-                  <option [ngValue]="category.id" *ngFor="let category of categories">{{category.name}}</option>
-                  <option [ngValue]=""></option>
-                </select>
-              </div>
-            </div>
-            <div *ngIf="deviceToEdit.categoryId">
-              <div class="form-group row" *ngFor="let property of deviceToEdit.properties; let i = index">
-                <label class="col-md-3 offset-1 form-control-label">{{property.key}}</label>
-                <div class="col-md-8">
-                  <input type="{{property.type}}" class="form-control" placeholder="{{property.key}}" name="deviceToEdit.property.value"
-                         [(ngModel)]="property.value" [ngModelOptions]="{standalone: true}">
+            <tabset>
+              <tab heading="Information" id="tab1">
+                <!-- ID -->
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label">ID</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Device ID" name="deviceToEdit.id" disabled
+                           [(ngModel)]="deviceToEdit.id">
+                  </div>
                 </div>
-              </div>
-            </div>
-            <!-- Alerts -->
-            <div class="form-group row">
-              <label class="col-md-3 form-control-label">Alerts</label>
-              <div class="col-md-9">
-                <button class="btn btn-sm btn-outline-success" (click)="$event.preventDefault(); addAlert()"><i class="fa fa-plus-circle"></i> Add alert</button>
-              </div>
-            </div>
+                <!-- Name -->
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label">Name</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Device name" name="deviceToEdit.name"
+                           [(ngModel)]="deviceToEdit.name">
+                  </div>
+                </div>
+                <!-- Parser -->
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label">Parser</label>
+                  <div class="col-md-9">
+                    <select name="device.parserId" class="form-control" size="1" [(ngModel)]="deviceToEdit.parserId">
+                      <option [ngValue]="parser.id" *ngFor="let parser of parsers">{{parser.name}}</option>
+                      <option [ngValue]=""></option>
+                    </select>
+                  </div>
+                </div>
+                <!-- Category -->
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label">Category</label>
+                  <div class="col-md-9">
+                    <select name="deviceToEdit.categoryId" class="form-control" size="1" [(ngModel)]="deviceToEdit.categoryId" (ngModelChange)="updateDeviceCategory()">
+                      <option [ngValue]="category.id" *ngFor="let category of categories">{{category.name}}</option>
+                      <option [ngValue]=""></option>
+                    </select>
+                  </div>
+                </div>
+                <div *ngIf="deviceToEdit.categoryId">
+                  <div class="form-group row" *ngFor="let property of deviceToEdit.properties; let i = index">
+                    <label class="col-md-3 offset-1 form-control-label">{{property.key}}</label>
+                    <div class="col-md-8">
+                      <input type="{{property.type}}" class="form-control" placeholder="{{property.key}}" name="deviceToEdit.property.value"
+                             [(ngModel)]="property.value" [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div>
+                </div>
 
-            <div *ngFor="let alert of deviceToEdit.alerts; let i = index">
-              <div class="form-group row">
-                <label class="col-md-3 offset-1 form-control-label">Connector</label>
-                <div class="col-md-8 mb-0">
-                  <select name="alert.connectorId" class="form-control" size="1" [(ngModel)]="alert.connectorId">
-                    <option *ngFor="let connector of connectors" [ngValue]="connector.id">{{connector.name}}</option>
-                    <option [ngValue]=""></option>
-                  </select>
+                <!-- Downlink data -->
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label">Downlink payload</label>
+                  <div class="col-md-9">
+                    <input #downlinkData="ngModel" type="text" class="form-control" placeholder="Downlink payload in HEX"
+                           name="downlinkData" maxlength="16" pattern="([a-fA-F0-9]{16})$"
+                           [(ngModel)]="deviceToEdit.downlinkData">
+                    <div [hidden]="downlinkData.valid || downlinkData.pristine"
+                         class="text-danger">
+                      Length must be 8 bytes, in hexadecimal
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 offset-1 form-control-label">Key</label>
-                <div class="col-md-8">
-                  <select name="alert.key" class="form-control" size="1" [(ngModel)]="alert.key">
-                    <option [ngValue]="item.key" *ngFor="let item of deviceToEdit.data_parsed">{{item.key}}</option>
-                    <option [ngValue]=""></option>
-                  </select>
+              </tab>
+
+
+              <tab heading="Alerts">
+                <!-- Alerts -->
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label">Connector</label>
+                  <div class="col-md-9 mb-0">
+                    <select name="newAlert.connectorId" class="form-control" size="1" [(ngModel)]="newAlert.connectorId">
+                      <option *ngFor="let connector of connectors" [ngValue]="connector.id">{{connector.name}}</option>
+                      <option [ngValue]=""></option>
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 offset-1 form-control-label">Min value</label>
-                <div class="col-md-7">
-                    <input type="number" class="form-control" name="alert.value_min"
-                         [(ngModel)]="alert.value_min" [ngModelOptions]="{standalone: true}">
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label">Key</label>
+                  <div class="col-md-9">
+                    <select name="newAlert.key" class="form-control" size="1" [(ngModel)]="newAlert.key">
+                      <option [ngValue]="item.key" *ngFor="let item of deviceToEdit.data_parsed">{{item.key}}</option>
+                      <option [ngValue]=""></option>
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 offset-1 form-control-label">Max value</label>
-                <div class="col-md-7">
-                  <input type="number" class="form-control" name="alert.value_max"
-                         [(ngModel)]="alert.value_max" [ngModelOptions]="{standalone: true}">
+                <div class="form-group row">
+                  <label class="col-md-3 offset-1 form-control-label">Min value</label>
+                  <div class="col-md-8">
+                    <input type="number" class="form-control" name="newAlert.value_min"
+                           [(ngModel)]="newAlert.value_min" [ngModelOptions]="{standalone: true}">
+                  </div>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 offset-1 form-control-label">Exact value</label>
-                <div class="col-md-7">
-                  <input type="text" class="form-control" placeholder="Exact value" name="alert.value_exact"
-                         [(ngModel)]="alert.value_exact" [ngModelOptions]="{standalone: true}">
+                <div class="form-group row">
+                  <label class="col-md-3 offset-1 form-control-label">Max value</label>
+                  <div class="col-md-7">
+                    <input type="number" class="form-control" name="newAlert.value_max"
+                           [(ngModel)]="newAlert.value_max" [ngModelOptions]="{standalone: true}">
+                  </div>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 offset-1 form-control-label">Custom message (optional)</label>
-                <div class="col-md-7">
-                  <input type="text" class="form-control" placeholder="Custom message" name="alert.message"
-                         [(ngModel)]="alert.message" [ngModelOptions]="{standalone: true}">
+                <div class="form-group row">
+                  <label class="col-md-3 offset-1 form-control-label">Exact value</label>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" placeholder="Exact value" name="newAlert.value_exact"
+                           [(ngModel)]="newAlert.value_exact" [ngModelOptions]="{standalone: true}">
+                  </div>
                 </div>
-              </div>
-              <div class="form-group row">
+                <div class="form-group row">
+                  <label class="col-md-3 offset-1 form-control-label">Custom message (optional)</label>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" placeholder="Custom message" name="newAlert.message"
+                           [(ngModel)]="newAlert.message" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-12">
+                    <button class="btn btn-sm btn-outline-success" (click)="$event.preventDefault(); addAlert(newAlert)"><i class="fa fa-plus-circle"></i> Add alert</button>
+                  </div>
+                </div>
+
+                <div *ngFor="let alert of deviceToEdit.alerts; let i = index">
+                  <div class="form-group row">
+                    <label class="col-md-3 form-control-label">Connector</label>
+                    <div class="col-md-9 mb-0">
+                      <select name="alert.connectorId" class="form-control" size="1" [(ngModel)]="alert.connectorId">
+                        <option *ngFor="let connector of connectors" [ngValue]="connector.id">{{connector.name}}</option>
+                        <option [ngValue]=""></option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-3 form-control-label">Key</label>
+                    <div class="col-md-9">
+                      <select name="alert.key" class="form-control" size="1" [(ngModel)]="alert.key">
+                        <option [ngValue]="item.key" *ngFor="let item of deviceToEdit.data_parsed">{{item.key}}</option>
+                        <option [ngValue]=""></option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-3 offset-1 form-control-label">Min value</label>
+                    <div class="col-md-8">
+                      <input type="number" class="form-control" name="alert.value_min"
+                             [(ngModel)]="alert.value_min" [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-3 offset-1 form-control-label">Max value</label>
+                    <div class="col-md-7">
+                      <input type="number" class="form-control" name="alert.value_max"
+                             [(ngModel)]="alert.value_max" [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-3 offset-1 form-control-label">Exact value</label>
+                    <div class="col-md-8">
+                      <input type="text" class="form-control" placeholder="Exact value" name="alert.value_exact"
+                             [(ngModel)]="alert.value_exact" [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-3 offset-1 form-control-label">Custom message (optional)</label>
+                    <div class="col-md-8">
+                      <input type="text" class="form-control" placeholder="Custom message" name="alert.message"
+                             [(ngModel)]="alert.message" [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <button class="btn pull-right btn-sm btn-outline-danger" (click)="removeAlert(i)"><i class="fa fa-trash"></i> Remove</button>
+                    </div>
+                  </div>
+                </div>
+              </tab>
+
+
+              <tab heading="Options" class="text-center">
+                <div class="col-md-12 mb-1">
+                  <button class="btn btn-info" (click)="e.preventDefault()"><i class="fa fa-database"></i> Retrieve messages from Sigfox Backend</button>
+                </div>
                 <div class="col-md-12">
-                  <button class="btn pull-right btn-sm btn-outline-danger" (click)="removeAlert(i)"><i class="fa fa-trash"></i> Remove</button>
+                  <button class="btn btn-info" (click)="e.preventDefault()"><i class="fa fa-code"></i> Decode all messages for current parser</button>
                 </div>
-              </div>
-            </div>
-
-            <!-- Downlink data -->
-            <div class="form-group row">
-              <label class="col-md-3 form-control-label">Downlink payload</label>
-              <div class="col-md-9">
-                <input #downlinkData="ngModel" type="text" class="form-control" placeholder="Downlink payload in HEX"
-                       name="downlinkData" maxlength="16" pattern="([a-fA-F0-9]{16})$"
-                       [(ngModel)]="deviceToEdit.downlinkData">
-                <div [hidden]="downlinkData.valid || downlinkData.pristine"
-                     class="text-danger">
-                  Length must be 8 bytes, in hexadecimal
-                </div>
-              </div>
-            </div>
+              </tab>
+            </tabset>
           </form>
+
         </div>
         <div class="card-footer">
           <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="updateDevice()"><i class="fa fa-check"></i> Update</button>
@@ -336,8 +407,8 @@
       </div>
     </div>
   </div>
-
 </div>
+
 
 
 

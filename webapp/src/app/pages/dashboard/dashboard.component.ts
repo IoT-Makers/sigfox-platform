@@ -65,7 +65,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
       tapToDismiss: true,
-      timeout: 5000
+      timeout: 5000,
+      animation: 'fade'
     });
 
   constructor(private rt: RealTime,
@@ -90,7 +91,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
       this.devicesSelect.items = this.devices;
     });
-    
+
     this.setup();
 
     /*if (

@@ -28,13 +28,6 @@
           </div>
           <div class="row mt-1">
             <div class="col-sm-12 col-md-8">
-              <div *ngIf="!devices.length">
-                Loading devices...
-                <div class="sk-double-bounce">
-                  <div class="sk-child sk-double-bounce1"></div>
-                  <div class="sk-child sk-double-bounce2"></div>
-                </div>
-              </div>
               <ng-select #devicesSelect
                          [placeholder]="'Select a device'"
                          [allowClear]="false"
@@ -67,42 +60,44 @@
         <div class="card-header">
           <strong>Count messages</strong>
         </div>
-        <div *ngIf="!messageChartData.length" class="card-block">
-          No messages yet...
-          <div class="sk-double-bounce">
-            <div class="sk-child sk-double-bounce1"></div>
-            <div class="sk-child sk-double-bounce2"></div>
-          </div>
-        </div>
-        <div *ngIf="messageChartData.length>0" class="card-block">
-          <div class="row">
-            <!--<div class="col-sm-5">-->
-            <!--<h4 class="card-title mb-0">Count Messages</h4>-->
-            <!--&lt;!&ndash;<div class="small text-muted">November 2015</div>&ndash;&gt;-->
-            <!--</div>&lt;!&ndash;/.col&ndash;&gt;-->
-            <div class="col col-12 pull-right">
-              <button type="button" class="btn btn-primary float-right"><i class="fa fa-download"></i></button>
-              <div class="btn-toolbar float-right" role="toolbar" aria-label="Toolbar with button groups">
-                <div class="btn-group mr-1" data-toggle="buttons" aria-label="First group">
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('hourly')">Hour</button>
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('daily')">Day</button>
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('weekly')">Week</button>
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('monthly')">Month</button>
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('yearly')">Year</button>
+        <div class="card-block">
+          <ng-container *ngIf="!messageChartData.length">
+            No messages yet...
+            <div class="sk-double-bounce">
+              <div class="sk-child sk-double-bounce1"></div>
+              <div class="sk-child sk-double-bounce2"></div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="messageChartData.length > 0">
+            <div class="row">
+              <!--<div class="col-sm-5">-->
+              <!--<h4 class="card-title mb-0">Count Messages</h4>-->
+              <!--&lt;!&ndash;<div class="small text-muted">November 2015</div>&ndash;&gt;-->
+              <!--</div>&lt;!&ndash;/.col&ndash;&gt;-->
+              <div class="col col-12 pull-right">
+                <button type="button" class="btn btn-primary float-right"><i class="fa fa-download"></i></button>
+                <div class="btn-toolbar float-right" role="toolbar" aria-label="Toolbar with button groups">
+                  <div class="btn-group mr-1" data-toggle="buttons" aria-label="First group">
+                    <button class="btn btn-outline-secondary" (click)="getMessagesGraph('hourly')">Hour</button>
+                    <button class="btn btn-outline-secondary" (click)="getMessagesGraph('daily')">Day</button>
+                    <button class="btn btn-outline-secondary" (click)="getMessagesGraph('weekly')">Week</button>
+                    <button class="btn btn-outline-secondary" (click)="getMessagesGraph('monthly')">Month</button>
+                    <button class="btn btn-outline-secondary" (click)="getMessagesGraph('yearly')">Year</button>
+                  </div>
                 </div>
-              </div>
-            </div><!--/.col-->
-          </div><!--/.row-->
-          <hr>
-          <div class="chart-wrapper">
-            <canvas *ngIf="messageChartData.length > 0" baseChart
-                    [datasets]="messageChartData"
-                    [labels]="messageChartLabels"
-                    [options]="messageChartOptions"
-                    [colors]="messageChartColors"
-                    [legend]="true"
-                    [chartType]="'bar'"></canvas>
-          </div>
+              </div><!--/.col-->
+            </div><!--/.row-->
+            <hr>
+            <div class="chart-wrapper">
+              <canvas *ngIf="messageChartData.length > 0" baseChart
+                      [datasets]="messageChartData"
+                      [labels]="messageChartLabels"
+                      [options]="messageChartOptions"
+                      [colors]="messageChartColors"
+                      [legend]="true"
+                      [chartType]="'bar'"></canvas>
+            </div>
+          </ng-container>
         </div>
       </div>
       <!--/.card-->

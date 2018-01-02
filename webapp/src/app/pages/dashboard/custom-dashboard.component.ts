@@ -62,7 +62,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
       tapToDismiss: true,
-      timeout: 5000
+      timeout: 5000,
+      animation: 'fade'
     });
 
 

@@ -90,12 +90,6 @@ class Device {
       });
   }
 
-  /*access(ctx: any, next: Function): void {
-    // Filter the request with the sent user Id
-    ctx.query.where.userId = ctx.args.options.accessToken.userId;
-    next();
-  }*/
-
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('Device: Before Save');

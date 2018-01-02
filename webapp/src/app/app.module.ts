@@ -27,7 +27,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     ReactiveFormsModule,
     AppRoutingModule,
     BsDropdownModule.forRoot(),
-    TabsModule.forRoot(),
+    //TabsModule.forRoot(),
     ChartsModule,
     SDKBrowserModule.forRoot()
   ],

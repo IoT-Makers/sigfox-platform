@@ -33,11 +33,13 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   public propertyType = ['string', 'number', 'geoloc', 'date', 'boolean'];
 
   // Notifications
+  private toast;
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
       tapToDismiss: true,
-      timeout: 5000
+      timeout: 5000,
+      animation: 'fade'
     });
 
   constructor(private rt: RealTime,
@@ -106,6 +108,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     if (this.newCategory)
       delete category.id;
     this.categoryRef.upsert(category).subscribe(value => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toasterService.pop('success', 'Success', 'Category was successfully updated.');
     }, error => {
       this.toasterService.pop('error', 'Error', 'Please fill in the category name.');
