@@ -22,6 +22,7 @@ import {ToasterModule} from 'angular2-toaster';
     }),
     ToasterModule
   ],
-  declarations: [ DevicesComponent ]
+  declarations: [DevicesComponent]
 })
-export class DevicesModule { }
+export class DevicesModule {
+}

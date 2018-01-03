@@ -15,4 +15,5 @@ import {DataFilterPipe} from './datafilterpipe';
     DataFilterPipe
   ]
 })
-export class DemoModule { }
+export class DemoModule {
+}

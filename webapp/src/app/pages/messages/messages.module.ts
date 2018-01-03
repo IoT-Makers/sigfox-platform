@@ -1,14 +1,13 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
-import { MessagesComponent } from './messages.component';
-import { MessagesRoutingModule } from './messages-routing.module';
+import {MessagesComponent} from './messages.component';
+import {MessagesRoutingModule} from './messages-routing.module';
 import {CommonModule} from '@angular/common';
-
 // DataTable
-import { DataTableModule } from 'angular2-datatable';
-import { DataFilterPipe } from './datafilterpipe';
-import { FormsModule } from '@angular/forms';
-import {ModalModule, TooltipModule} from "ng2-bootstrap";
+import {DataTableModule} from 'angular2-datatable';
+import {DataFilterPipe} from './datafilterpipe';
+import {FormsModule} from '@angular/forms';
+import {ModalModule} from "ng2-bootstrap";
 import {AgmCoreModule} from "@agm/core";
 
 @NgModule({
@@ -27,4 +26,5 @@ import {AgmCoreModule} from "@agm/core";
     DataFilterPipe
   ]
 })
-export class MessagesModule { }
+export class MessagesModule {
+}

@@ -16,12 +16,12 @@
       </a>
       <!--<div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">-->
 
-        <!--<div class="dropdown-header text-center"><strong>Information</strong></div>-->
-        <!--<a class="dropdown-item" href="#" [routerLink]="['/devices']"><i class="fa fa-microchip text-warning"></i> Devices<span class="badge badge-warning">{{countDevices}}</span></a>-->
-        <!--<a class="dropdown-item" href="#" [routerLink]="['/messages']"><i class="fa fa-envelope text-primary"></i> Messages<span class="badge badge-primary">{{countMessages}}</span></a>-->
-        <!--<div class="dropdown-header text-center"><strong>Settings</strong></div>-->
-        <!--<a class="dropdown-item" href="#" [routerLink]="['/profile']"><i class="fa fa-user text-profile"></i> Profile</a>-->
-        <!--<a class="dropdown-item" href="#" (click)="onLogout()"><i class="fa fa-lock text-danger"></i> Logout</a>-->
+      <!--<div class="dropdown-header text-center"><strong>Information</strong></div>-->
+      <!--<a class="dropdown-item" href="#" [routerLink]="['/devices']"><i class="fa fa-microchip text-warning"></i> Devices<span class="badge badge-warning">{{countDevices}}</span></a>-->
+      <!--<a class="dropdown-item" href="#" [routerLink]="['/messages']"><i class="fa fa-envelope text-primary"></i> Messages<span class="badge badge-primary">{{countMessages}}</span></a>-->
+      <!--<div class="dropdown-header text-center"><strong>Settings</strong></div>-->
+      <!--<a class="dropdown-item" href="#" [routerLink]="['/profile']"><i class="fa fa-user text-profile"></i> Profile</a>-->
+      <!--<a class="dropdown-item" href="#" (click)="onLogout()"><i class="fa fa-lock text-danger"></i> Logout</a>-->
 
       <!--</div>-->
     </li>
@@ -36,32 +36,36 @@
 <div class="app-body">
   <div class="sidebar">
     <!--<div class="sidebar-header">-->
-      <!--<img *ngIf="!user.avatar" src="assets/img/avatars/user.jpg" class="img-avatar" alt="Avatar">-->
-      <!--<img *ngIf="user.avatar" src="{{user.avatar}}" class="img-avatar" alt="Avatar">-->
-      <!--<div class="text-muted"><small>Hello </small></div>-->
-      <!--<div><strong>{{user.name || user.email}}</strong></div>-->
-      <!--<div class="btn-group" role="group" aria-label="Button group with nested dropdown">-->
-        <!--<a type="button" class="btn btn-link" routerLinkActive="active" [routerLink]="['/profile']">-->
-          <!--<i class="fa fa-user text-profile"></i>-->
-        <!--</a>-->
-        <!--<a type="button" class="btn btn-link" (click)="onLogout()">-->
-          <!--<i class="fa fa-sign-out"></i>-->
-        <!--</a>-->
-      <!--</div>-->
+    <!--<img *ngIf="!user.avatar" src="assets/img/avatars/user.jpg" class="img-avatar" alt="Avatar">-->
+    <!--<img *ngIf="user.avatar" src="{{user.avatar}}" class="img-avatar" alt="Avatar">-->
+    <!--<div class="text-muted"><small>Hello </small></div>-->
+    <!--<div><strong>{{user.name || user.email}}</strong></div>-->
+    <!--<div class="btn-group" role="group" aria-label="Button group with nested dropdown">-->
+    <!--<a type="button" class="btn btn-link" routerLinkActive="active" [routerLink]="['/profile']">-->
+    <!--<i class="fa fa-user text-profile"></i>-->
+    <!--</a>-->
+    <!--<a type="button" class="btn btn-link" (click)="onLogout()">-->
+    <!--<i class="fa fa-sign-out"></i>-->
+    <!--</a>-->
+    <!--</div>-->
     <!--</div>-->
     <nav class="sidebar-nav">
       <ul class="nav">
         <li class="nav-title">
-          Dashboards <button class="pull-right btn-round btn-outline-success btn-sm" routerLinkActive="active" (click)="newDashboard()" style="outline: none"><i class="fa fa-plus-circle"></i></button>
+          Dashboards
+          <button class="pull-right btn-round btn-outline-success btn-sm" routerLinkActive="active"
+                  (click)="newDashboard()" style="outline: none"><i class="fa fa-plus-circle"></i></button>
         </li>
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['/']"><i class="fa fa-dashboard text-white"></i> Overview </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/dashboard']"><i class="fa fa-home"></i>Test Dashboard</a>
+          <a class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+             [routerLink]="['/dashboard']"><i class="fa fa-home"></i>Test Dashboard</a>
         </li>
         <li class="nav-item" *ngFor="let dashboard of dashboards">
-          <a class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/dashboard', dashboard.id]"><i class="fa {{dashboard.icon ? dashboard.icon : null}}"></i>{{dashboard.name}}</a>
+          <a class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+             [routerLink]="['/dashboard', dashboard.id]"><i class="fa {{dashboard.icon ? dashboard.icon : null}}"></i>{{dashboard.name}}</a>
         </li>
 
         <li class="divider"></li>
@@ -70,13 +74,18 @@
           Information
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/categories']"><i class="fa fa-tag text-category"></i> Categories <span class="badge badge-category">{{countCategories}}</span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/categories']"><i
+            class="fa fa-tag text-category"></i> Categories <span
+            class="badge badge-category">{{countCategories}}</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/devices']"><i class="fa fa-thermometer-half text-device"></i> Devices <span class="badge badge-device">{{countDevices}}</span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/devices']"><i
+            class="fa fa-thermometer-half text-device"></i> Devices <span
+            class="badge badge-device">{{countDevices}}</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/messages']"><i class="fa fa-envelope text-message"></i> Messages <span class="badge badge-message">{{countMessages}}</span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/messages']"><i
+            class="fa fa-envelope text-message"></i> Messages <span class="badge badge-message">{{countMessages}}</span></a>
         </li>
 
         <!--<li class="nav-item">
@@ -87,10 +96,12 @@
           Widgets
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/tracking']"><i class="fa fa-map-marker text-tracking"></i> Tracking <span class="badge badge-tracking"></span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/tracking']"><i
+            class="fa fa-map-marker text-tracking"></i> Tracking <span class="badge badge-tracking"></span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/analytics']"><i class="fa fa-area-chart text-analytic"></i> Analytics <span class="badge badge-analytic"></span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/analytics']"><i
+            class="fa fa-area-chart text-analytic"></i> Analytics <span class="badge badge-analytic"></span></a>
         </li>
 
         <!--<li class="nav-title">-->
@@ -104,15 +115,16 @@
           Developers
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/parsers']"><i class="fa fa-code text-parser"></i> Parsers <span class="badge badge-parser">{{countParsers}}</span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/parsers']"><i
+            class="fa fa-code text-parser"></i> Parsers <span class="badge badge-parser">{{countParsers}}</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/connectors']"><i class="fa fa-plug"></i> Connectors</a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/connectors']"><i class="fa fa-plug"></i>
+            Connectors</a>
         </li>
         <!--<li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/base-stations']"><i class="fa fa-podcast"></i> Base Stations <span class="badge badge-info"></span></a>
         </li>-->
-
 
 
       </ul>
@@ -137,5 +149,6 @@
 
 <footer class="app-footer footer-fixed">
   <span class="text-primary">Made with <i class="fa fa-heart text-danger"></i></span> &copy; 2018
-  <span class="float-right">by <a target="_blank" href="https://github.com/luisomoreau">Louis Moreau</a> & <a target="_blank" href="https://github.com/antoinedechassey">Antoine de Chassey</a></span>
+  <span class="float-right">by <a target="_blank" href="https://github.com/luisomoreau">Louis Moreau</a> & <a
+    target="_blank" href="https://github.com/antoinedechassey">Antoine de Chassey</a></span>
 </footer>

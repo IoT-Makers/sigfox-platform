@@ -1,13 +1,14 @@
-import { Directive, HostListener } from '@angular/core';
+import {Directive, HostListener} from '@angular/core';
 
 /**
-* Allows the sidebar to be toggled via click.
-*/
+ * Allows the sidebar to be toggled via click.
+ */
 @Directive({
   selector: '.sidebar-toggler',
 })
 export class SidebarToggleDirective {
-  constructor() { }
+  constructor() {
+  }
 
   @HostListener('click', ['$event'])
   toggleOpen($event: any) {
@@ -20,7 +21,8 @@ export class SidebarToggleDirective {
   selector: '.mobile-sidebar-toggler',
 })
 export class MobileSidebarToggleDirective {
-  constructor() { }
+  constructor() {
+  }
 
   // Check if element has class
   private hasClass(target: any, elementClassName: string) {
@@ -35,13 +37,14 @@ export class MobileSidebarToggleDirective {
 }
 
 /**
-* Allows the off-canvas sidebar to be closed via click.
-*/
+ * Allows the off-canvas sidebar to be closed via click.
+ */
 @Directive({
   selector: '.sidebar-close',
 })
 export class SidebarOffCanvasCloseDirective {
-  constructor() { }
+  constructor() {
+  }
 
   // Check if element has class
   private hasClass(target: any, elementClassName: string) {
@@ -50,10 +53,10 @@ export class SidebarOffCanvasCloseDirective {
 
   // Toggle element class
   private toggleClass(elem: any, elementClassName: string) {
-    let newClass = ' ' + elem.className.replace( /[\t\r\n]/g, ' ' ) + ' ';
+    let newClass = ' ' + elem.className.replace(/[\t\r\n]/g, ' ') + ' ';
     if (this.hasClass(elem, elementClassName)) {
-      while (newClass.indexOf(' ' + elementClassName + ' ') >= 0 ) {
-        newClass = newClass.replace( ' ' + elementClassName + ' ' , ' ' );
+      while (newClass.indexOf(' ' + elementClassName + ' ') >= 0) {
+        newClass = newClass.replace(' ' + elementClassName + ' ', ' ');
       }
       elem.className = newClass.replace(/^\s+|\s+$/g, '');
     } else {

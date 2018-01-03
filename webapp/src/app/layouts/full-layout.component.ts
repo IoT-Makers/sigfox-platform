@@ -24,11 +24,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private categorySub: Subscription;
   private dashboardSub: Subscription;
 
-  private messages: Message[] = new Array<Message>();
-  private devices: Device[] = new Array<Device>();
-  private parsers: Parser[] = new Array<Parser>();
-  private categories: Category[] = new Array<Category>();
-  private dashboards: Dashboard[] = new Array<Dashboard>();
+  private messages: Message[] = [];
+  private devices: Device[] = [];
+  private parsers: Parser[] = [];
+  private categories: Category[] = [];
+  private dashboards: Dashboard[] = [];
 
   private countMessages = 0;
   private countDevices = 0;
@@ -43,12 +43,13 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
 
   public disabled = false;
-  public status: {isopen: boolean} = {isopen: false};
+  public status: { isopen: boolean } = {isopen: false};
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
               private parserApi: ParserApi,
-              private router: Router) { }
+              private router: Router) {
+  }
 
 
   ngOnInit(): void {
@@ -119,7 +120,10 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     // Dashboards
     this.dashboardRef = this.rt.FireLoop.ref<Dashboard>(Dashboard);
-    this.dashboardSub = this.dashboardRef.on('change', {where: {userId: this.user.id}, order: 'createdAt DESC'}).subscribe(
+    this.dashboardSub = this.dashboardRef.on('change', {
+      where: {userId: this.user.id},
+      order: 'createdAt DESC'
+    }).subscribe(
       (dashboards: Dashboard[]) => {
         console.log('Dashboard changed');
         this.dashboards = dashboards;

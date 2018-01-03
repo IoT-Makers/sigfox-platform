@@ -11,6 +11,7 @@ import {CommonModule} from "@angular/common";
     CommonModule,
     HttpClientModule
   ],
-  declarations: [ BaseStationsComponent ]
+  declarations: [BaseStationsComponent]
 })
-export class BaseStationsModule { }
+export class BaseStationsModule {
+}

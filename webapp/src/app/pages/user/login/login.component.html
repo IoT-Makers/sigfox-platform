@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-8">
-        <img class="img-fluid" src="assets/img/sigfox-logo.png" />
+        <img class="img-fluid" src="assets/img/sigfox-logo.png"/>
       </div>
     </div>
 
@@ -19,11 +19,13 @@
               <form #f="ngForm" (ngSubmit)="onLogin()">
                 <div class="input-group mb-1">
                   <span class="input-group-addon"><i class="icon-user"></i></span>
-                  <input [(ngModel)]="user.email" type="email" class="form-control" name="email" placeholder="Email" required>
+                  <input [(ngModel)]="user.email" type="email" class="form-control" name="email" placeholder="Email"
+                         required>
                 </div>
                 <div class="input-group mb-2">
                   <span class="input-group-addon"><i class="icon-lock"></i></span>
-                  <input [(ngModel)]="user.password" type="password" class="form-control" name="password" placeholder="Password" required>
+                  <input [(ngModel)]="user.password" type="password" class="form-control" name="password"
+                         placeholder="Password" required>
                 </div>
 
                 <div *ngIf="errorMessage != ''">
@@ -45,14 +47,14 @@
               </form>
 
 
-
             </div>
           </div>
           <div class="card card-inverse card-primary py-3">
             <div class="card-block text-center">
               <h2 class="mb-2 mt-2">Sign Up</h2>
               <!--<p>Registration are not available at the moment, please come back later ;)</p>-->
-              <button type="button" class="btn btn-primary active mt-2" [routerLink]="['/register']">Register Now!</button>
+              <button type="button" class="btn btn-primary active mt-2" [routerLink]="['/register']">Register Now!
+              </button>
             </div>
           </div>
         </div>

@@ -18,7 +18,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
   private mobile = false;
 
-  public devices: Array<any> = new Array<any>();
+  public devices: Array<any> = [];
 
   private messageSub: Subscription;
   private messageRef: FireLoopRef<Message>;
@@ -39,7 +39,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
       display: true,
     }
   };
-  private messageChartColors: Array<any> = [{ backgroundColor: '#5b9bd3' }];
+  private messageChartColors: Array<any> = [{backgroundColor: '#5b9bd3'}];
 
   // Devices Graph
   private selectedDevice: Device = new Device();
@@ -62,7 +62,8 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
   constructor(private rt: RealTime,
               private deviceApi: DeviceApi,
-              private userApi: UserApi) {}
+              private userApi: UserApi) {
+  }
 
   ngOnInit(): void {
     console.warn('Analytics: ngOnInit');
@@ -112,7 +113,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
     this.graphRange = option;
     this.messageChartLabels = [];
-    this.messageChartData   = [];
+    this.messageChartData = [];
     // this.data = [];
 
     this.messageRef.stats(
@@ -125,7 +126,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     ).subscribe((stats: any) => {
 
       this.messageChartLabels = [];
-      this.messageChartData   = [];
+      this.messageChartData = [];
       this.data = [];
 
       console.log('Stats: ', stats);
@@ -151,7 +152,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
       });
       // console.log('Data:' ,this.data);
       // console.log('Labels:',this.messageChartLabels);
-      this.messageChartData.push({ data: this.data, label: 'Messages'});
+      this.messageChartData.push({data: this.data, label: 'Messages'});
     });
   }
 

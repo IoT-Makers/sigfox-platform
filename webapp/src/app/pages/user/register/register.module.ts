@@ -15,4 +15,5 @@ import {FormsModule} from "@angular/forms";
     RegisterComponent
   ]
 })
-export class RegisterModule { }
+export class RegisterModule {
+}

@@ -21,14 +21,15 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   private payload: any;
 
-  private parsers: Parser[] = new Array<Parser>();
+  private parsers: Parser[] = [];
   private parserRef: FireLoopRef<Parser>;
   private parserSub: Subscription;
 
   private parserToRemove: Parser = new Parser();
 
   constructor(private rt: RealTime,
-              private userApi: UserApi) { }
+              private userApi: UserApi) {
+  }
 
   ngOnInit(): void {
     console.warn('Parsers: ngOnInit');
@@ -96,7 +97,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
       this.decodedPayload[i] = fn(payload);
     } else {
       this.decodedPayload[i] = [{'error': 'Please fill input'}];
-      setTimeout(function() {
+      setTimeout(function () {
         this.testPayload[i] = false;
       }.bind(this), 2000);
     }

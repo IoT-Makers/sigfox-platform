@@ -25,4 +25,5 @@ import {SelectModule} from 'ng2-select';
     DataFilterPipe
   ]
 })
-export class ConnectorsModule { }
+export class ConnectorsModule {
+}

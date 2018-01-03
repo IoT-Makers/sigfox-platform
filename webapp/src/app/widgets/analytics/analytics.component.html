@@ -93,7 +93,8 @@
             </div><!--/.row-->
             <div class="row">
               <div *ngIf="mobile" class="col-md-12" style="min-height: 200px;">
-                <iframe class="chartjs-hidden-iframe" tabindex="-1" style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
+                <iframe class="chartjs-hidden-iframe" tabindex="-1"
+                        style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
                 <canvas *ngIf="messageChartData.length > 0"
                         baseChart
                         [datasets]="messageChartData"
@@ -104,7 +105,8 @@
                         [chartType]="'bar'"></canvas>
               </div>
               <div *ngIf="!mobile" class="col-md-12" style="min-height: 400px;">
-                <iframe class="chartjs-hidden-iframe" tabindex="-1" style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
+                <iframe class="chartjs-hidden-iframe" tabindex="-1"
+                        style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
                 <canvas *ngIf="messageChartData.length > 0"
                         baseChart
                         [datasets]="messageChartData"
@@ -134,8 +136,6 @@
     </div>
   </div>
   <!--/.row-->
-
-
 
 
 </div>

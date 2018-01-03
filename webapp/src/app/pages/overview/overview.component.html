@@ -9,7 +9,8 @@
         <div class="h4 mb-0">{{countCategories}}</div>
         <small class="text-category text-uppercase font-weight-bold">Categories</small>
         <div class="progress progress-xs mt-1 mb-0">
-          <div class="progress-bar bg-category" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-category" role="progressbar" style="width: 100%" aria-valuenow="100"
+               aria-valuemin="0" aria-valuemax="100"></div>
         </div>
       </div>
     </div>
@@ -21,7 +22,8 @@
         <div class="h4 mb-0">{{countDevices}}</div>
         <small class="text-device text-uppercase font-weight-bold">Devices</small>
         <div class="progress progress-xs mt-1 mb-0">
-          <div class="progress-bar bg-device" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-device" role="progressbar" style="width: 100%" aria-valuenow="100"
+               aria-valuemin="0" aria-valuemax="100"></div>
         </div>
       </div>
     </div>
@@ -33,7 +35,8 @@
         <div class="h4 mb-0">{{countMessages}}</div>
         <small class="text-message text-uppercase font-weight-bold">Messages</small>
         <div class="progress progress-xs mt-1 mb-0">
-          <div class="progress-bar bg-message" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-message" role="progressbar" style="width: 100%" aria-valuenow="100"
+               aria-valuemin="0" aria-valuemax="100"></div>
         </div>
       </div>
     </div>
@@ -45,7 +48,8 @@
         <div class="h4 mb-0">{{countParsers}}</div>
         <small class="text-parser text-uppercase font-weight-bold">Parsers</small>
         <div class="progress progress-xs mt-1 mb-0">
-          <div class="progress-bar bg-parser" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-parser" role="progressbar" style="width: 100%" aria-valuenow="100"
+               aria-valuemin="0" aria-valuemax="100"></div>
         </div>
       </div>
     </div>
@@ -185,14 +189,16 @@
                     <div *ngFor="let geoloc of device.location">
 
                       <ng-container *ngIf="geoloc.type === 'sigfox'">
-                        <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-sigfox">
+                        <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
+                           class="small text-geoloc-sigfox">
                           <i class="fa fa-map-marker fa-2x"></i>
                           <br>
                           <strong>Sigfox Geoloc</strong>
                         </a>
                       </ng-container>
                       <ng-container *ngIf="geoloc.type === 'GPS'">
-                        <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-gps">
+                        <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
+                           class="small text-geoloc-gps">
                           <i class="fa fa-map-marker fa-2x"></i>
                           <br>
                           <strong>GPS</strong>
@@ -249,7 +255,8 @@
             </div>
           </div>
         </div>
-        <table class="table d-lg-table table-striped table-responsive" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+        <table class="table d-lg-table table-striped table-responsive" [mfData]="messages | dataFilter : filterQuery"
+               #mf="mfDataTable" [mfRowsOnPage]="10">
           <thead class="thead-inverse">
           <tr>
             <th class="text-center">
@@ -318,7 +325,8 @@
             <td class="text-center">
               <p *ngFor="let reception of item.reception">
                 <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success" aria-hidden="true"></i>
-                <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
+                <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI" class="fa fa-signal text-warning"
+                   aria-hidden="true"></i>
                 <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger" aria-hidden="true"></i>
                 {{reception.RSSI}}
                 <span>&nbsp;</span>

@@ -24,7 +24,8 @@
             </div>
           </div>
         </div>
-        <table class="table d-lg-table table-hover table-responsive" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+        <table class="table d-lg-table table-hover table-responsive" [mfData]="messages | dataFilter : filterQuery"
+               #mf="mfDataTable" [mfRowsOnPage]="10">
           <thead class="thead-inverse">
           <tr>
             <th class="text-center">
@@ -104,7 +105,8 @@
             <td class="text-center" (click)="showBaseStations(item.deviceId, item.time)">
               <p *ngFor="let reception of item.reception">
                 <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success" aria-hidden="true"></i>
-                <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
+                <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI" class="fa fa-signal text-warning"
+                   aria-hidden="true"></i>
                 <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger" aria-hidden="true"></i>
                 {{reception.RSSI}}
                 <span>&nbsp;</span>
@@ -136,8 +138,8 @@
 </div>
 
 
-
-<div bsModal #baseStationMap="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="baseStationMap" aria-hidden="true">
+<div bsModal #baseStationMap="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="baseStationMap"
+     aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">

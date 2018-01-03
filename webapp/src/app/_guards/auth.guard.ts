@@ -5,7 +5,8 @@ import {UserApi} from '../shared/sdk/services/custom/User';
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-  constructor(private userApi: UserApi, private router: Router) { }
+  constructor(private userApi: UserApi, private router: Router) {
+  }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this.userApi.isAuthenticated()) {
@@ -13,7 +14,7 @@ export class AuthGuard implements CanActivate {
     }
 
     // Not logged in so redirect to login page with the return url
-    this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
+    this.router.navigate(['/login'], {queryParams: {returnUrl: state.url}});
     return false;
   }
 }

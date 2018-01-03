@@ -1,14 +1,14 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
-import { p404Component } from './404.component';
-import { p500Component } from './500.component';
-import { LoginComponent } from './login.component';
-import { RegisterComponent } from './register.component';
+import {p404Component} from './404.component';
+import {p500Component} from './500.component';
+import {LoginComponent} from './login.component';
+import {RegisterComponent} from './register.component';
 
-import { PagesRoutingModule } from './pages-routing.module';
+import {PagesRoutingModule} from './pages-routing.module';
 
 @NgModule({
-  imports: [ PagesRoutingModule ],
+  imports: [PagesRoutingModule],
   declarations: [
     p404Component,
     p500Component,
@@ -16,4 +16,5 @@ import { PagesRoutingModule } from './pages-routing.module';
     RegisterComponent
   ]
 })
-export class PagesModule { }
+export class PagesModule {
+}

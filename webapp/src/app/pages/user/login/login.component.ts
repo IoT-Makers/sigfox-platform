@@ -15,7 +15,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   private errorMessage = '';
 
   constructor(private userApi: UserApi,
-              private router: Router) { }
+              private router: Router) {
+  }
 
   public onLogin(): void {
     this.userApi.login(this.user).subscribe(

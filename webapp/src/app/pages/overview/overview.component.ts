@@ -24,10 +24,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private parserSub: Subscription;
   private categorySub: Subscription;
 
-  private messages: Message[] = new Array<Message>();
-  private devices: Device[] = new Array<Device>();
-  private parsers: Parser[] = new Array<Parser>();
-  private categories: Category[] = new Array<Category>();
+  private messages: Message[] = [];
+  private devices: Device[] = [];
+  private parsers: Parser[] = [];
+  private categories: Category[] = [];
 
   private countMessages = 0;
   private countDevices = 0;
@@ -39,7 +39,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private parserRef: FireLoopRef<Parser>;
   private categoryRef: FireLoopRef<Category>;
 
-  private isCircleVisible: boolean[] = new Array<boolean>();
+  private isCircleVisible: boolean[] = [];
 
   private mapLat = 48.858093;
   private mapLng = 2.294694;
@@ -53,7 +53,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
               private dragulaService: DragulaService) {
 
     const bag: any = this.dragulaService.find('section-bag');
-    if (bag !== undefined )
+    if (bag !== undefined)
       this.dragulaService.destroy('section-bag');
     this.dragulaService.setOptions('section-bag', {
       moves: function (el, container, handle) {
@@ -159,7 +159,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         where: {
           userId: this.user.id
         }
-        }).subscribe(
+      }).subscribe(
       (devices: Device[]) => {
         this.devices = devices;
         this.userApi.countDevices(this.user.id).subscribe(result => {

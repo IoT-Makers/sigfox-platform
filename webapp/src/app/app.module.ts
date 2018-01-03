@@ -5,7 +5,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NAV_DROPDOWN_DIRECTIVES} from './shared/nav-dropdown.directive';
 import {AppComponent} from './app.component';
 import {BsDropdownModule} from 'ng2-bootstrap/dropdown';
-import {TabsModule} from 'ng2-bootstrap/tabs';
 import {ChartsModule} from 'ng2-charts/ng2-charts';
 import {SIDEBAR_TOGGLE_DIRECTIVES} from './shared/sidebar.directive';
 import {AsideToggleDirective} from './shared/aside.directive';
@@ -49,6 +48,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
       useClass: HashLocationStrategy
     }
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

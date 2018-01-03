@@ -21,8 +21,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   private categoryToRemove: Category = new Category();
   private categorySub: Subscription;
 
-  private devices: Device[] = new Array<Device>();
-  private categories: Category[] = new Array<Category>();
+  private devices: Device[] = [];
+  private categories: Category[] = [];
 
   private categoryRef: FireLoopRef<Category>;
 

@@ -1,13 +1,14 @@
-import { Directive, HostListener } from '@angular/core';
+import {Directive, HostListener} from '@angular/core';
 
 /**
-* Allows the aside to be toggled via click.
-*/
+ * Allows the aside to be toggled via click.
+ */
 @Directive({
   selector: '.aside-menu-toggler',
 })
 export class AsideToggleDirective {
-  constructor() { }
+  constructor() {
+  }
 
   @HostListener('click', ['$event'])
   toggleOpen($event: any) {

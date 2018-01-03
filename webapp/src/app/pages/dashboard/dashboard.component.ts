@@ -17,7 +17,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   @ViewChild('devicesSelect') devicesSelect: SelectComponent;
 
-  public devices: Array<any> = new Array<any>();
+  public devices: Array<any> = [];
 
   // Widgets
   private message: any;

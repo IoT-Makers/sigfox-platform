@@ -7,7 +7,7 @@ describe('ConnectorsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ConnectorsComponent ]
+      declarations: [ConnectorsComponent]
     })
       .compileComponents();
   }));

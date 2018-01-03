@@ -18,6 +18,7 @@ import {ModalModule, TooltipModule} from 'ng2-bootstrap';
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
   ],
-  declarations: [ CategoriesComponent ]
+  declarations: [CategoriesComponent]
 })
-export class CategoriesModule { }
+export class CategoriesModule {
+}

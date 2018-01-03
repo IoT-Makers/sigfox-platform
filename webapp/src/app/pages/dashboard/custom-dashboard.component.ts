@@ -51,11 +51,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     options: {},
     device: [],
     //DashboardId:this.dashboard.id
-    };
+  };
 
   private widgetType = ['map', 'tracking', 'gauge', 'table', 'time serie'];
 
-  private isCircleVisible: boolean[] = new Array<boolean>();
+  private isCircleVisible: boolean[] = [];
 
   // Notifications
   private toasterService: ToasterService;
@@ -99,7 +99,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     this.route.params.subscribe(params => {
-      this.userApi.findByIdDashboards(this.user.id, params.id).subscribe(result =>{
+      this.userApi.findByIdDashboards(this.user.id, params.id).subscribe(result => {
         console.log(result);
         this.dashboard = result;
         this.loadWidgets();

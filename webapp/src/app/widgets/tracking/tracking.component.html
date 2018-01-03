@@ -30,7 +30,8 @@
             <div class="col-sm-12 col-md-4">
               <label class="mr-1">Directions routes:</label>
               <label class="switch switch-text switch-primary">
-                <input type="checkbox" [checked]="directionsRoutes" (click)="onDirections()" (change)="directionsRoutes = !directionsRoutes" class="switch-input" checked="">
+                <input type="checkbox" [checked]="directionsRoutes" (click)="onDirections()"
+                       (change)="directionsRoutes = !directionsRoutes" class="switch-input" checked="">
                 <span class="switch-label" data-on="On" data-off="Off"></span>
                 <span class="switch-handle"></span>
               </label>
@@ -38,7 +39,8 @@
             <div class="col-sm-12 col-md-4">
               <label class="mr-1">Polylines:</label>
               <label class="switch switch-text switch-primary">
-                <input type="checkbox" [checked]="polylines" (change)="polylines = !polylines" class="switch-input" checked="">
+                <input type="checkbox" [checked]="polylines" (change)="polylines = !polylines" class="switch-input"
+                       checked="">
                 <span class="switch-label" data-on="On" data-off="Off"></span>
                 <span class="switch-handle"></span>
               </label>
@@ -65,7 +67,8 @@
             <div class="col-sm-12 col-md-4">
               <label class="mr-1">GPS only:</label>
               <label class="switch switch-text switch-primary">
-                <input type="checkbox" [checked]="gpsOnly" (click)="onGpsOnly()" (change)="gpsOnly = !gpsOnly" class="switch-input" checked="">
+                <input type="checkbox" [checked]="gpsOnly" (click)="onGpsOnly()" (change)="gpsOnly = !gpsOnly"
+                       class="switch-input" checked="">
                 <span class="switch-label" data-on="On" data-off="Off"></span>
                 <span class="switch-handle"></span>
               </label>
@@ -73,7 +76,8 @@
             <div class="col-sm-12 col-md-4">
               <label class="mr-1">Sigfox only:</label>
               <label class="switch switch-text switch-primary">
-                <input type="checkbox" [checked]="sigfoxOnly" (click)="onSigfoxOnly()" (change)="sigfoxOnly = !sigfoxOnly" class="switch-input" checked="">
+                <input type="checkbox" [checked]="sigfoxOnly" (click)="onSigfoxOnly()"
+                       (change)="sigfoxOnly = !sigfoxOnly" class="switch-input" checked="">
                 <span class="switch-label" data-on="On" data-off="Off"></span>
                 <span class="switch-handle"></span>
               </label>
@@ -81,7 +85,8 @@
             <div class="col-sm-12 col-md-4">
               <label class="mr-1">Prefer GPS:</label>
               <label class="switch switch-text switch-primary">
-                <input type="checkbox" [checked]="gpsPrefer" (change)="gpsPrefer = !gpsPrefer" class="switch-input" checked="">
+                <input type="checkbox" [checked]="gpsPrefer" (change)="gpsPrefer = !gpsPrefer" class="switch-input"
+                       checked="">
                 <span class="switch-label" data-on="On" data-off="Off"></span>
                 <span class="switch-handle"></span>
               </label>
@@ -97,7 +102,8 @@
             <div class="col-sm-12 col-md-4">
               <label class="mr-1">Precision circles:</label>
               <label class="switch switch-text switch-primary">
-                <input type="checkbox" [checked]="circlePrecision" (change)="circlePrecision = !circlePrecision" class="switch-input" checked="">
+                <input type="checkbox" [checked]="circlePrecision" (change)="circlePrecision = !circlePrecision"
+                       class="switch-input" checked="">
                 <span class="switch-label" data-on="On" data-off="Off"></span>
                 <span class="switch-handle"></span>
               </label>
@@ -142,7 +148,8 @@
     <div class="card-block">
       <blockquote *ngIf="searchResult != ''" class="blockquote">{{searchResult}}</blockquote>
     </div> <!--card-block-->
-    <iframe tabindex="-1" style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
+    <iframe tabindex="-1"
+            style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
     <agm-map
       [latitude]="mapPosition.lat"
       [longitude]="mapPosition.lng"
@@ -167,7 +174,6 @@
         </ng-container>
       </agm-polyline>
       <!-- End Polylines -->
-
 
 
       <!-- Markers -->
@@ -337,7 +343,6 @@
             </ng-container>
           </ng-container>
           <!-- End Default -->
-
 
 
         </ng-container>

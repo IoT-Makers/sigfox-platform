@@ -85,7 +85,8 @@
       <div class="card">
         <div class="card-header">
           <i class="fa fa-wrench fa-lg"></i> <strong>Edit Device</strong>
-          <button class="mt-0 btn btn-outline-secondary pull-right" (click)="cancel()"><i class="fa fa-close text-danger"></i></button>
+          <button class="mt-0 btn btn-outline-secondary pull-right" (click)="cancel()"><i
+            class="fa fa-close text-danger"></i></button>
         </div>
         <div class="card-block">
 
@@ -122,7 +123,8 @@
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label">Category</label>
                   <div class="col-md-9">
-                    <select name="deviceToEdit.categoryId" class="form-control" size="1" [(ngModel)]="deviceToEdit.categoryId" (ngModelChange)="updateDeviceCategory()">
+                    <select name="deviceToEdit.categoryId" class="form-control" size="1"
+                            [(ngModel)]="deviceToEdit.categoryId" (ngModelChange)="updateDeviceCategory()">
                       <option [ngValue]="category.id" *ngFor="let category of categories">{{category.name}}</option>
                       <option [ngValue]=""></option>
                     </select>
@@ -132,7 +134,8 @@
                   <div class="form-group row" *ngFor="let property of deviceToEdit.properties; let i = index">
                     <label class="col-md-3 offset-1 form-control-label">{{property.key}}</label>
                     <div class="col-md-8">
-                      <input type="{{property.type}}" class="form-control" placeholder="{{property.key}}" name="deviceToEdit.property.value"
+                      <input type="{{property.type}}" class="form-control" placeholder="{{property.key}}"
+                             name="deviceToEdit.property.value"
                              [(ngModel)]="property.value" [ngModelOptions]="{standalone: true}">
                     </div>
                   </div>
@@ -142,7 +145,8 @@
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label">Downlink payload</label>
                   <div class="col-md-9">
-                    <input #downlinkData="ngModel" type="text" class="form-control" placeholder="Downlink payload in HEX"
+                    <input #downlinkData="ngModel" type="text" class="form-control"
+                           placeholder="Downlink payload in HEX"
                            name="downlinkData" maxlength="16" pattern="([a-fA-F0-9]{16})$"
                            [(ngModel)]="deviceToEdit.downlinkData">
                     <div [hidden]="downlinkData.valid || downlinkData.pristine"
@@ -159,7 +163,8 @@
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label">Connector</label>
                   <div class="col-md-9 mb-0">
-                    <select name="newAlert.connectorId" class="form-control" size="1" [(ngModel)]="newAlert.connectorId">
+                    <select name="newAlert.connectorId" class="form-control" size="1"
+                            [(ngModel)]="newAlert.connectorId">
                       <option *ngFor="let connector of connectors" [ngValue]="connector.id">{{connector.name}}</option>
                       <option [ngValue]=""></option>
                     </select>
@@ -204,7 +209,10 @@
                 </div>
                 <div class="form-group row">
                   <div class="col-md-12">
-                    <button class="btn btn-sm btn-outline-success" (click)="$event.preventDefault(); addAlert(newAlert)"><i class="fa fa-plus-circle"></i> Add alert</button>
+                    <button class="btn btn-sm btn-outline-success"
+                            (click)="$event.preventDefault(); addAlert(newAlert)"><i class="fa fa-plus-circle"></i> Add
+                      alert
+                    </button>
                   </div>
                 </div>
 
@@ -213,7 +221,8 @@
                     <label class="col-md-3 form-control-label">Connector</label>
                     <div class="col-md-9 mb-0">
                       <select name="alert.connectorId" class="form-control" size="1" [(ngModel)]="alert.connectorId">
-                        <option *ngFor="let connector of connectors" [ngValue]="connector.id">{{connector.name}}</option>
+                        <option *ngFor="let connector of connectors" [ngValue]="connector.id">{{connector.name}}
+                        </option>
                         <option [ngValue]=""></option>
                       </select>
                     </div>
@@ -257,7 +266,9 @@
                   </div>
                   <div class="form-group row">
                     <div class="col-md-12">
-                      <button class="btn pull-right btn-sm btn-outline-danger" (click)="removeAlert(i)"><i class="fa fa-trash"></i> Remove</button>
+                      <button class="btn pull-right btn-sm btn-outline-danger" (click)="removeAlert(i)"><i
+                        class="fa fa-trash"></i> Remove
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -267,7 +278,10 @@
               <tab heading="Options" class="text-center">
 
                 <div class="col col-md-12 mb-1">
-                  <button class="btn btn-info" (click)="$event.preventDefault(); showRetrievalModal()"><i class="fa fa-database"></i><small> Retrieve messages from Sigfox Backend</small></button>
+                  <button class="btn btn-info" (click)="$event.preventDefault(); showRetrievalModal()"><i
+                    class="fa fa-database"></i>
+                    <small> Retrieve messages from Sigfox Backend</small>
+                  </button>
                 </div>
                 <ng-container *ngIf="loadingFromBackend">
                   This operation can take time...
@@ -277,7 +291,9 @@
                   </div>
                 </ng-container>
                 <div class="col col-md-12">
-                  <button class="btn btn-info" (click)="$event.preventDefault()"><i class="fa fa-code"></i><small> Decode all messages for current parser</small></button>
+                  <button class="btn btn-info" (click)="$event.preventDefault()"><i class="fa fa-code"></i>
+                    <small> Decode all messages for current parser</small>
+                  </button>
                 </div>
 
               </tab>
@@ -286,7 +302,9 @@
 
         </div>
         <div class="card-footer">
-          <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="updateDevice()"><i class="fa fa-check"></i> Update</button>
+          <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="updateDevice()"><i
+            class="fa fa-check"></i> Update
+          </button>
           <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
         </div>
       </div>
@@ -344,14 +362,16 @@
                       <div class="row">
                         <div class="col col-12">
                           <ng-container *ngIf="geoloc.type === 'sigfox'">
-                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-sigfox">
+                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
+                               class="small text-geoloc-sigfox">
                               <i class="fa fa-map-marker fa-2x"></i>
                               <br>
                               <strong>Sigfox Geoloc</strong>
                             </a>
                           </ng-container>
                           <ng-container *ngIf="geoloc.type === 'GPS'">
-                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-gps">
+                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
+                               class="small text-geoloc-gps">
                               <i class="fa fa-map-marker fa-2x"></i>
                               <br>
                               <strong>GPS</strong>
@@ -392,8 +412,10 @@
                 </td>
                 <td *ngIf="!edit" class="text-center">
                   <div class="btn-group-sm">
-                    <button class="btn btn-outline-primary btn-round" tooltip="Edit device" (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
-                    <button class="btn btn-outline-danger btn-round" tooltip="Delete device" (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
+                    <button class="btn btn-outline-primary btn-round" tooltip="Edit device"
+                            (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
+                    <button class="btn btn-outline-danger btn-round" tooltip="Delete device"
+                            (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
                   </div>
                 </td>
               </tr>
@@ -410,9 +432,8 @@
 </div>
 
 
-
-
-<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal" aria-hidden="true">
+<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal"
+     aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -422,7 +443,8 @@
         </button>
       </div>
       <div class="modal-body">
-        Are your sure you wish to delete this device (id: <b>{{deviceToRemove.id}}</b>) and <span class="text-danger">all its corresponding <b>messages</b></span> ?
+        Are your sure you wish to delete this device (id: <b>{{deviceToRemove.id}}</b>) and <span class="text-danger">all its corresponding <b>messages</b></span>
+        ?
       </div>
       <div class="modal-footer">
         <button class="btn btn-sm btn-danger" (click)="remove()">Delete</button>
@@ -432,7 +454,8 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<div bsModal #confirmDBModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDBModal" aria-hidden="true">
+<div bsModal #confirmDBModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDBModal"
+     aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -442,7 +465,8 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>You are about to fetch all the messages belonging to the device <b>{{deviceToEdit.id}}</b> from the Sigfox Backend.</p>
+        <p>You are about to fetch all the messages belonging to the device <b>{{deviceToEdit.id}}</b> from the Sigfox
+          Backend.</p>
         <p class="font-italic">This process may take some time, please do not leave this page.</p>
         <p>Are you sure you want to do this ?</p>
       </div>

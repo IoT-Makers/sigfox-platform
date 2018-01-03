@@ -21,4 +21,5 @@ import {FormsModule} from "@angular/forms";
     ParsersComponent
   ]
 })
-export class ParsersModule { }
+export class ParsersModule {
+}

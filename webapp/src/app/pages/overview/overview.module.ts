@@ -30,4 +30,5 @@ import {DragulaModule} from 'ng2-dragula';
     DataFilterPipe
   ]
 })
-export class OverviewModule { }
+export class OverviewModule {
+}

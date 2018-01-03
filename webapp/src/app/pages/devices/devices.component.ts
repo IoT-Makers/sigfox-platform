@@ -1,4 +1,4 @@
-import {Geoloc, Alert, Category, Connector, Device, FireLoopRef, Parser, User} from '../../shared/sdk/models';
+import {Alert, Category, Connector, Device, FireLoopRef, Geoloc, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {AgmInfoWindow} from '@agm/core';
@@ -20,21 +20,21 @@ export class DevicesComponent implements OnInit, OnDestroy {
   @ViewChild('confirmModal') confirmModal: any;
   @ViewChild('confirmDBModal') confirmDBModal: any;
 
-  private isCircleVisible: boolean[] = new Array<boolean>();
+  private isCircleVisible: boolean[] = [];
 
   private device: Device = new Device();
   private newAlert: Alert = new Alert();
   private parser: Parser = new Parser();
   private category: Category = new Category();
-  private connectors: Connector[] = new Array<Connector>();
+  private connectors: Connector[] = [];
 
   private deviceSub: Subscription;
   private parserSub: Subscription;
   private categorySub: Subscription;
 
-  private devices: Device[] = new Array<Device>();
-  private parsers: Parser[] = new Array<Parser>();
-  private categories: Category[] = new Array<Category>();
+  private devices: Device[] = [];
+  private parsers: Parser[] = [];
+  private categories: Category[] = [];
 
   private deviceRef: FireLoopRef<Device>;
   private parserRef: FireLoopRef<Parser>;
@@ -220,11 +220,11 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   retrieveMessages(deviceId: string, limit: number, before: number): void {
     this.loadingFromBackend = true;
-    this.deviceApi.getMessagesFromSigfoxBackend(deviceId,null,before ? before : null,null).subscribe(result => {
+    this.deviceApi.getMessagesFromSigfoxBackend(deviceId, null, before ? before : null, null).subscribe(result => {
       console.log(result);
       if (result.paging.next) {
         let before = result.paging.next.substring(result.paging.next.indexOf("before=") + 7);
-        this.retrieveMessages(deviceId,null,before);
+        this.retrieveMessages(deviceId, null, before);
       } else {
         console.log("finish");
         this.loadingFromBackend = false;

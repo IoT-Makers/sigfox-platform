@@ -26,9 +26,10 @@ import {AccordionModule} from 'ng2-bootstrap';
       apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
     })
   ],
-  providers:[
+  providers: [
     GoogleMapsAPIWrapper
   ],
-  declarations: [ TrackingComponent, DirectionsComponent ]
+  declarations: [TrackingComponent, DirectionsComponent]
 })
-export class TrackingModule { }
+export class TrackingModule {
+}

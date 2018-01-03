@@ -23,4 +23,5 @@ import {ToasterModule} from 'angular2-toaster';
     DataFilterPipe
   ]
 })
-export class ProfileModule { }
+export class ProfileModule {
+}

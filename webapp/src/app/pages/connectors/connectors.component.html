@@ -12,7 +12,8 @@
             <p *ngIf="!user.devAccessTokens" class="text-danger">
               Please create a developer access token first
             </p>
-            <table *ngIf="user.devAccessTokens.length > 0" class="table d-lg-table table-hover table-responsive" [mfData]="user.devAccessTokens | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+            <table *ngIf="user.devAccessTokens.length > 0" class="table d-lg-table table-hover table-responsive"
+                   [mfData]="user.devAccessTokens | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">
@@ -46,7 +47,8 @@
               </tfoot>
             </table>
           </div>
-          <button class="btn btn-success" (click)="createDevAccessToken()"><i class="fa fa-plus-circle"></i> Create new</button>
+          <button class="btn btn-success" (click)="createDevAccessToken()"><i class="fa fa-plus-circle"></i> Create new
+          </button>
         </accordion-group>
       </accordion>
     </div>
@@ -64,10 +66,12 @@
           </div>
           <div>
             <p>Type: <strong>DATA</strong> | <strong>UPLINK</strong></p>
-            <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see all the base stations that received the message)</i></p>
+            <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see
+              all the base stations that received the message)</i></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>PUT</strong></p>
-            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
+            </p>
             <p>Content Type: <strong>application/json</strong></p>
             <p>Body: <code class="text-center">{{
               '{
@@ -86,22 +90,31 @@
             </p>
             <p><u>Optional parameters:</u>
               <code>
-                <div>"parserId": <small><kbd>String</kbd> The ID of the parser you wish to decode the "data" (payload) with ("Parsers" tab)</small></div>
-                <div>"deviceNamePrefix": <small><kbd>String</kbd> The prefix to give for the device name</small></div>
+                <div>"parserId":
+                  <small><kbd>String</kbd> The ID of the parser you wish to decode the "data" (payload) with ("Parsers"
+                    tab)
+                  </small>
+                </div>
+                <div>"deviceNamePrefix":
+                  <small><kbd>String</kbd> The prefix to give for the device name</small>
+                </div>
               </code>
             </p>
           </div>
         </accordion-group>
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-primary">BIDIR</strong> <i class="fa fa-arrow-up" aria-hidden="true"></i><i class="fa fa-arrow-down" aria-hidden="true"></i>
+            <strong class="text-primary">BIDIR</strong> <i class="fa fa-arrow-up" aria-hidden="true"></i><i
+            class="fa fa-arrow-down" aria-hidden="true"></i>
           </div>
           <div class="card-block">
             <p>Type: <strong>DATA</strong> | <strong>BIDIR</strong></p>
-            <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see all the base stations that received the message)</i></p>
+            <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see
+              all the base stations that received the message)</i></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>PUT</strong></p>
-            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
+            </p>
             <p>Content Type: <strong>application/json</strong></p>
             <p>Body: <code class="text-center">{{
               '{
@@ -121,8 +134,14 @@
             </p>
             <p><u>Optional parameters:</u>
               <code>
-                <div>"parserId": <small><kbd>String</kbd> The ID of the parser you wish to decode the "data" (payload) with ("Parsers" tab)</small></div>
-                <div>"deviceNamePrefix": <small><kbd>String</kbd> The prefix to give for the device name</small></div>
+                <div>"parserId":
+                  <small><kbd>String</kbd> The ID of the parser you wish to decode the "data" (payload) with ("Parsers"
+                    tab)
+                  </small>
+                </div>
+                <div>"deviceNamePrefix":
+                  <small><kbd>String</kbd> The prefix to give for the device name</small>
+                </div>
               </code>
             </p>
           </div>
@@ -135,7 +154,8 @@
             <p>Type: <strong>SERVICE</strong> | <strong>GEOLOC</strong></p>
             <p>Url pattern: <strong>{{ callbackURL }}</strong></p>
             <p>Use HTTP Method: <strong>PUT</strong></p>
-            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span></p>
+            <p>Headers: <strong>Authorization</strong> : <span class="text-danger">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
+            </p>
             <p>Content Type: <strong>application/json</strong></p>
             <p>Body: <code class="text-center">{{
               '{
@@ -190,27 +210,33 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label font-weight-bold">Description <small>(optional)</small></label>
+                <label class="col-md-3 form-control-label font-weight-bold">Description
+                  <small>(optional)</small>
+                </label>
                 <div class="col-md-9">
-                  <input type="text" class="form-control" placeholder="Connector description" [(ngModel)]="newConnector.description">
+                  <input type="text" class="form-control" placeholder="Connector description"
+                         [(ngModel)]="newConnector.description">
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label font-weight-bold">Login</label>
                 <div class="col-md-9">
-                  <input type="text" class="form-control" placeholder="Connector login" [(ngModel)]="newConnector.login">
+                  <input type="text" class="form-control" placeholder="Connector login"
+                         [(ngModel)]="newConnector.login">
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label font-weight-bold">Password</label>
                 <div class="col-md-9">
-                  <input type="password" class="form-control" placeholder="Connector password" [(ngModel)]="newConnector.password">
+                  <input type="password" class="form-control" placeholder="Connector password"
+                         [(ngModel)]="newConnector.password">
                 </div>
               </div>
             </div>
           </div>
           <hr>
-          <button class="btn btn-success" (click)="saveConnector(newConnector)"><i class="fa fa-plus-circle"></i> Add</button>
+          <button class="btn btn-success" (click)="saveConnector(newConnector)"><i class="fa fa-plus-circle"></i> Add
+          </button>
         </accordion-group>
       </accordion>
     </div>
@@ -231,25 +257,31 @@
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label font-weight-bold">Description</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" value="{{connector.description}}" placeholder="{{connector.description ? connector.description : 'No description yet'}}" [(ngModel)]="connector.description" [ngModelOptions]="{standalone: true}">
+                    <input type="text" class="form-control" value="{{connector.description}}"
+                           placeholder="{{connector.description ? connector.description : 'No description yet'}}"
+                           [(ngModel)]="connector.description" [ngModelOptions]="{standalone: true}">
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label font-weight-bold">Login</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" value="{{connector.login}}" [(ngModel)]="connector.login" [ngModelOptions]="{standalone: true}">
+                    <input type="text" class="form-control" value="{{connector.login}}" [(ngModel)]="connector.login"
+                           [ngModelOptions]="{standalone: true}">
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label font-weight-bold">Password</label>
                   <div class="col-md-9">
-                    <input type="password" class="form-control" value="{{connector.password}}" [(ngModel)]="connector.password" [ngModelOptions]="{standalone: true}">
+                    <input type="password" class="form-control" value="{{connector.password}}"
+                           [(ngModel)]="connector.password" [ngModelOptions]="{standalone: true}">
                   </div>
                 </div>
               </form>
             </div>
-            <button class="btn btn-sm btn-primary" (click)="saveConnector(connector)"><i class="fa fa-check"></i> Save</button>
-            <button class="btn btn-sm btn-danger" (click)="removeConnector(connector)"><i class="fa fa-ban"></i> Remove</button>
+            <button class="btn btn-sm btn-primary" (click)="saveConnector(connector)"><i class="fa fa-check"></i> Save
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="removeConnector(connector)"><i class="fa fa-ban"></i> Remove
+            </button>
           </accordion-group>
         </accordion>
       </div>
@@ -258,7 +290,8 @@
 </div>
 
 
-<div bsModal #updatePasswordModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="updatePasswordModal" aria-hidden="true">
+<div bsModal #updatePasswordModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="updatePasswordModal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -272,19 +305,22 @@
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Current password</label>
             <div class="col-md-9">
-              <input type="password" class="form-control" (keyup.enter)="updatePassword()" placeholder="Your current password" name="oldPassword" [(ngModel)]="oldPassword">
+              <input type="password" class="form-control" (keyup.enter)="updatePassword()"
+                     placeholder="Your current password" name="oldPassword" [(ngModel)]="oldPassword">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">New password</label>
             <div class="col-md-9">
-              <input type="password" class="form-control" (keyup.enter)="updatePassword()" placeholder="New password" name="newPassword" [(ngModel)]="newPassword">
+              <input type="password" class="form-control" (keyup.enter)="updatePassword()" placeholder="New password"
+                     name="newPassword" [(ngModel)]="newPassword">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Retype new password</label>
             <div class="col-md-9">
-              <input type="password" class="form-control" (keyup.enter)="updatePassword()" placeholder="Retype new password" name="newPasswordConfirm" [(ngModel)]="newPasswordConfirm">
+              <input type="password" class="form-control" (keyup.enter)="updatePassword()"
+                     placeholder="Retype new password" name="newPasswordConfirm" [(ngModel)]="newPasswordConfirm">
             </div>
           </div>
         </form>
@@ -298,7 +334,8 @@
 </div><!-- /.modal -->
 
 
-<div bsModal #updateUserModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="updateUserModal" aria-hidden="true">
+<div bsModal #updateUserModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="updateUserModal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -312,19 +349,23 @@
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Username</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.username ? user.username : 'How do you want us to call you?'}}" name="user.username" [(ngModel)]="user.username">
+              <input type="text" class="form-control" (keyup.enter)="updateUser()"
+                     placeholder="{{user.username ? user.username : 'How do you want us to call you?'}}"
+                     name="user.username" [(ngModel)]="user.username">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Email</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.email}}" name="user.email" [(ngModel)]="user.email">
+              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.email}}"
+                     name="user.email" [(ngModel)]="user.email">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Avatar</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.avatar}}" name="user.avatar" [(ngModel)]="user.avatar">
+              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.avatar}}"
+                     name="user.avatar" [(ngModel)]="user.avatar">
             </div>
           </div>
         </form>
@@ -338,7 +379,8 @@
 </div><!-- /.modal -->
 
 
-<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal" aria-hidden="true">
+<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal"
+     aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -348,7 +390,10 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>Are your sure you wish to delete this access token (id: <small><b>{{devAccessTokenToRemove.id}}</b></small>)?</p>
+        <p>Are your sure you wish to delete this access token (id:
+          <small><b>{{devAccessTokenToRemove.id}}</b></small>
+          )?
+        </p>
         <p>Be aware the Sigfox Backend callbacks you configured with this token will then be <u>unauthorized</u>!</p>
       </div>
       <div class="modal-footer">

@@ -7,8 +7,8 @@
             <h1>Register</h1>
             <p class="text-muted">Create your account</p>
             <!--<div class="input-group mb-1">-->
-              <!--<span class="input-group-addon"><i class="icon-user"></i></span>-->
-              <!--<input [(ngModel)]="user.username" type="text" class="form-control" name="email" ngControl="email" placeholder="Username">-->
+            <!--<span class="input-group-addon"><i class="icon-user"></i></span>-->
+            <!--<input [(ngModel)]="user.username" type="text" class="form-control" name="email" ngControl="email" placeholder="Username">-->
             <!--</div>-->
 
             <div class="input-group mb-1">
@@ -18,12 +18,14 @@
 
             <div class="input-group mb-1">
               <span class="input-group-addon"><i class="icon-lock"></i></span>
-              <input [(ngModel)]="user.password" type="password" class="form-control" name="password" placeholder="Password">
+              <input [(ngModel)]="user.password" type="password" class="form-control" name="password"
+                     placeholder="Password">
             </div>
 
             <div class="input-group mb-2">
               <span class="input-group-addon"><i class="icon-lock"></i></span>
-              <input [(ngModel)]="verifyPassword" type="password" class="form-control" name="verifyPassword" (ngModelChange)="verify()" placeholder="Repeat password">
+              <input [(ngModel)]="verifyPassword" type="password" class="form-control" name="verifyPassword"
+                     (ngModelChange)="verify()" placeholder="Repeat password">
             </div>
 
             <div *ngIf="errorMessage != ''">
@@ -32,17 +34,18 @@
               </div>
             </div>
 
-            <button type="submit" class="btn btn-block btn-success" [disabled]="errorMessage!= ''">Create Account</button>
+            <button type="submit" class="btn btn-block btn-success" [disabled]="errorMessage!= ''">Create Account
+            </button>
           </div>
           <!--<div class="card-footer p-2">-->
-            <!--<div class="row">-->
-              <!--<div class="col-6">-->
-                <!--<a class="btn btn-block btn-facebook" type="button"><span>facebook</span></a>-->
-              <!--</div>-->
-              <!--<div class="col-6">-->
-                <!--<button class="btn btn-block btn-twitter" type="button"><span>twitter</span></button>-->
-              <!--</div>-->
-            <!--</div>-->
+          <!--<div class="row">-->
+          <!--<div class="col-6">-->
+          <!--<a class="btn btn-block btn-facebook" type="button"><span>facebook</span></a>-->
+          <!--</div>-->
+          <!--<div class="col-6">-->
+          <!--<button class="btn btn-block btn-twitter" type="button"><span>twitter</span></button>-->
+          <!--</div>-->
+          <!--</div>-->
           <!--</div>-->
         </form>
       </div>

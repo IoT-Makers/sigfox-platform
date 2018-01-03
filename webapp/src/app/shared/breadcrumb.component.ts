@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import {Component} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import 'rxjs/add/operator/filter';
 
 @Component({
@@ -14,12 +14,15 @@ import 'rxjs/add/operator/filter';
 })
 export class BreadcrumbsComponent {
   breadcrumbs: Array<Object>;
-  constructor(private router: Router, private route: ActivatedRoute) {}
+
+  constructor(private router: Router, private route: ActivatedRoute) {
+  }
+
   ngOnInit(): void {
     this.router.events.filter(event => event instanceof NavigationEnd).subscribe(event => {
       this.breadcrumbs = [];
       let currentRoute = this.route.root,
-      url = '';
+        url = '';
       do {
         let childrenRoutes = currentRoute.children;
         currentRoute = null;
@@ -29,7 +32,7 @@ export class BreadcrumbsComponent {
             url += '/' + routeSnapshot.url.map(segment => segment.path).join('/');
             this.breadcrumbs.push({
               label: route.snapshot.data,
-              url:   url
+              url: url
             });
             currentRoute = route;
           }

@@ -20,6 +20,7 @@ import {FormsModule} from '@angular/forms';
       apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
     })
   ],
-  declarations: [ CustomDashboardComponent ]
+  declarations: [CustomDashboardComponent]
 })
-export class CustomDashboardModule { }
+export class CustomDashboardModule {
+}
