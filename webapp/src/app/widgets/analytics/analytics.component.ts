@@ -37,11 +37,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
       display: true,
     }
   };
-  private messageChartColors: Array<any> = [
-    {
-      backgroundColor: '#5b9bd3'
-    }
-  ];
+  private messageChartColors: Array<any> = [{ backgroundColor: '#5b9bd3' }];
 
   // Devices Graph
   private selectedDevice: Device = new Device();
@@ -71,8 +67,11 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-
-    this.setup();
+    // Real Time
+    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+      this.setup();
+    else
+      this.rt.onAuthenticated().subscribe(() => this.setup());
     /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
@@ -82,7 +81,6 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
     }*/
-
 
     // Get devices
     this.userApi.getDevices(this.user.id).subscribe((devices: Device[]) => {

@@ -54,10 +54,13 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     console.warn('Categories: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-
     this.edit = false;
-
-    if (
+    // Real Time
+    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+      this.setup();
+    else
+      this.rt.onAuthenticated().subscribe(() => this.setup());
+    /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
     ) {
@@ -65,11 +68,11 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     } else {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
-    }
+    }*/
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    // this.ngOnDestroy();
 
     // Get and listen categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);

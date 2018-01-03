@@ -5,7 +5,6 @@ import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
 import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
 import {AgmMap} from '@agm/core';
-import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-messages',
@@ -25,6 +24,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private messages: Message[] = new Array<Message>();
   private messageRef: FireLoopRef<Message>;
 
+  private agmMapStyle = [{"featureType":"administrative.locality","elementType":"all","stylers":[{"saturation":"45"},{"lightness":"45"},{"visibility":"on"},{"hue":"#a700ff"},{"weight":"1"}]},{"featureType":"landscape","elementType":"all","stylers":[{"hue":"#ffffff"},{"saturation":-100},{"lightness":100},{"visibility":"simplified"}]},{"featureType":"poi","elementType":"all","stylers":[{"hue":"#ffffff"},{"saturation":-100},{"lightness":100},{"visibility":"off"}]},{"featureType":"road","elementType":"geometry","stylers":[{"hue":"#bbc0c4"},{"saturation":-93},{"lightness":31},{"visibility":"simplified"}]},{"featureType":"road","elementType":"labels","stylers":[{"hue":"#bbc0c4"},{"saturation":-93},{"lightness":31},{"visibility":"on"}]},{"featureType":"road.arterial","elementType":"labels","stylers":[{"hue":"#bbc0c4"},{"saturation":-93},{"lightness":-2},{"visibility":"simplified"}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"hue":"#e9ebed"},{"saturation":-90},{"lightness":-8},{"visibility":"simplified"}]},{"featureType":"transit","elementType":"all","stylers":[{"hue":"#e9ebed"},{"saturation":10},{"lightness":69},{"visibility":"on"}]},{"featureType":"water","elementType":"all","stylers":[{"hue":"#e9ebed"},{"saturation":-78},{"lightness":67},{"visibility":"simplified"}]}];
   public filterQuery = '';
 
   public toInt(num: string) {
@@ -39,9 +39,11 @@ export class MessagesComponent implements OnInit, OnDestroy {
     console.warn('Messages: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-
-    this.setup();
-
+    // Real Time
+    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+      this.setup();
+    else
+      this.rt.onAuthenticated().subscribe(() => this.setup());
     /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated

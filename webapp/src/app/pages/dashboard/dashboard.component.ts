@@ -91,9 +91,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
       this.devicesSelect.items = this.devices;
     });
-
-    this.setup();
-
+    // Real Time
+    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+      this.setup();
+    else
+      this.rt.onAuthenticated().subscribe(() => this.setup());
     /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated

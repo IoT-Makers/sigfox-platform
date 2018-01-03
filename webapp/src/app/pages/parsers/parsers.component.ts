@@ -32,7 +32,11 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.warn('Parsers: ngOnInit');
-    this.setup();
+    // Real Time
+    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+      this.setup();
+    else
+      this.rt.onAuthenticated().subscribe(() => this.setup());
     /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated

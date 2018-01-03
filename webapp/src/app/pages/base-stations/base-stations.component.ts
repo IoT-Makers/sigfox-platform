@@ -9,8 +9,5 @@ export class BaseStationsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-
-  }
-
+  ngOnInit() {  }
 }

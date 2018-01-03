@@ -55,9 +55,11 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     // Remove the new connector id (created server side) and set the createdAt date
     this.newConnector.id = null;
     this.newConnector.createdAt = new Date();
-
-    this.setup();
-
+    // Real Time
+    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+      this.setup();
+    else
+      this.rt.onAuthenticated().subscribe(() => this.setup());
     /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated

@@ -114,8 +114,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
     console.warn('Overview: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-
-    if (
+    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+      this.setup();
+    else
+      this.rt.onAuthenticated().subscribe(() => this.setup());
+    /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
     ) {
@@ -123,11 +126,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
     } else {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
-    }
+    }*/
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    // this.ngOnDestroy();
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     //console.log(this.organizations[0].id);

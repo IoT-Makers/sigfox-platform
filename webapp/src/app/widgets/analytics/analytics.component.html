@@ -41,9 +41,9 @@
             </div>
           </div>
 
-          <hr>
           <div class="chart-wrapper">
-            <canvas *ngIf="deviceChartData.length > 0" baseChart
+            <canvas *ngIf="deviceChartData.length > 0"
+                    baseChart
                     [datasets]="deviceChartData"
                     [labels]="deviceChartLabels"
                     [options]="deviceChartOptions"
@@ -88,14 +88,17 @@
               </div><!--/.col-->
             </div><!--/.row-->
             <hr>
-            <div class="chart-wrapper">
-              <canvas *ngIf="messageChartData.length > 0" baseChart
-                      [datasets]="messageChartData"
-                      [labels]="messageChartLabels"
-                      [options]="messageChartOptions"
-                      [colors]="messageChartColors"
-                      [legend]="true"
-                      [chartType]="'bar'"></canvas>
+            <div class="col-12">
+              <div class="chart-wrapper" style="width: 100%; height: 100%;">
+                <canvas *ngIf="messageChartData.length > 0"
+                        baseChart
+                        [datasets]="messageChartData"
+                        [labels]="messageChartLabels"
+                        [options]="messageChartOptions"
+                        [colors]="messageChartColors"
+                        [legend]="true"
+                        [chartType]="'bar'"></canvas>
+              </div>
             </div>
           </ng-container>
         </div>

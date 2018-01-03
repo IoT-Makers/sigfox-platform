@@ -79,9 +79,11 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.edit = false;
     // Hide all circles by default
     this.setCircles();
-
-    this.setup();
-
+    // Real Time
+    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+      this.setup();
+    else
+      this.rt.onAuthenticated().subscribe(() => this.setup());
     /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated

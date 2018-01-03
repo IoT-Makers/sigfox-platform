@@ -147,7 +147,8 @@
         </button>
       </div>
       <div class="modal-body">
-        <agm-map [latitude]="receptions[0] ? toInt(receptions[0].lat) : 48.883478"
+        <agm-map [styles]="agmMapStyle"
+                 [latitude]="receptions[0] ? toInt(receptions[0].lat) : 48.883478"
                  [longitude]="receptions[0] ? toInt(receptions[0].lng) : 2.302451"
                  [zoom]="9">
           <ng-container *ngFor="let reception of receptions">

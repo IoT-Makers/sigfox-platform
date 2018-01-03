@@ -56,6 +56,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     console.log(this.user);
+    // Real Time
     if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
@@ -69,7 +70,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   setup(): void {
     // console.log(this.rt.connection);
-    this.ngOnDestroy();
+    // this.ngOnDestroy();
 
     // Counts
     this.userApi.countDevices(this.user.id).subscribe(result => {
@@ -127,20 +128,20 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.warn('Full Layout: ngOnDestroy');
-    // if (this.messageRef) this.messageRef.dispose();
-    // if (this.messageSub) this.messageSub.unsubscribe();
-    //
-    // if (this.deviceRef) this.deviceRef.dispose();
-    // if (this.deviceSub) this.deviceSub.unsubscribe();
-    //
-    // if (this.parserRef) this.parserRef.dispose();
-    // if (this.parserSub) this.parserSub.unsubscribe();
-    //
-    // if (this.categoryRef) this.categoryRef.dispose();
-    // if (this.categorySub) this.categorySub.unsubscribe();
-    //
-    // if (this.dashboardRef) this.dashboardRef.dispose();
-    // if (this.dashboardSub) this.dashboardSub.unsubscribe();
+    if (this.messageRef) this.messageRef.dispose();
+    if (this.messageSub) this.messageSub.unsubscribe();
+
+    if (this.deviceRef) this.deviceRef.dispose();
+    if (this.deviceSub) this.deviceSub.unsubscribe();
+
+    if (this.parserRef) this.parserRef.dispose();
+    if (this.parserSub) this.parserSub.unsubscribe();
+
+    if (this.categoryRef) this.categoryRef.dispose();
+    if (this.categorySub) this.categorySub.unsubscribe();
+
+    if (this.dashboardRef) this.dashboardRef.dispose();
+    if (this.dashboardSub) this.dashboardSub.unsubscribe();
   }
 
   public toggled(open: boolean): void {
@@ -154,6 +155,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   onLogout(): void {
+    this.ngOnDestroy();
     this.rt.connection.disconnect();
     this.userApi.logout().subscribe((result: any) => {
       console.log('is authenticated: ', this.userApi.isAuthenticated());
