@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
 import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
 import {AgmMap} from '@agm/core';
+import {List} from "lodash";
 
 @Component({
   selector: 'app-messages',
