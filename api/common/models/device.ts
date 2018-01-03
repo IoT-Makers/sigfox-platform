@@ -277,6 +277,7 @@ class Device {
                     lat: messageInstance.computedLocation.lat,
                     lng: messageInstance.computedLocation.lng,
                     precision: messageInstance.computedLocation.radius,
+                    createdAt: messageInstance.time
                   }];
                 }
 
@@ -367,7 +368,7 @@ class Device {
                   loop++;
                   // console.log(data_parsed);
                   const geoloc: any = {};
-                  if(data_parsed){
+                  if (data_parsed) {
                     message.data_parsed = data_parsed;
                     message.data_parsed.forEach((o: any) => {
                       // Check if there is geoloc in parsed data
@@ -398,7 +399,7 @@ class Device {
                 }
               });
             });
-          }else{
+          } else {
             response.message = 'This device has no messages';
             next(null, response);
           }
