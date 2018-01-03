@@ -1,13 +1,12 @@
 import {NgModule} from '@angular/core';
-
 import {ParsersComponent} from './parsers.component';
 import {ParsersRoutingModule} from './parsers-routing.module';
-import {CommonModule} from "@angular/common";
-// Modal Component
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {ToasterModule} from 'angular2-toaster';
 import {ModalModule} from 'ng2-bootstrap/modal';
-// Code editor
 import {AceEditorModule} from 'ng2-ace-editor';
-import {FormsModule} from "@angular/forms";
+
 
 @NgModule({
   imports: [
@@ -15,7 +14,8 @@ import {FormsModule} from "@angular/forms";
     CommonModule,
     FormsModule,
     ModalModule.forRoot(),
-    AceEditorModule
+    AceEditorModule,
+    ToasterModule
   ],
   declarations: [
     ParsersComponent

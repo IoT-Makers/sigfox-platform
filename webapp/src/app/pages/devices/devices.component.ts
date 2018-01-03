@@ -195,8 +195,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The device was successfully updated.');
-    }, error => {
-      this.toasterService.pop('error', 'Error', error.message);
+    }, err => {
+      this.toasterService.pop('error', 'Error', err.error.message);
     });
   }
 
@@ -207,6 +207,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
         console.log(category);
         this.deviceToEdit.properties = category.properties;
         this.toasterService.pop('success', 'Success', 'The category was successfully updated.');
+      }, err => {
+        this.toasterService.pop('error', 'Error', err.error.message);
       });
     }
 
@@ -230,6 +232,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
         this.loadingFromBackend = false;
         this.toasterService.pop('success', 'Success', 'Retrieved messages from Sigfox Backend complete');
       }
+    }, err => {
+      this.toasterService.pop('error', 'Error', err.error.message);
     });
     this.confirmDBModal.hide();
   }
@@ -264,6 +268,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
       const index = this.devices.indexOf(this.deviceToRemove);
       this.devices.splice(index, 1);
       this.toasterService.pop('success', 'Success', 'The device and its messages were successfully deleted.');
+    }, err => {
+      this.toasterService.pop('error', 'Error', err.error.message);
     });
     /*this.userApi.deleteMessages().subscribe(value => {
       this.deviceRef.remove(this.deviceToRemove).subscribe();

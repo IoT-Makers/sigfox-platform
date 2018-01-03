@@ -144,8 +144,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   remove(): void {
     this.categoryRef.remove(this.categoryToRemove).subscribe(value => {
       this.toasterService.pop('success', 'Success', 'Category was successfully removed.');
-    }, error => {
-      this.toasterService.pop('error', 'Error', error.message);
+    }, err => {
+      this.toasterService.pop('error', 'Error', err.error.message);
     });
     this.confirmModal.hide();
   }
