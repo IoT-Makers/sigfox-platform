@@ -16,6 +16,8 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
   @ViewChild('devicesSelect') devicesSelect: SelectComponent;
 
+  private mobile = false;
+
   public devices: Array<any> = new Array<any>();
 
   private messageSub: Subscription;
@@ -24,7 +26,6 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   public data = [];
 
   // Messages graph
-
   private graphRange = 'hourly';
 
   private messageChartData: Array<any> = [];
@@ -32,7 +33,8 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
   public messageChartOptions = {
     responsive: true,
-    maintainAspectRatio: true,
+    scaleShowVerticalLines: false,
+    maintainAspectRatio: false,
     legend: {
       display: true,
     }
@@ -64,6 +66,9 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.warn('Analytics: ngOnInit');
+    if (window.screen.width <= 425) { // 768px portrait
+      this.mobile = true;
+    }
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();

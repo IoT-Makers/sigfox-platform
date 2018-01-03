@@ -5,7 +5,7 @@ import {FormsModule} from '@angular/forms';
 import {CategoriesComponent} from './categories.component';
 import {CategoriesRoutingModule} from './categories-routing.module';
 import {ToasterModule} from 'angular2-toaster';
-import {ModalModule} from 'ng2-bootstrap';
+import {ModalModule, TooltipModule} from 'ng2-bootstrap';
 
 
 @NgModule({
@@ -15,6 +15,7 @@ import {ModalModule} from 'ng2-bootstrap';
     MomentModule,
     FormsModule,
     ToasterModule,
+    TooltipModule.forRoot(),
     ModalModule.forRoot(),
   ],
   declarations: [ CategoriesComponent ]

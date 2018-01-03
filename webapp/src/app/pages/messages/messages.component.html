@@ -46,7 +46,7 @@
               <mfDefaultSorter by="reception">Reception</mfDefaultSorter>
             </th>
             <th class="text-center">
-              Options
+              Action
             </th>
           </tr>
           </thead>
@@ -116,7 +116,7 @@
               </p>
             </td>
             <td class="text-center">
-              <button type="button" class="btn btn-danger btn-round" (click)="remove(item)">
+              <button type="button" class="btn btn-outline-danger btn-round" (click)="remove(item)">
                 <i class="fa fa-trash"></i>
               </button>
             </td>
@@ -147,7 +147,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <agm-map [styles]="agmMapStyle"
+        <agm-map [styles]="mapStyle"
                  [latitude]="receptions[0] ? toInt(receptions[0].lat) : 48.883478"
                  [longitude]="receptions[0] ? toInt(receptions[0].lng) : 2.302451"
                  [zoom]="9">

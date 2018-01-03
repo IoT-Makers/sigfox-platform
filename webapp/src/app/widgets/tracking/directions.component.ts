@@ -60,9 +60,9 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
           this.trackingComponent.directionsDisplayStore.push(directionsDisplay);
           directionsDisplay.setOptions({
             polylineOptions: {
-              strokeWeight: 5,
-              strokeOpacity: 0.7,
-              strokeColor: '#08d7d4'
+              strokeWeight: 4,
+              strokeOpacity: 0.5,
+              strokeColor: '#d71223'
             },
             markerOptions: {
               visible: false

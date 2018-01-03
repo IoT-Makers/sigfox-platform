@@ -18,6 +18,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
   @ViewChild('confirmModal') confirmModal: any;
+  @ViewChild('confirmDBModal') confirmDBModal: any;
 
   private isCircleVisible: boolean[] = new Array<boolean>();
 
@@ -213,25 +214,24 @@ export class DevicesComponent implements OnInit, OnDestroy {
     // this.deviceRef.upsert(device).subscribe();
   }
 
-  retrieveMessages(deviceId:string, limit:number, before:number):void{
+  showRetrievalModal(): void {
+    this.confirmDBModal.show();
+  }
 
+  retrieveMessages(deviceId: string, limit: number, before: number): void {
     this.loadingFromBackend = true;
-
-    this.deviceApi.getMessagesFromSigfoxBackend(deviceId,null,before ? before : null,null).subscribe(result=>{
+    this.deviceApi.getMessagesFromSigfoxBackend(deviceId,null,before ? before : null,null).subscribe(result => {
       console.log(result);
-      if(result.paging.next){
+      if (result.paging.next) {
         let before = result.paging.next.substring(result.paging.next.indexOf("before=") + 7);
         this.retrieveMessages(deviceId,null,before);
-
-      }else{
+      } else {
         console.log("finish");
         this.loadingFromBackend = false;
         this.toasterService.pop('success', 'Success', 'Retrieved messages from Sigfox Backend complete');
       }
-
-
-    })
-
+    });
+    this.confirmDBModal.hide();
   }
 
   zoomOnDevice(elementId: string, geoloc: Geoloc): void {

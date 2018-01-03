@@ -8,7 +8,7 @@ import {CommonModule} from '@angular/common';
 import { DataTableModule } from 'angular2-datatable';
 import { DataFilterPipe } from './datafilterpipe';
 import { FormsModule } from '@angular/forms';
-import {ModalModule} from "ng2-bootstrap";
+import {ModalModule, TooltipModule} from "ng2-bootstrap";
 import {AgmCoreModule} from "@agm/core";
 
 @NgModule({

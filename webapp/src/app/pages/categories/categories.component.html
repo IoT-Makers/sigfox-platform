@@ -1,10 +1,9 @@
 <div class="animated fadeIn">
 
-  <div class="card-group">
+  <div class="row">
 
     <div [ngClass]="(edit)?'col-md-6 col-xs-12':'col-md-12 col-sm-12'">
-      <button class="mb-1 btn btn-success" (click)="editCategory()"><i class="fa fa-plus-circle"></i> Create a new category</button>
-
+      <button class="mb-1 btn btn-success" (click)="editCategory()"><i class="fa fa-plus-circle"></i> Add a new category</button>
 
       <div class="card">
         <div class="card-header">
@@ -22,13 +21,13 @@
           <ng-container *ngIf="categories.length > 0">
 
             <!--Table-->
-            <table class="table d-lg-table table-hover table-outline">
+            <table class="table d-lg-table table-hover table-outline table-responsive">
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">Name</th>
-                <th *ngIf="!edit" class="text-center hidden-xs-down">Description</th>
+                <th *ngIf="!edit" class="text-center">Description</th>
                 <th class="text-center">Properties</th>
-                <th class="text-center hidden-xs-down">Associated devices</th>
+                <th class="text-center">Associated devices</th>
                 <th *ngIf="!edit" class="text-center">Action</th>
               </tr>
               </thead>
@@ -39,28 +38,25 @@
                   <div class="small text-muted">Updated:
                     {{category.updatedAt | amTimeAgo}}</div>
                 </td>
-                <td class="text-center hidden-xs-down" *ngIf="!edit">
+                <td class="text-center" *ngIf="!edit">
                   <p>{{category.description}}</p>
                 </td>
-                <td class="">
+                <td>
                   <div *ngIf="!category.properties" class="small text-muted">No properties yet</div>
                   <div *ngIf="category.properties">
                     <div class="text-muted" *ngFor="let property of category.properties; let i = index"><span>{{property.key ? property.key : ""}}</span>{{property.type ? ": "+ property.type : ""}}</div>
                   </div>
                 </td>
-
-
-                <td class="">
+                <td>
                   <div *ngIf="!category.Devices" class="small text-muted">No devices yet</div>
                   <div *ngIf="category.Devices">
                     <div class="small text-center" *ngFor="let device of category.Devices; let i = index"><strong>{{device.id}}</strong></div>
                   </div>
                 </td>
-
                 <td *ngIf="!edit" class="text-center">
                   <div class="btn-group-sm">
-                    <button class="btn btn-success btn-round" (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
-                    <button class="btn btn-danger btn-round" (click)="showRemoveModal(category)"><i class="fa fa-trash fa-lg"></i></button>
+                    <button class="btn btn-outline-primary btn-round" tooltip="Edit category" (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
+                    <button class="btn btn-outline-danger btn-round" tooltip="Delete category" (click)="showRemoveModal(category)"><i class="fa fa-trash fa-lg"></i></button>
                   </div>
                 </td>
               </tr>
@@ -71,7 +67,7 @@
       </div>
     </div>
 
-    <div class="col-md-auto" *ngIf="edit">
+    <div *ngIf="edit" class="col-md-6">
       <div class="card">
         <div class="card-header">
           <strong>New Category</strong>
@@ -144,7 +140,7 @@
     </div>
 
   </div>
-  <!--/.card-group-->
+  <!--/.row-->
 
 </div>
 
