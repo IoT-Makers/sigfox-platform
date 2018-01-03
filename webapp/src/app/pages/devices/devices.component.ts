@@ -43,6 +43,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   private deviceToRemove: Device = new Device();
 
   private edit = false;
+  private loadingFromBackend = false;
 
   private mapLat = 48.858093;
   private mapLng = 2.294694;
@@ -210,6 +211,27 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
     console.log(this.deviceToEdit);
     // this.deviceRef.upsert(device).subscribe();
+  }
+
+  retrieveMessages(deviceId:string, limit:number, before:number):void{
+
+    this.loadingFromBackend = true;
+
+    this.deviceApi.getMessagesFromSigfoxBackend(deviceId,null,before ? before : null,null).subscribe(result=>{
+      console.log(result);
+      if(result.paging.next){
+        let before = result.paging.next.substring(result.paging.next.indexOf("before=") + 7);
+        this.retrieveMessages(deviceId,null,before);
+
+      }else{
+        console.log("finish");
+        this.loadingFromBackend = false;
+        this.toasterService.pop('success', 'Success', 'Retrieved messages from Sigfox Backend complete');
+      }
+
+
+    })
+
   }
 
   zoomOnDevice(elementId: string, geoloc: Geoloc): void {

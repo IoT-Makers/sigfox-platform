@@ -389,12 +389,21 @@
 
 
               <tab heading="Options" class="text-center">
-                <div class="col-md-12 mb-1">
-                  <button class="btn btn-info" (click)="e.preventDefault()"><i class="fa fa-database"></i> Retrieve messages from Sigfox Backend</button>
+
+                <div class="col col-md-12 mb-1">
+                  <button class="btn btn-info" (click)="$event.preventDefault(); retrieveMessages(deviceToEdit.id)"><i class="fa fa-database"></i><small> Retrieve messages from Sigfox Backend</small></button>
                 </div>
-                <div class="col-md-12">
-                  <button class="btn btn-info" (click)="e.preventDefault()"><i class="fa fa-code"></i> Decode all messages for current parser</button>
+                <ng-container *ngIf="loadingFromBackend">
+                  This operation can take time...
+                  <div class="sk-double-bounce">
+                    <div class="sk-child sk-double-bounce1"></div>
+                    <div class="sk-child sk-double-bounce2"></div>
+                  </div>
+                </ng-container>
+                <div class="col col-md-12">
+                  <button class="btn btn-info" (click)="$event.preventDefault()"><i class="fa fa-code"></i><small> Decode all messages for current parser</small></button>
                 </div>
+
               </tab>
             </tabset>
           </form>

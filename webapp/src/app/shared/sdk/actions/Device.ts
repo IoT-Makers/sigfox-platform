@@ -128,7 +128,7 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
          * </em>
    *
    * @param {string} id Device Id
-   * @param {number} limit Limit retrieved messages
+   * @param {number} limit Limit retrieved messages (max 100)
    * @param {number} before Before
    * @param {object} req 
    * @param {any} meta (optional).

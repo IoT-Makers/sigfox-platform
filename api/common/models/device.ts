@@ -49,7 +49,7 @@ const request = require('request');
     getMessagesFromSigfoxBackend: {
       accepts: [
         {arg: 'id', type: 'string', required: true, description: 'Device Id'},
-        {arg: 'limit', type: 'number', required: false, description: 'Limit retrieved messages'},
+        {arg: 'limit', type: 'number', required: false, description: 'Limit retrieved messages (max 100)'},
         {arg: 'before', type: 'number', description: 'Before'},
         {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
@@ -231,18 +231,17 @@ class Device {
             const sigfoxApiPassword = connector.password;
 
 
-            let messages: any[] = [];
+            //let messages: any[] = [];
             let message: any;
             let reception: any[] = [];
             let geoloc: any[] = [];
 
             const credentials = new Buffer(sigfoxApiLogin + ':' + sigfoxApiPassword).toString('base64');
 
-            // while(limit>0){
 
             this.model.app.dataSources.sigfox.getMessages(credentials, deviceId, (limit < 100) ? limit : 100, before ? before : new Date()).then((result: any) => {
-              console.log("Length: ", result.data.length);
-              console.log("Next: ", result.paging.next);
+              // console.log("Length: ", result.data.length);
+              // console.log("Next: ", result.paging.next);
               result.data.forEach((messageInstance: any) => {
 
                 reception = [];
@@ -256,12 +255,14 @@ class Device {
                   };
                   reception.push(rinfo);
                 });
-                geoloc = [{
-                  type:"sigfox",
-                  lat:messageInstance.computedLocation.lat,
-                  lng:messageInstance.computedLocation.lng,
-                  precision:messageInstance.computedLocation.radius,
-                }];
+                if(messageInstance.computedLocation){
+                  geoloc = [{
+                    type:"sigfox",
+                    lat:messageInstance.computedLocation.lat,
+                    lng:messageInstance.computedLocation.lng,
+                    precision:messageInstance.computedLocation.radius,
+                  }];
+                }
 
                 message = {
                   userId: userId,
@@ -270,11 +271,11 @@ class Device {
                   seqNumber: messageInstance.seqNumber,
                   data: messageInstance.data,
                   reception: reception,
-                  geoloc:geoloc
+                  geoloc:geoloc,
+                  createdAt: new Date(messageInstance.time * 1000),
+                  updateddAt: new Date(messageInstance.time * 1000)
                 };
-                messages.push(message);
-
-                // this.model.app.models.Message.putMessage(req, message);
+                //messages.push(message);
 
                 this.model.app.models.Message.findOrCreate(
                   {
@@ -295,7 +296,7 @@ class Device {
                       if (created) {
                         console.log('Created new message.');
                       } else {
-                        console.log('Found an existing message: ', messagePostProcess);
+                        console.log('Found an existing message: ');
                       }
                     }
                   });
@@ -303,19 +304,14 @@ class Device {
                 message = {};
               });
 
-              // before = result.paging.next.substring(result.paging.next.indexOf("before=") + 7);
-              // limit = limit - 100;
-              // console.log("Before: ", before);
-              // console.log("Limit: ", limit);
-
+              //before = result.paging.next.substring(result.paging.next.indexOf("before=") + 7);
+              //console.log("Before: ", before);
               //console.log(messages);
 
-              next(null, messages);
+              next(null, result);
             }).catch((err: any) => {
               next(err, null);
             });
-            // }
-
 
           } else {
             next(err, 'Please refer your Sigfox API connector first');
@@ -323,12 +319,8 @@ class Device {
         }
       });
 
-    // function getAndProcessMessages():void{
-    //
-    // }
 
   }
-
 
 }
 

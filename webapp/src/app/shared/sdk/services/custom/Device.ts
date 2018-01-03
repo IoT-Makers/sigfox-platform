@@ -101,7 +101,7 @@ export class DeviceApi extends BaseLoopBackApi {
    *
    * @param {string} id Device Id
    *
-   * @param {number} limit Limit retrieved messages
+   * @param {number} limit Limit retrieved messages (max 100)
    *
    * @param {number} before Before
    *
