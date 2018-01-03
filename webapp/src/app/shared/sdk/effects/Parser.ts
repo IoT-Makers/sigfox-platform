@@ -133,6 +133,20 @@ export class ParserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public parsePayload$ = this.actions$
+    .ofType(ParserActionTypes.PARSE_PAYLOAD).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.parser.parsePayload(action.payload.id, action.payload.payload, action.payload.req).pipe(
+          map((response: any) => new ParserActions.parsePayloadSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new ParserActions.parsePayloadFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public createManyDevices$ = this.actions$
     .ofType(ParserActionTypes.CREATE_MANY_DEVICES).pipe(
       mergeMap((action: LoopbackAction) =>

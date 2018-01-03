@@ -58,6 +58,20 @@ export class DeviceEffects extends BaseLoopbackEffects {
       )
     );
 
+  @Effect()
+  public parseAllMessages$ = this.actions$
+    .ofType(DeviceActionTypes.PARSE_ALL_MESSAGES).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.device.parseAllMessages(action.payload.id, action.payload.req).pipe(
+          map((response: any) => new DeviceActions.parseAllMessagesSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new DeviceActions.parseAllMessagesFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
     /**
    * @author João Ribeiro <@JonnyBGod> <github:JonnyBGod>
    * @description

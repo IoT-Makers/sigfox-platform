@@ -71,7 +71,8 @@
           "*": false,
           "timeSeries": true,
           "deleteDeviceAndMessages": true,
-          "getMessagesFromSigfoxBackend":true
+          "getMessagesFromSigfoxBackend":true,
+          "parseAllMessages": true
         }
       }
     }

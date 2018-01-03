@@ -109,7 +109,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       }
     ).subscribe((messages: Message[]) => {
       this.messages = messages;
-      console.log(this.messages);
+      // console.log(this.messages);
     });
   }
 

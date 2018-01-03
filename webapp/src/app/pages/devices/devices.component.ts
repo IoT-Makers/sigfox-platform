@@ -19,6 +19,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
   @ViewChild('confirmModal') confirmModal: any;
   @ViewChild('confirmDBModal') confirmDBModal: any;
+  @ViewChild('confirmParseModal') confirmParseModal: any;
 
   private isCircleVisible: boolean[] = [];
 
@@ -45,6 +46,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   private edit = false;
   private loadingFromBackend = false;
+  private parseMessages = false;
 
   private mapLat = 48.858093;
   private mapLng = 2.294694;
@@ -220,6 +222,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.confirmDBModal.show();
   }
 
+  showParseModal(): void {
+    this.confirmParseModal.show();
+  }
+
   retrieveMessages(deviceId: string, limit: number, before: number): void {
     this.loadingFromBackend = true;
     this.deviceApi.getMessagesFromSigfoxBackend(deviceId, null, before ? before : null, null).subscribe(result => {
@@ -236,6 +242,21 @@ export class DevicesComponent implements OnInit, OnDestroy {
       this.toasterService.pop('error', 'Error', err.error.message);
     });
     this.confirmDBModal.hide();
+  }
+
+  parseAllMessages(deviceId:string): void{
+    this.parseMessages = true;
+    this.deviceApi.parseAllMessages(deviceId, null,null).subscribe(result => {
+      this.parseMessages = false;
+      if(result.message==="Success"){
+        this.toasterService.pop('success', 'Success', result.message);
+      }else{
+        this.toasterService.pop('warning', 'Warning', result.message);
+      }
+
+      //console.log(result);
+    });
+    this.confirmParseModal.hide();
   }
 
   zoomOnDevice(elementId: string, geoloc: Geoloc): void {

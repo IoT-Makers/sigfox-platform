@@ -34,6 +34,10 @@ Object.assign(BaseLoopbackActionTypesFactory('Parser'), {
   DELETE_DEVICES_SUCCESS: type('[Parser] deleteDevices success'),
   DELETE_DEVICES_FAIL: type('[Parser] deleteDevices fail'),
 
+  PARSE_PAYLOAD: type('[Parser] parsePayload'),
+  PARSE_PAYLOAD_SUCCESS: type('[Parser] parsePayload success'),
+  PARSE_PAYLOAD_FAIL: type('[Parser] parsePayload fail'),
+
   CREATE_MANY_DEVICES: type('[Parser] createManyDevices'),
   CREATE_MANY_DEVICES_SUCCESS: type('[Parser] createManyDevices success'),
   CREATE_MANY_DEVICES_FAIL: type('[Parser] createManyDevices fail'),
@@ -358,6 +362,57 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   deleteDevicesFail: class implements Action {
     public readonly type = ParserActionTypes.DELETE_DEVICES_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * parsePayload Action.
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id Parser Id
+   * @param {string} payload Sigfox payload (12 bytes max)
+   * @param {object} req 
+   * @param {any} meta (optional).
+   * 
+   */
+  parsePayload: class implements Action {
+    public readonly type = ParserActionTypes.PARSE_PAYLOAD;
+      public payload: {id: any, payload: any, req: any};
+
+    constructor(id: any, payload: any, req: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, payload, req};
+    }
+  },
+  /**
+   * parsePayloadSuccess Action.
+   * 
+   * @param {any} id 
+   * Data properties:
+   *
+   *  - `result` – `{any}` - 
+   * @param {any} meta (optional).
+   * 
+   */
+  parsePayloadSuccess: class implements Action {
+    public readonly type = ParserActionTypes.PARSE_PAYLOAD_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * parsePayloadFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  parsePayloadFail: class implements Action {
+    public readonly type = ParserActionTypes.PARSE_PAYLOAD_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

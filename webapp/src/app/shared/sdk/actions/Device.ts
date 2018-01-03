@@ -18,6 +18,10 @@ Object.assign(BaseLoopbackActionTypesFactory('Device'), {
   GET_MESSAGES_FROM_SIGFOX_BACKEND_SUCCESS: type('[Device] getMessagesFromSigfoxBackend success'),
   GET_MESSAGES_FROM_SIGFOX_BACKEND_FAIL: type('[Device] getMessagesFromSigfoxBackend fail'),
 
+  PARSE_ALL_MESSAGES: type('[Device] parseAllMessages'),
+  PARSE_ALL_MESSAGES_SUCCESS: type('[Device] parseAllMessages success'),
+  PARSE_ALL_MESSAGES_FAIL: type('[Device] parseAllMessages fail'),
+
 });
 export const DeviceActions =
 Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
@@ -167,6 +171,57 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    */
   getMessagesFromSigfoxBackendFail: class implements Action {
     public readonly type = DeviceActionTypes.GET_MESSAGES_FROM_SIGFOX_BACKEND_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * parseAllMessages Action.
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `id` – `{string}` - Device Id
+   *
+   *  - `req` – `{object}` - 
+   * @param {any} meta (optional).
+   * 
+   */
+  parseAllMessages: class implements Action {
+    public readonly type = DeviceActionTypes.PARSE_ALL_MESSAGES;
+      public payload: {id: any, req: any};
+
+    constructor(id: any, req: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, req};
+    }
+  },
+  /**
+   * parseAllMessagesSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  parseAllMessagesSuccess: class implements Action {
+    public readonly type = DeviceActionTypes.PARSE_ALL_MESSAGES_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * parseAllMessagesFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  parseAllMessagesFail: class implements Action {
+    public readonly type = DeviceActionTypes.PARSE_ALL_MESSAGES_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

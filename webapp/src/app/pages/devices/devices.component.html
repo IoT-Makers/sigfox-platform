@@ -291,10 +291,17 @@
                   </div>
                 </ng-container>
                 <div class="col col-md-12">
-                  <button class="btn btn-info" (click)="$event.preventDefault()"><i class="fa fa-code"></i>
+                  <button class="btn btn-info" (click)="$event.preventDefault(); showParseModal()"><i class="fa fa-code"></i>
                     <small> Decode all messages for current parser</small>
                   </button>
                 </div>
+                <ng-container *ngIf="parseMessages">
+                  This operation can take time...
+                  <div class="sk-double-bounce">
+                    <div class="sk-child sk-double-bounce1"></div>
+                    <div class="sk-child sk-double-bounce2"></div>
+                  </div>
+                </ng-container>
 
               </tab>
             </tabset>
@@ -307,6 +314,7 @@
           </button>
           <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
         </div>
+
       </div>
     </div>
 
@@ -473,6 +481,29 @@
       <div class="modal-footer">
         <button class="btn btn-sm btn-success" (click)="retrieveMessages(deviceToEdit.id)">Retrieve</button>
         <button class="btn btn-sm btn-default" (click)="confirmDBModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div bsModal #confirmParseModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmParseModal"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm parse messages of <b>{{deviceToEdit.id}}</b></h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>You are about to parse all the messages belonging to the device <b>{{deviceToEdit.id}}</b></p>
+        <p class="font-italic">This process may take some time, please do not leave this page.</p>
+        <p>Are you sure you want to do this ?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-success" (click)="parseAllMessages(deviceToEdit.id)">Parse</button>
+        <button class="btn btn-sm btn-default" (click)="confirmParseModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

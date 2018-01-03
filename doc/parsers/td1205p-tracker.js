@@ -175,7 +175,7 @@ if (payload.length == 2 || payload.length == 4) {
     parsedData.push(obj);
     obj = {};
     if(payload.length == 4){
-        var battery = parseInt(payload.substring(0,2), 16);
+        var battery = parseInt('0x'+payload.substring(0,2));
         var alert = parseInt('0x'+payload.substring(2,4))
     }else{
         var battery = parseInt(payload, 16);
@@ -241,6 +241,7 @@ if (payload.length == 2 || payload.length == 4) {
     obj.type = "number";
     obj.unit = "V";
     parsedData.push(obj);
+    obj = {};
 
     obj.key = "alert";
     obj.value = alert;

@@ -58,6 +58,17 @@ const request = require('request');
         verb: 'get'
       },
       returns: {type: [], root: true}
+    },
+    parseAllMessages: {
+      accepts: [
+        {arg: 'id', type: 'string', required: true, description: 'Device Id'},
+        {arg: 'req', type: 'object', http: {source: 'req'}}
+      ],
+      http: {
+        path: '/:id/parse-messages',
+        verb: 'put'
+      },
+      returns: {type: [], root: true}
     }
   }
 })
@@ -231,7 +242,7 @@ class Device {
             const sigfoxApiPassword = connector.password;
 
 
-            //let messages: any[] = [];
+            // let messages: any[] = [];
             let message: any;
             let reception: any[] = [];
             let geoloc: any[] = [];
@@ -239,14 +250,19 @@ class Device {
             const credentials = new Buffer(sigfoxApiLogin + ':' + sigfoxApiPassword).toString('base64');
 
 
-            this.model.app.dataSources.sigfox.getMessages(credentials, deviceId, (limit < 100) ? limit : 100, before ? before : new Date()).then((result: any) => {
+            this.model.app.dataSources.sigfox.getMessages(
+              credentials,
+              deviceId,
+              (limit < 100) ? limit : 100,
+              before ? before : new Date()
+            ).then((result: any) => {
               // console.log("Length: ", result.data.length);
               // console.log("Next: ", result.paging.next);
               result.data.forEach((messageInstance: any) => {
 
                 reception = [];
                 messageInstance.rinfos.forEach((o: any) => {
-                  let rinfo: any = {
+                  const rinfo: any = {
                     id: o.tap,
                     lat: o.lat,
                     lng: o.lng,
@@ -255,12 +271,12 @@ class Device {
                   };
                   reception.push(rinfo);
                 });
-                if(messageInstance.computedLocation){
+                if (messageInstance.computedLocation) {
                   geoloc = [{
-                    type:"sigfox",
-                    lat:messageInstance.computedLocation.lat,
-                    lng:messageInstance.computedLocation.lng,
-                    precision:messageInstance.computedLocation.radius,
+                    type: 'sigfox',
+                    lat: messageInstance.computedLocation.lat,
+                    lng: messageInstance.computedLocation.lng,
+                    precision: messageInstance.computedLocation.radius,
                   }];
                 }
 
@@ -271,12 +287,10 @@ class Device {
                   seqNumber: messageInstance.seqNumber,
                   data: messageInstance.data,
                   reception: reception,
-                  geoloc:geoloc,
+                  geoloc: geoloc,
                   createdAt: new Date(messageInstance.time * 1000),
-                  updateddAt: new Date(messageInstance.time * 1000)
+                  updatedAt: new Date(messageInstance.time * 1000),
                 };
-                //messages.push(message);
-
                 this.model.app.models.Message.findOrCreate(
                   {
                     where: {
@@ -291,7 +305,7 @@ class Device {
                   (err: any, messagePostProcess: any, created: boolean) => { // callback
                     if (err) {
                       console.log(err);
-                      //next(err, err);
+                      // next(err, err);
                     } else {
                       if (created) {
                         console.log('Created new message.');
@@ -302,11 +316,8 @@ class Device {
                   });
 
                 message = {};
-              });
 
-              //before = result.paging.next.substring(result.paging.next.indexOf("before=") + 7);
-              //console.log("Before: ", before);
-              //console.log(messages);
+              });
 
               next(null, result);
             }).catch((err: any) => {
@@ -318,9 +329,88 @@ class Device {
           }
         }
       });
+  }
 
+  parseAllMessages(deviceId: string, req: any, next: Function): void {
+    const userId = req.accessToken.userId;
+
+    const Device = this.model.app.models.Device;
+    const Parser = this.model.app.models.Parser;
+    const Message = this.model.app.models.Message;
+    let loop = 0;
+
+    const response: any = {};
+
+    if (!userId) {
+      response.message = 'Please login or use a valid access token';
+      next(null, response);
+    }
+
+    Device.findById(deviceId, {include: 'Messages'}, function (err: any, device: any) {
+
+      if (err) {
+        next(err, null);
+      } else {
+        device = device.toJSON();
+        // console.log(device);
+        if (!device.ParserId || !device.parserId) {
+          response.message = 'No parser associated to this device';
+          next(null, response);
+        } else {
+          // console.log(device.Messages);
+          if (device.Messages) {
+            device.Messages.forEach((message: any) => {
+              Parser.parsePayload(device.parserId, message.data, req, function (err: any, data_parsed: any) {
+                if (err) {
+                  next(err, null);
+                } else {
+                  loop++;
+                  // console.log(data_parsed);
+                  const geoloc: any = {};
+                  if(data_parsed){
+                    message.data_parsed = data_parsed;
+                    message.data_parsed.forEach((o: any) => {
+                      // Check if there is geoloc in parsed data
+                      if (o.key === 'geoloc') {
+                        geoloc.type = o.value;
+                      } else if (o.key === 'lat') {
+                        geoloc.lat = o.value;
+                      } else if (o.key === 'lng') {
+                        geoloc.lng = o.value;
+                      } else if (o.key === 'precision') {
+                        geoloc.precision = o.value;
+                      }
+                    });
+                    if (geoloc.type) {
+                      if (!message.geoloc) {
+                        message.geoloc = [];
+                      }
+                      message.geoloc.push(geoloc);
+                    }
+                    Message.upsert(message, function(err: any, messageUpdated: any){
+                      console.log(messageUpdated);
+                    });
+                  }
+                  if (loop === device.Messages.length) {
+                    response.message = 'Success';
+                    next(null, response);
+                  }
+                }
+              });
+            });
+          }else{
+            response.message = 'This device has no messages';
+            next(null, response);
+          }
+
+        }
+      }
+
+
+    });
 
   }
+
 
 }
 

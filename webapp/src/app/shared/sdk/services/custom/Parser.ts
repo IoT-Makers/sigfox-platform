@@ -359,6 +359,39 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id Parser Id
+   *
+   * @param {string} payload Sigfox payload (12 bytes max)
+   *
+   * @param {object} req 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `result` – `{any}` - 
+   */
+  public parsePayload(id: any, payload: any, req: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Parsers/:id/payload";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof payload !== 'undefined' && payload !== null) _urlParams.payload = payload;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Statistical information for Parser registers.
    *
    * @param {string} range hourly, daily, weekly, monthly, yearly, custom
