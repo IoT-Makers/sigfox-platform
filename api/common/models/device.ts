@@ -277,7 +277,7 @@ class Device {
                     lat: messageInstance.computedLocation.lat,
                     lng: messageInstance.computedLocation.lng,
                     precision: messageInstance.computedLocation.radius,
-                    createdAt: messageInstance.time
+                    createdAt: new Date(messageInstance.time * 1000)
                   }];
                 }
 
