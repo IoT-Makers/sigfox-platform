@@ -1976,10 +1976,10 @@ export class UserApi extends BaseLoopBackApi {
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * The response body contains properties of the AccessToken created on login.
-   * Depending on the value of `include` parameter, the body may contain additional properties:
+   * Le corps de réponse contient les propriétés de AccessToken créées lors de la connexion.
+   * En fonction de la valeur du paramètre `include`, le corps peut contenir des propriétés supplémentaires :
    * 
-   *   - `user` - `U+007BUserU+007D` - Data of the currently logged in user. (`include=user`)
+   *   - `user` - `U+007BUserU+007D` - Données de l'utilisateur connecté. (`include=user`)
    * 
    *
    */

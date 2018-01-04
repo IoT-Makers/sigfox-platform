@@ -4,8 +4,10 @@ declare var Object: any;
 export interface AlertInterface {
   "connectorId": string;
   "key": string;
-  "value_min"?: number;
-  "value_max"?: number;
+  "value_min"?: any;
+  "value_max"?: any;
+  "value_less"?: any;
+  "value_more"?: any;
   "value_exact"?: any;
   "message"?: string;
   "id"?: number;
@@ -14,8 +16,10 @@ export interface AlertInterface {
 export class Alert implements AlertInterface {
   "connectorId": string = '';
   "key": string = '';
-  "value_min": number = 0;
-  "value_max": number = 0;
+  "value_min": any = <any>null;
+  "value_max": any = <any>null;
+  "value_less": any = <any>null;
+  "value_more": any = <any>null;
   "value_exact": any = <any>null;
   "message": string = '';
   "id": number = 0;
@@ -62,15 +66,28 @@ export class Alert implements AlertInterface {
         },
         "value_min": {
           name: 'value_min',
-          type: 'number'
+          type: 'any',
+          default: <any>null
         },
         "value_max": {
           name: 'value_max',
-          type: 'number'
+          type: 'any',
+          default: <any>null
+        },
+        "value_less": {
+          name: 'value_less',
+          type: 'any',
+          default: <any>null
+        },
+        "value_more": {
+          name: 'value_more',
+          type: 'any',
+          default: <any>null
         },
         "value_exact": {
           name: 'value_exact',
-          type: 'any'
+          type: 'any',
+          default: <any>null
         },
         "message": {
           name: 'message',

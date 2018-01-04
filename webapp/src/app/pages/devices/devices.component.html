@@ -179,25 +179,43 @@
                     </select>
                   </div>
                 </div>
-                <div class="form-group row">
-                  <label class="col-md-3 offset-1 form-control-label">Min value</label>
-                  <div class="col-md-8">
-                    <input type="number" class="form-control" name="newAlert.value_min"
-                           [(ngModel)]="newAlert.value_min" [ngModelOptions]="{standalone: true}">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-3 offset-1 form-control-label">Max value</label>
-                  <div class="col-md-7">
-                    <input type="number" class="form-control" name="newAlert.value_max"
-                           [(ngModel)]="newAlert.value_max" [ngModelOptions]="{standalone: true}">
-                  </div>
-                </div>
+
                 <div class="form-group row">
                   <label class="col-md-3 offset-1 form-control-label">Exact value</label>
                   <div class="col-md-8">
                     <input type="text" class="form-control" placeholder="Exact value" name="newAlert.value_exact"
                            [(ngModel)]="newAlert.value_exact" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 offset-1 form-control-label">Between</label>
+                  <div class="col-md-8">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <label class="form-control-label">Min value</label>
+                        <input type="number" class="form-control" name="newAlert.value_min"
+                               [(ngModel)]="newAlert.value_min" [ngModelOptions]="{standalone: true}">
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-control-label">Max value</label>
+                        <input type="number" class="form-control" name="newAlert.value_max"
+                               [(ngModel)]="newAlert.value_max" [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 offset-1 form-control-label">Less than</label>
+                  <div class="col-md-8">
+                    <input type="number" class="form-control" name="newAlert.value_min"
+                           [(ngModel)]="newAlert.value_less" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 offset-1 form-control-label">More than</label>
+                  <div class="col-md-8">
+                    <input type="number" class="form-control" name="newAlert.value_max"
+                           [(ngModel)]="newAlert.value_more" [ngModelOptions]="{standalone: true}">
                   </div>
                 </div>
                 <div class="form-group row">
@@ -215,6 +233,8 @@
                     </button>
                   </div>
                 </div>
+
+                <hr>
 
                 <div *ngFor="let alert of deviceToEdit.alerts; let i = index">
                   <div class="form-group row">
@@ -237,24 +257,41 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-md-3 offset-1 form-control-label">Min value</label>
-                    <div class="col-md-8">
-                      <input type="number" class="form-control" name="alert.value_min"
-                             [(ngModel)]="alert.value_min" [ngModelOptions]="{standalone: true}">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 offset-1 form-control-label">Max value</label>
-                    <div class="col-md-8">
-                      <input type="number" class="form-control" name="alert.value_max"
-                             [(ngModel)]="alert.value_max" [ngModelOptions]="{standalone: true}">
-                    </div>
-                  </div>
-                  <div class="form-group row">
                     <label class="col-md-3 offset-1 form-control-label">Exact value</label>
                     <div class="col-md-8">
                       <input type="text" class="form-control" placeholder="Exact value" name="alert.value_exact"
                              [(ngModel)]="alert.value_exact" [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-3 offset-1 form-control-label">Between</label>
+                    <div class="col-md-8">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label class="form-control-label">Min value</label>
+                          <input type="number" class="form-control" name="alert.value_min"
+                                 [(ngModel)]="alert.value_min" [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-control-label">Max value</label>
+                          <input type="number" class="form-control" name="alert.value_max"
+                                 [(ngModel)]="alert.value_max" [ngModelOptions]="{standalone: true}">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-3 offset-1 form-control-label">Less than</label>
+                    <div class="col-md-8">
+                      <input type="number" class="form-control" name="alert.value_min"
+                             [(ngModel)]="alert.value_less" [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-3 offset-1 form-control-label">More than</label>
+                    <div class="col-md-8">
+                      <input type="number" class="form-control" name="alert.value_max"
+                             [(ngModel)]="alert.value_more" [ngModelOptions]="{standalone: true}">
                     </div>
                   </div>
                   <div class="form-group row">

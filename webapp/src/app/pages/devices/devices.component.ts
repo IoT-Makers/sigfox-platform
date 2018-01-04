@@ -5,6 +5,7 @@ import {AgmInfoWindow} from '@agm/core';
 import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {updateLocale} from "moment";
 
 
 @Component({
@@ -178,14 +179,12 @@ export class DevicesComponent implements OnInit, OnDestroy {
       if (!this.deviceToEdit.alerts)
         this.deviceToEdit.alerts = [];
       this.deviceToEdit.alerts.push(newAlert);
-      this.toasterService.pop('success', 'Success', 'The alert was successfully created.');
       this.newAlert = new Alert();
     }
   }
 
   removeAlert(index: number): void {
     this.deviceToEdit.alerts.splice(index, 1);
-    this.toasterService.pop('success', 'Success', 'The alert was successfully removed.');
   }
 
   updateDevice(): void {

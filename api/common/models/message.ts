@@ -244,7 +244,12 @@ class Message {
                           // If the key being read is set for an alert
                           if (alert.key === o.key) {
                             // Verify conditions for the alert to be triggered
-                            if ((o.value === alert.value_exact) || (o.value <= alert.value_max && o.value >= alert.value_min)) {
+                            if (
+                              (alert.value_exact && o.value === alert.value_exact) ||
+                              (alert.value_min && alert.value_max && o.value >= alert.value_min && o.value <= alert.value_max) ||
+                              (alert.value_less && o.value < alert.value_less) ||
+                              (alert.value_more && o.value > alert.value_more)
+                            ) {
                               // Trigger alert
                               this.model.app.models.Connector.findById(alert.connectorId,
                                 (err: any, connector: any) => {

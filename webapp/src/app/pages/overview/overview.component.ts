@@ -6,6 +6,7 @@ import {DragulaService} from 'ng2-dragula';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
 import {ParserApi, UserApi} from '../../shared/sdk/services/custom';
+import * as moment from "moment";
 
 
 @Component({
@@ -16,6 +17,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private user: User;
 
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
+
+  private mobile = false;
 
   private message: Message = new Message();
 
@@ -46,6 +49,24 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private mapZoom = 2;
 
   public filterQuery = '';
+
+
+  // Graphs
+  public data = [];
+  // Messages graph
+  private graphRange = 'hourly';
+  private messageChartData: Array<any> = [];
+  private messageChartLabels: Array<any> = [];
+  public messageChartOptions = {
+    responsive: true,
+    scaleShowVerticalLines: false,
+    maintainAspectRatio: false,
+    legend: {
+      display: true,
+    }
+  };
+  private messageChartColors: Array<any> = [{backgroundColor: '#5b9bd3'}];
+
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
@@ -112,6 +133,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.warn('Overview: ngOnInit');
+    if (window.screen.width <= 425) { // 768px portrait
+      this.mobile = true;
+    }
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
@@ -127,6 +151,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
     }*/
+
   }
 
   setup(): void {
@@ -186,6 +211,54 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
     });
 
+    this.getMessagesGraph(this.graphRange);
+  }
+
+  getMessagesGraph(option: string): void {
+
+    this.graphRange = option;
+    this.messageChartLabels = [];
+    this.messageChartData = [];
+    // this.data = [];
+
+    this.messageRef.stats(
+      {
+        range: this.graphRange,
+        where: {
+          userId: this.user.id
+        }
+      }
+    ).subscribe((stats: any) => {
+
+      this.messageChartLabels = [];
+      this.messageChartData = [];
+      this.data = [];
+
+      console.log('Stats: ', stats);
+
+      stats.forEach((stat: any) => {
+
+        this.data.push(stat.count);
+        if (option === 'hourly') {
+          this.messageChartLabels.push(moment(stat.universal).format('h:mm a'));
+        }
+        if (option === 'daily') {
+          this.messageChartLabels.push(moment(stat.universal).format('ddd MMM YY'));
+        }
+        if (option === 'weekly') {
+          this.messageChartLabels.push(moment(stat.universal).format('DD MMM YY'));
+        }
+        if (option === 'monthly') {
+          this.messageChartLabels.push(moment(stat.universal).format('DD MMM YY'));
+        }
+        if (option === 'yearly') {
+          this.messageChartLabels.push(moment(stat.universal).format('MMM YYYY'));
+        }
+      });
+      // console.log('Data:' ,this.data);
+      // console.log('Labels:',this.messageChartLabels);
+      this.messageChartData.push({data: this.data, label: 'Messages'});
+    });
   }
 
   ngOnDestroy(): void {

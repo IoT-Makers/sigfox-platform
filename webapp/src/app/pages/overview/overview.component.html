@@ -235,6 +235,85 @@
 
 
   <div class="card">
+    <div class="card-header">
+      <strong>Count messages</strong>
+    </div>
+    <div class="card-block">
+      <ng-container *ngIf="!messageChartData.length">
+        No messages yet...
+        <div class="sk-double-bounce">
+          <div class="sk-child sk-double-bounce1"></div>
+          <div class="sk-child sk-double-bounce2"></div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="messageChartData.length > 0">
+        <div class="row">
+          <div *ngIf="mobile" class="col-md-12">
+            <div class="btn-group btn-group-sm" data-toggle="buttons" aria-label="First group">
+              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('hourly')">Hour</button>
+              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('daily')">Day</button>
+              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('weekly')">Week</button>
+            </div>
+            <div class="btn-group btn-group-sm" data-toggle="buttons" aria-label="First group">
+              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('monthly')">Month</button>
+              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('yearly')">Year</button>
+            </div>
+            <button type="button" class="btn btn-sm btn-primary pull-right"><i class="fa fa-download"></i></button>
+          </div><!--/.col-->
+          <div *ngIf="!mobile" class="col-md-12">
+            <div class="btn-group pull-left" data-toggle="buttons" aria-label="First group">
+              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('hourly')">Hour</button>
+              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('daily')">Day</button>
+              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('weekly')">Week</button>
+              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('monthly')">Month</button>
+              <button class="btn btn-outline-secondary" (click)="getMessagesGraph('yearly')">Year</button>
+            </div>
+            <button type="button" class="btn btn-primary pull-right"><i class="fa fa-download"></i></button>
+          </div><!--/.col-->
+        </div><!--/.row-->
+        <div class="row">
+          <div *ngIf="mobile" class="col-md-12" style="min-height: 200px;">
+            <iframe class="chartjs-hidden-iframe" tabindex="-1"
+                    style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
+            <canvas *ngIf="messageChartData.length > 0"
+                    baseChart
+                    [datasets]="messageChartData"
+                    [labels]="messageChartLabels"
+                    [options]="messageChartOptions"
+                    [colors]="messageChartColors"
+                    [legend]="true"
+                    [chartType]="'bar'"></canvas>
+          </div>
+          <div *ngIf="!mobile" class="col-md-12" style="min-height: 400px;">
+            <iframe class="chartjs-hidden-iframe" tabindex="-1"
+                    style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
+            <canvas *ngIf="messageChartData.length > 0"
+                    baseChart
+                    [datasets]="messageChartData"
+                    [labels]="messageChartLabels"
+                    [options]="messageChartOptions"
+                    [colors]="messageChartColors"
+                    [legend]="true"
+                    [chartType]="'bar'"></canvas>
+          </div>
+        </div>
+
+        <!--<div class="chart-wrapper" style="width: 100%; height: 100%;">
+          <canvas *ngIf="messageChartData.length > 0"
+                  baseChart
+                  [datasets]="messageChartData"
+                  [labels]="messageChartLabels"
+                  [options]="messageChartOptions"
+                  [colors]="messageChartColors"
+                  [legend]="true"
+                  [chartType]="'bar'"></canvas>
+        </div>-->
+      </ng-container>
+    </div>
+  </div>
+  <!--/.card-->
+
+  <!--<div class="card">
     <div class="card-header drag">
       <i class="fa fa-globe fa-lg"></i> <strong> Messages overview</strong>
     </div>
@@ -277,9 +356,9 @@
             <th class="text-center">
               <mfDefaultSorter by="reception">Reception</mfDefaultSorter>
             </th>
-            <!--<th class="text-center">-->
-            <!--Options-->
-            <!--</th>-->
+            &lt;!&ndash;<th class="text-center">&ndash;&gt;
+            &lt;!&ndash;Options&ndash;&gt;
+            &lt;!&ndash;</th>&ndash;&gt;
           </tr>
           </thead>
           <tbody>
@@ -337,11 +416,11 @@
                 {{reception.SNR}}
               </p>
             </td>
-            <!--<td class="text-center">-->
-            <!--<button type="button" class="btn btn-danger btn-round" (click)="remove(item)">-->
-            <!--<i class="fa fa-trash"></i>-->
-            <!--</button>-->
-            <!--</td>-->
+            &lt;!&ndash;<td class="text-center">&ndash;&gt;
+            &lt;!&ndash;<button type="button" class="btn btn-danger btn-round" (click)="remove(item)">&ndash;&gt;
+            &lt;!&ndash;<i class="fa fa-trash"></i>&ndash;&gt;
+            &lt;!&ndash;</button>&ndash;&gt;
+            &lt;!&ndash;</td>&ndash;&gt;
           </tr>
           </tbody>
           <tfoot>
@@ -354,32 +433,6 @@
         </table>
       </ng-container>
     </div>
-  </div>
-
-  <!--<div class="card-columns cols-2">-->
-  <!--<div class="card">-->
-  <!--<div class="card-header">-->
-  <!--Line Chart-->
-  <!--<div class="card-actions">-->
-  <!--<a href="http://www.chartjs.org">-->
-  <!--<small class="text-muted">docs</small>-->
-  <!--</a>-->
-  <!--</div>-->
-  <!--</div>-->
-  <!--<div class="card-block">-->
-  <!--<div class="chart-wrapper">-->
-  <!--<canvas baseChart class="chart"-->
-  <!--[datasets]="lineChartData"-->
-  <!--[labels]="lineChartLabels"-->
-  <!--[options]="lineChartOptions"-->
-  <!--[colors]="lineChartColours"-->
-  <!--[legend]="lineChartLegend"-->
-  <!--[chartType]="lineChartType"-->
-  <!--(chartHover)="chartHovered($event)"-->
-  <!--(chartClick)="chartClicked($event)"></canvas>-->
-  <!--</div>-->
-  <!--</div>-->
-  <!--</div>-->
-  <!--</div>-->
+  </div>-->
 
 </div>

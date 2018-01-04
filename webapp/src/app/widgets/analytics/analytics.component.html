@@ -53,8 +53,7 @@
       </div>
       <!--/.card-->
 
-
-      <div class="card">
+      <!--<div class="card">
         <div class="card-header">
           <strong>Count messages</strong>
         </div>
@@ -79,7 +78,7 @@
                   <button class="btn btn-outline-secondary" (click)="getMessagesGraph('yearly')">Year</button>
                 </div>
                 <button type="button" class="btn btn-sm btn-primary pull-right"><i class="fa fa-download"></i></button>
-              </div><!--/.col-->
+              </div>&lt;!&ndash;/.col&ndash;&gt;
               <div *ngIf="!mobile" class="col-md-12">
                 <div class="btn-group pull-left" data-toggle="buttons" aria-label="First group">
                   <button class="btn btn-outline-secondary" (click)="getMessagesGraph('hourly')">Hour</button>
@@ -89,8 +88,8 @@
                   <button class="btn btn-outline-secondary" (click)="getMessagesGraph('yearly')">Year</button>
                 </div>
                 <button type="button" class="btn btn-primary pull-right"><i class="fa fa-download"></i></button>
-              </div><!--/.col-->
-            </div><!--/.row-->
+              </div>&lt;!&ndash;/.col&ndash;&gt;
+            </div>&lt;!&ndash;/.row&ndash;&gt;
             <div class="row">
               <div *ngIf="mobile" class="col-md-12" style="min-height: 200px;">
                 <iframe class="chartjs-hidden-iframe" tabindex="-1"
@@ -118,7 +117,7 @@
               </div>
             </div>
 
-            <!--<div class="chart-wrapper" style="width: 100%; height: 100%;">
+            &lt;!&ndash;<div class="chart-wrapper" style="width: 100%; height: 100%;">
               <canvas *ngIf="messageChartData.length > 0"
                       baseChart
                       [datasets]="messageChartData"
@@ -127,10 +126,10 @@
                       [colors]="messageChartColors"
                       [legend]="true"
                       [chartType]="'bar'"></canvas>
-            </div>-->
+            </div>&ndash;&gt;
           </ng-container>
         </div>
-      </div>
+      </div>-->
       <!--/.card-->
 
     </div>

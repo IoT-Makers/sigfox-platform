@@ -34,13 +34,24 @@
       "required": true
     },
     "value_min": {
-      "type": "number"
+      "type": "any",
+      "default": null
     },
     "value_max": {
-      "type": "number"
+      "type": "any",
+      "default": null
+    },
+    "value_less": {
+      "type": "any",
+      "default": null
+    },
+    "value_more": {
+      "type": "any",
+      "default": null
     },
     "value_exact": {
-      "type": "any"
+      "type": "any",
+      "default": null
     },
     "message": {
       "type": "string"
