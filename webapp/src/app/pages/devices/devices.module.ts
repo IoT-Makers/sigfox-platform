@@ -7,6 +7,7 @@ import {DevicesComponent} from './devices.component';
 import {DevicesRoutingModule} from './devices-routing.module';
 import {ModalModule, TabsModule, TooltipModule} from 'ng2-bootstrap';
 import {ToasterModule} from 'angular2-toaster';
+import {LaddaModule} from 'angular2-ladda';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import {ToasterModule} from 'angular2-toaster';
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
     }),
+    LaddaModule,
     ToasterModule
   ],
   declarations: [DevicesComponent]

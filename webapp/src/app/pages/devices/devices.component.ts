@@ -232,10 +232,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.deviceApi.getMessagesFromSigfoxBackend(deviceId, null, before ? before : null, null).subscribe(result => {
       console.log(result);
       if (result.paging.next) {
-        let before = result.paging.next.substring(result.paging.next.indexOf("before=") + 7);
+        const before = result.paging.next.substring(result.paging.next.indexOf('before=') + 7);
         this.retrieveMessages(deviceId, null, before);
       } else {
-        console.log("finish");
+        console.log('Finished process');
         this.loadingFromBackend = false;
         this.toasterService.pop('success', 'Success', 'Retrieved messages from Sigfox Backend complete');
       }
@@ -245,17 +245,17 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.confirmDBModal.hide();
   }
 
-  parseAllMessages(deviceId:string): void{
+  parseAllMessages(deviceId: string): void {
     this.parseMessages = true;
-    this.deviceApi.parseAllMessages(deviceId, null,null).subscribe(result => {
+    this.deviceApi.parseAllMessages(deviceId, null, null).subscribe(result => {
       this.parseMessages = false;
-      if(result.message==="Success"){
-        this.toasterService.pop('success', 'Success', result.message);
+      if(result.message === 'Success') {
+        this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
       }else{
         this.toasterService.pop('warning', 'Warning', result.message);
       }
 
-      //console.log(result);
+      // console.log(result);
     });
     this.confirmParseModal.hide();
   }

@@ -361,43 +361,45 @@ class Device {
           // console.log(device.Messages);
           if (device.Messages) {
             device.Messages.forEach((message: any) => {
-              Parser.parsePayload(device.parserId, message.data, req, function (err: any, data_parsed: any) {
-                if (err) {
-                  next(err, null);
-                } else {
-                  loop++;
-                  // console.log(data_parsed);
-                  const geoloc: any = {};
-                  if (data_parsed) {
-                    message.data_parsed = data_parsed;
-                    message.data_parsed.forEach((o: any) => {
-                      // Check if there is geoloc in parsed data
-                      if (o.key === 'geoloc') {
-                        geoloc.type = o.value;
-                      } else if (o.key === 'lat') {
-                        geoloc.lat = o.value;
-                      } else if (o.key === 'lng') {
-                        geoloc.lng = o.value;
-                      } else if (o.key === 'precision') {
-                        geoloc.precision = o.value;
+              if (message.data) {
+                Parser.parsePayload(device.parserId, message.data, req, function (err: any, data_parsed: any) {
+                  if (err) {
+                    next(err, null);
+                  } else {
+                    loop++;
+                    // console.log(data_parsed);
+                    const geoloc: any = {};
+                    if (data_parsed) {
+                      message.data_parsed = data_parsed;
+                      message.data_parsed.forEach((o: any) => {
+                        // Check if there is geoloc in parsed data
+                        if (o.key === 'geoloc') {
+                          geoloc.type = o.value;
+                        } else if (o.key === 'lat') {
+                          geoloc.lat = o.value;
+                        } else if (o.key === 'lng') {
+                          geoloc.lng = o.value;
+                        } else if (o.key === 'precision') {
+                          geoloc.precision = o.value;
+                        }
+                      });
+                      if (geoloc.type) {
+                        if (!message.geoloc) {
+                          message.geoloc = [];
+                        }
+                        message.geoloc.push(geoloc);
                       }
-                    });
-                    if (geoloc.type) {
-                      if (!message.geoloc) {
-                        message.geoloc = [];
-                      }
-                      message.geoloc.push(geoloc);
+                      Message.upsert(message, function(err: any, messageUpdated: any){
+                        console.log(messageUpdated);
+                      });
                     }
-                    Message.upsert(message, function(err: any, messageUpdated: any){
-                      console.log(messageUpdated);
-                    });
+                    if (loop === device.Messages.length) {
+                      response.message = 'Success';
+                      next(null, response);
+                    }
                   }
-                  if (loop === device.Messages.length) {
-                    response.message = 'Success';
-                    next(null, response);
-                  }
-                }
-              });
+                });
+              }
             });
           } else {
             response.message = 'This device has no messages';

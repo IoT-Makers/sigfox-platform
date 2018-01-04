@@ -91,7 +91,7 @@
         <div class="card-block">
 
           <form (ngSubmit)="updateDevice()" class="form-horizontal" #editForm="ngForm">
-            <tabset>
+            <tabset class="table-responsive">
               <tab heading="Information" id="tab1">
                 <!-- ID -->
                 <div class="form-group row">
@@ -275,34 +275,20 @@
               </tab>
 
 
-              <tab heading="Options" class="text-center">
+              <tab heading="Operations" class="text-center">
 
                 <div class="col col-md-12 mb-1">
-                  <button class="btn btn-info" (click)="$event.preventDefault(); showRetrievalModal()"><i
-                    class="fa fa-database"></i>
-                    <small> Retrieve messages from Sigfox Backend</small>
+                  <p *ngIf="loadingFromBackend" class="font-italic font-weight-bold">This operation can take time...</p>
+                  <button tooltip="Retrieve messages from Sigfox Backend" class="btn btn-round btn-info btn-ladda" data-style="slide-up" [ladda]='loadingFromBackend' (click)="$event.preventDefault(); showRetrievalModal()">
+                    <i class="fa fa-database"></i>
                   </button>
                 </div>
-                <ng-container *ngIf="loadingFromBackend">
-                  This operation can take time...
-                  <div class="sk-double-bounce">
-                    <div class="sk-child sk-double-bounce1"></div>
-                    <div class="sk-child sk-double-bounce2"></div>
-                  </div>
-                </ng-container>
                 <div class="col col-md-12">
-                  <button class="btn btn-info" (click)="$event.preventDefault(); showParseModal()"><i class="fa fa-code"></i>
-                    <small> Decode all messages for current parser</small>
+                  <p *ngIf="parseMessages" class="font-italic font-weight-bold">This operation can take time...</p>
+                  <button tooltip="Decode all messages for current parser" class="btn btn-round btn-info btn-ladda" data-style="slide-up" [ladda]='parseMessages' (click)="$event.preventDefault(); showParseModal()">
+                    <i class="fa fa-code"></i>
                   </button>
                 </div>
-                <ng-container *ngIf="parseMessages">
-                  This operation can take time...
-                  <div class="sk-double-bounce">
-                    <div class="sk-child sk-double-bounce1"></div>
-                    <div class="sk-child sk-double-bounce2"></div>
-                  </div>
-                </ng-container>
-
               </tab>
             </tabset>
           </form>
