@@ -2,11 +2,12 @@ import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/co
 import {Category, Device, FireLoopRef, Message, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
-import {DragulaService} from 'ng2-dragula';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
 import {ParserApi, UserApi} from '../../shared/sdk/services/custom';
 import * as moment from "moment";
+import * as _ from "lodash";
+import {ToasterConfig, ToasterService} from "angular2-toaster";
 
 
 @Component({
@@ -19,8 +20,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
 
   private mobile = false;
-
-  private message: Message = new Message();
 
   private messageSub: Subscription;
   private deviceSub: Subscription;
@@ -50,6 +49,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   public filterQuery = '';
 
+  private see = false;
+  private deviceToSee: Device = new Device();
 
   // Graphs
   public data = [];
@@ -67,69 +68,56 @@ export class OverviewComponent implements OnInit, OnDestroy {
   };
   private messageChartColors: Array<any> = [{backgroundColor: '#5b9bd3'}];
 
+  // Widgets
+  private message: any;
+  private humidity;
+  private temperature;
+  private altitude;
+  private pressure;
+  private speed;
+  private light;
+  private alert;
+  private mode;
+  private battery;
+  private thresholdHumidity = {
+    '0': {color: '#cc853c'},
+    '40': {color: '#66cccc'},
+    '75': {color: '#3361cc'}
+  };
+  private thresholdTemperature = {
+    '-50': {color: '#3361cc'},
+    '17': {color: '#37ac55'},
+    '23': {color: '#cc853c'},
+    '30': {color: '#cb2c31'}
+  };
+  private thresholdSpeed = {
+    '0': {color: '#936f4f'},
+    '30': {color: '#ac756d'},
+    '70': {color: '#ac5668'},
+    '100': {color: '#cb2c31'}
+  };
+  private thresholdBattery = {
+    '0': {color: '#cb2c31'},
+    '30': {color: '#cc6543'},
+    '50': {color: '#cc8a36'},
+    '70': {color: '#3acc58'}
+  };
+
+  // Notifications
+  private lastMessage: Message;
+  private isFirstSubscribeMessage;
+  private toasterService: ToasterService;
+  public toasterconfig: ToasterConfig =
+    new ToasterConfig({
+      tapToDismiss: true,
+      timeout: 5000,
+      animation: 'fade'
+    });
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
-              private parserApi: ParserApi,
-              private dragulaService: DragulaService) {
-
-    const bag: any = this.dragulaService.find('section-bag');
-    if (bag !== undefined)
-      this.dragulaService.destroy('section-bag');
-    this.dragulaService.setOptions('section-bag', {
-      moves: function (el, container, handle) {
-        return handle.className === 'card-header drag';
-      }
-    });
-    this.dragulaService.drag.subscribe((value) => {
-      this.onDrag(value.slice(1));
-    });
-    this.dragulaService.drop.subscribe((value) => {
-      this.onDrop(value.slice(1));
-    });
-    this.dragulaService.over.subscribe((value) => {
-      this.onOver(value.slice(1));
-    });
-    this.dragulaService.out.subscribe((value) => {
-      this.onOut(value.slice(1));
-    });
-  }
-
-  private hasClass(el: any, name: string) {
-    return new RegExp('(?:^|\\s+)' + name + '(?:\\s+|$)').test(el.className);
-  }
-
-  private addClass(el: any, name: string) {
-    if (!this.hasClass(el, name)) {
-      el.className = el.className ? [el.className, name].join(' ') : name;
+              private parserApi: ParserApi) {
     }
-  }
-
-  private removeClass(el: any, name: string) {
-    if (this.hasClass(el, name)) {
-      el.className = el.className.replace(new RegExp('(?:^|\\s+)' + name + '(?:\\s+|$)', 'g'), '');
-    }
-  }
-
-  private onDrag(args) {
-    let [e, el] = args;
-    this.removeClass(e, 'ex-moved');
-  }
-
-  private onDrop(args) {
-    let [e, el] = args;
-    this.addClass(e, 'ex-moved');
-  }
-
-  private onOver(args) {
-    let [e, el, container] = args;
-    this.addClass(el, 'ex-over');
-  }
-
-  private onOut(args) {
-    let [e, el, container] = args;
-    this.removeClass(el, 'ex-over');
-  }
 
   ngOnInit(): void {
     console.warn('Overview: ngOnInit');
@@ -276,18 +264,78 @@ export class OverviewComponent implements OnInit, OnDestroy {
     if (this.categorySub) this.categorySub.unsubscribe();
   }
 
+  cancel(): void {
+    this.see = false;
+  }
 
-  // create(): void {
-  //   this.messageRef.create(this.message).subscribe(() => this.message = new Message());
-  // }
+  seeDevice(device): void {
+    this.see = true;
 
-  // update(message: Message): void {
-  //   this.messageRef.upsert(message).subscribe();
-  // }
+    // Reset real time
+    if (this.messageRef && this.messageSub) {
+      this.messageRef.dispose();
+      this.messageSub.unsubscribe();
+    }
 
-  // remove(message: Message): void {
-  //   this.messageRef.remove(message).subscribe();
-  // }
+    // Message & Device refs
+    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+
+    // Used to trigger notifications
+    this.lastMessage = new Message;
+    this.isFirstSubscribeMessage = true;
+
+    // Reset all widget values on device change
+    this.humidity = undefined;
+    this.temperature = undefined;
+    this.altitude = undefined;
+    this.pressure = undefined;
+    this.speed = undefined;
+    this.light = undefined;
+    this.alert = undefined;
+    this.mode = undefined;
+    this.battery = undefined;
+    this.message = undefined;
+
+    // Message real time
+    this.messageSub = this.messageRef.on('change',
+      {
+        limit: 1,
+        order: 'createdAt DESC',
+        where: {
+          and: [
+            {userId: this.user.id},
+            {deviceId: device.id}
+          ]
+        }
+      }
+    ).subscribe((messages: Message[]) => {
+      const message = messages[0];
+      //console.log('message', message);
+
+      // Used for time & geoloc
+      this.message = message;
+
+      this.humidity = _.filter(message.data_parsed, {key: 'humidity'})[0];
+      this.temperature = _.filter(message.data_parsed, {key: 'temperature'})[0];
+      this.altitude = _.filter(message.data_parsed, {key: 'altitude'})[0];
+      this.pressure = _.filter(message.data_parsed, {key: 'pressure'})[0];
+      this.speed = _.filter(message.data_parsed, {key: 'speed'})[0];
+      this.light = _.filter(message.data_parsed, {key: 'light'})[0];
+      this.alert = _.filter(message.data_parsed, {key: 'alert'})[0];
+      this.mode = _.filter(message.data_parsed, {key: 'mode'})[0];
+      this.battery = _.filter(message.data_parsed, {key: 'battery'})[0];
+
+      // Notification
+      if (this.isFirstSubscribeMessage)
+        this.lastMessage = message;
+      if ((this.lastMessage.time !== message.time) && !this.isFirstSubscribeMessage) {
+        this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
+        this.lastMessage = message;
+      }
+      this.isFirstSubscribeMessage = false;
+    });
+  }
+
 
   setCircles() {
     for (let i = 0; i < this.devices.length; i++) {

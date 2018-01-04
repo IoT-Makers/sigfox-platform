@@ -59,10 +59,6 @@
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['/']"><i class="fa fa-dashboard text-white"></i> Overview </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-             [routerLink]="['/dashboard']"><i class="fa fa-home"></i>Test Dashboard</a>
-        </li>
         <li class="nav-item" *ngFor="let dashboard of dashboards">
           <a class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
              [routerLink]="['/dashboard', dashboard.id]"><i class="fa {{dashboard.icon ? dashboard.icon : null}}"></i>{{dashboard.name}}</a>

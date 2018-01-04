@@ -354,105 +354,104 @@
               <div class="sk-child sk-double-bounce2"></div>
             </div>
           </ng-container>
-          <ng-container *ngIf="devices.length > 0">
 
-            <!--Table-->
-            <table class="table d-lg-table table-hover table-outline table-responsive">
-              <thead class="thead-inverse">
-              <tr>
-                <th class="text-center">ID</th>
-                <th class="text-center">Info</th>
-                <th *ngIf="!edit" class="text-center">Geoloc</th>
-                <th class="text-center">Last Update</th>
-                <th *ngIf="!edit" class="text-center">Properties</th>
-                <th *ngIf="!edit" class="text-center">Action</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let device of devices; let i = index">
-                <td class="text-center">
-                  <strong class="text-device">{{device.id}}</strong>
-                </td>
-                <td>
-                  <div class="small">
-                    <span class="text-gray-dark">Name: </span>
-                    <span class="text-device">{{device.name ? device.name : "None"}}</span>
-                  </div>
-                  <div class="small">
-                    <span class="text-gray-dark">Parser: </span>
-                    <span class="text-parser">{{device.Parser ? device.Parser.name : "None"}}</span>
-                  </div>
-                  <div class="small">
-                    <span class="text-gray-dark">Category: </span>
-                    <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
-                  </div>
-                </td>
-                <td *ngIf="!edit" class="text-center">
-                  <div *ngIf="device.location">
-                    <div *ngFor="let geoloc of device.location">
-                      <div class="row">
-                        <div class="col col-12">
-                          <ng-container *ngIf="geoloc.type === 'sigfox'">
-                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
-                               class="small text-geoloc-sigfox">
-                              <i class="fa fa-map-marker fa-2x"></i>
-                              <br>
-                              <strong>Sigfox Geoloc</strong>
-                            </a>
-                          </ng-container>
-                          <ng-container *ngIf="geoloc.type === 'GPS'">
-                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
-                               class="small text-geoloc-gps">
-                              <i class="fa fa-map-marker fa-2x"></i>
-                              <br>
-                              <strong>GPS</strong>
-                            </a>
-                          </ng-container>
-                        </div>
+          <!--Table-->
+          <table *ngIf="devices.length > 0" class="table d-lg-table table-hover table-outline table-responsive">
+            <thead class="thead-inverse">
+            <tr>
+              <th class="text-center">ID</th>
+              <th class="text-center">Info</th>
+              <th *ngIf="!edit" class="text-center">Geoloc</th>
+              <th class="text-center">Last Update</th>
+              <th *ngIf="!edit" class="text-center">Properties</th>
+              <th class="text-center">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let device of devices; let i = index">
+              <td class="text-center">
+                <strong class="text-device">{{device.id}}</strong>
+              </td>
+              <td>
+                <div class="small">
+                  <span class="text-gray-dark">Name: </span>
+                  <span class="text-device">{{device.name ? device.name : "None"}}</span>
+                </div>
+                <div class="small">
+                  <span class="text-gray-dark">Parser: </span>
+                  <span class="text-parser">{{device.Parser ? device.Parser.name : "None"}}</span>
+                </div>
+                <div class="small">
+                  <span class="text-gray-dark">Category: </span>
+                  <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
+                </div>
+              </td>
+              <td *ngIf="!edit" class="text-center">
+                <div *ngIf="device.location">
+                  <div *ngFor="let geoloc of device.location">
+                    <div class="row">
+                      <div class="col col-12">
+                        <ng-container *ngIf="geoloc.type === 'sigfox'">
+                          <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
+                             class="small text-geoloc-sigfox">
+                            <i class="fa fa-map-marker fa-2x"></i>
+                            <br>
+                            <strong>Sigfox Geoloc</strong>
+                          </a>
+                        </ng-container>
+                        <ng-container *ngIf="geoloc.type === 'GPS'">
+                          <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
+                             class="small text-geoloc-gps">
+                            <i class="fa fa-map-marker fa-2x"></i>
+                            <br>
+                            <strong>GPS</strong>
+                          </a>
+                        </ng-container>
                       </div>
                     </div>
                   </div>
+                </div>
 
-                </td>
-                <!--<td *ngIf="!edit">
-                <div class="clearfix">
-                <div class="float-left">
-                <strong>50%</strong>
-                </div>
-                <div class="float-right">
-                <small class="text-muted">3,321V</small>
-                </div>
-                </div>
-                <div class="progress progress-xs">
-                <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50"
-                aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                </td>-->
-                <td class="text-center">
-                  <div class="small text-muted">Last message:</div>
-                  <strong>{{device.updatedAt | amTimeAgo}}</strong>
-                </td>
-                <td *ngIf="!edit">
-                  <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
-                  <div *ngIf="device.categoryId">
-                    <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
-                      <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>
-                      <span class="text-primary">{{property.value ? property.value : ""}}</span>
-                    </div>
+              </td>
+              <!--<td *ngIf="!edit">
+              <div class="clearfix">
+              <div class="float-left">
+              <strong>50%</strong>
+              </div>
+              <div class="float-right">
+              <small class="text-muted">3,321V</small>
+              </div>
+              </div>
+              <div class="progress progress-xs">
+              <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50"
+              aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              </td>-->
+              <td class="text-center">
+                <div class="small text-muted">Last message:</div>
+                <strong>{{device.updatedAt | amTimeAgo}}</strong>
+              </td>
+              <td *ngIf="!edit">
+                <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
+                <div *ngIf="device.categoryId">
+                  <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
+                    <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>
+                    <span class="text-primary">{{property.value ? property.value : ""}}</span>
                   </div>
-                </td>
-                <td *ngIf="!edit" class="text-center">
-                  <div class="btn-group-sm">
-                    <button class="btn btn-outline-primary btn-round" tooltip="Edit device"
-                            (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
-                    <button class="btn btn-outline-danger btn-round" tooltip="Delete device"
-                            (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
-                  </div>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </ng-container>
+                </div>
+              </td>
+              <td class="text-center">
+                <div class="btn-group-sm">
+                  <button class="btn btn-outline-primary btn-round" tooltip="Edit device"
+                          (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
+                  <button class="btn btn-outline-danger btn-round" tooltip="Delete device"
+                          (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+
         </div>
       </div>
     </div>

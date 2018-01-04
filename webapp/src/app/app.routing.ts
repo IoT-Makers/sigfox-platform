@@ -17,7 +17,6 @@ export const routes: Routes = [
     children: [
       {path: '', loadChildren: './pages/overview/overview.module#OverviewModule'},
 
-      {path: 'dashboard', loadChildren: './pages/dashboard/dashboard.module#DashboardModule'},
       {path: 'dashboard/:id', loadChildren: './pages/dashboard/custom-dashboard.module#CustomDashboardModule'},
 
       {path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule'},
