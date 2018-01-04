@@ -370,6 +370,7 @@ class Device {
                     // console.log(data_parsed);
                     const geoloc: any = {};
                     if (data_parsed) {
+
                       message.data_parsed = data_parsed;
                       message.data_parsed.forEach((o: any) => {
                         // Check if there is geoloc in parsed data
@@ -384,10 +385,21 @@ class Device {
                         }
                       });
                       if (geoloc.type) {
+                        let addGeoloc: boolean = true;
                         if (!message.geoloc) {
                           message.geoloc = [];
+                        }else{
+                          message.geoloc.forEach((geo:any)=>{
+                            if(geo.type == geoloc.type){
+                              addGeoloc = false;
+                            }
+                          });
+
+                          if(addGeoloc){
+                            message.geoloc.push(geoloc);
+                          }
                         }
-                        message.geoloc.push(geoloc);
+
                       }
                       Message.upsert(message, function(err: any, messageUpdated: any){
                         console.log(messageUpdated);
