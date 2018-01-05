@@ -7,7 +7,7 @@ import {MomentModule} from 'angular2-moment';
 import {FormsModule} from '@angular/forms';
 import {DateTimePickerModule} from 'ng-pick-datetime';
 import {SelectModule} from 'ng2-select';
-
+import {TooltipModule} from 'ng2-bootstrap';
 
 @NgModule({
   imports: [
@@ -16,6 +16,7 @@ import {SelectModule} from 'ng2-select';
     ChartsModule,
     MomentModule,
     FormsModule,
+    TooltipModule.forRoot(),
     DateTimePickerModule,
     SelectModule
   ],

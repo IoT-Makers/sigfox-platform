@@ -150,7 +150,8 @@ class Device {
                   {createdAt: {lte: dateEnd}},
                   {data_parsed: {neq: null}}
                 ]
-              }
+              },
+              order: 'createdAt ASC'
             }
           }]
       },
@@ -163,7 +164,6 @@ class Device {
 
           messages = device.Messages;
           // console.log("messages", messages.length);
-
 
           messages.forEach((message: any, messageIndex: number) => {
             if (message.data_parsed) {

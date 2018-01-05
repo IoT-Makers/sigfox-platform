@@ -105,8 +105,6 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     // this.ngOnDestroy();
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-
-    this.getMessagesGraph(this.graphRange);
   }
 
   getMessagesGraph(option: string): void {
@@ -120,7 +118,8 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
       {
         range: this.graphRange,
         where: {
-          userId: this.user.id
+          userId: this.user.id,
+          deviceId: this.selectedDevice.id
         }
       }
     ).subscribe((stats: any) => {
@@ -129,7 +128,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
       this.messageChartData = [];
       this.data = [];
 
-      console.log('Stats: ', stats);
+      // console.log('Stats: ', stats);
 
       stats.forEach((stat: any) => {
 
@@ -173,7 +172,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
       // Transform the labels in the user local time zone format
       this.deviceChartLabels.forEach((label: any, index) => {
         const offset = moment().utcOffset();
-        this.deviceChartLabels[index] = moment.utc(label).utcOffset(offset).format('ddd MMM h:mm a');
+        this.deviceChartLabels[index] = moment.utc(label).utcOffset(offset).format('DD MMM YY - h:mm a');
       });
 
       // This boolean permits to activate (make visible) the first key graph only
@@ -240,14 +239,14 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
           this.deviceChartColors.push(colorOption);
         }
       }
-      console.log(this.deviceChartLabels);
-      console.log(this.deviceChartData);
+      // console.log(this.deviceChartLabels);
+      // console.log(this.deviceChartData);
       // this.deviceChartData = result.result.yAxis
     });
   }
 
   searchDevice(context: any): void {
-    console.log('search', context);
+    // console.debug('search', context);
   }
 
   download(): void {
@@ -255,7 +254,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.warn('Analytics: ngOnDestroy');
+    console.log('Analytics: ngOnDestroy');
     if (this.messageRef) this.messageRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
   }

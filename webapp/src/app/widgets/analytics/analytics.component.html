@@ -2,8 +2,14 @@
 
   <div class="row">
     <div class="col-sm-12 col-md-12">
-
-      <div class="card">
+      <ng-select
+        #devicesSelect
+        [placeholder]="'Select a device'"
+        [allowClear]="false"
+        [items]="devices"
+        (selected)="deviceSelected($event)">
+      </ng-select>
+      <div class="card mt-1">
         <div class="card-header">
           <strong>Device data</strong>
         </div>
@@ -21,103 +27,70 @@
 
           </div>
           <div class="row mt-1">
-            <div class="col-sm-12 col-md-8">
-              <ng-select #devicesSelect
-                         [placeholder]="'Select a device'"
-                         [allowClear]="false"
-                         [items]="devices"
-                         (selected)="deviceSelected($event)">
-              </ng-select>
+            <div class="col-12">
+              <button *ngIf="selectedDevice.id" class="btn btn-success" (click)="getDeviceGraph(); getMessagesGraph(this.graphRange)"><i class="fa fa-search"></i> Search</button>
+              <button *ngIf="!selectedDevice.id" class="btn btn-success disabled" tooltip="Select a device first" (click)="getDeviceGraph()"><i class="fa fa-search"></i> Search</button>
             </div>
-            <div *ngIf="!mobile" class="col-md-4">
-              <button class="btn btn-success" (click)="getDeviceGraph()"><i class="fa fa-search"></i> Search</button>
-              <!--<button *ngIf="deviceChartData.length > 0" class="btn btn-info" (click)="download()"><i class="fa fa-download"></i> Download</button>-->
-            </div>
-            <div *ngIf="mobile" class="col-sm-12 mt-1 text-center">
-              <button class="btn btn-success" (click)="getDeviceGraph()"><i class="fa fa-search"></i> Search</button>
-              <!--<button *ngIf="deviceChartData.length > 0" class="btn btn-info" (click)="download()"><i class="fa fa-download"></i> Download</button>-->
-            </div>
-          </div>
-
-          <div class="chart-wrapper">
-            <canvas *ngIf="deviceChartData.length > 0"
-                    baseChart
-                    [datasets]="deviceChartData"
-                    [labels]="deviceChartLabels"
-                    [options]="deviceChartOptions"
-                    [colors]="deviceChartColors"
-                    [legend]="true"
-                    [chartType]="'line'"></canvas>
           </div>
         </div>
       </div>
       <!--/.card-->
 
-      <!--<div class="card">
+      <div *ngIf="deviceChartData.length > 0" class="card">
         <div class="card-header">
-          <strong>Count messages</strong>
+          <i class="fa fa-line-chart" aria-hidden="true"></i> <strong>Data graph</strong>
         </div>
         <div class="card-block">
-          <ng-container *ngIf="!messageChartData.length">
-            No messages yet...
-            <div class="sk-double-bounce">
-              <div class="sk-child sk-double-bounce1"></div>
-              <div class="sk-child sk-double-bounce2"></div>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="messageChartData.length > 0">
-            <div class="row">
-              <div *ngIf="mobile" class="col-md-12">
-                <div class="btn-group btn-group-sm" data-toggle="buttons" aria-label="First group">
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('hourly')">Hour</button>
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('daily')">Day</button>
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('weekly')">Week</button>
-                </div>
-                <div class="btn-group btn-group-sm" data-toggle="buttons" aria-label="First group">
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('monthly')">Month</button>
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('yearly')">Year</button>
-                </div>
-                <button type="button" class="btn btn-sm btn-primary pull-right"><i class="fa fa-download"></i></button>
-              </div>&lt;!&ndash;/.col&ndash;&gt;
-              <div *ngIf="!mobile" class="col-md-12">
-                <div class="btn-group pull-left" data-toggle="buttons" aria-label="First group">
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('hourly')">Hour</button>
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('daily')">Day</button>
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('weekly')">Week</button>
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('monthly')">Month</button>
-                  <button class="btn btn-outline-secondary" (click)="getMessagesGraph('yearly')">Year</button>
-                </div>
-                <button type="button" class="btn btn-primary pull-right"><i class="fa fa-download"></i></button>
-              </div>&lt;!&ndash;/.col&ndash;&gt;
-            </div>&lt;!&ndash;/.row&ndash;&gt;
-            <div class="row">
-              <div *ngIf="mobile" class="col-md-12" style="min-height: 200px;">
-                <iframe class="chartjs-hidden-iframe" tabindex="-1"
-                        style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
-                <canvas *ngIf="messageChartData.length > 0"
-                        baseChart
-                        [datasets]="messageChartData"
-                        [labels]="messageChartLabels"
-                        [options]="messageChartOptions"
-                        [colors]="messageChartColors"
+          <div class="row">
+            <div class="col-md-12">
+              <div class="chart-wrapper">
+                <canvas baseChart
+                        [datasets]="deviceChartData"
+                        [labels]="deviceChartLabels"
+                        [options]="deviceChartOptions"
+                        [colors]="deviceChartColors"
                         [legend]="true"
-                        [chartType]="'bar'"></canvas>
-              </div>
-              <div *ngIf="!mobile" class="col-md-12" style="min-height: 400px;">
-                <iframe class="chartjs-hidden-iframe" tabindex="-1"
-                        style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
-                <canvas *ngIf="messageChartData.length > 0"
-                        baseChart
-                        [datasets]="messageChartData"
-                        [labels]="messageChartLabels"
-                        [options]="messageChartOptions"
-                        [colors]="messageChartColors"
-                        [legend]="true"
-                        [chartType]="'bar'"></canvas>
+                        [chartType]="'line'"></canvas>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-            &lt;!&ndash;<div class="chart-wrapper" style="width: 100%; height: 100%;">
+
+      <div *ngIf="messageChartData.length > 0" class="card">
+        <div class="card-header">
+          <i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> <strong>Message counter</strong>
+        </div>
+        <div class="card-block">
+          <div class="row">
+            <div *ngIf="mobile" class="col-md-12">
+              <div class="btn-group btn-group-sm" data-toggle="buttons" aria-label="First group">
+                <button class="btn btn-outline-secondary" (click)="getMessagesGraph('hourly')">Hour</button>
+                <button class="btn btn-outline-secondary" (click)="getMessagesGraph('daily')">Day</button>
+                <button class="btn btn-outline-secondary" (click)="getMessagesGraph('weekly')">Week</button>
+              </div>
+              <div class="btn-group btn-group-sm" data-toggle="buttons" aria-label="First group">
+                <button class="btn btn-outline-secondary" (click)="getMessagesGraph('monthly')">Month</button>
+                <button class="btn btn-outline-secondary" (click)="getMessagesGraph('yearly')">Year</button>
+              </div>
+              <button type="button" class="btn btn-sm btn-primary pull-right"><i class="fa fa-download"></i></button>
+            </div>
+            <div *ngIf="!mobile" class="col-md-12">
+              <div class="btn-group pull-left" data-toggle="buttons" aria-label="First group">
+                <button class="btn btn-outline-secondary" (click)="getMessagesGraph('hourly')">Hour</button>
+                <button class="btn btn-outline-secondary" (click)="getMessagesGraph('daily')">Day</button>
+                <button class="btn btn-outline-secondary" (click)="getMessagesGraph('weekly')">Week</button>
+                <button class="btn btn-outline-secondary" (click)="getMessagesGraph('monthly')">Month</button>
+                <button class="btn btn-outline-secondary" (click)="getMessagesGraph('yearly')">Year</button>
+              </div>
+              <button type="button" class="btn btn-primary pull-right"><i class="fa fa-download"></i></button>
+            </div>
+          </div>
+          <div class="row">
+            <div *ngIf="mobile" class="col-md-12" style="min-height: 200px;">
+              <iframe class="chartjs-hidden-iframe" tabindex="-1"
+                      style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
               <canvas *ngIf="messageChartData.length > 0"
                       baseChart
                       [datasets]="messageChartData"
@@ -126,15 +99,26 @@
                       [colors]="messageChartColors"
                       [legend]="true"
                       [chartType]="'bar'"></canvas>
-            </div>&ndash;&gt;
-          </ng-container>
+            </div>
+            <div *ngIf="!mobile" class="col-md-12" style="min-height: 400px;">
+              <iframe class="chartjs-hidden-iframe" tabindex="-1"
+                      style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
+              <canvas *ngIf="messageChartData.length > 0"
+                      baseChart
+                      [datasets]="messageChartData"
+                      [labels]="messageChartLabels"
+                      [options]="messageChartOptions"
+                      [colors]="messageChartColors"
+                      [legend]="true"
+                      [chartType]="'bar'"></canvas>
+            </div>
+          </div>
         </div>
-      </div>-->
+      </div>
       <!--/.card-->
 
     </div>
+    <!--/.row-->
   </div>
-  <!--/.row-->
-
 
 </div>
