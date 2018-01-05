@@ -36,7 +36,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     scaleShowVerticalLines: false,
     maintainAspectRatio: false,
     legend: {
-      display: true,
+      display: true
     }
   };
   private messageChartColors: Array<any> = [{backgroundColor: '#5b9bd3'}];
@@ -53,9 +53,23 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
   public deviceChartOptions: any = {
     responsive: true,
-    maintainAspectRatio: true,
+    scaleShowVerticalLines: false,
+    maintainAspectRatio: false,
     legend: {
-      display: true,
+      display: true
+    }
+  };
+  public deviceChartOptionsMobile: any = {
+    responsive: true,
+    scaleShowVerticalLines: false,
+    maintainAspectRatio: false,
+    legend: {
+      display: true
+    },
+    scales: {
+      xAxes: [{
+        display: false
+      }]
     }
   };
   private deviceChartColors: Array<any> = [];
