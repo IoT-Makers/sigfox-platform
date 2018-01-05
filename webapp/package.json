@@ -12,7 +12,6 @@
     "ng": "./node_modules/.bin/ng",
     "start": "node server.js",
     "test": "ng test",
-    "prebuild": "ng lint --fix",
     "build": "ng build --env=prod",
     "lint": "ng lint",
     "e2e": "ng e2e"

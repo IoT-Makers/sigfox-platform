@@ -9,7 +9,7 @@ LoopBackConfig.setApiVersion(environment.apiVersion);
 
 if (environment.production) {
   enableProdMode();
-  // window.console.log = function(){}; // Remove all console logs
+  window.console.log = function(){}; // Remove all console logs
 }
 
 platformBrowserDynamic().bootstrapModule(AppModule);
