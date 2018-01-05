@@ -72,7 +72,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.warn('Devices: ngOnInit');
+    console.log('Devices: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
@@ -156,7 +156,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.warn('Devices: ngOnDestroy');
+    console.log('Devices: ngOnDestroy');
     if (this.deviceRef) this.deviceRef.dispose();
     if (this.deviceSub) this.deviceSub.unsubscribe();
 
@@ -248,9 +248,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.parseMessages = true;
     this.deviceApi.parseAllMessages(deviceId, null, null).subscribe(result => {
       this.parseMessages = false;
-      if(result.message === 'Success') {
+      if (result.message === 'Success') {
         this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
-      }else{
+      } else {
         this.toasterService.pop('warning', 'Warning', result.message);
       }
 

@@ -24,7 +24,6 @@ export const routes: Routes = [
       {path: 'messages', loadChildren: './pages/messages/messages.module#MessagesModule'},
 
 
-      {path: 'base-stations', loadChildren: './pages/base-stations/base-stations.module#BaseStationsModule'},
       {path: 'profile', loadChildren: './pages/user/profile/profile.module#ProfileModule'},
 
       {path: 'demo', loadChildren: './pages/demo/demo.module#DemoModule'},

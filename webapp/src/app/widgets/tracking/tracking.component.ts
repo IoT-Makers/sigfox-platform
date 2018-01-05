@@ -177,7 +177,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.warn('Tracking: ngOnInit');
+    console.log('Tracking: ngOnInit');
     if (window.screen.width <= 425) { // 768px portrait
       this.mobile = true;
     }
@@ -200,7 +200,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.warn('Tracking: ngOnDestroy');
+    console.log('Tracking: ngOnDestroy');
   }
 
   rad(x) {
@@ -208,14 +208,14 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   getDistance(p1, p2) {
-    let R = 6378137; // Earth’s mean radius in meter
-    let dLat = this.rad(p2.lat() - p1.lat());
-    let dLong = this.rad(p2.lng() - p1.lng());
-    let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    const R = 6378137; // Earth’s mean radius in meter
+    const dLat = this.rad(p2.lat() - p1.lat());
+    const dLong = this.rad(p2.lng() - p1.lng());
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(this.rad(p1.lat())) * Math.cos(this.rad(p2.lat())) *
       Math.sin(dLong / 2) * Math.sin(dLong / 2);
-    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    let d = R * c;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c;
     return d; // returns the distance in meter
   }
 }

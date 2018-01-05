@@ -49,7 +49,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.warn('Connector: ngOnInit');
+    console.log('Connector: ngOnInit');
 
     // Get the logged in User object (avatar, email, ...)
     this.getUser();
@@ -152,7 +152,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.warn('Connector: ngOnDestroy');
+    console.log('Connector: ngOnDestroy');
     if (this.connectorRef) this.connectorRef.dispose();
     if (this.connectorSub) this.connectorSub.unsubscribe();
   }

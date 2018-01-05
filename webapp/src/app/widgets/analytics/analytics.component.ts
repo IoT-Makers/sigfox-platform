@@ -66,7 +66,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.warn('Analytics: ngOnInit');
+    console.log('Analytics: ngOnInit');
     if (window.screen.width <= 425) { // 768px portrait
       this.mobile = true;
     }

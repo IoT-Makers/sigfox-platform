@@ -77,7 +77,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.warn('Custom Dashboard: ngOnInit');
+    console.log('Custom Dashboard: ngOnInit');
     // Real Time
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
       this.setup();
@@ -109,7 +109,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.warn('Custom Dashboard: ngOnDestroy');
+    console.log('Custom Dashboard: ngOnDestroy');
     if (this.messageRef) this.messageRef.dispose();
     //if (this.messageSub) this.messageSub.unsubscribe();
 

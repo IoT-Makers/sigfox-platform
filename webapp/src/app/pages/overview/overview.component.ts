@@ -120,7 +120,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
 
   ngOnInit(): void {
-    console.warn('Overview: ngOnInit');
+    console.log('Overview: ngOnInit');
     if (window.screen.width <= 425) { // 768px portrait
       this.mobile = true;
     }
@@ -250,7 +250,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.warn('Overview: ngOnDestroy');
+    console.log('Overview: ngOnDestroy');
     if (this.messageRef) this.messageRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
 

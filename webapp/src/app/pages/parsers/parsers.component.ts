@@ -3,10 +3,9 @@ import {FireLoopRef, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {UserApi} from '../../shared/sdk/services/custom';
-import {ToasterConfig, ToasterService} from "angular2-toaster";
+import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 @Component({
-
   templateUrl: './parsers.component.html',
   styleUrls: ['./parsers.component.scss']
 })
@@ -45,7 +44,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.warn('Parsers: ngOnInit');
+    console.log('Parsers: ngOnInit');
 // Real Time
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
       this.setup();
@@ -98,7 +97,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.warn('Parsers: ngOnDestroy');
+    console.log('Parsers: ngOnDestroy');
     if (this.parserRef) this.parserRef.dispose();
     if (this.parserSub) this.parserSub.unsubscribe();
   }

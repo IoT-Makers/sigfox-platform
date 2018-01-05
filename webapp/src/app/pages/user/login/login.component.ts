@@ -45,11 +45,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.warn('Login: ngOnInit');
+    console.log('Login: ngOnInit');
   }
 
   ngOnDestroy(): void {
-    console.warn('Login: ngOnDestroy');
+    console.log('Login: ngOnDestroy');
   }
 
 }

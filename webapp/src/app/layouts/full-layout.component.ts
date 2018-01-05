@@ -53,7 +53,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    console.warn('Full Layout: ngOnInit');
+    console.log('Full Layout: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     console.log(this.user);
@@ -131,7 +131,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.warn('Full Layout: ngOnDestroy');
+    console.log('Full Layout: ngOnDestroy');
     if (this.messageRef) this.messageRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
 
