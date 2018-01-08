@@ -17,10 +17,6 @@ const request = require('request');
     access: {name: 'access', type: 'operation'}*/
   },
   remotes: {
-    myRemote: {
-      returns: {arg: 'result', type: 'array'},
-      http: {path: '/my-remote', verb: 'get'}
-    },
     timeSeries: {
       accepts: [
         {arg: 'deviceId', type: 'string', required: true, description: 'the deviceId'},
@@ -30,7 +26,8 @@ const request = require('request');
           default: moment().subtract(1, 'hours'),
           description: 'the starting date-time'
         },
-        {arg: 'dateEnd', type: 'string', default: moment(), description: 'the ending date-time'}
+        {arg: 'dateEnd', type: 'string', default: moment(), description: 'the ending date-time'},
+        {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
       returns: {arg: 'result', type: 'array'},
       http: {path: '/time-series', verb: 'get'}
@@ -119,13 +116,10 @@ class Device {
     next();
   }
 
-  // Example Remote Method
-  myRemote(next: Function): void {
-    this.model.find(next);
-  }
 
-
-  timeSeries(deviceId: string, dateBegin: string, dateEnd: string, next: Function): void {
+  timeSeries(deviceId: string, dateBegin: string, dateEnd: string, req: any, next: Function): void {
+    // Obtain the userId with the access_token of ctx
+    const userId = req.accessToken.userId;
 
     const result: any = {
       xAxis: [],
@@ -146,6 +140,7 @@ class Device {
               // fields: ['data_parsed'],
               where: {
                 and: [
+                  {userId: userId},
                   {createdAt: {gte: dateBegin}},
                   {createdAt: {lte: dateEnd}},
                   {data_parsed: {neq: null}}

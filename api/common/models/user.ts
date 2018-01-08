@@ -14,13 +14,18 @@ import {AccessToken} from '../../../webapp/src/app/shared/sdk/models/AccessToken
     beforeSave: {name: 'before save', type: 'operation'},
     afterRemoteLogin: {name: 'login', type: 'afterRemote'},
     afterRemoteCreate: {name: 'create', type: 'afterRemote'},
-    afterRemoteChangePassword: {name: 'changePassword', type: 'afterRemote'}
+    afterRemoteChangePassword: {name: 'changePassword', type: 'afterRemote'},
+    afterDelete: {name: 'after delete', type: 'operation'}
   },
   remotes: {
-    myRemote: {
+    /*deleteUser: {
+      accepts: [
+        {arg: 'userPassword', type: 'string', required: true, description: 'The user password'},
+        {arg: 'req', type: 'object', http: {source: 'req'}}
+      ],
       returns: {arg: 'result', type: 'array'},
-      http: {path: '/my-remote', verb: 'get'}
-    }
+      http: {path: '/delete-user', verb: 'delete'}
+    }*/
   }
 })
 
@@ -48,7 +53,7 @@ class user {
                 next(error, result);
               else
                 next();
-              console.log('Successfully restored devAccessTokens in AccessToken db table.');
+              console.log('Successfully restored devAccessTokens in AccessToken model.');
             });
           } else {
             next();
@@ -65,41 +70,6 @@ class user {
 
   afterRemoteLogin(ctx: any, loggedUser: AccessToken, next: any) {
     next();
-    // TODO: Check below
-    /*const userId = loggedUser.userId;
-    const user = {
-      lastLogin: new Date()
-    };
-    this.model.upsertWithWhere(
-      {where: {id: userId}},
-      user,
-      (err: any, response: any) => {
-        if (err) {
-          console.error(err);
-        } else {
-          console.log(response);
-        }
-        next();
-      });*/
-
-    /*    this.model.app.models.user.findById(
-          userId,
-          {},
-          (err: any, userInstance: User) => { //callback
-            userInstance.lastLogin = new Date(Date.now());
-            console.log(userInstance);
-            this.model.patchAttributes(
-              userId,
-              userInstance,
-              (err: any, response: any) => {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log(response);
-                }
-                next();
-              });
-          });*/
   }
 
   afterRemoteCreate(ctx: any, userInstance: any, next: any) {
@@ -163,7 +133,7 @@ class user {
                   });
                 }
               });
-          }else{
+          } else {
 
             // Create user
             this.model.app.models.Role.findOrCreate(
@@ -205,39 +175,45 @@ class user {
         }
       });
 
+    /*userInstance.Organizations.create(
+      organization,
+      (err: any, organizationInstance: any) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(organizationInstance);
+          console.log(user);
+        }
+        next();
+      });
 
-
-    // userInstance.Organizations.create(
-    //   organization,
-    //   (err: any, organizationInstance: any) => {
-    //   if(err){
-    //     console.log(err)
-    //   }else{
-    //     console.log(organizationInstance);
-    //     console.log(user);
-    //   }
-    //   next();
-    // });
-
-    // // this.model.app.models.Organization.create(
-    // //   organization,
-    //   (err: any, response: any) => {
-    //     if(err){
-    //       console.log(err)
-    //     }else{
-    //       console.log(response);
-    //       this.model.app.models.Organization.link()
-    //     }
-    //     next();
-    //   });
+    this.model.app.models.Organization.create(
+      organization,
+      (err: any, response: any) => {
+        if (err) {
+          console.log(err);
+        }else {
+          console.log(response);
+          this.model.app.models.Organization.link();
+        }
+        next();
+      });*/
   }
 
-  // Example Remote Method
-  myRemote(next: Function): void {
-    this.model.find(next);
+  // Delete user method
+  afterDelete(ctx: any, next: Function): void {
+    // Obtain the userId with the access_token of ctx
+    const userId = ctx.options.accessToken.userId;
+
+    this.model.app.models.RoleMapping.destroyAll({principalId: userId}, (error: any, result: any) => { });
+    this.model.app.models.Message.destroyAll({userId: userId}, (error: any, result: any) => { });
+    this.model.app.models.Device.destroyAll({userId: userId}, (error: any, result: any) => { });
+    this.model.app.models.Connector.destroyAll({userId: userId}, (error: any, result: any) => { });
+    this.model.app.models.Category.destroyAll({userId: userId}, (error: any, result: any) => { });
+    this.model.app.models.AccessToken.destroyAll({userId: userId}, (error: any, result: any) => { });
+
+    next(null, 'Success');
   }
-
-
 }
 
 module.exports = user;

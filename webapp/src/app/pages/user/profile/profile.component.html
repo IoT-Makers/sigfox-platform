@@ -61,7 +61,7 @@
             <button class="btn btn-sm btn-success btn-round" (click)="updatePasswordModal.show()">Change password
             </button>
           </div>
-          <hr>
+          <!--<hr>
           <div *ngIf="user.emailVerified; then verifiedEmail else unverifiedEmail"></div>
           <ng-template #verifiedEmail>
             <div class="text-success">
@@ -78,10 +78,11 @@
                 <span class="mr-1"></span> Please verify your email
               </b>
             </div>
-          </ng-template>
+          </ng-template>-->
         </div>
         <div class="card-footer mt-1">
           <button class="btn btn-sm btn-primary" (click)="updateUserModal.show()">Modify</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteUserModal.show()">Delete account</button>
         </div>
       </div>
     </div>
@@ -173,6 +174,27 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="updateUserModal.hide()">Close</button>
         <button type="button" class="btn btn-success" (click)="updateUser()">Update</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div bsModal #deleteUserModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="deleteUserModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Delete your account</h4>
+        <button type="button" class="close" (click)="deleteUserModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you wish to delete your account?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="deleteUserModal.hide()">Close</button>
+        <button type="button" class="btn btn-danger" (click)="deleteUser()">Delete</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

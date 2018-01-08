@@ -7,8 +7,6 @@ import { Model } from '@mean-expert/model';
  * Model Decorator
  **/
 
-const request = require('request');
-
 @Model({
   hooks: {
     beforeSave: { name: 'before save', type: 'operation' }
@@ -30,8 +28,6 @@ const request = require('request');
 })
 
 class Reception {
-  private sigfoxBackendBaseApiUrl = 'https://backend.sigfox.com/api/';
-
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {}
 

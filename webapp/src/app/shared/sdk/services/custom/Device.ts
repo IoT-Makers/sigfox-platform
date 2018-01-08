@@ -42,6 +42,8 @@ export class DeviceApi extends BaseLoopBackApi {
    *
    * @param {string} dateEnd the ending date-time
    *
+   * @param {object} req 
+   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -50,7 +52,7 @@ export class DeviceApi extends BaseLoopBackApi {
    *
    *  - `result` – `{any}` - 
    */
-  public timeSeries(deviceId: any, dateBegin: any = {}, dateEnd: any = {}, customHeaders?: Function): Observable<any> {
+  public timeSeries(deviceId: any, dateBegin: any = {}, dateEnd: any = {}, req: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Devices/time-series";

@@ -264,7 +264,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     if (this.categorySub) this.categorySub.unsubscribe();
   }
 
-  cancel(): void {
+  cancelSee(): void {
     this.see = false;
   }
 
@@ -352,6 +352,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   zoomOnDevice(elementId: string, geoloc: Geoloc): void {
+    this.cancelSee();
     this.agmInfoWindow.forEach((child) => {
       // console.log(child['_el'].nativeElement.id);
       if (child['_el'].nativeElement.id === elementId)

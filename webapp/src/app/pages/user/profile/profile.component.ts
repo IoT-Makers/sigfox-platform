@@ -3,6 +3,8 @@ import {UserApi} from '../../../shared/sdk/services/custom/User';
 import {DOCUMENT} from '@angular/common';
 import {User} from '../../../shared/sdk/models';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {FullLayoutComponent} from '../../../layouts/full-layout.component';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -15,6 +17,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   @ViewChild('updatePasswordModal') updatePasswordModal: any;
   @ViewChild('updateUserModal') updateUserModal: any;
+  @ViewChild('deleteUserModal') deleteUserModal: any;
 
   private oldPassword;
   private newPassword;
@@ -31,7 +34,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(DOCUMENT) private document: any,
               private userApi: UserApi,
-              toasterService: ToasterService) {
+              toasterService: ToasterService,
+              private router: Router) {
     this.toasterService = toasterService;
   }
 
@@ -67,6 +71,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.user = user;
       this.toasterService.pop('success', 'Success', 'Profile was updated successfully.');
       this.updateUserModal.hide();
+    });
+  }
+
+  deleteUser(): void {
+    this.userApi.deleteById(this.user.id).subscribe((value: any) => {
+      this.toasterService.pop('success', 'Success', 'Account was deleted successfully.');
+      this.deleteUserModal.hide();
+    });
+
+    this.userApi.logout().subscribe((result: any) => {
+      this.router.navigate(['/login']);
+    }, (error: any) => {
+      console.log(error);
+      this.router.navigate(['/login']);
     });
   }
 

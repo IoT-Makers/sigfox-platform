@@ -227,21 +227,28 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   retrieveMessages(deviceId: string, limit: number, before: number): void {
-    this.loadingFromBackend = true;
-    this.deviceApi.getMessagesFromSigfoxBackend(deviceId, null, before ? before : null, null).subscribe(result => {
-      console.log(result);
-      if (result.paging.next) {
-        const before = result.paging.next.substring(result.paging.next.indexOf('before=') + 7);
-        this.retrieveMessages(deviceId, null, before);
+
+    this.userApi.getConnectors(this.user.id, {where: {name: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
+      if (connectors.length > 0) {
+        this.loadingFromBackend = true;
+        this.deviceApi.getMessagesFromSigfoxBackend(deviceId, null, before ? before : null, null).subscribe(result => {
+          console.log(result);
+          if (result.paging.next) {
+            const before = result.paging.next.substring(result.paging.next.indexOf('before=') + 7);
+            this.retrieveMessages(deviceId, null, before);
+          } else {
+            console.log('Finished process');
+            this.loadingFromBackend = false;
+            this.toasterService.pop('success', 'Success', 'Retrieved messages from Sigfox Backend complete.');
+          }
+        }, err => {
+          this.toasterService.pop('error', 'Error', err.error.message);
+        });
+        this.confirmDBModal.hide();
       } else {
-        console.log('Finished process');
-        this.loadingFromBackend = false;
-        this.toasterService.pop('success', 'Success', 'Retrieved messages from Sigfox Backend complete');
+        this.toasterService.pop('warning', 'Warning', 'Please refer your Sigfox API credentials in the connectors page first.');
       }
-    }, err => {
-      this.toasterService.pop('error', 'Error', err.error.message);
     });
-    this.confirmDBModal.hide();
   }
 
   parseAllMessages(deviceId: string): void {
@@ -292,9 +299,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
     }, err => {
       this.toasterService.pop('error', 'Error', err.error.message);
     });
-    /*this.userApi.deleteMessages().subscribe(value => {
-      this.deviceRef.remove(this.deviceToRemove).subscribe();
-    });*/
     this.confirmModal.hide();
   }
 }

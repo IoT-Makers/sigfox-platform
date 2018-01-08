@@ -59,6 +59,20 @@
             "before"
           ]
         }
+      },
+      {
+        "template": {
+          "method": "GET",
+          "url": "https://backend.sigfox.com/api/devicetypes",
+          "headers": {
+            "Authorization": "Basic {credentials:string}"
+          }
+        },
+        "functions": {
+          "testConnection": [
+            "credentials"
+          ]
+        }
       }
     ]
   },

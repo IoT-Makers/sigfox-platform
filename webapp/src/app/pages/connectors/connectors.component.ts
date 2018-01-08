@@ -5,6 +5,7 @@ import {AccessToken, Connector, FireLoopRef, User} from '../../shared/sdk/models
 import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
 import {Subscription} from 'rxjs/Subscription';
 import {RealTime} from '../../shared/sdk/services/core';
+import {Reception} from '../../shared/sdk/models/Reception';
 
 @Component({
   selector: 'app-profile',
@@ -135,13 +136,15 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   saveConnector(connector: Connector): void {
     connector.userId = this.user.id;
-
-    this.connectorRef.upsert(connector).subscribe(value => {
+    this.connectorRef.upsert(connector).subscribe((value: any) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The connector was successfully updated.');
     }, err => {
-      this.toasterService.pop('warning', 'Oupsi', 'Have you filled all the required fields?');
+      if (err.error.statusCode === 401)
+        this.toasterService.pop('warning', 'Ouch', 'Could not connect to Sigfox. Are the API credentials correct?');
+      else
+        this.toasterService.pop('error', 'Error', 'An error occurred, check your connection.');
     });
   }
 

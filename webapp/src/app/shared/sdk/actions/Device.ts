@@ -35,15 +35,16 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    * @param {string} deviceId the deviceId
    * @param {string} dateBegin the starting date-time
    * @param {string} dateEnd the ending date-time
+   * @param {object} req 
    * @param {any} meta (optional).
    * 
    */
   timeSeries: class implements Action {
     public readonly type = DeviceActionTypes.TIME_SERIES;
-      public payload: {deviceId: any, dateBegin: any, dateEnd: any};
+      public payload: {deviceId: any, dateBegin: any, dateEnd: any, req: any};
 
-    constructor(deviceId: any, dateBegin: any = {}, dateEnd: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {deviceId, dateBegin, dateEnd};
+    constructor(deviceId: any, dateBegin: any = {}, dateEnd: any = {}, req: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {deviceId, dateBegin, dateEnd, req};
     }
   },
   /**

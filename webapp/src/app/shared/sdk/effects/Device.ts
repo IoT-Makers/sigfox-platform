@@ -20,7 +20,7 @@ export class DeviceEffects extends BaseLoopbackEffects {
   public timeSeries$ = this.actions$
     .ofType(DeviceActionTypes.TIME_SERIES).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.device.timeSeries(action.payload.deviceId, action.payload.dateBegin, action.payload.dateEnd).pipe(
+        this.device.timeSeries(action.payload.deviceId, action.payload.dateBegin, action.payload.dateEnd, action.payload.req).pipe(
           map((response: any) => new DeviceActions.timeSeriesSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
             of(new DeviceActions.timeSeriesFail(error, action.meta)),
