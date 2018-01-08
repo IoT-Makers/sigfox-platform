@@ -79,7 +79,7 @@ if (mode === 4 && altitude === 0) {
     obj.type = "number";
     obj.unit = "hPa";
     parsedData.push(obj);
-} else if (lat > 0 || lng > 0) {
+} else if (mode < 3) {
     obj.key = "geoloc";
     obj.value = "GPS";
     obj.type = "string";
@@ -97,19 +97,39 @@ if (mode === 4 && altitude === 0) {
     obj.type = "number";
     obj.unit = "";
     parsedData.push(obj);
+    obj = {};
+    obj.key = "altitude";
+    obj.value = altitude;
+    obj.type = "number";
+    obj.unit = "m";
+    parsedData.push(obj);
+    obj = {};
+    obj.key = "speed";
+    obj.value = speed;
+    obj.type = "number";
+    obj.unit = "km/h";
+    parsedData.push(obj);
+    switch (cap) {
+        case 0:
+            cap = "N";
+            break;
+        case 1:
+            cap = "E";
+            break;
+        case 2:
+            cap = "S";
+            break;
+        case 3:
+            cap = "W";
+            break;
+    }
+    obj = {};
+    obj.key = "cap";
+    obj.value = cap;
+    obj.type = "string";
+    obj.unit = "";
+    parsedData.push(obj);
 }
-obj = {};
-obj.key = "altitude";
-obj.value = altitude;
-obj.type = "number";
-obj.unit = "m";
-parsedData.push(obj);
-obj = {};
-obj.key = "speed";
-obj.value = speed;
-obj.type = "number";
-obj.unit = "km/h";
-parsedData.push(obj);
 obj = {};
 obj.key = "battery";
 obj.value = battery;
@@ -118,6 +138,9 @@ obj.unit = "%";
 parsedData.push(obj);
 
 switch (mode) {
+    case 3:
+        mode = "MSG_PUSH_BUTTON";
+        break;
     case 4:
         mode = "MSG_NO_MOTION";
         break;
@@ -136,27 +159,6 @@ switch (mode) {
 obj = {};
 obj.key = "mode";
 obj.value = mode;
-obj.type = "string";
-obj.unit = "";
-parsedData.push(obj);
-
-switch (cap) {
-    case 0:
-        cap = "N";
-        break;
-    case 1:
-        cap = "E";
-        break;
-    case 2:
-        cap = "S";
-        break;
-    case 3:
-        cap = "W";
-        break;
-}
-obj = {};
-obj.key = "cap";
-obj.value = cap;
 obj.type = "string";
 obj.unit = "";
 parsedData.push(obj);
