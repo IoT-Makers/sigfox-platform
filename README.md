@@ -92,8 +92,6 @@ If you are not familiar with Heroku, just create an account an follow the proced
 
 ![register](doc/img/register.png)
 
-![login-2](doc/img/login-2.png)
-
 Note that, the first user to register will be granted an admin role.
 The other users to register will be granted user roles.
 
@@ -140,4 +138,4 @@ A short wiki can be found [here](https://github.com/luisomoreau/sigfox-platform/
 
 Feel free to submit a Pull Request and don't forget to add you name and your useful links ;)
 
-> Made with :heart: by Antoine de Chassey & Louis Moreau
+> Made with  :heart:  by Antoine de Chassey & Louis Moreau
