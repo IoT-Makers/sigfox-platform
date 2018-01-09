@@ -138,4 +138,4 @@ A short wiki can be found [here](https://github.com/luisomoreau/sigfox-platform/
 
 Feel free to submit a Pull Request and don't forget to add you name and your useful links ;)
 
-> Made with  :heart:  by Antoine de Chassey & Louis Moreau
+> Made with &nbsp;:heart:&nbsp; by Antoine de Chassey & Louis Moreau
