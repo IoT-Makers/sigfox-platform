@@ -62,7 +62,7 @@
       <accordion>
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-primary">UPLINK</strong> <i class="fa fa-arrow-up" aria-hidden="true"></i>
+            <strong class="text-primary">UPLINK</strong> <i class="fa fa-arrow-up pull-right" aria-hidden="true"></i>
           </div>
           <div class="card-block">
             <p>Type: <strong>DATA</strong> | <strong>UPLINK</strong></p>
@@ -104,8 +104,8 @@
         </accordion-group>
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-primary">BIDIR</strong> <i class="fa fa-arrow-up" aria-hidden="true"></i><i
-            class="fa fa-arrow-down" aria-hidden="true"></i>
+            <strong class="text-primary">BIDIR</strong> <i class="fa fa-arrow-up pull-right" aria-hidden="true"></i><i
+            class="fa fa-arrow-down pull-right" aria-hidden="true"></i>
           </div>
           <div class="card-block">
             <p>Type: <strong>DATA</strong> | <strong>BIDIR</strong></p>
@@ -148,7 +148,7 @@
         </accordion-group>
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-geoloc-sigfox">GEOLOC</strong> <i class="fa fa-map-marker" aria-hidden="true"></i>
+            <strong class="text-geoloc-sigfox">GEOLOC</strong> <i class="fa fa-map-marker pull-right" aria-hidden="true"></i>
           </div>
           <div class="card-block">
             <p>Type: <strong>SERVICE</strong> | <strong>GEOLOC</strong></p>
@@ -178,6 +178,48 @@
             </p>
           </div>
         </accordion-group>
+        <!--<accordion-group>
+          <div accordion-heading>
+            <strong class="text-success">ACKNOWLEDGE</strong> <i class="fa fa-check-circle pull-right" aria-hidden="true"></i>
+          </div>
+          <div class="card-block">
+            <p>Type: <strong>SERVICE</strong> | <strong>ACKNOWLEDGE</strong></p>
+            <p>Url pattern: <strong tooltip="Click to copy" click-copy (click)="toastClick()">{{ callbackURL }}</strong></p>
+            <p>Use HTTP Method: <strong>PUT</strong></p>
+            <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span class="text-danger" tooltip="Click to copy" click-copy (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
+            </p>
+            <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong></p>
+            <p>Body: <code class="text-center" tooltip="Click to copy" click-copy (click)="toastClick()">{{
+              '{
+              "deviceId": "{device}",
+              "time": {time},
+              "seqNumber": 0,
+              "infoCode": {infoCode},
+              "infoMessage": "{infoMessage}",
+              "downlinkAck": {downlinkAck},
+              "downlinkOverusage": {downlinkOverusage},
+              "reception": [{
+              "id": "{station}",
+              "RSSI": {rssi},
+              "SNR": {snr}
+              }],
+              "data_parsed": [{
+              "key" : "downlinkAck",
+              "value" : {downlinkAck},
+              "type" : "boolean",
+              "unit" : ""
+              },
+              {
+              "key" : "downlinkOverusage",
+              "value" : {downlinkOverusage},
+              "type" : "boolean",
+              "unit" : ""
+              }]
+              }'
+              }}</code>
+            </p>
+          </div>
+        </accordion-group>-->
       </accordion>
     </div>
   </div>
