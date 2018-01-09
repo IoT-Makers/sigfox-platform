@@ -36,7 +36,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
       tapToDismiss: true,
-      timeout: 5000,
+      timeout: 3000,
       animation: 'fade'
     });
 
