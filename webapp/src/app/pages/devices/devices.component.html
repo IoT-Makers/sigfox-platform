@@ -174,7 +174,7 @@
                   <label class="col-md-3 form-control-label">Key</label>
                   <div class="col-md-9">
                     <select name="newAlert.key" class="form-control" size="1" [(ngModel)]="newAlert.key">
-                      <option [ngValue]="item.key" *ngFor="let item of deviceToEdit.data_parsed">{{item.key}}</option>
+                      <option [ngValue]="o.key" *ngFor="let o of deviceToEdit.data_parsed">{{o.key}}</option>
                       <option [ngValue]=""></option>
                     </select>
                   </div>
@@ -317,13 +317,13 @@
                 <div class="col col-md-12 mb-1">
                   <p *ngIf="loadingFromBackend" class="font-italic font-weight-bold">This operation can take time...</p>
                   <button tooltip="Retrieve messages from Sigfox Backend" class="btn btn-round btn-info btn-ladda" data-style="slide-up" [ladda]='loadingFromBackend' (click)="$event.preventDefault(); showRetrievalModal()">
-                   <i class="fa fa-database"></i> &nbsp; Retrieve
+                    <i class="fa fa-database"></i> &nbsp; Retrieve
                   </button>
                 </div>
                 <div class="col col-md-12">
                   <p *ngIf="parseMessages" class="font-italic font-weight-bold">This operation can take time...</p>
                   <button tooltip="Decode all messages for current parser" class="btn btn-round btn-info btn-ladda" data-style="slide-up" [ladda]='parseMessages' (click)="$event.preventDefault(); showParseModal()">
-                   <i class="fa fa-code"></i> &nbsp; Parse
+                    <i class="fa fa-code"></i> &nbsp; Parse
                   </button>
                 </div>
               </tab>

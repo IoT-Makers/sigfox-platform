@@ -5,7 +5,6 @@ import {AccessToken, Connector, FireLoopRef, User} from '../../shared/sdk/models
 import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
 import {Subscription} from 'rxjs/Subscription';
 import {RealTime} from '../../shared/sdk/services/core';
-import {Reception} from '../../shared/sdk/models/Reception';
 
 @Component({
   selector: 'app-profile',
@@ -152,6 +151,10 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     this.connectorRef.remove(connector).subscribe(value => {
       this.toasterService.pop('success', 'Success', 'The connector was successfully cleared.');
     });
+  }
+
+  toastClick() {
+    this.toasterService.pop('info', 'Click', 'Copied to clipboard.');
   }
 
   ngOnDestroy(): void {
