@@ -147,21 +147,17 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
       stats.forEach((stat: any) => {
 
         this.data.push(stat.count);
-        if (option === 'hourly') {
+        this.data.push(stat.count);
+        if (option === 'hourly')
           this.messageChartLabels.push(moment(stat.universal).format('h:mm a'));
-        }
-        if (option === 'daily') {
+        if (option === 'daily')
           this.messageChartLabels.push(moment(stat.universal).format('ddd MMM YY'));
-        }
-        if (option === 'weekly') {
+        if (option === 'weekly')
           this.messageChartLabels.push(moment(stat.universal).format('DD MMM YY'));
-        }
-        if (option === 'monthly') {
+        if (option === 'monthly')
           this.messageChartLabels.push(moment(stat.universal).format('DD MMM YY'));
-        }
-        if (option === 'yearly') {
+        if (option === 'yearly')
           this.messageChartLabels.push(moment(stat.universal).format('MMM YYYY'));
-        }
       });
       // console.log('Data:' ,this.data);
       // console.log('Labels:',this.messageChartLabels);

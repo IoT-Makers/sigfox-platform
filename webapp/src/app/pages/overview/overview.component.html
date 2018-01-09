@@ -471,17 +471,17 @@
 
   <div class="card">
     <div class="card-header">
-      <strong>Count messages</strong>
+      <strong>Recieved messages</strong>
     </div>
     <div class="card-block">
-      <ng-container *ngIf="!messageChartData.length">
+      <ng-container *ngIf="hasNoMessageChartData">
         No messages yet...
         <div class="sk-double-bounce">
           <div class="sk-child sk-double-bounce1"></div>
           <div class="sk-child sk-double-bounce2"></div>
         </div>
       </ng-container>
-      <ng-container *ngIf="messageChartData.length > 0">
+      <ng-container *ngIf="!hasNoMessageChartData">
         <div class="row">
           <div *ngIf="mobile" class="col-md-12">
             <div class="btn-group btn-group-sm" data-toggle="buttons" aria-label="First group">

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {User} from '../../../shared/sdk/models';
+import {AccessToken, User} from '../../../shared/sdk/models';
 import {UserApi} from '../../../shared/sdk/services';
 import {Router} from '@angular/router';
 
@@ -27,8 +27,8 @@ export class RegisterComponent {
     this.user.id = null;
     this.user.createdAt = new Date();
 
-    this.userApi.create(this.user).subscribe(response => {
-      this.router.navigate(['/login']);
+    this.userApi.create(this.user).subscribe((user: User) => {
+      this.onLogin();
     }, err => {
       // console.log(err);
       if (err.statusCode === 422)
@@ -46,4 +46,29 @@ export class RegisterComponent {
     }
   }
 
+  onLogin(): void {
+    this.userApi.login(this.user).subscribe(
+      (token: AccessToken) => {
+        // console.log('New token: ', token);
+
+        // Update the last login date
+        this.userApi.patchAttributes(
+          token.userId,
+          {
+            'lastLogin': new Date()
+          }
+        ).subscribe();
+        // Redirect to the /dashboard
+        this.router.navigate(['/']);
+      }, err => {
+        // console.log(err);
+        if (err.statusCode === 401) {
+          this.errorMessage = 'Invalid username or password.';
+        } else if (err.statusCode === 500) {
+          this.errorMessage = 'Internal server error';
+        } else {
+          this.errorMessage = err.message;
+        }
+      });
+  }
 }

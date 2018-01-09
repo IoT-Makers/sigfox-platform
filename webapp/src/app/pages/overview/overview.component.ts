@@ -5,9 +5,9 @@ import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
 import {ParserApi, UserApi} from '../../shared/sdk/services/custom';
-import * as moment from "moment";
-import * as _ from "lodash";
-import {ToasterConfig, ToasterService} from "angular2-toaster";
+import * as moment from 'moment';
+import * as _ from 'lodash';
+import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 
 @Component({
@@ -53,6 +53,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private deviceToSee: Device = new Device();
 
   // Graphs
+  private hasNoMessageChartData = false;
   public data = [];
   // Messages graph
   private graphRange = 'hourly';
@@ -117,7 +118,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   constructor(private rt: RealTime,
               private userApi: UserApi,
               private parserApi: ParserApi) {
-    }
+  }
 
   ngOnInit(): void {
     console.log('Overview: ngOnInit');
@@ -227,25 +228,24 @@ export class OverviewComponent implements OnInit, OnDestroy {
       stats.forEach((stat: any) => {
 
         this.data.push(stat.count);
-        if (option === 'hourly') {
+        if (option === 'hourly')
           this.messageChartLabels.push(moment(stat.universal).format('h:mm a'));
-        }
-        if (option === 'daily') {
+        if (option === 'daily')
           this.messageChartLabels.push(moment(stat.universal).format('ddd MMM YY'));
-        }
-        if (option === 'weekly') {
+        if (option === 'weekly')
           this.messageChartLabels.push(moment(stat.universal).format('DD MMM YY'));
-        }
-        if (option === 'monthly') {
+        if (option === 'monthly')
           this.messageChartLabels.push(moment(stat.universal).format('DD MMM YY'));
-        }
-        if (option === 'yearly') {
+        if (option === 'yearly')
           this.messageChartLabels.push(moment(stat.universal).format('MMM YYYY'));
-        }
       });
-      // console.log('Data:' ,this.data);
-      // console.log('Labels:',this.messageChartLabels);
+      // console.log('Data:', this.data);
+      // console.log('Labels:', this.messageChartLabels);
       this.messageChartData.push({data: this.data, label: 'Messages'});
+
+      this.hasNoMessageChartData = this.data.every(value => {
+        return value === 0;
+      });
     });
   }
 

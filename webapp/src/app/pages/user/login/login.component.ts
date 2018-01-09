@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit, OnDestroy {
               private router: Router) {
   }
 
-  public onLogin(): void {
+  onLogin(): void {
     this.userApi.login(this.user).subscribe(
       (token: AccessToken) => {
         // console.log('New token: ', token);
