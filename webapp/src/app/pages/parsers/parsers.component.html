@@ -7,33 +7,35 @@
         </div>
 
         <div class="card-block">
-          <strong class="text-uppercase">Add a new parser</strong>
+          <a tooltip="Get help on the Sigfox Platform Wiki" href="https://github.com/luisomoreau/sigfox-platform/wiki/Adding-a-custom-parser" target="_blank"><strong class="text-uppercase">Add a new parser</strong> <i class="fa fa-question-circle text-parser"></i></a>
           <div class="row">
-            <div class="col col-6 mt-1">
-              <p><strong>NB:</strong> Please use the variable name <code>payload</code> as it will contain the Sigfox
-                hexadecimal frame.</p>
-              <div class="input-group">
+            <div class="col-sm-12 col-md-4 mt-1">
+              <!--<p class="small"><i class="fa fa-question-circle text-warning" aria-hidden="true"></i> Get help on the <a href="https://github.com/luisomoreau/sigfox-platform/wiki/Adding-a-custom-parser" >Sigfox Platform Wiki</a>!
+              </p>-->
+              <p><strong>NB:</strong><i> Please use the variable name</i> <code>payload</code> <i>as it will contain the Sigfox
+                hexadecimal frame.</i>
+              </p>
+              <div class="form-group">
+                <label for="name">Name:</label>
                 <input type="text" required id="name" [(ngModel)]="newParser.name" name="parser" class="form-control"
-                       placeholder="Parser name">
+                     placeholder="Parser name">
+              </div>
+              <div class="form-group">
+                <label for="description">Description:</label>
                 <input type="text" required id="description" [(ngModel)]="newParser.description" name="parser"
-                       class="form-control" placeholder="Parser description">
+                        class="form-control" placeholder="Parser description">
               </div>
 
+              <button type="button" class="btn btn-secondary btn-parser mb-1" (click)="create()">
+                Add Parser
+              </button>
             </div>
-            <div class="col col-6">
+            <div class="col-md-8">
               <div ace-editor
                    [(text)]="newParser.function"
                    name="parser"
                    [mode]="'javascript'"
-                   style="min-height: 200px; width:100%; overflow: auto;"></div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col col-4">
-              <button type="button" class="btn btn-parser" (click)="create()">
-                Add Parser
-              </button>
+                   style="min-height: 400px; width:100%; overflow: auto;"></div>
             </div>
           </div>
 
@@ -44,9 +46,9 @@
           <strong class="text-uppercase">{{parser.name}}</strong> - parserId: <span
           class="text-parser">{{parser.id}}</span>
           <div class="row">
-            <div class="col col-4">
+            <div class="col-sm-12 col-md-4">
               <p>{{parser.description}}</p>
-              <div class="input-group">
+              <div class="input-group mb-1">
                 <input type="text" [(ngModel)]="payload" #payloadInput id="{{parser.id}}" name="{{parser.name}}"
                        class="form-control" placeholder="Sigfox payload in hexadecimal" maxlength="24"
                        pattern="([a-fA-F0-9])$">
@@ -69,7 +71,7 @@
               </div>
 
             </div>
-            <div class="col col-8">
+            <div class="col-md-8">
               <div ace-editor
                    [(text)]="parser.function"
                    [mode]="'javascript'"

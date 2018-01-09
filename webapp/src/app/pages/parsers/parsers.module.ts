@@ -6,6 +6,7 @@ import {FormsModule} from '@angular/forms';
 import {ToasterModule} from 'angular2-toaster';
 import {ModalModule} from 'ng2-bootstrap/modal';
 import {AceEditorModule} from 'ng2-ace-editor';
+import {TooltipModule} from 'ng2-bootstrap';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import {AceEditorModule} from 'ng2-ace-editor';
     CommonModule,
     FormsModule,
     ModalModule.forRoot(),
+    TooltipModule.forRoot(),
     AceEditorModule,
     ToasterModule
   ],
