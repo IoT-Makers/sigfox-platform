@@ -8,7 +8,7 @@ import {DataTableModule} from 'angular2-datatable';
 import {DataFilterPipe} from './datafilterpipe';
 import {ToasterModule} from 'angular2-toaster';
 import {SelectModule} from 'ng2-select';
-import {ClickCopyDirective} from '../../_directives/click-copy.directive';
+import {ClickCopyDirective} from './click-copy.directive';
 
 @NgModule({
   imports: [

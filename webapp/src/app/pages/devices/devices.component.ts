@@ -5,7 +5,6 @@ import {AgmInfoWindow} from '@agm/core';
 import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {updateLocale} from "moment";
 
 
 @Component({

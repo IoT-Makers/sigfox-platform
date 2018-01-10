@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
 import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
 import {AgmMap} from '@agm/core';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-messages',
@@ -13,6 +14,7 @@ import {AgmMap} from '@agm/core';
 })
 export class MessagesComponent implements OnInit, OnDestroy {
 
+  private sub: any;
   private user: User;
 
   @ViewChild('baseStationMap') baseStationMap: any;
@@ -69,7 +71,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
-              private receptionApi: ReceptionApi) {
+              private receptionApi: ReceptionApi,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -90,6 +93,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
     }*/
+
+    this.sub = this.route.params.subscribe(params => {
+      this.filterQuery = params['id'];
+    });
   }
 
   setup(): void {
@@ -114,6 +121,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Messages: ngOnDestroy');
+    this.sub.unsubscribe();
     if (this.messageRef) this.messageRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
   }

@@ -28,8 +28,8 @@
           </div>
           <div class="row mt-1">
             <div class="col-12">
-              <button *ngIf="selectedDevice.id" class="btn btn-success" (click)="getDeviceGraph(); getMessagesGraph(this.graphRange)"><i class="fa fa-search"></i> Search</button>
-              <button *ngIf="!selectedDevice.id" class="btn btn-success disabled" tooltip="Select a device first" (click)="getDeviceGraph()"><i class="fa fa-search"></i> Search</button>
+              <button *ngIf="selectedDevice.id" class="btn btn-success" (click)="showGraphs()"><i class="fa fa-search"></i> Search</button>
+              <button *ngIf="!selectedDevice.id" class="btn btn-success disabled" tooltip="Select a device first"><i class="fa fa-search"></i> Search</button>
             </div>
           </div>
         </div>

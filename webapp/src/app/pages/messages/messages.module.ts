@@ -9,7 +9,7 @@ import {DataFilterPipe} from './datafilterpipe';
 import {FormsModule} from '@angular/forms';
 import {ModalModule, TooltipModule} from 'ng2-bootstrap';
 import {AgmCoreModule} from '@agm/core';
-import {ClickCopyDirective} from '../../_directives/click-copy.directive';
+import {ClickCopyDirective} from './click-copy.directive';
 
 @NgModule({
   imports: [

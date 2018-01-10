@@ -147,7 +147,6 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
       stats.forEach((stat: any) => {
 
         this.data.push(stat.count);
-        this.data.push(stat.count);
         if (option === 'hourly')
           this.messageChartLabels.push(moment(stat.universal).format('h:mm a'));
         if (option === 'daily')
@@ -255,6 +254,10 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     });
   }
 
+  showGraphs(): void {
+    this.getDeviceGraph();
+    this.getMessagesGraph(this.graphRange);
+  }
   searchDevice(context: any): void {
     // console.debug('search', context);
   }
