@@ -321,7 +321,7 @@ class Device {
             });
 
           } else {
-            next(err, 'Please refer your Sigfox API connector first');
+            next(err, 'Please refer your Sigfox API connector first.');
           }
         }
       });
@@ -338,7 +338,7 @@ class Device {
     const response: any = {};
 
     if (!userId) {
-      response.message = 'Please login or use a valid access token';
+      response.message = 'Please login or use a valid access token.';
       next(null, response);
     }
 
@@ -350,78 +350,81 @@ class Device {
         device = device.toJSON();
         // console.log(device);
         if (!device.ParserId || !device.parserId) {
-          response.message = 'No parser associated to this device';
+          response.message = 'No parser associated to this device.';
           next(null, response);
         } else {
           // console.log(device.Messages);
-          if (device.Messages) {
-            device.Messages.forEach((message: any) => {
-              if (message.data) {
-                Parser.parsePayload(device.parserId, message.data, req, function (err: any, data_parsed: any) {
-                  if (err) {
-                    next(err, null);
-                  } else {
+          Parser.findById(
+            device.parserId,
+            (err: any, parserInstance: any) => {
+              if (err) {
+                console.log(err);
+                next(err, null);
+              } else if (parserInstance) {
+                const fn = Function('payload', parserInstance.function);
+
+                if (device.Messages) {
+                  device.Messages.forEach((message: any) => {
                     loop++;
-                    // console.log(data_parsed);
-                    const geoloc: any = {};
-                    if (data_parsed) {
+                    if (message.data) {
+                      Parser.parsePayload(fn, message.data, req, function (err: any, data_parsed: any) {
+                        if (err) {
+                          next(err, null);
+                        } else {
+                          // console.log(data_parsed);
+                          const geoloc: any = {};
+                          if (data_parsed) {
 
-                      message.data_parsed = data_parsed;
-                      message.data_parsed.forEach((o: any) => {
-                        // Check if there is geoloc in parsed data
-                        if (o.key === 'geoloc') {
-                          geoloc.type = o.value;
-                        } else if (o.key === 'lat') {
-                          geoloc.lat = o.value;
-                        } else if (o.key === 'lng') {
-                          geoloc.lng = o.value;
-                        } else if (o.key === 'precision') {
-                          geoloc.precision = o.value;
-                        }
-                      });
-                      if (geoloc.type) {
-                        let addGeoloc: boolean = true;
-                        if (!message.geoloc) {
-                          message.geoloc = [];
-                        }else{
-                          message.geoloc.forEach((geo:any)=>{
-                            if(geo.type == geoloc.type){
-                              addGeoloc = false;
+                            message.data_parsed = data_parsed;
+                            message.data_parsed.forEach((o: any) => {
+                              // Check if there is geoloc in parsed data
+                              if (o.key === 'geoloc')
+                                geoloc.type = o.value;
+                              else if (o.key === 'lat')
+                                geoloc.lat = o.value;
+                              else if (o.key === 'lng')
+                                geoloc.lng = o.value;
+                              else if (o.key === 'precision')
+                                geoloc.precision = o.value;
+                            });
+                            if (geoloc.type) {
+                              let addGeoloc = true;
+                              if (!message.geoloc) message.geoloc = [];
+                              else {
+                                message.geoloc.forEach((geo: any) => {
+                                  if (geo.type === geoloc.type) addGeoloc = false;
+                                });
+
+                                if (addGeoloc) message.geoloc.push(geoloc);
+                              }
+
                             }
-                          });
-
-                          if(addGeoloc){
-                            message.geoloc.push(geoloc);
+                            Message.upsert(message, function (err: any, messageUpdated: any) {
+                              // console.log(messageUpdated);
+                            });
                           }
                         }
-
-                      }
-                      Message.upsert(message, function(err: any, messageUpdated: any){
-                        console.log(messageUpdated);
                       });
                     }
+                    // Send the result when all messages have been processed
                     if (loop === device.Messages.length) {
                       response.message = 'Success';
                       next(null, response);
                     }
-                  }
-                });
+                  });
+                } else {
+                  response.message = 'This device has no messages.';
+                  next(null, response);
+                }
+              } else {
+                response.message = 'This device has no parser.';
+                next(null, response);
               }
             });
-          } else {
-            response.message = 'This device has no messages';
-            next(null, response);
-          }
-
         }
       }
-
-
     });
-
   }
-
-
 }
 
 module.exports = Device;

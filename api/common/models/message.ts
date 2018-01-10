@@ -212,7 +212,7 @@ class Message {
           } // else if(data.geoloc)
 
 
-          // Parse message, create message, send result to backend with downlink payload or not
+          // Parse message, create message, send result to backend with downlink payload or not if the data is not null and a parser is set
           else {
             if ((deviceInstance.parserId || parserId) && message.data) {
               this.model.app.models.Parser.findById(
@@ -233,7 +233,6 @@ class Message {
                     deviceToUpdate.id = data.deviceId;
                     deviceToUpdate.userId = data.userId;
                     deviceToUpdate.data_parsed = data_parsed;
-
 
                     // Check if the parsed data contains a 'geoloc' key and store it in the message property to be stored
                     data_parsed.forEach((o: any) => {

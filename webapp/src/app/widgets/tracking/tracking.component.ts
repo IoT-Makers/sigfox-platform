@@ -25,6 +25,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   public devices: Array<any> = [];
 
   public circlePrecision = false;
+  private isCircleVisible: boolean[] = [];
   public directionsRoutes = true;
   public travelMode = 'DRIVING';
   public sigfoxOnly = false;
@@ -100,7 +101,6 @@ export class TrackingComponent implements OnInit, OnDestroy {
       // this.onTrack();
     }
   }
-
 
   onDirections(): void {
     if (!this.directionsRoutes) {
@@ -205,6 +205,20 @@ export class TrackingComponent implements OnInit, OnDestroy {
 
   rad(x) {
     return x * Math.PI / 180;
+  }
+
+  setCircles() {
+    for (let i = 0; i < this.devices.length; i++) {
+      this.isCircleVisible.push(false);
+    }
+  }
+
+  markerOut(i) {
+    this.isCircleVisible[i] = false;
+  }
+
+  markerOver(i) {
+    this.isCircleVisible[i] = true;
   }
 
   getDistance(p1, p2) {

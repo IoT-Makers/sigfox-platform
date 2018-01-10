@@ -1,4 +1,5 @@
-import { Model } from '@mean-expert/model';
+import {Model} from '@mean-expert/model';
+
 /**
  * @module Parser
  * @description
@@ -11,15 +12,11 @@ import { Model } from '@mean-expert/model';
     beforeSave: { name: 'before save', type: 'operation' }
   },
   remotes: {
-    myRemote: {
-      returns : { arg: 'result', type: 'array' },
-      http    : { path: '/my-remote', verb: 'get' }
-    },
     parsePayload: {
       returns : { arg: 'result', type: 'array' },
       http    : { path: '/:id/payload', verb: 'get' },
       accepts: [
-        {arg: 'id', type: 'string', required: true, description: 'Parser Id'},
+        {arg: 'fn', type: 'string', required: true, description: 'Parser function'},
         {arg: 'payload', type: 'string', required: true, description: 'Sigfox payload (12 bytes max)'},
         {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
@@ -36,44 +33,26 @@ class Parser {
     next();
   }
 
-  // Example Remote Method
-  myRemote(next: Function): void {
-    this.model.find(next);
-  }
-
-  parsePayload(parserId: string, payload:string,req: any, next: Function): void {
-    let result:any;
+  parsePayload(fn: Function, payload: string, req: any, next: Function): void {
 
     const userId = req.accessToken.userId;
-    if(!userId){
+    if (!userId) {
       next(null, 'Please login or use a valid access token');
     }
 
-    //console.log(payload.length);
+    // console.log(payload.length);
 
-    if(payload.length > 24){
+    if (payload.length > 24) {
       next(null, 'Sigfox payload cannot be more than 12 bytes');
     }
 
-      this.model.app.models.Parser.findById(
-        parserId,
-        (err: any, parserInstance: any) => {
-          if (err) {
-            console.log(err);
-            next(err, null);
-          } else if (parserInstance) {
-            // Here we will decode the Sigfox payload and search for geoloc to be extracted and store in the Message
-            // @TODO: run it in another container because it can crash the app if something goes wrong...
-            const fn = Function('payload', parserInstance.function);
-
-            const data_parsed = fn(payload);
-            //console.log(data_parsed);
-            // result.data_parsed = data_parsed;
-
-            next(null, data_parsed);
-          }
-        });
-
+    // Here we will decode the Sigfox payload and search for geoloc to be extracted and store in the Message
+    // @TODO: run it in another container because it can crash the app if something goes wrong...
+    let data_parsed: any = null;
+    if (payload !== '') {
+      data_parsed = fn(payload);
+    }
+    next(null, data_parsed);
   }
 }
 

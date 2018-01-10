@@ -28,26 +28,24 @@
           <thead class="thead-inverse">
           <tr>
             <th class="text-center">
-              <mfDefaultSorter by="createdAt">Date</mfDefaultSorter>
+              <mfDefaultSorter by="createdAt"><i class="fa fa-sort"></i> Date</mfDefaultSorter>
             </th>
             <th class="text-center">
-              <mfDefaultSorter by="data">Data</mfDefaultSorter>
+              <mfDefaultSorter by="data"><i class="fa fa-sort"></i> Data</mfDefaultSorter>
             </th>
             <th class="text-center">
-              <mfDefaultSorter by="deviceId">Device</mfDefaultSorter>
+              <mfDefaultSorter by="deviceId"><i class="fa fa-sort"></i> Device</mfDefaultSorter>
             </th>
             <th class="text-center">
-              <mfDefaultSorter by="geoloc">Geoloc</mfDefaultSorter>
+              <mfDefaultSorter by="geoloc"><i class="fa fa-sort"></i> Geoloc</mfDefaultSorter>
             </th>
             <th class="text-center">
-              <mfDefaultSorter by="seqNumber">Seq Number</mfDefaultSorter>
+              <mfDefaultSorter by="seqNumber"><i class="fa fa-sort"></i> Seq Number</mfDefaultSorter>
             </th>
             <th class="text-center">
-              <mfDefaultSorter by="reception">Reception</mfDefaultSorter>
+              <mfDefaultSorter by="reception"><i class="fa fa-sort"></i> Reception</mfDefaultSorter>
             </th>
-            <th class="text-center">
-              Action
-            </th>
+            <th class="text-center">Action</th>
           </tr>
           </thead>
           <tbody>
@@ -65,7 +63,7 @@
               </div>
             </td>
             <td class="text-center text-device">
-              {{item.deviceId}}
+              <span tooltip="Click to filter" placement="right" click-copy (click)="filterQuery = item.deviceId">{{item.deviceId}}</span>
               <br>
               <small *ngIf="item.Device">{{item.Device.name}}</small>
             </td>

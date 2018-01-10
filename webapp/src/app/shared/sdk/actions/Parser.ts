@@ -1,8 +1,8 @@
 /* tslint:disable */
-import { Action } from '@ngrx/store';
-import { type } from '../util';
-import { BaseLoopbackActionTypesFactory, BaseLoopbackActionsFactory } from './base';
-import { LoopBackFilter, SDKToken, Parser } from '../models';
+import {Action} from '@ngrx/store';
+import {type} from '../util';
+import {BaseLoopbackActionsFactory, BaseLoopbackActionTypesFactory} from './base';
+import {LoopBackFilter, Parser} from '../models';
 
 export const ParserActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Parser'), {
@@ -53,7 +53,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    * @param {any} id Parser id
    * @param {any} fk Foreign key for Devices
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdDevices: class implements Action {
     public readonly type = ParserActionTypes.FIND_BY_ID_DEVICES;
@@ -65,11 +65,11 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
   },
   /**
    * findByIdDevicesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdDevicesSuccess: class implements Action {
     public readonly type = ParserActionTypes.FIND_BY_ID_DEVICES_SUCCESS;
@@ -84,7 +84,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdDevicesFail: class implements Action {
     public readonly type = ParserActionTypes.FIND_BY_ID_DEVICES_FAIL;
@@ -99,7 +99,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    * @param {any} id Parser id
    * @param {any} fk Foreign key for Devices
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdDevices: class implements Action {
     public readonly type = ParserActionTypes.DESTROY_BY_ID_DEVICES;
@@ -111,11 +111,11 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
   },
   /**
    * destroyByIdDevicesSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdDevicesSuccess: class implements Action {
     public readonly type = ParserActionTypes.DESTROY_BY_ID_DEVICES_SUCCESS;
@@ -130,7 +130,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdDevicesFail: class implements Action {
     public readonly type = ParserActionTypes.DESTROY_BY_ID_DEVICES_FAIL;
@@ -148,7 +148,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdDevices: class implements Action {
     public readonly type = ParserActionTypes.UPDATE_BY_ID_DEVICES;
@@ -160,11 +160,11 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
   },
   /**
    * updateByIdDevicesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdDevicesSuccess: class implements Action {
     public readonly type = ParserActionTypes.UPDATE_BY_ID_DEVICES_SUCCESS;
@@ -179,7 +179,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdDevicesFail: class implements Action {
     public readonly type = ParserActionTypes.UPDATE_BY_ID_DEVICES_FAIL;
@@ -192,9 +192,9 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    * Fetches belongsTo relation Organization.
    *
    * @param {any} id Parser id
-   * @param {boolean} refresh 
+   * @param {boolean} refresh
    * @param {any} meta (optional).
-   * 
+   *
    */
   getOrganization: class implements Action {
     public readonly type = ParserActionTypes.GET_ORGANIZATION;
@@ -206,11 +206,11 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
   },
   /**
    * getOrganizationSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   getOrganizationSuccess: class implements Action {
     public readonly type = ParserActionTypes.GET_ORGANIZATION_SUCCESS;
@@ -225,7 +225,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   getOrganizationFail: class implements Action {
     public readonly type = ParserActionTypes.GET_ORGANIZATION_FAIL;
@@ -238,9 +238,9 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    * Queries Devices of Parser.
    *
    * @param {any} id Parser id
-   * @param {object} filter 
+   * @param {object} filter
    * @param {any} meta (optional).
-   * 
+   *
    */
   getDevices: class implements Action {
     public readonly type = ParserActionTypes.GET_DEVICES;
@@ -252,11 +252,11 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
   },
   /**
    * getDevicesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   *
+   * @param {any} id
+   * @param {object[]} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   getDevicesSuccess: class implements Action {
     public readonly type = ParserActionTypes.GET_DEVICES_SUCCESS;
@@ -271,7 +271,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   getDevicesFail: class implements Action {
     public readonly type = ParserActionTypes.GET_DEVICES_FAIL;
@@ -288,7 +288,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   createDevices: class implements Action {
     public readonly type = ParserActionTypes.CREATE_DEVICES;
@@ -300,11 +300,11 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
   },
   /**
    * createDevicesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   createDevicesSuccess: class implements Action {
     public readonly type = ParserActionTypes.CREATE_DEVICES_SUCCESS;
@@ -319,7 +319,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   createDevicesFail: class implements Action {
     public readonly type = ParserActionTypes.CREATE_DEVICES_FAIL;
@@ -333,24 +333,24 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * @param {any} id Parser id
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteDevices: class implements Action {
     public readonly type = ParserActionTypes.DELETE_DEVICES;
-      
+
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteDevicesSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteDevicesSuccess: class implements Action {
     public readonly type = ParserActionTypes.DELETE_DEVICES_SUCCESS;
-  
+
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -358,7 +358,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteDevicesFail: class implements Action {
     public readonly type = ParserActionTypes.DELETE_DEVICES_FAIL;
@@ -372,29 +372,29 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} id Parser Id
+   * @param {string} fn Parser function
    * @param {string} payload Sigfox payload (12 bytes max)
-   * @param {object} req 
+   * @param {object} req
    * @param {any} meta (optional).
-   * 
+   *
    */
   parsePayload: class implements Action {
     public readonly type = ParserActionTypes.PARSE_PAYLOAD;
-      public payload: {id: any, payload: any, req: any};
+      public payload: {fn: any, payload: any, req: any};
 
-    constructor(id: any, payload: any, req: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, payload, req};
+    constructor(fn: any, payload: any, req: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {fn, payload, req};
     }
   },
   /**
    * parsePayloadSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * Data properties:
    *
-   *  - `result` – `{any}` - 
+   *  - `result` – `{any}` -
    * @param {any} meta (optional).
-   * 
+   *
    */
   parsePayloadSuccess: class implements Action {
     public readonly type = ParserActionTypes.PARSE_PAYLOAD_SUCCESS;
@@ -409,7 +409,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   parsePayloadFail: class implements Action {
     public readonly type = ParserActionTypes.PARSE_PAYLOAD_FAIL;
@@ -426,7 +426,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyDevices: class implements Action {
     public readonly type = ParserActionTypes.CREATE_MANY_DEVICES;
@@ -438,11 +438,11 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
   },
   /**
    * createManyDevicesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   *
+   * @param {any} id
+   * @param {object[]} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyDevicesSuccess: class implements Action {
     public readonly type = ParserActionTypes.CREATE_MANY_DEVICES_SUCCESS;
@@ -457,7 +457,7 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyDevicesFail: class implements Action {
     public readonly type = ParserActionTypes.CREATE_MANY_DEVICES_FAIL;
