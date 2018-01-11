@@ -30,11 +30,6 @@
     },
     "options": {
       "type": "object"
-    },
-    "data": {
-      "type": [
-        "object"
-      ]
     }
   },
   "validations": [],
