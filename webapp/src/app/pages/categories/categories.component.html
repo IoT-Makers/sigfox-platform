@@ -48,15 +48,17 @@
                 <td>
                   <div *ngIf="!category.properties" class="small text-muted">No properties yet</div>
                   <div *ngIf="category.properties">
-                    <div class="text-muted" *ngFor="let property of category.properties; let i = index"><span>{{property.key ? property.key : ""}}</span>{{property.type
-                      ? ": "+ property.type : ""}}
+                    <div class="small text-gray-dark" *ngFor="let property of category.properties; let i = index">
+                      <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>
+                      <span class="text-primary">{{property.type ? property.type : ""}}</span>
                     </div>
                   </div>
                 </td>
                 <td>
                   <div *ngIf="!category.Devices" class="small text-muted">No devices yet</div>
                   <div *ngIf="category.Devices">
-                    <div class="small text-center" *ngFor="let device of category.Devices; let i = index"><strong>{{device.id}}</strong>
+                    <div class="small text-center text-device" *ngFor="let device of category.Devices; let i = index">
+                      <strong [routerLink]="['/device-messages', device.id]">{{device.id}}</strong>
                     </div>
                   </div>
                 </td>
@@ -93,7 +95,7 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Description</label>
               <div class="col-md-9">
-                  <textarea type="text" class="form-control" placeholder="Device name" name="categoryToEdit.description"
+                  <textarea type="text" class="form-control" placeholder="Describe the category" name="categoryToEdit.description"
                             [(ngModel)]="categoryToEdit.description">
                   </textarea>
               </div>
