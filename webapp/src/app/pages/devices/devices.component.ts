@@ -241,7 +241,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
             this.toasterService.pop('success', 'Success', 'Retrieved messages from Sigfox Backend complete.');
           }
         }, err => {
-          this.toasterService.pop('error', 'Error', err.error.message);
+          this.toasterService.pop('error', 'Error', err.message.message);
+          this.loadingFromBackend = false;
         });
         this.confirmDBModal.hide();
       } else {
@@ -257,6 +258,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
       if (result.message === 'Success') {
         this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
       } else {
+        this.parseMessages = false;
         this.toasterService.pop('warning', 'Warning', result.message);
       }
 
