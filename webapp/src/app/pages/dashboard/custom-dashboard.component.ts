@@ -22,8 +22,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private categories: Array<Category> = [];
   private selectedCategory: Category;
 
-  private widget: Widget;
-  private widgets: Array<Widget> = [];
+  private widget: any;
+  private widgets: Array<any> = [];
 
   private messageRef: FireLoopRef<Message>;
   private deviceRef: FireLoopRef<Device>;
@@ -53,7 +53,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     //DashboardId:this.dashboard.id
   };
 
-  private widgetType = ['map'];
+  private widgetType = ['map', 'table'];
 
   private isCircleVisible: boolean[] = [];
 
@@ -171,11 +171,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   addFilter($event, model: string): void {
+    console.log($event);
 
     if (model === 'category') {
       this.newWidget.filter = {
         where: {
-          categoryId: $event.id
+          categoryId: $event
         }
       };
     }
@@ -184,7 +185,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       console.log(this.selectedDevice);
       this.newWidget.filter = {
         where: {
-          deviceId: $event.id
+          deviceId: $event
         }
       };
     }
@@ -211,7 +212,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         width: '',
         filter: {},
         options: {},
-        device: [],
         DashboardId: this.dashboard.id
       };
     });
@@ -246,7 +246,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         width: '',
         filter: {},
         options: {},
-        device: [],
         DashboardId: this.dashboard.id
       };
     });

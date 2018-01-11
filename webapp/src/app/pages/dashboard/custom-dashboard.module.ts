@@ -7,6 +7,7 @@ import {SelectModule} from 'ng2-select';
 import {ToasterModule} from 'angular2-toaster';
 import {AgmCoreModule} from '@agm/core';
 import {FormsModule} from '@angular/forms';
+import {MomentModule} from "angular2-moment";
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import {FormsModule} from '@angular/forms';
     SelectModule,
     FormsModule,
     ToasterModule,
+    MomentModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
     })

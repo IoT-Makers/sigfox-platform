@@ -10,7 +10,6 @@ export interface WidgetInterface {
   "width": string;
   "filter"?: any;
   "options"?: any;
-  "data"?: Array<any>;
   "id"?: number;
   "userId"?: number;
   "dashboardId"?: number;
@@ -28,7 +27,6 @@ export class Widget implements WidgetInterface {
   "width": string = '';
   "filter": any = <any>null;
   "options": any = <any>null;
-  "data": Array<any> = <any>[];
   "id": number = 0;
   "userId": number = 0;
   "dashboardId": number = 0;
@@ -96,10 +94,6 @@ export class Widget implements WidgetInterface {
         "options": {
           name: 'options',
           type: 'any'
-        },
-        "data": {
-          name: 'data',
-          type: 'Array&lt;any&gt;'
         },
         "id": {
           name: 'id',

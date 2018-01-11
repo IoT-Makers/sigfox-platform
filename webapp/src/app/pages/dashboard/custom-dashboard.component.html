@@ -137,7 +137,8 @@
             <hr>
 
             <!--map options-->
-            <div class="form-group row" *ngIf="newWidget.type === 'map'">
+            <ng-container *ngIf="newWidget.type === 'map'" >
+            <div class="form-group row" >
               <label class="col-md-3 form-control-label">Category</label>
               <div class="col-md-6">
                 <select name="categoryId" class="form-control" size="1" [ngModel]="selectedCategory"
@@ -148,7 +149,7 @@
               </div>
             </div>
 
-            <div class="form-group row" *ngIf="newWidget.type === 'map'">
+            <div class="form-group row">
               <label class="col-md-3 form-control-label">Default zoom<br>
                 <small>Between 1 and 13</small>
               </label>
@@ -159,7 +160,7 @@
               </div>
             </div>
 
-            <div class="form-group row" *ngIf="newWidget.type === 'map'">
+            <div class="form-group row">
               <label class="col-md-3 form-control-label">Default latitude</label>
               <div class="col-md-6">
                 <input type="number" class="form-control" placeholder="Latitude"
@@ -168,7 +169,7 @@
               </div>
             </div>
 
-            <div class="form-group row" *ngIf="newWidget.type === 'map'">
+            <div class="form-group row">
               <label class="col-md-3 form-control-label">Default longitude</label>
               <div class="col-md-6">
                 <input type="number" class="form-control" placeholder="Longitude"
@@ -177,7 +178,7 @@
               </div>
             </div>
 
-            <div class="form-group row" *ngIf="newWidget.type === 'map'">
+            <div class="form-group row">
               <label class="col-md-3 form-control-label">Map type</label>
               <div class="col-md-6">
                 <select name="categoryId" class="form-control" size="1" [(ngModel)]="newWidget.options.mapTypeId">
@@ -194,35 +195,57 @@
                        [(ngModel)]="newWidget.options.style">
               </div>
             </div>
+            </ng-container>
 
             <!--End of map option-->
 
 
+            <!--Table option-->
+            <ng-container *ngIf="newWidget.type === 'table'">
+              <div class="form-group row" >
+                <label class="col-md-3 form-control-label">Category</label>
+                <div class="col-md-6">
+                  <select name="categoryId" class="form-control" size="1" [ngModel]="selectedCategory"
+                          (ngModelChange)="addFilter($event, 'category')">
+                    <option [ngValue]="item.id" *ngFor="let item of categories">{{item.name}}</option>
+                    <option [ngValue]=""></option>
+                  </select>
+                </div>
+              </div>
+            </ng-container>
+
+
+            <!--End of table option-->
+
             <!--Gauge options-->
-            <div class="form-group row" *ngIf="newWidget.type === 'gauge'">
-              <label class="col-md-3 form-control-label">Device</label>
-              <div class="col-md-6">
-                <select name="categoryId" class="form-control" size="1" [ngModel]="selectedDevice"
-                        (ngModelChange)="addFilter($event, 'device')">
-                  <option [ngValue]="item" *ngFor="let item of devices">{{item.id + "(" + item.name ? item.name : "" +
-                    ")"}}
-                  </option>
-                  <option [ngValue]=""></option>
-                </select>
-              </div>
-            </div>
-
-
-            <div class="form-group row" *ngIf="newWidget.type === 'gauge' && selectedDevice">
-              <label class="col-md-3 form-control-label">Select property</label>
-              <div class="col-md-6">
-                <select name="categoryId" class="form-control" size="1" [ngModel]="">
-                  <option [ngValue]="item" *ngFor="let o of selectedDevice.data_parsed">{{o.key}}</option>
-                  <option [ngValue]=""></option>
-                </select>
+            <ng-container *ngIf="newWidget.type === 'gauge'">
+              <div class="form-group row" >
+                <label class="col-md-3 form-control-label">Device</label>
+                <div class="col-md-6">
+                  <select name="categoryId" class="form-control" size="1" [ngModel]="selectedDevice"
+                          (ngModelChange)="addFilter($event, 'device')">
+                    <option [ngValue]="item" *ngFor="let item of devices">{{item.id + "(" + item.name ? item.name : "" +
+                      ")"}}
+                    </option>
+                    <option [ngValue]=""></option>
+                  </select>
+                </div>
               </div>
 
-            </div>
+
+              <div class="form-group row" *ngIf="selectedDevice">
+                <label class="col-md-3 form-control-label">Select property</label>
+                <div class="col-md-6">
+                  <select name="categoryId" class="form-control" size="1" [ngModel]="">
+                    <option [ngValue]="item" *ngFor="let o of selectedDevice.data_parsed">{{o.key}}</option>
+                    <option [ngValue]=""></option>
+                  </select>
+                </div>
+
+              </div>
+            </ng-container>
+
+            <!--End gauge options-->
 
             <button class="btn btn-sm btn-primary" *ngIf="newWidgetFlag" [disabled]="!newWidgetForm.form.valid"
                     (click)="addWidget()"><i
@@ -344,16 +367,70 @@
           </ng-container>
 
 
-          <!--Gauge-->
-          <ng-container *ngIf="widget.type=='gauge'">
-            {{widget.type}}
-            <div *ngIf="widget.data">
-              {{widget.data[0].id}} ({{widget.data[0].name}})
-            </div>
+          <!--Table-->
+          <ng-container *ngIf="widget.type=='table'">
+
+
+              <table *ngIf="widget.data" class="table table-hover table-responsive">
+                <thead class="thead-inverse">
+                <tr>
+                  <th class="text-center">ID</th>
+                  <th class="text-center">Info</th>
+                  <th class="text-center">Last Update</th>
+                  <th class="text-center">Properties</th>
+                  <th class="text-center">Last Message</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let device of widget.data; let i = index">
+                  <td class="text-center">
+                    <strong class="text-device" [routerLink]="['/device-messages', device.id]">{{device.id}}</strong>
+                  </td>
+                  <td>
+                    <div class="small">
+                      <span class="text-gray-dark">Name: </span>
+                      <span class="text-device">{{device.name ? device.name : "None"}}</span>
+                    </div>
+                    <div class="small">
+                      <span class="text-gray-dark">Parser: </span>
+                      <span class="text-parser">{{device.Parser ? device.Parser.name : "None"}}</span>
+                    </div>
+                    <div class="small">
+                      <span class="text-gray-dark">Category: </span>
+                      <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
+                    </div>
+                  </td>
+
+                  <td class="text-center">
+                    <div class="small text-muted">Last message:</div>
+                    <strong>{{device.updatedAt | amTimeAgo}}</strong>
+                  </td>
+                  <td>
+                    <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
+                    <div *ngIf="device.categoryId">
+                      <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
+                        <small *ngIf="property.value">{{property.key}}: <strong>{{property.value}} {{property.unit}}</strong></small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div *ngIf="!device.data_parsed" class="small text-muted">No data</div>
+                    <div *ngIf="device.data_parsed">
+                      <div class="small text-gray-dark" *ngFor="let property of device.data_parsed; let i = index">
+                        <small *ngIf="property.value">{{property.key}}: <strong>{{property.value}} {{property.unit}}</strong></small>
+                        <!--<span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>-->
+                        <!--<span class="text-primary">{{property.value ? property.value : ""}}</span>-->
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+
           </ng-container>
           <!--End gauge-->
 
-          <ng-container *ngIf="widget.type!='map' && widget.type!='gauge'">{{widget.type}}</ng-container>
+          <ng-container *ngIf="widget.type!='map' && widget.type!='table'">{{widget.type}}</ng-container>
         </div>
       </div>
     </div>
