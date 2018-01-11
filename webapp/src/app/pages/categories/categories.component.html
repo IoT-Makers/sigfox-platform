@@ -21,6 +21,7 @@
             <table class="table d-lg-table table-hover table-outline table-responsive">
               <thead class="thead-inverse">
               <tr>
+                <th *ngIf="!edit" class="text-center">ID</th>
                 <th class="text-center">Name</th>
                 <th *ngIf="!edit" class="text-center">Description</th>
                 <th class="text-center">Properties</th>
@@ -30,13 +31,15 @@
               </thead>
               <tbody>
               <tr *ngFor="let category of categories; let i = index">
+                <td class="text-center" *ngIf="!edit">
+                  <div class="small text-danger" tooltip="Click to copy" click-copy>
+                    {{category.id}}
+                  </div>
+                </td>
                 <td class="text-center">
                   <strong class="text-category">{{category.name}}</strong>
                   <div class="small text-muted">Updated:
                     {{category.updatedAt | amTimeAgo}}
-                  </div>
-                  <div class="small text-category" tooltip="Click to copy" click-copy>
-                    {{category.id}}
                   </div>
                 </td>
                 <td class="text-center" *ngIf="!edit">

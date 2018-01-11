@@ -244,7 +244,6 @@ class Device {
 
             const credentials = new Buffer(sigfoxApiLogin + ':' + sigfoxApiPassword).toString('base64');
 
-
             this.model.app.dataSources.sigfox.getMessages(
               credentials,
               deviceId,
@@ -317,7 +316,10 @@ class Device {
 
               next(null, result);
             }).catch((err: any) => {
-              next(err, null);
+              if (err.statusCode === '403')
+                next(err, 'Your Sigfox API credentials are not allowed to do so.');
+              else
+                next(err, null);
             });
 
           } else {
