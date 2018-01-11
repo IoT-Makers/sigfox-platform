@@ -65,27 +65,33 @@
   "relations": {
     "Parser": {
       "type": "belongsTo",
-      "model": "Parser"
+      "model": "Parser",
+      "foreignKey": "parserId"
     },
     "user": {
       "type": "belongsTo",
-      "model": "user"
+      "model": "user",
+      "foreignKey": "userId"
     },
     "Organization": {
       "type": "belongsTo",
-      "model": "Organization"
+      "model": "Organization",
+      "foreignKey": "organizationId"
     },
     "Messages": {
       "type": "hasMany",
-      "model": "Message"
+      "model": "Message",
+      "foreignKey": "deviceId"
     },
     "Alerts": {
       "type": "hasMany",
-      "model": "Alert"
+      "model": "Alert",
+      "foreignKey": "deviceId"
     },
     "Category": {
       "type": "belongsTo",
-      "model": "Category"
+      "model": "Category",
+      "foreignKey": "categoryId"
     }
   },
   "acls": [

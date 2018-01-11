@@ -47,11 +47,13 @@
   "relations": {
     "Devices": {
       "type": "hasMany",
-      "model": "Device"
+      "model": "Device",
+      "foreignKey": "parserId"
     },
     "Organization": {
       "type": "belongsTo",
-      "model": "Organization"
+      "model": "Organization",
+      "foreignKey": "organizationId"
     }
   },
   "acls": [

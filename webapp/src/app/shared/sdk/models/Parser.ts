@@ -1,8 +1,5 @@
 /* tslint:disable */
-import {
-  Device,
-  Organization
-} from '../index';
+import {Device, Organization} from '../index';
 
 declare var Object: any;
 export interface ParserInterface {
@@ -13,7 +10,7 @@ export interface ParserInterface {
   "id"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "OrganizationId"?: number;
+  "organizationId"?: number;
   Devices?: Device[];
   Organization?: Organization;
 }
@@ -26,7 +23,7 @@ export class Parser implements ParserInterface {
   "id": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "OrganizationId": number = 0;
+  "organizationId": number = 0;
   Devices: Device[] = null;
   Organization: Organization = null;
   constructor(data?: ParserInterface) {
@@ -90,8 +87,8 @@ export class Parser implements ParserInterface {
           name: 'updatedAt',
           type: 'Date'
         },
-        "OrganizationId": {
-          name: 'OrganizationId',
+        "organizationId": {
+          name: 'organizationId',
           type: 'number'
         },
       },
@@ -109,7 +106,7 @@ export class Parser implements ParserInterface {
           type: 'Organization',
           model: 'Organization',
           relationType: 'belongsTo',
-                  keyFrom: 'OrganizationId',
+                  keyFrom: 'organizationId',
           keyTo: 'id'
         },
       }

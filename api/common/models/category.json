@@ -43,11 +43,13 @@
   "relations": {
     "user": {
       "type": "belongsTo",
-      "model": "user"
+      "model": "user",
+      "foreignKey": "userId"
     },
     "Devices": {
       "type": "hasMany",
-      "model": "Device"
+      "model": "Device",
+      "foreignKey": "categoryId"
     }
   },
   "acls": [

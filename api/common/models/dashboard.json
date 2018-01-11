@@ -32,11 +32,13 @@
   "relations": {
     "user": {
       "type": "belongsTo",
-      "model": "user"
+      "model": "user",
+      "foreignKey": "userId"
     },
     "Widgets": {
       "type": "hasMany",
-      "model": "Widget"
+      "model": "Widget",
+      "foreignKey": "dashboardId"
     }
   },
   "acls": [],

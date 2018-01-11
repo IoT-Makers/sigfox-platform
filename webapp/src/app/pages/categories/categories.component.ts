@@ -96,8 +96,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     } else {
       this.categoryToEdit = new Category();
       this.newCategory = true;
-      console.log(this.categoryToEdit);
     }
+    console.log(this.categoryToEdit);
   }
 
   cancel(): void {
@@ -110,6 +110,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     console.log(category);
     if (this.newCategory)
       delete category.id;
+
     this.categoryRef.upsert(category).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);

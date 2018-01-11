@@ -40,19 +40,23 @@
   "relations": {
     "Members": {
       "type": "hasAndBelongsToMany",
-      "model": "user"
+      "model": "user",
+      "foreignKey": "organizationId"
     },
     "Messages": {
       "type": "hasMany",
-      "model": "Message"
+      "model": "Message",
+      "foreignKey": "organizationId"
     },
     "Devices": {
       "type": "hasMany",
-      "model": "Device"
+      "model": "Device",
+      "foreignKey": "organizationId"
     },
     "Categories": {
       "type": "hasMany",
-      "model": "Category"
+      "model": "Category",
+      "foreignKey": "organizationId"
     }
   },
   "acls": [

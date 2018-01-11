@@ -56,7 +56,8 @@
   "relations": {
     "Organizations": {
       "type": "hasAndBelongsToMany",
-      "model": "Organization"
+      "model": "Organization",
+      "foreignKey": "organizationId"
     },
     "roles": {
       "type": "hasMany",
@@ -66,23 +67,28 @@
     },
     "Messages": {
       "type": "hasMany",
-      "model": "Message"
+      "model": "Message",
+      "foreignKey": "userId"
     },
     "Devices": {
       "type": "hasMany",
-      "model": "Device"
+      "model": "Device",
+      "foreignKey": "userId"
     },
     "Categories": {
       "type": "hasMany",
-      "model": "Category"
+      "model": "Category",
+      "foreignKey": "userId"
     },
     "Connectors": {
       "type": "hasMany",
-      "model": "Connector"
+      "model": "Connector",
+      "foreignKey": "userId"
     },
     "Dashboards": {
       "type": "hasMany",
-      "model": "Dashboard"
+      "model": "Dashboard",
+      "foreignKey": "userId"
     }
   },
   "acls": [

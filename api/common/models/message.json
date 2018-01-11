@@ -67,15 +67,18 @@
   "relations": {
     "Device": {
       "type": "belongsTo",
-      "model": "Device"
+      "model": "Device",
+      "foreignKey": "deviceId"
     },
     "user": {
       "type": "belongsTo",
-      "model": "user"
+      "model": "user",
+      "foreignKey": "userId"
     },
     "Organization": {
       "type": "belongsTo",
-      "model": "Organization"
+      "model": "Organization",
+      "foreignKey": "organizationId"
     }
   },
   "acls": [

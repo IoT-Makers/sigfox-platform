@@ -12,12 +12,10 @@ export interface MessageInterface {
   "reception"?: Array<any>;
   "geoloc"?: Array<any>;
   "id"?: number;
-  "DeviceId"?: string;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: number;
   "organizationId"?: number;
-  "OrganizationId"?: number;
   Device?: any;
   user?: any;
   Organization?: any;
@@ -34,12 +32,10 @@ export class Message implements MessageInterface {
   "reception": Array<any> = <any>[];
   "geoloc": Array<any> = <any>[];
   "id": number = 0;
-  "DeviceId": string = '';
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": number = 0;
   "organizationId": number = 0;
-  "OrganizationId": number = 0;
   Device: any = null;
   user: any = null;
   Organization: any = null;
@@ -116,10 +112,6 @@ export class Message implements MessageInterface {
           name: 'id',
           type: 'number'
         },
-        "DeviceId": {
-          name: 'DeviceId',
-          type: 'string'
-        },
         "createdAt": {
           name: 'createdAt',
           type: 'Date'
@@ -136,10 +128,6 @@ export class Message implements MessageInterface {
           name: 'organizationId',
           type: 'number'
         },
-        "OrganizationId": {
-          name: 'OrganizationId',
-          type: 'number'
-        },
       },
       relations: {
         Device: {
@@ -147,7 +135,7 @@ export class Message implements MessageInterface {
           type: 'any',
           model: '',
           relationType: 'belongsTo',
-                  keyFrom: 'DeviceId',
+                  keyFrom: 'deviceId',
           keyTo: 'id'
         },
         user: {
@@ -163,7 +151,7 @@ export class Message implements MessageInterface {
           type: 'any',
           model: '',
           relationType: 'belongsTo',
-                  keyFrom: 'OrganizationId',
+                  keyFrom: 'organizationId',
           keyTo: 'id'
         },
       }

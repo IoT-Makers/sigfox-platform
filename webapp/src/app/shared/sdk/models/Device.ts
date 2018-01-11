@@ -13,12 +13,9 @@ export interface DeviceInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "parserId"?: number;
-  "ParserId"?: number;
   "categoryId"?: number;
-  "CategoryId"?: number;
   "userId"?: number;
   "organizationId"?: number;
-  "OrganizationId"?: number;
   Parser?: any;
   Category?: any;
   Messages?: any[];
@@ -38,12 +35,9 @@ export class Device implements DeviceInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "parserId": number = 0;
-  "ParserId": number = 0;
   "categoryId": number = 0;
-  "CategoryId": number = 0;
   "userId": number = 0;
   "organizationId": number = 0;
-  "OrganizationId": number = 0;
   Parser: any = null;
   Category: any = null;
   Messages: any[] = null;
@@ -126,16 +120,8 @@ export class Device implements DeviceInterface {
           name: 'parserId',
           type: 'number'
         },
-        "ParserId": {
-          name: 'ParserId',
-          type: 'number'
-        },
         "categoryId": {
           name: 'categoryId',
-          type: 'number'
-        },
-        "CategoryId": {
-          name: 'CategoryId',
           type: 'number'
         },
         "userId": {
@@ -146,10 +132,6 @@ export class Device implements DeviceInterface {
           name: 'organizationId',
           type: 'number'
         },
-        "OrganizationId": {
-          name: 'OrganizationId',
-          type: 'number'
-        },
       },
       relations: {
         Parser: {
@@ -157,7 +139,7 @@ export class Device implements DeviceInterface {
           type: 'any',
           model: '',
           relationType: 'belongsTo',
-                  keyFrom: 'ParserId',
+                  keyFrom: 'parserId',
           keyTo: 'id'
         },
         Category: {
@@ -165,7 +147,7 @@ export class Device implements DeviceInterface {
           type: 'any',
           model: '',
           relationType: 'belongsTo',
-                  keyFrom: 'CategoryId',
+                  keyFrom: 'categoryId',
           keyTo: 'id'
         },
         Messages: {
@@ -189,7 +171,7 @@ export class Device implements DeviceInterface {
           type: 'any',
           model: '',
           relationType: 'belongsTo',
-                  keyFrom: 'OrganizationId',
+                  keyFrom: 'organizationId',
           keyTo: 'id'
         },
       }

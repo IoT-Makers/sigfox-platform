@@ -25,6 +25,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private messageSub: Subscription;
   private messages: Message[] = [];
   private messageRef: FireLoopRef<Message>;
+  private messageFilter = { };
 
   private mapStyle = [{
     "featureType": "administrative.locality",
@@ -79,6 +80,27 @@ export class MessagesComponent implements OnInit, OnDestroy {
     console.log('Messages: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
+    this.messageFilter = {
+      limit: 1000,
+      order: 'createdAt DESC',
+      include: ['Device'],
+      where: {
+        userId: this.user.id
+      }
+    };
+    this.sub = this.route.params.subscribe(params => {
+      this.filterQuery = params['id'];
+      this.messageFilter = {
+        limit: 1000,
+        order: 'createdAt DESC',
+        include: ['Device'],
+        where: {
+          userId: this.user.id,
+          deviceId: this.filterQuery
+        }
+      };
+    });
+
     // Real Time
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
       this.setup();
@@ -94,9 +116,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.rt.onReady().subscribe();
     }*/
 
-    this.sub = this.route.params.subscribe(params => {
-      this.filterQuery = params['id'];
-    });
+
   }
 
   setup(): void {
@@ -105,14 +125,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     // this.messageRef = this.userRef.make(this.user).child<Message>('Messages');
     this.messageSub = this.messageRef.on('change',
-      {
-        limit: 1000,
-        order: 'createdAt DESC',
-        include: ['Device'],
-        where: {
-          userId: this.user.id
-        }
-      }
+      this.messageFilter
     ).subscribe((messages: Message[]) => {
       this.messages = messages;
       // console.log(this.messages);

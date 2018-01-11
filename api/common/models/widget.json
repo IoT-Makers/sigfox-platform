@@ -41,11 +41,13 @@
   "relations": {
     "user": {
       "type": "belongsTo",
-      "model": "user"
+      "model": "user",
+      "foreignKey": "userId"
     },
     "Dashboard": {
       "type": "belongsTo",
-      "model": "Dashboard"
+      "model": "Dashboard",
+      "foreignKey": "dashboardId"
     }
   },
   "acls": [],
