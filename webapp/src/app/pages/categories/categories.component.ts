@@ -95,7 +95,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       this.categoryToEdit = category;
     } else {
       this.categoryToEdit = new Category();
-      this.newCategory = true;
+      delete this.categoryToEdit.id;
+      this.categoryToEdit.userId = this.user.id;
     }
     console.log(this.categoryToEdit);
   }
@@ -104,37 +105,28 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.edit = false;
   }
 
-  update(category: Category): void {
-    category.userId = this.user.id;
+  update(): void {
     this.edit = false;
-    console.log(category);
-    if (this.newCategory)
-      delete category.id;
 
-    this.categoryRef.upsert(category).subscribe(value => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+    this.categoryRef.upsert(this.categoryToEdit).subscribe((category: Category) => {
       this.toasterService.pop('success', 'Success', 'Category was successfully updated.');
     }, error => {
       this.toasterService.pop('error', 'Error', 'Please fill in the category name.');
     });
   }
 
-  addProperty(category: Category): void {
+  addProperty(): void {
     const property: any = {
       key: '',
       value: '',
       type: 'string'
     };
 
-    category.properties.push(property);
-    this.categoryToEdit = category;
+    this.categoryToEdit.properties.push(property);
   }
 
-  removeProperty(category: Category, index: number): void {
-    //delete category.properties[index];
-    category.properties.splice(index, 1);
-    this.categoryToEdit = category;
+  removeProperty(index: number): void {
+    this.categoryToEdit.properties.splice(index, 1);
   }
 
   showRemoveModal(category: Category): void {

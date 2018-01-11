@@ -135,7 +135,7 @@
                 </div>
                 <div class="row">
                   <div class="col-md-3">
-                    <button class="btn btn-sm btn-danger" (click)="removeProperty(categoryToEdit, i)"> Remove property
+                    <button class="btn btn-sm btn-danger" (click)="removeProperty(i)"> Remove property
                     </button>
                   </div>
                 </div>
@@ -143,14 +143,14 @@
 
               </div>
             </div>
-            <button class="pull-right btn btn-sm btn-outline-success" (click)="addProperty(categoryToEdit)"><i
+            <button class="pull-right btn btn-sm btn-outline-success" (click)="addProperty()"><i
               class="fa fa-plus-circle"></i> Add property
             </button>
 
           </form>
         </div>
         <div class="card-footer">
-          <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="update(categoryToEdit)"><i
+          <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="update()"><i
             class="fa fa-check"></i> Update
           </button>
           <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
