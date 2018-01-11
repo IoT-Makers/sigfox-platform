@@ -14,10 +14,6 @@
         <div class="card-block">
           <ng-container *ngIf="!categories.length">
             No categories yet...
-            <div class="sk-double-bounce">
-              <div class="sk-child sk-double-bounce1"></div>
-              <div class="sk-child sk-double-bounce2"></div>
-            </div>
           </ng-container>
           <ng-container *ngIf="categories.length > 0">
 
@@ -38,6 +34,9 @@
                   <strong class="text-category">{{category.name}}</strong>
                   <div class="small text-muted">Updated:
                     {{category.updatedAt | amTimeAgo}}
+                  </div>
+                  <div class="small text-category" tooltip="Click to copy" click-copy>
+                    {{category.id}}
                   </div>
                 </td>
                 <td class="text-center" *ngIf="!edit">

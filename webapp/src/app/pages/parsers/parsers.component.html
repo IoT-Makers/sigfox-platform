@@ -44,7 +44,7 @@
 
         <div class="card-block" *ngFor="let parser of parsers; let i = index">
           <strong class="text-uppercase">{{parser.name}}</strong> - parserId: <span
-          class="text-parser">{{parser.id}}</span>
+          class="text-parser" tooltip="Click to copy" click-copy>{{parser.id}}</span>
           <div class="row">
             <div class="col-sm-12 col-md-4">
               <p>{{parser.description}}</p>

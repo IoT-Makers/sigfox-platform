@@ -404,7 +404,7 @@
             <tbody>
             <tr *ngFor="let device of devices; let i = index">
               <td class="text-center">
-                <strong class="text-device">{{device.id}}</strong>
+                <strong class="text-device" [routerLink]="['/device-messages', device.id]">{{device.id}}</strong>
                 <div class="small" *ngIf="device.name">
                   <span class="text-gray-dark">Name: </span>
                   <span class="text-device">{{device.name ? device.name : "None"}}</span>

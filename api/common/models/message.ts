@@ -44,6 +44,7 @@ class Message {
     const deviceNamePrefix = message.deviceNamePrefix;
     const parserId = message.parserId;
     const categoryId = message.categoryId;
+    const downlinkData = message.downlinkData;
 
 
     if (!message.deviceId || !message.time || !message.seqNumber)
@@ -57,6 +58,7 @@ class Message {
     delete message.deviceNamePrefix;
     delete message.parserId;
     delete message.categoryId;
+    delete message.downlinkData;
 
 
     // Create a new device object
@@ -69,6 +71,8 @@ class Message {
       device.parserId = parserId;
     if (categoryId)
       device.categoryId = categoryId;
+    if (downlinkData)
+      device.downlinkData = downlinkData;
 
 
     // Check if the device exists

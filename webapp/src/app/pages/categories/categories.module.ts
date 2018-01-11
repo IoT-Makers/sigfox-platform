@@ -6,6 +6,7 @@ import {CategoriesComponent} from './categories.component';
 import {CategoriesRoutingModule} from './categories-routing.module';
 import {ToasterModule} from 'angular2-toaster';
 import {ModalModule, TooltipModule} from 'ng2-bootstrap';
+import {ClickCopyDirective} from './click-copy.directive';
 
 
 @NgModule({
@@ -18,7 +19,10 @@ import {ModalModule, TooltipModule} from 'ng2-bootstrap';
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
   ],
-  declarations: [CategoriesComponent]
+  declarations: [
+    CategoriesComponent,
+    ClickCopyDirective
+  ]
 })
 export class CategoriesModule {
 }

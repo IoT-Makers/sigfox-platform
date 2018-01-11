@@ -7,6 +7,7 @@ import {ToasterModule} from 'angular2-toaster';
 import {ModalModule} from 'ng2-bootstrap/modal';
 import {AceEditorModule} from 'ng2-ace-editor';
 import {TooltipModule} from 'ng2-bootstrap';
+import {ClickCopyDirective} from './click-copy.directive';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import {TooltipModule} from 'ng2-bootstrap';
     ToasterModule
   ],
   declarations: [
-    ParsersComponent
+    ParsersComponent,
+    ClickCopyDirective
   ]
 })
 export class ParsersModule {
