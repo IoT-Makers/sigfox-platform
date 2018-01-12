@@ -8,12 +8,14 @@ import {DevicesRoutingModule} from './devices-routing.module';
 import {ModalModule, TabsModule, TooltipModule} from 'ng2-bootstrap';
 import {ToasterModule} from 'angular2-toaster';
 import {LaddaModule} from 'angular2-ladda';
+import {DataTableModule} from 'angular2-datatable';
 
 @NgModule({
   imports: [
     DevicesRoutingModule,
     CommonModule,
     MomentModule,
+    DataTableModule,
     FormsModule,
     TabsModule.forRoot(),
     ModalModule.forRoot(),
@@ -24,7 +26,9 @@ import {LaddaModule} from 'angular2-ladda';
     LaddaModule,
     ToasterModule
   ],
-  declarations: [DevicesComponent]
+  declarations: [
+    DevicesComponent
+  ]
 })
 export class DevicesModule {
 }

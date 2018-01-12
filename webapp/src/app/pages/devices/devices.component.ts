@@ -125,9 +125,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
         include: ['Parser', 'Category', {
           relation: 'Messages',
           scope: {
-            skip: 0,
             limit: 1,
-            order: 'DESC'
+            order: 'createdAt DESC'
           }
         }],
         where: {
