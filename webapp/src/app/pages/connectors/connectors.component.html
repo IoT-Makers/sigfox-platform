@@ -12,7 +12,7 @@
             <p *ngIf="!user.devAccessTokens" class="text-danger">
               Please create a developer access token first
             </p>
-            <table *ngIf="user.devAccessTokens.length > 0" class="table d-lg-table table-hover table-responsive"
+            <table *ngIf="user.devAccessTokens.length > 0" class="table table-hover table-responsive"
                    [mfData]="user.devAccessTokens | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
               <thead class="thead-inverse">
               <tr>

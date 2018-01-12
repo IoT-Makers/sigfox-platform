@@ -391,12 +391,12 @@
           </ng-container>
 
           <!--Table-->
-          <table *ngIf="devices.length > 0" class="table d-lg-table table-hover table-outline table-responsive">
+          <table *ngIf="devices.length > 0" class="table table-hover table-outline table-responsive">
             <thead class="thead-inverse">
             <tr>
               <th class="text-center">ID</th>
               <th class="text-center">Geoloc</th>
-              <th class="text-center">Last Update</th>
+              <th class="text-center">Last Message</th>
               <th class="text-center">Properties</th>
               <th class="text-center">Action</th>
             </tr>
@@ -442,8 +442,7 @@
               </td>
 
               <td class="text-center">
-                <div class="small text-muted">Last message:</div>
-                <strong>{{device.updatedAt | amTimeAgo}}</strong>
+                <strong>{{device.Messages[0].createdAt | amTimeAgo}}</strong>
               </td>
               <td class="text-center">
                 <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
@@ -471,7 +470,7 @@
 
   <div class="card">
     <div class="card-header">
-      <strong>Recieved messages</strong>
+      <strong>Received messages</strong>
     </div>
     <div class="card-block">
       <ng-container *ngIf="hasNoMessageChartData">
@@ -569,7 +568,7 @@
             </div>
           </div>
         </div>
-        <table class="table d-lg-table table-striped table-responsive" [mfData]="messages | dataFilter : filterQuery"
+        <table class="table table-striped table-responsive" [mfData]="messages | dataFilter : filterQuery"
                #mf="mfDataTable" [mfRowsOnPage]="10">
           <thead class="thead-inverse">
           <tr>

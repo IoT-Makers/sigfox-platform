@@ -90,6 +90,11 @@
         </div>
         <div class="card-block">
 
+          <div class="mb-1">
+            <i class="fa fa-clock-o fa-lg"></i> Last update:
+            <strong>{{deviceToEdit.updatedAt | amTimeAgo}}</strong>
+          </div>
+
           <form (ngSubmit)="updateDevice()" class="form-horizontal" #editForm="ngForm">
             <tabset class="table-responsive">
               <tab heading="Information" id="tab1">
@@ -362,8 +367,9 @@
               <th class="text-center">ID</th>
               <th class="text-center">Info</th>
               <th *ngIf="!edit" class="text-center">Geoloc</th>
-              <th class="text-center">Last Update</th>
+              <th class="text-center">Last Message</th>
               <th *ngIf="!edit" class="text-center">Properties</th>
+              <!--<th *ngIf="!edit" class="text-center">Last Update</th>-->
               <th class="text-center">Action</th>
             </tr>
             </thead>
@@ -384,6 +390,10 @@
                 <div class="small">
                   <span class="text-gray-dark">Category: </span>
                   <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
+                </div>
+                <div *ngIf="device.downlinkData" class="small">
+                  <span class="text-gray-dark">Downlink: </span>
+                  <span class="text-message">{{device.downlinkData}}</span>
                 </div>
               </td>
               <td *ngIf="!edit" class="text-center">
@@ -413,23 +423,9 @@
                 </div>
 
               </td>
-              <!--<td *ngIf="!edit">
-              <div class="clearfix">
-              <div class="float-left">
-              <strong>50%</strong>
-              </div>
-              <div class="float-right">
-              <small class="text-muted">3,321V</small>
-              </div>
-              </div>
-              <div class="progress progress-xs">
-              <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50"
-              aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-              </td>-->
               <td class="text-center">
-                <div class="small text-muted">Last message:</div>
-                <strong>{{device.updatedAt | amTimeAgo}}</strong>
+                <div class="small text-gray-dark">{{device.Messages[0].createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
+                <strong>{{device.Messages[0].createdAt | amTimeAgo}}</strong>
               </td>
               <td *ngIf="!edit">
                 <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
@@ -440,6 +436,9 @@
                   </div>
                 </div>
               </td>
+              <!--<td *ngIf="!edit" class="text-center">
+                <strong>{{device.updatedAt | amTimeAgo}}</strong>
+              </td>-->
               <td class="text-center">
                 <div class="btn-group-sm">
                   <button class="btn btn-outline-primary btn-round" tooltip="Edit device"

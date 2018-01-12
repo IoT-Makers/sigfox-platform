@@ -147,7 +147,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     // this.ngOnDestroy();
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-    //console.log(this.organizations[0].id);
     this.messageSub = this.messageRef.on('change', {
       limit: 1000,
       order: 'createdAt DESC',
@@ -165,11 +164,18 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-    this.deviceRef.on('change',
+    this.deviceSub = this.deviceRef.on('change',
       {
         limit: 10,
         order: 'updatedAt DESC',
-        include: ['Parser', 'Category'],
+        include: ['Parser', 'Category', {
+          relation: 'Messages',
+          scope: {
+            skip: 0,
+            limit: 1,
+            order: 'DESC'
+          }
+        }],
         where: {
           userId: this.user.id
         }
@@ -183,7 +189,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categoryRef.on('change').subscribe(
+    this.categorySub = this.categoryRef.on('change').subscribe(
       (categories: Category[]) => {
         this.categories = categories;
         this.userApi.countCategories(this.user.id).subscribe(result => {
@@ -193,7 +199,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Parsers
     this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-    this.parserRef.on('change').subscribe((parsers: Parser[]) => {
+    this.parserSub = this.parserRef.on('change').subscribe((parsers: Parser[]) => {
       this.parsers = parsers;
       this.parserApi.count().subscribe(result => {
         this.countParsers = result.count;
@@ -210,7 +216,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.messageChartData = [];
     // this.data = [];
 
-    this.messageRef.stats(
+    this.messageSub = this.messageRef.stats(
       {
         range: this.graphRange,
         where: {
@@ -281,7 +287,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
 
     // Used to trigger notifications
-    this.lastMessage = new Message;
+    this.lastMessage = new Message();
     this.isFirstSubscribeMessage = true;
 
     // Reset all widget values on device change
@@ -329,7 +335,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       if (this.isFirstSubscribeMessage)
         this.lastMessage = message;
       if ((this.lastMessage.time !== message.time) && !this.isFirstSubscribeMessage) {
-        this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
+          this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
         this.lastMessage = message;
       }
       this.isFirstSubscribeMessage = false;

@@ -122,7 +122,14 @@ export class DevicesComponent implements OnInit, OnDestroy {
       {
         limit: 1000,
         order: 'updatedAt DESC',
-        include: ['Parser', 'Category'],
+        include: ['Parser', 'Category', {
+          relation: 'Messages',
+          scope: {
+            skip: 0,
+            limit: 1,
+            order: 'DESC'
+          }
+        }],
         where: {
           userId: this.user.id
         }

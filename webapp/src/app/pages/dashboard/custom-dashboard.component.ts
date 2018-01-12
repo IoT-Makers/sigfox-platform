@@ -175,12 +175,22 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
     if (model === 'category') {
       this.newWidget.filter = {
+        limit: 10,
+        order: 'updatedAt DESC',
+        include: ['Parser', 'Category', {
+          relation: 'Messages',
+          scope: {
+            skip: 0,
+            limit: 1,
+            order: 'DESC'
+          }
+        }],
         where: {
           categoryId: $event
         }
       };
     }
-    if (model === 'device') {
+    /*if (model === 'device') {
       this.selectedDevice = $event;
       console.log(this.selectedDevice);
       this.newWidget.filter = {
@@ -188,7 +198,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           deviceId: $event
         }
       };
-    }
+    }*/
     console.log('added filter', this.newWidget.filter);
   }
 
