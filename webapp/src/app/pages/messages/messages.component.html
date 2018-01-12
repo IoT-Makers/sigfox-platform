@@ -49,27 +49,27 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let item of mf.data">
-            <td class="text-center">{{item.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
+          <tr *ngFor="let message of mf.data">
+            <td class="text-center">{{message.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
             <td class="text-center">
-              <span class="text-message">{{item.data}}</span>
-              <div class="text-justify" *ngIf="item.data_parsed">
-                <div *ngFor="let o of item.data_parsed">
+              <span class="text-message">{{message.data}}</span>
+              <div class="text-justify" *ngIf="message.data_parsed">
+                <div *ngFor="let o of message.data_parsed">
                   <small *ngIf="o.value">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
                 </div>
               </div>
-              <div class="mt-1" *ngIf="item.downlinkData">
-                Downlink: <span class="text-danger" title="Downlink payload">{{item.downlinkData}}</span>
+              <div class="mt-1" *ngIf="message.downlinkData">
+                Downlink: <span class="text-danger" title="Downlink payload">{{message.downlinkData}}</span>
               </div>
             </td>
             <td class="text-center text-device">
-              <span tooltip="Click to filter" placement="right" click-copy (click)="filterQuery = item.deviceId">{{item.deviceId}}</span>
+              <span tooltip="Click to filter" placement="right" click-copy (click)="filterQuery = message.deviceId">{{message.deviceId}}</span>
               <br>
-              <small *ngIf="item.Device">{{item.Device.name}}</small>
+              <small *ngIf="message.Device">{{message.Device.name}}</small>
             </td>
             <td class="text-center">
-              <div *ngIf="item.geoloc">
-                <div *ngFor="let geoloc of item.geoloc">
+              <div *ngIf="message.geoloc">
+                <div *ngFor="let geoloc of message.geoloc">
                   <div class="row">
                     <div class="col col-7">
                       <ng-container *ngIf="geoloc.type == 'sigfox'">
@@ -98,9 +98,9 @@
                 </div>
               </div>
             </td>
-            <td class="text-center">{{item.seqNumber}}</td>
-            <td class="text-center" (click)="showBaseStations(item.deviceId, item.time)">
-              <p *ngFor="let reception of item.reception">
+            <td class="text-center">{{message.seqNumber}}</td>
+            <td class="text-center" (click)="showBaseStations(message.deviceId, message.time)">
+              <p *ngFor="let reception of message.reception">
                 <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success" aria-hidden="true"></i>
                 <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
                 <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger" aria-hidden="true"></i>
@@ -114,7 +114,7 @@
               </p>
             </td>
             <td class="text-center">
-              <button type="button" class="btn btn-outline-danger btn-round" (click)="remove(item)">
+              <button type="button" class="btn btn-outline-danger btn-round" (click)="remove(message)">
                 <i class="fa fa-trash"></i>
               </button>
             </td>

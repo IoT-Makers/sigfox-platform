@@ -368,16 +368,12 @@
                 <mfDefaultSorter by="id"><i class="fa fa-sort"></i> ID</mfDefaultSorter>
               </th>
               <th class="text-center">
-                <mfDefaultSorter by="info"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
+                <mfDefaultSorter by="downlinkData"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
               </th>
               <th *ngIf="!edit" class="text-center">
                 <mfDefaultSorter by="location"><i class="fa fa-sort"></i> Geoloc</mfDefaultSorter>
               </th>
-              <th class="text-center">
-                <mfDefaultSorter by="lastMessage">
-                  <i class="fa fa-sort"></i> Last Message
-                </mfDefaultSorter>
-              </th>
+              <th class="text-center">Last Message</th>
               <th *ngIf="!edit" class="text-center">
                 <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>
               </th>
@@ -386,7 +382,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let device of devices; let i = index">
+            <tr *ngFor="let device of mf.data; let i = index">
               <td class="text-center">
                 <strong class="text-device" [routerLink]="['/device-messages', device.id]">{{device.id}}</strong>
               </td>
