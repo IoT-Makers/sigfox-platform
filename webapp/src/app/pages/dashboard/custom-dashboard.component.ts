@@ -182,7 +182,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           scope: {
             skip: 0,
             limit: 1,
-            order: 'DESC'
+            order: 'createdAt DESC'
           }
         }],
         where: {
