@@ -4,7 +4,10 @@ declare var Object: any;
 export interface ConnectorInterface {
   "name": string;
   "description"?: string;
-  "login": any;
+  "login": string;
+  "host"?: string;
+  "port"?: number;
+  "recipient"?: string;
   "id"?: number;
   "userId"?: number;
   "createdAt"?: Date;
@@ -15,7 +18,10 @@ export interface ConnectorInterface {
 export class Connector implements ConnectorInterface {
   "name": string = '';
   "description": string = '';
-  "login": any = <any>null;
+  "login": string = '';
+  "host": string = '';
+  "port": number = 0;
+  "recipient": string = '';
   "id": number = 0;
   "userId": number = 0;
   "createdAt": Date = new Date(0);
@@ -64,7 +70,19 @@ export class Connector implements ConnectorInterface {
         },
         "login": {
           name: 'login',
-          type: 'any'
+          type: 'string'
+        },
+        "host": {
+          name: 'host',
+          type: 'string'
+        },
+        "port": {
+          name: 'port',
+          type: 'number'
+        },
+        "recipient": {
+          name: 'recipient',
+          type: 'string'
         },
         "id": {
           name: 'id',

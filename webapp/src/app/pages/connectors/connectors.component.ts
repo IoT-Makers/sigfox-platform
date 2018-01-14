@@ -18,10 +18,12 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   @ViewChild('confirmModal') confirmModal: any;
 
   private newConnector: Connector = new Connector();
-  public connectorNames = [{id: 'sigfox-api', text: 'Sigfox API'}, {
-    id: 'free-mobile',
-    text: 'Free Mobile'
-  }, {id: 'office-365', text: 'Outlook (Office 365)'}];
+  public connectorNames = [
+    {id: 'sigfox-api', text: 'Sigfox API'},
+    {id: 'free-mobile', text: 'Free Mobile'},
+    {id: 'office-365', text: 'Outlook (Office 365)'},
+    {id: 'mqtt', text: 'MQTT (publish - broker.mqttdashboard.com)'}
+    ];
 
   private connectorSub: Subscription;
   private connectorRef: FireLoopRef<Connector>;

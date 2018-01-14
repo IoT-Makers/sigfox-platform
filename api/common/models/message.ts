@@ -262,7 +262,7 @@ class Message {
                                   } else if (connector) {
 
                                     if (connector.name === 'office-365') {
-                                      console.error('Office 365 Email alert!');
+                                      console.log('Office 365 Email alert!');
                                       if (!alert.message) alert.message = o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit;
 
                                       // Set the connector user and pass
@@ -282,23 +282,30 @@ class Message {
                                         else console.log('Email sent!');
                                       });
 
-
                                     } else if (connector.name === 'free-mobile') {
-                                      console.error('Free Mobile SMS alert!');
+                                      console.log('Free Mobile SMS alert!');
                                       if (!alert.message) alert.message = o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit;
 
                                       this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, alert.message).then((result: any) => {
-                                        // Alert has been triggered, removing it from array
-                                        deviceInstance.alerts.splice(index, 1);
                                       }).catch((err: any) => {
                                         console.error('Free Mobile error');
                                       });
+
                                     } else if (connector.name === 'twilio') {
-                                      console.error('Twilio SMS alert!');
+                                      console.log('Twilio SMS alert!');
                                       // TODO: implement twilio connector
-                                      // Alert has been triggered, removing it from array
-                                      deviceInstance.alerts.splice(index, 1);
+
+                                    } else if (connector.name === 'mqtt') {
+                                      console.log('MQTT alert!');
+                                      if (!alert.message) alert.message = o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit;
+
+                                      const Client = require('strong-pubsub');
+                                      const Adapter = require('strong-pubsub-mqtt');
+                                      const client = new Client({host: connector.host, port: connector.port}, Adapter);
+                                      client.publish(connector.recipient, alert.message);
                                     }
+                                    // Alert has been triggered, removing it from array
+                                    deviceInstance.alerts.splice(index, 1);
                                   }
                                 });
                             }

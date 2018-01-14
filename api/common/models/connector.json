@@ -34,12 +34,21 @@
       "type": "string"
     },
     "login": {
-      "type": "any",
+      "type": "string",
       "required": true
     },
     "password": {
-      "type": "any",
+      "type": "string",
       "required": true
+    },
+    "host": {
+      "type": "string"
+    },
+    "port": {
+      "type": "number"
+    },
+    "recipient": {
+      "type": "string"
     }
   },
   "hidden": ["password"],

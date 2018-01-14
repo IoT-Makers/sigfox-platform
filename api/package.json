@@ -37,6 +37,8 @@
     "nodemailer": "^4.4.1",
     "serve-favicon": "^2.4.5",
     "strong-error-handler": "^2.3.0",
+    "strong-pubsub": "^0.2.0",
+    "strong-pubsub-mqtt": "^0.1.0",
     "supertest": "^3.0.0",
     "ts-node": "^3.3.0",
     "typescript": "^2.6.1"
