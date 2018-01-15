@@ -384,7 +384,7 @@
             <tbody>
             <tr *ngFor="let device of mf.data; let i = index">
               <td class="text-center">
-                <strong class="text-device" [routerLink]="['/device-messages', device.id]">{{device.id}}</strong>
+                <a [routerLink]="['/device-messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
               </td>
               <td>
                 <div class="small">

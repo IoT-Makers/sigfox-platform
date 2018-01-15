@@ -148,9 +148,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     this.messageSub = this.messageRef.on('change', {
-      limit: 1000,
+      limit: 1,
       order: 'createdAt DESC',
-      include: ['Device'],
       where: {
         userId: this.user.id
       }
@@ -335,7 +334,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       if (this.isFirstSubscribeMessage)
         this.lastMessage = message;
       if ((this.lastMessage.time !== message.time) && !this.isFirstSubscribeMessage) {
-          this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
+        this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
         this.lastMessage = message;
       }
       this.isFirstSubscribeMessage = false;
