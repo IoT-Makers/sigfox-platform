@@ -25,7 +25,11 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private messageSub: Subscription;
   private messages: Message[] = [];
   private messageRef: FireLoopRef<Message>;
-  private messageFilter = { };
+  private messageFilter: any;
+  private isLimit_100 = false;
+  private isLimit_500 = false;
+  private isLimit_1000 = false;
+  private isLimit_0 = false;
 
   private mapStyle = [{
     "featureType": "administrative.locality",
@@ -81,7 +85,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     this.messageFilter = {
-      limit: 1000,
+      limit: 100,
       order: 'createdAt DESC',
       include: ['Device'],
       where: {
@@ -90,15 +94,17 @@ export class MessagesComponent implements OnInit, OnDestroy {
     };
     this.sub = this.route.params.subscribe(params => {
       this.filterQuery = params['id'];
-      this.messageFilter = {
-        limit: 1000,
-        order: 'createdAt DESC',
-        include: ['Device'],
-        where: {
-          userId: this.user.id,
-          deviceId: this.filterQuery
-        }
-      };
+      if (this.filterQuery) {
+        this.messageFilter = {
+          limit: 100,
+          order: 'createdAt DESC',
+          include: ['Device'],
+          where: {
+            userId: this.user.id,
+            deviceId: this.filterQuery
+          }
+        };
+      }
     });
 
     // Real Time
@@ -134,6 +140,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Messages: ngOnDestroy');
+    // Unsubscribe from query parameters
     this.sub.unsubscribe();
     if (this.messageRef) this.messageRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
@@ -164,6 +171,27 @@ export class MessagesComponent implements OnInit, OnDestroy {
       } else {
         console.log('No Sigfox API connector');
       }
+    });
+  }
+
+  searchFilter(limit: number) {
+    this.isLimit_100 = false;
+    this.isLimit_500 = false;
+    this.isLimit_1000 = false;
+    this.isLimit_0 = false;
+
+    this.messageFilter.limit = limit;
+
+    console.log(this.messageFilter);
+    if (this.messageRef) this.messageRef.dispose();
+    if (this.messageSub) this.messageSub.unsubscribe();
+    // Messages
+    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+    this.messageSub = this.messageRef.on('change',
+      this.messageFilter
+    ).subscribe((messages: Message[]) => {
+      this.messages = messages;
+      console.log(this.messages);
     });
   }
 
