@@ -228,7 +228,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   retrieveMessages(deviceId: string, limit: number, before: number): void {
 
-    this.userApi.getConnectors(this.user.id, {where: {name: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
+    this.userApi.getConnectors(this.user.id, {where: {type: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
       if (connectors.length > 0) {
         this.loadingFromBackend = true;
         this.deviceApi.getMessagesFromSigfoxBackend(deviceId, null, before ? before : null, null).subscribe(result => {

@@ -261,13 +261,21 @@
           <div class="card-block">
             <div class="form-horizontal">
               <div class="form-group row">
-                <label class="col-md-3 form-control-label font-weight-bold">Name</label>
+                <label class="col-md-3 form-control-label font-weight-bold">Name
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" placeholder="Connector name"
+                         [(ngModel)]="newConnector.name">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label font-weight-bold">Type</label>
                 <div class="col-md-9">
                   <ng-select #namesSelected
-                             [placeholder]="'Select a connector'"
+                             [placeholder]="'Select a connector type'"
                              [allowClear]="false"
-                             [items]="connectorNames"
-                             (selected)="nameSelected($event)">
+                             [items]="connectorTypes"
+                             (selected)="connectorTypeSelected($event)">
                   </ng-select>
                 </div>
               </div>
@@ -280,7 +288,7 @@
                          [(ngModel)]="newConnector.description">
                 </div>
               </div>
-              <ng-container *ngIf="newConnector.name === 'mqtt'">
+              <ng-container *ngIf="newConnector.type === 'mqtt'">
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label font-weight-bold">Host
                   </label>
@@ -306,7 +314,7 @@
                   </div>
                 </div>
               </ng-container>
-              <div *ngIf="newConnector.name === 'office-365'" class="form-group row">
+              <div *ngIf="newConnector.type === 'office-365'" class="form-group row">
                 <label class="col-md-3 form-control-label font-weight-bold">Recipient email
                 </label>
                 <div class="col-md-9">
@@ -346,10 +354,18 @@
         <accordion>
           <accordion-group>
             <div accordion-heading>
-              <b>{{connector.name}}</b>
+              <b>{{connector.name}}</b> <small *ngIf="connector.description">{{connector.description}}</small>
             </div>
             <div class="card-block">
               <form class="form-horizontal">
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Name</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" value="{{connector.name}}"
+                           placeholder="{{connector.name}}"
+                           [(ngModel)]="connector.name" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label font-weight-bold">Description</label>
                   <div class="col-md-9">
@@ -372,7 +388,7 @@
                            [(ngModel)]="connector.password" [ngModelOptions]="{standalone: true}">
                   </div>
                 </div>
-                <ng-container *ngIf="connector.name === 'mqtt'">
+                <ng-container *ngIf="connector.type === 'mqtt'">
                   <div class="form-group row">
                     <label class="col-md-3 form-control-label font-weight-bold">Host
                     </label>
@@ -398,7 +414,7 @@
                     </div>
                   </div>
                 </ng-container>
-                <div *ngIf="newConnector.name === 'office-365'" class="form-group row">
+                <div *ngIf="newConnector.type === 'office-365'" class="form-group row">
                   <label class="col-md-3 form-control-label font-weight-bold">Recipient email
                   </label>
                   <div class="col-md-9">

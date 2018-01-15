@@ -18,12 +18,12 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   @ViewChild('confirmModal') confirmModal: any;
 
   private newConnector: Connector = new Connector();
-  public connectorNames = [
+  public connectorTypes = [
     {id: 'sigfox-api', text: 'Sigfox API'},
     {id: 'free-mobile', text: 'Free Mobile'},
     {id: 'office-365', text: 'Outlook (Office 365)'},
-    {id: 'mqtt', text: 'MQTT (publish - broker.mqttdashboard.com)'}
-    ];
+    {id: 'mqtt', text: 'MQTT'}
+  ];
 
   private connectorSub: Subscription;
   private connectorRef: FireLoopRef<Connector>;
@@ -102,8 +102,8 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     });
   }
 
-  nameSelected(name: any) {
-    this.newConnector.name = name.id;
+  connectorTypeSelected(type: any) {
+    this.newConnector.type = type.id;
   }
 
   createDevAccessToken(): void {
@@ -145,7 +145,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
       if (err.error.statusCode === 401)
         this.toasterService.pop('warning', 'Ouch', 'Could not connect to Sigfox. Are the API credentials correct?');
       else
-        this.toasterService.pop('error', 'Error', 'An error occurred, check your connection.');
+        this.toasterService.pop('error', 'Error', err.error.message);
     });
   }
 

@@ -1,5 +1,5 @@
-import { Model } from '@mean-expert/model';
-import {log} from 'util';
+import {Model} from '@mean-expert/model';
+
 /**
  * @module Connector
  * @description
@@ -35,19 +35,19 @@ class Connector {
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('Connector: Before Save');
-    const name = ctx.instance.name;
+    const type = ctx.instance.type;
     const login = ctx.instance.login;
     const password = ctx.instance.password;
-    if (name === 'sigfox-api') {
-      this.testConnection(name, login, password, next);
+    if (type === 'sigfox-api') {
+      this.testConnection(type, login, password, next);
     } else {
       next();
     }
   }
 
   // Test connector connection
-  testConnection(name: string, login: string, password: string, next: Function): void {
-    if (name === 'sigfox-api') {
+  testConnection(type: string, login: string, password: string, next: Function): void {
+    if (type === 'sigfox-api') {
       const credentials = new Buffer(login + ':' + password).toString('base64');
 
       this.model.app.dataSources.sigfox.testConnection(credentials).then((result: any) => {

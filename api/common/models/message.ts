@@ -282,7 +282,7 @@ class Message {
                                         else console.log('Email sent!');
                                       });
 
-                                    } else if (connector.name === 'free-mobile') {
+                                    } else if (connector.type === 'free-mobile') {
                                       console.log('Free Mobile SMS alert!');
                                       if (!alert.message) alert.message = o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit;
 
@@ -291,11 +291,11 @@ class Message {
                                         console.error('Free Mobile error');
                                       });
 
-                                    } else if (connector.name === 'twilio') {
+                                    } else if (connector.type === 'twilio') {
                                       console.log('Twilio SMS alert!');
                                       // TODO: implement twilio connector
 
-                                    } else if (connector.name === 'mqtt') {
+                                    } else if (connector.type === 'mqtt') {
                                       console.log('MQTT alert!');
                                       if (!alert.message) alert.message = o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit;
 

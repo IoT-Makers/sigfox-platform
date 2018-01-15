@@ -2,6 +2,7 @@
 
 declare var Object: any;
 export interface ConnectorInterface {
+  "type": string;
   "name": string;
   "description"?: string;
   "login": string;
@@ -16,6 +17,7 @@ export interface ConnectorInterface {
 }
 
 export class Connector implements ConnectorInterface {
+  "type": string = '';
   "name": string = '';
   "description": string = '';
   "login": string = '';
@@ -60,6 +62,10 @@ export class Connector implements ConnectorInterface {
       path: 'Connectors',
       idName: 'id',
       properties: {
+        "type": {
+          name: 'type',
+          type: 'string'
+        },
         "name": {
           name: 'name',
           type: 'string'
