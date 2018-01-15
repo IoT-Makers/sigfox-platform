@@ -12,40 +12,42 @@
             <p *ngIf="!user.devAccessTokens" class="text-danger">
               Please create a developer access token first
             </p>
-            <table *ngIf="user.devAccessTokens.length > 0" class="table d-md-table table-hover table-responsive"
-                   [mfData]="user.devAccessTokens | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
-              <thead class="thead-inverse">
-              <tr>
-                <th class="text-center">
-                  <mfDefaultSorter by="created">Date</mfDefaultSorter>
-                </th>
-                <th class="text-center">
-                  <mfDefaultSorter by="id">ID</mfDefaultSorter>
-                </th>
-                <th class="text-center">
-                  Remove
-                </th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let item of mf.data">
-                <td class="text-center">{{item.created | date:"yyyy/MM/dd HH:mm:ss"}}</td>
-                <td class="text-center" tooltip="Click to copy" click-copy (click)="toastClick()">{{item.id}}</td>
-                <td class="text-center">
-                  <button type="button" class="btn btn-danger btn-round" (click)="showRemoveModal(item)">
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </td>
-              </tr>
-              </tbody>
-              <tfoot>
-              <tr>
-                <td colspan="4">
-                  <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
-                </td>
-              </tr>
-              </tfoot>
-            </table>
+            <div *ngIf="user.devAccessTokens.length > 0" class="table-responsive">
+              <table class="table table-hover"
+                     [mfData]="user.devAccessTokens | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+                <thead class="thead-inverse">
+                <tr>
+                  <th class="text-center">
+                    <mfDefaultSorter by="created">Date</mfDefaultSorter>
+                  </th>
+                  <th class="text-center">
+                    <mfDefaultSorter by="id">ID</mfDefaultSorter>
+                  </th>
+                  <th class="text-center">
+                    Remove
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of mf.data">
+                  <td class="text-center">{{item.created | date:"yyyy/MM/dd HH:mm:ss"}}</td>
+                  <td class="text-center" tooltip="Click to copy" click-copy (click)="toastClick()">{{item.id}}</td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-danger btn-round" (click)="showRemoveModal(item)">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                  <td colspan="4">
+                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                  </td>
+                </tr>
+                </tfoot>
+              </table>
+            </div>
           </div>
           <button class="btn btn-success" (click)="createDevAccessToken()"><i class="fa fa-plus-circle"></i> Create new
           </button>

@@ -1,4 +1,5 @@
-import { Model } from '@mean-expert/model';
+import {Model} from '@mean-expert/model';
+
 /**
  * @module Dashboard
  * @description
@@ -8,13 +9,10 @@ import { Model } from '@mean-expert/model';
  **/
 @Model({
   hooks: {
-    beforeSave: { name: 'before save', type: 'operation' }
+    beforeSave: { name: 'before save', type: 'operation' },
+    afterDelete: {name: 'after delete', type: 'operation'}
   },
   remotes: {
-    myRemote: {
-      returns : { arg: 'result', type: 'array' },
-      http    : { path: '/my-remote', verb: 'get' }
-    }
   }
 })
 
@@ -27,9 +25,15 @@ class Dashboard {
     console.log('Dashboard: Before Save');
     next();
   }
-  // Example Remote Method
-  myRemote(next: Function): void {
-    this.model.find(next);
+
+  // Delete dashboard method
+  afterDelete(ctx: any, next: Function): void {
+    // Get the dashboardId from instance
+    const dashboardId = ctx.instance.dashboardId;
+
+    this.model.app.models.Widget.destroyAll({dashboardId: dashboardId}, (error: any, result: any) => { });
+
+    next(null, 'Success');
   }
 }
 

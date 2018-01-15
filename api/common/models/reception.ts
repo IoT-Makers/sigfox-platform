@@ -1,4 +1,5 @@
-import { Model } from '@mean-expert/model';
+import {Model} from '@mean-expert/model';
+
 /**
  * @module reception
  * @description
@@ -50,7 +51,7 @@ class Reception {
       {
         where: {
           userId: userId,
-          name: 'sigfox-api'
+          type: 'sigfox-api'
         }
       },
       (err: any, connector: any) => {

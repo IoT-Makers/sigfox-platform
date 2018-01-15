@@ -48,9 +48,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     type: '',
     width: '',
     filter: {},
-    options: {},
-    device: [],
-    //DashboardId:this.dashboard.id
+    options: {}
   };
 
   private widgetType = ['map', 'table'];
@@ -175,7 +173,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
     if (model === 'category') {
       this.newWidget.filter = {
-        limit: 10,
+        limit: 100,
         order: 'updatedAt DESC',
         include: ['Parser', 'Category', {
           relation: 'Messages',
@@ -199,7 +197,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         }
       };
     }*/
-    console.log('added filter', this.newWidget.filter);
+    console.log('Added filter', this.newWidget.filter);
   }
 
 
@@ -222,7 +220,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         width: '',
         filter: {},
         options: {},
-        DashboardId: this.dashboard.id
+        dashboardId: this.dashboard.id
       };
     });
 
@@ -256,7 +254,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         width: '',
         filter: {},
         options: {},
-        DashboardId: this.dashboard.id
+        dashboardId: this.dashboard.id
       };
     });
   }

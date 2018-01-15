@@ -85,7 +85,7 @@
           <form class="form-horizontal" #newWidgetForm="ngForm">
 
             <div class="form-group row">
-              <label class="col-md-3 form-control-label">Name (required) </label>
+              <label class="col-md-3 form-control-label">Name <small class="text-danger">(required)</small></label>
               <div class="col-md-6">
                 <input type="text" class="form-control" placeholder="Widget name" name="newWidget.name" required
                        [(ngModel)]="newWidget.name">
@@ -111,7 +111,7 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-md-3 form-control-label">Width (required)<br>
+              <label class="col-md-3 form-control-label">Width <small class="text-danger">(required)</small><br>
                 <small>Between 1 and 12</small>
               </label>
               <div class="col-md-6">
@@ -122,7 +122,7 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-md-3 form-control-label">Type (required)</label>
+              <label class="col-md-3 form-control-label">Type <small class="text-danger">(required)</small></label>
               <div class="col-md-6">
                 <ng-select #widgetTypeSelect
                            [placeholder]="newWidget.type ? newWidget.type : 'Select a type'"
@@ -289,6 +289,7 @@
 
         <!--card body-->
         <div class="card-block">
+          <!--Map-->
           <ng-container *ngIf="widget.type=='map'">
             <ng-container *ngIf="widget.data">
               <agm-map [latitude]="widget.options.lat ? widget.options.lat : 0"
@@ -365,24 +366,31 @@
 
             </ng-container>
           </ng-container>
-
+          <!--End Map-->
 
           <!--Table-->
           <ng-container *ngIf="widget.type=='table'">
-
-
-              <table *ngIf="widget.data" class="table d-md-table table-hover table-responsive">
+            <div *ngIf="widget.data" class="table-responsive">
+              <table class="table table-hover" [mfData]="widget.data" #mf="mfDataTable" [mfRowsOnPage]="5">
                 <thead class="thead-inverse">
                 <tr>
-                  <th class="text-center">ID</th>
-                  <th class="text-center">Info</th>
+                  <th class="text-center">
+                    <mfDefaultSorter by="id"><i class="fa fa-sort"></i> ID</mfDefaultSorter>
+                  </th>
+                  <th class="text-center">
+                    <mfDefaultSorter by="downlinkData"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
+                  </th>
                   <th class="text-center">Last Message</th>
-                  <th class="text-center">Properties</th>
-                  <th class="text-center">Last Message</th>
+                  <th class="text-center">
+                    <mfDefaultSorter by="data_parsed"><i class="fa fa-sort"></i> Data</mfDefaultSorter>
+                  </th>
+                  <th class="text-center">
+                    <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>
+                  </th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let device of widget.data; let i = index">
+                <tr *ngFor="let device of mf.data; let i = index">
                   <td class="text-center">
                     <strong class="text-device" [routerLink]="['/device-messages', device.id]">{{device.id}}</strong>
                   </td>
@@ -410,14 +418,6 @@
                     <strong>{{device.Messages[0].createdAt | amTimeAgo}}</strong>
                   </td>
                   <td>
-                    <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
-                    <div *ngIf="device.categoryId">
-                      <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
-                        <small *ngIf="property.value">{{property.key}}: <strong>{{property.value}} {{property.unit}}</strong></small>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
                     <div *ngIf="!device.data_parsed" class="small text-muted">No data</div>
                     <div *ngIf="device.data_parsed">
                       <div class="small text-gray-dark" *ngFor="let property of device.data_parsed; let i = index">
@@ -427,12 +427,27 @@
                       </div>
                     </div>
                   </td>
+                  <td>
+                    <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
+                    <div *ngIf="device.categoryId">
+                      <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
+                        <small *ngIf="property.value">{{property.key}}: <strong>{{property.value}} {{property.unit}}</strong></small>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
                 </tbody>
+                <tfoot>
+                <tr>
+                  <td colspan="4">
+                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                  </td>
+                </tr>
+                </tfoot>
               </table>
-
+            </div>
           </ng-container>
-          <!--End gauge-->
+          <!--End Table-->
 
           <ng-container *ngIf="widget.type!='map' && widget.type!='table'">{{widget.type}}</ng-container>
         </div>

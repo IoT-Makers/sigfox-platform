@@ -147,7 +147,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.receptions = [];
     const user = this.userApi.getCachedCurrent();
 
-    this.userApi.getConnectors(this.user.id, {where: {name: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
+    this.userApi.getConnectors(this.user.id, {where: {type: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
       if (connectors.length > 0) {
 
         this.baseStationMap.show();

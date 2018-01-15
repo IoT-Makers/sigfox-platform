@@ -211,6 +211,8 @@ class user {
     this.model.app.models.Connector.destroyAll({userId: userId}, (error: any, result: any) => { });
     this.model.app.models.Category.destroyAll({userId: userId}, (error: any, result: any) => { });
     this.model.app.models.AccessToken.destroyAll({userId: userId}, (error: any, result: any) => { });
+    // this.model.app.models.Dashboard.destroyAll({userId: userId}, (error: any, result: any) => { });
+    // this.model.app.models.Widget.destroyAll({userId: userId}, (error: any, result: any) => { });
 
     next(null, 'Success');
   }

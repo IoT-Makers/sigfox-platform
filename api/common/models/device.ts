@@ -223,7 +223,7 @@ class Device {
       {
         where: {
           userId: userId,
-          name: 'sigfox-api'
+          type: 'sigfox-api'
         }
       },
       (err: any, connector: any) => {
