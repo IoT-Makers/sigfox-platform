@@ -22,6 +22,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private mobile = false;
 
   private messageSub: Subscription;
+  private messageGraphSub: Subscription;
+  private messageSeeSub: Subscription;
   private deviceSub: Subscription;
   private parserSub: Subscription;
   private categorySub: Subscription;
@@ -31,12 +33,20 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private parsers: Parser[] = [];
   private categories: Category[] = [];
 
+  private isLimit_hourly = false;
+  private isLimit_daily = false;
+  private isLimit_weekly = false;
+  private isLimit_monthly = false;
+  private isLimit_yearly = false;
+
   private countMessages = 0;
   private countDevices = 0;
   private countParsers = 0;
   private countCategories = 0;
 
   private messageRef: FireLoopRef<Message>;
+  private messageGraphRef: FireLoopRef<Message>;
+  private messageSeeRef: FireLoopRef<Message>;
   private deviceRef: FireLoopRef<Device>;
   private parserRef: FireLoopRef<Parser>;
   private categoryRef: FireLoopRef<Category>;
@@ -209,13 +219,34 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   getMessagesGraph(option: string): void {
+    // Reset buttons
+    this.isLimit_hourly = false;
+    this.isLimit_daily = false;
+    this.isLimit_weekly = false;
+    this.isLimit_monthly = false;
+    this.isLimit_yearly = false;
+    if (option === 'hourly')
+      this.isLimit_hourly = true;
+    if (option === 'daily')
+      this.isLimit_daily = true;
+    if (option === 'weekly')
+      this.isLimit_weekly = true;
+    if (option === 'monthly')
+      this.isLimit_monthly = true;
+    if (option === 'yearly')
+      this.isLimit_yearly = true;
+    // Dispose and unsubscribe to clean the real time connection
+    if (this.messageGraphRef) this.messageGraphRef.dispose();
+    if (this.messageGraphSub) this.messageGraphSub.unsubscribe();
 
     this.graphRange = option;
     this.messageChartLabels = [];
     this.messageChartData = [];
     // this.data = [];
 
-    this.messageSub = this.messageRef.stats(
+    // Messages
+    this.messageGraphRef = this.rt.FireLoop.ref<Message>(Message);
+    this.messageGraphSub = this.messageRef.stats(
       {
         range: this.graphRange,
         where: {
@@ -256,6 +287,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Overview: ngOnDestroy');
+    // Dispose and unsubscribe to clean the real time connection
+    if (this.messageGraphRef) this.messageGraphRef.dispose();
+    if (this.messageGraphSub) this.messageGraphSub.unsubscribe();
+
     if (this.messageRef) this.messageRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
 
@@ -276,14 +311,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
   seeDevice(device): void {
     this.see = true;
 
-    // Reset real time
-    if (this.messageRef && this.messageSub) {
-      this.messageRef.dispose();
-      this.messageSub.unsubscribe();
-    }
-
-    // Message & Device refs
-    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+    // Dispose and unsubscribe to clean the real time connection
+    if (this.messageSeeRef) this.messageSeeRef.dispose();
+    if (this.messageSeeSub) this.messageSeeSub.unsubscribe();
 
     // Used to trigger notifications
     this.lastMessage = new Message();
@@ -301,8 +331,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.battery = undefined;
     this.message = undefined;
 
-    // Message real time
-    this.messageSub = this.messageRef.on('change',
+    // Message
+    this.messageSeeRef = this.rt.FireLoop.ref<Message>(Message);
+    this.messageSeeSub = this.messageRef.on('change',
       {
         limit: 1,
         order: 'createdAt DESC',

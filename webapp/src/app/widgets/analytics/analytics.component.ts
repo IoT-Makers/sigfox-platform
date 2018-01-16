@@ -20,13 +20,19 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
   public devices: Array<any> = [];
 
-  private messageSub: Subscription;
-  private messageRef: FireLoopRef<Message>;
+  private messageGraphSub: Subscription;
+  private messageGraphRef: FireLoopRef<Message>;
 
   public data = [];
 
   // Messages graph
   private graphRange = 'hourly';
+
+  private isLimit_hourly = true;
+  private isLimit_daily = false;
+  private isLimit_weekly = false;
+  private isLimit_monthly = false;
+  private isLimit_yearly = false;
 
   private messageChartData: Array<any> = [];
   private messageChartLabels: Array<any> = [];
@@ -117,18 +123,40 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
   setup(): void {
     // this.ngOnDestroy();
-    // Messages
-    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
   }
 
   getMessagesGraph(option: string): void {
+    // Reset buttons
+    this.isLimit_hourly = false;
+    this.isLimit_daily = false;
+    this.isLimit_weekly = false;
+    this.isLimit_monthly = false;
+    this.isLimit_yearly = false;
+    if (option === 'hourly')
+      this.isLimit_hourly = true;
+    if (option === 'daily')
+      this.isLimit_daily = true;
+    if (option === 'weekly')
+      this.isLimit_weekly = true;
+    if (option === 'monthly')
+      this.isLimit_monthly = true;
+    if (option === 'yearly')
+      this.isLimit_yearly = true;
+
+
+
+    // Dispose and unsubscribe to clean the real time connection
+    if (this.messageGraphRef) this.messageGraphRef.dispose();
+    if (this.messageGraphSub) this.messageGraphSub.unsubscribe();
 
     this.graphRange = option;
     this.messageChartLabels = [];
     this.messageChartData = [];
     // this.data = [];
 
-    this.messageRef.stats(
+    // Messages
+    this.messageGraphRef = this.rt.FireLoop.ref<Message>(Message);
+    this.messageGraphSub = this.messageGraphRef.stats(
       {
         range: this.graphRange,
         where: {
@@ -268,7 +296,8 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Analytics: ngOnDestroy');
-    if (this.messageRef) this.messageRef.dispose();
-    if (this.messageSub) this.messageSub.unsubscribe();
+    // Dispose and unsubscribe to clean the real time connection
+    if (this.messageGraphRef) this.messageGraphRef.dispose();
+    if (this.messageGraphSub) this.messageGraphSub.unsubscribe();
   }
 }

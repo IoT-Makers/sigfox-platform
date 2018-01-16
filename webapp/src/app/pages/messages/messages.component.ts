@@ -175,6 +175,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   searchFilter(limit: number) {
+    // Reset buttons
     this.isLimit_100 = false;
     this.isLimit_500 = false;
     this.isLimit_1000 = false;
