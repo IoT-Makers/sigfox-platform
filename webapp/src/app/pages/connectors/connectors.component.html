@@ -31,7 +31,7 @@
                 <tbody>
                 <tr *ngFor="let item of mf.data">
                   <td class="text-center">{{item.created | date:"yyyy/MM/dd HH:mm:ss"}}</td>
-                  <td class="text-center" tooltip="Click to copy" click-copy (click)="toastClick()">{{item.id}}</td>
+                  <td class="text-center" click-copy (click)="toastClick()">{{item.id}}</td>
                   <td class="text-center">
                     <button type="button" class="btn btn-danger btn-round" (click)="showRemoveModal(item)">
                       <i class="fa fa-trash"></i>

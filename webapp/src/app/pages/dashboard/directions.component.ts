@@ -1,20 +1,19 @@
 import {AfterViewInit, Directive, Input, OnDestroy} from '@angular/core';
 import {Message} from '../../shared/sdk/models/Message';
 import {GoogleMapsAPIWrapper} from '@agm/core';
-import {TrackingComponent} from './tracking.component';
+import {CustomDashboardComponent} from './custom-dashboard.component';
 
 declare let google: any;
 
 @Directive({
   selector: 'agm-directions'
 })
-
 export class DirectionsComponent implements AfterViewInit, OnDestroy {
 
   @Input() geolocMessages: Message[];
   @Input() routesColor: string;
 
-  constructor(private trackingComponent: TrackingComponent, private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
+  constructor(private customDashboardComponent: CustomDashboardComponent, private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
   }
 
   ngAfterViewInit() {
@@ -23,11 +22,11 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
 
   public buildDirections() {
     console.log('--------------------------------');
-    console.log(this.trackingComponent.directionsDisplayStore);
-    for (const i in this.trackingComponent.directionsDisplayStore) {
-      this.trackingComponent.directionsDisplayStore[i].setMap(null);
+    console.log(this.customDashboardComponent.directionsDisplayStore);
+    for (const i in this.customDashboardComponent.directionsDisplayStore) {
+      this.customDashboardComponent.directionsDisplayStore[i].setMap(null);
     }
-    this.trackingComponent.directionsDisplayStore = [];
+    this.customDashboardComponent.directionsDisplayStore = [];
     console.log('--------------------------------');
 
     let messages: Message[] = [];
@@ -60,7 +59,7 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
           const directionsService = new google.maps.DirectionsService;
           const directionsDisplay = new google.maps.DirectionsRenderer;
           directionsDisplay.setMap(map);
-          this.trackingComponent.directionsDisplayStore.push(directionsDisplay);
+          this.customDashboardComponent.directionsDisplayStore.push(directionsDisplay);
           directionsDisplay.setOptions({
             polylineOptions: {
               strokeWeight: 4,
@@ -73,7 +72,7 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
           });
 
           // If travel mode is TRANSIT, then only use the starting and ending coordinates
-          if (this.trackingComponent.travelMode === 'TRANSIT') {
+          if (this.customDashboardComponent.travelMode === 'TRANSIT') {
             waypoints = [];
           }
 
@@ -83,7 +82,7 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
             waypoints: waypoints,
             optimizeWaypoints: false,
             avoidHighways: false,
-            travelMode: this.trackingComponent.travelMode
+            travelMode: this.customDashboardComponent.travelMode
           }, function (response, status) {
             if (status === 'OK') {
               //console.log(response);
@@ -103,10 +102,10 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    for (let i in this.trackingComponent.directionsDisplayStore) {
-      this.trackingComponent.directionsDisplayStore[i].setMap(null);
+    for (let i in this.customDashboardComponent.directionsDisplayStore) {
+      this.customDashboardComponent.directionsDisplayStore[i].setMap(null);
     }
-    this.trackingComponent.directionsDisplayStore = [];
+    this.customDashboardComponent.directionsDisplayStore = [];
   }
 
   private getcomputeDistance(latLngA: any, latLngB: any) {

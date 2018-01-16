@@ -4,6 +4,7 @@ import {DashboardApi, RealTime, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {FireLoopRef, Message, Parser} from '../../shared/sdk/models';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-dashboard',
@@ -52,6 +53,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   };
 
   private widgetType = ['map', 'table', 'tracking'];
+
+  // Tracking
+  public directionsDisplayStore = [];
+  public travelMode = 'DRIVING';
 
   private isCircleVisible: boolean[] = [];
 
@@ -168,10 +173,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.newWidget.type = widgetType.id;
   }
 
-  addFilter($event, model: string): void {
+  addFilter($event, type: string): void {
     console.log($event);
 
-    if (model === 'category') {
+    if (type === 'category') {
       this.newWidget.filter = {
         limit: 100,
         order: 'updatedAt DESC',
@@ -181,6 +186,28 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             skip: 0,
             limit: 1,
             order: 'createdAt DESC'
+          }
+        }],
+        where: {
+          categoryId: $event
+        }
+      };
+    }
+
+    else if (type === 'category-tracking') {
+      this.newWidget.filter = {
+        limit: 50,
+        order: 'updatedAt DESC',
+        include: [{
+          relation: 'Messages',
+          scope: {
+            limit: 5000,
+            order: 'createdAt DESC',
+            where: {
+              and: [
+                {geoloc: {neq: null}}
+              ]
+            }
           }
         }],
         where: {
@@ -198,6 +225,16 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }*/
     console.log('Added filter', this.newWidget.filter);
+  }
+
+  toggleDeviceWidgetVisibility(widget: any, device: Device): void {
+    /*widget.data =_.remove(widget.data, {
+      id: device.id
+    });*/
+
+    widget.data = _.remove(widget.data, (row) => {
+      return row['id'] !== device.id;
+    });
   }
 
 

@@ -433,8 +433,8 @@
 
                 </td>
                 <td class="text-center">
-                  <div class="small text-gray-dark">{{device.Messages[0].createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
-                  <strong>{{device.Messages[0].createdAt | amTimeAgo}}</strong>
+                  <div class="small text-gray-dark">{{device.Messages[0] ? (device.Messages[0].createdAt | date:"yyyy/MM/dd HH:mm:ss") : 'No messages yet'}}</div>
+                  <strong>{{device.Messages[0] ? (device.Messages[0].createdAt | amTimeAgo) : ''}}</strong>
                 </td>
                 <td *ngIf="!edit">
                   <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>

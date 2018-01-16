@@ -59,7 +59,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   private dateBegin: Date = new Date();
   private dateEnd: Date = new Date();
   private searchResult = '';
-  public allLocalizedMessages: Message[] = [];
+  private geolocMessages: Message[] = [];
   public directionsDisplayStore = [];
 
   private selectedDevice: Device = new Device();
@@ -112,7 +112,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   onTrack() {
-    this.allLocalizedMessages = [];
+    this.geolocMessages = [];
     this.searchResult = 'Searching for geolocation messages for this device ID.';
 
     /*this.sigfoxOnly = false;
@@ -122,55 +122,55 @@ export class TrackingComponent implements OnInit, OnDestroy {
       if (messages.length > 0) {
         // this.searchResult = 'Found ' + messages.length + ' geoloc messages for device ID: ' + this.selectedDevice.id;
         for (let i = 0; i < messages.length; i++) {
-          this.allLocalizedMessages.push(messages[i]);
+          this.geolocMessages.push(messages[i]);
           i = i + this.markerInterval;
         }
         if (this.gpsPrefer) {
-          this.allLocalizedMessages.forEach((message, i) => {
+          this.geolocMessages.forEach((message, i) => {
             let hasSigfox = false;
             if (message.geoloc.length > 1) {
               message.geoloc.forEach((geoloc, j) => {
                 if (geoloc.type === 'sigfox')
                   hasSigfox = true;
                 if (hasSigfox)
-                  this.allLocalizedMessages[i].geoloc.splice(j, 1);
+                  this.geolocMessages[i].geoloc.splice(j, 1);
               });
             }
           });
         }
         if (this.gpsOnly) {
           // Message contains GPS
-          this.allLocalizedMessages = _.filter(this.allLocalizedMessages, {geoloc: [{type: 'GPS'}]});
+          this.geolocMessages = _.filter(this.geolocMessages, {geoloc: [{type: 'GPS'}]});
           // Filter others
-          this.allLocalizedMessages.forEach((message, i) => {
+          this.geolocMessages.forEach((message, i) => {
             message.geoloc.forEach((geoloc, j) => {
               if (geoloc.type !== 'GPS') {
-                this.allLocalizedMessages[i].geoloc.splice(j, 1);
+                this.geolocMessages[i].geoloc.splice(j, 1);
               }
             });
           });
 
         } else if (this.sigfoxOnly) {
           // Message contains Sigfox
-          this.allLocalizedMessages = _.filter(this.allLocalizedMessages, {geoloc: [{type: 'sigfox'}]});
+          this.geolocMessages = _.filter(this.geolocMessages, {geoloc: [{type: 'sigfox'}]});
           // Filter others
-          this.allLocalizedMessages.forEach((message, i) => {
+          this.geolocMessages.forEach((message, i) => {
             message.geoloc.forEach((geoloc, j) => {
               if (geoloc.type !== 'sigfox') {
-                this.allLocalizedMessages[i].geoloc.splice(j, 1);
+                this.geolocMessages[i].geoloc.splice(j, 1);
               }
             });
           });
         }
-        if (this.allLocalizedMessages.length > 0) {
+        if (this.geolocMessages.length > 0) {
           // Center map
-          this.mapPosition = this.allLocalizedMessages[this.allLocalizedMessages.length - 1].geoloc[0];
+          this.mapPosition = this.geolocMessages[this.geolocMessages.length - 1].geoloc[0];
           this.mapZoom = 14;
-          this.searchResult = 'Showing ' + this.allLocalizedMessages.length + ' markers for device ID: ' + this.selectedDevice.id;
+          this.searchResult = 'Showing ' + this.geolocMessages.length + ' markers for device ID: ' + this.selectedDevice.id;
         } else
           this.searchResult = 'No markers to show with these filters for device ID: ' + this.selectedDevice.id;
 
-        console.log(this.allLocalizedMessages);
+        console.log(this.geolocMessages);
       } else // -- no localized messages
         this.searchResult = 'No geolocation messages found for this device ID.';
     }, (error: Error) => this.searchResult = error.message);

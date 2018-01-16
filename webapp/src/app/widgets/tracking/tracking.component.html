@@ -164,7 +164,7 @@
         [zIndex]="2"
         [geodesic]="true"
         [strokeOpacity]="0.5">
-        <ng-container *ngFor="let marker of allLocalizedMessages">
+        <ng-container *ngFor="let marker of geolocMessages">
           <ng-container *ngFor="let geoloc of marker.geoloc">
             <agm-polyline-point
               [latitude]="geoloc.lat"
@@ -177,7 +177,7 @@
 
 
       <!-- Markers -->
-      <ng-container *ngFor="let marker of allLocalizedMessages; let i = index">
+      <ng-container *ngFor="let marker of geolocMessages; let i = index">
 
         <ng-container [ngSwitch]=i>
           <!-- Start Point -->
@@ -241,7 +241,7 @@
           <!-- End Start Point -->
 
           <!-- Finish Point -->
-          <ng-container *ngSwitchCase="allLocalizedMessages.length - 1">
+          <ng-container *ngSwitchCase="geolocMessages.length - 1">
             <ng-container *ngFor="let geoloc of marker.geoloc">
               <ng-container *ngIf="geoloc.type === 'sigfox'">
                 <agm-marker
@@ -366,8 +366,8 @@
         </ng-container>
       </ng-container>
 
-      <ng-container *ngIf="allLocalizedMessages.length > 0 && directionsRoutes">
-        <agm-directions></agm-directions>
+      <ng-container *ngIf="geolocMessages.length > 0 && directionsRoutes">
+        <agm-directions [routesColor]="'#d71223'" [geolocMessages]="geolocMessages"></agm-directions>
       </ng-container>
       <!--<agm-directions [origin]="{lat: 42, lng: 2}" [destination]="{lat: 43, lng: 2}" [waypoints]=""></agm-directions>-->
     </agm-map>
