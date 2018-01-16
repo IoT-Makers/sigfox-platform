@@ -753,7 +753,7 @@
                       <!-- End Markers -->
 
                       <ng-container *ngIf="device.Messages.length > 0">
-                        <agm-directions [routesColor]="'#d71223'" [geolocMessages]="device.Messages"></agm-directions>
+                        <agm-directions [routesColor]="generateColor()" [geolocMessages]="device.Messages"></agm-directions>
                       </ng-container>
 
                     </ng-container>

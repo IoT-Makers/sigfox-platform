@@ -304,6 +304,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  generateColor(): string {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+  }
+
   loadWidgets(): void {
     this.dashboardApi.getWidgets(this.dashboard.id).subscribe(widgets => {
       this.widgets = widgets;

@@ -176,6 +176,10 @@ export class TrackingComponent implements OnInit, OnDestroy {
     }, (error: Error) => this.searchResult = error.message);
   }
 
+  generateColor(): string {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+  }
+
   ngOnInit(): void {
     console.log('Tracking: ngOnInit');
     if (window.screen.width <= 425) { // 768px portrait

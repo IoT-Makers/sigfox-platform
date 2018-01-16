@@ -38,7 +38,6 @@ export class DirectionsComponent implements AfterViewInit, OnDestroy {
     console.log('Number of routes (23 geolocs per routes)', routes);
     for (let i = 0; i < routes; i++) {
       let waypoints = [];
-      //let color = '#' + Math.floor(Math.random()*16777215).toString(16);
       messages = this.geolocMessages.slice(i * 23, (i + 1) * 23);
       /*console.log("i*23", i*23);
       console.log("(i+1)*23-1", (i+1)*23);
