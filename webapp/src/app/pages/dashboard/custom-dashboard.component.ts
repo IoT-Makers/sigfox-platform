@@ -4,7 +4,6 @@ import {DashboardApi, RealTime, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {FireLoopRef, Message, Parser} from '../../shared/sdk/models';
-import * as _ from 'lodash';
 
 @Component({
   selector: 'app-dashboard',
@@ -227,16 +226,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     console.log('Added filter', this.newWidget.filter);
   }
 
-  toggleDeviceWidgetVisibility(widget: any, device: Device): void {
-    /*widget.data =_.remove(widget.data, {
-      id: device.id
-    });*/
-
-    widget.data = _.remove(widget.data, (row) => {
-      return row['id'] !== device.id;
-    });
-  }
-
 
   addWidget(): void {
 
@@ -324,6 +313,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         this.widgets.forEach(widget => {
           this.userApi.getDevices(this.user.id, widget.filter).subscribe(devices => {
             widget.data = devices;
+            widget.data.forEach( device => {
+              device.visibility = true;
+            });
             console.log(this.widgets);
           });
         });
