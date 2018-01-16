@@ -351,7 +351,7 @@ class Device {
       } else {
         device = device.toJSON();
         // console.log(device);
-        if (!device.ParserId || !device.parserId) {
+        if (!device.ParserId && !device.parserId) {
           response.message = 'No parser associated to this device.';
           next(null, response);
         } else {
