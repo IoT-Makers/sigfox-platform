@@ -1,18 +1,16 @@
 /* tslint:disable */
-import { map, catchError, mergeMap } from 'rxjs/operators'
-import { of } from 'rxjs/observable/of';
-import { concat } from 'rxjs/observable/concat';
-import { Injectable, Inject } from '@angular/core';
-import { Effect, Actions } from '@ngrx/effects';
+import {catchError, map, mergeMap} from 'rxjs/operators';
+import {of} from 'rxjs/observable/of';
+import {concat} from 'rxjs/observable/concat';
+import {Inject, Injectable} from '@angular/core';
+import {Actions, Effect} from '@ngrx/effects';
 
-import { LoopbackAction } from '../models/BaseModels';
-import { BaseLoopbackEffects } from './base';
-import { resolver } from './resolver';
-
-import * as actions from '../actions';
-import { ParserActionTypes, ParserActions } from '../actions/Parser';
-import { LoopbackErrorActions } from '../actions/error';
-import { ParserApi } from '../services/index';
+import {LoopbackAction} from '../models/BaseModels';
+import {BaseLoopbackEffects} from './base';
+import {resolver} from './resolver';
+import {ParserActions, ParserActionTypes} from '../actions/Parser';
+import {LoopbackErrorActions} from '../actions/error';
+import {ParserApi} from '../services/index';
 
 @Injectable()
 export class ParserEffects extends BaseLoopbackEffects {

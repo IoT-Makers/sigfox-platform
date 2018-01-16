@@ -1,19 +1,16 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
-import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
-import { JSONSearchParams } from '../core/search.params';
-import { ErrorHandler } from '../core/error.service';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Rx';
-import { Dashboard } from '../../models/Dashboard';
-import { SocketConnection } from '../../sockets/socket.connections';
-import { User } from '../../models/User';
-import { Widget } from '../../models/Widget';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {Http} from '@angular/http';
+import {SDKModels} from './SDKModels';
+import {BaseLoopBackApi} from '../core/base.service';
+import {LoopBackConfig} from '../../lb.config';
+import {LoopBackAuth} from '../core/auth.service';
+import {LoopBackFilter,} from '../../models/BaseModels';
+import {JSONSearchParams} from '../core/search.params';
+import {ErrorHandler} from '../core/error.service';
+import {Observable} from 'rxjs/Rx';
+import {Dashboard} from '../../models/Dashboard';
+import {SocketConnection} from '../../sockets/socket.connections';
 
 
 /**
@@ -38,7 +35,7 @@ export class DashboardApi extends BaseLoopBackApi {
    *
    * @param {any} id Dashboard id
    *
-   * @param {boolean} refresh 
+   * @param {boolean} refresh
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -161,7 +158,7 @@ export class DashboardApi extends BaseLoopBackApi {
    *
    * @param {any} id Dashboard id
    *
-   * @param {object} filter 
+   * @param {object} filter
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -256,7 +253,7 @@ export class DashboardApi extends BaseLoopBackApi {
    *
    * Data properties:
    *
-   *  - `count` – `{number}` - 
+   *  - `count` – `{number}` -
    */
   public countWidgets(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";

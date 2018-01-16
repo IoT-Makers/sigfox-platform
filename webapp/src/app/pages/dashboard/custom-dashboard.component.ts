@@ -51,7 +51,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     options: {}
   };
 
-  private widgetType = ['map', 'table'];
+  private widgetType = ['map', 'table', 'tracking'];
 
   private isCircleVisible: boolean[] = [];
 

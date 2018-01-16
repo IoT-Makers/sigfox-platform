@@ -1,8 +1,9 @@
 /* tslint:disable */
 declare var Object: any;
-import { Injectable, Inject } from '@angular/core';
-import { InternalStorage } from '../../storage/storage.swaps';
-import { SDKToken } from '../../models/BaseModels';
+import {Inject, Injectable} from '@angular/core';
+import {InternalStorage} from '../../storage/storage.swaps';
+import {SDKToken} from '../../models/BaseModels';
+
 /**
 * @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
 * @module SocketConnection

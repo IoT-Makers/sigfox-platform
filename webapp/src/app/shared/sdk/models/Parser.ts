@@ -1,8 +1,5 @@
 /* tslint:disable */
-import {
-  Device,
-  Organization
-} from '../index';
+import {Device, Organization} from '../index';
 
 declare var Object: any;
 export interface ParserInterface {
