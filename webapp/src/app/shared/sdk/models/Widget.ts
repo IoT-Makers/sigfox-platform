@@ -1,5 +1,8 @@
 /* tslint:disable */
-import {Dashboard, User} from '../index';
+import {
+  User,
+  Dashboard
+} from '../index';
 
 declare var Object: any;
 export interface WidgetInterface {

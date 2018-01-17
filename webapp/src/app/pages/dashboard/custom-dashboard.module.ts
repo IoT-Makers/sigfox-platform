@@ -10,6 +10,7 @@ import {FormsModule} from '@angular/forms';
 import {MomentModule} from 'angular2-moment';
 import {DataTableModule} from 'angular2-datatable';
 import {DirectionsComponent} from './directions.component';
+import {TooltipModule} from "ng2-bootstrap";
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import {DirectionsComponent} from './directions.component';
     ToasterModule,
     DataTableModule,
     MomentModule,
+    TooltipModule.forRoot(),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
     })

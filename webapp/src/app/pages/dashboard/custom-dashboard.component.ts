@@ -4,6 +4,7 @@ import {DashboardApi, RealTime, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {FireLoopRef, Message, Parser} from '../../shared/sdk/models';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-dashboard',
@@ -41,6 +42,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   private mapTypeIdList = ['roadmap', 'hybrid', 'satellite', 'terrain', ''];
 
+  private tableType = ["default", "custom"];
+  private tableColumnOptions = [];
+  private loadingTableOptions: boolean = false;
+
   private newWidget: any = {
     name: '',
     icon: '',
@@ -51,7 +56,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     options: {}
   };
 
-  private widgetType = ['map', 'table', 'tracking'];
+  private widgetType = ['map', 'table of devices', 'tracking'];
 
   // Tracking
   public directionsDisplayStore = [];
@@ -225,6 +230,73 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }*/
     console.log('Added filter', this.newWidget.filter);
   }
+
+  addTableType($event):void {
+    if($event==='custom'){
+      this.loadingTableOptions=true;
+      this.tableColumnOptions.push({model: "device", key: "id", type: "string", as: "Device id"});
+      this.tableColumnOptions.push({model: "device", key:"name", type: "string", as: "Device name"});
+      this.tableColumnOptions.push({model: "device", key:"createdAt", type: "date", as: "Device creation date"});
+      this.tableColumnOptions.push({model: "device", key:"updatedAt", type: "date", as: "Device updated date"});
+      this.tableColumnOptions.push({model: "device", key:"downlinkData", type: "string", as: "Device downlink payload"});
+      this.tableColumnOptions.push({model: "device.Parser", key:"name", type: "string", as: "Parser name"});
+      this.userApi.getDevices(this.user.id, this.newWidget.filter).subscribe(devices => {
+        console.log(devices);
+        if(devices[0].properties){
+          devices[0].properties.forEach( o => {
+            let object:any={
+              model:"device.Category.properties",
+              key:o.key,
+              type:o.type,
+              as: o.key + " (category)"
+            };
+
+            console.log(_.find(this.tableColumnOptions, object));
+            if(!_.find(this.tableColumnOptions, object)){
+              this.tableColumnOptions.push(object);
+            }
+          });
+        }
+
+        devices.forEach( device => {
+          if(device.data_parsed){
+            device.data_parsed.forEach( o => {
+              let object:any={
+                model:"device.data_parsed",
+                key:o.key,
+                type:o.type,
+                as: o.key + " (parsed data)"
+              };
+              console.log(_.find(this.tableColumnOptions, object));
+              if(!_.find(this.tableColumnOptions, object)){
+                this.tableColumnOptions.push(object);
+              }
+            })
+          }
+
+        });
+        console.log(this.tableColumnOptions);
+        this.newWidget.options.columns = new Array(1);
+        console.log(this.newWidget.options.columns);
+        this.loadingTableOptions=false;
+      });
+
+    }
+  }
+
+  addTableColumn($event):void {
+    //
+  }
+
+  removeTableColumn(newWidget, index):void {
+    this.newWidget.options.columns.splice(index, 1);
+  }
+
+  addEmptyTableColumn():void {
+    this.newWidget.options.columns.push(undefined);
+    console.log(this.newWidget.options.columns);
+  }
+
 
 
   addWidget(): void {
