@@ -249,8 +249,8 @@
                       <th class="text-center" *ngFor="let col of newWidget.options.columns; let i = index">
                         <select *ngIf="!newWidget.options.columns[i]" name="categoryId" class="form-control" size="1"
                                 [(ngModel)]="newWidget.options.columns[i]"
-                                placeholder="newWidget.options.columns[i].as" (ngModelChange)="addTableType($event)">
-                          <option *ngFor="let option of tableColumnOptions" [ngValue]="option">{{option.as}}</option>
+                                (ngModelChange)="addTableType($event)">
+                          <option *ngFor="let option of newWidget.options.tableColumnOptions" [ngValue]="option">{{option.as}}</option>
                         </select>
                         <ng-container *ngIf="newWidget.options.columns[i]">
                           <label>{{newWidget.options.columns[i].as}}</label>
@@ -373,7 +373,7 @@
 
             <button class="btn btn-sm btn-primary" *ngIf="editFlag" [disabled]="!newWidgetForm.form.valid"
                     (click)="updateWidget()"><i
-              class="fa fa-check"></i> Edit widget
+              class="fa fa-check"></i> Update widget
             </button>
 
           </form>
@@ -489,7 +489,9 @@
           <!--Table-->
           <ng-container *ngIf="widget.type=='table of devices'">
             <div *ngIf="widget.data" class="table-responsive">
-              <table class="table table-hover" [mfData]="widget.data" #mf="mfDataTable" [mfRowsOnPage]="5">
+
+              <!--default table-->
+              <table *ngIf="widget.options.tableType==='default'" class="table table-hover" [mfData]="widget.data" #mf="mfDataTable" [mfRowsOnPage]="5">
                 <thead class="thead-inverse">
                 <tr>
                   <th class="text-center">
@@ -515,19 +517,19 @@
                   <td>
                     <div class="small">
                       <span class="text-gray-dark">Name: </span>
-                      <span class="text-device">{{device.name ? device.name : "None"}}</span>
+                      <strong class="text-device">{{device.name ? device.name : "None"}}</strong>
                     </div>
                     <div class="small">
                       <span class="text-gray-dark">Parser: </span>
-                      <span class="text-parser">{{device.Parser ? device.Parser.name : "None"}}</span>
+                      <strong class="text-parser">{{device.Parser ? device.Parser.name : "None"}}</strong>
                     </div>
                     <div class="small">
                       <span class="text-gray-dark">Category: </span>
-                      <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
+                      <strong class="text-category">{{device.Category ? device.Category.name : "None"}}</strong>
                     </div>
                     <div *ngIf="device.downlinkData" class="small">
                       <span class="text-gray-dark">Downlink: </span>
-                      <span class="text-message">{{device.downlinkData}}</span>
+                      <strong class="text-message">{{device.downlinkData}}</strong>
                     </div>
                   </td>
 
@@ -540,8 +542,8 @@
                     <div *ngIf="!device.data_parsed" class="small text-muted">No data</div>
                     <div *ngIf="device.data_parsed">
                       <div class="small text-gray-dark" *ngFor="let property of device.data_parsed; let i = index">
-                        <small *ngIf="property.value">{{property.key}}: <strong>{{property.value}}
-                          {{property.unit}}</strong></small>
+                        <span *ngIf="property.value">{{property.key}}: <strong>{{property.value}}
+                          {{property.unit}}</strong></span>
                         <!--<span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>-->
                         <!--<span class="text-primary">{{property.value ? property.value : ""}}</span>-->
                       </div>
@@ -551,8 +553,8 @@
                     <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
                     <div *ngIf="device.categoryId">
                       <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
-                        <small *ngIf="property.value">{{property.key}}: <strong>{{property.value}}
-                          {{property.unit}}</strong></small>
+                        <span *ngIf="property.value">{{property.key}}: <strong>{{property.value}}
+                          {{property.unit}}</strong></span>
                       </div>
                     </div>
                   </td>
@@ -566,6 +568,34 @@
                 </tr>
                 </tfoot>
               </table>
+
+              <!--Custom table-->
+              <table *ngIf="widget.options.tableType==='custom'" class="table table-hover" [mfData]="widget.data" #mf="mfDataTable" [mfRowsOnPage]="5">
+                <thead class="thead-inverse">
+                <tr>
+                  <th class="text-center" *ngFor="let col of widget.options.columns">
+                    {{col ? col.as : ""}}
+                  </th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let data of mf.data; let i = index">
+                  <td class="text-center" *ngFor="let col of widget.options.columns; let j = index">
+                    {{data[j] ? (data[j].value + (data[j].unit ? data[j].unit : "")) : ""}}
+                  </td>
+
+                </tbody>
+                <tfoot>
+                <tr>
+                  <td colspan="4">
+                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                  </td>
+                </tr>
+                </tfoot>
+              </table>
+
+
             </div>
           </ng-container>
           <!--End of Table widget-->
@@ -831,7 +861,7 @@
           </ng-container>
           <!--End of Tracking widget-->
 
-          <ng-container *ngIf="widget.type!='map' && widget.type!='table' && widget.type!='tracking'">{{widget.type}}
+          <ng-container *ngIf="widget.type!='map' && widget.type!='table of devices' && widget.type!='tracking'">{{widget.type}}
           </ng-container>
         </div>
       </div>

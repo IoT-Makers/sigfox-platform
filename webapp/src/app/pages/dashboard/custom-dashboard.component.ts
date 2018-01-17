@@ -43,7 +43,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private mapTypeIdList = ['roadmap', 'hybrid', 'satellite', 'terrain', ''];
 
   private tableType = ["default", "custom"];
-  private tableColumnOptions = [];
+  // private tableColumnOptions = [];
   private loadingTableOptions: boolean = false;
 
   private newWidget: any = {
@@ -234,26 +234,27 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   addTableType($event):void {
     if($event==='custom'){
       this.loadingTableOptions=true;
-      this.tableColumnOptions.push({model: "device", key: "id", type: "string", as: "Device id"});
-      this.tableColumnOptions.push({model: "device", key:"name", type: "string", as: "Device name"});
-      this.tableColumnOptions.push({model: "device", key:"createdAt", type: "date", as: "Device creation date"});
-      this.tableColumnOptions.push({model: "device", key:"updatedAt", type: "date", as: "Device updated date"});
-      this.tableColumnOptions.push({model: "device", key:"downlinkData", type: "string", as: "Device downlink payload"});
-      this.tableColumnOptions.push({model: "device.Parser", key:"name", type: "string", as: "Parser name"});
+      this.newWidget.options.tableColumnOptions = [];
+      this.newWidget.options.tableColumnOptions.push({model: "device", key: "id", type: "string", as: "Device id"});
+      this.newWidget.options.tableColumnOptions.push({model: "device", key:"name", type: "string", as: "Device name"});
+      this.newWidget.options.tableColumnOptions.push({model: "device", key:"createdAt", type: "date", as: "Device creation date"});
+      this.newWidget.options.tableColumnOptions.push({model: "device", key:"updatedAt", type: "date", as: "Device updated date"});
+      this.newWidget.options.tableColumnOptions.push({model: "device", key:"downlinkData", type: "string", as: "Device downlink payload"});
+      this.newWidget.options.tableColumnOptions.push({model: "device.Parser", key:"name", type: "string", as: "Parser name"});
       this.userApi.getDevices(this.user.id, this.newWidget.filter).subscribe(devices => {
-        console.log(devices);
+        //console.log(devices);
         if(devices[0].properties){
           devices[0].properties.forEach( o => {
             let object:any={
-              model:"device.Category.properties",
+              model:"device.properties",
               key:o.key,
               type:o.type,
               as: o.key + " (category)"
             };
 
-            console.log(_.find(this.tableColumnOptions, object));
-            if(!_.find(this.tableColumnOptions, object)){
-              this.tableColumnOptions.push(object);
+            //console.log(_.find(this.newWidget.options.tableColumnOptions, object));
+            if(!_.find(this.newWidget.options.tableColumnOptions, object)){
+              this.newWidget.options.tableColumnOptions.push(object);
             }
           });
         }
@@ -267,17 +268,19 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 type:o.type,
                 as: o.key + " (parsed data)"
               };
-              console.log(_.find(this.tableColumnOptions, object));
-              if(!_.find(this.tableColumnOptions, object)){
-                this.tableColumnOptions.push(object);
+              //console.log(_.find(this.newWidget.options.tableColumnOptions, object));
+              if(!_.find(this.newWidget.options.tableColumnOptions, object)){
+                this.newWidget.options.tableColumnOptions.push(object);
               }
             })
           }
 
         });
-        console.log(this.tableColumnOptions);
-        this.newWidget.options.columns = new Array(1);
-        console.log(this.newWidget.options.columns);
+        //console.log(this.newWidget.options.tableColumnOptions);
+        if(!this.newWidget.options.columns){
+          this.newWidget.options.columns = new Array(1);
+        }
+        //console.log(this.newWidget.options.columns);
         this.loadingTableOptions=false;
       });
 
@@ -326,12 +329,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   editWidget(widget): void {
     this.newWidget = widget;
-    this.getDevices(null);
-    this.getCategories(null);
+    // this.getDevices(null);
+    // this.getCategories(null);
     this.editWidgetFlag = true;
   }
 
   updateWidget(): void {
+    delete this.newWidget.data;
     if (this.newWidget.options.style) {
       const myObject = eval(this.newWidget.options.style);
       console.log(myObject);
@@ -389,6 +393,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         this.widgets.forEach(widget => {
           this.userApi.getDevices(this.user.id, widget.filter).subscribe(devices => {
             widget.data = devices;
+            if(widget.options.tableType==="custom"){
+              widget.data = this.buildCustomTable(widget);
+            }
             widget.data.forEach( device => {
               device.visibility = true;
             });
@@ -397,6 +404,44 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  buildCustomTable(widget: any): any{
+
+    let returnedArray = [];
+
+    widget.data.forEach( row => {
+
+      let arrayAsRow = [];
+      widget.options.columns.forEach(col => {
+        let obj : any = {};
+        obj.key = col.key;
+        if(col.model==="device"){
+          obj.value = row[col.key];
+        }
+        if(col.model==="device.Parser"){
+          obj.value = row.Parser[col.key];
+        }
+        if(col.model==="device.properties"){
+          let index = _.findIndex(row.properties,{"key": col.key});
+          if(index != -1) {
+            obj.value = row.properties[index].value;
+          }
+        }
+        if(col.model==="device.data_parsed"){
+          let index = _.findIndex(row.data_parsed,{"key": col.key});
+          if(index != -1) {
+            obj.value = row.data_parsed[index].value;
+            obj.unit = row.data_parsed[index].unit;
+          }
+        }
+
+        arrayAsRow.push(obj);
+      });
+      returnedArray.push(arrayAsRow);
+
+    });
+    return returnedArray;
   }
 
   // Map functions
