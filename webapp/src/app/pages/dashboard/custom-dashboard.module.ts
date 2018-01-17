@@ -9,7 +9,7 @@ import {AgmCoreModule} from '@agm/core';
 import {FormsModule} from '@angular/forms';
 import {MomentModule} from 'angular2-moment';
 import {DataTableModule} from 'angular2-datatable';
-import {DirectionsComponent} from './directions.component';
+import {DirectionsDirective} from './directions.directive';
 
 @NgModule({
   imports: [
@@ -21,11 +21,9 @@ import {DirectionsComponent} from './directions.component';
     ToasterModule,
     DataTableModule,
     MomentModule,
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
-    })
+    AgmCoreModule
   ],
-  declarations: [CustomDashboardComponent, DirectionsComponent]
+  declarations: [CustomDashboardComponent, DirectionsDirective]
 })
 export class CustomDashboardModule {
 }

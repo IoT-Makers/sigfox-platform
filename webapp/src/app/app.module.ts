@@ -9,16 +9,15 @@ import {ChartsModule} from 'ng2-charts/ng2-charts';
 import {SIDEBAR_TOGGLE_DIRECTIVES} from './shared/sidebar.directive';
 import {AsideToggleDirective} from './shared/aside.directive';
 import {BreadcrumbsComponent} from './shared/breadcrumb.component';
-// Routing Module
 import {AppRoutingModule} from './app.routing';
-// Layouts
 import {FullLayoutComponent} from './layouts/full-layout.component';
-// SDK
 import {SDKBrowserModule} from './shared/sdk/index';
 import {AuthGuard} from './_guards/auth.guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {AgmCoreModule} from '@agm/core';
 
 @NgModule({
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -26,9 +25,11 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     ReactiveFormsModule,
     AppRoutingModule,
     BsDropdownModule.forRoot(),
-    //TabsModule.forRoot(),
     ChartsModule,
-    SDKBrowserModule.forRoot()
+    SDKBrowserModule.forRoot(),
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
+    })
   ],
   declarations: [
     AppComponent,
@@ -47,8 +48,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
       provide: LocationStrategy,
       useClass: HashLocationStrategy
     }
-  ],
-  bootstrap: [AppComponent]
+  ]
 })
 export class AppModule {
 }

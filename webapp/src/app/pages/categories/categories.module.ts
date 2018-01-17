@@ -8,7 +8,6 @@ import {ToasterModule} from 'angular2-toaster';
 import {ModalModule, TooltipModule} from 'ng2-bootstrap';
 import {ClickCopyDirective} from './click-copy.directive';
 
-
 @NgModule({
   imports: [
     CategoriesRoutingModule,

@@ -304,10 +304,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  generateColor(): string {
-    return '#' + Math.floor(Math.random() * 16777215).toString(16);
-  }
-
   loadWidgets(): void {
     this.dashboardApi.getWidgets(this.dashboard.id).subscribe(widgets => {
       this.widgets = widgets;
@@ -317,8 +313,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         this.widgets.forEach(widget => {
           this.userApi.getDevices(this.user.id, widget.filter).subscribe(devices => {
             widget.data = devices;
-            widget.data.forEach( device => {
-              device.visibility = true;
+            devices.forEach( device => {
+              device.visibility = false;
+              device.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
             });
             console.log(this.widgets);
           });

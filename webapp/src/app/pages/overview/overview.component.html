@@ -443,7 +443,7 @@
                 </td>
 
                 <td class="text-center">
-                  <strong>{{device.Messages[0].createdAt | amTimeAgo}}</strong>
+                  <strong>{{device.Messages[0] ? (device.Messages[0].createdAt | amTimeAgo) : 'No messages yet'}}</strong>
                 </td>
                 <td class="text-center">
                   <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>

@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-// Layouts
 import {FullLayoutComponent} from './layouts/full-layout.component';
 import {AuthGuard} from './_guards/auth.guard';
 
@@ -53,7 +52,8 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes
+  imports: [
+    RouterModule.forRoot(routes
     /*, { enableTracing: true }*/
   )],
   exports: [RouterModule]

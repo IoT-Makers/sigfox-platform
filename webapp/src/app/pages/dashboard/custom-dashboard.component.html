@@ -509,17 +509,18 @@
           <ng-container *ngIf="widget.type=='tracking'">
             <div class="row" *ngIf="widget.data">
               <div class="col-md-2 table-responsive">
+
                 <table class="table table-hover">
-                  <thead class="thead-inverse">
+                  <!--<thead class="thead-inverse">
                   <tr>
                     <th class="text-center">Devices</th>
                   </tr>
-                  </thead>
+                  </thead>-->
                   <tbody>
                   <tr *ngFor="let device of widget.data; let i = index">
                     <td class="text-center text-device">
-                      <strong>{{device.id}} {{device.name ? "(" + device.name + ")" : ""}}</strong>
-                      <label class="switch switch-sm switch-3d switch-primary">
+                      <strong>{{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong>
+                      <label class="switch switch-sm switch-3d switch-success">
                         <input (change)="device.visibility = !device.visibility" [checked]="device.visibility" type="checkbox" class="switch-input" checked>
                         <span class="switch-label"></span>
                         <span class="switch-handle"></span>
@@ -543,7 +544,7 @@
                          [styles]="widget.options.style ? widget.options.style: '' ">
 
                   <ng-container *ngFor="let device of widget.data; let i = index">
-                    <ng-container *ngIf="device.visibility === undefined || device.visibility === true">
+                    <ng-container *ngIf="device.visibility === true">
                       <!-- Polylines -->
                       <agm-polyline
                         *ngIf="polylines"
@@ -747,14 +748,16 @@
                           </ng-container>
                           <!-- End Default -->
 
-
                         </ng-container>
                       </ng-container>
                       <!-- End Markers -->
 
-                      <ng-container *ngIf="device.Messages.length > 0">
-                        <agm-directions [routesColor]="generateColor()" [geolocMessages]="device.Messages"></agm-directions>
-                      </ng-container>
+                      <agm-directions *ngIf="device.Messages.length > 0"
+                                      [directionsDisplayStore]="directionsDisplayStore"
+                                      [travelMode]="travelMode"
+                                      [routesColor]="device.color"
+                                      [geolocMessages]="device.Messages">
+                      </agm-directions>
 
                     </ng-container>
                   </ng-container>

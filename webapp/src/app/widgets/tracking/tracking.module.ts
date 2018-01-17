@@ -7,10 +7,9 @@ import {TrackingComponent} from './tracking.component';
 import {TrackingRoutingModule} from './tracking-routing.module';
 import {DateTimePickerModule} from 'ng-pick-datetime';
 import {HttpClientModule} from '@angular/common/http';
-import {DirectionsComponent} from './directions.component';
 import {SelectModule} from 'ng2-select';
 import {AccordionModule} from 'ng2-bootstrap';
-
+import {DirectionsDirective} from './directions.directive';
 
 @NgModule({
   imports: [
@@ -22,14 +21,12 @@ import {AccordionModule} from 'ng2-bootstrap';
     HttpClientModule,
     SelectModule,
     AccordionModule.forRoot(),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
-    })
+    AgmCoreModule
   ],
   providers: [
     GoogleMapsAPIWrapper
   ],
-  declarations: [TrackingComponent, DirectionsComponent]
+  declarations: [TrackingComponent, DirectionsDirective]
 })
 export class TrackingModule {
 }

@@ -366,9 +366,12 @@
         </ng-container>
       </ng-container>
 
-      <ng-container *ngIf="geolocMessages.length > 0 && directionsRoutes">
-        <agm-directions [routesColor]="'#d71223'" [geolocMessages]="geolocMessages"></agm-directions>
-      </ng-container>
+      <agm-directions *ngIf="device.Messages.length > 0 && directionsRoutes"
+                      [directionsDisplayStore]="directionsDisplayStore"
+                      [travelMode]="travelMode"
+                      [routesColor]="'#d71223'"
+                      [geolocMessages]="device.Messages">
+      </agm-directions>
       <!--<agm-directions [origin]="{lat: 42, lng: 2}" [destination]="{lat: 43, lng: 2}" [waypoints]=""></agm-directions>-->
     </agm-map>
 

@@ -14,7 +14,7 @@ export class ClickCopyDirective {
   }
 
   @HostListener('click', ['$event'])
-  onDblClick(event) {
+  onClick(event) {
     const selection = getSelection();
     const range = document.createRange();
 
