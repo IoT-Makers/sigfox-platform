@@ -4,6 +4,7 @@ import {DashboardApi, RealTime, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {FireLoopRef, Message, Parser} from '../../shared/sdk/models';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-dashboard',
@@ -41,6 +42,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   private mapTypeIdList = ['roadmap', 'hybrid', 'satellite', 'terrain', ''];
 
+  private tableType = ["default", "custom"];
+  // private tableColumnOptions = [];
+  private loadingTableOptions: boolean = false;
+
   private newWidget: any = {
     name: '',
     icon: '',
@@ -51,7 +56,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     options: {}
   };
 
-  private widgetType = ['map', 'table', 'tracking'];
+  private widgetType = ['map', 'table of devices', 'tracking'];
 
   // Tracking
   public directionsDisplayStore = [];
@@ -226,6 +231,76 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     console.log('Added filter', this.newWidget.filter);
   }
 
+  addTableType($event):void {
+    if($event==='custom'){
+      this.loadingTableOptions=true;
+      this.newWidget.options.tableColumnOptions = [];
+      this.newWidget.options.tableColumnOptions.push({model: "device", key: "id", type: "string", as: "Device id"});
+      this.newWidget.options.tableColumnOptions.push({model: "device", key:"name", type: "string", as: "Device name"});
+      this.newWidget.options.tableColumnOptions.push({model: "device", key:"createdAt", type: "date", as: "Device creation date"});
+      this.newWidget.options.tableColumnOptions.push({model: "device", key:"updatedAt", type: "date", as: "Device updated date"});
+      this.newWidget.options.tableColumnOptions.push({model: "device", key:"downlinkData", type: "string", as: "Device downlink payload"});
+      this.newWidget.options.tableColumnOptions.push({model: "device.Parser", key:"name", type: "string", as: "Parser name"});
+      this.userApi.getDevices(this.user.id, this.newWidget.filter).subscribe(devices => {
+        //console.log(devices);
+        if(devices[0].properties){
+          devices[0].properties.forEach( o => {
+            let object:any={
+              model:"device.properties",
+              key:o.key,
+              type:o.type,
+              as: o.key + " (category)"
+            };
+
+            //console.log(_.find(this.newWidget.options.tableColumnOptions, object));
+            if(!_.find(this.newWidget.options.tableColumnOptions, object)){
+              this.newWidget.options.tableColumnOptions.push(object);
+            }
+          });
+        }
+
+        devices.forEach( device => {
+          if(device.data_parsed){
+            device.data_parsed.forEach( o => {
+              let object:any={
+                model:"device.data_parsed",
+                key:o.key,
+                type:o.type,
+                as: o.key + " (parsed data)"
+              };
+              //console.log(_.find(this.newWidget.options.tableColumnOptions, object));
+              if(!_.find(this.newWidget.options.tableColumnOptions, object)){
+                this.newWidget.options.tableColumnOptions.push(object);
+              }
+            })
+          }
+
+        });
+        //console.log(this.newWidget.options.tableColumnOptions);
+        if(!this.newWidget.options.columns){
+          this.newWidget.options.columns = new Array(1);
+        }
+        //console.log(this.newWidget.options.columns);
+        this.loadingTableOptions=false;
+      });
+
+    }
+  }
+
+  addTableColumn($event):void {
+    //
+  }
+
+  removeTableColumn(newWidget, index):void {
+    this.newWidget.options.columns.splice(index, 1);
+  }
+
+  addEmptyTableColumn():void {
+    this.newWidget.options.columns.push(undefined);
+    console.log(this.newWidget.options.columns);
+  }
+
+
 
   addWidget(): void {
 
@@ -254,12 +329,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   editWidget(widget): void {
     this.newWidget = widget;
-    this.getDevices(null);
-    this.getCategories(null);
+    // this.getDevices(null);
+    // this.getCategories(null);
     this.editWidgetFlag = true;
   }
 
   updateWidget(): void {
+    delete this.newWidget.data;
     if (this.newWidget.options.style) {
       const myObject = eval(this.newWidget.options.style);
       console.log(myObject);
@@ -317,11 +393,52 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               device.visibility = false;
               device.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
             });
+            if (widget.options.tableType === 'custom') {
+              widget.data = this.buildCustomTable(widget);
+            }
             console.log(this.widgets);
           });
         });
       }
     });
+  }
+
+  buildCustomTable(widget: any): any{
+
+    const returnedArray = [];
+
+    widget.data.forEach( row => {
+
+      const arrayAsRow = [];
+      widget.options.columns.forEach(col => {
+        const obj: any = {};
+        obj.key = col.key;
+        if (col.model === 'device') {
+          obj.value = row[col.key];
+        }
+        if (col.model === 'device.Parser'){
+          obj.value = row.Parser[col.key];
+        }
+        if (col.model === 'device.properties'){
+          const index = _.findIndex(row.properties, {'key': col.key});
+          if (index !== -1) {
+            obj.value = row.properties[index].value;
+          }
+        }
+        if (col.model === 'device.data_parsed'){
+          const index = _.findIndex(row.data_parsed, {'key': col.key});
+          if (index !== -1) {
+            obj.value = row.data_parsed[index].value;
+            obj.unit = row.data_parsed[index].unit;
+          }
+        }
+
+        arrayAsRow.push(obj);
+      });
+      returnedArray.push(arrayAsRow);
+
+    });
+    return returnedArray;
   }
 
   // Map functions

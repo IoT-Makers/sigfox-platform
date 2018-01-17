@@ -85,7 +85,9 @@
           <form class="form-horizontal" #newWidgetForm="ngForm">
 
             <div class="form-group row">
-              <label class="col-md-3 form-control-label">Name <small class="text-danger">(required)</small></label>
+              <label class="col-md-3 form-control-label">Name
+                <small class="text-danger">(required)</small>
+              </label>
               <div class="col-md-6">
                 <input type="text" class="form-control" placeholder="Widget name" name="newWidget.name" required
                        [(ngModel)]="newWidget.name">
@@ -111,7 +113,9 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-md-3 form-control-label">Width <small class="text-danger">(required)</small><br>
+              <label class="col-md-3 form-control-label">Width
+                <small class="text-danger">(required)</small>
+                <br>
                 <small>Between 1 and 12</small>
               </label>
               <div class="col-md-6">
@@ -122,7 +126,9 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-md-3 form-control-label">Type <small class="text-danger">(required)</small></label>
+              <label class="col-md-3 form-control-label">Type
+                <small class="text-danger">(required)</small>
+              </label>
               <div class="col-md-6">
                 <ng-select #widgetTypeSelect
                            [placeholder]="newWidget.type ? newWidget.type : 'Select a type'"
@@ -137,8 +143,8 @@
             <hr>
 
             <!--Map widget-->
-            <ng-container *ngIf="newWidget.type === 'map'" >
-              <div class="form-group row" >
+            <ng-container *ngIf="newWidget.type === 'map'">
+              <div class="form-group row">
                 <label class="col-md-3 form-control-label">Category</label>
                 <div class="col-md-6">
                   <select name="categoryId" class="form-control" size="1" [ngModel]="selectedCategory"
@@ -199,9 +205,13 @@
             <!--End of Map widget-->
 
             <!--Table widget-->
-            <ng-container *ngIf="newWidget.type === 'table'">
-              <div class="form-group row" >
-                <label class="col-md-3 form-control-label">Category</label>
+            <ng-container *ngIf="newWidget.type === 'table of devices'">
+
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Category
+                  <small class="text-danger">(required)</small>
+                  <br>
+                </label>
                 <div class="col-md-6">
                   <select name="categoryId" class="form-control" size="1" [ngModel]="selectedCategory"
                           (ngModelChange)="addFilter($event, 'category')">
@@ -210,12 +220,63 @@
                   </select>
                 </div>
               </div>
+
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Type
+                  <small class="text-danger">(required)</small>
+                  <br>
+                </label>
+                <div class="col-md-6">
+                  <select name="categoryId" class="form-control" size="1" [(ngModel)]="newWidget.options.tableType"
+                          (ngModelChange)="addTableType($event)">
+                    <option *ngFor="let value of tableType" [ngValue]="value">{{value}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <ng-container *ngIf="newWidget.options.tableType === 'custom'">
+                <ng-container *ngIf="loadingTableOptions">
+                  <div class="sk-double-bounce">
+                    <div class="sk-child sk-double-bounce1"></div>
+                    <div class="sk-child sk-double-bounce2"></div>
+                  </div>
+                </ng-container>
+
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="">
+                    <tr>
+                      <th class="text-center" *ngFor="let col of newWidget.options.columns; let i = index">
+                        <select *ngIf="!newWidget.options.columns[i]" name="categoryId" class="form-control" size="1"
+                                [(ngModel)]="newWidget.options.columns[i]"
+                                (ngModelChange)="addTableType($event)">
+                          <option *ngFor="let option of newWidget.options.tableColumnOptions" [ngValue]="option">{{option.as}}</option>
+                        </select>
+                        <ng-container *ngIf="newWidget.options.columns[i]">
+                          <label>{{newWidget.options.columns[i].as}}</label>
+                          <button class="btn btn-sm btn-danger" tooltip="Remove column"
+                                  (click)="removeTableColumn(newWidget, i)"><i class="fa fa-trash fa-md"></i></button>
+                        </ng-container>
+                      </th>
+                      <th class="text-center">
+                        <button class="btn btn-sm btn-primary" tooltip="Add column"
+                                (click)="addEmptyTableColumn()"><i class="fa fa-plus fa-lg"></i></button>
+                      </th>
+                    </tr>
+                    </thead>
+
+                  </table>
+                </div>
+
+
+              </ng-container>
+
             </ng-container>
             <!--End of Table widget-->
 
             <!--Tracking widget-->
-            <ng-container *ngIf="newWidget.type === 'tracking'" >
-              <div class="form-group row" >
+            <ng-container *ngIf="newWidget.type === 'tracking'">
+              <div class="form-group row">
                 <label class="col-md-3 form-control-label">Category</label>
                 <div class="col-md-6">
                   <select name="categoryId" class="form-control" size="1" [ngModel]="selectedCategory"
@@ -277,7 +338,7 @@
 
             <!--Gauge widget-->
             <ng-container *ngIf="newWidget.type === 'gauge'">
-              <div class="form-group row" >
+              <div class="form-group row">
                 <label class="col-md-3 form-control-label">Device</label>
                 <div class="col-md-6">
                   <select name="categoryId" class="form-control" size="1" [ngModel]="selectedDevice"
@@ -304,6 +365,7 @@
             </ng-container>
             <!--End Gauge widget-->
 
+            <br>
             <button class="btn btn-sm btn-primary" *ngIf="newWidgetFlag" [disabled]="!newWidgetForm.form.valid"
                     (click)="addWidget()"><i
               class="fa fa-check"></i> Add widget
@@ -311,7 +373,7 @@
 
             <button class="btn btn-sm btn-primary" *ngIf="editFlag" [disabled]="!newWidgetForm.form.valid"
                     (click)="updateWidget()"><i
-              class="fa fa-check"></i> Edit widget
+              class="fa fa-check"></i> Update widget
             </button>
 
           </form>
@@ -425,9 +487,11 @@
           <!--End of Map widget-->
 
           <!--Table-->
-          <ng-container *ngIf="widget.type=='table'">
+          <ng-container *ngIf="widget.type=='table of devices'">
             <div *ngIf="widget.data" class="table-responsive">
-              <table class="table table-hover" [mfData]="widget.data" #mf="mfDataTable" [mfRowsOnPage]="5">
+
+              <!--default table-->
+              <table *ngIf="widget.options.tableType==='default'" class="table table-hover" [mfData]="widget.data" #mf="mfDataTable" [mfRowsOnPage]="5">
                 <thead class="thead-inverse">
                 <tr>
                   <th class="text-center">
@@ -453,31 +517,33 @@
                   <td>
                     <div class="small">
                       <span class="text-gray-dark">Name: </span>
-                      <span class="text-device">{{device.name ? device.name : "None"}}</span>
+                      <strong class="text-device">{{device.name ? device.name : "None"}}</strong>
                     </div>
                     <div class="small">
                       <span class="text-gray-dark">Parser: </span>
-                      <span class="text-parser">{{device.Parser ? device.Parser.name : "None"}}</span>
+                      <strong class="text-parser">{{device.Parser ? device.Parser.name : "None"}}</strong>
                     </div>
                     <div class="small">
                       <span class="text-gray-dark">Category: </span>
-                      <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
+                      <strong class="text-category">{{device.Category ? device.Category.name : "None"}}</strong>
                     </div>
                     <div *ngIf="device.downlinkData" class="small">
                       <span class="text-gray-dark">Downlink: </span>
-                      <span class="text-message">{{device.downlinkData}}</span>
+                      <strong class="text-message">{{device.downlinkData}}</strong>
                     </div>
                   </td>
 
                   <td class="text-center">
-                    <div class="small text-gray-dark">{{device.Messages[0].createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
+                    <div class="small text-gray-dark">{{device.Messages[0].createdAt | date:"yyyy/MM/dd HH:mm:ss"}}
+                    </div>
                     <strong>{{device.Messages[0].createdAt | amTimeAgo}}</strong>
                   </td>
                   <td>
                     <div *ngIf="!device.data_parsed" class="small text-muted">No data</div>
                     <div *ngIf="device.data_parsed">
                       <div class="small text-gray-dark" *ngFor="let property of device.data_parsed; let i = index">
-                        <small *ngIf="property.value">{{property.key}}: <strong>{{property.value}} {{property.unit}}</strong></small>
+                        <span *ngIf="property.value">{{property.key}}: <strong>{{property.value}}
+                          {{property.unit}}</strong></span>
                         <!--<span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>-->
                         <!--<span class="text-primary">{{property.value ? property.value : ""}}</span>-->
                       </div>
@@ -487,7 +553,8 @@
                     <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
                     <div *ngIf="device.categoryId">
                       <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
-                        <small *ngIf="property.value">{{property.key}}: <strong>{{property.value}} {{property.unit}}</strong></small>
+                        <span *ngIf="property.value">{{property.key}}: <strong>{{property.value}}
+                          {{property.unit}}</strong></span>
                       </div>
                     </div>
                   </td>
@@ -501,6 +568,34 @@
                 </tr>
                 </tfoot>
               </table>
+
+              <!--Custom table-->
+              <table *ngIf="widget.options.tableType==='custom'" class="table table-hover" [mfData]="widget.data" #mf="mfDataTable" [mfRowsOnPage]="5">
+                <thead class="thead-inverse">
+                <tr>
+                  <th class="text-center" *ngFor="let col of widget.options.columns">
+                    {{col ? col.as : ""}}
+                  </th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let data of mf.data; let i = index">
+                  <td class="text-center" *ngFor="let col of widget.options.columns; let j = index">
+                    {{data[j] ? (data[j].value + (data[j].unit ? data[j].unit : "")) : ""}}
+                  </td>
+
+                </tbody>
+                <tfoot>
+                <tr>
+                  <td colspan="4">
+                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                  </td>
+                </tr>
+                </tfoot>
+              </table>
+
+
             </div>
           </ng-container>
           <!--End of Table widget-->
@@ -767,7 +862,8 @@
           </ng-container>
           <!--End of Tracking widget-->
 
-          <ng-container *ngIf="widget.type!='map' && widget.type!='table' && widget.type!='tracking'">{{widget.type}}</ng-container>
+          <ng-container *ngIf="widget.type!='map' && widget.type!='table of devices' && widget.type!='tracking'">{{widget.type}}
+          </ng-container>
         </div>
       </div>
     </div>

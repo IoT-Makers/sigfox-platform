@@ -9,6 +9,7 @@ import {AgmCoreModule} from '@agm/core';
 import {FormsModule} from '@angular/forms';
 import {MomentModule} from 'angular2-moment';
 import {DataTableModule} from 'angular2-datatable';
+import {TooltipModule} from 'ng2-bootstrap';
 import {DirectionsDirective} from './directions.directive';
 
 @NgModule({
@@ -21,6 +22,7 @@ import {DirectionsDirective} from './directions.directive';
     ToasterModule,
     DataTableModule,
     MomentModule,
+    TooltipModule.forRoot(),
     AgmCoreModule
   ],
   declarations: [CustomDashboardComponent, DirectionsDirective]
