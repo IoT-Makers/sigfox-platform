@@ -205,7 +205,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         include: [{
           relation: 'Messages',
           scope: {
-            limit: 5000,
+            limit: 500,
             order: 'createdAt DESC',
             where: {
               and: [
@@ -231,63 +231,63 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     console.log('Added filter', this.newWidget.filter);
   }
 
-  addTableType($event):void {
-    if($event==='custom'){
-      this.loadingTableOptions=true;
+  addTableType($event): void {
+    if ($event === 'custom') {
+      this.loadingTableOptions = true;
       this.newWidget.options.tableColumnOptions = [];
-      this.newWidget.options.tableColumnOptions.push({model: "device", key: "id", type: "string", as: "Device id"});
-      this.newWidget.options.tableColumnOptions.push({model: "device", key:"name", type: "string", as: "Device name"});
-      this.newWidget.options.tableColumnOptions.push({model: "device", key:"createdAt", type: "date", as: "Device creation date"});
-      this.newWidget.options.tableColumnOptions.push({model: "device", key:"updatedAt", type: "date", as: "Device updated date"});
-      this.newWidget.options.tableColumnOptions.push({model: "device", key:"downlinkData", type: "string", as: "Device downlink payload"});
-      this.newWidget.options.tableColumnOptions.push({model: "device.Parser", key:"name", type: "string", as: "Parser name"});
+      this.newWidget.options.tableColumnOptions.push({model: 'device', key: 'id', type: 'string', as: 'Device id'});
+      this.newWidget.options.tableColumnOptions.push({model: 'device', key: 'name', type: 'string', as: 'Device name'});
+      this.newWidget.options.tableColumnOptions.push({model: 'device', key: 'createdAt', type: 'date', as: 'Device creation date'});
+      this.newWidget.options.tableColumnOptions.push({model: 'device', key: 'updatedAt', type: 'date', as: 'Device updated date'});
+      this.newWidget.options.tableColumnOptions.push({model: 'device', key: 'downlinkData', type: 'string', as: 'Device downlink payload'});
+      this.newWidget.options.tableColumnOptions.push({model: 'device.Parser', key: 'name', type: 'string', as: 'Parser name'});
       this.userApi.getDevices(this.user.id, this.newWidget.filter).subscribe(devices => {
         //console.log(devices);
-        if(devices[0].properties){
+        if (devices[0].properties) {
           devices[0].properties.forEach( o => {
-            let object:any={
-              model:"device.properties",
-              key:o.key,
-              type:o.type,
-              as: o.key + " (category)"
+            const object: any = {
+              model: 'device.properties',
+              key: o.key,
+              type: o.type,
+              as: o.key + ' (category)'
             };
 
             //console.log(_.find(this.newWidget.options.tableColumnOptions, object));
-            if(!_.find(this.newWidget.options.tableColumnOptions, object)){
+            if (!_.find(this.newWidget.options.tableColumnOptions, object)) {
               this.newWidget.options.tableColumnOptions.push(object);
             }
           });
         }
 
         devices.forEach( device => {
-          if(device.data_parsed){
+          if (device.data_parsed) {
             device.data_parsed.forEach( o => {
-              let object:any={
-                model:"device.data_parsed",
-                key:o.key,
-                type:o.type,
-                as: o.key + " (parsed data)"
+              const object: any = {
+                model: 'device.data_parsed',
+                key: o.key,
+                type: o.type,
+                as: o.key + ' (parsed data)'
               };
               //console.log(_.find(this.newWidget.options.tableColumnOptions, object));
-              if(!_.find(this.newWidget.options.tableColumnOptions, object)){
+              if (!_.find(this.newWidget.options.tableColumnOptions, object)) {
                 this.newWidget.options.tableColumnOptions.push(object);
               }
-            })
+            });
           }
 
         });
         //console.log(this.newWidget.options.tableColumnOptions);
-        if(!this.newWidget.options.columns){
+        if (!this.newWidget.options.columns) {
           this.newWidget.options.columns = new Array(1);
         }
         //console.log(this.newWidget.options.columns);
-        this.loadingTableOptions=false;
+        this.loadingTableOptions = false;
       });
 
     }
   }
 
-  addTableColumn($event):void {
+  addTableColumn($event): void {
     //
   }
 

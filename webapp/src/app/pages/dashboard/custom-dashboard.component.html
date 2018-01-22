@@ -152,6 +152,16 @@
                     <option [ngValue]="item.id" *ngFor="let item of categories">{{item.name}}</option>
                     <option [ngValue]=""></option>
                   </select>
+
+                  <!--<ng-select  [multiple]="true"
+                              [items]="items"
+                              [disabled]="disabled"
+                              (data)="refreshValue($event)"
+                              (selected)="selected($event)"
+                              (removed)="removed($event)"
+                              placeholder="No city selected">
+
+                  </ng-select>-->
                 </div>
               </div>
 
@@ -658,7 +668,7 @@
                       <!-- End Polylines -->
 
                       <!-- Markers -->
-                      <ng-container *ngFor="let marker of device.Messages; let i = index">
+                      <ng-container *ngFor="let marker of device.Messages.reverse(); let i = index">
 
                         <ng-container [ngSwitch]=i>
                           <!-- Start Point -->
