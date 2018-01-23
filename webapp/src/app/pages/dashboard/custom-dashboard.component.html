@@ -38,15 +38,13 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Name</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" placeholder="Device name" name="dashboard.name"
-                       [(ngModel)]="dashboard.name">
+                <input type="text" class="form-control" placeholder="Device name" name="dashboard.name" [(ngModel)]="dashboard.name">
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Description</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" placeholder="Dashboard description" name="dashboard.description"
-                       [(ngModel)]="dashboard.description">
+                <input type="text" class="form-control" placeholder="Dashboard description" name="dashboard.description" [(ngModel)]="dashboard.description">
               </div>
             </div>
             <div class="form-group row">
@@ -77,7 +75,7 @@
     <div class="col-md-12" *ngIf="newWidgetFlag || editWidgetFlag">
       <div class="card">
         <div class="card-header">
-          <strong>{{newWidgetFlag ? "Add new widget":"Edit widget"}}</strong>
+          <strong>{{newWidgetFlag ? "Add new widget" : "Edit widget"}}</strong>
         </div>
         <div class="card-block">
 
@@ -89,15 +87,13 @@
                 <small class="text-danger">(required)</small>
               </label>
               <div class="col-md-6">
-                <input type="text" class="form-control" placeholder="Widget name" name="newWidget.name" required
-                       [(ngModel)]="newWidget.name">
+                <input type="text" class="form-control" placeholder="Widget name" name="newWidget.name" required [(ngModel)]="newWidget.name">
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Description</label>
               <div class="col-md-6">
-                <input type="text" class="form-control" placeholder="Widget description" name="newWidget.description"
-                       [(ngModel)]="newWidget.description">
+                <input type="text" class="form-control" placeholder="Widget description" name="newWidget.description" [(ngModel)]="newWidget.description">
               </div>
             </div>
             <div class="form-group row">
@@ -119,9 +115,7 @@
                 <small>Between 1 and 12</small>
               </label>
               <div class="col-md-6">
-                <input type="number" min="1" max="12" class="form-control" placeholder="Widget width"
-                       name="newWidget.width" required
-                       [(ngModel)]="newWidget.width">
+                <input type="number" min="1" max="12" class="form-control" placeholder="Widget width" name="newWidget.width" required [(ngModel)]="newWidget.width">
               </div>
             </div>
 
@@ -145,23 +139,20 @@
             <!--Map widget-->
             <ng-container *ngIf="newWidget.type === 'map'">
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Category</label>
+                <label class="col-md-3 form-control-label">Category / Device(s)
+                  <small class="text-danger">(required)</small>
+                  <br>
+                </label>
                 <div class="col-md-6">
-                  <select name="categoryId" class="form-control" size="1" [ngModel]="selectedCategory"
-                          (ngModelChange)="addFilter($event, 'category')">
-                    <option [ngValue]="item.id" *ngFor="let item of categories">{{item.name}}</option>
-                    <option [ngValue]=""></option>
-                  </select>
+                  <ng-select  [allowClear]="true"
+                              [multiple]="true"
+                              [items]="selectCategoriesDevices"
+                              [active]="setCategoriesDevices"
+                              (removed)="removedSelectedCategoriesDevices($event, newWidget.type)"
+                              (selected)="selectedCategoriesDevices($event, newWidget.type)"
+                              [placeholder]="'Pick categories and/or devices'">
 
-                  <!--<ng-select  [multiple]="true"
-                              [items]="items"
-                              [disabled]="disabled"
-                              (data)="refreshValue($event)"
-                              (selected)="selected($event)"
-                              (removed)="removed($event)"
-                              placeholder="No city selected">
-
-                  </ng-select>-->
+                  </ng-select>
                 </div>
               </div>
 
@@ -170,45 +161,39 @@
                   <small>Between 1 and 13</small>
                 </label>
                 <div class="col-md-6">
-                  <input type="number" min="1" max="13" class="form-control" placeholder="Zoom"
-                         name="newWidget.zoom" required
-                         [(ngModel)]="newWidget.options.zoom">
+                  <input type="number" min="1" max="13" class="form-control" placeholder="Zoom" name="newWidget.zoom" [(ngModel)]="newWidget.options.zoom">
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Default latitude</label>
                 <div class="col-md-6">
-                  <input type="number" class="form-control" placeholder="Latitude"
-                         name="newWidget.lat"
-                         [(ngModel)]="newWidget.options.lat">
+                  <input type="number" class="form-control" placeholder="Latitude" name="newWidget.lat" [(ngModel)]="newWidget.options.lat">
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Default longitude</label>
                 <div class="col-md-6">
-                  <input type="number" class="form-control" placeholder="Longitude"
-                         name="newWidget.lng"
-                         [(ngModel)]="newWidget.options.lng">
+                  <input type="number" class="form-control" placeholder="Longitude" name="newWidget.lng" [(ngModel)]="newWidget.options.lng">
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Map type</label>
                 <div class="col-md-6">
-                  <select name="categoryId" class="form-control" size="1" [(ngModel)]="newWidget.options.mapTypeId">
-                    <option *ngFor="let value of mapTypeIdList" [ngValue]="value">{{value}}</option>
-                  </select>
+                  <ng-select  [allowClear]="true"
+                              [items]="mapTypeIdList"
+                              (selected)="newWidget.options.mapTypeId = $event.id"
+                              [placeholder]="newWidget.options.mapTypeId ? newWidget.options.mapTypeId : 'The map style'">
+                  </ng-select>
                 </div>
               </div>
 
-              <div class="form-group row" *ngIf="newWidget.options.mapTypeId === ''">
+              <div class="form-group row" *ngIf="newWidget.options.mapTypeId === 'custom'">
                 <label class="col-md-3 form-control-label">Snazzy Map</label>
                 <div class="col-md-6">
-                  <input type="text" class="form-control" placeholder="Past your snazzy map code here"
-                         name="newWidget.snazzymap"
-                         [(ngModel)]="newWidget.options.style">
+                  <input type="text" class="form-control" placeholder="Past your snazzy map code here" name="newWidget.snazzymap" [(ngModel)]="newWidget.options.style">
                 </div>
               </div>
             </ng-container>
@@ -218,29 +203,37 @@
             <ng-container *ngIf="newWidget.type === 'table of devices'">
 
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Category
+                <label class="col-md-3 form-control-label">Category / Device(s)
                   <small class="text-danger">(required)</small>
                   <br>
                 </label>
                 <div class="col-md-6">
-                  <select name="categoryId" class="form-control" size="1" [ngModel]="selectedCategory"
-                          (ngModelChange)="addFilter($event, 'category')">
-                    <option [ngValue]="item.id" *ngFor="let item of categories">{{item.name}}</option>
-                    <option [ngValue]=""></option>
-                  </select>
+                  <ng-select  [allowClear]="true"
+                              [multiple]="true"
+                              [items]="selectCategoriesDevices"
+                              [active]="setCategoriesDevices"
+                              (removed)="removedSelectedCategoriesDevices($event, newWidget.type)"
+                              (selected)="selectedCategoriesDevices($event, newWidget.type)"
+                              [placeholder]="'Pick categories and/or devices'">
+                  </ng-select>
                 </div>
               </div>
 
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Type
+                <label class="col-md-3 form-control-label">Table Type
                   <small class="text-danger">(required)</small>
                   <br>
                 </label>
                 <div class="col-md-6">
-                  <select name="categoryId" class="form-control" size="1" [(ngModel)]="newWidget.options.tableType"
-                          (ngModelChange)="addTableType($event)">
+                  <ng-select [placeholder]="newWidget.options.tableType ? newWidget.options.tableType : 'Select a table type'"
+                             [allowClear]="true"
+                             [items]="tableType"
+                             (selected)="newWidget.options.tableType = $event.id; addTableType($event.id)"
+                             required>
+                  </ng-select>
+                  <!--<select name="categoryId" class="form-control" size="1" [(ngModel)]="newWidget.options.tableType" (ngModelChange)="addTableType($event)">
                     <option *ngFor="let value of tableType" [ngValue]="value">{{value}}</option>
-                  </select>
+                  </select>-->
                 </div>
               </div>
 
@@ -257,20 +250,16 @@
                     <thead class="">
                     <tr>
                       <th class="text-center" *ngFor="let col of newWidget.options.columns; let i = index">
-                        <select *ngIf="!newWidget.options.columns[i]" name="categoryId" class="form-control" size="1"
-                                [(ngModel)]="newWidget.options.columns[i]"
-                                (ngModelChange)="addTableType($event)">
+                        <select *ngIf="!newWidget.options.columns[i]" name="categoryId" class="form-control" size="1" [(ngModel)]="newWidget.options.columns[i]" (ngModelChange)="addTableType($event)">
                           <option *ngFor="let option of newWidget.options.tableColumnOptions" [ngValue]="option">{{option.as}}</option>
                         </select>
                         <ng-container *ngIf="newWidget.options.columns[i]">
                           <label>{{newWidget.options.columns[i].as}}</label>
-                          <button class="btn btn-sm btn-danger" tooltip="Remove column"
-                                  (click)="removeTableColumn(newWidget, i)"><i class="fa fa-trash fa-md"></i></button>
+                          <button class="btn btn-sm btn-round btn-outline-danger" tooltip="Remove column" (click)="removeTableColumn(newWidget, i)"><i class="fa fa-trash fa-md"></i></button>
                         </ng-container>
                       </th>
                       <th class="text-center">
-                        <button class="btn btn-sm btn-primary" tooltip="Add column"
-                                (click)="addEmptyTableColumn()"><i class="fa fa-plus fa-lg"></i></button>
+                        <button class="btn btn-sm btn-round btn-outline-primary" tooltip="Add column" (click)="addEmptyTableColumn()"><i class="fa fa-plus fa-lg"></i></button>
                       </th>
                     </tr>
                     </thead>
@@ -287,60 +276,38 @@
             <!--Tracking widget-->
             <ng-container *ngIf="newWidget.type === 'tracking'">
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Category</label>
-                <div class="col-md-6">
-                  <select name="categoryId" class="form-control" size="1" [ngModel]="selectedCategory"
-                          (ngModelChange)="addFilter($event, 'category-tracking')">
-                    <option [ngValue]="item.id" *ngFor="let item of categories">{{item.name}}</option>
-                    <option [ngValue]=""></option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Default zoom<br>
-                  <small>Between 1 and 13</small>
+                <label class="col-md-3 form-control-label">Category / Device(s)
+                  <small class="text-danger">(required)</small>
+                  <br>
                 </label>
                 <div class="col-md-6">
-                  <input type="number" min="1" max="13" class="form-control" placeholder="Zoom"
-                         name="newWidget.zoom" required
-                         [(ngModel)]="newWidget.options.zoom">
-                </div>
-              </div>
+                  <ng-select  [allowClear]="true"
+                              [multiple]="true"
+                              [items]="selectCategoriesDevices"
+                              [active]="setCategoriesDevices"
+                              (removed)="removedSelectedCategoriesDevices($event, newWidget.type)"
+                              (selected)="selectedCategoriesDevices($event, newWidget.type)"
+                              [placeholder]="'Pick categories and/or devices'">
 
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Default latitude</label>
-                <div class="col-md-6">
-                  <input type="number" class="form-control" placeholder="Latitude"
-                         name="newWidget.lat"
-                         [(ngModel)]="newWidget.options.lat">
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Default longitude</label>
-                <div class="col-md-6">
-                  <input type="number" class="form-control" placeholder="Longitude"
-                         name="newWidget.lng"
-                         [(ngModel)]="newWidget.options.lng">
+                  </ng-select>
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Map type</label>
                 <div class="col-md-6">
-                  <select name="categoryId" class="form-control" size="1" [(ngModel)]="newWidget.options.mapTypeId">
-                    <option *ngFor="let value of mapTypeIdList" [ngValue]="value">{{value}}</option>
-                  </select>
+                  <ng-select  [allowClear]="true"
+                              [items]="mapTypeIdList"
+                              (selected)="newWidget.options.mapTypeId = $event.id"
+                              [placeholder]="newWidget.options.mapTypeId ? newWidget.options.mapTypeId : 'The map style'">
+                  </ng-select>
                 </div>
               </div>
 
-              <div class="form-group row" *ngIf="newWidget.options.mapTypeId === ''">
+              <div class="form-group row" *ngIf="newWidget.options.mapTypeId === 'custom'">
                 <label class="col-md-3 form-control-label">Snazzy Map</label>
                 <div class="col-md-6">
-                  <input type="text" class="form-control" placeholder="Past your snazzy map code here"
-                         name="newWidget.snazzymap"
-                         [(ngModel)]="newWidget.options.style">
+                  <input type="text" class="form-control" placeholder="Past your snazzy map code here" name="newWidget.snazzymap" [(ngModel)]="newWidget.options.style">
                 </div>
               </div>
             </ng-container>
@@ -351,8 +318,7 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Device</label>
                 <div class="col-md-6">
-                  <select name="categoryId" class="form-control" size="1" [ngModel]="selectedDevice"
-                          (ngModelChange)="addFilter($event, 'device')">
+                  <select name="categoryId" class="form-control" size="1" [ngModel]="selectedDevice" (ngModelChange)="selectedCategoriesDevices($event, 'device')">
                     <option [ngValue]="item" *ngFor="let item of devices">{{item.id + "(" + item.name ? item.name : "" +
                       ")"}}
                     </option>
@@ -376,13 +342,11 @@
             <!--End Gauge widget-->
 
             <br>
-            <button class="btn btn-sm btn-primary" *ngIf="newWidgetFlag" [disabled]="!newWidgetForm.form.valid"
-                    (click)="addWidget()"><i
+            <button class="btn btn-sm btn-primary" *ngIf="newWidgetFlag" [disabled]="!newWidgetForm.form.valid" (click)="addWidget()"><i
               class="fa fa-check"></i> Add widget
             </button>
 
-            <button class="btn btn-sm btn-primary" *ngIf="editFlag" [disabled]="!newWidgetForm.form.valid"
-                    (click)="updateWidget()"><i
+            <button class="btn btn-sm btn-primary" *ngIf="editFlag" [disabled]="!newWidgetForm.form.valid" (click)="updateWidget()"><i
               class="fa fa-check"></i> Update widget
             </button>
 
@@ -421,25 +385,18 @@
           <!--Map-->
           <ng-container *ngIf="widget.type=='map'">
             <ng-container *ngIf="widget.data">
-              <agm-map [latitude]="widget.options.lat ? widget.options.lat : 0"
-                       [longitude]="widget.options.lng ? widget.options.lng : 0"
+              <agm-map [latitude]="widget.options.lat ? widget.options.lat : 48.864716"
+                       [longitude]="widget.options.lng ? widget.options.lng : 2.349014"
                        [zoom]="widget.options.zoom ? widget.options.zoom : 2"
                        [fullscreenControl]="true"
-                       [mapTypeId]="widget.options.mapTypeId ? widget.options.mapTypeId: 'roadmap' "
-                       [styles]="widget.options.style ? widget.options.style: '' ">
+                       [mapTypeId]="widget.options.mapTypeId !== 'custom' ? widget.options.mapTypeId : 'roadmap'"
+                       [styles]="widget.options.style ? widget.options.style : ''">
                 <ng-container *ngFor="let device of widget.data; let i = index">
                   <ng-container *ngFor="let geoloc of device.location">
                     <!-- Geoloc Sigfox -->
                     <ng-container *ngIf="geoloc.type === 'sigfox'">
-                      <agm-marker
-                        (mouseOut)="markerOut(i)"
-                        (mouseOver)="markerOver(i)"
-                        [zIndex]="3"
-                        [latitude]="geoloc.lat"
-                        [longitude]="geoloc.lng"
-                        [iconUrl]="'assets/img/marker-sigfox.png'">
-                        <agm-info-window
-                          id="{{geoloc.type + '_' + device.id}}">
+                      <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="3" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-sigfox.png'">
+                        <agm-info-window id="{{geoloc.type + '_' + device.id}}">
                           <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
                           <br>
                           <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
@@ -454,28 +411,14 @@
                         </agm-info-window>
                       </agm-marker>
                       <!-- Circle -->
-                      <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
-                                  [zIndex]="1"
-                                  [strokePosition]="CENTER"
-                                  [strokeWeight]="1"
-                                  [strokeColor]="'#8d5dd1'"
-                                  [fillOpacity]="0.1"
-                                  [fillColor]="'#8d5dd1'"
-                                  [latitude]="geoloc.lat"
-                                  [longitude]="geoloc.lng"
-                                  [radius]="geoloc.precision">
+                      <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]" [zIndex]="1" [strokePosition]="CENTER" [strokeWeight]="1" [strokeColor]="'#8d5dd1'" [fillOpacity]="0.1" [fillColor]="'#8d5dd1'" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [radius]="geoloc.precision">
                       </agm-circle>
                       <!-- End Circle -->
                     </ng-container>
                     <!-- Geoloc GPS -->
                     <ng-container *ngIf="geoloc.type === 'GPS'">
-                      <agm-marker
-                        [zIndex]="3"
-                        [latitude]="geoloc.lat"
-                        [longitude]="geoloc.lng"
-                        [iconUrl]="'assets/img/marker-gps.png'">
-                        <agm-info-window
-                          id="{{geoloc.type + '_' + device.id}}">
+                      <agm-marker [zIndex]="3" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-gps.png'">
+                        <agm-info-window id="{{geoloc.type + '_' + device.id}}">
                           <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
                           <br>
                           <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
@@ -552,7 +495,7 @@
                     <div *ngIf="!device.data_parsed" class="small text-muted">No data</div>
                     <div *ngIf="device.data_parsed">
                       <div class="small text-gray-dark" *ngFor="let property of device.data_parsed; let i = index">
-                        <span *ngIf="property.value">{{property.key}}: <strong>{{property.value}}
+                          <span *ngIf="property.value">{{property.key}}: <strong>{{property.value}}
                           {{property.unit}}</strong></span>
                         <!--<span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>-->
                         <!--<span class="text-primary">{{property.value ? property.value : ""}}</span>-->
@@ -563,7 +506,7 @@
                     <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
                     <div *ngIf="device.categoryId">
                       <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
-                        <span *ngIf="property.value">{{property.key}}: <strong>{{property.value}}
+                          <span *ngIf="property.value">{{property.key}}: <strong>{{property.value}}
                           {{property.unit}}</strong></span>
                       </div>
                     </div>
@@ -580,7 +523,7 @@
               </table>
 
               <!--Custom table-->
-              <table *ngIf="widget.options.tableType==='custom'" class="table table-hover" [mfData]="widget.data" #mf="mfDataTable" [mfRowsOnPage]="5">
+              <table *ngIf="widget.options.tableType === 'custom'" class="table table-hover" [mfData]="widget.data" #mf="mfDataTable" [mfRowsOnPage]="5">
                 <thead class="thead-inverse">
                 <tr>
                   <th class="text-center" *ngFor="let col of widget.options.columns">
@@ -632,35 +575,29 @@
                       </label>
                     </td>
                     <!--<td class="text-center">
-                      <label class="checkbox-inline" for="inline-checkbox1">
-                        <input (change)="device.visibility = !device.visibility" [checked]="device.visibility" type="checkbox" id="inline-checkbox1" name="inline-checkbox1" value="option1">
-                      </label>
-                    </td>-->
+                    <label class="checkbox-inline" for="inline-checkbox1">
+                      <input (change)="device.visibility = !device.visibility" [checked]="device.visibility" type="checkbox" id="inline-checkbox1" name="inline-checkbox1" value="option1">
+                    </label>
+                  </td>-->
                   </tr>
                   </tbody>
                 </table>
               </div>
               <div class="col-md-10">
-                <agm-map [latitude]="widget.options.lat ? widget.options.lat : 0"
-                         [longitude]="widget.options.lng ? widget.options.lng : 0"
+                <agm-map [latitude]="widget.options.lat ? widget.options.lat : 48.864716"
+                         [longitude]="widget.options.lng ? widget.options.lng : 2.349014"
                          [zoom]="widget.options.zoom ? widget.options.zoom : 2"
                          [fullscreenControl]="true"
-                         [mapTypeId]="widget.options.mapTypeId ? widget.options.mapTypeId: 'roadmap' "
-                         [styles]="widget.options.style ? widget.options.style: '' ">
+                         [mapTypeId]="widget.options.mapTypeId !== 'custom' ? widget.options.mapTypeId : 'roadmap'"
+                         [styles]="widget.options.style ? widget.options.style : '' ">
 
                   <ng-container *ngFor="let device of widget.data; let i = index">
                     <ng-container *ngIf="device.visibility === true">
                       <!-- Polylines -->
-                      <agm-polyline
-                        *ngIf="polylines"
-                        [zIndex]="2"
-                        [geodesic]="true"
-                        [strokeOpacity]="0.5">
+                      <agm-polyline *ngIf="polylines" [zIndex]="2" [geodesic]="true" [strokeOpacity]="0.5">
                         <ng-container *ngFor="let marker of device.Messages">
                           <ng-container *ngFor="let geoloc of marker.geoloc">
-                            <agm-polyline-point
-                              [latitude]="geoloc.lat"
-                              [longitude]="geoloc.lng">
+                            <agm-polyline-point [latitude]="geoloc.lat" [longitude]="geoloc.lng">
                             </agm-polyline-point>
                           </ng-container>
                         </ng-container>
@@ -675,13 +612,7 @@
                           <ng-container *ngSwitchCase="0">
                             <ng-container *ngFor="let geoloc of marker.geoloc">
                               <ng-container *ngIf="geoloc.type === 'sigfox'">
-                                <agm-marker
-                                  (mouseOut)="markerOut(i)"
-                                  (mouseOver)="markerOver(i)"
-                                  [zIndex]="4"
-                                  [latitude]="geoloc.lat"
-                                  [longitude]="geoloc.lng"
-                                  [iconUrl]="'assets/img/marker-start.png'">
+                                <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="4" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-start.png'">
                                   <agm-info-window>
                                     <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                                     <br>
@@ -695,27 +626,13 @@
                                   </agm-info-window>
                                 </agm-marker>
                                 <!-- Circle -->
-                                <agm-circle *ngIf="circlePrecision || isCircleVisible[i]" [visible]="isCircleVisible[i]"
-                                            [zIndex]="1"
-                                            [strokePosition]="CENTER"
-                                            [strokeWeight]="1"
-                                            [strokeColor]="'#8d5dd1'"
-                                            [fillOpacity]="0.1"
-                                            [fillColor]="'#8d5dd1'"
-                                            [latitude]="geoloc.lat"
-                                            [longitude]="geoloc.lng"
+                                <agm-circle *ngIf="circlePrecision || isCircleVisible[i]" [visible]="isCircleVisible[i]" [zIndex]="1" [strokePosition]="CENTER" [strokeWeight]="1" [strokeColor]="'#8d5dd1'" [fillOpacity]="0.1" [fillColor]="'#8d5dd1'" [latitude]="geoloc.lat" [longitude]="geoloc.lng"
                                             [radius]="geoloc.precision">
                                 </agm-circle>
                                 <!-- End Circle -->
                               </ng-container>
                               <ng-container *ngIf="geoloc.type === 'GPS'">
-                                <agm-marker
-                                  (mouseOut)="markerOut(i)"
-                                  (mouseOver)="markerOver(i)"
-                                  [zIndex]="4"
-                                  [latitude]="geoloc.lat"
-                                  [longitude]="geoloc.lng"
-                                  [iconUrl]="'assets/img/marker-start.png'">
+                                <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="4" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-start.png'">
                                   <agm-info-window>
                                     <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                                     <br>
@@ -735,13 +652,7 @@
                           <ng-container *ngSwitchCase="device.Messages.length - 1">
                             <ng-container *ngFor="let geoloc of marker.geoloc">
                               <ng-container *ngIf="geoloc.type === 'sigfox'">
-                                <agm-marker
-                                  (mouseOut)="markerOut(i)"
-                                  (mouseOver)="markerOver(i)"
-                                  [zIndex]="4"
-                                  [latitude]="geoloc.lat"
-                                  [longitude]="geoloc.lng"
-                                  [iconUrl]="'assets/img/marker-finish.png'">
+                                <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="4" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-finish.png'">
                                   <agm-info-window>
                                     <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                                     <br>
@@ -755,27 +666,13 @@
                                   </agm-info-window>
                                 </agm-marker>
                                 <!-- Circle -->
-                                <agm-circle *ngIf="circlePrecision || isCircleVisible[i]" [visible]="isCircleVisible[i]"
-                                            [zIndex]="1"
-                                            [strokePosition]="CENTER"
-                                            [strokeWeight]="1"
-                                            [strokeColor]="'#8d5dd1'"
-                                            [fillOpacity]="0.1"
-                                            [fillColor]="'#8d5dd1'"
-                                            [latitude]="geoloc.lat"
-                                            [longitude]="geoloc.lng"
+                                <agm-circle *ngIf="circlePrecision || isCircleVisible[i]" [visible]="isCircleVisible[i]" [zIndex]="1" [strokePosition]="CENTER" [strokeWeight]="1" [strokeColor]="'#8d5dd1'" [fillOpacity]="0.1" [fillColor]="'#8d5dd1'" [latitude]="geoloc.lat" [longitude]="geoloc.lng"
                                             [radius]="geoloc.precision">
                                 </agm-circle>
                                 <!-- End Circle -->
                               </ng-container>
                               <ng-container *ngIf="geoloc.type === 'GPS'">
-                                <agm-marker
-                                  (mouseOut)="markerOut(i)"
-                                  (mouseOver)="markerOver(i)"
-                                  [zIndex]="4"
-                                  [latitude]="geoloc.lat"
-                                  [longitude]="geoloc.lng"
-                                  [iconUrl]="'assets/img/marker-finish.png'">
+                                <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="4" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-finish.png'">
                                   <agm-info-window>
                                     <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                                     <br>
@@ -796,13 +693,7 @@
                             <ng-container *ngFor="let geoloc of marker.geoloc">
                               <!-- Geoloc Sigfox -->
                               <ng-container *ngIf="geoloc.type === 'sigfox'">
-                                <agm-marker
-                                  (mouseOut)="markerOut(i)"
-                                  (mouseOver)="markerOver(i)"
-                                  [zIndex]="3"
-                                  [latitude]="geoloc.lat"
-                                  [longitude]="geoloc.lng"
-                                  [iconUrl]="'assets/img/marker-sigfox.png'">
+                                <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="3" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-sigfox.png'">
                                   <agm-info-window>
                                     <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                                     <br>
@@ -816,28 +707,14 @@
                                   </agm-info-window>
                                 </agm-marker>
                                 <!-- Circle -->
-                                <agm-circle *ngIf="circlePrecision || isCircleVisible[i]" [visible]="isCircleVisible[i]"
-                                            [zIndex]="1"
-                                            [strokePosition]="CENTER"
-                                            [strokeWeight]="1"
-                                            [strokeColor]="'#8d5dd1'"
-                                            [fillOpacity]="0.1"
-                                            [fillColor]="'#8d5dd1'"
-                                            [latitude]="geoloc.lat"
-                                            [longitude]="geoloc.lng"
+                                <agm-circle *ngIf="circlePrecision || isCircleVisible[i]" [visible]="isCircleVisible[i]" [zIndex]="1" [strokePosition]="CENTER" [strokeWeight]="1" [strokeColor]="'#8d5dd1'" [fillOpacity]="0.1" [fillColor]="'#8d5dd1'" [latitude]="geoloc.lat" [longitude]="geoloc.lng"
                                             [radius]="geoloc.precision">
                                 </agm-circle>
                                 <!-- End Circle -->
                               </ng-container>
                               <!-- Geoloc GPS -->
                               <ng-container *ngIf="geoloc.type === 'GPS'">
-                                <agm-marker
-                                  (mouseOut)="markerOut(i)"
-                                  (mouseOver)="markerOver(i)"
-                                  [zIndex]="3"
-                                  [latitude]="geoloc.lat"
-                                  [longitude]="geoloc.lng"
-                                  [iconUrl]="'assets/img/marker-gps.png'">
+                                <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="3" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-gps.png'">
                                   <agm-info-window>
                                     <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                                     <br>
@@ -857,11 +734,7 @@
                       </ng-container>
                       <!-- End Markers -->
 
-                      <agm-directions *ngIf="device.Messages.length > 0"
-                                      [directionsDisplayStore]="directionsDisplayStore"
-                                      [travelMode]="travelMode"
-                                      [routesColor]="device.color"
-                                      [geolocMessages]="device.Messages">
+                      <agm-directions *ngIf="device.Messages.length > 0" [directionsDisplayStore]="directionsDisplayStore" [travelMode]="travelMode" [routesColor]="device.color" [geolocMessages]="device.Messages">
                       </agm-directions>
 
                     </ng-container>
@@ -886,4 +759,3 @@
 </div>
 
 <toaster-container [toasterconfig]="toasterconfig"></toaster-container>
-

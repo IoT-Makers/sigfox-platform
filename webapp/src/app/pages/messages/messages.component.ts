@@ -152,7 +152,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   showBaseStations(deviceId: string, time: number): void {
     this.receptions = [];
-    const user = this.userApi.getCachedCurrent();
 
     this.userApi.getConnectors(this.user.id, {where: {type: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
       if (connectors.length > 0) {
