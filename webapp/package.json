@@ -43,6 +43,7 @@
     "angular2-datatable": "0.6.0",
     "angular2-ladda": "1.2.0",
     "angular2-moment": "^1.7.1",
+    "angular2-multiselect-dropdown": "^2.3.0",
     "angular2-text-mask": "8.0.0",
     "angular2-toaster": "^4.0.1",
     "chart.js": "2.5.0",

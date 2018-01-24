@@ -224,4 +224,29 @@ a.text-geoloc-ble:focus, a.text-geoloc-ble:hover {
 .badge-geoloc-ble[href]:focus, .badge-geoloc-ble[href]:hover {
   background-color: darken($geoloc-ble, 20%); }
 
+// Select
+.select-category {
+  color: #ccc;
+}
+.select-category .c-token{
+  background: $category !important;
+}
+.select-category .pure-checkbox label::before {
+  border-color: $category !important;
+}
+.select-category .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
+  background: $category !important;
+}
 
+.select-device {
+  color: #ccc;
+}
+.select-device .c-token{
+  background: $device !important;
+}
+.select-device .pure-checkbox label::before {
+  border-color: $device !important;
+}
+.select-device .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
+  background: $device !important;
+}

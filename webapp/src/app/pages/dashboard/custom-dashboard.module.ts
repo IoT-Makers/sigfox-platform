@@ -11,6 +11,7 @@ import {MomentModule} from 'angular2-moment';
 import {DataTableModule} from 'angular2-datatable';
 import {TooltipModule} from 'ng2-bootstrap';
 import {DirectionsDirective} from './directions.directive';
+import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import {DirectionsDirective} from './directions.directive';
     DataTableModule,
     MomentModule,
     TooltipModule.forRoot(),
-    AgmCoreModule
+    AgmCoreModule,
+    AngularMultiSelectModule
   ],
   declarations: [CustomDashboardComponent, DirectionsDirective]
 })
