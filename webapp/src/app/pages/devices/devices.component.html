@@ -84,7 +84,7 @@
     <div *ngIf="edit" class="col-md-6">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-wrench fa-lg"></i> <strong>Edit Device</strong>
+          <i class="fa fa-wrench fa-lg"></i> <strong>Edit device</strong> - <span class="text-device">{{deviceToEdit.name ? deviceToEdit.name : deviceToEdit.id}}</span>
           <button class="mt-0 btn btn-outline-secondary pull-right" (click)="cancel()"><i
             class="fa fa-close text-danger"></i></button>
         </div>

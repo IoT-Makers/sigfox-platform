@@ -18,12 +18,23 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private devices: Array<Device> = [];
   private categories: Array<Category> = [];
 
+  // Date
+  private dateTimeSettings = {
+    bigBanner: true,
+    timePicker: true,
+    format: 'dd-MMM-yyyy hh:mm a',
+    to: new Date(),
+    defaultOpen: false
+  };
+
   // Select
-  private selectedWidgetType: Array<Object>  = [];
-  private selectedMapType: Array<Object>  = [];
-  private selectedTableType: Array<Object>  = [];
-  private selectedCategories: Array<Object> = [];
-  private selectedDevices: Array<Object> = [];
+  private selectedWidgetType = [];
+  private selectedMapType = [];
+  private selectedTableType = [];
+  private selectedCategories = [];
+  private selectedDevices = [];
+  private selectedDateTimeBegin: Date = new Date();
+  private selectedGeolocType = [];
 
   private selectCategories: Array<Object> = [];
   private selectDevices: Array<Object> = [];
@@ -43,6 +54,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private selectTableType = [
     {id: 'default', itemName: 'Default'},
     {id: 'custom', itemName: 'Custom'},
+  ];
+  private selectGeolocType = [
+    {id: 'GPS', itemName: 'GPS'},
+    {id: 'sigfox', itemName: 'Sigfox'},
+    {id: 'preferGPS', itemName: 'Prefer GPS'}
   ];
 
   private selectOneSettings = {
@@ -91,7 +107,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     icon: '',
     description: '',
     type: '',
-    width: '6',
+    width: '12',
     filter: {
       where: {
         or: []
@@ -100,11 +116,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     options: {}
   };
 
-
-
   // Tracking
   public directionsDisplayStore = [];
-  public travelMode = 'DRIVING';
 
   private isCircleVisible: boolean[] = [];
 
@@ -116,7 +129,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       timeout: 5000,
       animation: 'fade'
     });
-
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
@@ -174,7 +186,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.devices.forEach((device: Device) => {
         const item = {
           id: device.id,
-          itemName: device.name ? device.name : device.id
+          itemName: device.name ? device.id + ' - ' + device.name : device.id
         };
         this.selectDevices.push(item);
       });
@@ -205,6 +217,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.selectedWidgetType = [];
     this.selectedMapType = [];
     this.selectedTableType = [];
+    this.selectedGeolocType = [];
 
     // Reset widget
     this.newWidget = {
@@ -355,11 +368,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         include: [{
           relation: 'Messages',
           scope: {
+            fields: ['geoloc', 'createdAt'],
             limit: 500,
             order: 'createdAt DESC',
             where: {
               and: [
-                { geoloc: { neq: null } }
+                { geoloc: { neq: null } },
+                { createdAt: {gte: this.selectedDateTimeBegin.toISOString()} }
               ]
             }
           }
@@ -405,7 +420,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.toasterService.pop('error', 'Error', 'Please select at least one category or device.');
       return;
     }
+
     delete this.newWidget.data;
+
     if (this.newWidget.options.style) {
       const myObject = eval(this.newWidget.options.style);
       console.log(myObject);
@@ -436,6 +453,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.selectedTableType = [];
     this.selectedCategories = [];
     this.selectedDevices = [];
+    this.selectedGeolocType = [];
+    this.selectedDateTimeBegin = new Date();
 
     if (this.newWidget.type !== '')
       this.selectedWidgetType = [{id: this.newWidget.type, itemName: this.capitalizeFirstLetter(this.newWidget.type)}];
@@ -449,6 +468,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         id: this.newWidget.options.tableType,
         itemName: this.capitalizeFirstLetter(this.newWidget.options.tableType)
       }];
+    if (this.newWidget.options.geolocType)
+      this.selectedGeolocType = [{
+        id: this.newWidget.options.geolocType,
+        itemName: this.capitalizeFirstLetter(this.newWidget.options.geolocType)
+      }];
 
     this.newWidget.filter.where.or.forEach((item: any, index: number) => {
       if (item.categoryId) {
@@ -456,8 +480,21 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         this.selectedCategories.push({id: item.categoryId, itemName: foundCategory.name});
       } else if (item.id) {
         const foundDevice = _.find(this.devices, {id: item.id});
-        this.selectedDevices.push({id: item.id, itemName: foundDevice.name ? foundDevice.name : foundDevice.id});
+        this.selectedDevices.push({id: item.id, itemName: foundDevice.name ?  foundDevice.id + ' - ' + foundDevice.name : foundDevice.id});
       }
+    });
+
+    if (this.newWidget.type === 'tracking')
+      this.selectedDateTimeBegin = new Date(this.newWidget.filter.include[0].scope.where.and[1].createdAt.gte);
+
+    console.log(this.selectedDateTimeBegin);
+  }
+
+  onMapReady($event) {
+    console.log($event);
+    this.widgets.forEach(widget => {
+      if (widget.type === 'tracking')
+        widget.data[0].visibility = true;
     });
   }
 
@@ -468,14 +505,57 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.dashboardReady = true;
       if (this.widgets) {
         this.widgets.forEach(widget => {
-          this.userApi.getDevices(this.user.id, widget.filter).subscribe(devices => {
-            widget.data = devices;
+          this.userApi.getDevices(this.user.id, widget.filter).subscribe((devices: any[]) => {
             devices.forEach(device => {
               device.visibility = false;
               device.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
             });
+            widget.data = devices;
+
             if (widget.options.tableType === 'custom') {
               widget.data = this.buildCustomTable(widget);
+            }
+
+            // Tracking
+            if (widget.options.geolocType === 'GPS') {
+              widget.data.forEach(device => {
+                device.Messages = _.filter(device.Messages, {geoloc: [{type: 'GPS'}]});
+                // Filter others
+                device.Messages.forEach((message, i) => {
+                  message.geoloc.forEach((geoloc, j) => {
+                    if (geoloc.type !== 'GPS') {
+                      device.Messages[i].geoloc.splice(j, 1);
+                    }
+                  });
+                });
+              });
+            } else if (widget.options.geolocType === 'sigfox') {
+              widget.data.forEach(device => {
+                // Message contains Sigfox
+                device.Messages = _.filter(device.Messages, {geoloc: [{type: 'sigfox'}]});
+                // Filter others
+                device.Messages.forEach((message, i) => {
+                  message.geoloc.forEach((geoloc, j) => {
+                    if (geoloc.type !== 'sigfox') {
+                      device.Messages[i].geoloc.splice(j, 1);
+                    }
+                  });
+                });
+              });
+            } else if (widget.options.geolocType === 'preferGPS') {
+              widget.data.forEach(device => {
+                device.Messages.forEach((message, i) => {
+                  let hasSigfox = false;
+                  if (message.geoloc.length > 1) {
+                    message.geoloc.forEach((geoloc, j) => {
+                      if (geoloc.type === 'sigfox')
+                        hasSigfox = true;
+                      if (hasSigfox)
+                        device.Messages[i].geoloc.splice(j, 1);
+                    });
+                  }
+                });
+              });
             }
             console.log(this.widgets);
           });
@@ -522,7 +602,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     return returnedArray;
   }
 
-  // Map functions
+// Map functions
   setCircles() {
     for (let i = 0; i < this.devices.length; i++) {
       this.isCircleVisible.push(false);

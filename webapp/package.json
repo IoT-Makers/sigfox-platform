@@ -76,6 +76,7 @@
     "ts-node": "~3.2.0",
     "tslint": "~5.3.2",
     "typescript": "~2.3.3",
+    "vk-custom-angular2-datetimepicker": "^1.1.11",
     "zone.js": "^0.8.20"
   },
   "devDependencies": {}

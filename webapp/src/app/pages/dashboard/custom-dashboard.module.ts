@@ -12,6 +12,7 @@ import {DataTableModule} from 'angular2-datatable';
 import {TooltipModule} from 'ng2-bootstrap';
 import {DirectionsDirective} from './directions.directive';
 import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
+import {AngularDateTimePickerModule} from 'vk-custom-angular2-datetimepicker';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-m
     MomentModule,
     TooltipModule.forRoot(),
     AgmCoreModule,
-    AngularMultiSelectModule
+    AngularMultiSelectModule,
+    AngularDateTimePickerModule
   ],
   declarations: [CustomDashboardComponent, DirectionsDirective]
 })

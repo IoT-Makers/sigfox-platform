@@ -333,6 +333,33 @@
               </div>
 
               <div class="form-group row">
+                <label class="col-md-3 form-control-label">Beginning at
+                </label>
+                <div class="col-md-6">
+                  <angular2-date-picker name="dateTime"
+                                        [(ngModel)]="selectedDateTimeBegin"
+                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter('tracking')"
+                                        [settings]="dateTimeSettings"
+                                        required>
+                  </angular2-date-picker>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Geoloc type
+                </label>
+                <div class="col-md-6">
+                  <angular2-multiselect name="geolocType"
+                                        [data]="selectGeolocType"
+                                        [(ngModel)]="selectedGeolocType"
+                                        (onSelect)="newWidget.options.geolocType = $event.id"
+                                        [settings]="selectOneSettings"
+                                        required>
+                  </angular2-multiselect>
+                </div>
+              </div>
+
+              <div class="form-group row">
                 <label class="col-md-3 form-control-label">Map type</label>
                 <div class="col-md-6">
                   <angular2-multiselect name="selectMapType"
@@ -434,7 +461,7 @@
             <ng-container *ngIf="widget.data">
               <agm-map [latitude]="widget.options.lat ? widget.options.lat : 48.864716"
                        [longitude]="widget.options.lng ? widget.options.lng : 2.349014"
-                       [zoom]="widget.options.zoom ? widget.options.zoom : 2"
+                       [zoom]="widget.options.zoom ? widget.options.zoom : 4"
                        [fullscreenControl]="true"
                        [mapTypeId]="widget.options.mapTypeId !== 'custom' ? widget.options.mapTypeId : 'roadmap'"
                        [styles]="widget.options.style ? widget.options.style : ''">
@@ -604,7 +631,6 @@
           <ng-container *ngIf="widget.type=='tracking'">
             <div class="row" *ngIf="widget.data">
               <div class="col-md-2 table-responsive">
-
                 <table class="table table-hover">
                   <!--<thead class="thead-inverse">
                   <tr>
@@ -635,6 +661,7 @@
                          [longitude]="widget.options.lng ? widget.options.lng : 2.349014"
                          [zoom]="widget.options.zoom ? widget.options.zoom : 2"
                          [fullscreenControl]="true"
+                         (mapReady)="onMapReady($event)"
                          [mapTypeId]="widget.options.mapTypeId !== 'custom' ? widget.options.mapTypeId : 'roadmap'"
                          [styles]="widget.options.style ? widget.options.style : '' ">
                   <ng-container *ngFor="let device of widget.data; let i = index">
@@ -780,7 +807,11 @@
                       </ng-container>
                       <!-- End Markers -->
 
-                      <agm-directions *ngIf="device.Messages.length > 0" [directionsDisplayStore]="directionsDisplayStore" [travelMode]="travelMode" [routesColor]="device.color" [geolocMessages]="device.Messages">
+                      <agm-directions *ngIf="device.Messages.length > 1"
+                                      [directionsDisplayStore]="directionsDisplayStore"
+                                      [travelMode]="'DRIVING'"
+                                      [routesColor]="device.color"
+                                      [geolocMessages]="device.Messages">
                       </agm-directions>
 
                     </ng-container>

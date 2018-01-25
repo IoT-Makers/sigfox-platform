@@ -1,6 +1,6 @@
 import {AfterViewInit, Directive, Input, OnDestroy} from '@angular/core';
 import {GoogleMapsAPIWrapper} from '@agm/core';
-import {Message} from '../../shared/sdk/models';
+import {Geoloc, Message} from '../../shared/sdk/models';
 
 declare let google: any;
 
@@ -13,7 +13,7 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
   @Input() geolocMessages: Message[];
   @Input() routesColor: string;
   @Input() directionsDisplayStore: any[];
-  @Input() travelMode: string = '#ee3b38';
+  @Input() travelMode = '#ee3b38';
 
   constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
   }
@@ -32,6 +32,7 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
     console.log('--------------------------------');
 
     let messages: Message[] = [];
+
     const startCoord = this.geolocMessages[0].geoloc[0];
     const endCoord = this.geolocMessages[this.geolocMessages.length - 1].geoloc[0];
 
@@ -46,10 +47,11 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
       console.log("messagesCount", messages.length);
       console.log(messages);*/
 
-      messages.forEach(message => {
-        const coord = message.geoloc[0];
-        const latLng = new google.maps.LatLng(coord.lat, coord.lng);
-        waypoints.push({location: latLng, stopover: true});
+      messages.forEach((message: Message) => {
+        message.geoloc.forEach((geoloc: Geoloc) => {
+          const latLng = new google.maps.LatLng(geoloc.lat, geoloc.lng);
+          waypoints.push({location: latLng, stopover: true});
+        });
       });
 
       //console.log(waypoints);
@@ -103,7 +105,7 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    for (let i in this.directionsDisplayStore) {
+    for (const i in this.directionsDisplayStore) {
       this.directionsDisplayStore[i].setMap(null);
     }
     this.directionsDisplayStore = [];
