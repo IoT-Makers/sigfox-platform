@@ -491,10 +491,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   onMapReady($event) {
-    /*this.widgets.forEach(widget => {
+    this.widgets.forEach(widget => {
       if (widget.type === 'tracking')
         widget.data[0].visibility = true;
-    });*/
+    });
   }
 
   loadWidgets(): void {
