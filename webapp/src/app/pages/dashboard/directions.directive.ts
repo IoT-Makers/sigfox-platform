@@ -15,13 +15,11 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
   @Input() directionsDisplayStore: any[];
   @Input() travelMode: string;
 
-  constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
+    constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
   }
 
   ngAfterViewInit() {
-    this._googleMapsAPIWrapper.getNativeMap().then((map) => {
-      this.buildDirections();
-    });
+    this.buildDirections();
   }
 
   public generateColor(): string {
