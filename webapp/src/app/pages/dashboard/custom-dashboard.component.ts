@@ -263,7 +263,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       icon: '',
       description: '',
       type: '',
-      width: '6',
+      width: '12',
       filter: {
         where: {
           or: []
@@ -492,10 +492,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   onMapReady($event) {
     console.log($event);
-    this.widgets.forEach(widget => {
+    /*this.widgets.forEach(widget => {
       if (widget.type === 'tracking')
         widget.data[0].visibility = true;
-    });
+    });*/
   }
 
   loadWidgets(): void {

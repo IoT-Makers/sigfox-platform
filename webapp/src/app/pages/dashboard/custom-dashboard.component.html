@@ -463,7 +463,7 @@
                        [longitude]="widget.options.lng ? widget.options.lng : 2.349014"
                        [zoom]="widget.options.zoom ? widget.options.zoom : 4"
                        [fullscreenControl]="true"
-                       [mapTypeId]="widget.options.mapTypeId !== 'custom' ? widget.options.mapTypeId : 'roadmap'"
+                       [mapTypeId]="widget.options.mapTypeId !== 'custom' && widget.options.mapTypeId ? widget.options.mapTypeId : 'roadmap'"
                        [styles]="widget.options.style ? widget.options.style : ''">
                 <ng-container *ngFor="let device of widget.data; let i = index">
                   <ng-container *ngFor="let geoloc of device.location">
@@ -662,7 +662,7 @@
                          [zoom]="widget.options.zoom ? widget.options.zoom : 2"
                          [fullscreenControl]="true"
                          (mapReady)="onMapReady($event)"
-                         [mapTypeId]="widget.options.mapTypeId !== 'custom' ? widget.options.mapTypeId : 'roadmap'"
+                         [mapTypeId]="widget.options.mapTypeId !== 'custom' && widget.options.mapTypeId ? widget.options.mapTypeId : 'roadmap'"
                          [styles]="widget.options.style ? widget.options.style : '' ">
                   <ng-container *ngFor="let device of widget.data; let i = index">
                     <ng-container *ngIf="device.visibility === true">
