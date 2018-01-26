@@ -14,7 +14,6 @@ import {FullLayoutComponent} from './layouts/full-layout.component';
 import {SDKBrowserModule} from './shared/sdk/index';
 import {AuthGuard} from './_guards/auth.guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {AgmCoreModule} from '@agm/core';
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -26,10 +25,7 @@ import {AgmCoreModule} from '@agm/core';
     AppRoutingModule,
     BsDropdownModule.forRoot(),
     ChartsModule,
-    SDKBrowserModule.forRoot(),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
-    })
+    SDKBrowserModule.forRoot()
   ],
   declarations: [
     AppComponent,

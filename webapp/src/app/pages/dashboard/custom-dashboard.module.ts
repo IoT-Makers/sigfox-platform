@@ -25,7 +25,9 @@ import {AngularDateTimePickerModule} from 'vk-custom-angular2-datetimepicker';
     DataTableModule,
     MomentModule,
     TooltipModule.forRoot(),
-    AgmCoreModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
+    }),
     AngularMultiSelectModule,
     AngularDateTimePickerModule
   ],
