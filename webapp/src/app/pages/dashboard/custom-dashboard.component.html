@@ -639,14 +639,14 @@
                   </thead>-->
                   <tbody>
                   <tr *ngFor="let device of widget.data; let i = index">
-                    <!--<td class="text-center text-device">
+                    <td class="text-center text-device">
                       <strong>{{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong>
                       <label class="switch switch-sm switch-3d switch-success">
                         <input (change)="device.visibility = !device.visibility" [checked]="device.visibility" type="checkbox" class="switch-input">
                         <span class="switch-label"></span>
                         <span class="switch-handle"></span>
                       </label>
-                    </td>-->
+                    </td>
                     <!--<td class="text-center">
                     <label class="checkbox-inline" for="inline-checkbox1">
                       <input (change)="device.visibility = !device.visibility" [checked]="device.visibility" type="checkbox" id="inline-checkbox1" name="inline-checkbox1" value="option1">
@@ -821,7 +821,7 @@
                       <!-- End Markers -->
 
                       <agm-directions *ngIf="device.Messages.length > 1"
-                                      [directionsDisplayStore]="directionsDisplayStore"
+                                      [directionsDisplayStore]="device.directionsDisplayStore"
                                       [travelMode]="'DRIVING'"
                                       [geolocMessages]="device.Messages">
                       </agm-directions>

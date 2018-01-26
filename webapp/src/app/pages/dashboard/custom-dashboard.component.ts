@@ -116,9 +116,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     options: {}
   };
 
-  // Tracking
-  public directionsDisplayStore = [];
-
   private isCircleVisible: boolean[] = [];
 
   // Notifications
@@ -491,10 +488,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   onMapReady($event) {
-    this.widgets.forEach(widget => {
+    /*this.widgets.forEach(widget => {
       if (widget.type === 'tracking')
         widget.data[0].visibility = true;
-    });
+    });*/
   }
 
   loadWidgets(): void {
@@ -507,6 +504,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           this.userApi.getDevices(this.user.id, widget.filter).subscribe((devices: any[]) => {
             devices.forEach(device => {
               device.visibility = false;
+              device.directionsDisplayStore = [];
               //device.color = this.generateColor();
             });
             widget.data = devices;
