@@ -24,7 +24,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     timePicker: true,
     format: 'dd-MMM-yyyy hh:mm a',
     to: new Date(),
-    defaultOpen: false
+    defaultOpen: false,
+    placeholder: 'Starting date'
   };
 
   // Select
@@ -481,10 +482,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       }
     });
 
-    if (this.newWidget.type === 'tracking')
+    if (this.newWidget.type === 'tracking') {
       this.selectedDateTimeBegin = new Date(this.newWidget.filter.include[0].scope.where.and[1].createdAt.gte);
-
-    console.log(this.selectedDateTimeBegin);
+      this.dateTimeSettings.placeholder = this.selectedDateTimeBegin.toISOString();
+    }
   }
 
   onMapReady($event) {

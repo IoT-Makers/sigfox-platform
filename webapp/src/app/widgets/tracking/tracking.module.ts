@@ -5,11 +5,11 @@ import {MomentModule} from 'angular2-moment';
 import {AgmCoreModule, GoogleMapsAPIWrapper} from '@agm/core';
 import {TrackingComponent} from './tracking.component';
 import {TrackingRoutingModule} from './tracking-routing.module';
-import {DateTimePickerModule} from 'ng-pick-datetime';
 import {HttpClientModule} from '@angular/common/http';
 import {SelectModule} from 'ng2-select';
 import {AccordionModule} from 'ng2-bootstrap';
 import {DirectionsDirective} from './directions.directive';
+import {AngularDateTimePickerModule} from 'vk-custom-angular2-datetimepicker';
 
 @NgModule({
   imports: [
@@ -17,11 +17,11 @@ import {DirectionsDirective} from './directions.directive';
     CommonModule,
     MomentModule,
     FormsModule,
-    DateTimePickerModule,
     HttpClientModule,
     SelectModule,
     AccordionModule.forRoot(),
-    AgmCoreModule
+    AgmCoreModule,
+    AngularDateTimePickerModule
   ],
   providers: [
     GoogleMapsAPIWrapper

@@ -5,9 +5,9 @@ import {AnalyticsRoutingModule} from './analytics-routing.module';
 import {AnalyticsComponent} from './analytics.component';
 import {MomentModule} from 'angular2-moment';
 import {FormsModule} from '@angular/forms';
-import {DateTimePickerModule} from 'ng-pick-datetime';
 import {SelectModule} from 'ng2-select';
 import {TooltipModule} from 'ng2-bootstrap';
+import {AngularDateTimePickerModule} from 'vk-custom-angular2-datetimepicker';
 
 @NgModule({
   imports: [
@@ -17,7 +17,7 @@ import {TooltipModule} from 'ng2-bootstrap';
     MomentModule,
     FormsModule,
     TooltipModule.forRoot(),
-    DateTimePickerModule,
+    AngularDateTimePickerModule,
     SelectModule
   ],
   declarations: [AnalyticsComponent]

@@ -25,6 +25,24 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
   public data = [];
 
+  // Date
+  private dateBeginSettings = {
+    bigBanner: true,
+    timePicker: true,
+    format: 'dd-MMM-yyyy hh:mm a',
+    to: new Date(),
+    defaultOpen: false,
+    placeholder: 'Select begin date'
+  };
+  private dateEndSettings = {
+    bigBanner: true,
+    timePicker: true,
+    format: 'dd-MMM-yyyy hh:mm a',
+    to: new Date(),
+    defaultOpen: false,
+    placeholder: 'Select end date'
+  };
+
   // Messages graph
   private graphRange = 'hourly';
 
@@ -91,6 +109,9 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
       this.mobile = true;
     }
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
+    this.dateBeginSettings.placeholder = this.dateBegin.toISOString();
+    this.dateEndSettings.placeholder = this.dateEnd.toISOString();
+
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     // Real Time
@@ -200,6 +221,9 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     this.deviceChartColors = [];
     this.deviceChartLabels = [];
     this.deviceChartData = [];
+
+    console.log(this.dateBegin.toISOString());
+    console.log(this.dateEnd.toISOString());
 
     this.deviceApi.timeSeries(this.selectedDevice.id, this.dateBegin.toISOString(), this.dateEnd.toISOString()).subscribe((result: any) => {
 

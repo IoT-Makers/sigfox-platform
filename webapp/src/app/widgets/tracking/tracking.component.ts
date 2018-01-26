@@ -56,6 +56,23 @@ export class TrackingComponent implements OnInit, OnDestroy {
     "stylers": [{"hue": "#00FF6A"}, {"saturation": -1.0989010989011234}, {"lightness": 11.200000000000017}, {"gamma": 1}]
   }];
 
+  // Date
+  private dateBeginSettings = {
+    bigBanner: true,
+    timePicker: true,
+    format: 'dd-MMM-yyyy hh:mm a',
+    to: new Date(),
+    defaultOpen: false,
+    placeholder: 'Select begin date'
+  };
+  private dateEndSettings = {
+    bigBanner: true,
+    timePicker: true,
+    format: 'dd-MMM-yyyy hh:mm a',
+    to: new Date(),
+    defaultOpen: false,
+    placeholder: 'Select end date'
+  };
   private dateBegin: Date = new Date();
   private dateEnd: Date = new Date();
   private searchResult = '';
@@ -186,6 +203,8 @@ export class TrackingComponent implements OnInit, OnDestroy {
       this.mobile = true;
     }
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
+    this.dateBeginSettings.placeholder = this.dateBegin.toISOString();
+    this.dateEndSettings.placeholder = this.dateEnd.toISOString();
 
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();

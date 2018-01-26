@@ -11,14 +11,24 @@
             <strong class="text-geoloc-sigfox">Period</strong>
           </div>
           <div class="row">
+
             <div class="col-sm-12 col-md-6">
-              <span>Start date & time:</span>
-              <owl-date-time [(ngModel)]="dateBegin"></owl-date-time>
+              <angular2-date-picker name="dateBegin"
+                                    [(ngModel)]="dateBegin"
+                                    (onDateSelect)="dateBegin = $event"
+                                    [settings]="dateBeginSettings"
+                                    required>
+              </angular2-date-picker>
             </div>
             <div class="col-sm-12 col-md-6">
-              <span>End date & time:</span>
-              <owl-date-time [(ngModel)]="dateEnd"></owl-date-time>
+              <angular2-date-picker name="dateEnd"
+                                    [(ngModel)]="dateEnd"
+                                    (onDateSelect)="dateEnd = $event"
+                                    [settings]="dateEndSettings"
+                                    required>
+              </angular2-date-picker>
             </div>
+
           </div>
         </accordion-group>
 
