@@ -667,7 +667,7 @@
                   <ng-container *ngFor="let device of widget.data; let i = index">
                     <ng-container *ngIf="device.visibility === true">
                       <!-- Polylines -->
-                      <agm-polyline *ngIf="polylines" [zIndex]="2" [geodesic]="true" [strokeOpacity]="0.5">
+                      <agm-polyline *ngIf="widget.options.polylines" [zIndex]="2" [geodesic]="true" [strokeOpacity]="0.5">
                         <ng-container *ngFor="let marker of device.Messages">
                           <ng-container *ngFor="let geoloc of marker.geoloc">
                             <agm-polyline-point [latitude]="geoloc.lat" [longitude]="geoloc.lng">
@@ -687,6 +687,8 @@
                               <ng-container *ngIf="geoloc.type === 'sigfox'">
                                 <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="4" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-start.png'">
                                   <agm-info-window>
+                                    <strong><b>ID:</b> <span class="text-device">{{device.name ? device.id + ' - ' + device.name : device.id}}</span></strong>
+                                    <br>
                                     <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                                     <br>
                                     <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
@@ -707,6 +709,8 @@
                               <ng-container *ngIf="geoloc.type === 'GPS'">
                                 <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="4" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-start.png'">
                                   <agm-info-window>
+                                    <strong><b>ID:</b> <span class="text-device">{{device.name ? device.id + ' - ' + device.name : device.id}}</span></strong>
+                                    <br>
                                     <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                                     <br>
                                     <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
@@ -727,6 +731,8 @@
                               <ng-container *ngIf="geoloc.type === 'sigfox'">
                                 <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="4" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-finish.png'">
                                   <agm-info-window>
+                                    <strong><b>ID:</b> <span class="text-device">{{device.name ? device.id + ' - ' + device.name : device.id}}</span></strong>
+                                    <br>
                                     <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                                     <br>
                                     <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
@@ -747,6 +753,8 @@
                               <ng-container *ngIf="geoloc.type === 'GPS'">
                                 <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="4" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-finish.png'">
                                   <agm-info-window>
+                                    <strong><b>ID:</b> <span class="text-device">{{device.name ? device.id + ' - ' + device.name : device.id}}</span></strong>
+                                    <br>
                                     <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                                     <br>
                                     <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
@@ -768,6 +776,8 @@
                               <ng-container *ngIf="geoloc.type === 'sigfox'">
                                 <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="3" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-sigfox.png'">
                                   <agm-info-window>
+                                    <strong><b>ID:</b> <span class="text-device">{{device.name ? device.id + ' - ' + device.name : device.id}}</span></strong>
+                                    <br>
                                     <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                                     <br>
                                     <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
@@ -789,6 +799,8 @@
                               <ng-container *ngIf="geoloc.type === 'GPS'">
                                 <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="3" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/marker-gps.png'">
                                   <agm-info-window>
+                                    <strong><b>ID:</b> <span class="text-device">{{device.name ? device.id + ' - ' + device.name : device.id}}</span></strong>
+                                    <br>
                                     <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                                     <br>
                                     <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
@@ -810,10 +822,9 @@
                       <agm-directions *ngIf="device.Messages.length > 1"
                                       [directionsDisplayStore]="directionsDisplayStore"
                                       [travelMode]="'DRIVING'"
-                                      [routesColor]="device.color"
+                                      [routesColor]=""
                                       [geolocMessages]="device.Messages">
                       </agm-directions>
-
                     </ng-container>
                   </ng-container>
                 </agm-map>

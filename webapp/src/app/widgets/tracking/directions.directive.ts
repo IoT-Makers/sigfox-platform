@@ -1,4 +1,4 @@
-import {AfterViewInit, Directive, Input, OnDestroy} from '@angular/core';
+import {AfterContentInit, Directive, Input, OnDestroy} from '@angular/core';
 import {GoogleMapsAPIWrapper} from '@agm/core';
 import {Geoloc, Message} from '../../shared/sdk/models';
 
@@ -8,18 +8,22 @@ declare let google: any;
   selector: 'agm-directions'
 })
 
-export class DirectionsDirective implements AfterViewInit, OnDestroy {
+export class DirectionsDirective implements AfterContentInit, OnDestroy {
 
   @Input() geolocMessages: Message[];
   @Input() routesColor: string;
   @Input() directionsDisplayStore: any[];
-  @Input() travelMode = '#ee3b38';
+  @Input() travelMode: string;
 
   constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
   }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     this.buildDirections();
+  }
+
+  public generateColor(): string {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
   }
 
   public buildDirections() {
@@ -32,7 +36,6 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
     console.log('--------------------------------');
 
     let messages: Message[] = [];
-
     const startCoord = this.geolocMessages[0].geoloc[0];
     const endCoord = this.geolocMessages[this.geolocMessages.length - 1].geoloc[0];
 
@@ -67,7 +70,7 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
             polylineOptions: {
               strokeWeight: 4,
               strokeOpacity: 0.5,
-              strokeColor: this.routesColor
+              strokeColor: this.routesColor ? this.routesColor : this.generateColor()
             },
             markerOptions: {
               visible: false

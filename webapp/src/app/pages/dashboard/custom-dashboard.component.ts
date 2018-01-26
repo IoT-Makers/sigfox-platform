@@ -491,11 +491,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   onMapReady($event) {
-    console.log($event);
-    /*this.widgets.forEach(widget => {
+    this.widgets.forEach(widget => {
       if (widget.type === 'tracking')
         widget.data[0].visibility = true;
-    });*/
+    });
   }
 
   loadWidgets(): void {
@@ -508,7 +507,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           this.userApi.getDevices(this.user.id, widget.filter).subscribe((devices: any[]) => {
             devices.forEach(device => {
               device.visibility = false;
-              device.color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+              //device.color = this.generateColor();
             });
             widget.data = devices;
 

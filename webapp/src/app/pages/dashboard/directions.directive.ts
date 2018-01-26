@@ -1,4 +1,4 @@
-import {AfterViewInit, Directive, Input, OnDestroy} from '@angular/core';
+import {AfterContentInit, Directive, Input, OnDestroy} from '@angular/core';
 import {GoogleMapsAPIWrapper} from '@agm/core';
 import {Geoloc, Message} from '../../shared/sdk/models';
 
@@ -8,7 +8,7 @@ declare let google: any;
   selector: 'agm-directions'
 })
 
-export class DirectionsDirective implements AfterViewInit, OnDestroy {
+export class DirectionsDirective implements AfterContentInit, OnDestroy {
 
   @Input() geolocMessages: Message[];
   @Input() routesColor: string;
@@ -18,8 +18,12 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
   constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
   }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     this.buildDirections();
+  }
+
+  public generateColor(): string {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
   }
 
   public buildDirections() {
@@ -66,7 +70,7 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
             polylineOptions: {
               strokeWeight: 4,
               strokeOpacity: 0.5,
-              strokeColor: this.routesColor
+              strokeColor: this.routesColor ? this.routesColor : this.generateColor()
             },
             markerOptions: {
               visible: false
