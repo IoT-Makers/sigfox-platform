@@ -819,13 +819,13 @@
                         </ng-container>
                       </ng-container>
                       <!-- End Markers -->
-
-                      <agm-directions *ngIf="device.Messages.length > 1"
-                                      [directionsDisplayStore]="device.directionsDisplayStore"
-                                      [travelMode]="'DRIVING'"
-                                      [routesColor]="device.color"
-                                      [geolocMessages]="device.Messages">
-                      </agm-directions>
+                      <ng-container *ngIf="device.Messages.length > 1">
+                        <agm-directions [directionsDisplayStore]="device.directionsDisplayStore"
+                                        [travelMode]="'DRIVING'"
+                                        [routesColor]="device.color"
+                                        [geolocMessages]="device.Messages">
+                        </agm-directions>
+                      </ng-container>
                     </ng-container>
                   </ng-container>
                 </agm-map>

@@ -1,4 +1,4 @@
-import {Directive, Input, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Directive, Input, OnDestroy} from '@angular/core';
 import {GoogleMapsAPIWrapper} from '@agm/core';
 import {Geoloc, Message} from '../../shared/sdk/models';
 
@@ -8,7 +8,7 @@ declare let google: any;
   selector: 'agm-directions'
 })
 
-export class DirectionsDirective implements OnInit, OnDestroy {
+export class DirectionsDirective implements AfterViewInit, OnDestroy {
 
   @Input() geolocMessages: Message[];
   @Input() routesColor: string;
@@ -18,7 +18,7 @@ export class DirectionsDirective implements OnInit, OnDestroy {
   constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.buildDirections();
   }
 
