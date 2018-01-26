@@ -17,9 +17,7 @@ import {ClickCopyDirective} from './click-copy.directive';
     FormsModule,
     ModalModule.forRoot(),
     TooltipModule.forRoot(),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
-    })
+    AgmCoreModule
   ],
   declarations: [
     MessagesComponent,

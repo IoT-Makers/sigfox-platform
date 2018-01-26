@@ -20,9 +20,7 @@ import {DataTableModule} from 'angular2-datatable';
     TabsModule.forRoot(),
     ModalModule.forRoot(),
     TooltipModule.forRoot(),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
-    }),
+    AgmCoreModule,
     LaddaModule,
     ToasterModule
   ],

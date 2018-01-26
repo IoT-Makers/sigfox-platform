@@ -22,11 +22,11 @@ export class DirectionsDirective implements AfterContentInit, OnDestroy {
     this.buildDirections();
   }
 
-  public generateColor(): string {
+  private generateColor(): string {
     return '#' + Math.floor(Math.random() * 16777215).toString(16);
   }
 
-  public buildDirections() {
+  private buildDirections() {
     console.log('--------------------------------');
     console.log(this.directionsDisplayStore);
     for (const i in this.directionsDisplayStore) {

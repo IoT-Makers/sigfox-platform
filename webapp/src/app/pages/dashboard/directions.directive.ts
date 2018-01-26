@@ -19,8 +19,9 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    console.log(1);
-    this.buildDirections();
+    this._googleMapsAPIWrapper.getNativeMap().then((map) => {
+      this.buildDirections();
+    });
   }
 
   public generateColor(): string {

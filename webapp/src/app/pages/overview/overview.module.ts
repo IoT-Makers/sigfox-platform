@@ -21,9 +21,7 @@ import {NgxGaugeModule} from 'ngx-gauge';
     FormsModule,
     MomentModule,
     TooltipModule.forRoot(),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
-    })
+    AgmCoreModule
   ],
   declarations: [
     OverviewComponent,
