@@ -22,10 +22,6 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
     this.buildDirections();
   }
 
-  private generateColor(): string {
-    return '#' + Math.floor(Math.random() * 16777215).toString(16);
-  }
-
   private buildDirections() {
     console.log('Building routes');
     this.directionsDisplayStore.forEach(directions => {
@@ -57,7 +53,7 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
 
       //console.log(waypoints);
 
-      /*if (waypoints.length <= 23) {
+      if (waypoints.length <= 23) {
 
         this._googleMapsAPIWrapper.getNativeMap().then((map) => {
           const directionsService = new google.maps.DirectionsService;
@@ -68,7 +64,7 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
             polylineOptions: {
               strokeWeight: 4,
               strokeOpacity: 0.5,
-              strokeColor: this.routesColor ? this.routesColor : this.generateColor()
+              strokeColor: this.routesColor ? this.routesColor : '#d71223'
             },
             markerOptions: {
               visible: false
@@ -93,14 +89,14 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
               directionsDisplay.setDirections(response);
             } else {
               console.log(status);
-              /!*window.alert('Directions request failed due to ' + status);*!/
+              /*window.alert('Directions request failed due to ' + status);*/
             }
           });
         }, err => {
           console.log('error', err);
         });
 
-      }*/
+      }
 
     }
   }

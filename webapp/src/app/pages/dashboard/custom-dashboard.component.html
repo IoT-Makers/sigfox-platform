@@ -668,7 +668,7 @@
                   <ng-container *ngFor="let device of widget.data; let i = index">
                     <ng-container *ngIf="device.visibility === true">
                       <!-- Polylines -->
-                      <agm-polyline *ngIf="widget.options.polylines" [zIndex]="2" [geodesic]="true" [strokeOpacity]="0.5">
+                      <agm-polyline *ngIf="widget.options.polylines" [zIndex]="2" [geodesic]="true" [strokeColor]="device.color" [strokeOpacity]="0.5">
                         <ng-container *ngFor="let marker of device.Messages">
                           <ng-container *ngFor="let geoloc of marker.geoloc">
                             <agm-polyline-point [latitude]="geoloc.lat" [longitude]="geoloc.lng">
