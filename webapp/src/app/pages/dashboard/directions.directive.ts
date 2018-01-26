@@ -15,25 +15,23 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
   @Input() directionsDisplayStore: any[];
   @Input() travelMode: string;
 
-    constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
+  constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
   }
 
   ngAfterViewInit() {
     this.buildDirections();
   }
 
-  public generateColor(): string {
+  private generateColor(): string {
     return '#' + Math.floor(Math.random() * 16777215).toString(16);
   }
 
-  public buildDirections() {
-    console.log('--------------------------------');
-    console.log(this.directionsDisplayStore);
-    for (const i in this.directionsDisplayStore) {
-      this.directionsDisplayStore[i].setMap(null);
-    }
+  private buildDirections() {
+    console.log('Building routes');
+    this.directionsDisplayStore.forEach(directions => {
+      directions.setMap(null);
+    });
     this.directionsDisplayStore = [];
-    console.log('--------------------------------');
 
     let messages: Message[] = [];
     const startCoord = this.geolocMessages[0].geoloc[0];
@@ -59,7 +57,7 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
 
       //console.log(waypoints);
 
-      if (waypoints.length <= 23) {
+      /*if (waypoints.length <= 23) {
 
         this._googleMapsAPIWrapper.getNativeMap().then((map) => {
           const directionsService = new google.maps.DirectionsService;
@@ -95,22 +93,22 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
               directionsDisplay.setDirections(response);
             } else {
               console.log(status);
-              /*window.alert('Directions request failed due to ' + status);*/
+              /!*window.alert('Directions request failed due to ' + status);*!/
             }
           });
         }, err => {
           console.log('error', err);
         });
 
-      }
+      }*/
 
     }
   }
 
   ngOnDestroy() {
-    for (const i in this.directionsDisplayStore) {
-      this.directionsDisplayStore[i].setMap(null);
-    }
+    this.directionsDisplayStore.forEach(directions => {
+      directions.setMap(null);
+    });
     this.directionsDisplayStore = [];
   }
 

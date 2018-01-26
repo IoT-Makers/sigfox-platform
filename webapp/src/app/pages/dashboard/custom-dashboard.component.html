@@ -666,7 +666,7 @@
                          [styles]="widget.options.style ? widget.options.style : '' ">
 
                   <ng-container *ngFor="let device of widget.data; let i = index">
-                    <!--<ng-container *ngIf="device.visibility === true">-->
+                    <ng-container *ngIf="device.visibility === true">
                       <!-- Polylines -->
                       <agm-polyline *ngIf="widget.options.polylines" [zIndex]="2" [geodesic]="true" [strokeOpacity]="0.5">
                         <ng-container *ngFor="let marker of device.Messages">
@@ -823,9 +823,10 @@
                       <agm-directions *ngIf="device.Messages.length > 1"
                                       [directionsDisplayStore]="device.directionsDisplayStore"
                                       [travelMode]="'DRIVING'"
+                                      [routesColor]="device.color"
                                       [geolocMessages]="device.Messages">
                       </agm-directions>
-                  <!--</ng-container>-->
+                    </ng-container>
                   </ng-container>
                 </agm-map>
               </div>
