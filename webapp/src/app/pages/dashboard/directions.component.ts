@@ -1,14 +1,15 @@
-import {AfterViewInit, Directive, Input, OnDestroy} from '@angular/core';
+import {AfterContentInit, Component, Input, OnDestroy} from '@angular/core';
 import {GoogleMapsAPIWrapper} from '@agm/core';
 import {Geoloc, Message} from '../../shared/sdk/models';
 
 declare let google: any;
 
-@Directive({
-  selector: 'agm-directions'
+@Component({
+  selector: 'agm-directions',
+  template: ''
 })
 
-export class DirectionsDirective implements AfterViewInit, OnDestroy {
+export class DirectionsComponent implements AfterContentInit, OnDestroy {
 
   @Input() geolocMessages: Message[];
   @Input() routesColor: string;
@@ -16,10 +17,12 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
   @Input() travelMode: string;
 
   constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
+    console.log('DirectionsDirective');
+    this.buildDirections();
   }
 
-  ngAfterViewInit() {
-    this.buildDirections();
+  ngAfterContentInit() {
+    //this.buildDirections();
   }
 
   private generateColor(): string {
@@ -27,12 +30,13 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
   }
 
   private buildDirections() {
-    console.log('Building routes');
-    this.directionsDisplayStore.forEach(directions => {
-      directions.setMap(null);
-    });
-    this.directionsDisplayStore = [];
+    console.log('--------------------------------');
     console.log(this.directionsDisplayStore);
+    for (const i in this.directionsDisplayStore) {
+      this.directionsDisplayStore[i].setMap(null);
+    }
+    this.directionsDisplayStore = [];
+    console.log('--------------------------------');
 
     let messages: Message[] = [];
     const startCoord = this.geolocMessages[0].geoloc[0];
@@ -107,9 +111,9 @@ export class DirectionsDirective implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.directionsDisplayStore.forEach(directions => {
-      directions.setMap(null);
-    });
+    for (const i in this.directionsDisplayStore) {
+      this.directionsDisplayStore[i].setMap(null);
+    }
     this.directionsDisplayStore = [];
   }
 

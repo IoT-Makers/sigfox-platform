@@ -333,6 +333,29 @@
               </div>
 
               <div class="form-group row">
+                <label class="col-md-3 form-control-label">Default zoom<br>
+                  <small>Between 1 and 13</small>
+                </label>
+                <div class="col-md-6">
+                  <input type="number" min="1" max="13" class="form-control" placeholder="Zoom" name="newWidget.zoom" [(ngModel)]="newWidget.options.zoom">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Default latitude</label>
+                <div class="col-md-6">
+                  <input type="number" class="form-control" placeholder="Latitude" name="newWidget.lat" [(ngModel)]="newWidget.options.lat">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Default longitude</label>
+                <div class="col-md-6">
+                  <input type="number" class="form-control" placeholder="Longitude" name="newWidget.lng" [(ngModel)]="newWidget.options.lng">
+                </div>
+              </div>
+
+              <div class="form-group row">
                 <label class="col-md-3 form-control-label">Beginning at
                 </label>
                 <div class="col-md-6">
@@ -459,9 +482,9 @@
           <!--Map-->
           <ng-container *ngIf="widget.type=='map'">
             <ng-container *ngIf="widget.data">
-              <agm-map [latitude]="widget.options.lat ? widget.options.lat : 48.864716"
-                       [longitude]="widget.options.lng ? widget.options.lng : 2.349014"
-                       [zoom]="widget.options.zoom ? widget.options.zoom : 4"
+              <agm-map [latitude]="widget.options.lat"
+                       [longitude]="widget.options.lng"
+                       [zoom]="widget.options.zoom"
                        [fullscreenControl]="true"
                        [mapTypeId]="widget.options.mapTypeId !== 'custom' && widget.options.mapTypeId ? widget.options.mapTypeId : 'roadmap'"
                        [styles]="widget.options.style ? widget.options.style : ''">
@@ -642,7 +665,10 @@
                     <td class="text-center text-device">
                       <strong>{{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong>
                       <label class="switch switch-sm switch-3d switch-success">
-                        <input (change)="device.visibility = !device.visibility" [checked]="device.visibility" type="checkbox" class="switch-input">
+                        <!--<input (click)="device.visibility = !device.visibility; showTracking(device, 'DRIVING')"
+                               [checked]="device.visibility" type="checkbox" class="switch-input">-->
+                        <input (change)="device.visibility = !device.visibility"
+                               [checked]="device.visibility" type="checkbox" class="switch-input">
                         <span class="switch-label"></span>
                         <span class="switch-handle"></span>
                       </label>
@@ -657,9 +683,9 @@
                 </table>
               </div>
               <div class="col-md-10">
-                <agm-map [latitude]="widget.options.lat ? widget.options.lat : 48.864716"
-                         [longitude]="widget.options.lng ? widget.options.lng : 2.349014"
-                         [zoom]="widget.options.zoom ? widget.options.zoom : 2"
+                <agm-map [latitude]="widget.options.lat"
+                         [longitude]="widget.options.lng"
+                         [zoom]="widget.options.zoom"
                          [fullscreenControl]="true"
                          (mapReady)="onMapReady($event)"
                          [mapTypeId]="widget.options.mapTypeId !== 'custom' && widget.options.mapTypeId ? widget.options.mapTypeId : 'roadmap'"
@@ -668,7 +694,15 @@
                   <ng-container *ngFor="let device of widget.data; let i = index">
                     <ng-container *ngIf="device.visibility === true">
                       <!-- Polylines -->
-                      <agm-polyline *ngIf="widget.options.polylines" [zIndex]="2" [geodesic]="true" [strokeColor]="device.color" [strokeOpacity]="0.5">
+                      <!--<agm-polyline *ngIf="widget.options.polylines" [zIndex]="2" [geodesic]="true" [strokeColor]="device.color" [strokeOpacity]="0.5">
+                        <ng-container *ngFor="let marker of device.Messages">
+                          <ng-container *ngFor="let geoloc of marker.geoloc">
+                            <agm-polyline-point [latitude]="geoloc.lat" [longitude]="geoloc.lng">
+                            </agm-polyline-point>
+                          </ng-container>
+                        </ng-container>
+                      </agm-polyline>-->
+                      <agm-polyline [zIndex]="2" [geodesic]="true" [strokeColor]="device.color" [strokeOpacity]="0.5">
                         <ng-container *ngFor="let marker of device.Messages">
                           <ng-container *ngFor="let geoloc of marker.geoloc">
                             <agm-polyline-point [latitude]="geoloc.lat" [longitude]="geoloc.lng">
@@ -819,13 +853,12 @@
                         </ng-container>
                       </ng-container>
                       <!-- End Markers -->
-                      <ng-container *ngIf="device.Messages.length > 1">
-                        <agm-directions [directionsDisplayStore]="device.directionsDisplayStore"
-                                        [travelMode]="'DRIVING'"
-                                        [routesColor]="device.color"
-                                        [geolocMessages]="device.Messages">
-                        </agm-directions>
-                      </ng-container>
+
+                      <!--<agm-directions [directionsDisplayStore]="device.directionsDisplayStore"
+                                      [travelMode]="'DRIVING'"
+                                      [routesColor]="device.color"
+                                      [geolocMessages]="device.Messages">
+                      </agm-directions>-->
                     </ng-container>
                   </ng-container>
                 </agm-map>
