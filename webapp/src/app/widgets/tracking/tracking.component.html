@@ -187,7 +187,7 @@
 
 
       <!-- Markers -->
-      <agm-marker-cluster imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
+      <agm-marker-cluster [styles]="clusterStyles">
         <ng-container *ngFor="let marker of geolocMessages; let i = index">
 
           <ng-container [ngSwitch]=i>
@@ -201,7 +201,7 @@
                     [zIndex]="4"
                     [latitude]="geoloc.lat"
                     [longitude]="geoloc.lng"
-                    [iconUrl]="'assets/img/marker-start.png'">
+                    [iconUrl]="'assets/img/markers/marker-start.png'">
                     <agm-info-window>
                       <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                       <br>
@@ -235,7 +235,7 @@
                     [zIndex]="4"
                     [latitude]="geoloc.lat"
                     [longitude]="geoloc.lng"
-                    [iconUrl]="'assets/img/marker-start.png'">
+                    [iconUrl]="'assets/img/markers/marker-start.png'">
                     <agm-info-window>
                       <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                       <br>
@@ -261,7 +261,7 @@
                     [zIndex]="4"
                     [latitude]="geoloc.lat"
                     [longitude]="geoloc.lng"
-                    [iconUrl]="'assets/img/marker-finish.png'">
+                    [iconUrl]="'assets/img/markers/marker-finish.png'">
                     <agm-info-window>
                       <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                       <br>
@@ -295,7 +295,7 @@
                     [zIndex]="4"
                     [latitude]="geoloc.lat"
                     [longitude]="geoloc.lng"
-                    [iconUrl]="'assets/img/marker-finish.png'">
+                    [iconUrl]="'assets/img/markers/marker-finish.png'">
                     <agm-info-window>
                       <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                       <br>
@@ -322,7 +322,7 @@
                     [zIndex]="3"
                     [latitude]="geoloc.lat"
                     [longitude]="geoloc.lng"
-                    [iconUrl]="'assets/img/marker-sigfox.png'">
+                    [iconUrl]="'assets/img/markers/marker-sigfox.png'">
                     <agm-info-window>
                       <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                       <br>
@@ -358,7 +358,7 @@
                     [zIndex]="3"
                     [latitude]="geoloc.lat"
                     [longitude]="geoloc.lng"
-                    [iconUrl]="'assets/img/marker-gps.png'">
+                    [iconUrl]="'assets/img/markers/marker-gps.png'">
                     <agm-info-window>
                       <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
                       <br>

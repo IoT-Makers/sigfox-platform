@@ -20,6 +20,31 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private devices: Array<Device> = [];
   private categories: Array<Category> = [];
 
+  // Map
+  private clusterStyles = [
+    {
+      textSize: 13,
+      textColor: '#F1F1F1',
+      url: 'assets/img/markers/clusters/m1.png',
+      height: 37,
+      width: 37
+    },
+    {
+      textSize: 14,
+      textColor: '#F1F1F1',
+      url: 'assets/img/markers/clusters/m2.png',
+      height: 40,
+      width: 40
+    },
+    {
+      textSize: 15,
+      textColor: '#F1F1F1',
+      url: 'assets/img/markers/clusters/m3.png',
+      height: 53,
+      width: 53
+    }
+  ];
+
   // Date
   private dateTimeSettings = {
     bigBanner: true,
