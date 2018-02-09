@@ -5,7 +5,6 @@ import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {FireLoopRef, Message, Parser} from '../../shared/sdk/models';
 import * as _ from 'lodash';
-import {MapsAPILoader} from '@agm/core';
 
 declare let google: any;
 
@@ -140,8 +139,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               private dashboardApi: DashboardApi,
               private route: ActivatedRoute,
               private router: Router,
-              toasterService: ToasterService,
-              private _maps_loader: MapsAPILoader) {
+              toasterService: ToasterService) {
     this.toasterService = toasterService;
   }
 
@@ -519,7 +517,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.dashboardApi.getWidgets(this.dashboard.id).subscribe(widgets => {
       this.widgets = widgets;
       // console.log(widgets);
-      this.dashboardReady = true;
       if (this.widgets) {
         this.widgets.forEach(widget => {
           this.userApi.getDevices(this.user.id, widget.filter).subscribe((devices: any[]) => {
@@ -579,6 +576,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           });
         });
       }
+      this.dashboardReady = true;
     });
   }
 
@@ -645,13 +643,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
    *                TRACKING
    *
    *******************************************/
-  /*showTracking(device: any, travelMode: string, routesColor: string): void {
+  /*showTracking(device: any, travelMode: string): void {
     if (device.visibility) {
       this.buildDirections(device.Messages, device.directionsDisplayStore, device.color, travelMode);
     }
   }
 
-  private buildDirections(geolocMessages: Message[], directionsDisplayStore: any, routesColor: string, travelMode: string) {
+  buildDirections(geolocMessages: Message[], directionsDisplayStore: any, routesColor: string, travelMode: string) {
     console.log('--------------------------------');
     console.log(directionsDisplayStore);
     for (const i in directionsDisplayStore) {
@@ -720,7 +718,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               directionsDisplay.setDirections(response);
             } else {
               console.log(status);
-              /!*window.alert('Directions request failed due to ' + status);*!/
+              //window.alert('Directions request failed due to ' + status);
             }
           });
         }, err => {

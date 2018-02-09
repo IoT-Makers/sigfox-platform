@@ -1,15 +1,14 @@
-import {AfterContentInit, Component, Input, OnDestroy} from '@angular/core';
+import {AfterContentInit, Directive, Input, OnDestroy} from '@angular/core';
 import {GoogleMapsAPIWrapper} from '@agm/core';
 import {Geoloc, Message} from '../../shared/sdk/models';
 
 declare let google: any;
 
-@Component({
-  selector: 'agm-directions',
-  template: ''
+@Directive({
+  selector: 'agm-directions'
 })
 
-export class DirectionsComponent implements AfterContentInit, OnDestroy {
+export class DirectionsDirective implements AfterContentInit, OnDestroy {
 
   @Input() geolocMessages: Message[];
   @Input() routesColor: string;
@@ -17,12 +16,10 @@ export class DirectionsComponent implements AfterContentInit, OnDestroy {
   @Input() travelMode: string;
 
   constructor(private _googleMapsAPIWrapper: GoogleMapsAPIWrapper) {
-    console.log('DirectionsDirective');
-    this.buildDirections();
   }
 
   ngAfterContentInit() {
-    //this.buildDirections();
+    this.buildDirections();
   }
 
   private generateColor(): string {

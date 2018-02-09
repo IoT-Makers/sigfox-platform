@@ -19,6 +19,7 @@
   "private": true,
   "dependencies": {
     "@agm/core": "^1.0.0-beta.2",
+    "@agm/js-marker-clusterer": "^1.0.0-beta.2",
     "@angular/animations": "^5.2.2",
     "@angular/cli": "^1.6.6",
     "@angular/common": "^5.2.2",
@@ -53,6 +54,7 @@
     "express": "^4.16.2",
     "jasmine-core": "^2.6.2",
     "jasmine-spec-reporter": "^4.1.0",
+    "js-marker-clusterer": "^1.0.0",
     "karma": "^1.7.0",
     "karma-chrome-launcher": "^2.1.1",
     "karma-cli": "^1.0.1",

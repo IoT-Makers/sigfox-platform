@@ -10,6 +10,7 @@ import {SelectModule} from 'ng2-select';
 import {AccordionModule} from 'ng2-bootstrap';
 import {DirectionsDirective} from './directions.directive';
 import {AngularDateTimePickerModule} from 'vk-custom-angular2-datetimepicker';
+import {AgmJsMarkerClustererModule} from '@agm/js-marker-clusterer';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import {AngularDateTimePickerModule} from 'vk-custom-angular2-datetimepicker';
     SelectModule,
     AccordionModule.forRoot(),
     AgmCoreModule,
+    AgmJsMarkerClustererModule,
     AngularDateTimePickerModule
   ],
   providers: [
