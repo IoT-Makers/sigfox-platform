@@ -717,14 +717,14 @@
                           </ng-container>
                         </ng-container>
                       </agm-polyline>-->
-                      <!--<agm-polyline *ngIf="device.visibility" [zIndex]="2" [geodesic]="true" [strokeColor]="device.color" [strokeOpacity]="0.5">
+                      <agm-polyline *ngIf="device.visibility" [zIndex]="2" [geodesic]="true" [strokeColor]="device.color" [strokeOpacity]="0.5">
                         <ng-container *ngFor="let marker of device.Messages">
                           <ng-container *ngFor="let geoloc of marker.geoloc">
                             <agm-polyline-point [latitude]="geoloc.lat" [longitude]="geoloc.lng">
                             </agm-polyline-point>
                           </ng-container>
                         </ng-container>
-                      </agm-polyline>-->
+                      </agm-polyline>
                       <!-- End Polylines -->
 
                       <!-- Markers -->
@@ -870,12 +870,12 @@
                         </ng-container>
                       </agm-marker-cluster>
                       <!-- End Markers -->
-                      <agm-directions *ngIf="device.Messages.length > 0 && device.visibility"
+                      <!--<agm-directions *ngIf="device.Messages.length > 0 && device.visibility"
                                       [directionsDisplayStore]="device.directionsDisplayStore"
                                       [travelMode]="'DRIVING'"
                                       [routesColor]="device.color"
                                       [geolocMessages]="device.Messages">
-                      </agm-directions>
+                      </agm-directions>-->
                   </ng-container>
                 </agm-map>
               </div>
