@@ -664,7 +664,7 @@
                     <span class="switch-handle"></span>
                     </label>
                   </span>
-                    <input type="text" class="form-control text-center" value="{{device.id}}" readonly>
+                    <input type="text" class="form-control text-center text-device font-weight-bold" value="{{device.name ? device.id + '(' + device.name + ')' : device.id}}" [readonly]="true">
                     <!--<strong>{{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong>-->
                   </div>
                 </div>
@@ -708,7 +708,6 @@
                          [styles]="widget.options.style ? widget.options.style : '' ">
 
                   <ng-container *ngFor="let device of widget.data; let i = index">
-                    <ng-container *ngIf="device.visibility === true">
                       <!-- Polylines -->
                       <!--<agm-polyline *ngIf="widget.options.polylines" [zIndex]="2" [geodesic]="true" [strokeColor]="device.color" [strokeOpacity]="0.5">
                         <ng-container *ngFor="let marker of device.Messages">
@@ -718,7 +717,7 @@
                           </ng-container>
                         </ng-container>
                       </agm-polyline>-->
-                      <agm-polyline [zIndex]="2" [geodesic]="true" [strokeColor]="device.color" [strokeOpacity]="0.5">
+                      <agm-polyline *ngIf="device.visibility" [zIndex]="2" [geodesic]="true" [strokeColor]="device.color" [strokeOpacity]="0.5">
                         <ng-container *ngFor="let marker of device.Messages">
                           <ng-container *ngFor="let geoloc of marker.geoloc">
                             <agm-polyline-point [latitude]="geoloc.lat" [longitude]="geoloc.lng">
@@ -729,7 +728,7 @@
                       <!-- End Polylines -->
 
                       <!-- Markers -->
-                      <agm-marker-cluster imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
+                      <agm-marker-cluster *ngIf="device.visibility" imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
                         <ng-container *ngFor="let marker of device.Messages.reverse(); let i = index">
 
                           <ng-container [ngSwitch]=i>
@@ -871,13 +870,12 @@
                         </ng-container>
                       </agm-marker-cluster>
                       <!-- End Markers -->
-                      <agm-directions *ngIf="device.Messages.length > 0"
+                      <agm-directions *ngIf="device.Messages.length > 0 && device.visibility"
                                       [directionsDisplayStore]="device.directionsDisplayStore"
                                       [travelMode]="'DRIVING'"
                                       [routesColor]="device.color"
                                       [geolocMessages]="device.Messages">
                       </agm-directions>
-                    </ng-container>
                   </ng-container>
                 </agm-map>
               </div>
