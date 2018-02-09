@@ -683,7 +683,8 @@
                 </table>
               </div>
               <div class="col-md-10">
-                <agm-map [latitude]="widget.options.lat"
+                <agm-map id="widget.data[0].id"
+                         [latitude]="widget.options.lat"
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
                          [fullscreenControl]="true"
