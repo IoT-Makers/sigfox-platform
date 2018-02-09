@@ -856,7 +856,7 @@
                       </agm-marker-cluster>
                       <!-- End Markers -->
                     </ng-container>
-                    <agm-directions *ngIf="device.Messages.length > 0 && device.visibility"
+                    <agm-directions *ngIf="device.Messages.length > 0"
                                     [directionsDisplayStore]="device.directionsDisplayStore"
                                     [travelMode]="'DRIVING'"
                                     [routesColor]="device.color"
