@@ -5,6 +5,7 @@ import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {FireLoopRef, Message, Parser} from '../../shared/sdk/models';
 import * as _ from 'lodash';
+import {MapsAPILoader} from '@agm/core';
 
 declare let google: any;
 
@@ -139,7 +140,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               private dashboardApi: DashboardApi,
               private route: ActivatedRoute,
               private router: Router,
-              toasterService: ToasterService) {
+              toasterService: ToasterService,
+              private _maps_loader: MapsAPILoader) {
     this.toasterService = toasterService;
   }
 
