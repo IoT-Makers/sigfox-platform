@@ -534,8 +534,15 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     });*/
   }
 
-  private generateColor(): string {
-    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+  getRandomColor() {
+    let letters = '012345'.split('');
+    let color = '#';
+    color += letters[Math.round(Math.random() * 5)];
+    letters = '0123456789ABCDEF'.split('');
+    for (const i = 0; i < 5; i++) {
+      color += letters[Math.round(Math.random() * 15)];
+    }
+    return color;
   }
 
   loadWidgets(): void {
@@ -548,7 +555,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             devices.forEach(device => {
               device.visibility = false;
               device.directionsDisplayStore = [];
-              device.color = this.generateColor();
+              device.color = this.getRandomColor();
               device.Messages.reverse();
             });
             widget.data = devices;
@@ -719,7 +726,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             polylineOptions: {
               strokeWeight: 4,
               strokeOpacity: 0.5,
-              strokeColor: routesColor ? routesColor : this.generateColor()
+              strokeColor: routesColor ? routesColor : this.getRandomRolor()
             },
             markerOptions: {
               visible: false
