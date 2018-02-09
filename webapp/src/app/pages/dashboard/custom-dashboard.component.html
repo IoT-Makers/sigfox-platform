@@ -667,7 +667,7 @@
                       <label class="switch switch-sm switch-3d switch-success">
                         <!--<input (click)="device.visibility = !device.visibility; showTracking(device, 'DRIVING')"
                                [checked]="device.visibility" type="checkbox" class="switch-input">-->
-                        <input (change)="device.visibility = !device.visibility"
+                        <input (change)="device.visibility = !device.visibility; device.directionsDisplayStore = []"
                                [checked]="device.visibility" type="checkbox" class="switch-input">
                         <span class="switch-label"></span>
                         <span class="switch-handle"></span>
@@ -855,13 +855,13 @@
                         </ng-container>
                       </agm-marker-cluster>
                       <!-- End Markers -->
+                      <agm-directions *ngIf="device.Messages.length > 0"
+                                      [directionsDisplayStore]="device.directionsDisplayStore"
+                                      [travelMode]="'DRIVING'"
+                                      [routesColor]="device.color"
+                                      [geolocMessages]="device.Messages">
+                      </agm-directions>
                     </ng-container>
-                    <agm-directions *ngIf="device.Messages.length > 0"
-                                    [directionsDisplayStore]="device.directionsDisplayStore"
-                                    [travelMode]="'DRIVING'"
-                                    [routesColor]="device.color"
-                                    [geolocMessages]="device.Messages">
-                    </agm-directions>
                   </ng-container>
                 </agm-map>
               </div>

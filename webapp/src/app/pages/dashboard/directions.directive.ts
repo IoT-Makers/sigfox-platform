@@ -19,6 +19,7 @@ export class DirectionsDirective implements AfterContentInit, OnDestroy {
   }
 
   ngAfterContentInit() {
+    console.log('DirectionsDirective: ngAfterContentInit');
     this.buildDirections();
   }
 
@@ -108,6 +109,7 @@ export class DirectionsDirective implements AfterContentInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    console.log('DirectionsDirective: ngOnDestroy');
     for (const i in this.directionsDisplayStore) {
       this.directionsDisplayStore[i].setMap(null);
     }
