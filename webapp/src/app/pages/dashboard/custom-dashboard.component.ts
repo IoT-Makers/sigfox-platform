@@ -539,7 +539,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     let color = '#';
     color += letters[Math.round(Math.random() * 5)];
     letters = '0123456789ABCDEF'.split('');
-    for (const i = 0; i < 5; i++) {
+    for (let i = 0; i < 5; i++) {
       color += letters[Math.round(Math.random() * 15)];
     }
     return color;
