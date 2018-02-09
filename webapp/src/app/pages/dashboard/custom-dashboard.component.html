@@ -653,36 +653,52 @@
           <!--Tracking-->
           <ng-container *ngIf="widget.type=='tracking'">
             <div class="row" *ngIf="widget.data">
-              <div class="col-md-2 table-responsive">
+              <div class="col-md-12 mb-1">
+                <div *ngFor="let device of widget.data; let i = index">
+                  <div class="input-group">
+                  <span class="input-group-addon">
+                    <label for="{{device.id}}" class="switch switch-sm switch-3d switch-success">
+                    <input id="{{device.id}}"
+                           [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    </label>
+                  </span>
+                    <input type="text" class="form-control text-center" value="{{device.id}}" readonly>
+                    <!--<strong>{{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong>-->
+                  </div>
+                </div>
+              </div>
+              <!--<div class="col-md-2 table-responsive">
                 <table class="table table-hover">
-                  <!--<thead class="thead-inverse">
+                  &lt;!&ndash;<thead class="thead-inverse">
                   <tr>
                     <th class="text-center">Devices</th>
                   </tr>
-                  </thead>-->
+                  </thead>&ndash;&gt;
                   <tbody>
                   <tr *ngFor="let device of widget.data; let i = index">
                     <td class="text-center text-device">
                       <strong>{{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong>
                       <label for="device.id" class="switch switch-sm switch-3d switch-success">
-                        <!--<input (click)="device.visibility = !device.visibility; showTracking(device, 'DRIVING')"
-                               [checked]="device.visibility" type="checkbox" class="switch-input">-->
+                        &lt;!&ndash;<input (click)="device.visibility = !device.visibility; showTracking(device, 'DRIVING')"
+                               [checked]="device.visibility" type="checkbox" class="switch-input">&ndash;&gt;
                         <input id="device.id"
                                [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
                         <span class="switch-label"></span>
                         <span class="switch-handle"></span>
                       </label>
                     </td>
-                    <!--<td class="text-center">
+                    &lt;!&ndash;<td class="text-center">
                     <label class="checkbox-inline" for="inline-checkbox1">
                       <input (change)="device.visibility = !device.visibility" [checked]="device.visibility" type="checkbox" id="inline-checkbox1" name="inline-checkbox1" value="option1">
                     </label>
-                  </td>-->
+                  </td>&ndash;&gt;
                   </tr>
                   </tbody>
                 </table>
-              </div>
-              <div class="col-md-10">
+              </div>-->
+              <div class="col-md-12">
                 <agm-map [latitude]="widget.options.lat"
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
