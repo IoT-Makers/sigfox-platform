@@ -524,6 +524,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               device.visibility = false;
               device.directionsDisplayStore = [];
               device.color = this.generateColor();
+              device.Messages.reverse();
             });
             widget.data = devices;
 
