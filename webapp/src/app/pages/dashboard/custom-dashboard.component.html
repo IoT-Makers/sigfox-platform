@@ -664,11 +664,11 @@
                   <tr *ngFor="let device of widget.data; let i = index">
                     <td class="text-center text-device">
                       <strong>{{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong>
-                      <label class="switch switch-sm switch-3d switch-success">
+                      <label for="device.id" class="switch switch-sm switch-3d switch-success">
                         <!--<input (click)="device.visibility = !device.visibility; showTracking(device, 'DRIVING')"
                                [checked]="device.visibility" type="checkbox" class="switch-input">-->
-                        <input (change)="device.visibility = !device.visibility; device.directionsDisplayStore = []"
-                               [checked]="device.visibility" type="checkbox" class="switch-input">
+                        <input id="device.id"
+                               [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
                         <span class="switch-label"></span>
                         <span class="switch-handle"></span>
                       </label>
