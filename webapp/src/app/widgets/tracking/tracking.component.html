@@ -380,7 +380,7 @@
       </agm-marker-cluster>
       <!-- End Markers -->
 
-      <agm-directions *ngIf="geolocMessages.length > 0 && directionsRoutes"
+      <agm-directions *ngIf="directionsRoutes"
                       [directionsDisplayStore]="directionsDisplayStore"
                       [travelMode]="travelMode"
                       [routesColor]="'#d71223'"

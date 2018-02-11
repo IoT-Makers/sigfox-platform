@@ -20,7 +20,8 @@ export class DirectionsDirective implements AfterContentInit, OnDestroy {
 
   ngAfterContentInit() {
     console.log('DirectionsDirective: ngAfterContentInit');
-    this.buildDirections();
+    if (this.geolocMessages.length > 0)
+      this.buildDirections();
   }
 
   private generateColor(): string {

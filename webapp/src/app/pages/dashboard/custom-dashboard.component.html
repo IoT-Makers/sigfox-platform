@@ -333,6 +333,32 @@
               </div>
 
               <div class="form-group row">
+                <label class="col-md-3 form-control-label">Directions routes<br>
+                </label>
+                <div class="col-md-6">
+                  <label class="switch switch-text switch-primary">
+                    <input type="checkbox" [checked]="newWidget.options.directions"
+                           (change)="newWidget.options.directions = !newWidget.options.directions" class="switch-input" checked="">
+                    <span class="switch-label" data-on="On" data-off="Off"></span>
+                    <span class="switch-handle"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Polylines<br>
+                </label>
+                <div class="col-md-6">
+                  <label class="switch switch-text switch-primary">
+                    <input type="checkbox" [checked]="newWidget.options.polylines"
+                           (change)="newWidget.options.polylines = !newWidget.options.polylines" class="switch-input" checked="">
+                    <span class="switch-label" data-on="On" data-off="Off"></span>
+                    <span class="switch-handle"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group row">
                 <label class="col-md-3 form-control-label">Default zoom<br>
                   <small>Between 1 and 13</small>
                 </label>
@@ -708,16 +734,13 @@
                          [styles]="widget.options.style ? widget.options.style : '' ">
 
                   <ng-container *ngFor="let device of widget.data; let i = index">
+                    <ng-container *ngIf="device.visibility">
                       <!-- Polylines -->
-                      <!--<agm-polyline *ngIf="widget.options.polylines" [zIndex]="2" [geodesic]="true" [strokeColor]="device.color" [strokeOpacity]="0.5">
-                        <ng-container *ngFor="let marker of device.Messages">
-                          <ng-container *ngFor="let geoloc of marker.geoloc">
-                            <agm-polyline-point [latitude]="geoloc.lat" [longitude]="geoloc.lng">
-                            </agm-polyline-point>
-                          </ng-container>
-                        </ng-container>
-                      </agm-polyline>-->
-                      <agm-polyline *ngIf="device.visibility" [zIndex]="2" [geodesic]="true" [strokeColor]="device.color" [strokeOpacity]="0.5">
+                      <agm-polyline *ngIf="widget.options.polylines"
+                                    [zIndex]="2"
+                                    [geodesic]="true"
+                                    [strokeColor]="device.color"
+                                    [strokeOpacity]="0.5">
                         <ng-container *ngFor="let marker of device.Messages">
                           <ng-container *ngFor="let geoloc of marker.geoloc">
                             <agm-polyline-point [latitude]="geoloc.lat" [longitude]="geoloc.lng">
@@ -728,7 +751,7 @@
                       <!-- End Polylines -->
 
                       <!-- Markers -->
-                      <agm-marker-cluster *ngIf="device.visibility" [styles]="clusterStyles">
+                      <agm-marker-cluster [styles]="clusterStyles">
                         <ng-container *ngFor="let marker of device.Messages; let i = index">
 
                           <ng-container [ngSwitch]=i>
@@ -870,12 +893,13 @@
                         </ng-container>
                       </agm-marker-cluster>
                       <!-- End Markers -->
-                      <!--<agm-directions *ngIf="device.Messages.length > 0 && device.visibility"
+                      <agm-directions *ngIf="widget.options.directions"
                                       [directionsDisplayStore]="device.directionsDisplayStore"
                                       [travelMode]="'DRIVING'"
                                       [routesColor]="device.color"
                                       [geolocMessages]="device.Messages">
-                      </agm-directions>-->
+                      </agm-directions>
+                    </ng-container>
                   </ng-container>
                 </agm-map>
               </div>
