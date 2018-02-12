@@ -14,6 +14,7 @@ import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-m
 import {AngularDateTimePickerModule} from 'vk-custom-angular2-datetimepicker';
 import {DirectionsDirective} from './directions.directive';
 import {AgmJsMarkerClustererModule} from '@agm/js-marker-clusterer';
+import {ModalModule} from 'ngx-bootstrap';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import {AgmJsMarkerClustererModule} from '@agm/js-marker-clusterer';
     AgmCoreModule,
     AgmJsMarkerClustererModule,
     AngularMultiSelectModule,
-    AngularDateTimePickerModule
+    AngularDateTimePickerModule,
+    ModalModule.forRoot()
   ],
   providers: [
     GoogleMapsAPIWrapper

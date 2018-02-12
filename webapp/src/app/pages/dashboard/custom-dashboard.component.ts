@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DashboardApi, RealTime, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
@@ -13,6 +13,8 @@ declare let google: any;
   templateUrl: './custom-dashboard.component.html'
 })
 export class CustomDashboardComponent implements OnInit, OnDestroy {
+
+  @ViewChild('updateWidgetModal') updateWidgetModal: any;
 
   private user: User;
 
@@ -63,14 +65,18 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private selectedDevices = [];
   private selectedDateTimeBegin: Date = new Date();
   private selectedGeolocType = [];
+  private selectedKey = [];
 
   private selectCategories: Array<Object> = [];
   private selectDevices: Array<Object> = [];
+  private selectKeys: Array<Object> = [];
 
   private selectWidgetType = [
     {id: 'map', itemName: 'Map'},
     {id: 'table of devices', itemName: 'Table of devices'},
-    {id: 'tracking', itemName: 'Tracking'}
+    {id: 'tracking', itemName: 'Tracking'},
+    {id: 'alert', itemName: 'Alert'},
+    {id: 'gauge', itemName: 'Gauge'}
   ];
   private selectMapType = [
     {id: 'roadmap', itemName: 'Roadmap'},
@@ -107,6 +113,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     text: 'Select devices',
     selectAllText: 'Select all',
     unSelectAllText: 'Unselect all',
+    enableSearchFilter: true,
+    classes: 'select-device'
+  };
+  private selectOneDeviceSettings = {
+    singleSelection: true,
+    text: 'Select one device',
     enableSearchFilter: true,
     classes: 'select-device'
   };
@@ -288,8 +300,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   addNewWidget(): void {
-    this.loadSelectFilters();
     this.newWidgetFlag = true;
+
+    this.loadSelectFilters();
 
     this.newWidget = {
       name: '',
@@ -309,6 +322,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       },
       dashboardId: this.dashboard.id
     };
+
+    this.updateWidgetModal.show();
   }
 
   addTableType($event): void {
@@ -381,7 +396,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   setFilter(type: string): void {
-    if (type === 'map' || type === 'table of devices') {
+    if (type === 'map' || type === 'table of devices' || type === 'alert') {
       this.newWidget.filter = {
         limit: 100,
         order: 'updatedAt DESC',
@@ -422,7 +437,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         }
       };
     }
-
     this.selectedDevices.forEach( (item: any) => {
       this.newWidget.filter.where.or.push({id: item.id});
     });
@@ -430,6 +444,25 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.newWidget.filter.where.or.push({categoryId: item.id});
     });
     console.log('Set filter', this.newWidget.filter);
+  }
+
+  loadDeviceKeys(): void {
+    this.selectKeys = [];
+    this.userApi.getDevices(this.user.id, this.newWidget.filter).subscribe(devices => {
+      // console.log(devices);
+      if (devices[0].data_parsed) {
+        devices[0].data_parsed.forEach(o => {
+          const item = {
+            id: o.key,
+            itemName: o.key
+          };
+
+          // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
+          if (!_.find(this.selectKeys, item))
+            this.selectKeys.push(item);
+        });
+      }
+    });
   }
 
   addWidget(): void {
@@ -443,6 +476,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.toasterService.pop('success', 'Success', 'Successfully created widget.');
 
       this.newWidgetFlag = false;
+
+      this.updateWidgetModal.hide();
     });
   }
 
@@ -472,6 +507,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.toasterService.pop('success', 'Success', 'The widget was successfully updated.');
 
       this.editWidgetFlag = false;
+      this.updateWidgetModal.hide();
     });
   }
 
@@ -492,6 +528,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.selectedDevices = [];
     this.selectedGeolocType = [];
     this.selectedDateTimeBegin = new Date();
+    this.selectKeys = [];
 
     if (this.newWidget.type !== '')
       this.selectedWidgetType = [{id: this.newWidget.type, itemName: this.capitalizeFirstLetter(this.newWidget.type)}];
@@ -509,6 +546,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.selectedGeolocType = [{
         id: this.newWidget.options.geolocType,
         itemName: this.capitalizeFirstLetter(this.newWidget.options.geolocType)
+      }];
+    if (this.newWidget.options.key)
+      this.selectedKey = [{
+        id: this.newWidget.options.key,
+        itemName: this.capitalizeFirstLetter(this.newWidget.options.key)
       }];
 
     this.newWidget.filter.where.or.forEach((item: any, index: number) => {
