@@ -482,6 +482,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   editWidget(widget): void {
+    this.newWidgetFlag = false;
     this.newWidget = widget;
     this.loadSelectFilters();
     this.editWidgetFlag = true;

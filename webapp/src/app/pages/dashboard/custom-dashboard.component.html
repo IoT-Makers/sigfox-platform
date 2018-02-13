@@ -986,7 +986,7 @@
           <!-- End new widget -->
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="updateWidgetModal.hide(); newWidgetFlag = false;">Close</button>
+          <button type="button" class="btn btn-secondary" (click)="updateWidgetModal.hide()">Close</button>
           <button class="btn btn-primary" *ngIf="newWidgetFlag" [disabled]="!newWidgetForm.form.valid" (click)="addWidget()"><i
             class="fa fa-check"></i> Add widget
           </button>
