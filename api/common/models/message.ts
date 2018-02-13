@@ -261,7 +261,7 @@ class Message {
                                     next(err, data);
                                   } else if (connector) {
 
-                                    if (connector.name === 'office-365') {
+                                    if (connector.type === 'office-365') {
                                       console.log('Office 365 Email alert!');
                                       if (!alert.message) alert.message = o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit;
 
