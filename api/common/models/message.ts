@@ -272,7 +272,7 @@ class Message {
                                       };
                                       const title = deviceInstance.name ? deviceInstance.name : deviceInstance.id;
                                       this.model.app.models.Email.send({
-                                        to: connector.login,
+                                        to: connector.recipient,
                                         from: connector.login,
                                         subject: '[Sigfox Platform] - Alert for ' + title,
                                         text: alert.message,
