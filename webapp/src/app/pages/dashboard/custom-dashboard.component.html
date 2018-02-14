@@ -269,15 +269,15 @@
                   <ng-container [ngSwitch]="widget.extraData[i].Messages[0].data_parsed[0].value">
                     <td *ngSwitchCase="true"
                         class="text-center text-danger font-weight-bold">
-                      Triggered
+                      Alerte
                     </td>
                     <td *ngSwitchCase="'processing'"
                         class="text-center text-warning font-weight-bold">
-                      Being processed
+                      En cours
                     </td>
                     <td *ngSwitchCase="'treated'"
                         class="text-center text-success font-weight-bold">
-                      Treated
+                      Ok
                     </td>
                     <td *ngSwitchDefault
                         class="text-center text-success font-weight-bold">
