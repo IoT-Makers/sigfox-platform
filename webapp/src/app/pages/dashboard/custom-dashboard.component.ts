@@ -300,10 +300,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   addNewWidget(): void {
-    this.newWidgetFlag = true;
-
-    this.loadSelectFilters();
-
     this.newWidget = {
       name: '',
       icon: '',
@@ -323,6 +319,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       dashboardId: this.dashboard.id
     };
 
+    this.loadSelectFilters();
+
+    this.newWidgetFlag = true;
     this.updateWidgetModal.show();
   }
 
