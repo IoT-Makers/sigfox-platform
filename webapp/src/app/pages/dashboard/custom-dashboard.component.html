@@ -79,9 +79,7 @@
       <div class="card">
         <!-- card header -->
         <div class="card-header">
-
           <i class="fa {{widget.icon}} fa-lg"></i> <strong>{{widget.name}}</strong>
-
           <div class="btn-toolbar pull-right">
             <div class="btn-group">
               <button class="btn btn-info" *ngIf="editFlag" (click)="editWidget(widget); updateWidgetModal.show()"><i class="fa fa-pencil"></i></button>
@@ -148,13 +146,12 @@
               </agm-map>
             </ng-container>
           </ng-container>
-          <!-- End of Map widget -->
+          <!-- End Map widget -->
 
           <!-- Table -->
           <ng-container *ngIf="widget.type === 'table of devices'">
             <div *ngIf="widget.data" class="table-responsive">
-
-              <!-- default table -->
+              <!-- Default table -->
               <table *ngIf="widget.options.tableType==='default'" class="table table-hover" [mfData]="widget.data" #mf="mfDataTable" [mfRowsOnPage]="5">
                 <thead class="thead-inverse">
                 <tr>
@@ -232,23 +229,73 @@
                 </tr>
                 </tfoot>
               </table>
-
+              <!-- End Default table -->
               <!-- Custom table -->
               <table *ngIf="widget.options.tableType === 'custom'" class="table table-hover" [mfData]="widget.data" #mf="mfDataTable" [mfRowsOnPage]="5">
                 <thead class="thead-inverse">
                 <tr>
                   <th class="text-center" *ngFor="let col of widget.options.columns">
-                    {{col ? col.as : ""}}
+                    {{col ? formatTableColumn(col.as) : ""}}
                   </th>
-
+                  <th class="text-center">
+                    Alert status
+                  </th>
+                  <th class="text-center">
+                    Last alert status change
+                  </th>
+                  <th class="text-center">
+                    Actions
+                  </th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="let data of mf.data; let i = index">
-                  <td class="text-center" *ngFor="let col of widget.options.columns; let j = index">
-                    {{data[j] ? (data[j].value + (data[j].unit ? data[j].unit : "")) : ""}}
+                  <ng-container *ngFor="let col of widget.options.columns; let j = index">
+                    <ng-container [ngSwitch]="col.as">
+                      <td *ngSwitchCase="'ID'"
+                          class="text-center">
+                        <a [routerLink]="['/device-messages',data[j].value]"><strong class="text-device">{{data[j].value}}</strong></a>
+                      </td>
+                      <td *ngSwitchCase="'Shop (category)'"
+                          class="text-center text-primary font-weight-bold">
+                        {{data[j] ? (data[j].value + (data[j].unit ? data[j].unit : "")) : ""}}
+                      </td>
+                      <td *ngSwitchDefault
+                          class="text-center">
+                        {{data[j] ? (data[j].value + (data[j].unit ? data[j].unit : "")) : ""}}
+                      </td>
+                    </ng-container>
+                  </ng-container>
+                  <ng-container [ngSwitch]="widget.extraData[i].Messages[0].data_parsed[0].value">
+                    <td *ngSwitchCase="true"
+                        class="text-center text-danger font-weight-bold">
+                      Triggered
+                    </td>
+                    <td *ngSwitchCase="'processing'"
+                        class="text-center text-warning font-weight-bold">
+                      Being processed
+                    </td>
+                    <td *ngSwitchCase="'treated'"
+                        class="text-center text-success font-weight-bold">
+                      Treated
+                    </td>
+                    <td *ngSwitchDefault
+                        class="text-center text-success font-weight-bold">
+                      None
+                    </td>
+                  </ng-container>
+                  <td class="text-center">
+                    {{widget.extraData[i].Messages[0].updatedAt | amTimeAgo}}
                   </td>
-
+                  <td class="text-center">
+                    <div class="btn-group-sm">
+                      <button class="btn btn-outline-warning btn-round" tooltip="Process"
+                              (click)="markAlertProcess(widget, i)"><i class="fa fa-eye fa-lg"></i></button>
+                      <button class="btn btn-outline-success btn-round" tooltip="Done"
+                              (click)="markAlertDone(widget, i)"><i class="fa fa-check fa-lg"></i></button>
+                    </div>
+                  </td>
+                </tr>
                 </tbody>
                 <tfoot>
                 <tr>
@@ -258,11 +305,10 @@
                 </tr>
                 </tfoot>
               </table>
-
-
+              <!-- End Custom table -->
             </div>
           </ng-container>
-          <!-- End of Table widget -->
+          <!-- End Table widget -->
 
           <!-- Tracking -->
           <ng-container *ngIf="widget.type === 'tracking'">
@@ -518,7 +564,7 @@
               </agm-map>
             </div>
           </ng-container>
-          <!-- End of Tracking widget -->
+          <!-- End Tracking widget -->
 
           <!-- Alert -->
           <ng-container *ngIf="widget.type === 'alert'">

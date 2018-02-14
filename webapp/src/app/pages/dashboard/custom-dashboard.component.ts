@@ -382,6 +382,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  formatTableColumn(str: string): string {
+    if (str.indexOf(' (') !== -1)
+      str = str.substring(0, str.indexOf(' ('));
+    str = str.charAt(0).toUpperCase() + str.slice(1);
+    return str;
+  }
+
   addTableColumn($event): void {
     //
   }
@@ -592,7 +599,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           // Devices
           this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
           this.deviceRef.on('change', widget.filter).subscribe((devices: any[]) => {
-          /*this.userApi.getDevices(this.user.id, widget.filter).subscribe((devices: any[]) => {*/
+            /*this.userApi.getDevices(this.user.id, widget.filter).subscribe((devices: any[]) => {*/
             devices.forEach(device => {
               device.visibility = false;
               device.directionsDisplayStore = [];
@@ -603,6 +610,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
             if (widget.options.tableType === 'custom') {
               widget.data = this.buildCustomTable(widget);
+              widget.extraData = devices;
             }
 
             // Tracking
@@ -651,6 +659,21 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         });
       }
       this.dashboardReady = true;
+    });
+  }
+
+  markAlertProcess(widget, i): void {
+    const updateMessage = widget.extraData[i].Messages[0];
+    updateMessage.data_parsed = [{key: 'alert', value: 'processing', type: 'boolean', unit: ''}];
+    this.userApi.updateByIdMessages(this.user.id, widget.extraData[i].Messages[0].id, updateMessage).subscribe( (message: Message) => {
+      widget.extraData[i].Messages[0] = message;
+    });
+  }
+  markAlertDone(widget, i): void {
+    const updateMessage = widget.extraData[i].Messages[0];
+    updateMessage.data_parsed = [{key: 'alert', value: 'treated', type: 'boolean', unit: ''}];
+    this.userApi.updateByIdMessages(this.user.id, widget.extraData[i].Messages[0].id, updateMessage).subscribe( (message: Message) => {
+      widget.extraData[i].Messages[0] = message;
     });
   }
 

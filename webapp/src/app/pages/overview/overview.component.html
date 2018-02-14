@@ -415,7 +415,6 @@
                     <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
                   </div>
                 </td>
-
                 <td class="text-center">
                   <div *ngIf="device.location">
                     <div *ngFor="let geoloc of device.location">
@@ -441,11 +440,10 @@
                   </div>
 
                 </td>
-
                 <td class="text-center">
                   <strong>{{device.Messages[0] ? (device.Messages[0].createdAt | amTimeAgo) : 'No messages yet'}}</strong>
                 </td>
-                <td class="text-center">
+                <td>
                   <div *ngIf="!device.categoryId" class="small text-muted">No properties yet</div>
                   <div *ngIf="device.categoryId">
                     <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
@@ -458,7 +456,6 @@
                   <button class="btn btn-sm btn-outline-primary btn-round" tooltip="See device latest dashboard"
                           (click)="seeDevice(device)"><i class="fa fa-eye fa-lg"></i></button>
                 </td>
-
               </tr>
               </tbody>
             </table>
