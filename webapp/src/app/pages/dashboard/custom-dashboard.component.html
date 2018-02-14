@@ -238,10 +238,10 @@
                     {{col ? formatTableColumn(col.as) : ""}}
                   </th>
                   <th class="text-center">
-                    Alert status
+                    Statut
                   </th>
                   <th class="text-center">
-                    Last alert status change
+                    Date de changement de statut
                   </th>
                   <th class="text-center">
                     Actions
@@ -256,7 +256,7 @@
                           class="text-center">
                         <a [routerLink]="['/device-messages',data[j].value]"><strong class="text-device">{{data[j].value}}</strong></a>
                       </td>
-                      <td *ngSwitchCase="'Shop (category)'"
+                      <td *ngSwitchCase="'Magasin (category)'"
                           class="text-center text-primary font-weight-bold">
                         {{data[j] ? (data[j].value + (data[j].unit ? data[j].unit : "")) : ""}}
                       </td>
