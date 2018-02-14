@@ -86,8 +86,8 @@ export class ParsersComponent implements OnInit, OnDestroy {
     // this.ngOnDestroy();
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-// Parsers
 
+    // Parsers
     this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
     this.parserSub = this.parserRef.on('change').subscribe(
       (parsers: Parser[]) => {

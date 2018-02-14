@@ -588,7 +588,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       // console.log(widgets);
       if (this.widgets) {
         this.widgets.forEach(widget => {
-          this.userApi.getDevices(this.user.id, widget.filter).subscribe((devices: any[]) => {
+          // Real-Time
+          // Devices
+          this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+          this.deviceRef.on('change', widget.filter).subscribe((devices: any[]) => {
+          /*this.userApi.getDevices(this.user.id, widget.filter).subscribe((devices: any[]) => {*/
             devices.forEach(device => {
               device.visibility = false;
               device.directionsDisplayStore = [];
