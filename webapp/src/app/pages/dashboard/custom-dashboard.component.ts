@@ -661,7 +661,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  markAlertProcess(widget, i): void {
+  /*markAlertProcess(widget, i): void {
     const updateMessage = widget.extraData[i].Messages[0];
     updateMessage.data_parsed = [{key: 'alert', value: 'processing', type: 'boolean', unit: ''}];
     this.userApi.updateByIdMessages(this.user.id, widget.extraData[i].Messages[0].id, updateMessage).subscribe( (message: Message) => {
@@ -674,7 +674,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.userApi.updateByIdMessages(this.user.id, widget.extraData[i].Messages[0].id, updateMessage).subscribe( (message: Message) => {
       widget.extraData[i].Messages[0] = message;
     });
-  }
+  }*/
 
   buildCustomTable(widget: any): any {
 

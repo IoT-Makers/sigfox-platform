@@ -237,7 +237,7 @@
                   <th class="text-center" *ngFor="let col of widget.options.columns">
                     {{col ? formatTableColumn(col.as) : ""}}
                   </th>
-                  <th class="text-center">
+                  <!--<th class="text-center">
                     Statut
                   </th>
                   <th class="text-center">
@@ -245,7 +245,7 @@
                   </th>
                   <th class="text-center">
                     Actions
-                  </th>
+                  </th>-->
                 </tr>
                 </thead>
                 <tbody>
@@ -256,17 +256,17 @@
                           class="text-center">
                         <a [routerLink]="['/device-messages',data[j].value]"><strong class="text-device">{{data[j].value}}</strong></a>
                       </td>
-                      <td *ngSwitchCase="'Magasin (category)'"
+                      <!--<td *ngSwitchCase="'Magasin (category)'"
                           class="text-center text-primary font-weight-bold">
                         {{data[j] ? (data[j].value + (data[j].unit ? data[j].unit : "")) : ""}}
-                      </td>
+                      </td>-->
                       <td *ngSwitchDefault
                           class="text-center">
                         {{data[j] ? (data[j].value + (data[j].unit ? data[j].unit : "")) : ""}}
                       </td>
                     </ng-container>
                   </ng-container>
-                  <ng-container [ngSwitch]="widget.extraData[i].Messages[0].data_parsed[0].value">
+                  <!--<ng-container [ngSwitch]="widget.extraData[i].Messages[0].data_parsed[0].value">
                     <td *ngSwitchCase="true"
                         class="text-center text-danger font-weight-bold">
                       Alerte
@@ -294,7 +294,7 @@
                       <button class="btn btn-outline-success btn-round" tooltip="Done"
                               (click)="markAlertDone(widget, i)"><i class="fa fa-check fa-lg"></i></button>
                     </div>
-                  </td>
+                  </td>-->
                 </tr>
                 </tbody>
                 <tfoot>
