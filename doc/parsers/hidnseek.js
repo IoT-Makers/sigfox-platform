@@ -13,6 +13,8 @@ var payload,
     speed,
     battery,
     mode,
+    pressure,
+    temperature,
     cap,
     parsedData = [],
     obj = {};
@@ -67,18 +69,8 @@ cap = (cpx >> 10) & 3;
 
 // Store objects in parsedData array
 if (mode === 4 && altitude === 0) {
-    obj = {};
-    obj.key = "temperature";
-    obj.value = lat.toFixed(2);
-    obj.type = "number";
-    obj.unit = "°C";
-    parsedData.push(obj);
-    obj = {};
-    obj.key = "pressure";
-    obj.value = lng.toFixed(2);
-    obj.type = "number";
-    obj.unit = "hPa";
-    parsedData.push(obj);
+    temperature = lat.toFixed(2);
+    pressure = lng.toFixed(2);
 } else if (mode < 3) {
     obj.key = "geoloc";
     obj.value = "GPS";
@@ -96,18 +88,6 @@ if (mode === 4 && altitude === 0) {
     obj.value = lng;
     obj.type = "number";
     obj.unit = "";
-    parsedData.push(obj);
-    obj = {};
-    obj.key = "altitude";
-    obj.value = altitude;
-    obj.type = "number";
-    obj.unit = "m";
-    parsedData.push(obj);
-    obj = {};
-    obj.key = "speed";
-    obj.value = speed;
-    obj.type = "number";
-    obj.unit = "km/h";
     parsedData.push(obj);
     switch (cap) {
         case 0:
@@ -130,12 +110,6 @@ if (mode === 4 && altitude === 0) {
     obj.unit = "";
     parsedData.push(obj);
 }
-obj = {};
-obj.key = "battery";
-obj.value = battery;
-obj.type = "number";
-obj.unit = "%";
-parsedData.push(obj);
 
 switch (mode) {
     case 3:
@@ -162,6 +136,35 @@ obj.value = mode;
 obj.type = "string";
 obj.unit = "";
 parsedData.push(obj);
-
+obj = {};
+obj.key = "temperature";
+obj.value = temperature;
+obj.type = "number";
+obj.unit = "°C";
+parsedData.push(obj);
+obj = {};
+obj.key = "pressure";
+obj.value = pressure;
+obj.type = "number";
+obj.unit = "hPa";
+parsedData.push(obj);
+obj = {};
+obj.key = "speed";
+obj.value = speed;
+obj.type = "number";
+obj.unit = "km/h";
+parsedData.push(obj);
+obj = {};
+obj.key = "altitude";
+obj.value = altitude;
+obj.type = "number";
+obj.unit = "m";
+parsedData.push(obj);
+obj = {};
+obj.key = "battery";
+obj.value = battery;
+obj.type = "number";
+obj.unit = "%";
+parsedData.push(obj);
 //console.log(parsedData);
 return parsedData;
