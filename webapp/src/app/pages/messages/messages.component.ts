@@ -154,7 +154,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.mapZoom = 10;
 
     // Message geoloc
-    if (message.geoloc.length > 0) {
+    if (message.geoloc && message.geoloc.length > 0) {
       this.geolocs = message.geoloc;
       this.mapLat = message.geoloc[0].lat;
       this.mapLng = message.geoloc[0].lng;
