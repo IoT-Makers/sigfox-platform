@@ -15,6 +15,10 @@ import {AngularDateTimePickerModule} from 'vk-custom-angular2-datetimepicker';
 import {DirectionsDirective} from './directions.directive';
 import {AgmJsMarkerClustererModule} from '@agm/js-marker-clusterer';
 import {ModalModule} from 'ngx-bootstrap';
+import {NvD3Module} from 'ng2-nvd3';
+// d3 and nvd3 should be included somewhere
+import 'd3';
+import 'nvd3';
 
 @NgModule({
   imports: [
@@ -31,7 +35,8 @@ import {ModalModule} from 'ngx-bootstrap';
     AgmJsMarkerClustererModule,
     AngularMultiSelectModule,
     AngularDateTimePickerModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    NvD3Module
   ],
   providers: [
     GoogleMapsAPIWrapper

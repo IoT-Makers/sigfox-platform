@@ -75,7 +75,7 @@
   </div>
   <div class="row" *ngIf="widgets.length > 0">
     <!-- For each widget -->
-    <div *ngFor="let widget of widgets" class="col col-md-{{widget.width}}">
+    <div *ngFor="let widget of widgets" class="col-md-{{widget.width}}">
       <div class="card">
         <!-- card header -->
         <div class="card-header">
@@ -92,7 +92,7 @@
         <!-- Card body -->
         <div class="card-block">
           <!-- Map -->
-          <ng-container *ngIf="widget.type=='map'">
+          <ng-container *ngIf="widget.type === 'map'">
             <ng-container *ngIf="widget.data">
               <agm-map [latitude]="widget.options.lat"
                        [longitude]="widget.options.lng"
@@ -149,7 +149,7 @@
           <!-- End Map widget -->
 
           <!-- Table -->
-          <ng-container *ngIf="widget.type === 'table of devices'">
+          <ng-container *ngIf="widget.type === 'table'">
             <div *ngIf="widget.data" class="table-responsive">
               <!-- Default table -->
               <table *ngIf="widget.options.tableType==='default'" class="table table-hover" [mfData]="widget.data" #mf="mfDataTable" [mfRowsOnPage]="5">
@@ -262,7 +262,7 @@
                       </td>-->
                       <td *ngSwitchDefault
                           class="text-center">
-                        {{data[j] ? (data[j].value + (data[j].unit ? data[j].unit : "")) : ""}}
+                        {{data[j] ? (data[j].value + (data[j].unit ? " " + data[j].unit : "")) : ""}}
                       </td>
                     </ng-container>
                   </ng-container>
@@ -587,7 +587,44 @@
           </ng-container>
           <!-- End Alert -->
 
-          <ng-container *ngIf="widget.type!='map' && widget.type!='table of devices' && widget.type!='tracking' && widget.type!='alert'">
+          <!-- Gauge -->
+          <ng-container *ngIf="widget.type === 'gauge'">
+            <div *ngIf="widget.data" class="text-center">
+              <ngx-gauge #gauge
+                         [type]="'arch'"
+                         [size]="200"
+                         [cap]="'round'"
+                         [thick]="15"
+                         [value]="widget.value"
+                         [label]="widget.label"
+                         [append]="widget.unit">
+              </ngx-gauge>
+            </div>
+          </ng-container>
+          <!-- End Gauge -->
+
+          <!-- Chart -->
+          <ng-container *ngIf="widget.type === 'line' || widget.type === 'bar'">
+            <div *ngIf="widget.data">
+              <nvd3 [options]="widget.chartOptions" [data]="widget.chartData"></nvd3>
+            </div>
+          </ng-container>
+          <!-- End Chart -->
+
+          <!--<ng-container *ngIf="widget.type === 'bar'">
+            <div *ngIf="widget.data">
+              <div style="display: block">
+                <canvas baseChart
+                        [datasets]="widget.chartData"
+                        [labels]="widget.chartLabels"
+                        [options]="widget.chartOptions"
+                        [legend]="true"
+                        [chartType]="widget.chartType"></canvas>
+              </div>
+            </div>
+          </ng-container>-->
+
+          <ng-container *ngIf="widget.type!='map' && widget.type!='table' && widget.type!='tracking' && widget.type!='alert' && widget.type!='gauge' && widget.type!='line' && widget.type!='bar'">
             {{widget.type}}
           </ng-container>
         </div>
@@ -750,7 +787,7 @@
             <!-- End Map widget -->
 
             <!-- Table widget -->
-            <ng-container *ngIf="newWidget.type === 'table of devices'">
+            <ng-container *ngIf="newWidget.type === 'table'">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Categories
                 </label>
@@ -1022,12 +1059,99 @@
                                         [(ngModel)]="selectedKey"
                                         [settings]="selectOneSettings"
                                         (onDeSelect)="newWidget.options.key = ''"
-                                        (onSelect)="newWidget.options.key = $event.id">
+                                        (onSelect)="newWidget.options.key = $event.id; setFilter(newWidget.type)">
                   </angular2-multiselect>
                 </div>
               </div>
             </ng-container>
             <!-- End Gauge widget -->
+
+            <!-- Line widget -->
+            <ng-container *ngIf="newWidget.type === 'line'">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Devices
+                </label>
+                <div class="col-md-6">
+                  <angular2-multiselect name="selectDevices"
+                                        [data]="selectDevices"
+                                        [(ngModel)]="selectedDevices"
+                                        [settings]="selectOneDeviceSettings"
+                                        (onSelect)="setFilter(newWidget.type); loadDeviceKeys()"
+                                        (onDeSelect)="setFilter(newWidget.type); selectKeys = []">
+                  </angular2-multiselect>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="selectedDevices[0]">
+                <label class="col-md-3 form-control-label">Select property</label>
+                <div class="col-md-6">
+                  <angular2-multiselect name="selectKeys"
+                                        [data]="selectKeys"
+                                        [(ngModel)]="selectedKey"
+                                        [settings]="selectOneSettings"
+                                        (onDeSelect)="newWidget.options.key = ''"
+                                        (onSelect)="newWidget.options.key = $event.id; setFilter(newWidget.type)">
+                  </angular2-multiselect>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Beginning at
+                </label>
+                <div class="col-md-6">
+                  <angular2-date-picker name="dateTime"
+                                        [(ngModel)]="selectedDateTimeBegin"
+                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter(newWidget.type)"
+                                        [settings]="dateTimeSettings"
+                                        required>
+                  </angular2-date-picker>
+                </div>
+              </div>
+
+            </ng-container>
+            <!-- End Line widget -->
+
+            <!-- Bar widget -->
+            <ng-container *ngIf="newWidget.type === 'bar'">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Devices
+                </label>
+                <div class="col-md-6">
+                  <angular2-multiselect name="selectDevices"
+                                        [data]="selectDevices"
+                                        [(ngModel)]="selectedDevices"
+                                        [settings]="selectOneDeviceSettings"
+                                        (onSelect)="setFilter(newWidget.type); loadDeviceKeys()"
+                                        (onDeSelect)="setFilter(newWidget.type); selectKeys = []">
+                  </angular2-multiselect>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="selectedDevices[0]">
+                <label class="col-md-3 form-control-label">Select property</label>
+                <div class="col-md-6">
+                  <angular2-multiselect name="selectKeys"
+                                        [data]="selectKeys"
+                                        [(ngModel)]="selectedKey"
+                                        [settings]="selectOneSettings"
+                                        (onDeSelect)="newWidget.options.key = ''"
+                                        (onSelect)="newWidget.options.key = $event.id; setFilter(newWidget.type)">
+                  </angular2-multiselect>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Beginning at
+                </label>
+                <div class="col-md-6">
+                  <angular2-date-picker name="dateTime"
+                                        [(ngModel)]="selectedDateTimeBegin"
+                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter(newWidget.type)"
+                                        [settings]="dateTimeSettings"
+                                        required>
+                  </angular2-date-picker>
+                </div>
+              </div>
+
+            </ng-container>
+            <!-- End Bar widget -->
+
           </div>
           <!-- End new widget -->
         </div>

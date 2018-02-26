@@ -68,7 +68,6 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   // Devices Graph
   private selectedDevice: Device = new Device();
 
-
   private dateEnd: Date = new Date();
   private dateBegin: Date = new Date();
 

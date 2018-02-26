@@ -6,7 +6,7 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {FireLoopRef, Message, Parser} from '../../shared/sdk/models';
 import * as _ from 'lodash';
 
-declare let google: any;
+declare let d3: any;
 
 @Component({
   selector: 'app-dashboard',
@@ -21,6 +21,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private device: Device;
   private devices: Array<Device> = [];
   private categories: Array<Category> = [];
+
+  // Charts
+  private optionsLineChart;
+  private dataLineChart;
 
   // Map
   private clusterStyles = [
@@ -73,10 +77,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   private selectWidgetType = [
     {id: 'map', itemName: 'Map'},
-    {id: 'table of devices', itemName: 'Table of devices'},
+    {id: 'table', itemName: 'Table'},
     {id: 'tracking', itemName: 'Tracking'},
     {id: 'alert', itemName: 'Alert'},
-    {id: 'gauge', itemName: 'Gauge'}
+    {id: 'gauge', itemName: 'Gauge'},
+    {id: 'line', itemName: 'Line graph'},
+    {id: 'bar', itemName: 'Bar graph'}
   ];
   private selectMapType = [
     {id: 'roadmap', itemName: 'Roadmap'},
@@ -402,7 +408,28 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   setFilter(type: string): void {
-    if (type === 'map' || type === 'table of devices' || type === 'alert') {
+    // Map
+    if (type === 'map') {
+      this.newWidget.filter = {
+        limit: 100,
+        order: 'updatedAt DESC',
+        include: [{
+          relation: 'Messages',
+          scope: {
+            skip: 0,
+            limit: 1,
+            order: 'createdAt DESC'
+          }
+        }],
+        where: {
+          or: [
+          ]
+        }
+      };
+    }
+
+    // Table
+    else if (type === 'table') {
       this.newWidget.filter = {
         limit: 100,
         order: 'updatedAt DESC',
@@ -419,7 +446,35 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           ]
         }
       };
-    } else if (type === 'tracking') {
+    }
+
+    // Alert & Gauge
+    else if (type === 'alert' || type === 'gauge') {
+      this.newWidget.filter = {
+        limit: 1,
+        order: 'updatedAt DESC',
+        include: [{
+          relation: 'Messages',
+          scope: {
+            fields: ['data_parsed', 'createdAt'],
+            limit: 1,
+            order: 'createdAt DESC',
+            where: {
+              and: [
+                { data_parsed: { neq: null } }
+              ]
+            }
+          }
+        }],
+        where: {
+          or: [
+          ]
+        }
+      };
+    }
+
+    // Tracking
+    else if (type === 'tracking') {
       this.newWidget.filter = {
         limit: 50,
         order: 'updatedAt DESC',
@@ -432,6 +487,32 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             where: {
               and: [
                 { geoloc: { neq: null } },
+                { createdAt: {gte: this.selectedDateTimeBegin.toISOString()} }
+              ]
+            }
+          }
+        }],
+        where: {
+          or: [
+          ]
+        }
+      };
+    }
+
+    // Line, Bar
+    else if (type === 'line' || type === 'bar') {
+      this.newWidget.filter = {
+        limit: 50,
+        order: 'updatedAt DESC',
+        include: [{
+          relation: 'Messages',
+          scope: {
+            fields: ['data_parsed', 'createdAt'],
+            limit: 3000,
+            order: 'createdAt DESC',
+            where: {
+              and: [
+                { data_parsed: { neq: null } },
                 { createdAt: {gte: this.selectedDateTimeBegin.toISOString()} }
               ]
             }
@@ -570,7 +651,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       }
     });
 
-    if (this.newWidget.type === 'tracking') {
+    if (this.newWidget.type === 'tracking' || this.newWidget.type === 'line') {
       this.selectedDateTimeBegin = new Date(this.newWidget.filter.include[0].scope.where.and[1].createdAt.gte);
       this.dateTimeSettings.placeholder = this.selectedDateTimeBegin.toISOString();
     }
@@ -594,66 +675,244 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       // console.log(widgets);
       if (this.widgets) {
         this.widgets.forEach(widget => {
-          // Real-Time
           // Devices
           /*this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
           this.deviceRef.on('change', widget.filter).subscribe((devices: any[]) => {*/
           this.userApi.getDevices(this.user.id, widget.filter).subscribe((devices: any[]) => {
-            devices.forEach(device => {
-              device.visibility = false;
-              device.directionsDisplayStore = [];
-              device.color = this.getRandomColor();
-              device.Messages.reverse();
-            });
+            // Default data
             widget.data = devices;
 
-            if (widget.options.tableType === 'custom') {
-              widget.data = this.buildCustomTable(widget);
-              widget.extraData = devices;
+            // Table
+            if (widget.type === 'table') {
+              if (widget.options.tableType === 'custom') {
+                widget.data = this.buildCustomTable(widget);
+                widget.extraData = devices;
+              }
+            }
+
+            // Map
+            else if (widget.type === 'map') {
+
             }
 
             // Tracking
-            if (widget.options.geolocType === 'GPS') {
+            else if (widget.type === 'tracking') {
+              // Default parameters
               widget.data.forEach(device => {
-                device.Messages = _.filter(device.Messages, {geoloc: [{type: 'GPS'}]});
-                // Filter others
-                device.Messages.forEach((message, i) => {
-                  message.geoloc.forEach((geoloc, j) => {
-                    if (geoloc.type !== 'GPS') {
-                      device.Messages[i].geoloc.splice(j, 1);
-                    }
-                  });
-                });
+                device.visibility = false;
+                device.directionsDisplayStore = [];
+                device.color = this.getRandomColor();
+                // Reverse the array to trace route from eldest to newest position
+                device.Messages.reverse();
               });
-            } else if (widget.options.geolocType === 'sigfox') {
-              widget.data.forEach(device => {
-                // Message contains Sigfox
-                device.Messages = _.filter(device.Messages, {geoloc: [{type: 'sigfox'}]});
-                // Filter others
-                device.Messages.forEach((message, i) => {
-                  message.geoloc.forEach((geoloc, j) => {
-                    if (geoloc.type !== 'sigfox') {
-                      device.Messages[i].geoloc.splice(j, 1);
-                    }
-                  });
-                });
-              });
-            } else if (widget.options.geolocType === 'preferGPS') {
-              widget.data.forEach(device => {
-                device.Messages.forEach((message, i) => {
-                  let hasSigfox = false;
-                  if (message.geoloc.length > 1) {
+
+              if (widget.options.geolocType === 'GPS') {
+                widget.data.forEach(device => {
+                  device.Messages = _.filter(device.Messages, {geoloc: [{type: 'GPS'}]});
+                  // Filter others
+                  device.Messages.forEach((message, i) => {
                     message.geoloc.forEach((geoloc, j) => {
-                      if (geoloc.type === 'sigfox')
-                        hasSigfox = true;
-                      if (hasSigfox)
+                      if (geoloc.type !== 'GPS') {
                         device.Messages[i].geoloc.splice(j, 1);
+                      }
                     });
-                  }
+                  });
+                });
+              } else if (widget.options.geolocType === 'sigfox') {
+                widget.data.forEach(device => {
+                  // Message contains Sigfox
+                  device.Messages = _.filter(device.Messages, {geoloc: [{type: 'sigfox'}]});
+                  // Filter others
+                  device.Messages.forEach((message, i) => {
+                    message.geoloc.forEach((geoloc, j) => {
+                      if (geoloc.type !== 'sigfox') {
+                        device.Messages[i].geoloc.splice(j, 1);
+                      }
+                    });
+                  });
+                });
+              } else if (widget.options.geolocType === 'preferGPS') {
+                widget.data.forEach(device => {
+                  device.Messages.forEach((message, i) => {
+                    let hasSigfox = false;
+                    if (message.geoloc.length > 1) {
+                      message.geoloc.forEach((geoloc, j) => {
+                        if (geoloc.type === 'sigfox')
+                          hasSigfox = true;
+                        if (hasSigfox)
+                          device.Messages[i].geoloc.splice(j, 1);
+                      });
+                    }
+                  });
+                });
+              }
+            }
+
+            // Gauge
+            else if (widget.type === 'gauge') {
+              const lastData_parsed = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.key})[0];
+              widget.value = lastData_parsed.value;
+              widget.unit = lastData_parsed.unit;
+              widget.label = this.formatTableColumn(lastData_parsed.key);
+            }
+
+            // Line
+            else if (widget.type === 'line') {
+              widget.chartData = [];
+              const aData_parsed = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.key})[0];
+              const key = this.formatTableColumn(aData_parsed.key);
+              const unit = aData_parsed.unit;
+              widget.data.forEach((device, i) => {
+                widget.chartData[i] = {};
+                // Set key
+                widget.chartData[i].key = key;
+                // Set values
+                widget.chartData[i].values = [];
+                device.Messages.forEach((message, j) => {
+                  const item = {label: new Date(message.createdAt), value: Number(_.filter(message.data_parsed, {key: widget.options.key})[0].value)};
+                  widget.chartData[i].values.push(item);
                 });
               });
+              widget.chartOptions = {
+                chart: {
+                  type: 'lineWithFocusChart',
+                  height: 450,
+                  margin: {
+                    top: 20,
+                    right: 20,
+                    bottom: 50,
+                    left: 55
+                  },
+                  x: function (d) {
+                    return d.label;
+                  },
+                  y: function (d) {
+                    return d.value;
+                  },
+                  color: [this.getRandomColor()],
+                  useVoronoi: true,
+                  isArea: true,
+                  noData: 'There is no data to display yet',
+                  tooltip: {
+                    contentGenerator: function (e) {
+                      const series = e.series[0];
+                      if (series.value === null) return;
+
+                      const rows =
+                        '<tr>' +
+                        '<td class="key">' + 'Date: ' + '</td>' +
+                        '<td class="x-value">' + d3.time.format('%d %b %y - %I:%M %p')(new Date(e.value)) + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td class="key">' + key + ': </td>' +
+                        '<td class="x-value"><strong>' + (series.value ? series.value.toFixed(2) : 0) + ' ' + unit + '</strong></td>' +
+                        '</tr>';
+
+                      const header =
+                        '<thead>' +
+                        '<tr>' +
+                        '<td class="legend-color-guide"><div style="background-color: ' + series.color + ';"></div></td>' +
+                        '<td class="key"><strong>' + series.key + '</strong></td>' +
+                        '</tr>' +
+                        '</thead>';
+
+                      return '<table>' +
+                        header +
+                        '<tbody>' +
+                        rows +
+                        '</tbody>' +
+                        '</table>';
+                    }
+                  },
+                  xAxis: {
+                    axisLabel: 'Date',
+                    tickFormat: function(d) { return d3.time.format('%d %b %y')(new Date(d)); }
+                  },
+                  x2Axis: {
+                    tickFormat: function (d) { return d3.time.format('%d %b %y')(new Date(d)); }
+                  },
+                  yAxis: {
+                    axisLabel: this.formatTableColumn(aData_parsed.key) + ' (' + aData_parsed.unit + ')',
+                    axisLabelDistance: -10
+                  }
+                }
+              };
             }
-            console.log(this.widgets);
+
+            // Bar
+            else if (widget.type === 'bar') {
+              /*widget.chartData = [];
+              widget.chartLabels = [];
+              widget.chartOptions = {
+                responsive: true,
+                scaleShowVerticalLines: false,
+                maintainAspectRatio: false,
+                legend: {
+                  display: true
+                }
+              };
+              const aData_parsed = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.key})[0];
+
+              widget.data.forEach((device, i) => {
+                const chartValues = [];
+                device.Messages.forEach((message, j) => {
+                  chartValues.push(_.filter(message.data_parsed, {key: widget.options.key})[0].value);
+                  widget.chartLabels.push(new Date(message.createdAt));
+                });
+                // Transform the labels in the user local time zone format
+                widget.chartLabels.forEach((label: any, i) => {
+                  const offset = moment().utcOffset();
+                  widget.chartLabels[i] = moment.utc(label).utcOffset(offset).format('DD MMM YY - h:mm a');
+                });
+                widget.chartData.push({data: chartValues, label: this.formatTableColumn(aData_parsed.key)});
+              });*/
+              widget.chartData = [];
+              const aData_parsed = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.key})[0];
+              widget.data.forEach((device, i) => {
+                widget.chartData[i] = {};
+                // Set key
+                widget.chartData[i].key = this.formatTableColumn(aData_parsed.key);
+                // Set values
+                widget.chartData[i].values = [];
+                device.Messages.forEach((message, j) => {
+                  const item = {label: new Date(message.createdAt), value: _.filter(message.data_parsed, {key: widget.options.key})[0].value};
+                  widget.chartData[i].values.push(item);
+                });
+              });
+              widget.chartOptions = {
+                chart: {
+                  type: 'discreteBarChart',
+                  height: 450,
+                  margin: {
+                    top: 20,
+                    right: 20,
+                    bottom: 50,
+                    left: 55
+                  },
+                  x: function (d) {
+                    return d.label;
+                  },
+                  y: function (d) {
+                    return d.value;
+                  },
+                  color: [this.getRandomColor()],
+                  useVoronoi: true,
+                  showXAxis: false,
+                  noData: 'There is no data to display yet',
+                  xAxis: {
+                    axisLabel: 'Date',
+                    tickFormat: function(d) { return d3.time.format('%d %b %y - %I:%M %p')(new Date(d)); }
+                  },
+                  yAxis: {
+                    ticks: 5,
+                    axisLabel: this.formatTableColumn(aData_parsed.key) + ' (' + aData_parsed.unit + ')',
+                    axisLabelDistance: -10
+                  }
+                }
+              };
+            }
+
+            console.log('Widget loaded', widget);
           });
         });
       }
