@@ -15,6 +15,13 @@ module.exports = function(app) {
   var User = app.models.user;
   var RoleMapping = app.models.RoleMapping;
 
+  RoleMapping.settings.strictObjectIDCoercion = true;
+
+  // RoleMapping.belongsTo(User);
+  // User.hasMany(RoleMapping, {foreignKey: 'principalId'});
+  // Role.hasMany(User, {through: RoleMapping, foreignKey: 'roleId'});
+
+
   // Role.registerResolver('organizationMember', function(role, context, cb) {
   //   function reject() {
   //     process.nextTick(function() {
