@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Connector, FireLoopRef, Message, User} from '../../shared/sdk/models';
+import {Connector, FireLoopRef, Geoloc, Message, User} from '../../shared/sdk/models';
 import {RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
@@ -17,10 +17,14 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private sub: any;
   private user: User;
 
-  @ViewChild('baseStationMap') baseStationMap: any;
-  @ViewChild(AgmMap) agmMap: AgmMap;
+  @ViewChild('mapModal') mapModal: any;
+  @ViewChild('agmMap') agmMap: AgmMap;
 
+  private mapLat = 48.856614;
+  private mapLng = 2.352222;
+  private mapZoom = 10;
   private receptions: any[] = [];
+  private geolocs: Geoloc[] = [];
 
   private messageSub: Subscription;
   private messages: Message[] = [];
@@ -70,10 +74,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }];
   public filterQuery = '';
 
-  public toInt(num: string) {
-    return +num;
-  }
-
   constructor(private rt: RealTime,
               private userApi: UserApi,
               private receptionApi: ReceptionApi,
@@ -121,8 +121,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
     }*/
-
-
   }
 
   setup(): void {
@@ -150,19 +148,45 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.messageRef.remove(message).subscribe();
   }
 
-  showBaseStations(deviceId: string, time: number): void {
+  showMarkers(message: Message): void {
+    this.geolocs = [];
     this.receptions = [];
+    this.mapZoom = 10;
 
+    // Message geoloc
+    if (message.geoloc) {
+      this.geolocs = message.geoloc;
+      this.mapLat = message.geoloc[0].lat;
+      this.mapLng = message.geoloc[0].lng;
+      // Show map
+      this.mapModal.show();
+      this.mapModal.onShown.subscribe((reason: string) => {
+        this.agmMap.triggerResize();
+      });
+    }
+
+    // Coverage
     this.userApi.getConnectors(this.user.id, {where: {type: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
       if (connectors.length > 0) {
-
-        this.baseStationMap.show();
-
-        this.receptionApi.getBaseStationsByDeviceId(deviceId, time).subscribe((receptionsResult: Reception[]) => {
+        // Show map
+        this.mapModal.show();
+        // Get receptions
+        this.receptionApi.getBaseStationsByDeviceId(message.deviceId, message.time).subscribe((receptionsResult: Reception[]) => {
             this.receptions = receptionsResult;
             console.log(this.receptions);
-            if (this.receptions.length > 0)
-              this.agmMap.triggerResize();
+            if (this.receptions.length > 0) {
+              this.receptions.forEach((reception, i) => {
+                this.receptions[i].lat = Number(reception.lat);
+                this.receptions[i].lng = Number(reception.lng);
+              });
+              if (!message.geoloc) {
+                this.mapLat = this.receptions[0].lat;
+                this.mapLng = this.receptions[0].lng;
+              }
+              this.mapModal.onShown.subscribe((reason: string) => {
+                this.agmMap.triggerResize();
+              });
+            }
           }, error => {
             console.log(error);
           }

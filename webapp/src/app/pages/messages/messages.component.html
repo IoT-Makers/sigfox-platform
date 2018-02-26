@@ -84,18 +84,18 @@
                     <div class="row">
                       <div class="col col-7">
                         <ng-container *ngIf="geoloc.type == 'sigfox'">
-                        <span class="small text-geoloc-sigfox">
-                          <i class="fa fa-map-marker fa-2x"></i>
-                          <br>
-                          <strong>Sigfox Network</strong>
-                        </span>
+                          <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-sigfox">
+                            <i class="fa fa-map-marker fa-2x"></i>
+                            <br>
+                            <strong>Sigfox Network</strong>
+                          </a>
                         </ng-container>
                         <ng-container *ngIf="geoloc.type == 'GPS'">
-                        <span class="small text-geoloc-gps">
-                          <i class="fa fa-map-marker fa-2x"></i>
-                          <br>
-                          <strong>GPS</strong>
-                        </span>
+                          <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-gps">
+                            <i class="fa fa-map-marker fa-2x"></i>
+                            <br>
+                            <strong>GPS</strong>
+                          </a>
                         </ng-container>
                       </div>
                       <div class="col col-5 text-left">
@@ -110,7 +110,7 @@
                 </div>
               </td>
               <td class="text-center">{{message.seqNumber}}</td>
-              <td class="text-center" (click)="showBaseStations(message.deviceId, message.time)">
+              <td class="text-center" (click)="showMarkers(message)">
                 <p *ngFor="let reception of message.reception">
                   <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success" aria-hidden="true"></i>
                   <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
@@ -146,48 +146,88 @@
 </div>
 
 
-
-<div bsModal #baseStationMap="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="baseStationMap" aria-hidden="true">
+<div bsModal #mapModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mapModal" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Base stations that received the message</h4>
-        <button type="button" class="close" (click)="baseStationMap.hide()" aria-label="Close">
+        <h4 class="modal-title">Message location map</h4>
+        <button type="button" class="close" (click)="mapModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <agm-map [styles]="mapStyle"
-                 [latitude]="receptions[0] ? toInt(receptions[0].lat) : 48.883478"
-                 [longitude]="receptions[0] ? toInt(receptions[0].lng) : 2.302451"
-                 [zoom]="9">
+        <agm-map #agmMap
+                 [latitude]="mapLat"
+                 [longitude]="mapLng"
+                 [zoom]="mapZoom"
+                 [styles]="mapStyle"
+                 [fullscreenControl]="true"
+                 [mapTypeId]="'roadmap'">
+          <!-- Receptions -->
           <ng-container *ngFor="let reception of receptions">
             <agm-marker
               [zIndex]="3"
-              [latitude]="toInt(reception.lat)"
-              [longitude]="toInt(reception.lng)"
+              [latitude]="reception.lat"
+              [longitude]="reception.lng"
               [iconUrl]="'assets/img/markers/marker-base-station.png'">
               <agm-info-window>
                 <strong><b>ID:</b> {{reception.tap}}</strong>
               </agm-info-window>
             </agm-marker>
-            <!-- Circle -->
-            <!--<agm-circle [zIndex]="1"
-                        [strokePosition]="CENTER"
-                        [strokeWeight]="1"
-                        [strokeColor]="'#2333d1'"
-                        [fillOpacity]="0.15"
-                        [fillColor]="'#2333d1'"
-                        [latitude]="toInt(reception.lat)"
-                        [longitude]="toInt(reception.lng)"
-                        [radius]="50000">
-            </agm-circle>-->
-            <!-- End Circle -->
+          </ng-container>
+          <!-- Message Geoloc -->
+          <ng-container *ngFor="let geoloc of geolocs">
+            <!-- Geoloc Sigfox -->
+            <ng-container *ngIf="geoloc.type === 'sigfox'">
+              <agm-marker
+                [zIndex]="3"
+                [latitude]="geoloc.lat"
+                [longitude]="geoloc.lng"
+                [iconUrl]="'assets/img/markers/marker-sigfox.png'">
+                <agm-info-window>
+                  <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                  <br>
+                  <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                  <br>
+                  <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                  <br>
+                  <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                </agm-info-window>
+              </agm-marker>
+              <!-- Circle -->
+              <agm-circle [zIndex]="1"
+                          [strokePosition]="CENTER"
+                          [strokeWeight]="1"
+                          [strokeColor]="'#8d5dd1'"
+                          [fillOpacity]="0.1"
+                          [fillColor]="'#8d5dd1'"
+                          [latitude]="geoloc.lat"
+                          [longitude]="geoloc.lng"
+                          [radius]="geoloc.precision">
+              </agm-circle>
+              <!-- End Circle -->
+            </ng-container>
+            <!-- Geoloc GPS -->
+            <ng-container *ngIf="geoloc.type === 'GPS'">
+              <agm-marker
+                [zIndex]="3"
+                [latitude]="geoloc.lat"
+                [longitude]="geoloc.lng"
+                [iconUrl]="'assets/img/markers/marker-gps.png'">
+                <agm-info-window>
+                  <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                  <br>
+                  <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                  <br>
+                  <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                </agm-info-window>
+              </agm-marker>
+            </ng-container>
           </ng-container>
         </agm-map>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="baseStationMap.hide()">Close</button>
+        <button type="button" class="btn btn-secondary" (click)="mapModal.hide()">Close</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

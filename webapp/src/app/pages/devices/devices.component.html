@@ -411,16 +411,14 @@
                       <div class="row">
                         <div class="col col-12">
                           <ng-container *ngIf="geoloc.type === 'sigfox'">
-                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
-                               class="small text-geoloc-sigfox">
+                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-sigfox">
                               <i class="fa fa-map-marker fa-2x"></i>
                               <br>
                               <strong>Sigfox Geoloc</strong>
                             </a>
                           </ng-container>
                           <ng-container *ngIf="geoloc.type === 'GPS'">
-                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
-                               class="small text-geoloc-gps">
+                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-gps">
                               <i class="fa fa-map-marker fa-2x"></i>
                               <br>
                               <strong>GPS</strong>
