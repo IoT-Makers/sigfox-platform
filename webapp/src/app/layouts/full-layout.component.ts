@@ -4,6 +4,7 @@ import {Category, Dashboard, Device, FireLoopRef, Message, Parser, User} from '.
 import {Subscription} from 'rxjs/Subscription';
 import {ParserApi, UserApi} from '../shared/sdk/services/custom';
 import {RealTime} from '../shared/sdk/services/core';
+import * as _ from 'lodash';
 
 @Component({
   templateUrl: './full-layout.component.html'
@@ -11,6 +12,7 @@ import {RealTime} from '../shared/sdk/services/core';
 export class FullLayoutComponent implements OnInit, OnDestroy {
 
   private user: User;
+
 
   private message: Message = new Message();
   private device: Device = new Device();
@@ -41,6 +43,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private categoryRef: FireLoopRef<Category>;
   private dashboardRef: FireLoopRef<Dashboard>;
 
+  private admin: boolean = false;
 
   public disabled = false;
   public status: { isopen: boolean } = {isopen: false};
@@ -56,7 +59,21 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     console.log('Full Layout: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
+
     console.log(this.user);
+
+    this.userApi.getRoles(this.user.id).subscribe(roles =>{
+      console.log("roles: ", roles);
+      this.user.roles = roles;
+      if( _.filter(this.user.roles, {name: 'admin'}).length != 0){
+        this.admin = true;
+        console.log(this.admin);
+      }
+
+
+      console.log();
+
+    })
     // Real Time
     if (
       this.rt.connection.isConnected() &&

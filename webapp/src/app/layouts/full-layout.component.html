@@ -111,6 +111,17 @@
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/connectors']"><i class="fa fa-plug"></i>
             Connectors</a>
         </li>
+
+        <ng-container *ngIf="admin">
+        <li class="nav-title">
+          Admin
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/parsers']"><i
+            class="fa fa-bomb"></i> Admin </a>
+        </li>
+        </ng-container>
+
       </ul>
     </nav>
   </div>
