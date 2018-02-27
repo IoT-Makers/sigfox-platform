@@ -73,7 +73,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
       console.log();
 
-    })
+    });
     // Real Time
     if (
       this.rt.connection.isConnected() &&
@@ -84,11 +84,12 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe(() => this.setup());
     }
+
   }
 
   setup(): void {
-    // console.log(this.rt.connection);
-    // this.ngOnDestroy();
+    console.log("Setup Full layout");
+    //this.ngOnDestroy();
 
     // Counts
     this.userApi.countDevices(this.user.id).subscribe(result => {
@@ -103,8 +104,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.parserApi.count().subscribe(result => {
       this.countParsers = result.count;
     });
-    this.userApi.getDashboards(this.user.id).subscribe(result => {
-      this.dashboards = result;
+    this.userApi.getDashboards(this.user.id).subscribe((dashboards: Dashboard[]) => {
+      this.dashboards = dashboards;
     });
 
     // Messages

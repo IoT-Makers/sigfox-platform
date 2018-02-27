@@ -30,7 +30,9 @@ export const routes: Routes = [
       {path: 'analytics', loadChildren: './widgets/analytics/analytics.module#AnalyticsModule'},
 
       {path: 'parsers', loadChildren: './pages/parsers/parsers.module#ParsersModule'},
-      {path: 'connectors', loadChildren: './pages/connectors/connectors.module#ConnectorsModule'}
+      {path: 'connectors', loadChildren: './pages/connectors/connectors.module#ConnectorsModule'},
+
+      {path: 'admin', loadChildren: './pages/admin/admin.module#AdminModule'}
 
     ]
   },

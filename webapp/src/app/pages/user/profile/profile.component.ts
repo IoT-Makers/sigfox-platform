@@ -5,6 +5,7 @@ import {User} from '../../../shared/sdk/models';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {FullLayoutComponent} from '../../../layouts/full-layout.component';
 import {Router} from '@angular/router';
+import {RealTime} from "../../../shared/sdk/services";
 
 @Component({
   selector: 'app-profile',
@@ -33,6 +34,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
 
   constructor(@Inject(DOCUMENT) private document: any,
+              private rt: RealTime,
               private userApi: UserApi,
               toasterService: ToasterService,
               private router: Router) {
@@ -71,6 +73,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.user = user;
       this.toasterService.pop('success', 'Success', 'Profile was updated successfully.');
       this.updateUserModal.hide();
+      this.rt.onReady().subscribe();
     });
   }
 
@@ -90,6 +93,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('Profile: ngOnInit');
+
 
     // Get the logged in User object
     this.getUser();

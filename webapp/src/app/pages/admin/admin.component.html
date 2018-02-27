@@ -1,0 +1,126 @@
+<div class="animated fadeIn">
+
+  <div class="row">
+    <div class="col col-12">
+      <accordion>
+
+        <accordion-group>
+          <div accordion-heading>
+            <h4 class="text-center">Application Settings</h4>
+          </div>
+          <div class="card-block">
+            hello
+          </div>
+        </accordion-group>
+
+        <accordion-group>
+          <div accordion-heading>
+            <h4 class="text-center">Users</h4>
+          </div>
+          <div class="card-block">
+
+              <button class="mb-1 btn btn-success" (click)="editUser()"><i class="fa fa-plus-circle"></i> Add a new user
+              </button>
+                  <ng-container *ngIf="!users.length">
+                    No user yet...
+                    <div class="sk-double-bounce">
+                      <div class="sk-child sk-double-bounce1"></div>
+                      <div class="sk-child sk-double-bounce2"></div>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="users.length > 0">
+
+                    <!--Table-->
+                    <div class="table-responsive">
+                      <table class="table table-hover table-outline" [mfData]="users" #mf="mfDataTable" [mfRowsOnPage]="50">
+                        <thead class="thead-inverse">
+                        <tr>
+                          <th class="text-center">
+                            User
+                          </th>
+                          <th class="text-center">
+                            <mfDefaultSorter by="email"><i class="fa fa-sort"></i> Email</mfDefaultSorter>
+                          </th>
+                          <th class="text-center">
+                            <mfDefaultSorter by="updatedAt"><i class="fa fa-sort"></i> Last seen</mfDefaultSorter>
+                          </th>
+                          <th class="text-center">Roles</th>
+                          <th class="text-center">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let user of  mf.data; let i = index">
+                          <td class="text-center">
+                            <div class="small text-center">
+                              <img src="{{user.avatar}}" height="50px" class="img-avatar">
+                            </div>
+                          </td>
+                          <td class="text-center">
+                            <div class="">
+                              {{user.email}}
+                            </div>
+                          </td>
+                          <td class="text-center">
+                            <strong class="">{{user.updatedAt | amTimeAgo}}</strong>
+                            <div class="small text-muted">Creation date:
+                              {{user.createdAt | amTimeAgo}}
+                            </div>
+                          </td>
+                          <td class="text-center">
+                            <p *ngFor="let role of user.roles;">{{role.name}}</p>
+                          </td>
+
+                          <td class="text-center">
+                            <div class="btn-group-sm">
+                              <button class="btn btn-outline-primary btn-round" tooltip="Edit user"
+                                      (click)="editUser(user)"><i class="fa fa-pencil fa-lg"></i></button>
+                              <button class="btn btn-outline-danger btn-round" tooltip="Delete user"
+                                      (click)="showRemoveModal(user)"><i class="fa fa-trash fa-lg"></i></button>
+                            </div>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </ng-container>
+
+
+          </div>
+        </accordion-group>
+      </accordion>
+    </div>
+
+
+
+
+
+
+
+
+  </div>
+  <!--/.row-->
+
+</div>
+
+<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm removal of <b></b></h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are your sure you wish to delete this category?
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-danger" (click)="remove()">Delete</button>
+        <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

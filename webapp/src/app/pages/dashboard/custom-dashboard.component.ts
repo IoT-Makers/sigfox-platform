@@ -296,6 +296,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       console.log(result);
       this.editFlag = false;
       this.toasterService.pop('success', 'Success', 'Successfully saved dashboard.');
+      this.rt.onReady().subscribe();
     });
   }
 
