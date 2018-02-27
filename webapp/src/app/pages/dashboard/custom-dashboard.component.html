@@ -322,7 +322,7 @@
                     <span class="switch-handle"></span>
                     </label>
                   </span>
-                    <input type="text" class="form-control text-center text-device font-weight-bold" value="{{device.name ? device.id + '(' + device.name + ')' : device.id}}" [readonly]="true">
+                    <input type="text" class="form-control text-center text-device font-weight-bold" value="{{device.name ? device.id + ' (' + device.name + ')' : device.id}}" [readonly]="true">
                     <!-- <strong>{{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong> -->
                   </div>
                 </div>
@@ -960,7 +960,7 @@
                 <div class="col-md-6">
                   <angular2-date-picker name="dateTime"
                                         [(ngModel)]="selectedDateTimeBegin"
-                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter('tracking')"
+                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter(newWidget.type)"
                                         [settings]="dateTimeSettings"
                                         required>
                   </angular2-date-picker>
