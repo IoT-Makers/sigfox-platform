@@ -69,7 +69,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private selectedDevices = [];
   private selectedDateTimeBegin: Date = new Date();
   private selectedGeolocType = [];
-  private selectedKey = [];
+  private selectedKeys = [];
 
   private selectCategories: Array<Object> = [];
   private selectDevices: Array<Object> = [];
@@ -100,11 +100,17 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     {id: 'sigfox', itemName: 'Sigfox'},
     {id: 'preferGPS', itemName: 'Prefer GPS'}
   ];
-
   private selectOneSettings = {
     singleSelection: true,
     text: 'Select one',
     enableSearchFilter: false
+  };
+  private selectKeysSettings = {
+    singleSelection: false,
+    text: 'Select keys',
+    selectAllText: 'Select all',
+    unSelectAllText: 'Unselect all',
+    enableSearchFilter: true
   };
   private selectCategoriesSettings = {
     singleSelection: false,
@@ -367,7 +373,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 model: 'device.data_parsed',
                 key: o.key,
                 type: o.type,
-                as: o.key + ' (parsed data)'
+                as: o.key + ' (' + device.id + ')'
               };
               // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
               if (!_.find(this.newWidget.options.tableColumnOptions, object)) {
@@ -389,8 +395,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   formatTableColumn(str: string): string {
-    if (str.indexOf(' (') !== -1)
-      str = str.substring(0, str.indexOf(' ('));
+    /*if (str.indexOf(' (') !== -1)
+      str = str.substring(0, str.indexOf(' ('));*/
     str = str.charAt(0).toUpperCase() + str.slice(1);
     return str;
   }
@@ -409,6 +415,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   setFilter(type: string): void {
+    console.log('setFilter: START', this.newWidget);
     // Map
     if (type === 'map') {
       this.newWidget.filter = {
@@ -500,10 +507,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-    // Line, Bar
+    // Line & Bar
     else if (type === 'line' || type === 'bar') {
       this.newWidget.filter = {
-        limit: 50,
+        limit: 10,
         order: 'updatedAt DESC',
         include: [{
           relation: 'Messages',
@@ -525,31 +532,47 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         }
       };
     }
+
+    // Reset filters arrays
+    this.newWidget.options.keys = [];
+    this.newWidget.filter.where.or = [];
+    // Set filter arrays by looping on selected data
+    this.selectedKeys.forEach( (item: any) => {
+      this.newWidget.options.keys.push(item.id);
+    });
     this.selectedDevices.forEach( (item: any) => {
       this.newWidget.filter.where.or.push({id: item.id});
     });
     this.selectedCategories.forEach( (item: any) => {
       this.newWidget.filter.where.or.push({categoryId: item.id});
     });
-    console.log('Set filter', this.newWidget.filter);
+    console.log('Set filter: END', this.newWidget);
+    console.log(this.selectedKeys.length, this.selectedKeys);
   }
 
-  loadDeviceKeys(): void {
+  loadKeys(): void {
+    // Reset the selected keys
+    this.selectedKeys = [];
+    // Reset the selectable keys
     this.selectKeys = [];
-    this.userApi.getDevices(this.user.id, this.newWidget.filter).subscribe(devices => {
-      // console.log(devices);
-      if (devices[0].data_parsed) {
-        devices[0].data_parsed.forEach(o => {
-          const item = {
-            id: o.key,
-            itemName: o.key
-          };
-
-          // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
-          if (!_.find(this.selectKeys, item))
-            this.selectKeys.push(item);
-        });
-      }
+    // Prepare widget keys object
+    this.newWidget.options.keys = [];
+    // Fetch all the keys belonging to selected devices
+    this.userApi.getDevices(this.user.id, this.newWidget.filter).subscribe((devices: Device[]) => {
+      console.log(devices);
+      devices.forEach((device: Device, i) => {
+        if (device.data_parsed) {
+          device.data_parsed.forEach(o => {
+            const item = {
+              id: o.key,
+              itemName: o.key + ' (' + device.id + ')'
+            };
+            // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
+            if (!_.find(this.selectKeys, item))
+              this.selectKeys.push(item);
+          });
+        }
+      });
     });
   }
 
@@ -617,30 +640,37 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.selectedDevices = [];
     this.selectedGeolocType = [];
     this.selectedDateTimeBegin = new Date();
-    this.selectKeys = [];
+    this.selectedKeys = [];
 
-    if (this.newWidget.type !== '')
+    if (this.newWidget.type !== '') {
       this.selectedWidgetType = [{id: this.newWidget.type, itemName: this.capitalizeFirstLetter(this.newWidget.type)}];
-    if (this.newWidget.options.mapTypeId)
+    }
+    if (this.newWidget.options.mapTypeId) {
       this.selectedMapType = [{
         id: this.newWidget.options.mapTypeId,
         itemName: this.capitalizeFirstLetter(this.newWidget.options.mapTypeId)
       }];
-    if (this.newWidget.options.tableType)
+    }
+    if (this.newWidget.options.tableType) {
       this.selectedTableType = [{
         id: this.newWidget.options.tableType,
         itemName: this.capitalizeFirstLetter(this.newWidget.options.tableType)
       }];
-    if (this.newWidget.options.geolocType)
+    }
+    if (this.newWidget.options.geolocType) {
       this.selectedGeolocType = [{
         id: this.newWidget.options.geolocType,
         itemName: this.capitalizeFirstLetter(this.newWidget.options.geolocType)
       }];
-    if (this.newWidget.options.key)
-      this.selectedKey = [{
-        id: this.newWidget.options.key,
-        itemName: this.capitalizeFirstLetter(this.newWidget.options.key)
-      }];
+    }
+    if (this.newWidget.options.keys) {
+      this.newWidget.options.keys.forEach((key, i) => {
+        this.selectedKeys.push({
+          id: this.newWidget.options.keys[i],
+          itemName: this.newWidget.options.keys[i]
+        });
+      });
+    }
 
     this.newWidget.filter.where.or.forEach((item: any, index: number) => {
       if (item.categoryId) {
@@ -652,7 +682,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       }
     });
 
-    if (this.newWidget.type === 'tracking' || this.newWidget.type === 'line') {
+    if (this.newWidget.type === 'tracking' || this.newWidget.type === 'line' || this.newWidget.type === 'bar') {
       this.selectedDateTimeBegin = new Date(this.newWidget.filter.include[0].scope.where.and[1].createdAt.gte);
       this.dateTimeSettings.placeholder = this.selectedDateTimeBegin.toISOString();
     }
@@ -671,11 +701,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   loadWidgets(): void {
-    this.dashboardApi.getWidgets(this.dashboard.id).subscribe(widgets => {
+    this.dashboardApi.getWidgets(this.dashboard.id).subscribe((widgets: any[]) => {
       this.widgets = widgets;
       // console.log(widgets);
       if (this.widgets) {
-        this.widgets.forEach(widget => {
+        this.widgets.forEach((widget: any) => {
           // Devices
           /*this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
           this.deviceRef.on('change', widget.filter).subscribe((devices: any[]) => {*/
@@ -751,7 +781,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
             // Gauge
             else if (widget.type === 'gauge') {
-              const lastData_parsed = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.key})[0];
+              const lastData_parsed = _.filter(widget.data[0].data_parsed, {key: widget.options.keys[0]})[0];
               widget.value = lastData_parsed.value;
               widget.unit = lastData_parsed.unit;
               widget.label = this.formatTableColumn(lastData_parsed.key);
@@ -760,18 +790,40 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             // Line
             else if (widget.type === 'line') {
               widget.chartData = [];
-              const aData_parsed = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.key})[0];
-              const key = this.formatTableColumn(aData_parsed.key);
-              const unit = aData_parsed.unit;
-              widget.data.forEach((device, i) => {
-                widget.chartData[i] = {};
-                // Set key
-                widget.chartData[i].key = key;
-                // Set values
-                widget.chartData[i].values = [];
-                device.Messages.forEach((message, j) => {
-                  const item = {label: new Date(message.createdAt), value: Number(_.filter(message.data_parsed, {key: widget.options.key})[0].value)};
-                  widget.chartData[i].values.push(item);
+              const keys_units = [];
+
+              let w = 0;
+
+              // Loop each device for this widget
+              widget.data.forEach((device: Device) => {
+                const data_parsed = device.data_parsed;
+                // Loop each keys chosen for this widget
+                widget.options.keys.forEach((key) => {
+                  const o = _.filter(device.data_parsed, {key: key})[0];
+                  console.log(device.id, o);
+                  if (o) {
+                    keys_units.push(o);
+                    // Check if the device has this key
+                    data_parsed.forEach((line, k) => {
+                      if (line.key === key) {
+                        widget.chartData[w] = {};
+                        // Set key
+                        widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
+                        // Set values
+                        widget.chartData[w].values = [];
+                        device.Messages.forEach((message) => {
+                          const item = {
+                            label: new Date(message.createdAt),
+                            value: Number(_.filter(message.data_parsed,
+                              {key: key})[0].value)
+                          };
+                          widget.chartData[w].values.push(item);
+                        });
+                        data_parsed.splice(k, 1);
+                      }
+                    });
+                    w++;
+                  }
                 });
               });
               widget.chartOptions = {
@@ -790,94 +842,110 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   y: function (d) {
                     return d.value;
                   },
-                  color: [this.getRandomColor()],
+                  color: [],
                   useVoronoi: true,
                   isArea: true,
                   noData: 'There is no data to display yet',
-                  tooltip: {
-                    contentGenerator: function (e) {
-                      const series = e.series[0];
-                      if (series.value === null) return;
-
-                      const rows =
-                        '<tr>' +
-                        '<td class="key">' + 'Date: ' + '</td>' +
-                        '<td class="x-value">' + d3.time.format('%d %b %y - %I:%M %p')(new Date(e.value)) + '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td class="key">' + key + ': </td>' +
-                        '<td class="x-value"><strong>' + (series.value ? series.value.toFixed(2) : 0) + ' ' + unit + '</strong></td>' +
-                        '</tr>';
-
-                      const header =
-                        '<thead>' +
-                        '<tr>' +
-                        '<td class="legend-color-guide"><div style="background-color: ' + series.color + ';"></div></td>' +
-                        '<td class="key"><strong>' + series.key + '</strong></td>' +
-                        '</tr>' +
-                        '</thead>';
-
-                      return '<table>' +
-                        header +
-                        '<tbody>' +
-                        rows +
-                        '</tbody>' +
-                        '</table>';
-                    }
-                  },
                   xAxis: {
                     axisLabel: 'Date',
                     tickFormat: function(d) { return d3.time.format('%d %b %y')(new Date(d)); }
                   },
                   x2Axis: {
                     tickFormat: function (d) { return d3.time.format('%d %b %y')(new Date(d)); }
-                  },
-                  yAxis: {
-                    axisLabel: this.formatTableColumn(aData_parsed.key) + ' (' + aData_parsed.unit + ')',
-                    axisLabelDistance: -10
                   }
                 }
               };
+              // Dynamically add Y axis to chart
+              keys_units.forEach((key_unit: any) => {
+                widget.chartOptions.chart.color.push(this.getRandomColor());
+                if (keys_units.length === 1) {
+                  widget.chartOptions.chart['yAxis'] = {
+                    axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
+                    axisLabelDistance: -10
+                  };
+                }
+                /*if (i === 0) {
+                  widget.chartOptions.chart['yAxis'] = {
+                    axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
+                    axisLabelDistance: -10
+                  };
+                } else {
+                  widget.chartOptions.chart['y' + i + 'Axis'] = {
+                    axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
+                    axisLabelDistance: -10
+                  };
+                }*/
+                widget.chartOptions.chart.tooltip = {
+                  contentGenerator: function (e) {
+                    const series = e.series[0];
+                    if (series.value === null) return;
+
+                    const rows =
+                      '<tr>' +
+                      '<td class="key">' + 'Date: ' + '</td>' +
+                      '<td class="x-value">' + d3.time.format('%d %b %y - %I:%M %p')(new Date(e.value)) + '</td>' +
+                      '</tr>' +
+                      '<tr>' +
+                      '<td class="key">' + 'Value:' + ': </td>' +
+                      '<td class="x-value"><strong>' + (series.value ? series.value.toFixed(2) : 0) + '</strong></td>' +
+                      '</tr>';
+
+                    const header =
+                      '<thead>' +
+                      '<tr>' +
+                      '<td class="legend-color-guide"><div style="background-color: ' + series.color + ';"></div></td>' +
+                      '<td class="key"><strong>' + series.key + '</strong></td>' +
+                      '</tr>' +
+                      '</thead>';
+
+                    return '<table>' +
+                      header +
+                      '<tbody>' +
+                      rows +
+                      '</tbody>' +
+                      '</table>';
+                  }
+                };
+              });
             }
 
             // Bar
             else if (widget.type === 'bar') {
-              /*widget.chartData = [];
-              widget.chartLabels = [];
-              widget.chartOptions = {
-                responsive: true,
-                scaleShowVerticalLines: false,
-                maintainAspectRatio: false,
-                legend: {
-                  display: true
-                }
-              };
-              const aData_parsed = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.key})[0];
-
-              widget.data.forEach((device, i) => {
-                const chartValues = [];
-                device.Messages.forEach((message, j) => {
-                  chartValues.push(_.filter(message.data_parsed, {key: widget.options.key})[0].value);
-                  widget.chartLabels.push(new Date(message.createdAt));
-                });
-                // Transform the labels in the user local time zone format
-                widget.chartLabels.forEach((label: any, i) => {
-                  const offset = moment().utcOffset();
-                  widget.chartLabels[i] = moment.utc(label).utcOffset(offset).format('DD MMM YY - h:mm a');
-                });
-                widget.chartData.push({data: chartValues, label: this.formatTableColumn(aData_parsed.key)});
-              });*/
               widget.chartData = [];
-              const aData_parsed = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.key})[0];
-              widget.data.forEach((device, i) => {
-                widget.chartData[i] = {};
-                // Set key
-                widget.chartData[i].key = this.formatTableColumn(aData_parsed.key);
-                // Set values
-                widget.chartData[i].values = [];
-                device.Messages.forEach((message, j) => {
-                  const item = {label: new Date(message.createdAt), value: _.filter(message.data_parsed, {key: widget.options.key})[0].value};
-                  widget.chartData[i].values.push(item);
+              const keys_units = [];
+
+              let w = 0;
+
+              // Loop each device for this widget
+              widget.data.forEach((device: Device) => {
+                const data_parsed = device.data_parsed;
+                // Loop each keys chosen for this widget
+                widget.options.keys.forEach((key) => {
+                  const o = _.filter(device.data_parsed, {key: key})[0];
+                  console.log(device.id, o);
+                  if (o) {
+                    keys_units.push(o);
+                    // Check if the device has this key
+                    data_parsed.forEach((line, k) => {
+                      if (line.key === key) {
+                        widget.chartData[w] = {};
+                        // Set key
+                        widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
+                        // Set values
+                        widget.chartData[w].values = [];
+                        device.Messages.forEach((message) => {
+                          const item = {
+                            label: new Date(message.createdAt),
+                            value: Number(_.filter(message.data_parsed,
+                              {key: key})[0].value)
+                          };
+                          widget.chartData[w].values.push(item);
+                        });
+                        data_parsed.splice(k, 1);
+                      }
+                    });
+                    w++;
+                  }
                 });
               });
               widget.chartOptions = {
@@ -896,21 +964,54 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   y: function (d) {
                     return d.value;
                   },
-                  color: [this.getRandomColor()],
+                  color: [],
                   useVoronoi: true,
                   showXAxis: false,
                   noData: 'There is no data to display yet',
-                  xAxis: {
-                    axisLabel: 'Date',
-                    tickFormat: function(d) { return d3.time.format('%d %b %y - %I:%M %p')(new Date(d)); }
-                  },
-                  yAxis: {
-                    ticks: 5,
-                    axisLabel: this.formatTableColumn(aData_parsed.key) + ' (' + aData_parsed.unit + ')',
-                    axisLabelDistance: -10
-                  }
                 }
               };
+              // Dynamically add Y axis to chart
+              keys_units.forEach((key_unit: any) => {
+                widget.chartOptions.chart.color.push(this.getRandomColor());
+                if (keys_units.length === 1) {
+                  widget.chartOptions.chart['yAxis'] = {
+                    ticks: 5,
+                    axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
+                    axisLabelDistance: -10
+                  };
+                }
+                widget.chartOptions.chart.tooltip = {
+                  contentGenerator: function (e) {
+                    const series = e.series[0];
+                    if (series.value === null) return;
+
+                    const rows =
+                      '<tr>' +
+                      '<td class="key">' + 'Date: ' + '</td>' +
+                      '<td class="x-value">' + d3.time.format('%d %b %y - %I:%M %p')(new Date(e.value)) + '</td>' +
+                      '</tr>' +
+                      '<tr>' +
+                      '<td class="key">' + 'Value:' + ': </td>' +
+                      '<td class="x-value"><strong>' + (series.value ? series.value.toFixed(2) : 0) + '</strong></td>' +
+                      '</tr>';
+
+                    const header =
+                      '<thead>' +
+                      '<tr>' +
+                      '<td class="legend-color-guide"><div style="background-color: ' + series.color + ';"></div></td>' +
+                      '<td class="key"><strong>' + series.key + '</strong></td>' +
+                      '</tr>' +
+                      '</thead>';
+
+                    return '<table>' +
+                      header +
+                      '<tbody>' +
+                      rows +
+                      '</tbody>' +
+                      '</table>';
+                  }
+                };
+              });
             }
 
             console.log('Widget loaded', widget);

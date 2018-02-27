@@ -34,19 +34,19 @@
           <form class="form-horizontal" #editDashboardForm="ngForm">
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Name</label>
-              <div class="col-md-9">
+              <div class="col-md-6">
                 <input type="text" class="form-control" placeholder="Device name" name="dashboard.name" [(ngModel)]="dashboard.name">
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Description</label>
-              <div class="col-md-9">
+              <div class="col-md-6">
                 <input type="text" class="form-control" placeholder="Dashboard description" name="dashboard.description" [(ngModel)]="dashboard.description">
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Icon <i class="fa {{dashboard.icon}}"></i></label>
-              <div class="col-md-9">
+              <div class="col-md-6">
                 <ng-select #iconDashboardSelect
                            [placeholder]="dashboard.icon ? dashboard.icon : 'Select an icon'"
                            [allowClear]="true"
@@ -202,11 +202,9 @@
                   <td>
                     <div *ngIf="!device.data_parsed" class="small text-muted">No data</div>
                     <div *ngIf="device.data_parsed">
-                      <div class="small text-gray-dark" *ngFor="let property of device.data_parsed; let i = index">
-                          <span *ngIf="property.value">{{property.key}}: <strong>{{property.value}}
-                          {{property.unit}}</strong></span>
-                        <!-- <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span> -->
-                        <!-- <span class="text-primary">{{property.value ? property.value : ""}}</span> -->
+                      <div class="small text-gray-dark" *ngFor="let o of device.data_parsed; let i = index">
+                          <span *ngIf="o.value">{{o.key}}: <strong>{{o.value}}
+                          {{o.unit}}</strong></span>
                       </div>
                     </div>
                   </td>
@@ -708,32 +706,29 @@
             <!-- Map widget -->
             <ng-container *ngIf="newWidget.type === 'map'">
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Categories
+                <label class="col-md-3 form-control-label">Categories / Devices
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <angular2-multiselect name="selectCategories"
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter(newWidget.type)"
-                                        (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelectAll)="setFilter(newWidget.type)"
-                                        (onDeSelectAll)="setFilter(newWidget.type)">
+                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onDeSelect)="setFilter(newWidget.type);"
+                                        (onSelectAll)="setFilter(newWidget.type);"
+                                        (onDeSelectAll)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Devices
-                </label>
-                <div class="col-md-6">
+
+                <div class="col-md-5">
                   <angular2-multiselect name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter(newWidget.type)"
-                                        (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelectAll)="setFilter(newWidget.type)"
-                                        (onDeSelectAll)="setFilter(newWidget.type)">
+                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onDeSelect)="setFilter(newWidget.type);"
+                                        (onSelectAll)="setFilter(newWidget.type);"
+                                        (onDeSelectAll)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -775,7 +770,7 @@
 
               <div class="form-group row" *ngIf="newWidget.options.mapTypeId === 'custom'">
                 <label class="col-md-3 form-control-label">Snazzy Map</label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <input type="text"
                          class="form-control"
                          placeholder="Past your snazzy map code here"
@@ -789,32 +784,29 @@
             <!-- Table widget -->
             <ng-container *ngIf="newWidget.type === 'table'">
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Categories
+                <label class="col-md-3 form-control-label">Categories / Devices
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <angular2-multiselect name="selectCategories"
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter(newWidget.type)"
-                                        (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelectAll)="setFilter(newWidget.type)"
-                                        (onDeSelectAll)="setFilter(newWidget.type)">
+                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onDeSelect)="setFilter(newWidget.type);"
+                                        (onSelectAll)="setFilter(newWidget.type);"
+                                        (onDeSelectAll)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Devices
-                </label>
-                <div class="col-md-6">
+
+                <div class="col-md-5">
                   <angular2-multiselect name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter(newWidget.type)"
-                                        (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelectAll)="setFilter(newWidget.type)"
-                                        (onDeSelectAll)="setFilter(newWidget.type)">
+                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onDeSelect)="setFilter(newWidget.type);"
+                                        (onSelectAll)="setFilter(newWidget.type);"
+                                        (onDeSelectAll)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -843,7 +835,6 @@
                     <div class="sk-child sk-double-bounce2"></div>
                   </div>
                 </ng-container>
-
                 <div class="table-responsive">
                   <table class="table table-hover">
                     <thead class="">
@@ -862,45 +853,54 @@
                       </th>
                     </tr>
                     </thead>
-
                   </table>
                 </div>
-
-
+                <!--<div class="form-group row" *ngIf="selectedCategories.length > 0 || selectedDevices.length > 0">
+                  <label class="col-md-3 form-control-label">Keys</label>
+                  <div class="col-md-9">
+                    <angular2-multiselect name="selectKeys"
+                                          (onOpen)="loadKeys()"
+                                          [data]="selectKeys"
+                                          [(ngModel)]="selectedKeys"
+                                          [settings]="selectKeysSettings"
+                                          (onSelect)="setFilter(newWidget.type)"
+                                          (onDeSelect)="setFilter(newWidget.type)"
+                                          (onSelectAll)="setFilter(newWidget.type)"
+                                          (onDeSelectAll)="setFilter(newWidget.type)"
+                                          required>
+                    </angular2-multiselect>
+                  </div>
+                </div>-->
               </ng-container>
-
             </ng-container>
             <!-- End Table widget -->
 
             <!-- Tracking widget -->
             <ng-container *ngIf="newWidget.type === 'tracking'">
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Categories
+                <label class="col-md-3 form-control-label">Categories / Devices
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <angular2-multiselect name="selectCategories"
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter(newWidget.type)"
-                                        (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelectAll)="setFilter(newWidget.type)"
-                                        (onDeSelectAll)="setFilter(newWidget.type)">
+                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onDeSelect)="setFilter(newWidget.type);"
+                                        (onSelectAll)="setFilter(newWidget.type);"
+                                        (onDeSelectAll)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Devices
-                </label>
-                <div class="col-md-6">
+
+                <div class="col-md-5">
                   <angular2-multiselect name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter(newWidget.type)"
-                                        (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelectAll)="setFilter(newWidget.type)"
-                                        (onDeSelectAll)="setFilter(newWidget.type)">
+                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onDeSelect)="setFilter(newWidget.type);"
+                                        (onSelectAll)="setFilter(newWidget.type);"
+                                        (onDeSelectAll)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -995,7 +995,7 @@
 
               <div class="form-group row" *ngIf="newWidget.options.mapTypeId === 'custom'">
                 <label class="col-md-3 form-control-label">Snazzy Map</label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <input type="text"
                          class="form-control"
                          placeholder="Past your snazzy map code here"
@@ -1009,27 +1009,29 @@
             <!-- Alert widget -->
             <ng-container *ngIf="newWidget.type === 'alert'">
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Devices
+                <label class="col-md-3 form-control-label">Device
                 </label>
                 <div class="col-md-6">
                   <angular2-multiselect name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(newWidget.type); loadDeviceKeys()"
-                                        (onDeSelect)="setFilter(newWidget.type); selectKeys = []">
+                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onDeSelect)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
               </div>
-              <div class="form-group row" *ngIf="selectedDevices[0]">
-                <label class="col-md-3 form-control-label">Select property</label>
+              <div class="form-group row" *ngIf="selectedDevices.length > 0">
+                <label class="col-md-3 form-control-label">Keys</label>
                 <div class="col-md-6">
                   <angular2-multiselect name="selectKeys"
+                                        (onOpen)="loadKeys()"
                                         [data]="selectKeys"
-                                        [(ngModel)]="selectedKey"
+                                        [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
-                                        (onDeSelect)="newWidget.options.key = ''"
-                                        (onSelect)="newWidget.options.key = $event.id">
+                                        (onDeSelect)="setFilter(newWidget.type)"
+                                        (onSelect)="setFilter(newWidget.type)"
+                                        required>
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1039,27 +1041,28 @@
             <!-- Gauge widget -->
             <ng-container *ngIf="newWidget.type === 'gauge'">
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Devices
+                <label class="col-md-3 form-control-label">Device
                 </label>
                 <div class="col-md-6">
                   <angular2-multiselect name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(newWidget.type); loadDeviceKeys()"
-                                        (onDeSelect)="setFilter(newWidget.type); selectKeys = []">
+                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onDeSelect)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
               </div>
-              <div class="form-group row" *ngIf="selectedDevices[0]">
-                <label class="col-md-3 form-control-label">Select property</label>
+              <div class="form-group row" *ngIf="selectedDevices.length > 0">
+                <label class="col-md-3 form-control-label">Keys</label>
                 <div class="col-md-6">
                   <angular2-multiselect name="selectKeys"
+                                        (onOpen)="loadKeys()"
                                         [data]="selectKeys"
-                                        [(ngModel)]="selectedKey"
+                                        [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
-                                        (onDeSelect)="newWidget.options.key = ''"
-                                        (onSelect)="newWidget.options.key = $event.id; setFilter(newWidget.type)">
+                                        (onDeSelect)="setFilter(newWidget.type)"
+                                        (onSelect)="setFilter(newWidget.type)">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1069,30 +1072,50 @@
             <!-- Line widget -->
             <ng-container *ngIf="newWidget.type === 'line'">
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Devices
+                <label class="col-md-3 form-control-label">Categories / Devices
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-4">
+                  <angular2-multiselect name="selectCategories"
+                                        [data]="selectCategories"
+                                        [(ngModel)]="selectedCategories"
+                                        [settings]="selectCategoriesSettings"
+                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onDeSelect)="setFilter(newWidget.type);"
+                                        (onSelectAll)="setFilter(newWidget.type);"
+                                        (onDeSelectAll)="setFilter(newWidget.type);">
+                  </angular2-multiselect>
+                </div>
+
+                <div class="col-md-5">
                   <angular2-multiselect name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
-                                        [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(newWidget.type); loadDeviceKeys()"
-                                        (onDeSelect)="setFilter(newWidget.type); selectKeys = []">
+                                        [settings]="selectDevicesSettings"
+                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onDeSelect)="setFilter(newWidget.type);"
+                                        (onSelectAll)="setFilter(newWidget.type);"
+                                        (onDeSelectAll)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
               </div>
-              <div class="form-group row" *ngIf="selectedDevices[0]">
-                <label class="col-md-3 form-control-label">Select property</label>
-                <div class="col-md-6">
+
+              <div class="form-group row" *ngIf="selectedCategories.length > 0 || selectedDevices.length > 0">
+                <label class="col-md-3 form-control-label">Keys</label>
+                <div class="col-md-9">
                   <angular2-multiselect name="selectKeys"
+                                        (onOpen)="loadKeys()"
                                         [data]="selectKeys"
-                                        [(ngModel)]="selectedKey"
-                                        [settings]="selectOneSettings"
-                                        (onDeSelect)="newWidget.options.key = ''"
-                                        (onSelect)="newWidget.options.key = $event.id; setFilter(newWidget.type)">
+                                        [(ngModel)]="selectedKeys"
+                                        [settings]="selectKeysSettings"
+                                        (onSelect)="setFilter(newWidget.type)"
+                                        (onDeSelect)="setFilter(newWidget.type)"
+                                        (onSelectAll)="setFilter(newWidget.type)"
+                                        (onDeSelectAll)="setFilter(newWidget.type)"
+                                        required>
                   </angular2-multiselect>
                 </div>
               </div>
+
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Beginning at
                 </label>
@@ -1112,30 +1135,50 @@
             <!-- Bar widget -->
             <ng-container *ngIf="newWidget.type === 'bar'">
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Devices
+                <label class="col-md-3 form-control-label">Categories / Devices
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-4">
+                  <angular2-multiselect name="selectCategories"
+                                        [data]="selectCategories"
+                                        [(ngModel)]="selectedCategories"
+                                        [settings]="selectCategoriesSettings"
+                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onDeSelect)="setFilter(newWidget.type);"
+                                        (onSelectAll)="setFilter(newWidget.type);"
+                                        (onDeSelectAll)="setFilter(newWidget.type);">
+                  </angular2-multiselect>
+                </div>
+
+                <div class="col-md-5">
                   <angular2-multiselect name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
-                                        [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(newWidget.type); loadDeviceKeys()"
-                                        (onDeSelect)="setFilter(newWidget.type); selectKeys = []">
+                                        [settings]="selectDevicesSettings"
+                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onDeSelect)="setFilter(newWidget.type);"
+                                        (onSelectAll)="setFilter(newWidget.type);"
+                                        (onDeSelectAll)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
               </div>
-              <div class="form-group row" *ngIf="selectedDevices[0]">
-                <label class="col-md-3 form-control-label">Select property</label>
-                <div class="col-md-6">
+
+              <div class="form-group row" *ngIf="selectedCategories.length > 0 || selectedDevices.length > 0">
+                <label class="col-md-3 form-control-label">Keys</label>
+                <div class="col-md-9">
                   <angular2-multiselect name="selectKeys"
+                                        (onOpen)="loadKeys()"
                                         [data]="selectKeys"
-                                        [(ngModel)]="selectedKey"
-                                        [settings]="selectOneSettings"
-                                        (onDeSelect)="newWidget.options.key = ''"
-                                        (onSelect)="newWidget.options.key = $event.id; setFilter(newWidget.type)">
+                                        [(ngModel)]="selectedKeys"
+                                        [settings]="selectKeysSettings"
+                                        (onSelect)="setFilter(newWidget.type)"
+                                        (onDeSelect)="setFilter(newWidget.type)"
+                                        (onSelectAll)="setFilter(newWidget.type)"
+                                        (onDeSelectAll)="setFilter(newWidget.type)"
+                                        required>
                   </angular2-multiselect>
                 </div>
               </div>
+
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Beginning at
                 </label>
