@@ -4,19 +4,21 @@
     Loading dashboard...
   </div>
   <div class="row" *ngIf="dashboardReady">
-    <!-- Buttons -->
-    <div class="col-md-12">
-      <button *ngIf="!editFlag" class="btn btn-info pull-right" (click)="editDashboard()"><i
-        class="fa fa-pencil"></i> Edit
-        Dashboard
-      </button>
-      <button *ngIf="!editFlag" class="btn btn-success pull-right" (click)="addNewWidget()"><i class="fa fa-plus"></i> Add widget
-      </button>
-      <button *ngIf="editFlag" class="btn btn-danger pull-right" (click)="cancel()"><i class="fa fa-"></i> Cancel
-      </button>
-
+    <!-- Title -->
+    <div class="col-md-8">
       <h2 class=""><i class="fa {{dashboard.icon}}"></i> {{dashboard.name}}</h2>
-      <hr>
+      <p class="blockquote" *ngIf="dashboard.description">{{dashboard.description}}</p>
+    </div>
+    <!-- End Title -->
+
+    <!-- Buttons -->
+    <div class="col-md-4">
+      <button *ngIf="!editFlag" class="btn btn-info pull-right" (click)="editDashboard()"><i class="fa fa-pencil"></i> Edit dashboard
+      </button>
+      <button *ngIf="!editFlag" class="btn btn-success pull-right" (click)="addNewWidget()"><i class="fa fa-plus-circle"></i> Add widget
+      </button>
+      <button *ngIf="editFlag" class="btn btn-danger pull-right" (click)="cancel()"><i class="fa fa-ban"></i> Cancel
+      </button>
     </div>
     <!-- End Buttons -->
 
@@ -24,10 +26,10 @@
     <div class="col-md-12" *ngIf="editFlag">
       <div class="card">
         <div class="card-header">
-          <strong>Edit Dashboard</strong>
+          <strong>Edit dashboard</strong>
         </div>
         <div class="card-block">
-          <h4 class="text-center">Dashboard information</h4>
+          <h4 class="text-center">Dashboard Information</h4>
           <hr>
 
           <!-- Form Begin -->
@@ -47,20 +49,27 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Icon <i class="fa {{dashboard.icon}}"></i></label>
               <div class="col-md-6">
-                <ng-select #iconDashboardSelect
-                           [placeholder]="dashboard.icon ? dashboard.icon : 'Select an icon'"
-                           [allowClear]="true"
-                           [items]="fontAwesomeList"
-                           (selected)="dashboard.icon = $event.id">
-                </ng-select>
+                <angular2-multiselect name="iconDashboardSelect"
+                                      [data]="fontAwesomeList"
+                                      [(ngModel)]="selectedDashboardIcon"
+                                      (onSelect)="dashboard.icon = $event.id"
+                                      (onDeSelect)="dashboard.icon = ''"
+                                      [settings]="selectIconSettings">
+                  <c-item>
+                    <ng-template let-item="item">
+                      <label style="color: #333;min-width: 150px;">{{item.itemName}}</label>
+                      <i class="fa {{item.id}}" style="width: 16px; margin-right: 5px;"></i>
+                    </ng-template>
+                  </c-item>
+                </angular2-multiselect>
               </div>
             </div>
 
             <button class="btn btn-sm btn-primary" [disabled]="!editDashboardForm.form.valid" (click)="saveDashboard()"><i
-              class="fa fa-check"></i> Save Dashboard
+              class="fa fa-check"></i> Save dashboard
             </button>
             <button class="btn btn-sm btn-danger" (click)="deleteDashboard()"><i class="fa fa-trash"></i> Delete
-              Dashboard
+              dashboard
             </button>
           </form>
         </div>
@@ -68,6 +77,8 @@
     </div>
     <!-- End Edit dashboard -->
   </div>
+
+  <hr>
 
   <!-- Show widgets -->
   <div class="row" *ngIf="widgets.length === 0">
@@ -654,25 +665,32 @@
               <label class="col-md-3 form-control-label">Name
                 <small class="text-danger">(required)</small>
               </label>
-              <div class="col-md-6">
+              <div class="col-md-9">
                 <input type="text" class="form-control" placeholder="Widget name" name="newWidget.name" required [(ngModel)]="newWidget.name">
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Description</label>
-              <div class="col-md-6">
+              <div class="col-md-9">
                 <input type="text" class="form-control" placeholder="Widget description" name="newWidget.description" [(ngModel)]="newWidget.description">
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Icon <i class="fa {{newWidget.icon}}"></i></label>
-              <div class="col-md-6">
-                <ng-select #iconWidgetSelect
-                           [placeholder]="newWidget.icon ? newWidget.icon : 'Select an icon'"
-                           [allowClear]="true"
-                           [items]="fontAwesomeList"
-                           (selected)="newWidget.icon = $event.id">
-                </ng-select>
+              <div class="col-md-9">
+                <angular2-multiselect name="iconWidgetSelect"
+                                      [data]="fontAwesomeList"
+                                      [(ngModel)]="selectedWidgetIcon"
+                                      (onSelect)="newWidget.icon = $event.id"
+                                      (onDeSelect)="newWidget.icon = ''"
+                                      [settings]="selectIconSettings">
+                  <c-item>
+                    <ng-template let-item="item">
+                      <label style="color: #333;min-width: 150px;">{{item.itemName}}</label>
+                      <i class="fa {{item.id}}" style="width: 16px; margin-right: 5px;"></i>
+                    </ng-template>
+                  </c-item>
+                </angular2-multiselect>
               </div>
             </div>
             <div class="form-group row">
@@ -681,7 +699,7 @@
                 <br>
                 <small>Between 1 and 12</small>
               </label>
-              <div class="col-md-6">
+              <div class="col-md-9">
                 <input type="number" min="1" max="12" class="form-control" placeholder="Widget width" name="newWidget.width" required [(ngModel)]="newWidget.width">
               </div>
             </div>
@@ -689,11 +707,11 @@
               <label class="col-md-3 form-control-label">Type
                 <small class="text-danger">(required)</small>
               </label>
-              <div class="col-md-6">
+              <div class="col-md-9">
                 <angular2-multiselect name="selectWidgetType"
                                       [data]="selectWidgetType"
                                       [(ngModel)]="selectedWidgetType"
-                                      (onSelect)="newWidget.type = $event.id"
+                                      (onSelect)="newWidget.type = $event.id; log($event)"
                                       (onDeSelect)="newWidget.type = ''"
                                       [settings]="selectOneSettings"
                                       required>
@@ -737,28 +755,28 @@
                 <label class="col-md-3 form-control-label">Default zoom<br>
                   <small>Between 1 and 13</small>
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <input type="number" min="1" max="13" class="form-control" placeholder="Zoom" name="newWidget.zoom" [(ngModel)]="newWidget.options.zoom">
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Default latitude</label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <input type="number" class="form-control" placeholder="Latitude" name="newWidget.lat" [(ngModel)]="newWidget.options.lat">
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Default longitude</label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <input type="number" class="form-control" placeholder="Longitude" name="newWidget.lng" [(ngModel)]="newWidget.options.lng">
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Map type</label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <angular2-multiselect name="selectMapType"
                                         [data]="selectMapType"
                                         [(ngModel)]="selectedMapType"
@@ -816,7 +834,7 @@
                   <small class="text-danger">(required)</small>
                   <br>
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <angular2-multiselect name="selectTableType"
                                         [data]="selectTableType"
                                         [(ngModel)]="selectedTableType"
@@ -908,7 +926,7 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Directions routes<br>
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <label class="switch switch-text switch-primary">
                     <input type="checkbox" [checked]="newWidget.options.directions"
                            (change)="newWidget.options.directions = !newWidget.options.directions" class="switch-input" checked="">
@@ -921,7 +939,7 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Polylines<br>
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <label class="switch switch-text switch-primary">
                     <input type="checkbox" [checked]="newWidget.options.polylines"
                            (change)="newWidget.options.polylines = !newWidget.options.polylines" class="switch-input" checked="">
@@ -935,21 +953,21 @@
                 <label class="col-md-3 form-control-label">Default zoom<br>
                   <small>Between 1 and 13</small>
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <input type="number" min="1" max="13" class="form-control" placeholder="Zoom" name="newWidget.zoom" [(ngModel)]="newWidget.options.zoom">
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Default latitude</label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <input type="number" class="form-control" placeholder="Latitude" name="newWidget.lat" [(ngModel)]="newWidget.options.lat">
                 </div>
               </div>
 
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Default longitude</label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <input type="number" class="form-control" placeholder="Longitude" name="newWidget.lng" [(ngModel)]="newWidget.options.lng">
                 </div>
               </div>
@@ -957,7 +975,7 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Beginning at
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <angular2-date-picker name="dateTime"
                                         [(ngModel)]="selectedDateTimeBegin"
                                         (onDateSelect)="selectedDateTimeBegin = $event; setFilter(newWidget.type)"
@@ -970,7 +988,7 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Geoloc type
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <angular2-multiselect name="geolocType"
                                         [data]="selectGeolocType"
                                         [(ngModel)]="selectedGeolocType"
@@ -983,7 +1001,7 @@
 
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Map type</label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <angular2-multiselect name="selectMapType"
                                         [data]="selectMapType"
                                         [(ngModel)]="selectedMapType"
@@ -1011,7 +1029,7 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Device
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <angular2-multiselect name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
@@ -1023,7 +1041,7 @@
               </div>
               <div class="form-group row" *ngIf="selectedDevices.length > 0">
                 <label class="col-md-3 form-control-label">Keys</label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <angular2-multiselect name="selectKeys"
                                         (onOpen)="loadKeys()"
                                         [data]="selectKeys"
@@ -1043,7 +1061,7 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Device
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <angular2-multiselect name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
@@ -1055,7 +1073,7 @@
               </div>
               <div class="form-group row" *ngIf="selectedDevices.length > 0">
                 <label class="col-md-3 form-control-label">Keys</label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <angular2-multiselect name="selectKeys"
                                         (onOpen)="loadKeys()"
                                         [data]="selectKeys"
@@ -1119,7 +1137,7 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Beginning at
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <angular2-date-picker name="dateTime"
                                         [(ngModel)]="selectedDateTimeBegin"
                                         (onDateSelect)="selectedDateTimeBegin = $event; setFilter(newWidget.type)"
@@ -1182,7 +1200,7 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Beginning at
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-9">
                   <angular2-date-picker name="dateTime"
                                         [(ngModel)]="selectedDateTimeBegin"
                                         (onDateSelect)="selectedDateTimeBegin = $event; setFilter(newWidget.type)"

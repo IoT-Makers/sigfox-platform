@@ -195,8 +195,9 @@ a.text-profile:focus, a.text-profile:hover {
 .badge-profile[href]:focus, .badge-profile[href]:hover {
   background-color: darken($profile, 20%); }
 
-// Geoloc Markers
 
+
+// Geoloc Markers
 .text-geoloc-sigfox {
   color: $geoloc-sigfox !important; }
 a.text-geoloc-sigfox:focus, a.text-geoloc-sigfox:hover {
@@ -224,6 +225,8 @@ a.text-geoloc-ble:focus, a.text-geoloc-ble:hover {
 .badge-geoloc-ble[href]:focus, .badge-geoloc-ble[href]:hover {
   background-color: darken($geoloc-ble, 20%); }
 
+
+
 // Select
 .select-category {
   color: #ccc;
@@ -249,4 +252,15 @@ a.text-geoloc-ble:focus, a.text-geoloc-ble:hover {
 }
 .select-device .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
   background: $device !important;
+}
+
+
+.select-one {
+}
+.select-one .c-token{
+}
+.select-one .pure-checkbox label::before {
+  border-radius: 100% !important;
+}
+.select-one .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
 }
