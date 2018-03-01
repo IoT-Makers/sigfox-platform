@@ -289,7 +289,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   remove(): void {
     // Delete all messages belonging to the device
-    this.deviceApi.deleteDeviceAndMessages(this.deviceToRemove.id).subscribe(value => {
+    this.deviceApi.deleteDeviceMessagesAlerts(this.deviceToRemove.id).subscribe(value => {
       const index = this.devices.indexOf(this.deviceToRemove);
       this.devices.splice(index, 1);
       this.toasterService.pop('success', 'Success', 'The device and its messages were successfully deleted.');

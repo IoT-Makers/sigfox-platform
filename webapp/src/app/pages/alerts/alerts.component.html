@@ -53,25 +53,27 @@
               </td>
               <td>
                 <div class="small">
-                  <span class="text-gray-dark">Key: {{alert.key}}</span>
+                  <span class="text-gray-dark"><span class="font-weight-bold">Key:</span> {{alert.key}}</span>
                 </div>
                 <div class="small" *ngIf="alert.value_min">
-                  <span class="text-gray-dark">Min value: {{alert.value_min}}</span>
+                  <span class="text-gray-dark"><span
+                    class="font-weight-bold">Min value:</span> {{alert.value_min}}</span>
                 </div>
                 <div class="small" *ngIf="alert.value_max">
-                  <span class="text-gray-dark">Max value: {{alert.value_max}}</span>
+                  <span class="text-gray-dark"><span
+                    class="font-weight-bold">Max value:</span> {{alert.value_max}}</span>
                 </div>
                 <div class="small" *ngIf="alert.value_less">
-                  <span class="text-gray-dark">Less than value: {{alert.value_less}}</span>
+                  <span class="text-gray-dark"><span class="font-weight-bold">Less than value:</span> {{alert.value_less}}</span>
                 </div>
                 <div class="small" *ngIf="alert.value_more">
-                  <span class="text-gray-dark">More than value: {{alert.value_more}}</span>
+                  <span class="text-gray-dark"><span class="font-weight-bold">More than value:</span> {{alert.value_more}}</span>
                 </div>
                 <div class="small" *ngIf="alert.value_exact">
-                  <span class="text-gray-dark">Exact value: {{alert.value_exact}}</span>
+                  <span class="text-gray-dark"><span class="font-weight-bold">Exact value:</span> {{alert.value_exact}}</span>
                 </div>
                 <div class="small" *ngIf="alert.message">
-                  <span class="text-gray-dark">Message: {{alert.message}}</span>
+                  <span class="text-gray-dark"><span class="font-weight-bold">Message:</span> {{alert.message}}</span>
                 </div>
               </td>
               <td class="text-center">

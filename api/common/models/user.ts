@@ -206,10 +206,14 @@ class user {
     const userId = ctx.options.accessToken.userId;
 
     this.model.app.models.RoleMapping.destroyAll({principalId: userId}, (error: any, result: any) => { });
-    this.model.app.models.Message.destroyAll({userId: userId}, (error: any, result: any) => { });
+    this.model.app.models.Category.destroyAll({userId: userId}, (error: any, result: any) => {
+    });
     this.model.app.models.Device.destroyAll({userId: userId}, (error: any, result: any) => { });
+    this.model.app.models.Message.destroyAll({userId: userId}, (error: any, result: any) => {
+    });
+    this.model.app.models.Alert.destroyAll({userId: userId}, (error: any, result: any) => {
+    });
     this.model.app.models.Connector.destroyAll({userId: userId}, (error: any, result: any) => { });
-    this.model.app.models.Category.destroyAll({userId: userId}, (error: any, result: any) => { });
     this.model.app.models.AccessToken.destroyAll({userId: userId}, (error: any, result: any) => { });
     // this.model.app.models.Dashboard.destroyAll({userId: userId}, (error: any, result: any) => { });
     // this.model.app.models.Widget.destroyAll({userId: userId}, (error: any, result: any) => { });

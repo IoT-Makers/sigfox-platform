@@ -6,4 +6,4 @@ export const WidgetActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Widget'), {
 });
 export const WidgetActions =
-Object.assign(BaseLoopbackActionsFactory<Widget>(WidgetActionTypes), {});
+  Object.assign(BaseLoopbackActionsFactory<Widget>(WidgetActionTypes), {});

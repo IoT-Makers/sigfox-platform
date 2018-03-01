@@ -84,6 +84,7 @@ class Message {
           console.error('Error creating device.', err);
           next(err, data);
         } else {
+          deviceInstance = deviceInstance.toJSON();
           if (created)
             console.log('Created new device.');
           else
@@ -218,7 +219,6 @@ class Message {
 
           // Parse message, create message, send result to backend with downlink payload or not if the data is not null and a parser is set
           else {
-            console.log(deviceInstance);
             if ((deviceInstance.parserId || parserId) && message.data) {
               this.model.app.models.Parser.findById(
                 deviceInstance.parserId || parserId,
@@ -242,9 +242,10 @@ class Message {
                     // Check if the parsed data contains a 'geoloc' key and store it in the message property to be stored
                     data_parsed.forEach((o: any) => {
                       // Look if an alert has been set for the device
-                      if (deviceInstance.Alerts) {
+                      if (deviceInstance.Alerts && deviceInstance.Alerts.length > 0) {
+                        const alerts = deviceInstance.Alerts;
                         // Loop in all the alerts
-                        deviceInstance.Alerts.forEach((alert: any, index: any) => {
+                        alerts.forEach((alert: any, index: any) => {
                           // If the key being read is set for an alert
                           if (alert.key === o.key) {
                             // Verify conditions for the alert to be triggered
@@ -306,8 +307,22 @@ class Message {
                                       client.publish(connector.recipient, alert.message);
                                     }
                                     // Alert has been triggered, removing it from array
-                                    deviceInstance.alerts.splice(index, 1);
+                                    alerts.splice(index, 1);
                                   }
+
+                                  // Update the alert last trigger time
+                                  alert.last_trigger = new Date();
+                                  this.model.app.models.Alert.upsert(
+                                    alert,
+                                    (err: any, alert: any) => {
+                                      if (err) {
+                                        console.log(err);
+                                        next(err, data);
+                                      } else {
+                                        console.log('Updated alert as: ', alert);
+                                      }
+                                    });
+
                                 });
                             }
                           }

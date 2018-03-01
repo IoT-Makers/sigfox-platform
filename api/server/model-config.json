@@ -70,7 +70,7 @@
         "sharedMethods": {
           "*": false,
           "timeSeries": true,
-          "deleteDeviceAndMessages": true,
+          "deleteDeviceMessagesAlerts": true,
           "getMessagesFromSigfoxBackend":true,
           "parseAllMessages": true
         }

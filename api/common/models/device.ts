@@ -32,7 +32,7 @@ const request = require('request');
       returns: {arg: 'result', type: 'array'},
       http: {path: '/time-series', verb: 'get'}
     },
-    deleteDeviceAndMessages: {
+    deleteDeviceMessagesAlerts: {
       accepts: [
         {arg: 'deviceId', type: 'string', required: true},
         {arg: 'req', type: 'object', http: {source: 'req'}}
@@ -78,7 +78,7 @@ class Device {
   constructor(public model: any) {
   }
 
-  deleteDeviceAndMessages(deviceId: string, req: any, next: Function): void {
+  deleteDeviceMessagesAlerts(deviceId: string, req: any, next: Function): void {
     // Obtain the userId with the access_token of ctx
     const userId = req.accessToken.userId;
     // Find device
@@ -97,10 +97,19 @@ class Device {
         } else if (deviceInstance) {
           console.log('Deleting device ' + deviceId + ' and all its corresponding messages.');
 
+          // Delete messages
           this.model.app.models.Message.destroyAll({deviceId: deviceId}, (err: any, result: any) => {
             if (!err) {
-              this.model.destroyById(deviceId, (error: any, result: any) => {
-                next(null, result);
+              // Delete alerts
+              this.model.app.models.Alert.destroyAll({deviceId: deviceId}, (err: any, result: any) => {
+                if (!err) {
+                  // Delete device
+                  this.model.destroyById(deviceId, (error: any, result: any) => {
+                    next(null, result);
+                  });
+                } else {
+                  next(err, 'Error for alerts suppression with device ID ' + deviceId);
+                }
               });
             } else {
               next(err, 'Error for messages suppression with device ID ' + deviceId);
