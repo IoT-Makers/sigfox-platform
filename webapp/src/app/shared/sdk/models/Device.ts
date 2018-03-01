@@ -8,7 +8,6 @@ export interface DeviceInterface {
   "data_parsed"?: Array<any>;
   "downlinkData"?: string;
   "location"?: Array<any>;
-  "alerts"?: Array<any>;
   "properties"?: Array<any>;
   "createdAt"?: Date;
   "updatedAt"?: Date;
@@ -21,6 +20,7 @@ export interface DeviceInterface {
   Messages?: any[];
   user?: any;
   Organization?: any;
+  Alerts?: any[];
 }
 
 export class Device implements DeviceInterface {
@@ -30,7 +30,6 @@ export class Device implements DeviceInterface {
   "data_parsed": Array<any> = <any>[];
   "downlinkData": string = '';
   "location": Array<any> = <any>[];
-  "alerts": Array<any> = <any>[];
   "properties": Array<any> = <any>[];
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
@@ -43,6 +42,7 @@ export class Device implements DeviceInterface {
   Messages: any[] = null;
   user: any = null;
   Organization: any = null;
+  Alerts: any[] = null;
   constructor(data?: DeviceInterface) {
     Object.assign(this, data);
   }
@@ -98,10 +98,6 @@ export class Device implements DeviceInterface {
         },
         "location": {
           name: 'location',
-          type: 'Array&lt;any&gt;'
-        },
-        "alerts": {
-          name: 'alerts',
           type: 'Array&lt;any&gt;'
         },
         "properties": {
@@ -173,6 +169,14 @@ export class Device implements DeviceInterface {
           relationType: 'belongsTo',
                   keyFrom: 'organizationId',
           keyTo: 'id'
+        },
+        Alerts: {
+          name: 'Alerts',
+          type: 'any[]',
+          model: '',
+          relationType: 'hasMany',
+          keyFrom: 'id',
+          keyTo: 'deviceId'
         },
       }
     }

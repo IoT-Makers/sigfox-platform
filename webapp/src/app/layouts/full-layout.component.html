@@ -70,56 +70,70 @@
           Information
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/categories']"><i
-            class="fa fa-tag text-category"></i> Categories <span
-            class="badge badge-category">{{countCategories}}</span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/categories']">
+            <i class="fa fa-tag text-category"></i> Categories <span
+            class="badge badge-category">{{countCategories}}</span>
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/devices']"><i
-            class="fa fa-thermometer-half text-device"></i> Devices <span
-            class="badge badge-device">{{countDevices}}</span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/devices']">
+            <i class="fa fa-thermometer-half text-device"></i> Devices <span
+            class="badge badge-device">{{countDevices}}</span>
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/messages']"><i
-            class="fa fa-envelope text-message"></i> Messages <span class="badge badge-message">{{countMessages}}</span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/messages']">
+            <i class="fa fa-envelope text-message"></i> Messages <span
+            class="badge badge-message">{{countMessages}}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/alerts']">
+            <i class="fa fa-bell text-alert"></i> Alerts <span class="badge badge-alert">{{countAlerts}}</span>
+          </a>
         </li>
 
         <!--<li class="nav-item">
-        <a class="nav-link" routerLinkActive="active" [routerLink]="['/demo']"><i class="fa fa-cube"></i> Cube <span class="badge badge-info"></span></a>
+        <a class="nav-link" routerLinkActive="active" [routerLink]="['/demo']"><i class="fa fa-cube"></i> Demo <span class="badge badge-info"></span></a>
         </li>-->
 
         <li class="nav-title">
-          Widgets
+          Widgets (to be removed)
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/tracking']"><i
-            class="fa fa-map-marker text-tracking"></i> Tracking <span class="badge badge-tracking"></span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/tracking']">
+            <i class="fa fa-map-marker text-tracking"></i> Tracking <span class="badge badge-tracking"></span>
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/analytics']"><i
-            class="fa fa-area-chart text-analytic"></i> Analytics <span class="badge badge-analytic"></span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/analytics']">
+            <i class="fa fa-area-chart text-analytic"></i> Analytics <span class="badge badge-analytic"></span>
+          </a>
         </li>
 
         <li class="nav-title">
           Developers
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/parsers']"><i
-            class="fa fa-code text-parser"></i> Parsers <span class="badge badge-parser">{{countParsers}}</span></a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/parsers']">
+            <i class="fa fa-code text-parser"></i> Parsers <span class="badge badge-parser">{{countParsers}}</span>
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/connectors']"><i class="fa fa-plug"></i>
-            Connectors</a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/connectors']">
+            <i class="fa fa-plug text-connector"></i>Connectors <span
+            class="badge badge-connector">{{countConnectors}}</span>
+          </a>
         </li>
 
         <ng-container *ngIf="admin">
-        <li class="nav-title">
-          Admin
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/admin']"><i
-            class="fa fa-bomb"></i> Admin </a>
-        </li>
+          <li class="nav-title">
+            Admin
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/admin']"><i
+              class="fa fa-bomb"></i> Admin </a>
+          </li>
         </ng-container>
 
       </ul>

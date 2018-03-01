@@ -77,7 +77,7 @@ class Message {
 
     // Check if the device exists
     this.model.app.models.Device.findOrCreate(
-      {where: {id: data.deviceId}}, // find
+      {where: {id: data.deviceId}, include: ['Alerts']}, // find
       device, // create
       (err: any, deviceInstance: any, created: boolean) => { // callback
         if (err) {
@@ -218,6 +218,7 @@ class Message {
 
           // Parse message, create message, send result to backend with downlink payload or not if the data is not null and a parser is set
           else {
+            console.log(deviceInstance);
             if ((deviceInstance.parserId || parserId) && message.data) {
               this.model.app.models.Parser.findById(
                 deviceInstance.parserId || parserId,
@@ -241,9 +242,9 @@ class Message {
                     // Check if the parsed data contains a 'geoloc' key and store it in the message property to be stored
                     data_parsed.forEach((o: any) => {
                       // Look if an alert has been set for the device
-                      if (deviceInstance.alerts) {
+                      if (deviceInstance.Alerts) {
                         // Loop in all the alerts
-                        deviceInstance.alerts.forEach( (alert: any, index: any) => {
+                        deviceInstance.Alerts.forEach((alert: any, index: any) => {
                           // If the key being read is set for an alert
                           if (alert.key === o.key) {
                             // Verify conditions for the alert to be triggered

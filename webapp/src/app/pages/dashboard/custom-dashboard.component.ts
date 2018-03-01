@@ -142,7 +142,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     singleSelection: true,
     text: 'Select one device',
     enableSearchFilter: true,
-    classes: 'select-device select-one'
+    classes: 'select-device '
   };
 
   private widget: any;
@@ -237,7 +237,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     });
 
     // Categories
-    this.userApi.getCategories(this.user.id).subscribe(categories => {
+    this.userApi.getCategories(this.user.id).subscribe((categories: Category[]) => {
       this.categories = categories;
       this.categories.forEach((category: Category) => {
         const item = {
@@ -248,12 +248,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       });
     });
     // Devices
-    this.userApi.getDevices(this.user.id).subscribe(devices => {
+    this.userApi.getDevices(this.user.id).subscribe((devices: Device[]) => {
       this.devices = devices;
       this.devices.forEach((device: Device) => {
         const item = {
           id: device.id,
-          itemName: device.name ? device.id + ' - ' + device.name : device.id
+          itemName: device.name ? device.name + ' (' + device.id + ')' : device.id
         };
         this.selectDevices.push(item);
       });
@@ -587,8 +587,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               itemName: o.key + ' (' + device.id + ')'
             };
             // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
-            if (!_.find(this.selectKeys, item))
-              this.selectKeys.push(item);
+            //if (!_.find(this.selectKeys, item))
+            this.selectKeys.push(item);
           });
         }
       });

@@ -65,14 +65,9 @@
       "foreignKey": "principalId",
       "through": "RoleMapping"
     },
-    "Messages": {
+    "Dashboards": {
       "type": "hasMany",
-      "model": "Message",
-      "foreignKey": "userId"
-    },
-    "Devices": {
-      "type": "hasMany",
-      "model": "Device",
+      "model": "Dashboard",
       "foreignKey": "userId"
     },
     "Categories": {
@@ -80,14 +75,24 @@
       "model": "Category",
       "foreignKey": "userId"
     },
+    "Devices": {
+      "type": "hasMany",
+      "model": "Device",
+      "foreignKey": "userId"
+    },
+    "Messages": {
+      "type": "hasMany",
+      "model": "Message",
+      "foreignKey": "userId"
+    },
     "Connectors": {
       "type": "hasMany",
       "model": "Connector",
       "foreignKey": "userId"
     },
-    "Dashboards": {
+    "Alerts": {
       "type": "hasMany",
-      "model": "Dashboard",
+      "model": "Alert",
       "foreignKey": "userId"
     }
   },

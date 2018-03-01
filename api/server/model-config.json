@@ -129,8 +129,15 @@
     "public": true
   },
   "Alert": {
-    "dataSource": null,
-    "public": true
+    "dataSource": "db",
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false
+        }
+      }
+    }
   },
   "Reception": {
     "dataSource": null,
@@ -149,6 +156,13 @@
   },
   "Widget": {
     "dataSource": "db",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false
+        }
+      }
+    }
   }
 }

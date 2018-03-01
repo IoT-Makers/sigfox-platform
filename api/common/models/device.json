@@ -50,11 +50,6 @@
         "Geoloc"
       ]
     },
-    "alerts": {
-      "type": [
-        "Alert"
-      ]
-    },
     "properties": {
       "type": [
         "object"
@@ -63,11 +58,6 @@
   },
   "validations": [],
   "relations": {
-    "Parser": {
-      "type": "belongsTo",
-      "model": "Parser",
-      "foreignKey": "parserId"
-    },
     "user": {
       "type": "belongsTo",
       "model": "user",
@@ -77,6 +67,11 @@
       "type": "belongsTo",
       "model": "Organization",
       "foreignKey": "organizationId"
+    },
+    "Category": {
+      "type": "belongsTo",
+      "model": "Category",
+      "foreignKey": "categoryId"
     },
     "Messages": {
       "type": "hasMany",
@@ -88,10 +83,10 @@
       "model": "Alert",
       "foreignKey": "deviceId"
     },
-    "Category": {
+    "Parser": {
       "type": "belongsTo",
-      "model": "Category",
-      "foreignKey": "categoryId"
+      "model": "Parser",
+      "foreignKey": "parserId"
     }
   },
   "acls": [

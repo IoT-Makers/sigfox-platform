@@ -13,37 +13,32 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   private user: User;
 
-
-  private message: Message = new Message();
-  private device: Device = new Device();
-  private parser: Parser = new Parser();
-  private category: Category = new Category();
-  private dashboard: Dashboard = new Dashboard();
-
-  private messageSub: Subscription;
-  private deviceSub: Subscription;
-  private parserSub: Subscription;
-  private categorySub: Subscription;
   private dashboardSub: Subscription;
+  private categorySub: Subscription;
+  private deviceSub: Subscription;
+  private messageSub: Subscription;
+  private alertSub: Subscription;
+  private parserSub: Subscription;
+  private connectorSub: Subscription;
 
-  private messages: Message[] = [];
-  private devices: Device[] = [];
-  private parsers: Parser[] = [];
-  private categories: Category[] = [];
   private dashboards: Dashboard[] = [];
 
-  private countMessages = 0;
-  private countDevices = 0;
-  private countParsers = 0;
   private countCategories = 0;
+  private countDevices = 0;
+  private countMessages = 0;
+  private countAlerts = 0;
+  private countParsers = 0;
+  private countConnectors = 0;
 
-  private messageRef: FireLoopRef<Message>;
-  private deviceRef: FireLoopRef<Device>;
-  private parserRef: FireLoopRef<Parser>;
-  private categoryRef: FireLoopRef<Category>;
   private dashboardRef: FireLoopRef<Dashboard>;
+  private categoryRef: FireLoopRef<Category>;
+  private deviceRef: FireLoopRef<Device>;
+  private messageRef: FireLoopRef<Message>;
+  private alertRef: FireLoopRef<Parser>;
+  private parserRef: FireLoopRef<Parser>;
+  private connectorRef: FireLoopRef<Parser>;
 
-  private admin: boolean = false;
+  private admin = false;
 
   public disabled = false;
   public status: { isopen: boolean } = {isopen: false};
@@ -62,17 +57,13 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     console.log(this.user);
 
-    this.userApi.getRoles(this.user.id).subscribe(roles =>{
-      console.log("roles: ", roles);
+    this.userApi.getRoles(this.user.id).subscribe(roles => {
+      console.log('Roles: ', roles);
       this.user.roles = roles;
-      if( _.filter(this.user.roles, {name: 'admin'}).length != 0){
+      if (_.filter(this.user.roles, {name: 'admin'}).length !== 0) {
         this.admin = true;
         console.log(this.admin);
       }
-
-
-      console.log();
-
     });
     // Real Time
     if (
@@ -88,33 +79,49 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    console.log("Setup Full layout");
+    console.log('Setup Full layout');
     //this.ngOnDestroy();
 
     // Counts
+    this.userApi.getDashboards(this.user.id).subscribe((dashboards: Dashboard[]) => {
+      this.dashboards = dashboards;
+    });
+    this.userApi.countCategories(this.user.id).subscribe(result => {
+      this.countCategories = result.count;
+    });
     this.userApi.countDevices(this.user.id).subscribe(result => {
       this.countDevices = result.count;
     });
     this.userApi.countMessages(this.user.id).subscribe(result => {
       this.countMessages = result.count;
     });
-    this.userApi.countCategories(this.user.id).subscribe(result => {
-      this.countCategories = result.count;
+    this.userApi.countAlerts(this.user.id).subscribe(result => {
+      this.countAlerts = result.count;
     });
     this.parserApi.count().subscribe(result => {
       this.countParsers = result.count;
     });
-    this.userApi.getDashboards(this.user.id).subscribe((dashboards: Dashboard[]) => {
-      this.dashboards = dashboards;
+    this.userApi.countConnectors(this.user.id).subscribe(result => {
+      this.countConnectors = result.count;
     });
 
-    // Messages
-    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-    //console.log(this.organizations[0].id);
-    this.messageSub = this.messageRef.on('child_added', {limit: 1, order: 'createdAt DESC'}).subscribe(
-      (messages: Message[]) => {
-        this.userApi.countMessages(this.user.id).subscribe(result => {
-          this.countMessages = result.count;
+    // Dashboards
+    this.dashboardRef = this.rt.FireLoop.ref<Dashboard>(Dashboard);
+    this.dashboardSub = this.dashboardRef.on('change', {
+      where: {userId: this.user.id},
+      order: 'createdAt DESC'
+    }).subscribe(
+      (dashboards: Dashboard[]) => {
+        console.log('Dashboard changed');
+        this.dashboards = dashboards;
+      });
+
+    // Categories
+    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
+    this.categoryRef.on('child_added', {limit: 1, order: 'createdAt DESC'}).subscribe(
+      (categories: Category[]) => {
+        this.userApi.countCategories(this.user.id).subscribe(result => {
+          this.countCategories = result.count;
         });
       });
 
@@ -127,43 +134,39 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         });
       });
 
-    // Categories
-    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categoryRef.on('child_added', {limit: 1, order: 'createdAt DESC'}).subscribe(
-      (categories: Category[]) => {
-        this.userApi.countCategories(this.user.id).subscribe(result => {
-          this.countCategories = result.count;
+    // Messages
+    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+    this.messageSub = this.messageRef.on('child_added', {limit: 1, order: 'createdAt DESC'}).subscribe(
+      (messages: Message[]) => {
+        this.userApi.countMessages(this.user.id).subscribe(result => {
+          this.countMessages = result.count;
         });
       });
 
-    // Dashboards
-    this.dashboardRef = this.rt.FireLoop.ref<Dashboard>(Dashboard);
-    this.dashboardSub = this.dashboardRef.on('change', {
-      where: {userId: this.user.id},
-      order: 'createdAt DESC'
-    }).subscribe(
-      (dashboards: Dashboard[]) => {
-        console.log('Dashboard changed');
-        this.dashboards = dashboards;
-      });
   }
 
   ngOnDestroy(): void {
     console.log('Full Layout: ngOnDestroy');
-    if (this.messageRef) this.messageRef.dispose();
-    if (this.messageSub) this.messageSub.unsubscribe();
-
-    if (this.deviceRef) this.deviceRef.dispose();
-    if (this.deviceSub) this.deviceSub.unsubscribe();
-
-    if (this.parserRef) this.parserRef.dispose();
-    if (this.parserSub) this.parserSub.unsubscribe();
+    if (this.dashboardRef) this.dashboardRef.dispose();
+    if (this.dashboardSub) this.dashboardSub.unsubscribe();
 
     if (this.categoryRef) this.categoryRef.dispose();
     if (this.categorySub) this.categorySub.unsubscribe();
 
-    if (this.dashboardRef) this.dashboardRef.dispose();
-    if (this.dashboardSub) this.dashboardSub.unsubscribe();
+    if (this.deviceRef) this.deviceRef.dispose();
+    if (this.deviceSub) this.deviceSub.unsubscribe();
+
+    if (this.messageRef) this.messageRef.dispose();
+    if (this.messageSub) this.messageSub.unsubscribe();
+
+    if (this.alertRef) this.alertRef.dispose();
+    if (this.alertSub) this.alertSub.unsubscribe();
+
+    if (this.parserRef) this.parserRef.dispose();
+    if (this.parserSub) this.parserSub.unsubscribe();
+
+    if (this.connectorRef) this.connectorRef.dispose();
+    if (this.connectorSub) this.connectorSub.unsubscribe();
   }
 
   public toggled(open: boolean): void {
@@ -191,7 +194,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   newDashboard(): void {
     const dashboard = {
-      name: 'New Dashboard'
+      name: 'New dashboard'
     };
     this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard => {
       console.log(dashboard);

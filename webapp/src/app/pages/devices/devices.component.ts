@@ -23,23 +23,19 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   private isCircleVisible: boolean[] = [];
 
-  private device: Device = new Device();
-  private newAlert: Alert = new Alert();
-  private parser: Parser = new Parser();
-  private category: Category = new Category();
   private connectors: Connector[] = [];
 
+  private categorySub: Subscription;
   private deviceSub: Subscription;
   private parserSub: Subscription;
-  private categorySub: Subscription;
 
+  private categories: Category[] = [];
   private devices: Device[] = [];
   private parsers: Parser[] = [];
-  private categories: Category[] = [];
 
+  private categoryRef: FireLoopRef<Category>;
   private deviceRef: FireLoopRef<Device>;
   private parserRef: FireLoopRef<Parser>;
-  private categoryRef: FireLoopRef<Category>;
 
   private deviceToEdit: Device = new Device();
   private deviceToRemove: Device = new Device();
@@ -114,8 +110,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    // this.ngOnDestroy();
-
     // Get and listen devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceSub = this.deviceRef.on('change',
@@ -157,7 +151,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
       this.categories = categories;
       console.log(this.categories);
     });
-
   }
 
   ngOnDestroy(): void {
@@ -178,18 +171,20 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   addAlert(newAlert: Alert): void {
-    if (newAlert.connectorId === '' || newAlert.key === '') {
+    this.toasterService.pop('error', 'Error', 'In development.');
+    /*if (newAlert.connectorId === '' || newAlert.key === '') {
       this.toasterService.pop('error', 'Error', 'Please select a connector and a key.');
     } else {
       if (!this.deviceToEdit.alerts)
         this.deviceToEdit.alerts = [];
       this.deviceToEdit.alerts.push(newAlert);
       this.newAlert = new Alert();
-    }
+    }*/
   }
 
   removeAlert(index: number): void {
-    this.deviceToEdit.alerts.splice(index, 1);
+    this.toasterService.pop('error', 'Error', 'In development.');
+    /*this.deviceToEdit.alerts.splice(index, 1);*/
   }
 
   updateDevice(): void {

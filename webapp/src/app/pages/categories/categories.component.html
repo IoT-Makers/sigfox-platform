@@ -3,12 +3,18 @@
   <div class="row">
 
     <div [ngClass]="(edit)?'col-md-6 col-xs-12':'col-md-12 col-sm-12'">
-      <button class="mb-1 btn btn-success" (click)="editCategory()"><i class="fa fa-plus-circle"></i> Add a new category
-      </button>
-
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-tag fa-lg text-category"></i> <strong>Categories</strong>
+          <div class="row">
+            <div class="col-10">
+              <i class="fa fa-tag fa-lg text-category"></i> <strong>Categories</strong>
+            </div>
+            <div class="col-2">
+              <button class="pull-right btn btn-sm btn-round btn-success" (click)="editCategory()">
+                <i class="fa fa-plus-circle"></i>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="card-block">
@@ -68,7 +74,7 @@
                       <button class="btn btn-outline-primary btn-round" tooltip="Edit category"
                               (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
                       <button class="btn btn-outline-danger btn-round" tooltip="Delete category"
-                              (click)="showRemoveModal(category)"><i class="fa fa-trash fa-lg"></i></button>
+                              (click)="openConfirmModal(category)"><i class="fa fa-trash fa-lg"></i></button>
                     </div>
                   </td>
                 </tr>

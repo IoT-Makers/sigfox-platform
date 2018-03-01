@@ -89,6 +89,11 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
   }
 
+  openConfirmModal(category): void {
+    this.categoryToRemove = category;
+    this.confirmModal.show();
+  }
+
   editCategory(category: Category): void {
     this.edit = true;
     if (category) {
@@ -127,11 +132,6 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   removeProperty(index: number): void {
     this.categoryToEdit.properties.splice(index, 1);
-  }
-
-  showRemoveModal(category: Category): void {
-    this.confirmModal.show();
-    this.categoryToRemove = category;
   }
 
   remove(): void {

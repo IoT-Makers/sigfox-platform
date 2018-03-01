@@ -1,12 +1,13 @@
 {
   "name": "Alert",
-  "base": "Model",
-  "idInjection": false,
+  "plural": "Alerts",
+  "base": "PersistedModel",
+  "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "mixins": {
-    "FireLoop": false,
+    "FireLoop": true,
     "TimeStamp": {
       "required": false,
       "validateUpsert": true
@@ -15,7 +16,7 @@
       {
         "method": "stats",
         "endpoint": "/stats",
-        "description": "Statistical information for Message registers.",
+        "description": "Statistical information for Alert registers.",
         "type": "model",
         "count": {
           "on": "createdAt",
@@ -25,13 +26,17 @@
     ]
   },
   "properties": {
-    "connectorId": {
+    "deviceId": {
       "type": "string",
       "required": true
     },
     "key": {
       "type": "string",
       "required": true
+    },
+    "value_exact": {
+      "type": "any",
+      "default": null
     },
     "value_min": {
       "type": "any",
@@ -49,16 +54,73 @@
       "type": "any",
       "default": null
     },
-    "value_exact": {
-      "type": "any",
-      "default": null
-    },
     "message": {
       "type": "string"
+    },
+    "last_trigger": {
+      "type": "date"
     }
   },
   "validations": [],
-  "relations": {},
-  "acls": [],
+  "relations": {
+    "Connector": {
+      "type": "belongsTo",
+      "model": "Connector",
+      "foreignKey": "connectorId"
+    },
+    "Device": {
+      "type": "belongsTo",
+      "model": "Device",
+      "foreignKey": "deviceId"
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    },
+    "Organization": {
+      "type": "belongsTo",
+      "model": "Organization",
+      "foreignKey": "organizationId"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "CREATE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "organizationMember",
+      "permission": "ALLOW"
+    }
+  ],
   "methods": {}
 }

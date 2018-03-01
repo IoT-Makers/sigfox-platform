@@ -335,7 +335,6 @@ class Device {
     const Device = this.model.app.models.Device;
     const Parser = this.model.app.models.Parser;
     const Message = this.model.app.models.Message;
-    let loop = 0;
 
     const response: any = {};
 
@@ -366,8 +365,7 @@ class Device {
                 const fn = Function('payload', parserInstance.function);
 
                 if (device.Messages) {
-                  device.Messages.forEach((message: any) => {
-                    loop++;
+                  device.Messages.forEach((message: any, msgCount: number) => {
                     if (message.data) {
                       Parser.parsePayload(fn, message.data, req, function (err: any, data_parsed: any) {
                         if (err) {
@@ -408,8 +406,14 @@ class Device {
                         }
                       });
                     }
-                    // Send the result when all messages have been processed
-                    if (loop === device.Messages.length) {
+                    // Send the result when all messages have been processed and store last data_parsed in device
+                    if (msgCount === device.Messages.length) {
+                      // Update the device
+                      device.data_parsed = device.Messages[0].data_parsed;
+                      Device.upsert(device, function (err: any, deviceUpdated: any) {
+                        // console.log(deviceUpdated);
+                      });
+                      // Send the response
                       response.message = 'Success';
                       next(null, response);
                     }

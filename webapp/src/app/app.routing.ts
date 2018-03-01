@@ -21,6 +21,7 @@ export const routes: Routes = [
       {path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule'},
       {path: 'devices', loadChildren: './pages/devices/devices.module#DevicesModule'},
       {path: 'device-messages/:id', loadChildren: './pages/messages/messages.module#MessagesModule'},
+      {path: 'alerts', loadChildren: './pages/alerts/alerts.module#AlertsModule'},
       {path: 'messages', loadChildren: './pages/messages/messages.module#MessagesModule'},
 
       {path: 'profile', loadChildren: './pages/user/profile/profile.module#ProfileModule'},

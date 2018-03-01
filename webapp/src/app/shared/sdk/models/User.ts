@@ -1,13 +1,5 @@
 /* tslint:disable */
-import {
-  AccessToken,
-  Message,
-  Device,
-  Category,
-  Dashboard,
-  Organization,
-  Connector
-} from '../index';
+import {AccessToken, Alert, Category, Connector, Dashboard, Device, Message, Organization} from '../index';
 
 declare var Object: any;
 export interface UserInterface {
@@ -28,11 +20,12 @@ export interface UserInterface {
   "password"?: string;
   accessTokens?: AccessToken[];
   roles?: any[];
-  Messages?: Message[];
-  Devices?: Device[];
-  Categories?: Category[];
   Dashboards?: Dashboard[];
+  Categories?: Category[];
+  Devices?: Device[];
+  Messages?: Message[];
   Organizations?: Organization[];
+  Alerts?: Alert[];
   Connectors?: Connector[];
 }
 
@@ -54,11 +47,12 @@ export class User implements UserInterface {
   "password": string = '';
   accessTokens: AccessToken[] = null;
   roles: any[] = null;
-  Messages: Message[] = null;
-  Devices: Device[] = null;
-  Categories: Category[] = null;
   Dashboards: Dashboard[] = null;
+  Categories: Category[] = null;
+  Devices: Device[] = null;
+  Messages: Message[] = null;
   Organizations: Organization[] = null;
+  Alerts: Alert[] = null;
   Connectors: Connector[] = null;
   constructor(data?: UserInterface) {
     Object.assign(this, data);
@@ -174,10 +168,18 @@ export class User implements UserInterface {
           keyFrom: 'id',
           keyTo: 'principalId'
         },
-        Messages: {
-          name: 'Messages',
-          type: 'Message[]',
-          model: 'Message',
+        Dashboards: {
+          name: 'Dashboards',
+          type: 'Dashboard[]',
+          model: 'Dashboard',
+          relationType: 'hasMany',
+          keyFrom: 'id',
+          keyTo: 'userId'
+        },
+        Categories: {
+          name: 'Categories',
+          type: 'Category[]',
+          model: 'Category',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'userId'
@@ -190,18 +192,10 @@ export class User implements UserInterface {
                   keyFrom: 'id',
           keyTo: 'userId'
         },
-        Categories: {
-          name: 'Categories',
-          type: 'Category[]',
-          model: 'Category',
-          relationType: 'hasMany',
-                  keyFrom: 'id',
-          keyTo: 'userId'
-        },
-        Dashboards: {
-          name: 'Dashboards',
-          type: 'Dashboard[]',
-          model: 'Dashboard',
+        Messages: {
+          name: 'Messages',
+          type: 'Message[]',
+          model: 'Message',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'userId'
@@ -213,6 +207,14 @@ export class User implements UserInterface {
           relationType: 'hasMany',
           modelThrough: 'Organizationuser',
           keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'userId'
+        },
+        Alerts: {
+          name: 'Alerts',
+          type: 'Alert[]',
+          model: 'Alert',
+          relationType: 'hasMany',
           keyFrom: 'id',
           keyTo: 'userId'
         },

@@ -138,6 +138,31 @@ a.text-message:focus, a.text-device:hover {
 a.bg-message:focus, a.bg-message:hover {
   background-color: darken($message, 20%); }
 
+.text-alert {
+  color: $alert !important;
+}
+
+a.text-alert:focus, a.text-device:hover {
+  color: darken($alert, 20%) !important;
+}
+
+.badge-alert {
+  background-color: $alert;
+}
+
+.badge-alert[href]:focus, .badge-alert[href]:hover {
+  background-color: darken($alert, 20%);
+}
+
+.bg-alert {
+  color: #fff !important;
+  background-color: $alert !important;
+}
+
+a.bg-alert:focus, a.bg-alert:hover {
+  background-color: darken($alert, 20%);
+}
+
 .text-tracking {
   color: $tracking !important; }
 a.text-tracking:focus, a.text-tracking:hover {
@@ -185,6 +210,31 @@ btn-parser {
   background-color: $parser;
   background-image: none;
   border-color: $parser; }
+
+.text-connector {
+  color: $connector !important;
+}
+
+a.text-connector:focus, a.text-device:hover {
+  color: darken($connector, 20%) !important;
+}
+
+.badge-connector {
+  background-color: $connector;
+}
+
+.badge-connector[href]:focus, .badge-connector[href]:hover {
+  background-color: darken($connector, 20%);
+}
+
+.bg-connector {
+  color: #fff !important;
+  background-color: $connector !important;
+}
+
+a.bg-connector:focus, a.bg-connector:hover {
+  background-color: darken($connector, 20%);
+}
 
 .text-profile {
   color: $profile !important; }
@@ -252,6 +302,22 @@ a.text-geoloc-ble:focus, a.text-geoloc-ble:hover {
 }
 .select-device .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
   background: $device !important;
+}
+
+.select-connector {
+  color: #ccc;
+}
+
+.select-connector .c-token {
+  background: $connector !important;
+}
+
+.select-connector .pure-checkbox label::before {
+  border-color: $connector !important;
+}
+
+.select-connector .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
+  background: $connector !important;
 }
 
 

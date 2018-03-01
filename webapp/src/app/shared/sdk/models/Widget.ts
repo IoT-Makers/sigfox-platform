@@ -1,8 +1,4 @@
 /* tslint:disable */
-import {
-  User,
-  Dashboard
-} from '../index';
 
 declare var Object: any;
 export interface WidgetInterface {
@@ -18,8 +14,8 @@ export interface WidgetInterface {
   "dashboardId"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  user?: User;
-  Dashboard?: Dashboard;
+  user?: any;
+  Dashboard?: any;
 }
 
 export class Widget implements WidgetInterface {
@@ -35,8 +31,8 @@ export class Widget implements WidgetInterface {
   "dashboardId": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  user: User = null;
-  Dashboard: Dashboard = null;
+  user: any = null;
+  Dashboard: any = null;
   constructor(data?: WidgetInterface) {
     Object.assign(this, data);
   }
@@ -122,16 +118,16 @@ export class Widget implements WidgetInterface {
       relations: {
         user: {
           name: 'user',
-          type: 'User',
-          model: 'User',
+          type: 'any',
+          model: '',
           relationType: 'belongsTo',
                   keyFrom: 'userId',
           keyTo: 'id'
         },
         Dashboard: {
           name: 'Dashboard',
-          type: 'Dashboard',
-          model: 'Dashboard',
+          type: 'any',
+          model: '',
           relationType: 'belongsTo',
                   keyFrom: 'dashboardId',
           keyTo: 'id'

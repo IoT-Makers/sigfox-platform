@@ -1,18 +1,18 @@
 /* tslint:disable */
-import { map, catchError, mergeMap } from 'rxjs/operators'
-import { of } from 'rxjs/observable/of';
-import { concat } from 'rxjs/observable/concat';
-import { Injectable, Inject } from '@angular/core';
-import { Effect, Actions } from '@ngrx/effects';
+import {catchError, map, mergeMap} from 'rxjs/operators';
+import {of} from 'rxjs/observable/of';
+import {concat} from 'rxjs/observable/concat';
+import {Inject, Injectable} from '@angular/core';
+import {Actions, Effect} from '@ngrx/effects';
 
-import { LoopbackAction } from '../models/BaseModels';
-import { BaseLoopbackEffects } from './base';
-import { resolver } from './resolver';
+import {LoopbackAction} from '../models/BaseModels';
+import {BaseLoopbackEffects} from './base';
+import {resolver} from './resolver';
 
 import * as actions from '../actions';
-import { UserActionTypes, UserActions } from '../actions/User';
-import { LoopbackErrorActions } from '../actions/error';
-import { UserApi } from '../services/index';
+import {UserActions, UserActionTypes} from '../actions/User';
+import {LoopbackErrorActions} from '../actions/error';
+import {UserApi} from '../services/index';
 
 @Injectable()
 export class UserEffects extends BaseLoopbackEffects {
@@ -138,16 +138,16 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public findByIdMessages$ = this.actions$
-    .ofType(UserActionTypes.FIND_BY_ID_MESSAGES).pipe(
+  public findByIdDashboards$ = this.actions$
+    .ofType(UserActionTypes.FIND_BY_ID_DASHBOARDS).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.findByIdMessages(action.payload.id, action.payload.fk).pipe(
+        this.user.findByIdDashboards(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Message', 'findByIdSuccess'),
-            of(new UserActions.findByIdMessagesSuccess(action.payload.id, response, action.meta))
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Dashboard', 'findByIdSuccess'),
+            of(new UserActions.findByIdDashboardsSuccess(action.payload.id, response, action.meta))
           )),
           catchError((error: any) => concat(
-            of(new UserActions.findByIdMessagesFail(error, action.meta)),
+            of(new UserActions.findByIdDashboardsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -155,16 +155,16 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public destroyByIdMessages$ = this.actions$
-    .ofType(UserActionTypes.DESTROY_BY_ID_MESSAGES).pipe(
+  public destroyByIdDashboards$ = this.actions$
+    .ofType(UserActionTypes.DESTROY_BY_ID_DASHBOARDS).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.destroyByIdMessages(action.payload.id, action.payload.fk).pipe(
+        this.user.destroyByIdDashboards(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Message', 'deleteByIdSuccess'),
-            of(new UserActions.destroyByIdMessagesSuccess(action.payload.id, response, action.meta))
+            resolver({data: response, meta: action.meta}, 'Dashboard', 'deleteByIdSuccess'),
+            of(new UserActions.destroyByIdDashboardsSuccess(action.payload.id, response, action.meta))
           )),
           catchError((error: any) => concat(
-            of(new UserActions.destroyByIdMessagesFail(error, action.meta)),
+            of(new UserActions.destroyByIdDashboardsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -172,67 +172,16 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public updateByIdMessages$ = this.actions$
-    .ofType(UserActionTypes.UPDATE_BY_ID_MESSAGES).pipe(
+  public updateByIdDashboards$ = this.actions$
+    .ofType(UserActionTypes.UPDATE_BY_ID_DASHBOARDS).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.updateByIdMessages(action.payload.id, action.payload.fk, action.payload.data).pipe(
+        this.user.updateByIdDashboards(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Message', 'findByIdSuccess'),
-            of(new UserActions.updateByIdMessagesSuccess(action.payload.id, response, action.meta))
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Dashboard', 'findByIdSuccess'),
+            of(new UserActions.updateByIdDashboardsSuccess(action.payload.id, response, action.meta))
           )),
           catchError((error: any) => concat(
-            of(new UserActions.updateByIdMessagesFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
-  public findByIdDevices$ = this.actions$
-    .ofType(UserActionTypes.FIND_BY_ID_DEVICES).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.user.findByIdDevices(action.payload.id, action.payload.fk).pipe(
-          mergeMap((response: any) => concat(
-            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Device', 'findByIdSuccess'),
-            of(new UserActions.findByIdDevicesSuccess(action.payload.id, response, action.meta))
-          )),
-          catchError((error: any) => concat(
-            of(new UserActions.findByIdDevicesFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
-  public destroyByIdDevices$ = this.actions$
-    .ofType(UserActionTypes.DESTROY_BY_ID_DEVICES).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.user.destroyByIdDevices(action.payload.id, action.payload.fk).pipe(
-          mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Device', 'deleteByIdSuccess'),
-            of(new UserActions.destroyByIdDevicesSuccess(action.payload.id, response, action.meta))
-          )),
-          catchError((error: any) => concat(
-            of(new UserActions.destroyByIdDevicesFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
-  public updateByIdDevices$ = this.actions$
-    .ofType(UserActionTypes.UPDATE_BY_ID_DEVICES).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.user.updateByIdDevices(action.payload.id, action.payload.fk, action.payload.data).pipe(
-          mergeMap((response: any) => concat(
-            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Device', 'findByIdSuccess'),
-            of(new UserActions.updateByIdDevicesSuccess(action.payload.id, response, action.meta))
-          )),
-          catchError((error: any) => concat(
-            of(new UserActions.updateByIdDevicesFail(error, action.meta)),
+            of(new UserActions.updateByIdDashboardsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -291,16 +240,16 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public findByIdDashboards$ = this.actions$
-    .ofType(UserActionTypes.FIND_BY_ID_DASHBOARDS).pipe(
+  public findByIdDevices$ = this.actions$
+    .ofType(UserActionTypes.FIND_BY_ID_DEVICES).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.findByIdDashboards(action.payload.id, action.payload.fk).pipe(
+        this.user.findByIdDevices(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Dashboard', 'findByIdSuccess'),
-            of(new UserActions.findByIdDashboardsSuccess(action.payload.id, response, action.meta))
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Device', 'findByIdSuccess'),
+            of(new UserActions.findByIdDevicesSuccess(action.payload.id, response, action.meta))
           )),
           catchError((error: any) => concat(
-            of(new UserActions.findByIdDashboardsFail(error, action.meta)),
+            of(new UserActions.findByIdDevicesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -308,16 +257,16 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public destroyByIdDashboards$ = this.actions$
-    .ofType(UserActionTypes.DESTROY_BY_ID_DASHBOARDS).pipe(
+  public destroyByIdDevices$ = this.actions$
+    .ofType(UserActionTypes.DESTROY_BY_ID_DEVICES).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.destroyByIdDashboards(action.payload.id, action.payload.fk).pipe(
+        this.user.destroyByIdDevices(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Dashboard', 'deleteByIdSuccess'),
-            of(new UserActions.destroyByIdDashboardsSuccess(action.payload.id, response, action.meta))
+            resolver({data: response, meta: action.meta}, 'Device', 'deleteByIdSuccess'),
+            of(new UserActions.destroyByIdDevicesSuccess(action.payload.id, response, action.meta))
           )),
           catchError((error: any) => concat(
-            of(new UserActions.destroyByIdDashboardsFail(error, action.meta)),
+            of(new UserActions.destroyByIdDevicesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -325,16 +274,67 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public updateByIdDashboards$ = this.actions$
-    .ofType(UserActionTypes.UPDATE_BY_ID_DASHBOARDS).pipe(
+  public updateByIdDevices$ = this.actions$
+    .ofType(UserActionTypes.UPDATE_BY_ID_DEVICES).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.updateByIdDashboards(action.payload.id, action.payload.fk, action.payload.data).pipe(
+        this.user.updateByIdDevices(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Dashboard', 'findByIdSuccess'),
-            of(new UserActions.updateByIdDashboardsSuccess(action.payload.id, response, action.meta))
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Device', 'findByIdSuccess'),
+            of(new UserActions.updateByIdDevicesSuccess(action.payload.id, response, action.meta))
           )),
           catchError((error: any) => concat(
-            of(new UserActions.updateByIdDashboardsFail(error, action.meta)),
+            of(new UserActions.updateByIdDevicesFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public findByIdMessages$ = this.actions$
+    .ofType(UserActionTypes.FIND_BY_ID_MESSAGES).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.findByIdMessages(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Message', 'findByIdSuccess'),
+            of(new UserActions.findByIdMessagesSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.findByIdMessagesFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public destroyByIdMessages$ = this.actions$
+    .ofType(UserActionTypes.DESTROY_BY_ID_MESSAGES).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.destroyByIdMessages(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Message', 'deleteByIdSuccess'),
+            of(new UserActions.destroyByIdMessagesSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.destroyByIdMessagesFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public updateByIdMessages$ = this.actions$
+    .ofType(UserActionTypes.UPDATE_BY_ID_MESSAGES).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.updateByIdMessages(action.payload.id, action.payload.fk, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Message', 'findByIdSuccess'),
+            of(new UserActions.updateByIdMessagesSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.updateByIdMessagesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -420,6 +420,57 @@ export class UserEffects extends BaseLoopbackEffects {
         )),
           catchError((error: any) => concat(
             of(new UserActions.unlinkOrganizationsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public findByIdAlerts$ = this.actions$
+    .ofType(UserActionTypes.FIND_BY_ID_ALERTS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.findByIdAlerts(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Alert', 'findByIdSuccess'),
+            of(new UserActions.findByIdAlertsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.findByIdAlertsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public destroyByIdAlerts$ = this.actions$
+    .ofType(UserActionTypes.DESTROY_BY_ID_ALERTS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.destroyByIdAlerts(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Alert', 'deleteByIdSuccess'),
+            of(new UserActions.destroyByIdAlertsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.destroyByIdAlertsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public updateByIdAlerts$ = this.actions$
+    .ofType(UserActionTypes.UPDATE_BY_ID_ALERTS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.updateByIdAlerts(action.payload.id, action.payload.fk, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Alert', 'findByIdSuccess'),
+            of(new UserActions.updateByIdAlertsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.updateByIdAlertsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -568,16 +619,16 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public getMessages$ = this.actions$
-    .ofType(UserActionTypes.GET_MESSAGES).pipe(
+  public getDashboards$ = this.actions$
+    .ofType(UserActionTypes.GET_DASHBOARDS).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.getMessages(action.payload.id, action.payload.filter).pipe(
+        this.user.getDashboards(action.payload.id, action.payload.filter).pipe(
           mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Message', 'findSuccess'),
-            of(new UserActions.getMessagesSuccess(action.payload.id, response, action.meta))
+            resolver({data: response, meta: action.meta}, 'Dashboard', 'findSuccess'),
+            of(new UserActions.getDashboardsSuccess(action.payload.id, response, action.meta))
           )),
           catchError((error: any) => concat(
-            of(new UserActions.getMessagesFail(error, action.meta)),
+            of(new UserActions.getDashboardsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -585,16 +636,16 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public createMessages$ = this.actions$
-    .ofType(UserActionTypes.CREATE_MESSAGES).pipe(
+  public createDashboards$ = this.actions$
+    .ofType(UserActionTypes.CREATE_DASHBOARDS).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.createMessages(action.payload.id, action.payload.data).pipe(
+        this.user.createDashboards(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Message', 'findSuccess'),
-            of(new UserActions.createMessagesSuccess(action.payload.id, response, action.meta))
+            resolver({data: response, meta: action.meta}, 'Dashboard', 'findSuccess'),
+            of(new UserActions.createDashboardsSuccess(action.payload.id, response, action.meta))
           )),
           catchError((error: any) => concat(
-            of(new UserActions.createMessagesFail(error, action.meta)),
+            of(new UserActions.createDashboardsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -602,61 +653,13 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public deleteMessages$ = this.actions$
-    .ofType(UserActionTypes.DELETE_MESSAGES).pipe(
+  public deleteDashboards$ = this.actions$
+    .ofType(UserActionTypes.DELETE_DASHBOARDS).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.deleteMessages(action.payload.id).pipe(
-          map((response: any) => new UserActions.deleteMessagesSuccess(action.payload, action.meta)),
+        this.user.deleteDashboards(action.payload.id).pipe(
+          map((response: any) => new UserActions.deleteDashboardsSuccess(action.payload, action.meta)),
           catchError((error: any) => concat(
-            of(new UserActions.deleteMessagesFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
-  public getDevices$ = this.actions$
-    .ofType(UserActionTypes.GET_DEVICES).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.user.getDevices(action.payload.id, action.payload.filter).pipe(
-          mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Device', 'findSuccess'),
-            of(new UserActions.getDevicesSuccess(action.payload.id, response, action.meta))
-          )),
-          catchError((error: any) => concat(
-            of(new UserActions.getDevicesFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
-  public createDevices$ = this.actions$
-    .ofType(UserActionTypes.CREATE_DEVICES).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.user.createDevices(action.payload.id, action.payload.data).pipe(
-          mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Device', 'findSuccess'),
-            of(new UserActions.createDevicesSuccess(action.payload.id, response, action.meta))
-          )),
-          catchError((error: any) => concat(
-            of(new UserActions.createDevicesFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
-  public deleteDevices$ = this.actions$
-    .ofType(UserActionTypes.DELETE_DEVICES).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.user.deleteDevices(action.payload.id).pipe(
-          map((response: any) => new UserActions.deleteDevicesSuccess(action.payload, action.meta)),
-          catchError((error: any) => concat(
-            of(new UserActions.deleteDevicesFail(error, action.meta)),
+            of(new UserActions.deleteDashboardsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -712,16 +715,16 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public getDashboards$ = this.actions$
-    .ofType(UserActionTypes.GET_DASHBOARDS).pipe(
+  public getDevices$ = this.actions$
+    .ofType(UserActionTypes.GET_DEVICES).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.getDashboards(action.payload.id, action.payload.filter).pipe(
+        this.user.getDevices(action.payload.id, action.payload.filter).pipe(
           mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Dashboard', 'findSuccess'),
-            of(new UserActions.getDashboardsSuccess(action.payload.id, response, action.meta))
+            resolver({data: response, meta: action.meta}, 'Device', 'findSuccess'),
+            of(new UserActions.getDevicesSuccess(action.payload.id, response, action.meta))
           )),
           catchError((error: any) => concat(
-            of(new UserActions.getDashboardsFail(error, action.meta)),
+            of(new UserActions.getDevicesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -729,16 +732,16 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public createDashboards$ = this.actions$
-    .ofType(UserActionTypes.CREATE_DASHBOARDS).pipe(
+  public createDevices$ = this.actions$
+    .ofType(UserActionTypes.CREATE_DEVICES).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.createDashboards(action.payload.id, action.payload.data).pipe(
+        this.user.createDevices(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Dashboard', 'findSuccess'),
-            of(new UserActions.createDashboardsSuccess(action.payload.id, response, action.meta))
+            resolver({data: response, meta: action.meta}, 'Device', 'findSuccess'),
+            of(new UserActions.createDevicesSuccess(action.payload.id, response, action.meta))
           )),
           catchError((error: any) => concat(
-            of(new UserActions.createDashboardsFail(error, action.meta)),
+            of(new UserActions.createDevicesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -746,13 +749,61 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public deleteDashboards$ = this.actions$
-    .ofType(UserActionTypes.DELETE_DASHBOARDS).pipe(
+  public deleteDevices$ = this.actions$
+    .ofType(UserActionTypes.DELETE_DEVICES).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.deleteDashboards(action.payload.id).pipe(
-          map((response: any) => new UserActions.deleteDashboardsSuccess(action.payload, action.meta)),
+        this.user.deleteDevices(action.payload.id).pipe(
+          map((response: any) => new UserActions.deleteDevicesSuccess(action.payload, action.meta)),
           catchError((error: any) => concat(
-            of(new UserActions.deleteDashboardsFail(error, action.meta)),
+            of(new UserActions.deleteDevicesFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public getMessages$ = this.actions$
+    .ofType(UserActionTypes.GET_MESSAGES).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.getMessages(action.payload.id, action.payload.filter).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Message', 'findSuccess'),
+            of(new UserActions.getMessagesSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.getMessagesFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createMessages$ = this.actions$
+    .ofType(UserActionTypes.CREATE_MESSAGES).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createMessages(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Message', 'findSuccess'),
+            of(new UserActions.createMessagesSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createMessagesFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public deleteMessages$ = this.actions$
+    .ofType(UserActionTypes.DELETE_MESSAGES).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.deleteMessages(action.payload.id).pipe(
+          map((response: any) => new UserActions.deleteMessagesSuccess(action.payload, action.meta)),
+          catchError((error: any) => concat(
+            of(new UserActions.deleteMessagesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -801,6 +852,54 @@ export class UserEffects extends BaseLoopbackEffects {
           map((response: any) => new UserActions.deleteOrganizationsSuccess(action.payload, action.meta)),
           catchError((error: any) => concat(
             of(new UserActions.deleteOrganizationsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public getAlerts$ = this.actions$
+    .ofType(UserActionTypes.GET_ALERTS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.getAlerts(action.payload.id, action.payload.filter).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Alert', 'findSuccess'),
+            of(new UserActions.getAlertsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.getAlertsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createAlerts$ = this.actions$
+    .ofType(UserActionTypes.CREATE_ALERTS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createAlerts(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Alert', 'findSuccess'),
+            of(new UserActions.createAlertsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createAlertsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public deleteAlerts$ = this.actions$
+    .ofType(UserActionTypes.DELETE_ALERTS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.deleteAlerts(action.payload.id).pipe(
+          map((response: any) => new UserActions.deleteAlertsSuccess(action.payload, action.meta)),
+          catchError((error: any) => concat(
+            of(new UserActions.deleteAlertsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -985,33 +1084,16 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public createManyMessages$ = this.actions$
-    .ofType(UserActionTypes.CREATE_MANY_MESSAGES).pipe(
+  public createManyDashboards$ = this.actions$
+    .ofType(UserActionTypes.CREATE_MANY_DASHBOARDS).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.createManyMessages(action.payload.id, action.payload.data).pipe(
+        this.user.createManyDashboards(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Message', 'findSuccess'),
-            of(new UserActions.createManyMessagesSuccess(action.payload.id, response, action.meta))
+            resolver({data: response, meta: action.meta}, 'Dashboard', 'findSuccess'),
+            of(new UserActions.createManyDashboardsSuccess(action.payload.id, response, action.meta))
           )),
           catchError((error: any) => concat(
-            of(new UserActions.createManyMessagesFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
-  public createManyDevices$ = this.actions$
-    .ofType(UserActionTypes.CREATE_MANY_DEVICES).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.user.createManyDevices(action.payload.id, action.payload.data).pipe(
-          mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Device', 'findSuccess'),
-            of(new UserActions.createManyDevicesSuccess(action.payload.id, response, action.meta))
-          )),
-          catchError((error: any) => concat(
-            of(new UserActions.createManyDevicesFail(error, action.meta)),
+            of(new UserActions.createManyDashboardsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -1036,16 +1118,33 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public createManyDashboards$ = this.actions$
-    .ofType(UserActionTypes.CREATE_MANY_DASHBOARDS).pipe(
+  public createManyDevices$ = this.actions$
+    .ofType(UserActionTypes.CREATE_MANY_DEVICES).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.user.createManyDashboards(action.payload.id, action.payload.data).pipe(
+        this.user.createManyDevices(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-            resolver({data: response, meta: action.meta}, 'Dashboard', 'findSuccess'),
-            of(new UserActions.createManyDashboardsSuccess(action.payload.id, response, action.meta))
+            resolver({data: response, meta: action.meta}, 'Device', 'findSuccess'),
+            of(new UserActions.createManyDevicesSuccess(action.payload.id, response, action.meta))
           )),
           catchError((error: any) => concat(
-            of(new UserActions.createManyDashboardsFail(error, action.meta)),
+            of(new UserActions.createManyDevicesFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createManyMessages$ = this.actions$
+    .ofType(UserActionTypes.CREATE_MANY_MESSAGES).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createManyMessages(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Message', 'findSuccess'),
+            of(new UserActions.createManyMessagesSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createManyMessagesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -1063,6 +1162,23 @@ export class UserEffects extends BaseLoopbackEffects {
           )),
           catchError((error: any) => concat(
             of(new UserActions.createManyOrganizationsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createManyAlerts$ = this.actions$
+    .ofType(UserActionTypes.CREATE_MANY_ALERTS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createManyAlerts(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Alert', 'findSuccess'),
+            of(new UserActions.createManyAlertsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createManyAlertsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

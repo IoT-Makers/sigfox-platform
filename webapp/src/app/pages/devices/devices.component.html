@@ -162,161 +162,6 @@
                 </div>
               </tab>
 
-
-              <tab heading="Alerts">
-                <!-- Alerts -->
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Connector</label>
-                  <div class="col-md-9 mb-0">
-                    <select name="newAlert.connectorId" class="form-control" size="1"
-                            [(ngModel)]="newAlert.connectorId">
-                      <option *ngFor="let connector of connectors" [ngValue]="connector.id">{{connector.name}}</option>
-                      <option [ngValue]=""></option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Key</label>
-                  <div class="col-md-9">
-                    <select name="newAlert.key" class="form-control" size="1" [(ngModel)]="newAlert.key">
-                      <option [ngValue]="o.key" *ngFor="let o of deviceToEdit.data_parsed">{{o.key}}</option>
-                      <option [ngValue]=""></option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="form-group row">
-                  <label class="col-md-3 offset-1 form-control-label">Exact value</label>
-                  <div class="col-md-8">
-                    <input type="text" class="form-control" placeholder="Exact value" name="newAlert.value_exact"
-                           [(ngModel)]="newAlert.value_exact" [ngModelOptions]="{standalone: true}">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-3 offset-1 form-control-label">Between</label>
-                  <div class="col-md-8">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <label class="form-control-label">Min value</label>
-                        <input type="number" class="form-control" name="newAlert.value_min"
-                               [(ngModel)]="newAlert.value_min" [ngModelOptions]="{standalone: true}">
-                      </div>
-                      <div class="col-md-6">
-                        <label class="form-control-label">Max value</label>
-                        <input type="number" class="form-control" name="newAlert.value_max"
-                               [(ngModel)]="newAlert.value_max" [ngModelOptions]="{standalone: true}">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-3 offset-1 form-control-label">Less than</label>
-                  <div class="col-md-8">
-                    <input type="number" class="form-control" name="newAlert.value_min"
-                           [(ngModel)]="newAlert.value_less" [ngModelOptions]="{standalone: true}">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-3 offset-1 form-control-label">More than</label>
-                  <div class="col-md-8">
-                    <input type="number" class="form-control" name="newAlert.value_max"
-                           [(ngModel)]="newAlert.value_more" [ngModelOptions]="{standalone: true}">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-3 offset-1 form-control-label">Custom message (optional)</label>
-                  <div class="col-md-8">
-                    <input type="text" class="form-control" placeholder="Custom message" name="newAlert.message"
-                           [(ngModel)]="newAlert.message" [ngModelOptions]="{standalone: true}">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <div class="col-md-12">
-                    <button class="btn btn-sm btn-outline-success"
-                            (click)="$event.preventDefault(); addAlert(newAlert)"><i class="fa fa-plus-circle"></i> Add
-                      alert
-                    </button>
-                  </div>
-                </div>
-
-                <hr>
-
-                <div *ngFor="let alert of deviceToEdit.alerts; let i = index">
-                  <div class="form-group row">
-                    <label class="col-md-3 form-control-label">Connector</label>
-                    <div class="col-md-9 mb-0">
-                      <select name="alert.connectorId" class="form-control" size="1" [(ngModel)]="alert.connectorId">
-                        <option *ngFor="let connector of connectors" [ngValue]="connector.id">{{connector.name}}
-                        </option>
-                        <option [ngValue]=""></option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 form-control-label">Key</label>
-                    <div class="col-md-9">
-                      <select name="alert.key" class="form-control" size="1" [(ngModel)]="alert.key">
-                        <option [ngValue]="item.key" *ngFor="let item of deviceToEdit.data_parsed">{{item.key}}</option>
-                        <option [ngValue]=""></option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 offset-1 form-control-label">Exact value</label>
-                    <div class="col-md-8">
-                      <input type="text" class="form-control" placeholder="Exact value" name="alert.value_exact"
-                             [(ngModel)]="alert.value_exact" [ngModelOptions]="{standalone: true}">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 offset-1 form-control-label">Between</label>
-                    <div class="col-md-8">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <label class="form-control-label">Min value</label>
-                          <input type="number" class="form-control" name="alert.value_min"
-                                 [(ngModel)]="alert.value_min" [ngModelOptions]="{standalone: true}">
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-control-label">Max value</label>
-                          <input type="number" class="form-control" name="alert.value_max"
-                                 [(ngModel)]="alert.value_max" [ngModelOptions]="{standalone: true}">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 offset-1 form-control-label">Less than</label>
-                    <div class="col-md-8">
-                      <input type="number" class="form-control" name="alert.value_min"
-                             [(ngModel)]="alert.value_less" [ngModelOptions]="{standalone: true}">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 offset-1 form-control-label">More than</label>
-                    <div class="col-md-8">
-                      <input type="number" class="form-control" name="alert.value_max"
-                             [(ngModel)]="alert.value_more" [ngModelOptions]="{standalone: true}">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 offset-1 form-control-label">Custom message (optional)</label>
-                    <div class="col-md-8">
-                      <input type="text" class="form-control" placeholder="Custom message" name="alert.message"
-                             [(ngModel)]="alert.message" [ngModelOptions]="{standalone: true}">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <div class="col-md-12">
-                      <button class="btn pull-right btn-sm btn-outline-danger" (click)="removeAlert(i)"><i
-                        class="fa fa-trash"></i> Remove
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </tab>
-
-
               <tab heading="Operations" class="text-center">
 
                 <div class="col col-md-12 mb-1">
@@ -360,7 +205,7 @@
             </div>
           </ng-container>
 
-          <!--Table-->
+          <!-- Table -->
           <div *ngIf="devices.length > 0" class="table-responsive">
             <table class="table table-hover table-outline" [mfData]="devices" #mf="mfDataTable" [mfRowsOnPage]="10">
               <thead class="thead-inverse">
@@ -465,6 +310,8 @@
               </tfoot>
             </table>
           </div>
+          <!-- End Table -->
+
         </div>
       </div>
     </div>
