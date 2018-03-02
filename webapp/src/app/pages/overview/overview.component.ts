@@ -4,7 +4,7 @@ import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
-import {ParserApi, UserApi} from '../../shared/sdk/services/custom';
+import {UserApi} from '../../shared/sdk/services/custom';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -207,9 +207,15 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Alerts
     this.alertRef = this.rt.FireLoop.ref<Alert>(Alert);
-    this.alertSub = this.alertRef.on('change', {where: {active: true}}).subscribe((alerts: Alert[]) => {
+    this.alertSub = this.alertRef.on('change', {
+      where: {
+        userId: this.user.id
+      }
+    }).subscribe((alerts: Alert[]) => {
       this.alerts = alerts;
-      this.userApi.countAlerts(this.user.id).subscribe(result => {
+      this.userApi.countAlerts(this.user.id, {
+        active: true
+      }).subscribe(result => {
         this.countAlerts = result.count;
       });
     });
