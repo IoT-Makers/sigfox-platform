@@ -1,7 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AccessToken, User} from '../../../shared/sdk/models';
-import {UserApi} from '../../../shared/sdk/services';
+import {AccessToken, AppSetting, User} from '../../../shared/sdk/models';
+import {UserApi, AppSettingApi} from '../../../shared/sdk/services';
 import {Router} from '@angular/router';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   private user: User = new User();
   private errorMessage = '';
 
+  private setting: AppSetting;
+  private settings: AppSetting[] = [];
+
+  private canUserRegister: boolean = false;
+
   constructor(private userApi: UserApi,
+              private appSettingApi: AppSettingApi,
               private router: Router) {
   }
 
@@ -47,6 +54,17 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Login: ngOnInit');
+    this.getAppSettings()
+  }
+
+  getAppSettings(): void {
+    this.appSettingApi.find().subscribe((settings: AppSetting[])=> {
+      this.settings = settings;
+      let temp = _.filter(settings, {key: 'canUserRegister'});
+      this.canUserRegister = temp[0].value;
+
+      //console.log(this.canUserRegister);
+    });
   }
 
   ngOnDestroy(): void {

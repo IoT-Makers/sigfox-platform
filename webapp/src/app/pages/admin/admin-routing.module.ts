@@ -8,7 +8,7 @@ const routes: Routes = [
     path: '',
     component: AdminComponent,
     data: {
-      title: 'Messages'
+      title: 'Admin'
     }
   }
 ];
