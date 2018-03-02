@@ -1,15 +1,17 @@
 /* tslint:disable */
-import {Inject, Injectable, Optional} from '@angular/core';
-import {Http} from '@angular/http';
-import {SDKModels} from './SDKModels';
-import {BaseLoopBackApi} from '../core/base.service';
-import {LoopBackConfig} from '../../lb.config';
-import {LoopBackAuth} from '../core/auth.service';
-import {JSONSearchParams} from '../core/search.params';
-import {ErrorHandler} from '../core/error.service';
-import {Observable} from 'rxjs/Rx';
-import {Device} from '../../models/Device';
-import {SocketConnection} from '../../sockets/socket.connections';
+import { Injectable, Inject, Optional } from '@angular/core';
+import { Http, Response } from '@angular/http';
+import { SDKModels } from './SDKModels';
+import { BaseLoopBackApi } from '../core/base.service';
+import { LoopBackConfig } from '../../lb.config';
+import { LoopBackAuth } from '../core/auth.service';
+import { LoopBackFilter,  } from '../../models/BaseModels';
+import { JSONSearchParams } from '../core/search.params';
+import { ErrorHandler } from '../core/error.service';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Rx';
+import { Device } from '../../models/Device';
+import { SocketConnection } from '../../sockets/socket.connections';
 
 
 /**
@@ -40,7 +42,7 @@ export class DeviceApi extends BaseLoopBackApi {
    *
    * @param {string} dateEnd the ending date-time
    *
-   * @param {object} req
+   * @param {object} req 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -48,7 +50,7 @@ export class DeviceApi extends BaseLoopBackApi {
    *
    * Data properties:
    *
-   *  - `result` – `{any}` -
+   *  - `result` – `{any}` - 
    */
   public timeSeries(deviceId: any, dateBegin: any = {}, dateEnd: any = {}, req: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
@@ -69,9 +71,9 @@ export class DeviceApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId
+   * @param {string} deviceId 
    *
-   * @param {object} req
+   * @param {object} req 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -105,7 +107,7 @@ export class DeviceApi extends BaseLoopBackApi {
    *
    * @param {number} before Before
    *
-   * @param {object} req
+   * @param {object} req 
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -140,7 +142,7 @@ export class DeviceApi extends BaseLoopBackApi {
    *
    *  - `id` – `{string}` - Device Id
    *
-   *  - `req` – `{object}` -
+   *  - `req` – `{object}` - 
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned

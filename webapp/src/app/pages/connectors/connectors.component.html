@@ -264,6 +264,7 @@
             <div class="form-horizontal">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label font-weight-bold">Name
+                  <small class="text-danger">(required)</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" placeholder="Connector name"
@@ -271,7 +272,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label font-weight-bold">Type</label>
+                <label class="col-md-3 form-control-label font-weight-bold">Type
+                  <small class="text-danger">(required)</small>
+                </label>
                 <div class="col-md-9">
                   <ng-select #namesSelected
                              [placeholder]="'Select a connector type'"
@@ -290,9 +293,112 @@
                          [(ngModel)]="newConnector.description">
                 </div>
               </div>
+
+              <!-- Sigfox API -->
+              <ng-container *ngIf="newConnector.type === 'sigfox-api'">
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Login
+                    <small class="text-danger">(required)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Connector login"
+                           [(ngModel)]="newConnector.login"
+                           required>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Password
+                    <small class="text-danger">(required)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <input type="password" class="form-control" placeholder="Connector password"
+                           [(ngModel)]="newConnector.password"
+                           required>
+                  </div>
+                </div>
+              </ng-container>
+              <!-- End Sigfox API -->
+
+              <!-- POST -->
+              <ng-container *ngIf="newConnector.type === 'post'">
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">URL
+                    <small class="text-danger">(required)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Destination URL"
+                           [(ngModel)]="newConnector.url">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Login
+                    <small>(optional)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Connector login"
+                           [(ngModel)]="newConnector.login">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Password
+                    <small>(optional)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <input type="password" class="form-control" placeholder="Connector password"
+                           [(ngModel)]="newConnector.password">
+                  </div>
+                </div>
+              </ng-container>
+              <!-- End POST -->
+
+              <!-- Free Mobile -->
+              <ng-container *ngIf="newConnector.type === 'free-mobile'">
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Login
+                    <small class="text-danger">(required)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Connector login"
+                           [(ngModel)]="newConnector.login"
+                           required>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Password
+                    <small class="text-danger">(required)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <input type="password" class="form-control" placeholder="Connector password"
+                           [(ngModel)]="newConnector.password"
+                           required>
+                  </div>
+                </div>
+              </ng-container>
+              <!-- End Free Mobile -->
+
+              <!-- MQTT -->
               <ng-container *ngIf="newConnector.type === 'mqtt'">
                 <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Login
+                    <small>(optional)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Connector login"
+                           [(ngModel)]="newConnector.login">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Password
+                    <small>(optional)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <input type="password" class="form-control" placeholder="Connector password"
+                           [(ngModel)]="newConnector.password">
+                  </div>
+                </div>
+                <div class="form-group row">
                   <label class="col-md-3 form-control-label font-weight-bold">Host
+                    <small class="text-danger">(required)</small>
                   </label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" placeholder="MQTT host"
@@ -301,6 +407,7 @@
                 </div>
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label font-weight-bold">Port
+                    <small class="text-danger">(required)</small>
                   </label>
                   <div class="col-md-9">
                     <input type="number" class="form-control" placeholder="MQTT port"
@@ -309,35 +416,48 @@
                 </div>
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label font-weight-bold">Topic
+                    <small class="text-danger">(required)</small>
                   </label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" placeholder="MQTT topic"
+                           [(ngModel)]="newConnector.topic">
+                  </div>
+                </div>
+              </ng-container>
+              <!-- End MQTT -->
+
+              <!-- Office-365 -->
+              <ng-container *ngIf="newConnector.type === 'office-365'" class="form-group row">
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Login
+                    <small class="text-danger">(required)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Connector login"
+                           [(ngModel)]="newConnector.login">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Password
+                    <small class="text-danger">(required)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <input type="password" class="form-control" placeholder="Connector password"
+                           [(ngModel)]="newConnector.password">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Recipient email
+                    <small class="text-danger">(required)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <input type="email" class="form-control" placeholder="Recipient email"
                            [(ngModel)]="newConnector.recipient">
                   </div>
                 </div>
               </ng-container>
-              <div *ngIf="newConnector.type === 'office-365'" class="form-group row">
-                <label class="col-md-3 form-control-label font-weight-bold">Recipient email
-                </label>
-                <div class="col-md-9">
-                  <input type="email" class="form-control" placeholder="Recipient email"
-                         [(ngModel)]="newConnector.recipient">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label font-weight-bold">Login</label>
-                <div class="col-md-9">
-                  <input type="text" class="form-control" placeholder="Connector login"
-                         [(ngModel)]="newConnector.login">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label font-weight-bold">Password</label>
-                <div class="col-md-9">
-                  <input type="password" class="form-control" placeholder="Connector password"
-                         [(ngModel)]="newConnector.password">
-                </div>
-              </div>
+              <!-- End Office-365 -->
+
             </div>
           </div>
           <hr>

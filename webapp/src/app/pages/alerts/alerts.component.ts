@@ -185,6 +185,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   editAlert(): void {
     this.alertRef.upsert(this.alertToEdit).subscribe(value => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
     }, err => {
       this.toasterService.pop('error', 'Error', err.error.message);

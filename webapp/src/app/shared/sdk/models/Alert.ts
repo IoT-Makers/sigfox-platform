@@ -2,22 +2,22 @@
 
 declare var Object: any;
 export interface AlertInterface {
-  'deviceId': string;
-  'active'?: boolean;
+  "deviceId": string;
+  "active"?: boolean;
   "key": string;
-  'value_exact'?: any;
+  "value_exact"?: any;
   "value_min"?: any;
   "value_max"?: any;
   "value_less"?: any;
   "value_more"?: any;
   "message"?: string;
-  'last_trigger'?: Date;
+  "last_trigger"?: Date;
   "id"?: number;
-  'userId'?: number;
-  'organizationId'?: number;
-  'createdAt'?: Date;
-  'updatedAt'?: Date;
-  'connectorId'?: number;
+  "userId"?: number;
+  "organizationId"?: number;
+  "createdAt"?: Date;
+  "updatedAt"?: Date;
+  "connectorId"?: number;
   Device?: any;
   user?: any;
   Organization?: any;
@@ -25,22 +25,22 @@ export interface AlertInterface {
 }
 
 export class Alert implements AlertInterface {
-  'deviceId': string = '';
-  'active': boolean = true;
+  "deviceId": string = '';
+  "active": boolean = true;
   "key": string = '';
-  'value_exact': any = <any>null;
+  "value_exact": any = <any>null;
   "value_min": any = <any>null;
   "value_max": any = <any>null;
   "value_less": any = <any>null;
   "value_more": any = <any>null;
   "message": string = '';
-  'last_trigger': Date = new Date(0);
+  "last_trigger": Date = new Date(0);
   "id": number = 0;
-  'userId': number = 0;
-  'organizationId': number = 0;
-  'createdAt': Date = new Date(0);
-  'updatedAt': Date = new Date(0);
-  'connectorId': number = 0;
+  "userId": number = 0;
+  "organizationId": number = 0;
+  "createdAt": Date = new Date(0);
+  "updatedAt": Date = new Date(0);
+  "connectorId": number = 0;
   Device: any = null;
   user: any = null;
   Organization: any = null;
@@ -78,11 +78,11 @@ export class Alert implements AlertInterface {
       path: 'Alerts',
       idName: 'id',
       properties: {
-        'deviceId': {
+        "deviceId": {
           name: 'deviceId',
           type: 'string'
         },
-        'active': {
+        "active": {
           name: 'active',
           type: 'boolean',
           default: true
@@ -91,7 +91,7 @@ export class Alert implements AlertInterface {
           name: 'key',
           type: 'string'
         },
-        'value_exact': {
+        "value_exact": {
           name: 'value_exact',
           type: 'any',
           default: <any>null
@@ -106,12 +106,12 @@ export class Alert implements AlertInterface {
           type: 'any',
           default: <any>null
         },
-        'value_less': {
+        "value_less": {
           name: 'value_less',
           type: 'any',
           default: <any>null
         },
-        'value_more': {
+        "value_more": {
           name: 'value_more',
           type: 'any',
           default: <any>null
@@ -120,7 +120,7 @@ export class Alert implements AlertInterface {
           name: 'message',
           type: 'string'
         },
-        'last_trigger': {
+        "last_trigger": {
           name: 'last_trigger',
           type: 'Date'
         },
@@ -128,23 +128,23 @@ export class Alert implements AlertInterface {
           name: 'id',
           type: 'number'
         },
-        'userId': {
+        "userId": {
           name: 'userId',
           type: 'number'
         },
-        'organizationId': {
+        "organizationId": {
           name: 'organizationId',
           type: 'number'
         },
-        'createdAt': {
+        "createdAt": {
           name: 'createdAt',
           type: 'Date'
         },
-        'updatedAt': {
+        "updatedAt": {
           name: 'updatedAt',
           type: 'Date'
         },
-        'connectorId': {
+        "connectorId": {
           name: 'connectorId',
           type: 'number'
         },
@@ -155,7 +155,7 @@ export class Alert implements AlertInterface {
           type: 'any',
           model: '',
           relationType: 'belongsTo',
-          keyFrom: 'deviceId',
+                  keyFrom: 'deviceId',
           keyTo: 'id'
         },
         user: {
@@ -163,7 +163,7 @@ export class Alert implements AlertInterface {
           type: 'any',
           model: '',
           relationType: 'belongsTo',
-          keyFrom: 'userId',
+                  keyFrom: 'userId',
           keyTo: 'id'
         },
         Organization: {
@@ -171,7 +171,7 @@ export class Alert implements AlertInterface {
           type: 'any',
           model: '',
           relationType: 'belongsTo',
-          keyFrom: 'organizationId',
+                  keyFrom: 'organizationId',
           keyTo: 'id'
         },
         Connector: {
@@ -179,7 +179,7 @@ export class Alert implements AlertInterface {
           type: 'any',
           model: '',
           relationType: 'belongsTo',
-          keyFrom: 'connectorId',
+                  keyFrom: 'connectorId',
           keyTo: 'id'
         },
       }

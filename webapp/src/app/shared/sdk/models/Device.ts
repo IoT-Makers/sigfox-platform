@@ -175,7 +175,7 @@ export class Device implements DeviceInterface {
           type: 'any[]',
           model: '',
           relationType: 'hasMany',
-          keyFrom: 'id',
+                  keyFrom: 'id',
           keyTo: 'deviceId'
         },
       }

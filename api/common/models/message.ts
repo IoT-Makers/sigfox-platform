@@ -286,6 +286,13 @@ class Message {
                                         else console.log('Email sent!');
                                       });
 
+                                    } else if (connector.type === 'post') {
+                                      console.log('POST alert!');
+                                      this.model.app.dataSources.post.send(connector.url, connector.password, alertMessage).then((result: any) => {
+                                      }).catch((err: any) => {
+                                        console.error('POST request error');
+                                      });
+
                                     } else if (connector.type === 'free-mobile') {
                                       console.log('Free Mobile SMS alert!');
                                       this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, alertMessage).then((result: any) => {
@@ -302,7 +309,7 @@ class Message {
                                       const Client = require('strong-pubsub');
                                       const Adapter = require('strong-pubsub-mqtt');
                                       const client = new Client({host: connector.host, port: connector.port}, Adapter);
-                                      client.publish(connector.recipient, alertMessage);
+                                      client.publish(connector.topic, alertMessage);
                                     }
                                     // Alert has been triggered, removing it from array
                                     alerts.splice(index, 1);

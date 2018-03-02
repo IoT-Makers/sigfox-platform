@@ -1,5 +1,14 @@
 /* tslint:disable */
-import {AccessToken, Alert, Category, Connector, Dashboard, Device, Message, Organization} from '../index';
+import {
+  AccessToken,
+  Dashboard,
+  Category,
+  Device,
+  Message,
+  Organization,
+  Alert,
+  Connector
+} from '../index';
 
 declare var Object: any;
 export interface UserInterface {
@@ -173,7 +182,7 @@ export class User implements UserInterface {
           type: 'Dashboard[]',
           model: 'Dashboard',
           relationType: 'hasMany',
-          keyFrom: 'id',
+                  keyFrom: 'id',
           keyTo: 'userId'
         },
         Categories: {
@@ -215,7 +224,7 @@ export class User implements UserInterface {
           type: 'Alert[]',
           model: 'Alert',
           relationType: 'hasMany',
-          keyFrom: 'id',
+                  keyFrom: 'id',
           keyTo: 'userId'
         },
         Connectors: {

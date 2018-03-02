@@ -20,6 +20,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   private newConnector: Connector = new Connector();
   public connectorTypes = [
     {id: 'sigfox-api', text: 'Sigfox API'},
+    {id: 'post', text: 'POST request'},
     {id: 'free-mobile', text: 'Free Mobile'},
     {id: 'office-365', text: 'Outlook (Office 365)'},
     {id: 'mqtt', text: 'MQTT'}
@@ -97,8 +98,6 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
       }
     ).subscribe((connectors: Connector[]) => {
       this.connectors = connectors;
-      this.connectors.forEach(connector => {
-      });
     });
   }
 

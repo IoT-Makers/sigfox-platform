@@ -5,10 +5,12 @@ export interface ConnectorInterface {
   "type": string;
   "name": string;
   "description"?: string;
-  "login": string;
+  "login"?: string;
   "host"?: string;
   "port"?: number;
+  "topic"?: number;
   "recipient"?: string;
+  "url"?: string;
   "id"?: number;
   "userId"?: number;
   "createdAt"?: Date;
@@ -23,7 +25,9 @@ export class Connector implements ConnectorInterface {
   "login": string = '';
   "host": string = '';
   "port": number = 0;
+  "topic": number = 0;
   "recipient": string = '';
+  "url": string = '';
   "id": number = 0;
   "userId": number = 0;
   "createdAt": Date = new Date(0);
@@ -86,8 +90,16 @@ export class Connector implements ConnectorInterface {
           name: 'port',
           type: 'number'
         },
+        "topic": {
+          name: 'topic',
+          type: 'number'
+        },
         "recipient": {
           name: 'recipient',
+          type: 'string'
+        },
+        "url": {
+          name: 'url',
           type: 'string'
         },
         "id": {

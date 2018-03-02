@@ -79,15 +79,43 @@
   "email": {
     "name": "email",
     "connector": "mail",
-    "transports": [{
-      "type": "SMTP",
-      "host": "smtp.office365.com",
-      "secure": false,
-      "port": 587,
-      "auth": {
-        "user": "",
-        "pass": ""
+    "transports": [
+      {
+        "type": "SMTP",
+        "host": "smtp.office365.com",
+        "secure": false,
+        "port": 587,
+        "auth": {
+          "user": "",
+          "pass": ""
+        }
       }
-    }]
+    ]
+  },
+  "post": {
+    "name": "post",
+    "connector": "rest",
+    "debug": "true",
+    "operations": [
+      {
+        "template": {
+          "method": "POST",
+          "url": "{url:string}",
+          "headers": {
+            "Authorization": "Basic {credentials:string}"
+          },
+          "body": {
+            "json": "{!json:string}"
+          }
+        },
+        "functions": {
+          "send": [
+            "url",
+            "credentials",
+            "json"
+          ]
+        }
+      }
+    ]
   }
 }

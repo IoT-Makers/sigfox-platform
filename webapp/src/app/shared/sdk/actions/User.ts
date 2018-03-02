@@ -1503,7 +1503,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   findByIdAlerts: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ALERTS;
-    public payload: { id: any, fk: any };
+      public payload: {id: any, fk: any};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
       this.payload = {id, fk};
@@ -1519,7 +1519,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   findByIdAlertsSuccess: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ALERTS_SUCCESS;
-    public payload: { id: any, data: any };
+      public payload: {id: any, data: any};
 
     constructor(id: any, data: any, public meta?: any) {
       this.payload = {id, data};
@@ -1535,8 +1535,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   findByIdAlertsFail: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ALERTS_FAIL;
 
-    constructor(public payload: any, public meta?: any) {
-    }
+    constructor(public payload: any, public meta?: any) { }
   },
 
   /**
@@ -1550,7 +1549,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   destroyByIdAlerts: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ALERTS;
-    public payload: { id: any, fk: any };
+      public payload: {id: any, fk: any};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
       this.payload = {id, fk};
@@ -1566,7 +1565,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   destroyByIdAlertsSuccess: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ALERTS_SUCCESS;
-    public payload: { id: any, fk: any };
+      public payload: {id: any, fk: any};
 
     constructor(id: any, fk: any, public meta?: any) {
       this.payload = {id, fk};
@@ -1582,8 +1581,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   destroyByIdAlertsFail: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ALERTS_FAIL;
 
-    constructor(public payload: any, public meta?: any) {
-    }
+    constructor(public payload: any, public meta?: any) { }
   },
 
   /**
@@ -1600,7 +1598,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   updateByIdAlerts: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ALERTS;
-    public payload: { id: any, fk: any, data: any };
+      public payload: {id: any, fk: any, data: any};
 
     constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
       this.payload = {id, fk, data};
@@ -1616,7 +1614,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   updateByIdAlertsSuccess: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ALERTS_SUCCESS;
-    public payload: { id: any, data: any };
+      public payload: {id: any, data: any};
 
     constructor(id: any, data: any, public meta?: any) {
       this.payload = {id, data};
@@ -1632,8 +1630,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   updateByIdAlertsFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ALERTS_FAIL;
 
-    constructor(public payload: any, public meta?: any) {
-    }
+    constructor(public payload: any, public meta?: any) { }
   },
 
   /**
@@ -2054,7 +2051,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   getDashboards: class implements Action {
     public readonly type = UserActionTypes.GET_DASHBOARDS;
-    public payload: { id: any, filter: LoopBackFilter };
+      public payload: {id: any, filter: LoopBackFilter};
 
     constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
       this.payload = {id, filter};
@@ -2070,7 +2067,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   getDashboardsSuccess: class implements Action {
     public readonly type = UserActionTypes.GET_DASHBOARDS_SUCCESS;
-    public payload: { id: any, data: any };
+      public payload: {id: any, data: any};
 
     constructor(id: any, data: any, public meta?: any) {
       this.payload = {id, data};
@@ -2086,8 +2083,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   getDashboardsFail: class implements Action {
     public readonly type = UserActionTypes.GET_DASHBOARDS_FAIL;
 
-    constructor(public payload: any, public meta?: any) {
-    }
+    constructor(public payload: any, public meta?: any) { }
   },
 
   /**
@@ -2103,7 +2099,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   createDashboards: class implements Action {
     public readonly type = UserActionTypes.CREATE_DASHBOARDS;
-    public payload: { id: any, data: any };
+      public payload: {id: any, data: any};
 
     constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
       this.payload = {id, data};
@@ -2119,7 +2115,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   createDashboardsSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_DASHBOARDS_SUCCESS;
-    public payload: { id: any, data: any };
+      public payload: {id: any, data: any};
 
     constructor(id: any, data: any, public meta?: any) {
       this.payload = {id, data};
@@ -2135,8 +2131,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   createDashboardsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_DASHBOARDS_FAIL;
 
-    constructor(public payload: any, public meta?: any) {
-    }
+    constructor(public payload: any, public meta?: any) { }
   },
 
   /**
@@ -2150,8 +2145,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   deleteDashboards: class implements Action {
     public readonly type = UserActionTypes.DELETE_DASHBOARDS;
 
-    constructor(public payload: any, public meta?: any) {
-    }
+    constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteDashboardsSuccess Action.
@@ -2164,8 +2158,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   deleteDashboardsSuccess: class implements Action {
     public readonly type = UserActionTypes.DELETE_DASHBOARDS_SUCCESS;
 
-    constructor(public payload: any, public meta?: any) {
-    }
+    constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteDashboardsFail Action.
@@ -2177,8 +2170,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   deleteDashboardsFail: class implements Action {
     public readonly type = UserActionTypes.DELETE_DASHBOARDS_FAIL;
 
-    constructor(public payload: any, public meta?: any) {
-    }
+    constructor(public payload: any, public meta?: any) { }
   },
 
   /**
@@ -3412,7 +3404,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   createManyDashboards: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_DASHBOARDS;
-    public payload: { id: any, data: any[] };
+      public payload: {id: any, data: any[]};
 
     constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
       this.payload = {id, data};
@@ -3428,7 +3420,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   createManyDashboardsSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_DASHBOARDS_SUCCESS;
-    public payload: { id: any, data: any };
+      public payload: {id: any, data: any};
 
     constructor(id: any, data: any, public meta?: any) {
       this.payload = {id, data};
@@ -3444,8 +3436,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   createManyDashboardsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_DASHBOARDS_FAIL;
 
-    constructor(public payload: any, public meta?: any) {
-    }
+    constructor(public payload: any, public meta?: any) { }
   },
 
   /**
