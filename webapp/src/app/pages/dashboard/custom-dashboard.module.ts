@@ -25,7 +25,7 @@ import 'nvd3';
     CustomDashboardRoutingModule,
     NgxGaugeModule,
     FormsModule,
-    ToasterModule,
+    ToasterModule.forRoot(),
     DataTableModule,
     MomentModule,
     TooltipModule.forRoot(),

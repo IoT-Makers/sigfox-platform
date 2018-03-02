@@ -304,6 +304,23 @@ a.text-geoloc-ble:focus, a.text-geoloc-ble:hover {
   background: $device !important;
 }
 
+.select-one-device {
+  color: #ccc;
+}
+
+.select-one-device .c-token {
+  background: $device !important;
+}
+
+.select-one-device .pure-checkbox label::before {
+  border-radius: 100% !important;
+  border-color: $device !important;
+}
+
+.select-one-device .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
+  background: $device !important;
+}
+
 .select-connector {
   color: #ccc;
 }
@@ -329,4 +346,19 @@ a.text-geoloc-ble:focus, a.text-geoloc-ble:hover {
   border-radius: 100% !important;
 }
 .select-one .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
+}
+
+@each $variant, $color in (category: $category, device: $device, message: $message, alert: $alert, parser: $parser, connector: $connector) {
+  //normal style
+  .switch-#{$variant} {
+    @include switch-variant($color);
+  }
+  //outline style
+  .switch-#{$variant}-outline {
+    @include switch-outline-variant($color);
+  }
+  //outline alternative style
+  .switch-#{$variant}-outline-alt {
+    @include switch-outline-alt-variant($color);
+  }
 }

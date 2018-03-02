@@ -142,7 +142,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     singleSelection: true,
     text: 'Select one device',
     enableSearchFilter: true,
-    classes: 'select-device '
+    classes: 'select-one-device'
   };
 
   private widget: any;
@@ -218,6 +218,15 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
     }*/
+    // Prepare icon list
+    if (typeof this.fontAwesomeList[0] === 'string') {
+      this.fontAwesomeList.forEach((icon, i) => {
+        this.fontAwesomeList[i] = {
+          id: icon,
+          itemName: icon.substr(3)
+        };
+      });
+    }
   }
 
   log($event) {
@@ -303,15 +312,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   editDashboard(): void {
     this.editFlag = true;
-    // Prepare icon list
-    if (typeof this.fontAwesomeList[0] === 'string') {
-      this.fontAwesomeList.forEach((icon, i) => {
-        this.fontAwesomeList[i] = {
-          id: icon,
-          itemName: icon.substr(3)
-        };
-      });
-    }
     // Retrieve selected icon
     this.selectedDashboardIcon[0] = {id: this.dashboard.icon, itemName: this.dashboard.icon.substr(3)};
   }

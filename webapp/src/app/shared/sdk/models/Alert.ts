@@ -3,6 +3,7 @@
 declare var Object: any;
 export interface AlertInterface {
   'deviceId': string;
+  'active'?: boolean;
   "key": string;
   'value_exact'?: any;
   "value_min"?: any;
@@ -25,6 +26,7 @@ export interface AlertInterface {
 
 export class Alert implements AlertInterface {
   'deviceId': string = '';
+  'active': boolean = true;
   "key": string = '';
   'value_exact': any = <any>null;
   "value_min": any = <any>null;
@@ -79,6 +81,11 @@ export class Alert implements AlertInterface {
         'deviceId': {
           name: 'deviceId',
           type: 'string'
+        },
+        'active': {
+          name: 'active',
+          type: 'boolean',
+          default: true
         },
         "key": {
           name: 'key',

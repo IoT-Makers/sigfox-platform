@@ -326,7 +326,7 @@
                 <div *ngFor="let device of widget.data; let i = index">
                   <div class="input-group">
                   <span class="input-group-addon">
-                    <label for="{{device.id}}" class="switch switch-sm switch-3d switch-success">
+                    <label for="{{device.id}}" class="switch switch-sm switch-3d switch-device-outline-alt">
                     <input id="{{device.id}}"
                            [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
                     <span class="switch-label"></span>

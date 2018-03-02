@@ -30,6 +30,10 @@
       "type": "string",
       "required": true
     },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
     "key": {
       "type": "string",
       "required": true

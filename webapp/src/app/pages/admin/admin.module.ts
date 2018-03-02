@@ -3,13 +3,12 @@ import {AdminComponent} from './admin.component';
 import {AdminRoutingModule} from './admin-routing.module';
 import {CommonModule} from '@angular/common';
 import {ToasterModule} from 'angular2-toaster';
-import {ModalModule, TooltipModule, AccordionModule} from 'ng2-bootstrap';
+import {AccordionModule, ModalModule, TooltipModule} from 'ng2-bootstrap';
 
 import {MomentModule} from 'angular2-moment';
 import {FormsModule} from '@angular/forms';
 
 import {DataTableModule} from 'angular2-datatable';
-
 
 
 @NgModule({
@@ -18,7 +17,7 @@ import {DataTableModule} from 'angular2-datatable';
     CommonModule,
     MomentModule,
     FormsModule,
-    ToasterModule,
+    ToasterModule.forRoot(),
     AccordionModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),

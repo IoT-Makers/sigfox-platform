@@ -15,13 +15,13 @@ import {ModalModule} from 'ngx-bootstrap';
   imports: [
     AlertsRoutingModule,
     CommonModule,
-    ToasterModule,
     DataTableModule,
     FormsModule,
     MomentModule,
     TooltipModule.forRoot(),
     AngularMultiSelectModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    ToasterModule.forRoot()
   ],
   declarations: [
     AlertsComponent,

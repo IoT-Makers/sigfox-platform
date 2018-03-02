@@ -18,7 +18,7 @@ import {ClickCopyDirective} from './click-copy.directive';
     ModalModule.forRoot(),
     TooltipModule.forRoot(),
     AceEditorModule,
-    ToasterModule
+    ToasterModule.forRoot()
   ],
   declarations: [
     ParsersComponent,

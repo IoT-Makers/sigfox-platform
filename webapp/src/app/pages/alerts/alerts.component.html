@@ -1,111 +1,126 @@
 <div class="animated fadeIn">
 
-  <div class="col-md-12">
-    <div class="card">
-      <div class="card-header">
-        <div class="row">
-          <div class="col-10">
-            <i class="fa fa-bell fa-lg text-alert"></i> <strong>Alerts</strong>
-          </div>
-          <div class="col-2">
-            <button class="pull-right btn btn-sm btn-round btn-success" (click)="openAddAlertModal()">
-              <i class="fa fa-plus-circle"></i>
-            </button>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-10">
+              <i class="fa fa-bell fa-lg text-alert"></i> <strong>Alerts</strong>
+            </div>
+            <div class="col-2">
+              <button class="pull-right btn btn-sm btn-round btn-success" (click)="openAddAlertModal()">
+                <i class="fa fa-plus-circle"></i>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="card-block">
-        <ng-container *ngIf="!alerts.length">
-          No alert yet...
-          <div class="sk-double-bounce">
-            <div class="sk-child sk-double-bounce1"></div>
-            <div class="sk-child sk-double-bounce2"></div>
-          </div>
-        </ng-container>
+        <div class="card-block">
+          <ng-container *ngIf="!alerts.length">
+            No alert yet...
+            <div class="sk-double-bounce">
+              <div class="sk-child sk-double-bounce1"></div>
+              <div class="sk-child sk-double-bounce2"></div>
+            </div>
+          </ng-container>
 
-        <!-- Table -->
-        <div *ngIf="alerts.length > 0" class="table-responsive">
-          <table class="table table-hover table-outline" [mfData]="alerts" #mf="mfDataTable" [mfRowsOnPage]="10">
-            <thead class="thead-inverse">
-            <tr>
-              <th class="text-center">
-                <mfDefaultSorter by="id"><i class="fa fa-sort"></i> Device</mfDefaultSorter>
-              </th>
-              <th class="text-center">
-                <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Trigger</mfDefaultSorter>
-              </th>
-              <th class="text-center">
-                <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Last triggered</mfDefaultSorter>
-              </th>
-              <th class="text-center">
-                <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Updated at</mfDefaultSorter>
-              </th>
-              <th class="text-center">Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let alert of mf.data; let i = index">
-              <td class="text-center">
-                <a [routerLink]="['/device-messages', alert.Device.id]">
-                  <strong class="text-device">{{alert.Device.id}}</strong>
-                  <span *ngIf="alert.Device.name" class="small">({{alert.Device.name}})</span>
-                </a>
-              </td>
-              <td>
-                <div class="small">
-                  <span class="text-gray-dark"><span class="font-weight-bold">Key:</span> {{alert.key}}</span>
-                </div>
-                <div class="small" *ngIf="alert.value_min">
+          <!-- Table -->
+          <div *ngIf="alerts.length > 0" class="table-responsive">
+            <table class="table table-hover table-outline" [mfData]="alerts" #mf="mfDataTable" [mfRowsOnPage]="10">
+              <thead class="thead-inverse">
+              <tr>
+                <th class="text-center">
+                  <mfDefaultSorter by="active"><i class="fa fa-sort"></i> Active</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="id"><i class="fa fa-sort"></i> Device</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by=""><i class="fa fa-sort"></i> Trigger</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="Connector.name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="last_trigger"><i class="fa fa-sort"></i> Last triggered</mfDefaultSorter>
+                </th>
+                <th class="text-center">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let alert of mf.data; let i = index">
+                <td class="text-center">
+                  <label for="{{alert.id}}" class="switch switch-sm switch-3d switch-alert-outline-alt">
+                    <input id="{{alert.id}}" (change)="setAlertActive(alert)" [(ngModel)]="alert.active" type="checkbox"
+                           class="switch-input">
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                  </label>
+                </td>
+                <td class="text-center">
+                  <a [routerLink]="['/device-messages', alert.Device.id]">
+                    <strong class="text-device">{{alert.Device.id}}</strong>
+                    <span *ngIf="alert.Device.name" class="small">({{alert.Device.name}})</span>
+                  </a>
+                </td>
+                <td>
+                  <div class="small">
+                    <span class="text-gray-dark"><span class="font-weight-bold">Key:</span> {{alert.key}}</span>
+                  </div>
+                  <div class="small" *ngIf="alert.value_min">
                   <span class="text-gray-dark"><span
                     class="font-weight-bold">Min value:</span> {{alert.value_min}}</span>
-                </div>
-                <div class="small" *ngIf="alert.value_max">
+                  </div>
+                  <div class="small" *ngIf="alert.value_max">
                   <span class="text-gray-dark"><span
                     class="font-weight-bold">Max value:</span> {{alert.value_max}}</span>
-                </div>
-                <div class="small" *ngIf="alert.value_less">
-                  <span class="text-gray-dark"><span class="font-weight-bold">Less than value:</span> {{alert.value_less}}</span>
-                </div>
-                <div class="small" *ngIf="alert.value_more">
-                  <span class="text-gray-dark"><span class="font-weight-bold">More than value:</span> {{alert.value_more}}</span>
-                </div>
-                <div class="small" *ngIf="alert.value_exact">
-                  <span class="text-gray-dark"><span class="font-weight-bold">Exact value:</span> {{alert.value_exact}}</span>
-                </div>
-                <div class="small" *ngIf="alert.message">
-                  <span class="text-gray-dark"><span class="font-weight-bold">Message:</span> {{alert.message}}</span>
-                </div>
-              </td>
-              <td class="text-center">
-                <strong>{{alert.last_trigger ? (alert.last_trigger | amTimeAgo) : ''}}</strong>
-              </td>
-              <td class="text-center">
-                <strong>{{alert.updatedAt ? (alert.updatedAt | amTimeAgo) : ''}}</strong>
-              </td>
-              <td class="text-center">
-                <div class="btn-group-sm">
-                  <button class="btn btn-outline-primary btn-round" tooltip="Edit alert"
-                          (click)="openEditAlertModal(alert)"><i class="fa fa-pencil fa-lg"></i></button>
-                  <button class="btn btn-outline-danger btn-round" tooltip="Delete alert"
-                          (click)="openConfirmModal(alert)"><i class="fa fa-trash fa-lg"></i></button>
-                </div>
-              </td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-              <td colspan="4">
-                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
-              </td>
-            </tr>
-            </tfoot>
-          </table>
-        </div>
-        <!-- End Table -->
+                  </div>
+                  <div class="small" *ngIf="alert.value_less">
+                    <span class="text-gray-dark"><span class="font-weight-bold">Less than value:</span> {{alert.value_less}}</span>
+                  </div>
+                  <div class="small" *ngIf="alert.value_more">
+                    <span class="text-gray-dark"><span class="font-weight-bold">More than value:</span> {{alert.value_more}}</span>
+                  </div>
+                  <div class="small" *ngIf="alert.value_exact">
+                    <span class="text-gray-dark"><span class="font-weight-bold">Exact value:</span> {{alert.value_exact}}</span>
+                  </div>
+                  <div class="small" *ngIf="alert.message">
+                    <span class="text-gray-dark"><span class="font-weight-bold">Message:</span> {{alert.message}}</span>
+                  </div>
+                </td>
+                <td class="text-center text-connector">
+                  <strong>{{alert.Connector.name}}</strong>
+                </td>
+                <td class="text-center">
+                  <strong>{{alert.last_trigger !== dateOrigin.toISOString() ? (alert.last_trigger | amTimeAgo) : 'Not
+                    yet triggered'}}</strong>
+                </td>
+                <td class="text-center">
+                  <div class="btn-group-sm">
+                    <button class="btn btn-outline-primary btn-round" tooltip="Edit alert"
+                            (click)="openEditAlertModal(alert)"><i class="fa fa-pencil fa-lg"></i></button>
+                    <button class="btn btn-outline-danger btn-round" tooltip="Delete alert"
+                            (click)="openConfirmModal(alert)"><i class="fa fa-trash fa-lg"></i></button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+              <tfoot>
+              <tr>
+                <td colspan="4">
+                  <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                </td>
+              </tr>
+              </tfoot>
+            </table>
+          </div>
+          <!-- End Table -->
 
+        </div>
       </div>
     </div>
   </div>
+
 </div>
 
 <div bsModal #addAlertModal="bs-modal" class="modal fade" [config]="{ignoreBackdropClick: true}" tabindex="-1"
@@ -319,6 +334,16 @@
                 <div class="col-md-8">
                   <input type="number" class="form-control" name="alertToEdit.value_max"
                          [(ngModel)]="alertToEdit.value_more">
+                </div>
+              </div>
+              <hr class="offset-1">
+              <div class="form-group row">
+                <label class="offset-1 col-md-3 form-control-label">Custom message
+                  <small>(optional)</small>
+                </label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" placeholder="Message" name="alertToEdit.message"
+                         [(ngModel)]="alertToEdit.message">
                 </div>
               </div>
             </ng-container>

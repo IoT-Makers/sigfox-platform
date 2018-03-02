@@ -27,6 +27,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   private alertRef: FireLoopRef<Alert>;
 
+  private dateOrigin: Date = new Date(0);
+
   // Select
   private selectDevices: Array<Object> = [];
   private selectedDevices = [];
@@ -34,7 +36,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     singleSelection: true,
     text: 'Select one device',
     enableSearchFilter: true,
-    classes: 'select-device '
+    classes: 'select-one-device'
   };
   private selectConnectors: Array<Object> = [];
   private selectedConnectors = [];
@@ -42,7 +44,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     singleSelection: true,
     text: 'Select connectors',
     enableSearchFilter: true,
-    classes: 'select-connector '
+    classes: 'select-connector'
   };
   private selectKeys: Array<Object> = [];
   private selectedKeys = [];
@@ -99,7 +101,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
       {
         limit: 1000,
         order: 'updatedAt DESC',
-        include: ['Device'],
+        include: ['Device', 'Connector'],
         where: {
           userId: this.user.id
         }
@@ -132,7 +134,13 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   openAddAlertModal(): void {
+    // Reset selects
+    this.selectedDevices = [];
+    this.selectedKeys = [];
+    this.selectedConnectors = [];
+    // New alert
     this.newAlert = new Alert();
+    // Open modal
     this.addAlertModal.show();
   }
 
@@ -141,14 +149,12 @@ export class AlertsComponent implements OnInit, OnDestroy {
     // Load keys for this device
     this.loadKeys(alert.deviceId);
     // Set selected values
-    this.selectedDevices = [{id: alert.deviceId, itemName: alert.deviceId}];
+    this.selectedDevices = [{
+      id: alert.deviceId,
+      itemName: alert.Device.name ? alert.Device.name + ' (' + alert.Device.id + ')' : alert.Device.id
+    }];
     this.selectedKeys = [{id: alert.key, itemName: alert.key}];
-    this.selectConnectors.forEach((connector: any) => {
-      if (connector.id === alert.connectorId) {
-        this.selectedConnectors = [connector];
-        return;
-      }
-    });
+    this.selectedConnectors = [{id: alert.Connector.id, itemName: alert.Connector.name + ' (' + alert.Connector.type + ')'}];
 
     this.editAlertModal.show();
   }
@@ -200,9 +206,9 @@ export class AlertsComponent implements OnInit, OnDestroy {
   loadKeys(deviceId: string): void {
     // Reset the selected keys
     this.selectedKeys = [];
-// Reset the selectable keys
+    // Reset the selectable keys
     this.selectKeys = [];
-// Fetch all the keys belonging to selected devices
+    // Fetch all the keys belonging to selected devices
     this.userApi.getDevices(this.user.id, {where: {id: deviceId}}).subscribe((devices: Device[]) => {
       console.log(devices);
       if (devices[0].data_parsed) {
@@ -218,6 +224,17 @@ export class AlertsComponent implements OnInit, OnDestroy {
     });
   }
 
+  setAlertActive(alert: Alert): void {
+    this.alertRef.upsert(alert).subscribe((alert: Alert) => {
+      if (alert.active) {
+        this.toasterService.pop('success', 'Success', 'Alert was successfully activated.');
+      } else {
+        this.toasterService.pop('success', 'Success', 'Alert was successfully deactivated.');
+      }
+    }, err => {
+      this.toasterService.pop('error', 'Error', 'Please fill in the alert form.' + err.error.message);
+    });
+  }
 
   ngOnDestroy(): void {
     console.log('Alerts: ngOnDestroy');

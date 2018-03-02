@@ -22,7 +22,7 @@ import {DataTableModule} from 'angular2-datatable';
     TooltipModule.forRoot(),
     AgmCoreModule,
     LaddaModule,
-    ToasterModule
+    ToasterModule.forRoot()
   ],
   declarations: [
     DevicesComponent

@@ -14,7 +14,7 @@ import {ClickCopyDirective} from './click-copy.directive';
     CommonModule,
     MomentModule,
     FormsModule,
-    ToasterModule,
+    ToasterModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
   ],

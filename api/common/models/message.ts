@@ -253,7 +253,7 @@ class Message {
                               (alert.value_exact && o.value === alert.value_exact) ||
                               (alert.value_min && alert.value_max && o.value >= alert.value_min && o.value <= alert.value_max) ||
                               (alert.value_less && o.value < alert.value_less) ||
-                              (alert.value_more && o.value > alert.value_more)
+                              (alert.value_more && o.value > alert.value_more) && alert.active
                             ) {
                               // Trigger alert
                               this.model.app.models.Connector.findById(alert.connectorId,
@@ -262,11 +262,12 @@ class Message {
                                     console.log(err);
                                     next(err, data);
                                   } else if (connector) {
+                                    let alertMessage = alert.message;
+                                    if (!alert.message)
+                                      alertMessage = o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit;
 
                                     if (connector.type === 'office-365') {
                                       console.log('Office 365 Email alert!');
-                                      if (!alert.message) alert.message = o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit;
-
                                       // Set the connector user and pass
                                       this.model.app.models.Email.dataSource.connector.transports[0].transporter.options.auth = {
                                         user: connector.login,
@@ -277,7 +278,7 @@ class Message {
                                         to: connector.recipient,
                                         from: connector.login,
                                         subject: '[Sigfox Platform] - Alert for ' + title,
-                                        text: alert.message,
+                                        text: alertMessage,
                                         html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alert.message + '</p>'
                                       }, function (err: any, mail: any) {
                                         if (err) console.error(err);
@@ -286,9 +287,7 @@ class Message {
 
                                     } else if (connector.type === 'free-mobile') {
                                       console.log('Free Mobile SMS alert!');
-                                      if (!alert.message) alert.message = o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit;
-
-                                      this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, alert.message).then((result: any) => {
+                                      this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, alertMessage).then((result: any) => {
                                       }).catch((err: any) => {
                                         console.error('Free Mobile error');
                                       });
@@ -299,12 +298,10 @@ class Message {
 
                                     } else if (connector.type === 'mqtt') {
                                       console.log('MQTT alert!');
-                                      if (!alert.message) alert.message = o.key.charAt(0).toUpperCase() + o.key.slice(1) + ': ' + o.value + ' ' + o.unit;
-
                                       const Client = require('strong-pubsub');
                                       const Adapter = require('strong-pubsub-mqtt');
                                       const client = new Client({host: connector.host, port: connector.port}, Adapter);
-                                      client.publish(connector.recipient, alert.message);
+                                      client.publish(connector.recipient, alertMessage);
                                     }
                                     // Alert has been triggered, removing it from array
                                     alerts.splice(index, 1);
