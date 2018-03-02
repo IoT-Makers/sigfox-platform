@@ -78,6 +78,7 @@ class user {
     //   name: userInstance.email,
     //   ownerId: userInstance.id,
     // };
+    userInstance.email = userInstance.email.toLocaleLowerCase();
 
     const adminRole = {
       name: 'admin'

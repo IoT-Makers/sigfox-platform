@@ -24,6 +24,8 @@ export class RegisterComponent {
       return;
     }
 
+    this.user.email = this.user.email.toLocaleLowerCase();
+
     this.user.id = null;
     this.user.createdAt = new Date();
 

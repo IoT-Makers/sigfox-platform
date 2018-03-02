@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onLogin(): void {
+    this.user.email = this.user.email.toLocaleLowerCase();
     this.userApi.login(this.user).subscribe(
       (token: AccessToken) => {
         // console.log('New token: ', token);
