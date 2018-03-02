@@ -123,9 +123,13 @@ export class ParsersComponent implements OnInit, OnDestroy {
     this.newParser.id = null;
     this.parserRef.create(this.newParser).subscribe(value => {
       this.newParser = new Parser();
-      this.toasterService.pop('success', 'Success', 'The parser was successfully created.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully created.');
     }, err => {
-      this.toasterService.pop('error', 'Error', err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
   }
 
@@ -135,7 +139,9 @@ export class ParsersComponent implements OnInit, OnDestroy {
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully updated.');
     }, err => {
-      this.toasterService.pop('error', 'Error', err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
   }
 
@@ -146,9 +152,13 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   remove(): void {
     this.parserRef.remove(this.parserToRemove).subscribe(value => {
-      this.toasterService.pop('success', 'Success', 'The parser was successfully deleted.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully deleted.');
     }, err => {
-      this.toasterService.pop('error', 'Error', err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
     this.confirmModal.hide();
   }

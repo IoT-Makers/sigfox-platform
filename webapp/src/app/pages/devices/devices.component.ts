@@ -170,23 +170,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.deviceToEdit = device;
   }
 
-  addAlert(newAlert: Alert): void {
-    this.toasterService.pop('error', 'Error', 'In development.');
-    /*if (newAlert.connectorId === '' || newAlert.key === '') {
-      this.toasterService.pop('error', 'Error', 'Please select a connector and a key.');
-    } else {
-      if (!this.deviceToEdit.alerts)
-        this.deviceToEdit.alerts = [];
-      this.deviceToEdit.alerts.push(newAlert);
-      this.newAlert = new Alert();
-    }*/
-  }
-
-  removeAlert(index: number): void {
-    this.toasterService.pop('error', 'Error', 'In development.');
-    /*this.deviceToEdit.alerts.splice(index, 1);*/
-  }
-
   updateDevice(): void {
     this.edit = false;
     this.deviceRef.upsert(this.deviceToEdit).subscribe(value => {
@@ -194,7 +177,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The device was successfully updated.');
     }, err => {
-      this.toasterService.pop('error', 'Error', err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
   }
 
@@ -205,7 +190,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
         console.log(category);
         this.deviceToEdit.properties = category.properties;
       }, err => {
-        this.toasterService.pop('error', 'Error', err.error.message);
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
       });
     }
 
@@ -234,15 +221,21 @@ export class DevicesComponent implements OnInit, OnDestroy {
           } else {
             console.log('Finished process');
             this.loadingFromBackend = false;
-            this.toasterService.pop('success', 'Success', 'Retrieved messages from Sigfox Backend complete.');
+            if (this.toast)
+              this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+            this.toast = this.toasterService.pop('success', 'Success', 'Retrieved messages from Sigfox Backend complete.');
           }
         }, err => {
-          this.toasterService.pop('error', 'Error', err.message.message);
+          if (this.toast)
+            this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+          this.toast = this.toasterService.pop('error', 'Error', err.message.message);
           this.loadingFromBackend = false;
         });
         this.confirmDBModal.hide();
       } else {
-        this.toasterService.pop('warning', 'Warning', 'Please refer your Sigfox API credentials in the connectors page first.');
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('warning', 'Warning', 'Please refer your Sigfox API credentials in the connectors page first.');
       }
     });
   }
@@ -252,10 +245,14 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.deviceApi.parseAllMessages(deviceId, null, null).subscribe(result => {
       this.parseMessages = false;
       if (result.message === 'Success') {
-        this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
       } else {
         this.parseMessages = false;
-        this.toasterService.pop('warning', 'Warning', result.message);
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('warning', 'Warning', result.message);
       }
 
       // console.log(result);
@@ -292,9 +289,13 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.deviceApi.deleteDeviceMessagesAlerts(this.deviceToRemove.id).subscribe(value => {
       const index = this.devices.indexOf(this.deviceToRemove);
       this.devices.splice(index, 1);
-      this.toasterService.pop('success', 'Success', 'The device and its messages were successfully deleted.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The device and its messages were successfully deleted.');
     }, err => {
-      this.toasterService.pop('error', 'Error', err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
     this.confirmModal.hide();
   }

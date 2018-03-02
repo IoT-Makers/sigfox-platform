@@ -114,9 +114,13 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.edit = false;
 
     this.categoryRef.upsert(this.categoryToEdit).subscribe((category: Category) => {
-      this.toasterService.pop('success', 'Success', 'Category was successfully updated.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Category was successfully updated.');
     }, error => {
-      this.toasterService.pop('error', 'Error', 'Please fill in the category name.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', 'Please fill in the category name.');
     });
   }
 
@@ -136,9 +140,13 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   remove(): void {
     this.categoryRef.remove(this.categoryToRemove).subscribe(value => {
-      this.toasterService.pop('success', 'Success', 'Category was successfully removed.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Category was successfully removed.');
     }, err => {
-      this.toasterService.pop('error', 'Error', err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
     this.confirmModal.hide();
   }

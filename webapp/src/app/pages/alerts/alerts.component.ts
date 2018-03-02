@@ -176,9 +176,13 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   removeAlert(): void {
     this.alertRef.remove(this.alertToRemove).subscribe(value => {
-      this.toasterService.pop('success', 'Success', 'Alert was successfully removed.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully removed.');
     }, err => {
-      this.toasterService.pop('error', 'Error', err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
     this.confirmModal.hide();
   }
@@ -187,9 +191,11 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.alertRef.upsert(this.alertToEdit).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
+      this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
     }, err => {
-      this.toasterService.pop('error', 'Error', err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
     this.editAlertModal.hide();
   }
@@ -198,9 +204,13 @@ export class AlertsComponent implements OnInit, OnDestroy {
     delete this.newAlert.id;
     this.newAlert.userId = this.user.id;
     this.alertRef.upsert(this.newAlert).subscribe((alert: Alert) => {
-      this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
     }, err => {
-      this.toasterService.pop('error', 'Error', 'Please fill in the alert form.' + err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', 'Please fill in the alert form.' + err.error.message);
     });
     this.addAlertModal.hide();
   }
@@ -229,12 +239,18 @@ export class AlertsComponent implements OnInit, OnDestroy {
   setAlertActive(alert: Alert): void {
     this.alertRef.upsert(alert).subscribe((alert: Alert) => {
       if (alert.active) {
-        this.toasterService.pop('success', 'Success', 'Alert was successfully activated.');
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully activated.');
       } else {
-        this.toasterService.pop('success', 'Success', 'Alert was successfully deactivated.');
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully deactivated.');
       }
     }, err => {
-      this.toasterService.pop('error', 'Error', 'Please fill in the alert form.' + err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', 'Please fill in the alert form.' + err.error.message);
     });
   }
 

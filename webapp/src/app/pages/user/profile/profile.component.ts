@@ -25,6 +25,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private newPasswordConfirm;
 
   // Notifications
+  private toast;
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
@@ -51,13 +52,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
   updatePassword(): void {
     if (this.newPassword === this.newPasswordConfirm) {
       this.userApi.changePassword(this.oldPassword, this.newPassword).subscribe((result: any) => {
-        this.toasterService.pop('success', 'Success', 'Password was successfully modified.');
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('success', 'Success', 'Password was successfully modified.');
         this.updatePasswordModal.hide();
       }, (error: any) => {
-        this.toasterService.pop('error', 'Error', error.message);
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', error.message);
       });
     } else {
-      this.toasterService.pop('error', 'Error', 'Please make sure the passwords match.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', 'Please make sure the passwords match.');
     }
   }
 
@@ -71,7 +78,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
     ).subscribe((user: User) => {
       this.user = user;
-      this.toasterService.pop('success', 'Success', 'Profile was updated successfully.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Profile was updated successfully.');
       this.updateUserModal.hide();
       this.rt.onReady().subscribe();
     });
@@ -79,7 +88,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   deleteUser(): void {
     this.userApi.deleteById(this.user.id).subscribe((value: any) => {
-      this.toasterService.pop('success', 'Success', 'Account was deleted successfully.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Account was deleted successfully.');
       this.deleteUserModal.hide();
     });
 

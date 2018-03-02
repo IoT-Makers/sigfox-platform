@@ -141,21 +141,30 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The connector was successfully updated.');
     }, err => {
-      if (err.error.statusCode === 401)
-        this.toasterService.pop('warning', 'Ouch', 'Could not connect to Sigfox. Are the API credentials correct?');
-      else
-        this.toasterService.pop('error', 'Error', err.error.message);
+      if (err.error.statusCode === 401) {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('warning', 'Ouch', 'Could not connect to Sigfox. Are the API credentials correct?');
+      } else {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      }
     });
   }
 
   removeConnector(connector: Connector) {
     this.connectorRef.remove(connector).subscribe(value => {
-      this.toasterService.pop('success', 'Success', 'The connector was successfully cleared.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The connector was successfully cleared.');
     });
   }
 
   toastClick() {
-    this.toasterService.pop('info', 'Click', 'Copied to clipboard.');
+    if (this.toast)
+      this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+    this.toast = this.toasterService.pop('info', 'Click', 'Copied to clipboard.');
   }
 
   ngOnDestroy(): void {
