@@ -245,7 +245,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
       } else {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully deactivated.');
+        this.toast = this.toasterService.pop('danger', 'Success', 'Alert was successfully deactivated.');
       }
     }, err => {
       if (this.toast)

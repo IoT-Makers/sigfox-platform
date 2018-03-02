@@ -51,7 +51,7 @@
               <tr *ngFor="let alert of mf.data; let i = index">
                 <td class="text-center">
                   <label for="{{alert.id}}" class="switch switch-sm switch-3d switch-alert-outline-alt">
-                    <input id="{{alert.id}}" (change)="setAlertActive(alert)" [(ngModel)]="alert.active" type="checkbox"
+                    <input id="{{alert.id}}" (click)="setAlertActive(alert)" [(ngModel)]="alert.active" type="checkbox"
                            class="switch-input">
                     <span class="switch-label"></span>
                     <span class="switch-handle"></span>
