@@ -30,6 +30,7 @@ class Dashboard {
   afterDelete(ctx: any, next: Function): void {
     // Get the dashboardId from instance
     const dashboardId = ctx.instance.dashboardId;
+    //console.log(dashboardId);
 
     this.model.app.models.Widget.destroyAll({dashboardId: dashboardId}, (error: any, result: any) => { });
 

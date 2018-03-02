@@ -15,7 +15,7 @@ import {AccessToken} from '../../../webapp/src/app/shared/sdk/models/AccessToken
     afterRemoteLogin: {name: 'login', type: 'afterRemote'},
     afterRemoteCreate: {name: 'create', type: 'afterRemote'},
     afterRemoteChangePassword: {name: 'changePassword', type: 'afterRemote'},
-    afterDelete: {name: 'after delete', type: 'operation'}
+    afterRemoteDelete: {name: 'deleteById', type: 'afterRemote'}
   },
   remotes: {
     /*deleteUser: {
@@ -202,9 +202,13 @@ class user {
   }
 
   // Delete user method
-  afterDelete(ctx: any, next: Function): void {
+  afterRemoteDelete(ctx: any, result:any, next: Function): void {
     // Obtain the userId with the access_token of ctx
-    const userId = ctx.options.accessToken.userId;
+
+    // console.log(ctx.args.id);
+    // console.log(result);
+
+    const userId = ctx.args.id;
 
     this.model.app.models.RoleMapping.destroyAll({principalId: userId}, (error: any, result: any) => { });
     this.model.app.models.Category.destroyAll({userId: userId}, (error: any, result: any) => {
@@ -216,8 +220,8 @@ class user {
     });
     this.model.app.models.Connector.destroyAll({userId: userId}, (error: any, result: any) => { });
     this.model.app.models.AccessToken.destroyAll({userId: userId}, (error: any, result: any) => { });
-    // this.model.app.models.Dashboard.destroyAll({userId: userId}, (error: any, result: any) => { });
-    // this.model.app.models.Widget.destroyAll({userId: userId}, (error: any, result: any) => { });
+    // // this.model.app.models.Dashboard.destroyAll({userId: userId}, (error: any, result: any) => { });
+    // // this.model.app.models.Widget.destroyAll({userId: userId}, (error: any, result: any) => { });
 
     next(null, 'Success');
   }

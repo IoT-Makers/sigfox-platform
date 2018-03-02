@@ -9,7 +9,7 @@
             <h4 class="text-center">Application Settings</h4>
           </div>
           <div class="card-block">
-            hello
+            <p *ngFor="let setting of settings">{{setting.key}}: {{setting.value}}</p>
           </div>
         </accordion-group>
 

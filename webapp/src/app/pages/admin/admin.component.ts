@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild, ViewChildren} from '@angular/core';
-import {Category, Device, FireLoopRef, User} from '../../shared/sdk/models';
-import {CategoryApi, DeviceApi, RealTime, UserApi} from '../../shared/sdk/services';
+import {AppSetting, Category, Device, FireLoopRef, User} from '../../shared/sdk/models';
+import {AppSettingApi ,CategoryApi, DeviceApi, RealTime, UserApi} from '../../shared/sdk/services';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 @Component({
@@ -12,6 +12,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   private user: User;
   private userToRemove: User;
   private users: User[] = [];
+
+  private setting: AppSetting;
+  private settings: AppSetting[] = [];
 
   @ViewChild('updateUserModal') updateUserModal: any;
   @ViewChild('confirmModal') confirmModal: any;
@@ -28,6 +31,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
+              private appSettingApi: AppSettingApi,
               private toasterService: ToasterService) {
 
     this.toasterService = toasterService;
@@ -46,6 +50,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.getUsers();
+    this.getAppSettings();
   }
 
   getUsers(): void {
@@ -53,6 +58,12 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.userApi.find({include: "roles", order: 'updatedAt DESC'}).subscribe((users: User[]) => {
       this.users = users;
       console.log(users);
+    });
+  }
+
+  getAppSettings(): void {
+    this.appSettingApi.find().subscribe((settings: AppSetting[])=> {
+      this.settings = settings;
     });
   }
 
@@ -66,6 +77,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.userApi.deleteById(this.userToRemove.id).subscribe((value: any) => {
       this.toasterService.pop('success', 'Success', 'Account was deleted successfully.');
       this.confirmModal.hide();
+      this.getUsers();
     });
 
   }

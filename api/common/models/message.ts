@@ -240,6 +240,7 @@ class Message {
                     deviceToUpdate.data_parsed = data_parsed;
 
                     // Check if the parsed data contains a 'geoloc' key and store it in the message property to be stored
+
                     data_parsed.forEach((o: any) => {
                       // Look if an alert has been set for the device
                       if (deviceInstance.Alerts && deviceInstance.Alerts.length > 0) {
@@ -419,6 +420,11 @@ class Message {
           }
         });
     }
+  }
+
+  private sendAlerts(message: any, next: Function){
+
+    next();
   }
 
 
