@@ -79,7 +79,13 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.confirmModal.hide();
       this.getUsers();
     });
+  }
 
+  changeSetting(setting: AppSetting): void{
+    //setting.value = !setting.value;
+    this.appSettingApi.upsert(setting).subscribe((setting: any)=> {
+      console.log(setting);
+    });
   }
 
 

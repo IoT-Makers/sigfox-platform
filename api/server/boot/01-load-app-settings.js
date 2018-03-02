@@ -6,7 +6,7 @@ module.exports = function(app){
 
   var settings = [
     {key: "canUserRegister", value: "true"},
-    {key: "canUserCreateOrganization", value: "true"}
+    {key: "canUserCreateOrganization", value: true}
   ];
 
   settings.forEach(function (setting) {

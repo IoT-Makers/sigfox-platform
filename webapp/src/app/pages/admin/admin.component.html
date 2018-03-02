@@ -9,7 +9,16 @@
             <h4 class="text-center">Application Settings</h4>
           </div>
           <div class="card-block">
-            <p *ngFor="let setting of settings">{{setting.key}}: {{setting.value}}</p>
+            <div *ngFor="let setting of settings">
+              <label>{{setting.key}}:</label>
+              <label class="switch switch-sm switch-3d switch-success-outline-alt">
+                <input (change)="changeSetting(setting)" [(ngModel)]="setting.value" type="checkbox"
+                       class="switch-input">
+                <span class="switch-label"></span>
+                <span class="switch-handle"></span>
+              </label>
+              <hr>
+            </div>
           </div>
         </accordion-group>
 

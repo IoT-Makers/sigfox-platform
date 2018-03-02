@@ -3,7 +3,7 @@
 declare var Object: any;
 export interface AppSettingInterface {
   "key": string;
-  "value": string;
+  "value": boolean;
   "id"?: number;
   "createdAt"?: Date;
   "updatedAt"?: Date;
@@ -11,7 +11,7 @@ export interface AppSettingInterface {
 
 export class AppSetting implements AppSettingInterface {
   "key": string = '';
-  "value": string = '';
+  "value": boolean = false;
   "id": number = 0;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
@@ -54,7 +54,7 @@ export class AppSetting implements AppSettingInterface {
         },
         "value": {
           name: 'value',
-          type: 'string'
+          type: 'boolean'
         },
         "id": {
           name: 'id',

@@ -53,7 +53,7 @@
             <div class="card-block text-center">
               <h2 class="mb-2 mt-2">Sign Up</h2>
               <!--<p>Registration are not available at the moment, please come back later ;)</p>-->
-              <button type="button" class="btn btn-primary active mt-2" [routerLink]="['/register']">Register Now!
+              <button type="button" class="btn btn-primary active mt-2" [routerLink]="['/register']" [disabled]="!canUserRegister" >Register Now!
               </button>
             </div>
           </div>

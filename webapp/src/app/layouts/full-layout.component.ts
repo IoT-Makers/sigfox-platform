@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {Category, Dashboard, Device, FireLoopRef, Message, Parser, User} from '../shared/sdk/models';
+import {Category, Dashboard, Device, Organization, FireLoopRef, Message, Parser, User} from '../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
-import {ParserApi, UserApi} from '../shared/sdk/services/custom';
+import {ParserApi, UserApi, OrganizationApi} from '../shared/sdk/services/custom';
 import {RealTime} from '../shared/sdk/services/core';
 import * as _ from 'lodash';
 
@@ -22,6 +22,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private connectorSub: Subscription;
 
   private dashboards: Dashboard[] = [];
+  private organizations: Organization[] = [];
 
   private countCategories = 0;
   private countDevices = 0;
@@ -46,6 +47,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   constructor(private rt: RealTime,
               private userApi: UserApi,
               private parserApi: ParserApi,
+              private organizationApi: OrganizationApi,
               private router: Router) {
   }
 
@@ -82,10 +84,15 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     console.log('Setup Full layout');
     //this.ngOnDestroy();
 
-    // Counts
+
     this.userApi.getDashboards(this.user.id).subscribe((dashboards: Dashboard[]) => {
       this.dashboards = dashboards;
     });
+    this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
+      this.organizations = organizations;
+      console.log(organizations);
+    });
+    // Counts
     this.userApi.countCategories(this.user.id).subscribe(result => {
       this.countCategories = result.count;
     });
