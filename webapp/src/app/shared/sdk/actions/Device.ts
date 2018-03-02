@@ -1,8 +1,8 @@
 /* tslint:disable */
-import {Action} from '@ngrx/store';
-import {type} from '../util';
-import {BaseLoopbackActionsFactory, BaseLoopbackActionTypesFactory} from './base';
-import {Device} from '../models';
+import { Action } from '@ngrx/store';
+import { type } from '../util';
+import { BaseLoopbackActionTypesFactory, BaseLoopbackActionsFactory } from './base';
+import { LoopBackFilter, SDKToken, Device } from '../models';
 
 export const DeviceActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Device'), {
@@ -35,9 +35,9 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    * @param {string} deviceId the deviceId
    * @param {string} dateBegin the starting date-time
    * @param {string} dateEnd the ending date-time
-   * @param {object} req
+   * @param {object} req 
    * @param {any} meta (optional).
-   *
+   * 
    */
   timeSeries: class implements Action {
     public readonly type = DeviceActionTypes.TIME_SERIES;
@@ -49,13 +49,13 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
   },
   /**
    * timeSeriesSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * Data properties:
    *
-   *  - `result` – `{any}` -
+   *  - `result` – `{any}` - 
    * @param {any} meta (optional).
-   *
+   * 
    */
   timeSeriesSuccess: class implements Action {
     public readonly type = DeviceActionTypes.TIME_SERIES_SUCCESS;
@@ -70,7 +70,7 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   timeSeriesFail: class implements Action {
     public readonly type = DeviceActionTypes.TIME_SERIES_FAIL;
@@ -84,10 +84,10 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId
-   * @param {object} req
+   * @param {string} deviceId 
+   * @param {object} req 
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteDeviceMessagesAlerts: class implements Action {
     public readonly type = DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS;
@@ -99,11 +99,11 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
   },
   /**
    * deleteDeviceMessagesAlertsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteDeviceMessagesAlertsSuccess: class implements Action {
     public readonly type = DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS_SUCCESS;
@@ -118,7 +118,7 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteDeviceMessagesAlertsFail: class implements Action {
     public readonly type = DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS_FAIL;
@@ -135,9 +135,9 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    * @param {string} id Device Id
    * @param {number} limit Limit retrieved messages (max 100)
    * @param {number} before Before
-   * @param {object} req
+   * @param {object} req 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getMessagesFromSigfoxBackend: class implements Action {
     public readonly type = DeviceActionTypes.GET_MESSAGES_FROM_SIGFOX_BACKEND;
@@ -149,11 +149,11 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
   },
   /**
    * getMessagesFromSigfoxBackendSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getMessagesFromSigfoxBackendSuccess: class implements Action {
     public readonly type = DeviceActionTypes.GET_MESSAGES_FROM_SIGFOX_BACKEND_SUCCESS;
@@ -168,7 +168,7 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   getMessagesFromSigfoxBackendFail: class implements Action {
     public readonly type = DeviceActionTypes.GET_MESSAGES_FROM_SIGFOX_BACKEND_FAIL;
@@ -186,9 +186,9 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    *
    *  - `id` – `{string}` - Device Id
    *
-   *  - `req` – `{object}` -
+   *  - `req` – `{object}` - 
    * @param {any} meta (optional).
-   *
+   * 
    */
   parseAllMessages: class implements Action {
     public readonly type = DeviceActionTypes.PARSE_ALL_MESSAGES;
@@ -200,11 +200,11 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
   },
   /**
    * parseAllMessagesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   parseAllMessagesSuccess: class implements Action {
     public readonly type = DeviceActionTypes.PARSE_ALL_MESSAGES_SUCCESS;
@@ -219,7 +219,7 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   parseAllMessagesFail: class implements Action {
     public readonly type = DeviceActionTypes.PARSE_ALL_MESSAGES_FAIL;

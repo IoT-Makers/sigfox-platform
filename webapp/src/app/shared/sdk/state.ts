@@ -37,7 +37,7 @@ export interface LoopbackStateInterface {
   Receptions: reducers.ReceptionsState;
   Connectors: reducers.ConnectorsState;
   Widgets: reducers.WidgetsState;
-};
+}
 
 export const LoopbackReducer = {
   LoopbackAuth: reducers.LoopbackAuthReducer,

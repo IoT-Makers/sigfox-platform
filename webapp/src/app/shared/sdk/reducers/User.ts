@@ -6,7 +6,9 @@ import { User, UserInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { UserActionTypes } from '../actions';
 
-export interface UsersState extends EntityState<User | UserInterface> {};
+
+export interface UsersState extends EntityState<User | UserInterface> {
+}
 
 export const UserAdapter: EntityAdapter<User | UserInterface> = createEntityAdapter<User | UserInterface>();
 

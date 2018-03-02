@@ -92,25 +92,26 @@
       }
     ]
   },
-  "post": {
-    "name": "post",
+  "webhook": {
+    "name": "webhook",
     "connector": "rest",
     "debug": "true",
     "operations": [
       {
         "template": {
-          "method": "POST",
-          "url": "{url:string}",
+          "method": "{!method:string}",
+          "url": "{!url:string}",
           "headers": {
             "Authorization": "Basic {credentials:string}"
           },
           "body": {
-            "json": "{!json:string}"
+            "json": "{json:string}"
           }
         },
         "functions": {
           "send": [
             "url",
+            "method",
             "credentials",
             "json"
           ]

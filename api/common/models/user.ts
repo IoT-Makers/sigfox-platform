@@ -1,5 +1,4 @@
 import {Model} from '@mean-expert/model';
-import {AccessToken} from '../../../webapp/src/app/shared/sdk/models/AccessToken';
 
 /**
  * @module user
@@ -68,7 +67,7 @@ class user {
     next();
   }
 
-  afterRemoteLogin(ctx: any, loggedUser: AccessToken, next: any) {
+  afterRemoteLogin(ctx: any, loggedUser: any, next: any) {
     next();
   }
 
@@ -202,7 +201,7 @@ class user {
   }
 
   // Delete user method
-  afterRemoteDelete(ctx: any, result:any, next: Function): void {
+  afterRemoteDelete(ctx: any, result: any, next: Function): void {
     // Obtain the userId with the access_token of ctx
 
     // console.log(ctx.args.id);
@@ -211,17 +210,14 @@ class user {
     const userId = ctx.args.id;
 
     this.model.app.models.RoleMapping.destroyAll({principalId: userId}, (error: any, result: any) => { });
-    this.model.app.models.Category.destroyAll({userId: userId}, (error: any, result: any) => {
-    });
+    this.model.app.models.Category.destroyAll({userId: userId}, (error: any, result: any) => { });
     this.model.app.models.Device.destroyAll({userId: userId}, (error: any, result: any) => { });
-    this.model.app.models.Message.destroyAll({userId: userId}, (error: any, result: any) => {
-    });
-    this.model.app.models.Alert.destroyAll({userId: userId}, (error: any, result: any) => {
-    });
+    this.model.app.models.Message.destroyAll({userId: userId}, (error: any, result: any) => { });
+    this.model.app.models.Alert.destroyAll({userId: userId}, (error: any, result: any) => { });
     this.model.app.models.Connector.destroyAll({userId: userId}, (error: any, result: any) => { });
     this.model.app.models.AccessToken.destroyAll({userId: userId}, (error: any, result: any) => { });
-    // // this.model.app.models.Dashboard.destroyAll({userId: userId}, (error: any, result: any) => { });
-    // // this.model.app.models.Widget.destroyAll({userId: userId}, (error: any, result: any) => { });
+    // this.model.app.models.Dashboard.destroyAll({userId: userId}, (error: any, result: any) => { });
+    // this.model.app.models.Widget.destroyAll({userId: userId}, (error: any, result: any) => { });
 
     next(null, 'Success');
   }

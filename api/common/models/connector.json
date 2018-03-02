@@ -50,12 +50,15 @@
       "type": "number"
     },
     "topic": {
-      "type": "number"
+      "type": "string"
     },
     "recipient": {
       "type": "string"
     },
     "url": {
+      "type": "string"
+    },
+    "method": {
       "type": "string"
     }
   },

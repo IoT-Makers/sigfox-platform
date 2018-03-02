@@ -1,8 +1,8 @@
 /* tslint:disable */
-import {Action} from '@ngrx/store';
-import {type} from '../util';
-import {BaseLoopbackActionsFactory, BaseLoopbackActionTypesFactory} from './base';
-import {Widget} from '../models';
+import { Action } from '@ngrx/store';
+import { type } from '../util';
+import { BaseLoopbackActionTypesFactory, BaseLoopbackActionsFactory } from './base';
+import { LoopBackFilter, SDKToken, Widget } from '../models';
 
 export const WidgetActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Widget'), {
@@ -23,9 +23,9 @@ Object.assign(BaseLoopbackActionsFactory<Widget>(WidgetActionTypes), {
    * Fetches belongsTo relation user.
    *
    * @param {any} id Widget id
-   * @param {boolean} refresh
+   * @param {boolean} refresh 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getUser: class implements Action {
     public readonly type = WidgetActionTypes.GET_USER;
@@ -37,11 +37,11 @@ Object.assign(BaseLoopbackActionsFactory<Widget>(WidgetActionTypes), {
   },
   /**
    * getUserSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getUserSuccess: class implements Action {
     public readonly type = WidgetActionTypes.GET_USER_SUCCESS;
@@ -56,7 +56,7 @@ Object.assign(BaseLoopbackActionsFactory<Widget>(WidgetActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   getUserFail: class implements Action {
     public readonly type = WidgetActionTypes.GET_USER_FAIL;
@@ -69,9 +69,9 @@ Object.assign(BaseLoopbackActionsFactory<Widget>(WidgetActionTypes), {
    * Fetches belongsTo relation Dashboard.
    *
    * @param {any} id Widget id
-   * @param {boolean} refresh
+   * @param {boolean} refresh 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getDashboard: class implements Action {
     public readonly type = WidgetActionTypes.GET_DASHBOARD;
@@ -83,11 +83,11 @@ Object.assign(BaseLoopbackActionsFactory<Widget>(WidgetActionTypes), {
   },
   /**
    * getDashboardSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getDashboardSuccess: class implements Action {
     public readonly type = WidgetActionTypes.GET_DASHBOARD_SUCCESS;
@@ -102,7 +102,7 @@ Object.assign(BaseLoopbackActionsFactory<Widget>(WidgetActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   getDashboardFail: class implements Action {
     public readonly type = WidgetActionTypes.GET_DASHBOARD_FAIL;

@@ -319,15 +319,26 @@
               </ng-container>
               <!-- End Sigfox API -->
 
-              <!-- POST -->
-              <ng-container *ngIf="newConnector.type === 'post'">
+              <!-- Webhook -->
+              <ng-container *ngIf="newConnector.type === 'webhook'">
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label font-weight-bold">URL
                     <small class="text-danger">(required)</small>
                   </label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" placeholder="Destination URL"
+                    <input type="text" class="form-control" placeholder="Request URL"
                            [(ngModel)]="newConnector.url">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label font-weight-bold">Method
+                    <small class="text-danger">(required)</small>
+                  </label>
+                  <div class="col-md-9">
+                    <select class="form-control" size="1"
+                            [(ngModel)]="newConnector.method">
+                      <option [ngValue]="method" *ngFor="let method of ['GET', 'POST', 'PUT']">{{method}}</option>
+                    </select>
                   </div>
                 </div>
                 <div class="form-group row">
@@ -349,7 +360,7 @@
                   </div>
                 </div>
               </ng-container>
-              <!-- End POST -->
+              <!-- End Webhook -->
 
               <!-- Free Mobile -->
               <ng-container *ngIf="newConnector.type === 'free-mobile'">

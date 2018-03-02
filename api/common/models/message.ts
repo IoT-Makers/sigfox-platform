@@ -247,14 +247,14 @@ class Message {
                         const alerts = deviceInstance.Alerts;
                         // Loop in all the alerts
                         alerts.forEach((alert: any, index: any) => {
-                          // If the key being read is set for an alert
-                          if (alert.key === o.key) {
+                          // If the key being read is set for an alert and if it is activated
+                          if (alert.active && (alert.key === o.key)) {
                             // Verify conditions for the alert to be triggered
                             if (
                               (alert.value_exact && o.value === alert.value_exact) ||
                               (alert.value_min && alert.value_max && o.value >= alert.value_min && o.value <= alert.value_max) ||
                               (alert.value_less && o.value < alert.value_less) ||
-                              (alert.value_more && o.value > alert.value_more) && alert.active
+                              (alert.value_more && o.value > alert.value_more)
                             ) {
                               // Trigger alert
                               this.model.app.models.Connector.findById(alert.connectorId,
@@ -286,18 +286,20 @@ class Message {
                                         else console.log('Email sent!');
                                       });
 
-                                    } else if (connector.type === 'post') {
-                                      console.log('POST alert!');
-                                      this.model.app.dataSources.post.send(connector.url, connector.password, alertMessage).then((result: any) => {
+                                    } else if (connector.type === 'webhook') {
+                                      console.log('Webhook alert!');
+                                      this.model.app.dataSources.webhook.send(connector.url, connector.method, connector.password, alertMessage).then((result: any) => {
                                       }).catch((err: any) => {
-                                        console.error('POST request error');
+                                        if (err) console.error('Webhook request error');
+                                        else console.log('Webhook request sent!');
                                       });
 
                                     } else if (connector.type === 'free-mobile') {
                                       console.log('Free Mobile SMS alert!');
                                       this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, alertMessage).then((result: any) => {
                                       }).catch((err: any) => {
-                                        console.error('Free Mobile error');
+                                        if (err) console.error('Free Mobile error');
+                                        else console.log('Free Mobile sent!');
                                       });
 
                                     } else if (connector.type === 'twilio') {
@@ -313,21 +315,20 @@ class Message {
                                     }
                                     // Alert has been triggered, removing it from array
                                     alerts.splice(index, 1);
+
+                                    // Update the alert last trigger time
+                                    alert.last_trigger = new Date();
+                                    this.model.app.models.Alert.upsert(
+                                      alert,
+                                      (err: any, alert: any) => {
+                                        if (err) {
+                                          console.log(err);
+                                          next(err, data);
+                                        } else {
+                                          console.log('Updated alert as: ', alert);
+                                        }
+                                      });
                                   }
-
-                                  // Update the alert last trigger time
-                                  alert.last_trigger = new Date();
-                                  this.model.app.models.Alert.upsert(
-                                    alert,
-                                    (err: any, alert: any) => {
-                                      if (err) {
-                                        console.log(err);
-                                        next(err, data);
-                                      } else {
-                                        console.log('Updated alert as: ', alert);
-                                      }
-                                    });
-
                                 });
                             }
                           }

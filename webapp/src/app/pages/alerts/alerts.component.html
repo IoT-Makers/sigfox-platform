@@ -89,11 +89,10 @@
                   </div>
                 </td>
                 <td class="text-center text-connector">
-                  <strong>{{alert.Connector.name}}</strong>
+                  <strong>{{alert.Connector ? alert.Connector.name: 'No connector'}}</strong>
                 </td>
                 <td class="text-center">
-                  <strong>{{alert.last_trigger !== dateOrigin.toISOString() ? (alert.last_trigger | amTimeAgo) : 'Not
-                    yet triggered'}}</strong>
+                  <strong>{{alert.last_trigger !== dateOrigin.toISOString() ? (alert.last_trigger | amTimeAgo) : 'Not yet triggered'}}</strong>
                 </td>
                 <td class="text-center">
                   <div class="btn-group-sm">
