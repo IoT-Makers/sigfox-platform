@@ -39,7 +39,7 @@
                 <tbody>
                 <tr *ngFor="let category of categories; let i = index">
                   <td class="text-center" *ngIf="!edit">
-                    <div class="small text-danger" tooltip="Click to copy" click-copy>
+                    <div class="small text-category" tooltip="Click to copy" click-copy>
                       {{category.id}}
                     </div>
                   </td>

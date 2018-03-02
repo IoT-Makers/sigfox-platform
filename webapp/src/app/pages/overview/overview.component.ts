@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {Category, Device, FireLoopRef, Message, Parser, User} from '../../shared/sdk/models';
+import {Alert, Category, Device, FireLoopRef, Message, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
@@ -25,12 +25,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private messageGraphSub: Subscription;
   private messageSeeSub: Subscription;
   private deviceSub: Subscription;
-  private parserSub: Subscription;
+  private alertSub: Subscription;
   private categorySub: Subscription;
 
   private messages: Message[] = [];
   private devices: Device[] = [];
-  private parsers: Parser[] = [];
+  private alerts: Alert[] = [];
   private categories: Category[] = [];
 
   private isLimit_hourly = false;
@@ -41,14 +41,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   private countMessages = 0;
   private countDevices = 0;
-  private countParsers = 0;
+  private countAlerts = 0;
   private countCategories = 0;
 
   private messageRef: FireLoopRef<Message>;
   private messageGraphRef: FireLoopRef<Message>;
   private messageSeeRef: FireLoopRef<Message>;
   private deviceRef: FireLoopRef<Device>;
-  private parserRef: FireLoopRef<Parser>;
+  private alertRef: FireLoopRef<Alert>;
   private categoryRef: FireLoopRef<Category>;
 
   private isCircleVisible: boolean[] = [];
@@ -126,8 +126,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     });
 
   constructor(private rt: RealTime,
-              private userApi: UserApi,
-              private parserApi: ParserApi) {
+              private userApi: UserApi) {
   }
 
   ngOnInit(): void {
@@ -155,19 +154,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   setup(): void {
     // this.ngOnDestroy();
-    // Messages
-    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-    this.messageSub = this.messageRef.on('change', {
-      limit: 1,
-      order: 'createdAt DESC',
-      where: {
-        userId: this.user.id
-      }
-    }).subscribe(
-      (messages: Message[]) => {
-        this.messages = messages;
-        this.userApi.countMessages(this.user.id).subscribe(result => {
-          this.countMessages = result.count;
+    // Categories
+    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
+    this.categorySub = this.categoryRef.on('change').subscribe(
+      (categories: Category[]) => {
+        this.categories = categories;
+        this.userApi.countCategories(this.user.id).subscribe(result => {
+          this.countCategories = result.count;
         });
       });
 
@@ -196,22 +189,28 @@ export class OverviewComponent implements OnInit, OnDestroy {
         });
       });
 
-    // Categories
-    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categorySub = this.categoryRef.on('change').subscribe(
-      (categories: Category[]) => {
-        this.categories = categories;
-        this.userApi.countCategories(this.user.id).subscribe(result => {
-          this.countCategories = result.count;
+    // Messages
+    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+    this.messageSub = this.messageRef.on('change', {
+      limit: 1,
+      order: 'createdAt DESC',
+      where: {
+        userId: this.user.id
+      }
+    }).subscribe(
+      (messages: Message[]) => {
+        this.messages = messages;
+        this.userApi.countMessages(this.user.id).subscribe(result => {
+          this.countMessages = result.count;
         });
       });
 
-    // Parsers
-    this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-    this.parserSub = this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-      this.parsers = parsers;
-      this.parserApi.count().subscribe(result => {
-        this.countParsers = result.count;
+    // Alerts
+    this.alertRef = this.rt.FireLoop.ref<Alert>(Alert);
+    this.alertSub = this.alertRef.on('change', {where: {active: true}}).subscribe((alerts: Alert[]) => {
+      this.alerts = alerts;
+      this.userApi.countAlerts(this.user.id).subscribe(result => {
+        this.countAlerts = result.count;
       });
     });
 
@@ -291,17 +290,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
     if (this.messageGraphRef) this.messageGraphRef.dispose();
     if (this.messageGraphSub) this.messageGraphSub.unsubscribe();
 
-    if (this.messageRef) this.messageRef.dispose();
-    if (this.messageSub) this.messageSub.unsubscribe();
+    if (this.categoryRef) this.categoryRef.dispose();
+    if (this.categorySub) this.categorySub.unsubscribe();
 
     if (this.deviceRef) this.deviceRef.dispose();
     if (this.deviceSub) this.deviceSub.unsubscribe();
 
-    if (this.parserRef) this.parserRef.dispose();
-    if (this.parserSub) this.parserSub.unsubscribe();
+    if (this.messageRef) this.messageRef.dispose();
+    if (this.messageSub) this.messageSub.unsubscribe();
 
-    if (this.categoryRef) this.categoryRef.dispose();
-    if (this.categorySub) this.categorySub.unsubscribe();
+    if (this.alertRef) this.alertRef.dispose();
+    if (this.alertSub) this.alertSub.unsubscribe();
+
+
   }
 
   cancelSee(): void {
