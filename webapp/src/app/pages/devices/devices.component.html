@@ -207,7 +207,7 @@
 
           <!-- Table -->
           <div *ngIf="devices.length > 0" class="table-responsive">
-            <table class="table table-hover table-outline" [mfData]="devices" #mf="mfDataTable" [mfRowsOnPage]="10">
+            <table class="table table-hover table-outline" [mfData]="devices" #mf="mfDataTable" [mfRowsOnPage]="20">
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">
@@ -219,7 +219,9 @@
                 <th *ngIf="!edit" class="text-center">
                   <mfDefaultSorter by="location"><i class="fa fa-sort"></i> Geoloc</mfDefaultSorter>
                 </th>
-                <th class="text-center">Last Message</th>
+                <th class="text-center">
+                  <mfDefaultSorter by="updatedAt"><i class="fa fa-sort"></i> Last Message</mfDefaultSorter>
+                </th>
                 <th *ngIf="!edit" class="text-center">
                   <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>
                 </th>
