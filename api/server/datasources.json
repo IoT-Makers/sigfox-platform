@@ -3,6 +3,10 @@
     "name": "db",
     "connector": "memory"
   },
+  "mongodb": {
+    "name": "mongodb",
+    "connector": "mongodb"
+  },
   "freeMobile": {
     "name": "freeMobile",
     "connector": "rest",

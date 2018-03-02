@@ -17,14 +17,14 @@
     ]
   },
   "User": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": false
   },
   "Email": {
     "dataSource": "email"
   },
   "AccessToken": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true,
     "options": {
       "remoting": {
@@ -51,19 +51,19 @@
     ]
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": false
   },
   "Role": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": false
   },
   "Device": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true,
     "options": {
       "remoting": {
@@ -78,11 +78,11 @@
     }
   },
   "Parser": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true
   },
   "Category": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true,
     "options": {
       "remoting": {
@@ -93,7 +93,7 @@
     }
   },
   "Message": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true,
     "options": {
       "remoting": {
@@ -105,15 +105,15 @@
     }
   },
   "AppSetting": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true
   },
   "Dashboard": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true
   },
   "user": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true,
     "options": {
       "emailVerificationRequired": false,
@@ -121,7 +121,7 @@
     }
   },
   "Organization": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true
   },
   "Geoloc": {
@@ -129,7 +129,7 @@
     "public": true
   },
   "Alert": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true,
     "options": {
       "remoting": {
@@ -144,7 +144,7 @@
     "public": true
   },
   "Connector": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true,
     "options": {
       "remoting": {
@@ -155,7 +155,7 @@
     }
   },
   "Widget": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true
   }
 }

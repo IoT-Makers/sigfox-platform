@@ -10,10 +10,10 @@ export interface DashboardInterface {
   "description"?: string;
   "icon"?: string;
   "options"?: any;
-  "id"?: number;
+  "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "userId"?: number;
+  "userId"?: any;
   user?: User;
   Widgets?: Widget[];
 }
@@ -23,10 +23,10 @@ export class Dashboard implements DashboardInterface {
   "description": string = '';
   "icon": string = '';
   "options": any = <any>null;
-  "id": number = 0;
+  "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "userId": number = 0;
+  "userId": any = <any>null;
   user: User = null;
   Widgets: Widget[] = null;
   constructor(data?: DashboardInterface) {
@@ -80,7 +80,7 @@ export class Dashboard implements DashboardInterface {
         },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',
@@ -92,7 +92,7 @@ export class Dashboard implements DashboardInterface {
         },
         "userId": {
           name: 'userId',
-          type: 'number'
+          type: 'any'
         },
       },
       relations: {

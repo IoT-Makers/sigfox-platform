@@ -11,10 +11,10 @@ export interface DeviceInterface {
   "properties"?: Array<any>;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "parserId"?: number;
-  "categoryId"?: number;
-  "userId"?: number;
-  "organizationId"?: number;
+  "parserId"?: any;
+  "categoryId"?: any;
+  "userId"?: any;
+  "organizationId"?: any;
   Parser?: any;
   Category?: any;
   Messages?: any[];
@@ -33,10 +33,10 @@ export class Device implements DeviceInterface {
   "properties": Array<any> = <any>[];
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "parserId": number = 0;
-  "categoryId": number = 0;
-  "userId": number = 0;
-  "organizationId": number = 0;
+  "parserId": any = <any>null;
+  "categoryId": any = <any>null;
+  "userId": any = <any>null;
+  "organizationId": any = <any>null;
   Parser: any = null;
   Category: any = null;
   Messages: any[] = null;
@@ -114,19 +114,19 @@ export class Device implements DeviceInterface {
         },
         "parserId": {
           name: 'parserId',
-          type: 'number'
+          type: 'any'
         },
         "categoryId": {
           name: 'categoryId',
-          type: 'number'
+          type: 'any'
         },
         "userId": {
           name: 'userId',
-          type: 'number'
+          type: 'any'
         },
         "organizationId": {
           name: 'organizationId',
-          type: 'number'
+          type: 'any'
         },
       },
       relations: {

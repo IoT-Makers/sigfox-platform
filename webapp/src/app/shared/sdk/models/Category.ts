@@ -5,11 +5,11 @@ export interface CategoryInterface {
   "name": string;
   "properties"?: Array<any>;
   "description"?: string;
-  "id"?: number;
+  "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "userId"?: number;
-  "organizationId"?: number;
+  "userId"?: any;
+  "organizationId"?: any;
   Devices?: any[];
   user?: any;
 }
@@ -18,11 +18,11 @@ export class Category implements CategoryInterface {
   "name": string = '';
   "properties": Array<any> = <any>[];
   "description": string = '';
-  "id": number = 0;
+  "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "userId": number = 0;
-  "organizationId": number = 0;
+  "userId": any = <any>null;
+  "organizationId": any = <any>null;
   Devices: any[] = null;
   user: any = null;
   constructor(data?: CategoryInterface) {
@@ -72,7 +72,7 @@ export class Category implements CategoryInterface {
         },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',
@@ -84,11 +84,11 @@ export class Category implements CategoryInterface {
         },
         "userId": {
           name: 'userId',
-          type: 'number'
+          type: 'any'
         },
         "organizationId": {
           name: 'organizationId',
-          type: 'number'
+          type: 'any'
         },
       },
       relations: {

@@ -23,7 +23,7 @@ export interface UserInterface {
   "username"?: string;
   "email": string;
   "emailVerified"?: boolean;
-  "id"?: number;
+  "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "password"?: string;
@@ -50,7 +50,7 @@ export class User implements UserInterface {
   "username": string = '';
   "email": string = '';
   "emailVerified": boolean = false;
-  "id": number = 0;
+  "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "password": string = '';
@@ -143,7 +143,7 @@ export class User implements UserInterface {
         },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',

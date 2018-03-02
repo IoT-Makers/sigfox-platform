@@ -12,12 +12,12 @@ export interface AlertInterface {
   "value_more"?: any;
   "message"?: string;
   "last_trigger"?: Date;
-  "id"?: number;
-  "userId"?: number;
-  "organizationId"?: number;
+  "id"?: any;
+  "userId"?: any;
+  "organizationId"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "connectorId"?: number;
+  "connectorId"?: any;
   Device?: any;
   user?: any;
   Organization?: any;
@@ -35,12 +35,12 @@ export class Alert implements AlertInterface {
   "value_more": any = <any>null;
   "message": string = '';
   "last_trigger": Date = new Date(0);
-  "id": number = 0;
-  "userId": number = 0;
-  "organizationId": number = 0;
+  "id": any = <any>null;
+  "userId": any = <any>null;
+  "organizationId": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "connectorId": number = 0;
+  "connectorId": any = <any>null;
   Device: any = null;
   user: any = null;
   Organization: any = null;
@@ -126,15 +126,15 @@ export class Alert implements AlertInterface {
         },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
         },
         "userId": {
           name: 'userId',
-          type: 'number'
+          type: 'any'
         },
         "organizationId": {
           name: 'organizationId',
-          type: 'number'
+          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',
@@ -146,7 +146,7 @@ export class Alert implements AlertInterface {
         },
         "connectorId": {
           name: 'connectorId',
-          type: 'number'
+          type: 'any'
         },
       },
       relations: {

@@ -12,8 +12,8 @@ export interface ConnectorInterface {
   "recipient"?: string;
   "url"?: string;
   "method"?: string;
-  "id"?: number;
-  "userId"?: number;
+  "id"?: any;
+  "userId"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   user?: any;
@@ -30,8 +30,8 @@ export class Connector implements ConnectorInterface {
   "recipient": string = '';
   "url": string = '';
   "method": string = '';
-  "id": number = 0;
-  "userId": number = 0;
+  "id": any = <any>null;
+  "userId": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   user: any = null;
@@ -110,11 +110,11 @@ export class Connector implements ConnectorInterface {
         },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
         },
         "userId": {
           name: 'userId',
-          type: 'number'
+          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',

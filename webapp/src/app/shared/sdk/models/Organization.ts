@@ -10,7 +10,7 @@ declare var Object: any;
 export interface OrganizationInterface {
   "name": string;
   "ownerId": string;
-  "id"?: number;
+  "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   Members?: User[];
@@ -22,7 +22,7 @@ export interface OrganizationInterface {
 export class Organization implements OrganizationInterface {
   "name": string = 'New organization';
   "ownerId": string = '';
-  "id": number = 0;
+  "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   Members: User[] = null;
@@ -73,7 +73,7 @@ export class Organization implements OrganizationInterface {
         },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',

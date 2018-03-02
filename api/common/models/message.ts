@@ -313,8 +313,6 @@ class Message {
                                       const client = new Client({host: connector.host, port: connector.port}, Adapter);
                                       client.publish(connector.topic, alertMessage);
                                     }
-                                    // Alert has been triggered, removing it from array
-                                    alerts.splice(index, 1);
 
                                     // Update the alert last trigger time
                                     alert.last_trigger = new Date();
@@ -328,6 +326,8 @@ class Message {
                                           console.log('Updated alert as: ', alert);
                                         }
                                       });
+                                    // Alert has been triggered, removing it from array
+                                    alerts.splice(index, 1);
                                   }
                                 });
                             }

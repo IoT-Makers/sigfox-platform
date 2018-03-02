@@ -11,11 +11,11 @@ export interface MessageInterface {
   "ack"?: boolean;
   "reception"?: Array<any>;
   "geoloc"?: Array<any>;
-  "id"?: number;
+  "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "userId"?: number;
-  "organizationId"?: number;
+  "userId"?: any;
+  "organizationId"?: any;
   Device?: any;
   user?: any;
   Organization?: any;
@@ -31,11 +31,11 @@ export class Message implements MessageInterface {
   "ack": boolean = false;
   "reception": Array<any> = <any>[];
   "geoloc": Array<any> = <any>[];
-  "id": number = 0;
+  "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "userId": number = 0;
-  "organizationId": number = 0;
+  "userId": any = <any>null;
+  "organizationId": any = <any>null;
   Device: any = null;
   user: any = null;
   Organization: any = null;
@@ -110,7 +110,7 @@ export class Message implements MessageInterface {
         },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',
@@ -122,11 +122,11 @@ export class Message implements MessageInterface {
         },
         "userId": {
           name: 'userId',
-          type: 'number'
+          type: 'any'
         },
         "organizationId": {
           name: 'organizationId',
-          type: 'number'
+          type: 'any'
         },
       },
       relations: {
