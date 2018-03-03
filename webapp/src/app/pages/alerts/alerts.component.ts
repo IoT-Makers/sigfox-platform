@@ -124,11 +124,13 @@ export class AlertsComponent implements OnInit, OnDestroy {
     // Connectors
     this.userApi.getConnectors(this.user.id).subscribe((connectors: Connector[]) => {
       connectors.forEach((connector: Connector) => {
-        const item = {
-          id: connector.id,
-          itemName: connector.name + ' (' + connector.type + ')'
-        };
-        this.selectConnectors.push(item);
+        if (connector.type !== 'sigfox-api') {
+          const item = {
+            id: connector.id,
+            itemName: connector.name + ' (' + connector.type + ')'
+          };
+          this.selectConnectors.push(item);
+        }
       });
     });
   }
@@ -154,7 +156,11 @@ export class AlertsComponent implements OnInit, OnDestroy {
       itemName: alert.Device.name ? alert.Device.name + ' (' + alert.Device.id + ')' : alert.Device.id
     }];
     this.selectedKeys = [{id: alert.key, itemName: alert.key}];
-    this.selectedConnectors = [{id: alert.Connector.id, itemName: alert.Connector.name + ' (' + alert.Connector.type + ')'}];
+
+    // Check if connector has not been removed
+    if (alert.Connector) {
+      this.selectedConnectors = [{id: alert.Connector.id, itemName: alert.Connector.name + ' (' + alert.Connector.type + ')'}];
+    }
 
     this.editAlertModal.show();
   }

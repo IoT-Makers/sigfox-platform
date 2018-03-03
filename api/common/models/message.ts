@@ -311,7 +311,7 @@ class Message {
                                       const Client = require('strong-pubsub');
                                       const Adapter = require('strong-pubsub-mqtt');
                                       const client = new Client({host: connector.host, port: connector.port}, Adapter);
-                                      client.publish(connector.topic, alertMessage);
+                                        client.publish(connector.topic, alertMessage);
                                     }
 
                                     // Update the alert last trigger time
