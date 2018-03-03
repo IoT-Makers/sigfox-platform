@@ -416,7 +416,7 @@ class Device {
                       });
                     }
                     // Send the result when all messages have been processed and store last data_parsed in device
-                    if (msgCount === device.Messages.length) {
+                    if (msgCount === device.Messages.length - 1) {
                       // Update the device
                       device.data_parsed = device.Messages[0].data_parsed;
                       Device.upsert(device, function (err: any, deviceUpdated: any) {

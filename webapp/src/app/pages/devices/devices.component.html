@@ -225,7 +225,7 @@
                 <th *ngIf="!edit" class="text-center">
                   <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>
                 </th>
-                <!--<th *ngIf="!edit" class="text-center">Last Update</th>-->
+                <th class="text-center">Losses</th>
                 <th class="text-center">Action</th>
               </tr>
               </thead>
@@ -290,9 +290,9 @@
                     </div>
                   </div>
                 </td>
-                <!--<td *ngIf="!edit" class="text-center">
-                  <strong>{{device.updatedAt | amTimeAgo}}</strong>
-                </td>-->
+                <td *ngIf="!edit" class="text-center">
+                  <strong tooltip="Based on the last 100 received">{{device.losses}} %</strong>
+                </td>
                 <td class="text-center">
                   <div class="btn-group-sm">
                     <button class="btn btn-outline-primary btn-round" tooltip="Edit device"

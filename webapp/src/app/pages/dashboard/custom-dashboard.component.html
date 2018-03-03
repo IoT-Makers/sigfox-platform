@@ -49,10 +49,11 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Icon <i class="fa {{dashboard.icon}}"></i></label>
               <div class="col-md-6">
-                <angular2-multiselect name="iconDashboardSelect"
+                <angular2-multiselect #selectOne
+                                      name="iconDashboardSelect"
                                       [data]="fontAwesomeList"
                                       [(ngModel)]="selectedDashboardIcon"
-                                      (onSelect)="dashboard.icon = $event.id"
+                                      (onSelect)="dashboard.icon = $event.id; selectOne.isActive = false;"
                                       (onDeSelect)="dashboard.icon = ''"
                                       [settings]="selectIconSettings">
                   <c-item>
@@ -678,10 +679,11 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Icon <i class="fa {{newWidget.icon}}"></i></label>
               <div class="col-md-9">
-                <angular2-multiselect name="iconWidgetSelect"
+                <angular2-multiselect #selectOne
+                                      name="iconWidgetSelect"
                                       [data]="fontAwesomeList"
                                       [(ngModel)]="selectedWidgetIcon"
-                                      (onSelect)="newWidget.icon = $event.id"
+                                      (onSelect)="newWidget.icon = $event.id; selectOne.isActive = false;"
                                       (onDeSelect)="newWidget.icon = ''"
                                       [settings]="selectIconSettings">
                   <c-item>
@@ -708,10 +710,11 @@
                 <small class="text-danger">(required)</small>
               </label>
               <div class="col-md-9">
-                <angular2-multiselect name="selectWidgetType"
+                <angular2-multiselect #selectOne
+                                      name="selectWidgetType"
                                       [data]="selectWidgetType"
                                       [(ngModel)]="selectedWidgetType"
-                                      (onSelect)="newWidget.type = $event.id; log($event)"
+                                      (onSelect)="newWidget.type = $event.id; log($event); selectOne.isActive = false;"
                                       (onDeSelect)="newWidget.type = ''"
                                       [settings]="selectOneSettings"
                                       required>
@@ -777,10 +780,11 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Map type</label>
                 <div class="col-md-9">
-                  <angular2-multiselect name="selectMapType"
+                  <angular2-multiselect #selectOne
+                                        name="selectMapType"
                                         [data]="selectMapType"
                                         [(ngModel)]="selectedMapType"
-                                        (onSelect)="newWidget.options.mapTypeId = $event.id"
+                                        (onSelect)="newWidget.options.mapTypeId = $event.id; selectOne.isActive = false;"
                                         [settings]="selectOneSettings">
                   </angular2-multiselect>
                 </div>
@@ -835,11 +839,12 @@
                   <br>
                 </label>
                 <div class="col-md-9">
-                  <angular2-multiselect name="selectTableType"
+                  <angular2-multiselect #selectOne
+                                        name="selectTableType"
                                         [data]="selectTableType"
                                         [(ngModel)]="selectedTableType"
                                         (onDeSelect)="newWidget.options.tableType = ''"
-                                        (onSelect)="newWidget.options.tableType = $event.id; addTableType($event.id)"
+                                        (onSelect)="newWidget.options.tableType = $event.id; addTableType($event.id); selectOne.isActive = false;"
                                         [settings]="selectOneSettings"
                                         required>
                   </angular2-multiselect>
@@ -989,10 +994,11 @@
                 <label class="col-md-3 form-control-label">Geoloc type
                 </label>
                 <div class="col-md-9">
-                  <angular2-multiselect name="geolocType"
+                  <angular2-multiselect #selectOne
+                                        name="geolocType"
                                         [data]="selectGeolocType"
                                         [(ngModel)]="selectedGeolocType"
-                                        (onSelect)="newWidget.options.geolocType = $event.id"
+                                        (onSelect)="newWidget.options.geolocType = $event.id; selectOne.isActive = false;"
                                         [settings]="selectOneSettings"
                                         required>
                   </angular2-multiselect>
@@ -1002,10 +1008,11 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Map type</label>
                 <div class="col-md-9">
-                  <angular2-multiselect name="selectMapType"
+                  <angular2-multiselect #selectOne
+                                        name="selectMapType"
                                         [data]="selectMapType"
                                         [(ngModel)]="selectedMapType"
-                                        (onSelect)="newWidget.options.mapTypeId = $event.id"
+                                        (onSelect)="newWidget.options.mapTypeId = $event.id; selectOne.isActive = false;"
                                         [settings]="selectOneSettings">
                   </angular2-multiselect>
                 </div>
@@ -1030,11 +1037,12 @@
                 <label class="col-md-3 form-control-label">Device
                 </label>
                 <div class="col-md-9">
-                  <angular2-multiselect name="selectDevices"
+                  <angular2-multiselect #selectOne
+                                        name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onSelect)="setFilter(newWidget.type); loadKeys(); selectOne.isActive = false;"
                                         (onDeSelect)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
@@ -1042,13 +1050,13 @@
               <div class="form-group row" *ngIf="selectedDevices.length > 0">
                 <label class="col-md-3 form-control-label">Key</label>
                 <div class="col-md-9">
-                  <angular2-multiselect name="selectKeys"
-                                        (onOpen)="loadKeys()"
+                  <angular2-multiselect #selectOne
+                                        name="selectKeys"
                                         [data]="selectKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
                                         (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelect)="setFilter(newWidget.type)"
+                                        (onSelect)="setFilter(newWidget.type); selectOne.isActive = false;"
                                         required>
                   </angular2-multiselect>
                 </div>
@@ -1062,11 +1070,12 @@
                 <label class="col-md-3 form-control-label">Device
                 </label>
                 <div class="col-md-9">
-                  <angular2-multiselect name="selectDevices"
+                  <angular2-multiselect #selectOne
+                                        name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(newWidget.type);"
+                                        (onSelect)="setFilter(newWidget.type); loadKeys(); selectOne.isActive = false;"
                                         (onDeSelect)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
@@ -1074,13 +1083,13 @@
               <div class="form-group row" *ngIf="selectedDevices.length > 0">
                 <label class="col-md-3 form-control-label">Key</label>
                 <div class="col-md-9">
-                  <angular2-multiselect name="selectKeys"
-                                        (onOpen)="loadKeys()"
+                  <angular2-multiselect #selectOne
+                                        name="selectKeys"
                                         [data]="selectKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
                                         (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelect)="setFilter(newWidget.type)">
+                                        (onSelect)="setFilter(newWidget.type); selectOne.isActive = false;">
                   </angular2-multiselect>
                 </div>
               </div>

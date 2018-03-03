@@ -143,11 +143,12 @@
                 <small class="text-danger">(required)</small>
               </label>
               <div class="col-md-9">
-                <angular2-multiselect name="selectDevices"
+                <angular2-multiselect #selectOne
+                                      name="selectDevices"
                                       [data]="selectDevices"
                                       [(ngModel)]="selectedDevices"
                                       [settings]="selectOneDeviceSettings"
-                                      (onSelect)="newAlert.deviceId = $event.id; loadKeys($event.id)"
+                                      (onSelect)="newAlert.deviceId = $event.id; selectOne.isActive = false; loadKeys($event.id)"
                                       (onDeSelect)="newAlert.deviceId = null; newAlert.key = null;"
                                       required="">
                 </angular2-multiselect>
@@ -158,11 +159,12 @@
                 <small class="text-danger">(required)</small>
               </label>
               <div class="col-md-9">
-                <angular2-multiselect name="selectKeys"
+                <angular2-multiselect #selectOne
+                                      name="selectKeys"
                                       [data]="selectKeys"
                                       [(ngModel)]="selectedKeys"
                                       [settings]="selectOneSettings"
-                                      (onSelect)="newAlert.key = $event.id"
+                                      (onSelect)="newAlert.key = $event.id; selectOne.isActive = false;"
                                       (onDeSelect)="newAlert.key = null"
                                       required>
                 </angular2-multiselect>

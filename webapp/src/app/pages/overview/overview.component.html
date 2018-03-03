@@ -149,7 +149,7 @@
     <div *ngIf="see" class="col-md-6">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-eye fa-lg"></i> <strong>See Device</strong>
+          <i class="fa fa-eye fa-lg"></i> <strong>See device</strong>
           <button class="mt-0 btn btn-outline-secondary pull-right" (click)="cancelSee()"><i
             class="fa fa-close text-danger"></i></button>
         </div>
@@ -395,15 +395,19 @@
             <table class="table table-hover table-outline">
               <thead class="thead-inverse">
               <tr>
+                <th class="text-center">See</th>
                 <th class="text-center">ID</th>
                 <th class="text-center">Geoloc</th>
                 <th class="text-center">Last Message</th>
                 <th class="text-center">Properties</th>
-                <th class="text-center">Action</th>
               </tr>
               </thead>
               <tbody>
               <tr *ngFor="let device of devices; let i = index">
+                <td class="text-center">
+                  <button class="btn btn-sm btn-outline-primary btn-round" tooltip="See device latest message"
+                          (click)="seeDevice(device)"><i class="fa fa-eye fa-lg"></i></button>
+                </td>
                 <td class="text-center">
                   <a [routerLink]="['/device-messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
                   <div class="small" *ngIf="device.name">
@@ -451,10 +455,6 @@
                       <span class="text-primary">{{property.value ? property.value : ""}}</span>
                     </div>
                   </div>
-                </td>
-                <td class="text-center">
-                  <button class="btn btn-sm btn-outline-primary btn-round" tooltip="See device latest dashboard"
-                          (click)="seeDevice(device)"><i class="fa fa-eye fa-lg"></i></button>
                 </td>
               </tr>
               </tbody>
