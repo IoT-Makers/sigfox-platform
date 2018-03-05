@@ -15,9 +15,8 @@
         <div class="row mb-1">
           <div class="col-md-6">
             <div class="input-group">
-              <span class="input-group-addon">Show</span>
+              <span class="input-group-addon" (click)="searchFilter(100)">Show</span>
               <div class="btn-group" role="group" aria-label="Quantity">
-                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_100}" (click)="searchFilter(100); isLimit_100 = true">100</button>
                 <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_500}" (click)="searchFilter(500); isLimit_500 = true">500</button>
                 <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_1000}" (click)="searchFilter(1000); isLimit_1000 = true">1000</button>
                 <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_0}" (click)="searchFilter(0); isLimit_0 = true">All</button>
