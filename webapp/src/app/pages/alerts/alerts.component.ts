@@ -21,7 +21,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   private alertSub: Subscription;
 
   private alerts: Alert[] = [];
-  private newAlert: Alert = new Alert();
+  private alertToAdd: Alert = new Alert();
   private alertToRemove: Alert = new Alert();
   private alertToEdit: Alert = new Alert();
 
@@ -141,12 +141,12 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.selectedKeys = [];
     this.selectedConnectors = [];
     // New alert
-    this.newAlert = new Alert();
+    this.alertToAdd = new Alert();
     // Open modal
     this.addAlertModal.show();
   }
 
-  openEditAlertModal(alert): void {
+  openEditAlertModal(alert: Alert): void {
     this.alertToEdit = alert;
     // Load keys for this device
     this.loadKeys(alert.deviceId);
@@ -165,7 +165,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.editAlertModal.show();
   }
 
-  openConfirmModal(alert): void {
+  openConfirmModal(alert: Alert): void {
     this.alertToRemove = alert;
     this.confirmModal.show();
   }
@@ -175,7 +175,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
      * TODO: implement multi connector (HasAndBelongsToMany relations?)
      */
     this.selectedConnectors.forEach((item: any) => {
-      this.newAlert.connectorId = item.id;
+      this.alertToAdd.connectorId = item.id;
       this.alertToEdit.connectorId = item.id;
     });
   }
@@ -207,9 +207,9 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   addAlert(): void {
-    delete this.newAlert.id;
-    this.newAlert.userId = this.user.id;
-    this.alertRef.upsert(this.newAlert).subscribe((alert: Alert) => {
+    delete this.alertToAdd.id;
+    this.alertToAdd.userId = this.user.id;
+    this.alertRef.upsert(this.alertToAdd).subscribe((alert: Alert) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');

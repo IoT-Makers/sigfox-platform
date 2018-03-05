@@ -225,7 +225,7 @@
                 <th *ngIf="!edit" class="text-center">
                   <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>
                 </th>
-                <th *ngIf="!edit" class="text-center">Losses</th>
+                <th *ngIf="!edit" class="text-center">Success Rate</th>
                 <th class="text-center">Action</th>
               </tr>
               </thead>
@@ -291,7 +291,7 @@
                   </div>
                 </td>
                 <td *ngIf="!edit" class="text-center">
-                  <strong tooltip="Based on the last 100 received">{{device.losses}} %</strong>
+                  <strong tooltip="Based on the last 100 received">{{device.successRate}} %</strong>
                 </td>
                 <td class="text-center">
                   <div class="btn-group-sm">

@@ -1,4 +1,4 @@
-import {Category, Connector, Device, FireLoopRef, Geoloc, Message, Parser, User} from '../../shared/sdk/models';
+import {Category, Connector, Device, FireLoopRef, Geoloc, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {AgmInfoWindow} from '@agm/core';
@@ -130,22 +130,25 @@ export class DevicesComponent implements OnInit, OnDestroy {
     ).subscribe((devices: Device[]) => {
       this.devices = devices;
       this.devices.forEach((device: any) => {
-        device.losses = 0;
+        device.successRate = 0;
         /*device.Messages.forEach((message: Message, i) => {
           if (message.seqNumber && i !== device.Messages.length - 1) {
             if (device.Messages[i + 1].seqNumber) {
               if ((message.seqNumber - device.Messages[i + 1].seqNumber) !== 1) {
-                device.losses += (message.seqNumber - device.Messages[i + 1].seqNumber) - 1;
+                device.successRate += (message.seqNumber - device.Messages[i + 1].seqNumber) - 1;
                 console.log('Missing between', message.seqNumber + ' and ' + device.Messages[i + 1].seqNumber);
                 console.log('Missing', message.seqNumber - device.Messages[i + 1].seqNumber - 1);
               }
             }
           }
         });*/
-        const attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber;
-        device.losses = (100 - ((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
-        //device.losses = ((device.losses / attendedNbMessages) * 100).toFixed(2);
-        console.log(device.id, {nbMessages: device.Messages.length, attendedNbMessages: attendedNbMessages, losses: device.losses});
+        let attendedNbMessages: number;
+        attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber;
+        if (device.Messages[device.Messages.length - 1].seqNumber > device.Messages[0].seqNumber)
+          attendedNbMessages += 4096;
+        device.successRate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
+        //device.successRate = ((device.successRate / attendedNbMessages) * 100).toFixed(2);
+        console.log(device.id, {nbMessages: device.Messages.length, attendedNbMessages: attendedNbMessages, successRate: device.successRate});
       });
       console.log(this.devices);
     });

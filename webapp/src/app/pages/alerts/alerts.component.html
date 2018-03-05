@@ -143,72 +143,72 @@
                 <small class="text-danger">(required)</small>
               </label>
               <div class="col-md-9">
-                <angular2-multiselect #selectOne
+                <angular2-multiselect #selectDevicesAdd
                                       name="selectDevices"
                                       [data]="selectDevices"
                                       [(ngModel)]="selectedDevices"
                                       [settings]="selectOneDeviceSettings"
-                                      (onSelect)="newAlert.deviceId = $event.id; selectOne.isActive = false; loadKeys($event.id)"
-                                      (onDeSelect)="newAlert.deviceId = null; newAlert.key = null;"
+                                      (onSelect)="alertToAdd.deviceId = $event.id; selectDevicesAdd.isActive = false; loadKeys($event.id)"
+                                      (onDeSelect)="alertToAdd.deviceId = null; alertToAdd.key = null;"
                                       required="">
                 </angular2-multiselect>
               </div>
             </div>
-            <div class="form-group row" *ngIf="newAlert.deviceId">
+            <div class="form-group row" *ngIf="alertToAdd.deviceId">
               <label class="col-md-3 form-control-label">Key
                 <small class="text-danger">(required)</small>
               </label>
               <div class="col-md-9">
-                <angular2-multiselect #selectOne
+                <angular2-multiselect #selectKeysAdd
                                       name="selectKeys"
                                       [data]="selectKeys"
                                       [(ngModel)]="selectedKeys"
                                       [settings]="selectOneSettings"
-                                      (onSelect)="newAlert.key = $event.id; selectOne.isActive = false;"
-                                      (onDeSelect)="newAlert.key = null"
+                                      (onSelect)="alertToAdd.key = $event.id; selectKeysAdd.isActive = false;"
+                                      (onDeSelect)="alertToAdd.key = null"
                                       required>
                 </angular2-multiselect>
               </div>
             </div>
-            <ng-container *ngIf="newAlert.deviceId && newAlert.key">
+            <ng-container *ngIf="alertToAdd.deviceId && alertToAdd.key">
               <div class="form-group row">
                 <label class="offset-1 col-md-3 form-control-label">Exact value
                 </label>
                 <div class="col-md-8">
-                  <input type="text" class="form-control" placeholder="Exact value" name="newAlert.value_exact"
-                         [(ngModel)]="newAlert.value_exact">
+                  <input type="text" class="form-control" placeholder="Exact value" name="alertToAdd.value_exact"
+                         [(ngModel)]="alertToAdd.value_exact">
                 </div>
               </div>
 
               <div class="form-group row">
-                <label class="col-md-3 offset-1 form-control-label">Between</label>
+                <label class="offset-1 col-md-3 form-control-label">Between</label>
                 <div class="col-md-8">
                   <div class="row">
                     <div class="col-md-6">
                       <label class="form-control-label">Min value</label>
-                      <input type="number" class="form-control" name="newAlert.value_min"
-                             [(ngModel)]="newAlert.value_min">
+                      <input type="number" class="form-control" name="alertToAdd.value_min"
+                             [(ngModel)]="alertToAdd.value_min">
                     </div>
                     <div class="col-md-6">
                       <label class="form-control-label">Max value</label>
-                      <input type="number" class="form-control" name="newAlert.value_max"
-                             [(ngModel)]="newAlert.value_max">
+                      <input type="number" class="form-control" name="alertToAdd.value_max"
+                             [(ngModel)]="alertToAdd.value_max">
                     </div>
                   </div>
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 offset-1 form-control-label">Less than</label>
+                <label class="offset-1 col-md-3 form-control-label">Less than</label>
                 <div class="col-md-8">
-                  <input type="number" class="form-control" name="newAlert.value_less"
-                         [(ngModel)]="newAlert.value_less">
+                  <input type="number" class="form-control" name="alertToAdd.value_less"
+                         [(ngModel)]="alertToAdd.value_less">
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 offset-1 form-control-label">More than</label>
+                <label class="offset-1 col-md-3 form-control-label">More than</label>
                 <div class="col-md-8">
-                  <input type="number" class="form-control" name="newAlert.value_more"
-                         [(ngModel)]="newAlert.value_more">
+                  <input type="number" class="form-control" name="alertToAdd.value_more"
+                         [(ngModel)]="alertToAdd.value_more">
                 </div>
               </div>
               <hr class="offset-1">
@@ -217,12 +217,12 @@
                   <small>(optional)</small>
                 </label>
                 <div class="col-md-8">
-                  <input type="text" class="form-control" placeholder="Message" name="newAlert.message"
-                         [(ngModel)]="newAlert.message">
+                  <input type="text" class="form-control" placeholder="Message" name="alertToAdd.message"
+                         [(ngModel)]="alertToAdd.message">
                 </div>
               </div>
             </ng-container>
-            <div class="form-group row" *ngIf="newAlert.deviceId && newAlert.key">
+            <div class="form-group row" *ngIf="alertToAdd.deviceId && alertToAdd.key">
               <label class="col-md-3 form-control-label">Connectors
                 <small class="text-danger">(required)</small>
               </label>
@@ -272,11 +272,12 @@
                 <small class="text-danger">(required)</small>
               </label>
               <div class="col-md-9">
-                <angular2-multiselect name="selectDevices"
+                <angular2-multiselect #selectDevicesEdit
+                                      name="selectDevices"
                                       [data]="selectDevices"
                                       [(ngModel)]="selectedDevices"
                                       [settings]="selectOneDeviceSettings"
-                                      (onSelect)="alertToEdit.deviceId = $event.id; loadKeys($event.id)"
+                                      (onSelect)="alertToEdit.deviceId = $event.id; selectDevicesEdit.isActive = false; loadKeys($event.id)"
                                       (onDeSelect)="alertToEdit.deviceId = null; alertToEdit.key = null;"
                                       required="">
                 </angular2-multiselect>
@@ -287,11 +288,12 @@
                 <small class="text-danger">(required)</small>
               </label>
               <div class="col-md-9">
-                <angular2-multiselect name="selectKeys"
+                <angular2-multiselect #selectKeysEdit
+                                      name="selectKeys"
                                       [data]="selectKeys"
                                       [(ngModel)]="selectedKeys"
                                       [settings]="selectOneSettings"
-                                      (onSelect)="alertToEdit.key = $event.id"
+                                      (onSelect)="alertToEdit.key = $event.id; selectKeysEdit.isActive = false"
                                       (onDeSelect)="alertToEdit.key = null"
                                       required>
                 </angular2-multiselect>
@@ -307,7 +309,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 offset-1 form-control-label">Between</label>
+                <label class="offset-1 col-md-3 form-control-label">Between</label>
                 <div class="col-md-8">
                   <div class="row">
                     <div class="col-md-6">
@@ -324,14 +326,14 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 offset-1 form-control-label">Less than</label>
+                <label class="offset-1 col-md-3 form-control-label">Less than</label>
                 <div class="col-md-8">
                   <input type="number" class="form-control" name="alertToEdit.value_less"
                          [(ngModel)]="alertToEdit.value_less">
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 offset-1 form-control-label">More than</label>
+                <label class="offset-1 col-md-3 form-control-label">More than</label>
                 <div class="col-md-8">
                   <input type="number" class="form-control" name="alertToEdit.value_more"
                          [(ngModel)]="alertToEdit.value_more">

@@ -46,8 +46,7 @@ class Message {
     const categoryId = message.categoryId;
     const downlinkData = message.downlinkData;
 
-
-    if (!message.deviceId || !message.time || !message.seqNumber)
+    if (typeof message.deviceId  === 'undefined' || typeof message.time  === 'undefined' || typeof message.seqNumber === 'undefined')
       next('Missing "deviceId", "time" and "seqNumber"', message);
     // Set the createdAt time
     message.createdAt = new Date(message.time * 1000);

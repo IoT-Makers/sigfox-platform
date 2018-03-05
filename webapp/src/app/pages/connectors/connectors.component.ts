@@ -15,23 +15,36 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   private user: User;
 
-  @ViewChild('confirmModal') confirmModal: any;
-
-  private newConnector: Connector = new Connector();
-  public connectorTypes = [
-    {id: 'sigfox-api', text: 'Sigfox API'},
-    {id: 'webhook', text: 'Webhook'},
-    {id: 'free-mobile', text: 'Free Mobile'},
-    {id: 'office-365', text: 'Outlook (Office 365)'},
-    {id: 'mqtt', text: 'MQTT'}
-  ];
+  @ViewChild('confirmTokenModal') confirmTokenModal: any;
+  @ViewChild('addConnectorModal') addConnectorModal: any;
+  @ViewChild('editConnectorModal') editConnectorModal: any;
+  @ViewChild('confirmConnectorModal') confirmConnectorModal: any;
 
   private connectorSub: Subscription;
   private connectorRef: FireLoopRef<Connector>;
   private connectors: Connector[] = [];
+  private connectorToAdd: Connector = new Connector();
+  private connectorToRemove: Connector = new Connector();
+  private connectorToEdit: Connector = new Connector();
 
   private devAccessTokenToRemove: AccessToken = new AccessToken();
   private callbackURL;
+
+  // Select
+  private selectTypes: Array<Object> = [
+    {id: 'sigfox-api', itemName: 'Sigfox API'},
+    {id: 'webhook', itemName: 'Webhook'},
+    {id: 'free-mobile', itemName: 'Free Mobile'},
+    {id: 'office-365', itemName: 'Outlook (Office 365)'},
+    {id: 'mqtt', itemName: 'MQTT'}
+  ];
+  private selectedTypes = [];
+  private selectOneSettings = {
+    singleSelection: true,
+    text: 'Select one type',
+    enableSearchFilter: false,
+    classes: 'select-one'
+  };
 
   // Notifications
   private toast;
@@ -58,9 +71,6 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     this.getUser();
     this.callbackURL = this.document.location.origin + '/api/Messages/sigfox';
 
-    // Remove the new connector id (created server side) and set the createdAt date
-    this.newConnector.id = null;
-    this.newConnector.createdAt = new Date();
     // Real Time
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
       this.setup();
@@ -88,7 +98,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   setup(): void {
     // this.ngOnDestroy();
 
-    // Get and listen categories
+    // Get and listen connectors
     this.connectorRef = this.rt.FireLoop.ref<Connector>(Connector);
     this.connectorSub = this.connectorRef.on('change',
       {
@@ -101,8 +111,76 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     });
   }
 
-  connectorTypeSelected(type: any) {
-    this.newConnector.type = type.id;
+  openAddConnectorModal(): void {
+    // Reset selects
+    this.selectedTypes = [];
+    // New connector
+    this.connectorToAdd = new Connector();
+    // Open modal
+    this.addConnectorModal.show();
+  }
+
+  openEditConnectorModal(connector: Connector): void {
+     this.connectorToEdit = connector;
+     // Set selected values
+     this.selectedTypes = [{
+       id: connector.type,
+       itemName: connector.type
+     }];
+    this.editConnectorModal.show();
+  }
+
+  openConfirmConnectorModal(connector: Connector): void {
+    this.connectorToRemove = connector;
+    this.confirmConnectorModal.show();
+  }
+
+  removeConnector(): void {
+    this.connectorRef.remove(this.connectorToRemove).subscribe(value => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully removed.');
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+    });
+    this.confirmConnectorModal.hide();
+  }
+
+  editConnector(): void {
+    this.connectorRef.upsert(this.connectorToEdit).subscribe(value => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully updated.');
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+    });
+    this.editConnectorModal.hide();
+  }
+
+  addConnector(): void {
+    delete this.connectorToAdd.id;
+    this.connectorToAdd.userId = this.user.id;
+    this.connectorRef.upsert(this.connectorToAdd).subscribe((connector: Connector) => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully updated.');
+    }, err => {
+      if (err.error.statusCode === 401) {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('warning', 'Ouch', 'Could not connect to Sigfox. Are the API credentials correct?');
+      } else {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      }
+    });
+
+    this.addConnectorModal.hide();
   }
 
   createDevAccessToken(): void {
@@ -117,9 +195,9 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     });
   }
 
-  showRemoveModal(devAccessToken: AccessToken): void {
-    this.confirmModal.show();
+  openConfirmTokenModal(devAccessToken: AccessToken): void {
     this.devAccessTokenToRemove = devAccessToken;
+    this.confirmTokenModal.show();
   }
 
   removeDevAccessToken(): void {
@@ -131,34 +209,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
         });
       }
     );
-    this.confirmModal.hide();
-  }
-
-  saveConnector(connector: Connector): void {
-    connector.userId = this.user.id;
-    this.connectorRef.upsert(connector).subscribe((value: any) => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'The connector was successfully updated.');
-    }, err => {
-      if (err.error.statusCode === 401) {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('warning', 'Ouch', 'Could not connect to Sigfox. Are the API credentials correct?');
-      } else {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
-      }
-    });
-  }
-
-  removeConnector(connector: Connector) {
-    this.connectorRef.remove(connector).subscribe(value => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'The connector was successfully cleared.');
-    });
+    this.confirmTokenModal.hide();
   }
 
   toastClick() {
