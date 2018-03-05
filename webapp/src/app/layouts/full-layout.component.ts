@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {Category, Dashboard, Device, Organization, FireLoopRef, Message, Parser, User} from '../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
@@ -50,7 +50,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
               private organizationApi: OrganizationApi,
               private router: Router) {
   }
-
 
   ngOnInit(): void {
     console.log('Full Layout: ngOnInit');

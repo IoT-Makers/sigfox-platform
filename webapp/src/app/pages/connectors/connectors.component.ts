@@ -121,12 +121,18 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   openEditConnectorModal(connector: Connector): void {
-     this.connectorToEdit = connector;
-     // Set selected values
-     this.selectedTypes = [{
-       id: connector.type,
-       itemName: connector.type
-     }];
+    this.connectorToEdit = connector;
+    // Set selected values
+    this.selectTypes.forEach((type: any) => {
+      if (connector.type === type.id) {
+        this.selectedTypes = [{
+          id: type.id,
+          itemName: type.itemName
+        }];
+        return;
+      }
+    });
+
     this.editConnectorModal.show();
   }
 
@@ -154,9 +160,15 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully updated.');
     }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      if (err.error.statusCode === 401) {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('warning', 'Ouch', 'Could not connect to Sigfox. Are the API credentials correct?');
+      } else {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      }
     });
     this.editConnectorModal.hide();
   }
@@ -179,7 +191,6 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
         this.toast = this.toasterService.pop('error', 'Error', err.error.message);
       }
     });
-
     this.addConnectorModal.hide();
   }
 

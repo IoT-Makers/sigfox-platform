@@ -92,7 +92,12 @@
                   <strong>{{alert.Connector ? alert.Connector.name: 'No connector'}}</strong>
                 </td>
                 <td class="text-center">
-                  <strong>{{alert.last_trigger !== dateOrigin.toISOString() ? (alert.last_trigger | amTimeAgo) : 'Not yet triggered'}}</strong>
+                  <strong *ngIf="alert.last_trigger !== dateOrigin.toISOString()">
+                    {{alert.last_trigger | amTimeAgo}}
+                  </strong>
+                  <strong *ngIf="alert.last_trigger === dateOrigin.toISOString()" class="text-warning">
+                    Not yet triggered
+                  </strong>
                 </td>
                 <td class="text-center">
                   <div class="btn-group-sm">
@@ -150,7 +155,7 @@
                                       [settings]="selectOneDeviceSettings"
                                       (onSelect)="alertToAdd.deviceId = $event.id; selectDevicesAdd.isActive = false; loadKeys($event.id)"
                                       (onDeSelect)="alertToAdd.deviceId = null; alertToAdd.key = null;"
-                                      required="">
+                                      required>
                 </angular2-multiselect>
               </div>
             </div>

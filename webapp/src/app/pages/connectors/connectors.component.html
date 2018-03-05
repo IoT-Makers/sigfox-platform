@@ -472,12 +472,12 @@
                 <small class="text-danger">(required)</small>
               </label>
               <div class="col-md-9">
-                <angular2-multiselect #selectOneType
+                <angular2-multiselect #selectTypesAdd
                                       name="selectTypes"
                                       [data]="selectTypes"
                                       [(ngModel)]="selectedTypes"
                                       [settings]="selectOneSettings"
-                                      (onSelect)="connectorToAdd.type = $event.id; selectOneType.isActive = false;"
+                                      (onSelect)="connectorToAdd.type = $event.id; selectTypesAdd.isActive = false;"
                                       (onDeSelect)="connectorToAdd.type = null"
                                       required>
                 </angular2-multiselect>
@@ -542,7 +542,8 @@
                 <div class="col-md-9">
                   <select class="form-control" size="1"
                           name="connectorToAdd.method"
-                          [(ngModel)]="connectorToAdd.method">
+                          [(ngModel)]="connectorToAdd.method"
+                          required>
                     <option [ngValue]="method" *ngFor="let method of ['GET', 'POST', 'PUT']">{{method}}</option>
                   </select>
                 </div>
@@ -631,7 +632,8 @@
                   <input type="text" class="form-control"
                          name="connectorToAdd.host"
                          placeholder="MQTT host"
-                         [(ngModel)]="connectorToAdd.host">
+                         [(ngModel)]="connectorToAdd.host"
+                         required>
                 </div>
               </div>
               <div class="form-group row">
@@ -642,7 +644,8 @@
                   <input type="number" class="form-control"
                          name="connectorToAdd.port"
                          placeholder="MQTT port"
-                         [(ngModel)]="connectorToAdd.port">
+                         [(ngModel)]="connectorToAdd.port"
+                         required>
                 </div>
               </div>
               <div class="form-group row">
@@ -653,7 +656,8 @@
                   <input type="text" class="form-control"
                          name="connectorToAdd.topic"
                          placeholder="MQTT topic"
-                         [(ngModel)]="connectorToAdd.topic">
+                         [(ngModel)]="connectorToAdd.topic"
+                         required>
                 </div>
               </div>
             </ng-container>
@@ -668,7 +672,8 @@
                   <input type="text" class="form-control"
                          name="connectorToAdd.login"
                          placeholder="Connector login"
-                         [(ngModel)]="connectorToAdd.login">
+                         [(ngModel)]="connectorToAdd.login"
+                         required>
                 </div>
               </div>
               <div class="form-group row">
@@ -679,7 +684,8 @@
                   <input type="password" class="form-control"
                          name="connectorToAdd.password"
                          placeholder="Connector password"
-                         [(ngModel)]="connectorToAdd.password">
+                         [(ngModel)]="connectorToAdd.password"
+                         required>
                 </div>
               </div>
               <div class="form-group row">
@@ -690,7 +696,8 @@
                   <input type="email" class="form-control"
                          name="connectorToAdd.recipient"
                          placeholder="Recipient email"
-                         [(ngModel)]="connectorToAdd.recipient">
+                         [(ngModel)]="connectorToAdd.recipient"
+                         required>
                 </div>
               </div>
             </ng-container>
@@ -733,7 +740,8 @@
                 <input type="text" class="form-control"
                        name="connectorToEdit.name"
                        placeholder="Connector name"
-                       [(ngModel)]="connectorToEdit.name">
+                       [(ngModel)]="connectorToEdit.name"
+                       required>
               </div>
             </div>
             <div class="form-group row">
@@ -741,12 +749,12 @@
                 <small class="text-danger">(required)</small>
               </label>
               <div class="col-md-9">
-                <angular2-multiselect #selectOne
+                <angular2-multiselect #selectTypesEdit
                                       name="selectTypes"
                                       [data]="selectTypes"
                                       [(ngModel)]="selectedTypes"
                                       [settings]="selectOneSettings"
-                                      (onSelect)="connectorToEdit.type = $event.id; selectOne.isActive = false;"
+                                      (onSelect)="connectorToEdit.type = $event.id; selectTypesEdit.isActive = false;"
                                       (onDeSelect)="connectorToEdit.type = null"
                                       required>
                 </angular2-multiselect>
@@ -801,7 +809,8 @@
                   <input type="text" class="form-control"
                          name="connectorToEdit.url"
                          placeholder="Request URL"
-                         [(ngModel)]="connectorToEdit.url">
+                         [(ngModel)]="connectorToEdit.url"
+                         required>
                 </div>
               </div>
               <div class="form-group row">
@@ -811,7 +820,8 @@
                 <div class="col-md-9">
                   <select class="form-control" size="1"
                           name="connectorToEdit.method"
-                          [(ngModel)]="connectorToEdit.method">
+                          [(ngModel)]="connectorToEdit.method"
+                          required>
                     <option [ngValue]="method" *ngFor="let method of ['GET', 'POST', 'PUT']">{{method}}</option>
                   </select>
                 </div>
@@ -900,7 +910,8 @@
                   <input type="text" class="form-control"
                          name="connectorToEdit.host"
                          placeholder="MQTT host"
-                         [(ngModel)]="connectorToEdit.host">
+                         [(ngModel)]="connectorToEdit.host"
+                         required>
                 </div>
               </div>
               <div class="form-group row">
@@ -911,7 +922,8 @@
                   <input type="number" class="form-control"
                          name="connectorToEdit.port"
                          placeholder="MQTT port"
-                         [(ngModel)]="connectorToEdit.port">
+                         [(ngModel)]="connectorToEdit.port"
+                         required>
                 </div>
               </div>
               <div class="form-group row">
@@ -922,7 +934,8 @@
                   <input type="text" class="form-control"
                          name="connectorToEdit.topic"
                          placeholder="MQTT topic"
-                         [(ngModel)]="connectorToEdit.topic">
+                         [(ngModel)]="connectorToEdit.topic"
+                         required>
                 </div>
               </div>
             </ng-container>
@@ -937,7 +950,8 @@
                   <input type="text" class="form-control"
                          name="connectorToEdit.login"
                          placeholder="Connector login"
-                         [(ngModel)]="connectorToEdit.login">
+                         [(ngModel)]="connectorToEdit.login"
+                         required>
                 </div>
               </div>
               <div class="form-group row">
@@ -948,7 +962,8 @@
                   <input type="password" class="form-control"
                          name="connectorToEdit.password"
                          placeholder="Connector password"
-                         [(ngModel)]="connectorToEdit.password">
+                         [(ngModel)]="connectorToEdit.password"
+                         required>
                 </div>
               </div>
               <div class="form-group row">
@@ -959,7 +974,8 @@
                   <input type="email" class="form-control"
                          name="connectorToEdit.recipient"
                          placeholder="Recipient email"
-                         [(ngModel)]="connectorToEdit.recipient">
+                         [(ngModel)]="connectorToEdit.recipient"
+                         required>
                 </div>
               </div>
             </ng-container>

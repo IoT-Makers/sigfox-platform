@@ -17,13 +17,13 @@
               </p>
               <div class="form-group">
                 <label for="name">Name:</label>
-                <input type="text" required id="name" [(ngModel)]="newParser.name" name="parser" class="form-control"
-                     placeholder="Parser name">
+                <input type="text" required id="name" [(ngModel)]="parserToAdd.name" name="parser" class="form-control"
+                       placeholder="Parser name">
               </div>
               <div class="form-group">
                 <label for="description">Description:</label>
-                <input type="text" required id="description" [(ngModel)]="newParser.description" name="parser"
-                        class="form-control" placeholder="Parser description">
+                <input type="text" required id="description" [(ngModel)]="parserToAdd.description" name="parser"
+                       class="form-control" placeholder="Parser description">
               </div>
 
               <button type="button" class="btn btn-secondary btn-parser mb-1" (click)="create()">
@@ -32,7 +32,7 @@
             </div>
             <div class="col-md-8">
               <div ace-editor
-                   [(text)]="newParser.function"
+                   [(text)]="parserToAdd.function"
                    name="parser"
                    [mode]="'javascript'"
                    style="min-height: 400px; width:100%; overflow: auto;"></div>
@@ -114,6 +114,27 @@
       <div class="modal-footer">
         <button class="btn btn-sm btn-danger" (click)="remove()">Delete</button>
         <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div bsModal #confirmParseModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmParseModal"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Parse all corresponding messages</h4>
+        <button type="button" class="close" (click)="confirmParseModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Would you like to parse all messages linked to this parser (name: <b>{{parserToEdit.name}}</b>) ?
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-primary" (click)="updateParsedData()">Parse all messages</button>
+        <button class="btn btn-sm btn-default" (click)="confirmParseModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
