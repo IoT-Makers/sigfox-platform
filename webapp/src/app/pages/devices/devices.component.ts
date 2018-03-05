@@ -143,9 +143,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
           }
         });*/
         let attendedNbMessages: number;
-        attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber;
+        attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber + 1;
         if (device.Messages[device.Messages.length - 1].seqNumber > device.Messages[0].seqNumber)
-          attendedNbMessages += 4096;
+          attendedNbMessages += 4095;
         device.successRate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
         //device.successRate = ((device.successRate / attendedNbMessages) * 100).toFixed(2);
         console.log(device.id, {nbMessages: device.Messages.length, attendedNbMessages: attendedNbMessages, successRate: device.successRate});
