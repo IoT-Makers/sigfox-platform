@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {Category, Dashboard, Device, Organization, FireLoopRef, Message, Parser, User} from '../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
@@ -11,6 +11,8 @@ import * as _ from 'lodash';
 })
 export class FullLayoutComponent implements OnInit, OnDestroy {
 
+  @ViewChild('createOrganizationModal') createOrganizationModal: any;
+
   private user: User;
 
   private dashboardSub: Subscription;
@@ -22,6 +24,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private connectorSub: Subscription;
 
   private dashboards: Dashboard[] = [];
+
+  private newOrganization = new Organization();
   private organizations: Organization[] = [];
 
   private countCategories = 0;
@@ -50,6 +54,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
               private organizationApi: OrganizationApi,
               private router: Router) {
   }
+
 
   ngOnInit(): void {
     console.log('Full Layout: ngOnInit');
@@ -82,7 +87,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   setup(): void {
     console.log('Setup Full layout');
     //this.ngOnDestroy();
-
 
     this.userApi.getDashboards(this.user.id).subscribe((dashboards: Dashboard[]) => {
       this.dashboards = dashboards;
@@ -206,5 +210,29 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       console.log(dashboard);
       this.setup();
     });
+  }
+
+  newOrganisation(): void {
+
+    this.createOrganizationModal.show();
+  }
+
+  createOrganization(orga:any): void {
+
+    orga.ownerId = this.user.id;
+    console.log(orga);
+    this.userApi.createOrganizations(this.user.id, orga).subscribe(organization => {
+      console.log(organization);
+      this.newOrganization = new Organization();
+      this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
+        this.organizations = organizations;
+        console.log(organizations);
+      });
+
+      this.createOrganizationModal.hide();
+    });
+
+
+
   }
 }

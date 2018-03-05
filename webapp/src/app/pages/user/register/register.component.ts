@@ -18,7 +18,7 @@ export class RegisterComponent {
   private setting: AppSetting;
   private settings: AppSetting[] = [];
 
-  private canUserRegister: boolean = false;
+  private canUserRegister: any = false;
 
   constructor(private userApi: UserApi,
               private appSettingApi: AppSettingApi,

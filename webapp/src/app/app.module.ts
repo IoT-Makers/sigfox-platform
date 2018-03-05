@@ -15,6 +15,7 @@ import {SDKBrowserModule} from './shared/sdk/index';
 import {AuthGuard} from './_guards/auth.guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AgmCoreModule} from '@agm/core';
+import {ModalModule} from "ng2-bootstrap";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -25,6 +26,7 @@ import {AgmCoreModule} from '@agm/core';
     ReactiveFormsModule,
     AppRoutingModule,
     BsDropdownModule.forRoot(),
+    ModalModule.forRoot(),
     ChartsModule,
     SDKBrowserModule.forRoot(),
     AgmCoreModule.forRoot({

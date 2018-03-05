@@ -255,6 +255,57 @@ export class OrganizationEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public findByIdDashboards$ = this.actions$
+    .ofType(OrganizationActionTypes.FIND_BY_ID_DASHBOARDS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.organization.findByIdDashboards(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Dashboard', 'findByIdSuccess'),
+            of(new OrganizationActions.findByIdDashboardsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new OrganizationActions.findByIdDashboardsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public destroyByIdDashboards$ = this.actions$
+    .ofType(OrganizationActionTypes.DESTROY_BY_ID_DASHBOARDS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.organization.destroyByIdDashboards(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Dashboard', 'deleteByIdSuccess'),
+            of(new OrganizationActions.destroyByIdDashboardsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new OrganizationActions.destroyByIdDashboardsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public updateByIdDashboards$ = this.actions$
+    .ofType(OrganizationActionTypes.UPDATE_BY_ID_DASHBOARDS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.organization.updateByIdDashboards(action.payload.id, action.payload.fk, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Dashboard', 'findByIdSuccess'),
+            of(new OrganizationActions.updateByIdDashboardsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new OrganizationActions.updateByIdDashboardsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public getMembers$ = this.actions$
     .ofType(OrganizationActionTypes.GET_MEMBERS).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -447,6 +498,54 @@ export class OrganizationEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public getDashboards$ = this.actions$
+    .ofType(OrganizationActionTypes.GET_DASHBOARDS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.organization.getDashboards(action.payload.id, action.payload.filter).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Dashboard', 'findSuccess'),
+            of(new OrganizationActions.getDashboardsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new OrganizationActions.getDashboardsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createDashboards$ = this.actions$
+    .ofType(OrganizationActionTypes.CREATE_DASHBOARDS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.organization.createDashboards(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Dashboard', 'findSuccess'),
+            of(new OrganizationActions.createDashboardsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new OrganizationActions.createDashboardsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public deleteDashboards$ = this.actions$
+    .ofType(OrganizationActionTypes.DELETE_DASHBOARDS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.organization.deleteDashboards(action.payload.id).pipe(
+          map((response: any) => new OrganizationActions.deleteDashboardsSuccess(action.payload, action.meta)),
+          catchError((error: any) => concat(
+            of(new OrganizationActions.deleteDashboardsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public createManyMembers$ = this.actions$
     .ofType(OrganizationActionTypes.CREATE_MANY_MEMBERS).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -508,6 +607,23 @@ export class OrganizationEffects extends BaseLoopbackEffects {
           )),
           catchError((error: any) => concat(
             of(new OrganizationActions.createManyCategoriesFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createManyDashboards$ = this.actions$
+    .ofType(OrganizationActionTypes.CREATE_MANY_DASHBOARDS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.organization.createManyDashboards(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Dashboard', 'findSuccess'),
+            of(new OrganizationActions.createManyDashboardsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new OrganizationActions.createManyDashboardsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

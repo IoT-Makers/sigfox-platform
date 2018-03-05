@@ -6,9 +6,7 @@ import { Device, DeviceInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { DeviceActionTypes } from '../actions';
 
-
-export interface DevicesState extends EntityState<Device | DeviceInterface> {
-}
+export interface DevicesState extends EntityState<Device | DeviceInterface> {};
 
 export const DeviceAdapter: EntityAdapter<Device | DeviceInterface> = createEntityAdapter<Device | DeviceInterface>();
 

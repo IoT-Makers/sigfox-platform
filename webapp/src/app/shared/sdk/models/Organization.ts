@@ -3,7 +3,8 @@ import {
   User,
   Message,
   Device,
-  Category
+  Category,
+  Dashboard
 } from '../index';
 
 declare var Object: any;
@@ -18,10 +19,11 @@ export interface OrganizationInterface {
   Messages?: Message[];
   Devices?: Device[];
   Categories?: Category[];
+  Dashboards?: Dashboard[];
 }
 
 export class Organization implements OrganizationInterface {
-  "name": string = 'New organization';
+  "name": string = 'My organization';
   "ownerId": string = '';
   "logo": string = 'https://www.shareicon.net/data/512x512/2017/07/13/888376_office_512x512.png';
   "id": any = <any>null;
@@ -31,6 +33,7 @@ export class Organization implements OrganizationInterface {
   Messages: Message[] = null;
   Devices: Device[] = null;
   Categories: Category[] = null;
+  Dashboards: Dashboard[] = null;
   constructor(data?: OrganizationInterface) {
     Object.assign(this, data);
   }
@@ -67,7 +70,7 @@ export class Organization implements OrganizationInterface {
         "name": {
           name: 'name',
           type: 'string',
-          default: 'New organization'
+          default: 'My organization'
         },
         "ownerId": {
           name: 'ownerId',
@@ -125,6 +128,14 @@ export class Organization implements OrganizationInterface {
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'organizationId'
+        },
+        Dashboards: {
+          name: 'Dashboards',
+          type: 'Dashboard[]',
+          model: 'Dashboard',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'dashboardId'
         },
       }
     }

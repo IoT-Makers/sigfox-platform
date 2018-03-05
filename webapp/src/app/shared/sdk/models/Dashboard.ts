@@ -14,6 +14,7 @@ export interface DashboardInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: any;
+  "dashboardId"?: any;
   user?: User;
   Widgets?: Widget[];
 }
@@ -27,6 +28,7 @@ export class Dashboard implements DashboardInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
+  "dashboardId": any = <any>null;
   user: User = null;
   Widgets: Widget[] = null;
   constructor(data?: DashboardInterface) {
@@ -92,6 +94,10 @@ export class Dashboard implements DashboardInterface {
         },
         "userId": {
           name: 'userId',
+          type: 'any'
+        },
+        "dashboardId": {
+          name: 'dashboardId',
           type: 'any'
         },
       },

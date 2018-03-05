@@ -6,9 +6,7 @@ import { AppSetting, AppSettingInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { AppSettingActionTypes } from '../actions';
 
-
-export interface AppSettingsState extends EntityState<AppSetting | AppSettingInterface> {
-}
+export interface AppSettingsState extends EntityState<AppSetting | AppSettingInterface> {};
 
 export const AppSettingAdapter: EntityAdapter<AppSetting | AppSettingInterface> = createEntityAdapter<AppSetting | AppSettingInterface>();
 
