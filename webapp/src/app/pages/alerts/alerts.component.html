@@ -95,9 +95,9 @@
                   <strong *ngIf="alert.last_trigger !== dateOrigin.toISOString()">
                     {{alert.last_trigger | amTimeAgo}}
                   </strong>
-                  <strong *ngIf="alert.last_trigger === dateOrigin.toISOString()" class="text-warning">
+                  <span *ngIf="alert.last_trigger === dateOrigin.toISOString()" class="text-warning">
                     Not yet triggered
-                  </strong>
+                  </span>
                 </td>
                 <td class="text-center">
                   <div class="btn-group-sm">
