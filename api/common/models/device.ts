@@ -396,7 +396,8 @@ class Device {
                               else if (o.key === 'precision')
                                 geoloc.precision = o.value;
                             });
-                            if (geoloc.type) {
+
+                            if (geoloc.type && geoloc.lat && geoloc.lng) {
                               let addGeoloc = true;
                               if (!message.geoloc) message.geoloc = [];
                               else {
@@ -406,7 +407,6 @@ class Device {
 
                                 if (addGeoloc) message.geoloc.push(geoloc);
                               }
-
                             }
                             Message.upsert(message, function (err: any, messageUpdated: any) {
                               // console.log(messageUpdated);

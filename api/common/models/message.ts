@@ -310,7 +310,7 @@ class Message {
                                       const Client = require('strong-pubsub');
                                       const Adapter = require('strong-pubsub-mqtt');
                                       const client = new Client({host: connector.host, port: connector.port}, Adapter);
-                                        client.publish(connector.topic, alertMessage);
+                                      client.publish(connector.topic, alertMessage);
                                     }
 
                                     // Check if alert is one shot only, if yes: deactivate it
@@ -346,13 +346,17 @@ class Message {
                         geoloc.precision = o.value;
                     });
 
-                    if (geoloc.type && geoloc.lat >= -90 && geoloc.lat <= 90  && geoloc.lng >= -180 && geoloc.lng <= 180) {
-                      console.warn('There is geoloc in the parsed data: storing it in message & updating device location.');
-                      if (!message.geoloc)
-                        message.geoloc = [];
-                      message.geoloc.push(geoloc);
-                      // Update the device location geoloc array
-                      deviceToUpdate.location = [geoloc];
+                    if (geoloc.type) {
+                      if (geoloc.type === 'GPS' && geoloc.lat >= -90 && geoloc.lat <= 90  && geoloc.lng >= -180 && geoloc.lng <= 180) {
+                        console.log('There is GPS geoloc in the parsed data: storing it in message & updating device location.');
+                        if (!message.geoloc)
+                          message.geoloc = [];
+                        message.geoloc.push(geoloc);
+                        // Update the device location geoloc array
+                        deviceToUpdate.location = [geoloc];
+                      } else {
+                        console.log('There is another geoloc in the parsed data: storing it in message & updating device location.');
+                      }
                     }
 
                     // Update the device with parsed data objects keys & geoloc if present
