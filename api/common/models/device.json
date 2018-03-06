@@ -37,6 +37,9 @@
     "name": {
       "type": "string"
     },
+    "success_rate": {
+      "type": "number"
+    },
     "data_parsed": {
       "type": [
         "object"

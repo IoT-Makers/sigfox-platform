@@ -313,6 +313,8 @@ class Message {
                                         client.publish(connector.topic, alertMessage);
                                     }
 
+                                    // Check if alert is one shot only, if yes: deactivate it
+                                    if (alert.one_shot) alert.active = false;
                                     // Update the alert last trigger time
                                     alert.last_trigger = new Date();
                                     this.model.app.models.Alert.upsert(

@@ -1,22 +1,16 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
-import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
-import { JSONSearchParams } from '../core/search.params';
-import { ErrorHandler } from '../core/error.service';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Rx';
-import { Organization } from '../../models/Organization';
-import { SocketConnection } from '../../sockets/socket.connections';
-import { User } from '../../models/User';
-import { Message } from '../../models/Message';
-import { Device } from '../../models/Device';
-import { Category } from '../../models/Category';
-import { Dashboard } from '../../models/Dashboard';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {Http} from '@angular/http';
+import {SDKModels} from './SDKModels';
+import {BaseLoopBackApi} from '../core/base.service';
+import {LoopBackConfig} from '../../lb.config';
+import {LoopBackAuth} from '../core/auth.service';
+import {LoopBackFilter,} from '../../models/BaseModels';
+import {JSONSearchParams} from '../core/search.params';
+import {ErrorHandler} from '../core/error.service';
+import {Observable} from 'rxjs/Rx';
+import {Organization} from '../../models/Organization';
+import {SocketConnection} from '../../sockets/socket.connections';
 
 
 /**
@@ -599,7 +593,7 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * @param {any} id Organization id
    *
-   * @param {object} filter 
+   * @param {object} filter
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -694,7 +688,7 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * Data properties:
    *
-   *  - `count` – `{number}` - 
+   *  - `count` – `{number}` -
    */
   public countMembers(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
@@ -715,7 +709,7 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * @param {any} id Organization id
    *
-   * @param {object} filter 
+   * @param {object} filter
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -810,7 +804,7 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * Data properties:
    *
-   *  - `count` – `{number}` - 
+   *  - `count` – `{number}` -
    */
   public countMessages(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
@@ -831,7 +825,7 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * @param {any} id Organization id
    *
-   * @param {object} filter 
+   * @param {object} filter
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -926,7 +920,7 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * Data properties:
    *
-   *  - `count` – `{number}` - 
+   *  - `count` – `{number}` -
    */
   public countDevices(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
@@ -947,7 +941,7 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * @param {any} id Organization id
    *
-   * @param {object} filter 
+   * @param {object} filter
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1042,7 +1036,7 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * Data properties:
    *
-   *  - `count` – `{number}` - 
+   *  - `count` – `{number}` -
    */
   public countCategories(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
@@ -1063,7 +1057,7 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * @param {any} id Organization id
    *
-   * @param {object} filter 
+   * @param {object} filter
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1158,7 +1152,7 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * Data properties:
    *
-   *  - `count` – `{number}` - 
+   *  - `count` – `{number}` -
    */
   public countDashboards(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
@@ -1247,7 +1241,7 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * Data properties:
    *
-   *  - `result` – `{any}` - 
+   *  - `result` – `{any}` -
    */
   public myRemote(customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
@@ -1267,9 +1261,9 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * @param {object} custom {"start": date, "end": date }
    *
-   * @param {object} where where filter 
+   * @param {object} where where filter
    *
-   * @param {string} groupBy group by filter 
+   * @param {string} groupBy group by filter
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned

@@ -1,12 +1,14 @@
 /* tslint:disable */
-import { Action, createSelector } from '@ngrx/store';
-import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { BaseReducerFactory } from './base';
-import { User, UserInterface } from '../models';
-import { LoopbackAction } from '../models/BaseModels';
-import { UserActionTypes } from '../actions';
+import {createSelector} from '@ngrx/store';
+import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
+import {BaseReducerFactory} from './base';
+import {User, UserInterface} from '../models';
+import {LoopbackAction} from '../models/BaseModels';
+import {UserActionTypes} from '../actions';
 
-export interface UsersState extends EntityState<User | UserInterface> {};
+
+export interface UsersState extends EntityState<User | UserInterface> {
+}
 
 export const UserAdapter: EntityAdapter<User | UserInterface> = createEntityAdapter<User | UserInterface>();
 

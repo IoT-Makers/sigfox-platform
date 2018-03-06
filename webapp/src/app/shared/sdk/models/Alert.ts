@@ -4,6 +4,8 @@ declare var Object: any;
 export interface AlertInterface {
   "deviceId": string;
   "active"?: boolean;
+  "one_shot"?: boolean;
+  "last_trigger"?: Date;
   "key": string;
   "value_exact"?: any;
   "value_min"?: any;
@@ -11,7 +13,6 @@ export interface AlertInterface {
   "value_less"?: any;
   "value_more"?: any;
   "message"?: string;
-  "last_trigger"?: Date;
   "id"?: any;
   "userId"?: any;
   "organizationId"?: any;
@@ -27,6 +28,8 @@ export interface AlertInterface {
 export class Alert implements AlertInterface {
   "deviceId": string = '';
   "active": boolean = true;
+  "one_shot": boolean = false;
+  "last_trigger": Date = new Date(0);
   "key": string = '';
   "value_exact": any = <any>null;
   "value_min": any = <any>null;
@@ -34,7 +37,6 @@ export class Alert implements AlertInterface {
   "value_less": any = <any>null;
   "value_more": any = <any>null;
   "message": string = '';
-  "last_trigger": Date = new Date(0);
   "id": any = <any>null;
   "userId": any = <any>null;
   "organizationId": any = <any>null;
@@ -87,6 +89,15 @@ export class Alert implements AlertInterface {
           type: 'boolean',
           default: true
         },
+        "one_shot": {
+          name: 'one_shot',
+          type: 'boolean',
+          default: false
+        },
+        "last_trigger": {
+          name: 'last_trigger',
+          type: 'Date'
+        },
         "key": {
           name: 'key',
           type: 'string'
@@ -119,10 +130,6 @@ export class Alert implements AlertInterface {
         "message": {
           name: 'message',
           type: 'string'
-        },
-        "last_trigger": {
-          name: 'last_trigger',
-          type: 'Date'
         },
         "id": {
           name: 'id',

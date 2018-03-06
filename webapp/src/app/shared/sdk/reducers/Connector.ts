@@ -1,12 +1,14 @@
 /* tslint:disable */
-import { Action, createSelector } from '@ngrx/store';
-import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { BaseReducerFactory } from './base';
-import { Connector, ConnectorInterface } from '../models';
-import { LoopbackAction } from '../models/BaseModels';
-import { ConnectorActionTypes } from '../actions';
+import {createSelector} from '@ngrx/store';
+import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
+import {BaseReducerFactory} from './base';
+import {Connector, ConnectorInterface} from '../models';
+import {LoopbackAction} from '../models/BaseModels';
+import {ConnectorActionTypes} from '../actions';
 
-export interface ConnectorsState extends EntityState<Connector | ConnectorInterface> {};
+
+export interface ConnectorsState extends EntityState<Connector | ConnectorInterface> {
+}
 
 export const ConnectorAdapter: EntityAdapter<Connector | ConnectorInterface> = createEntityAdapter<Connector | ConnectorInterface>();
 

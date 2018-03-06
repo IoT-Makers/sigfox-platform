@@ -1,12 +1,14 @@
 /* tslint:disable */
-import { Action, createSelector } from '@ngrx/store';
-import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { BaseReducerFactory } from './base';
-import { Geoloc, GeolocInterface } from '../models';
-import { LoopbackAction } from '../models/BaseModels';
-import { GeolocActionTypes } from '../actions';
+import {createSelector} from '@ngrx/store';
+import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
+import {BaseReducerFactory} from './base';
+import {Geoloc, GeolocInterface} from '../models';
+import {LoopbackAction} from '../models/BaseModels';
+import {GeolocActionTypes} from '../actions';
 
-export interface GeolocsState extends EntityState<Geoloc | GeolocInterface> {};
+
+export interface GeolocsState extends EntityState<Geoloc | GeolocInterface> {
+}
 
 export const GeolocAdapter: EntityAdapter<Geoloc | GeolocInterface> = createEntityAdapter<Geoloc | GeolocInterface>();
 

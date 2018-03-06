@@ -100,7 +100,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.alertSub = this.alertRef.on('change',
       {
         limit: 1000,
-        order: 'updatedAt DESC',
+        order: 'last_trigger DESC',
         include: ['Device', 'Connector'],
         where: {
           userId: this.user.id
@@ -133,6 +133,34 @@ export class AlertsComponent implements OnInit, OnDestroy {
         }
       });
     });
+  }
+
+  setDrawingMap(google) {
+    const map = google.map;
+    const drawingManager = new google.maps.drawing.DrawingManager({
+      drawingMode: google.maps.drawing.OverlayType.MARKER,
+      drawingControl: true,
+      drawingControlOptions: {
+        position: google.maps.ControlPosition.TOP_CENTER,
+        drawingModes: [
+          google.maps.drawing.OverlayType.MARKER,
+          google.maps.drawing.OverlayType.CIRCLE,
+          google.maps.drawing.OverlayType.POLYGON,
+          google.maps.drawing.OverlayType.POLYLINE,
+          google.maps.drawing.OverlayType.RECTANGLE
+        ]
+      },
+      /*markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},*/
+      circleOptions: {
+        fillColor: '#ff5b52',
+        fillOpacity: 1,
+        strokeWeight: 5,
+        clickable: false,
+        editable: true,
+        zIndex: 1
+      }
+    });
+    drawingManager.setMap(map);
   }
 
   openAddAlertModal(): void {
@@ -256,7 +284,25 @@ export class AlertsComponent implements OnInit, OnDestroy {
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', 'Please fill in the alert form.' + err.error.message);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+    });
+  }
+
+  setAlertOneShot(alert: Alert): void {
+    this.alertRef.upsert(alert).subscribe((alert: Alert) => {
+      if (alert.one_shot) {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully set for one shot only.');
+      } else {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('info', 'Success', 'Alert will always trigger.');
+      }
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
   }
 
