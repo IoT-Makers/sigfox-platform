@@ -46,6 +46,11 @@
       "model": "user",
       "foreignKey": "userId"
     },
+    "Organizations": {
+      "type": "hasAndBelongsToMany",
+      "model": "Organization",
+      "foreignKey": "organizationId"
+    },
     "Devices": {
       "type": "hasMany",
       "model": "Device",

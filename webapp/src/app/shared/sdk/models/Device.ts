@@ -19,7 +19,7 @@ export interface DeviceInterface {
   Category?: any;
   Messages?: any[];
   user?: any;
-  Organization?: any;
+  Organizations?: any[];
   Alerts?: any[];
 }
 
@@ -41,7 +41,7 @@ export class Device implements DeviceInterface {
   Category: any = null;
   Messages: any[] = null;
   user: any = null;
-  Organization: any = null;
+  Organizations: any[] = null;
   Alerts: any[] = null;
   constructor(data?: DeviceInterface) {
     Object.assign(this, data);
@@ -162,13 +162,15 @@ export class Device implements DeviceInterface {
                   keyFrom: 'userId',
           keyTo: 'id'
         },
-        Organization: {
-          name: 'Organization',
-          type: 'any',
+        Organizations: {
+          name: 'Organizations',
+          type: 'any[]',
           model: '',
-          relationType: 'belongsTo',
-                  keyFrom: 'organizationId',
-          keyTo: 'id'
+          relationType: 'hasMany',
+          modelThrough: 'DeviceOrganization',
+          keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'deviceId'
         },
         Alerts: {
           name: 'Alerts',

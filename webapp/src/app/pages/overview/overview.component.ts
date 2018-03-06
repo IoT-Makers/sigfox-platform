@@ -1,10 +1,11 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {Alert, Category, Device, FireLoopRef, Message, Parser, User} from '../../shared/sdk/models';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Alert, Category, Device, FireLoopRef, Message, Organization, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
-import {UserApi} from '../../shared/sdk/services/custom';
+import {UserApi, OrganizationApi} from '../../shared/sdk/services/custom';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -15,9 +16,15 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 })
 export class OverviewComponent implements OnInit, OnDestroy {
 
+  @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
+
   private user: User;
 
-  @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
+  private organization: Organization;
+  private filter: any;
+
+  private newOrganization = new Organization();
+  private organizations: Organization[] = [];
 
   private mobile = false;
 
@@ -126,7 +133,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
     });
 
   constructor(private rt: RealTime,
-              private userApi: UserApi) {
+              private userApi: UserApi,
+              private organizationApi: OrganizationApi,
+              private route: ActivatedRoute,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -134,12 +144,42 @@ export class OverviewComponent implements OnInit, OnDestroy {
     if (window.screen.width <= 425) { // 768px portrait
       this.mobile = true;
     }
+
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-      this.setup();
-    else
-      this.rt.onAuthenticated().subscribe(() => this.setup());
+
+    //Check if organization view
+    this.route.params.subscribe(params => {
+
+      if(params.id){
+        this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
+          this.organization = organization;
+          //console.log("Organization:", organization);
+
+          //Set filter for API calls
+          this.filter = {"organizationId": this.organization.id};
+
+          //Check if real time and setup
+          if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+            this.setup();
+          else
+            this.rt.onAuthenticated().subscribe(() => this.setup());
+        });
+      }else{
+
+        //Set filter for API calls
+        this.filter = {"userId": this.user.id};
+
+        //Check if real time and setup
+        if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+          this.setup();
+        else
+          this.rt.onAuthenticated().subscribe(() => this.setup());
+      }
+      //console.log("Router", params);
+    });
+
+
     /*if (
       this.rt.connection.isConnected() &&
       this.rt.connection.authenticated
@@ -154,14 +194,21 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   setup(): void {
     // this.ngOnDestroy();
+
     // Categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categorySub = this.categoryRef.on('change').subscribe(
+    this.categorySub = this.categoryRef.on('change', {where: this.filter}).subscribe(
       (categories: Category[]) => {
         this.categories = categories;
-        this.userApi.countCategories(this.user.id).subscribe(result => {
-          this.countCategories = result.count;
-        });
+        if(!this.organization){
+          this.userApi.countCategories(this.user.id).subscribe(result => {
+            this.countCategories = result.count;
+          });
+        }else{
+          this.organizationApi.countCategories(this.organization.id).subscribe(result => {
+            this.countCategories = result.count;
+          });
+        }
       });
 
     // Devices
@@ -178,15 +225,21 @@ export class OverviewComponent implements OnInit, OnDestroy {
             order: 'createdAt DESC'
           }
         }],
-        where: {
-          userId: this.user.id
-        }
+        where: this.filter
       }).subscribe(
       (devices: Device[]) => {
+        //console.log(devices);
         this.devices = devices;
-        this.userApi.countDevices(this.user.id).subscribe(result => {
-          this.countDevices = result.count;
-        });
+        if(!this.organization){
+          this.userApi.countDevices(this.user.id).subscribe(result => {
+            this.countDevices = result.count;
+          });
+        }else{
+          this.organizationApi.countDevices(this.organization.id).subscribe(result => {
+            this.countDevices = result.count;
+          });
+        }
+
       });
 
     // Messages
@@ -194,15 +247,20 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.messageSub = this.messageRef.on('change', {
       limit: 1,
       order: 'createdAt DESC',
-      where: {
-        userId: this.user.id
-      }
+      where: this.filter
     }).subscribe(
       (messages: Message[]) => {
         this.messages = messages;
-        this.userApi.countMessages(this.user.id).subscribe(result => {
-          this.countMessages = result.count;
-        });
+        if(!this.organization){
+          this.userApi.countMessages(this.user.id).subscribe(result => {
+            this.countMessages = result.count;
+          });
+        }else {
+          this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+            this.countMessages = result.count;
+          });
+        }
+
       });
 
     // Alerts
@@ -254,9 +312,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.messageGraphSub = this.messageRef.stats(
       {
         range: this.graphRange,
-        where: {
-          userId: this.user.id
-        }
+        where: this.filter
       }
     ).subscribe((stats: any) => {
 
@@ -264,7 +320,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.messageChartData = [];
       this.data = [];
 
-      console.log('Stats: ', stats);
+      //console.log('Stats: ', stats);
 
       stats.forEach((stat: any) => {
 

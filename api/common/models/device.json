@@ -63,8 +63,8 @@
       "model": "user",
       "foreignKey": "userId"
     },
-    "Organization": {
-      "type": "belongsTo",
+    "Organizations": {
+      "type": "hasAndBelongsToMany",
       "model": "Organization",
       "foreignKey": "organizationId"
     },

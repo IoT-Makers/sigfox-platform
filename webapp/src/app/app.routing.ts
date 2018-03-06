@@ -37,6 +37,17 @@ export const routes: Routes = [
 
     ]
   },
+  {
+    path: 'organization/:id',
+    canActivate: [AuthGuard],
+    component: FullLayoutComponent,
+    data: {
+      title: 'Organization'
+    },
+    children: [
+      {path: '', loadChildren: './pages/overview/overview.module#OverviewModule'}
+    ]
+  },
   {path: 'not-found', loadChildren: './pages/not-found/not-found.module#NotFoundModule'},
   {path: '**', redirectTo: 'not-found'}/*,
   {

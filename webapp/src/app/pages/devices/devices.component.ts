@@ -2,7 +2,7 @@ import {Category, Connector, Device, FireLoopRef, Geoloc, Parser, User} from '..
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {AgmInfoWindow} from '@agm/core';
-import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
+import {DeviceApi, UserApi, AppSettingApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 

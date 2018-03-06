@@ -45,7 +45,7 @@
     "Members": {
       "type": "hasAndBelongsToMany",
       "model": "user",
-      "foreignKey": "organizationId"
+      "foreignKey":"memberId"
     },
     "Messages": {
       "type": "hasMany",

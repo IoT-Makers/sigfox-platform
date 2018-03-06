@@ -18,7 +18,7 @@ export interface MessageInterface {
   "organizationId"?: any;
   Device?: any;
   user?: any;
-  Organization?: any;
+  Organizations?: any[];
 }
 
 export class Message implements MessageInterface {
@@ -38,7 +38,7 @@ export class Message implements MessageInterface {
   "organizationId": any = <any>null;
   Device: any = null;
   user: any = null;
-  Organization: any = null;
+  Organizations: any[] = null;
   constructor(data?: MessageInterface) {
     Object.assign(this, data);
   }
@@ -146,13 +146,15 @@ export class Message implements MessageInterface {
                   keyFrom: 'userId',
           keyTo: 'id'
         },
-        Organization: {
-          name: 'Organization',
-          type: 'any',
+        Organizations: {
+          name: 'Organizations',
+          type: 'any[]',
           model: '',
-          relationType: 'belongsTo',
-                  keyFrom: 'organizationId',
-          keyTo: 'id'
+          relationType: 'hasMany',
+          modelThrough: 'MessageOrganization',
+          keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'messageId'
         },
       }
     }

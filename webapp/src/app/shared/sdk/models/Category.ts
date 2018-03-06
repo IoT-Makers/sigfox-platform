@@ -12,6 +12,7 @@ export interface CategoryInterface {
   "organizationId"?: any;
   Devices?: any[];
   user?: any;
+  Organizations?: any[];
 }
 
 export class Category implements CategoryInterface {
@@ -25,6 +26,7 @@ export class Category implements CategoryInterface {
   "organizationId": any = <any>null;
   Devices: any[] = null;
   user: any = null;
+  Organizations: any[] = null;
   constructor(data?: CategoryInterface) {
     Object.assign(this, data);
   }
@@ -107,6 +109,16 @@ export class Category implements CategoryInterface {
           relationType: 'belongsTo',
                   keyFrom: 'userId',
           keyTo: 'id'
+        },
+        Organizations: {
+          name: 'Organizations',
+          type: 'any[]',
+          model: '',
+          relationType: 'hasMany',
+          modelThrough: 'CategoryOrganization',
+          keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'categoryId'
         },
       }
     }
