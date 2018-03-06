@@ -43,7 +43,7 @@
     },
     "data_parsed": {
       "type": [
-        "object"
+        "Property"
       ]
     },
     "downlinkData": {

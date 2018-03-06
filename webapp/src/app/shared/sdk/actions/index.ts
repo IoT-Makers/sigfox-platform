@@ -1,22 +1,23 @@
 /* tslint:disable */
-import { LoopbackAuthActionTypes, LoopbackAuthActions } from './auth';
-import { LoopbackErrorActionTypes, LoopbackErrorActions } from './error';
+import {LoopbackAuthActions, LoopbackAuthActionTypes} from './auth';
+import {LoopbackErrorActions, LoopbackErrorActionTypes} from './error';
 
-import { EmailActionTypes, EmailActions } from './Email';
-import { AccessTokenActionTypes, AccessTokenActions } from './AccessToken';
-import { DeviceActionTypes, DeviceActions } from './Device';
-import { ParserActionTypes, ParserActions } from './Parser';
-import { CategoryActionTypes, CategoryActions } from './Category';
-import { MessageActionTypes, MessageActions } from './Message';
-import { AppSettingActionTypes, AppSettingActions } from './AppSetting';
-import { DashboardActionTypes, DashboardActions } from './Dashboard';
-import { UserActionTypes, UserActions } from './User';
-import { OrganizationActionTypes, OrganizationActions } from './Organization';
-import { GeolocActionTypes, GeolocActions } from './Geoloc';
-import { AlertActionTypes, AlertActions } from './Alert';
-import { ReceptionActionTypes, ReceptionActions } from './Reception';
-import { ConnectorActionTypes, ConnectorActions } from './Connector';
-import { WidgetActionTypes, WidgetActions } from './Widget';
+import {EmailActions, EmailActionTypes} from './Email';
+import {AccessTokenActions, AccessTokenActionTypes} from './AccessToken';
+import {DeviceActions, DeviceActionTypes} from './Device';
+import {ParserActions, ParserActionTypes} from './Parser';
+import {CategoryActions, CategoryActionTypes} from './Category';
+import {MessageActions, MessageActionTypes} from './Message';
+import {AppSettingActions, AppSettingActionTypes} from './AppSetting';
+import {DashboardActions, DashboardActionTypes} from './Dashboard';
+import {UserActions, UserActionTypes} from './User';
+import {OrganizationActions, OrganizationActionTypes} from './Organization';
+import {GeolocActions, GeolocActionTypes} from './Geoloc';
+import {AlertActions, AlertActionTypes} from './Alert';
+import {ReceptionActions, ReceptionActionTypes} from './Reception';
+import {ConnectorActions, ConnectorActionTypes} from './Connector';
+import {WidgetActions, WidgetActionTypes} from './Widget';
+import {PropertyActions, PropertyActionTypes} from './Property';
 
 export {
   LoopbackAuthActionTypes, LoopbackAuthActions,
@@ -36,4 +37,5 @@ export {
 	ReceptionActionTypes, ReceptionActions,
 	ConnectorActionTypes, ConnectorActions,
 	WidgetActionTypes, WidgetActions,
+	PropertyActionTypes, PropertyActions,
 };

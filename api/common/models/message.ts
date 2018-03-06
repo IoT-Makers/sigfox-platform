@@ -346,7 +346,7 @@ class Message {
                         geoloc.precision = o.value;
                     });
 
-                    if (geoloc.type) {
+                    if (geoloc.type && geoloc.lat >= -90 && geoloc.lat <= 90  && geoloc.lng >= -180 && geoloc.lng <= 180) {
                       console.warn('There is geoloc in the parsed data: storing it in message & updating device location.');
                       if (!message.geoloc)
                         message.geoloc = [];

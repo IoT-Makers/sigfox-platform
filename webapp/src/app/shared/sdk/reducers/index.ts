@@ -16,3 +16,4 @@ export * from './Alert';
 export * from './Reception';
 export * from './Connector';
 export * from './Widget';
+export * from './Property';

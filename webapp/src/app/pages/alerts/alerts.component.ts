@@ -3,7 +3,7 @@ import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
-import {Alert, Connector, Device, FireLoopRef, User} from '../../shared/sdk/models';
+import {Alert, Connector, Device, FireLoopRef, Property, User} from '../../shared/sdk/models';
 
 @Component({
   selector: 'app-alerts',
@@ -258,10 +258,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.userApi.getDevices(this.user.id, {where: {id: deviceId}}).subscribe((devices: Device[]) => {
       console.log(devices);
       if (devices[0].data_parsed) {
-        devices[0].data_parsed.forEach(o => {
+        devices[0].data_parsed.forEach((p: Property) => {
           const item = {
-            id: o.key,
-            itemName: o.key
+            id: p.key,
+            itemName: p.key
           };
           // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
           this.selectKeys.push(item);

@@ -39,11 +39,11 @@
   "relations": {},
   "acls": [
     {
-      "property": "find",
       "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "$everyone",
-      "permission": "ALLOW"
+      "permission": "ALLOW",
+      "property": "find"
     },
     {
       "accessType": "*",

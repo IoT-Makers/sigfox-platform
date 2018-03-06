@@ -71,7 +71,7 @@
           "*": false,
           "timeSeries": true,
           "deleteDeviceMessagesAlerts": true,
-          "getMessagesFromSigfoxBackend":true,
+          "getMessagesFromSigfoxBackend": true,
           "parseAllMessages": true
         }
       }
@@ -156,6 +156,10 @@
   },
   "Widget": {
     "dataSource": "mongodb",
+    "public": true
+  },
+  "Property": {
+    "dataSource": null,
     "public": true
   }
 }

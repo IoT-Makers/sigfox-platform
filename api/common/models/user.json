@@ -49,7 +49,9 @@
       ]
     },
     "Email": {
-      "dataSource": "Email"
+      "type": {
+        "dataSource": "Email"
+      }
     }
   },
   "validations": [],
