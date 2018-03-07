@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild, ViewChildren} from '@angular/core';
-import {AppSetting, Category, Device, FireLoopRef, User} from '../../shared/sdk/models';
-import {AppSettingApi ,CategoryApi, DeviceApi, RealTime, UserApi} from '../../shared/sdk/services';
+import {AppSetting, Category, Device, FireLoopRef, Organization, User} from '../../shared/sdk/models';
+import {AppSettingApi ,CategoryApi, DeviceApi, RealTime, UserApi, OrganizationApi} from '../../shared/sdk/services';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 @Component({
@@ -15,6 +15,9 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private setting: AppSetting;
   private settings: AppSetting[] = [];
+
+  private organization: Organization;
+  private organizations: Organization[] = [];
 
   @ViewChild('updateUserModal') updateUserModal: any;
   @ViewChild('confirmModal') confirmModal: any;
@@ -32,6 +35,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   constructor(private rt: RealTime,
               private userApi: UserApi,
               private appSettingApi: AppSettingApi,
+              private organizationApi: OrganizationApi,
               private toasterService: ToasterService) {
 
     this.toasterService = toasterService;
@@ -51,6 +55,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   setup(): void {
     this.getUsers();
     this.getAppSettings();
+    this.getOrganizations();
   }
 
   getUsers(): void {
@@ -64,6 +69,13 @@ export class AdminComponent implements OnInit, OnDestroy {
   getAppSettings(): void {
     this.appSettingApi.find().subscribe((settings: AppSetting[])=> {
       this.settings = settings;
+    });
+  }
+
+  getOrganizations(): void {
+    this.organizationApi.find({include:"Members"}).subscribe((organizations: Organization[]) => {
+      this.organizations = organizations;
+      console.log(organizations);
     });
   }
 

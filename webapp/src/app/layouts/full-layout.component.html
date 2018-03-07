@@ -27,13 +27,19 @@
 
         <div class="dropdown-header text-center"><strong>Organizations</strong></div>
 
-        <button href="#" class="dropdown-item" *ngFor="let orga of organizations" [routerLink]="['/organization/'+orga.id]">
+        <button href="#" class="dropdown-item text-center" *ngFor="let orga of organizations" [routerLink]="['/organization/'+orga.id]">
           <img src="{{orga.logo}}" height="30px" class="img-avatar"> {{orga.name}}
         </button>
-        <button href="#" class="dropdown-item" (click)="newOrganisation()">
+        <button href="#" class="dropdown-item text-center" (click)="newOrganisation()">
           <i class="fa fa-plus text-primary"></i> New organization
         </button>
 
+        <!--<ng-container *ngIf="admin">-->
+          <!--<div class="dropdown-header text-center"><strong>Admin</strong></div>-->
+          <!--<button href="#" class="dropdown-item text-center" (click)="setAdminView()">-->
+            <!--<i class="fa fa-key text-primary"></i> Go to admin-->
+          <!--</button>-->
+        <!--</ng-container>-->
       </div>
     </li>
 
@@ -318,7 +324,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary">Close</button>
+        <button type="button" class="btn btn-secondary" (click)="createOrganizationModal.hide()">Close</button>
         <button type="button" class="btn btn-success" (click)="createOrganization(newOrganization)">Create</button>
       </div>
     </div><!-- /.modal-content -->

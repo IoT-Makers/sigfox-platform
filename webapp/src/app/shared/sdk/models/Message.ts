@@ -15,7 +15,6 @@ export interface MessageInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: any;
-  "organizationId"?: any;
   Device?: any;
   user?: any;
   Organizations?: any[];
@@ -35,7 +34,6 @@ export class Message implements MessageInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
-  "organizationId": any = <any>null;
   Device: any = null;
   user: any = null;
   Organizations: any[] = null;
@@ -124,10 +122,6 @@ export class Message implements MessageInterface {
           name: 'userId',
           type: 'any'
         },
-        "organizationId": {
-          name: 'organizationId',
-          type: 'any'
-        },
       },
       relations: {
         Device: {
@@ -151,7 +145,7 @@ export class Message implements MessageInterface {
           type: 'any[]',
           model: '',
           relationType: 'hasMany',
-          modelThrough: 'MessageOrganization',
+          modelThrough: 'OrganizationMessage',
           keyThrough: 'organizationId',
           keyFrom: 'id',
           keyTo: 'messageId'

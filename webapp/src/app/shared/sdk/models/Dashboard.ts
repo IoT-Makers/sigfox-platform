@@ -1,6 +1,7 @@
 /* tslint:disable */
 import {
   User,
+  Organization,
   Widget
 } from '../index';
 
@@ -14,8 +15,8 @@ export interface DashboardInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: any;
-  "dashboardId"?: any;
   user?: User;
+  Organizations?: Organization[];
   Widgets?: Widget[];
 }
 
@@ -28,8 +29,8 @@ export class Dashboard implements DashboardInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
-  "dashboardId": any = <any>null;
   user: User = null;
+  Organizations: Organization[] = null;
   Widgets: Widget[] = null;
   constructor(data?: DashboardInterface) {
     Object.assign(this, data);
@@ -96,10 +97,6 @@ export class Dashboard implements DashboardInterface {
           name: 'userId',
           type: 'any'
         },
-        "dashboardId": {
-          name: 'dashboardId',
-          type: 'any'
-        },
       },
       relations: {
         user: {
@@ -109,6 +106,16 @@ export class Dashboard implements DashboardInterface {
           relationType: 'belongsTo',
                   keyFrom: 'userId',
           keyTo: 'id'
+        },
+        Organizations: {
+          name: 'Organizations',
+          type: 'Organization[]',
+          model: 'Organization',
+          relationType: 'hasMany',
+          modelThrough: 'OrganizationDashboard',
+          keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'dashboardId'
         },
         Widgets: {
           name: 'Widgets',

@@ -14,7 +14,6 @@ export interface DeviceInterface {
   "parserId"?: any;
   "categoryId"?: any;
   "userId"?: any;
-  "organizationId"?: any;
   Parser?: any;
   Category?: any;
   Messages?: any[];
@@ -36,7 +35,6 @@ export class Device implements DeviceInterface {
   "parserId": any = <any>null;
   "categoryId": any = <any>null;
   "userId": any = <any>null;
-  "organizationId": any = <any>null;
   Parser: any = null;
   Category: any = null;
   Messages: any[] = null;
@@ -124,10 +122,6 @@ export class Device implements DeviceInterface {
           name: 'userId',
           type: 'any'
         },
-        "organizationId": {
-          name: 'organizationId',
-          type: 'any'
-        },
       },
       relations: {
         Parser: {
@@ -167,7 +161,7 @@ export class Device implements DeviceInterface {
           type: 'any[]',
           model: '',
           relationType: 'hasMany',
-          modelThrough: 'DeviceOrganization',
+          modelThrough: 'OrganizationDevice',
           keyThrough: 'organizationId',
           keyFrom: 'id',
           keyTo: 'deviceId'

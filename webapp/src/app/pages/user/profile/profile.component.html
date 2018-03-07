@@ -104,48 +104,55 @@
           </ng-container>
 
 
-
-
           <!--Table-->
           <div class="table-responsive">
-    <table class="table table-hover table-outline" [mfData]="organizations" #mf="mfDataTable" [mfRowsOnPage]="50">
-      <thead class="thead-inverse">
-      <tr>
-        <th class="text-center">
-          Logo
-        </th>
-        <th class="text-center">
-          <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
-        </th>
+            <table class="table table-hover table-outline" [mfData]="organizations" #mf="mfDataTable"
+                   [mfRowsOnPage]="50">
+              <thead class="thead-inverse">
+              <tr>
+                <th class="text-center">
+                  Logo
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="Members.length"><i class="fa fa-sort"></i> Users</mfDefaultSorter>
+                </th>
 
-        <th class="text-center">Action</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let item of  mf.data; let i = index">
-        <td class="text-center">
-          <div class="small text-center">
-            <img src="{{item.logo}}" height="50px" class="img-avatar">
-          </div>
-        </td>
-        <td class="text-center">
-          <div class="">
-            {{item.name}}
-          </div>
-        </td>
+                <th class="text-center">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of  mf.data; let i = index">
+                <td class="text-center">
+                  <div class="small text-center">
+                    <img src="{{item.logo}}" height="50px" class="img-avatar">
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="">
+                    {{item.name}}
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="">
+                    {{item.Members.length}}
+                  </div>
+                </td>
 
-        <td class="text-center">
-          <div class="btn-group-sm">
-            <button class="btn btn-outline-primary btn-round" tooltip="Leave organization" disabled
-                    (click)="leaveOrganization(item)"><i class="fa fa-sign-out fa-lg"></i></button>
-            <button class="btn btn-outline-danger btn-round" tooltip="Delete organization" disabled
-                    (click)="deleteOrganization(item)"><i class="fa fa-trash fa-lg"></i></button>
+                <td class="text-center">
+                  <div class="btn-group-sm">
+                    <button class="btn btn-outline-primary btn-round" tooltip="Leave organization" disabled
+                            (click)="leaveOrganization(item)"><i class="fa fa-sign-out fa-lg"></i></button>
+                    <button class="btn btn-outline-danger btn-round" tooltip="Delete organization" disabled
+                            (click)="deleteOrganization(item)"><i class="fa fa-trash fa-lg"></i></button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
 
         </div>
       </div>
@@ -255,7 +262,8 @@
       </div>
       <div class="modal-body">
         <p>Are you sure you wish to delete your account?</p>
-        <p class="font-weight-bold text-danger">This action is irreversible and will permanently delete all your data (categories, devices, messages, connectors, ...).</p>
+        <p class="font-weight-bold text-danger">This action is irreversible and will permanently delete all your data
+          (categories, devices, messages, connectors, ...).</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="deleteUserModal.hide()">Close</button>

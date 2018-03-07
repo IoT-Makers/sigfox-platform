@@ -111,12 +111,6 @@
       "principalType": "ROLE",
       "principalId": "$owner",
       "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "organizationMember",
-      "permission": "ALLOW"
     }
   ],
   "methods": {}

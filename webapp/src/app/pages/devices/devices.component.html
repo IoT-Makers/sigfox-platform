@@ -176,6 +176,12 @@
                     <i class="fa fa-code"></i> &nbsp; Parse
                   </button>
                 </div>
+                <div class="col col-md-12">
+                  <p></p>
+                  <button tooltip="Share this device" class="btn btn-round btn-info btn-ladda" data-style="slide-up" (click)="$event.preventDefault(); showShareDeviceWithOrganizationModal()">
+                    <i class="fa fa-share"></i> &nbsp; Share
+                  </button>
+                </div>
               </tab>
             </tabset>
           </form>
@@ -388,6 +394,41 @@
       <div class="modal-footer">
         <button class="btn btn-sm btn-success" (click)="parseAllMessages(deviceToEdit.id)">Parse</button>
         <button class="btn btn-sm btn-default" (click)="confirmParseModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div bsModal #shareDeviceWithOrganizationModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="shareDeviceWithOrganizationModal"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Share device <b>{{deviceToEdit.id}}</b> with an organization</h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="shareDeviceWithOrganization(deviceToEdit.id)" class="form-horizontal" #editForm="ngForm">
+
+
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Select organizations</label>
+            <div class="col-md-9">
+              <angular2-multiselect name="selectOrganizations"
+                                    [data]="selectOrganizations"
+                                    [(ngModel)]="selectedOrganizations"
+                                    [settings]="selectOrganizationsSettings">
+              </angular2-multiselect>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-success" (click)="shareDeviceWithOrganization(deviceToEdit.id)">Share</button>
+        <button class="btn btn-sm btn-default" (click)="shareDeviceWithOrganizationModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

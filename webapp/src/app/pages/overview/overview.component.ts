@@ -5,7 +5,7 @@ import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
-import {UserApi, OrganizationApi} from '../../shared/sdk/services/custom';
+import {UserApi, OrganizationApi, DeviceApi} from '../../shared/sdk/services/custom';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -32,6 +32,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private messageGraphSub: Subscription;
   private messageSeeSub: Subscription;
   private deviceSub: Subscription;
+  private organizationSub: Subscription;
   private alertSub: Subscription;
   private categorySub: Subscription;
 
@@ -50,11 +51,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private countDevices = 0;
   private countAlerts = 0;
   private countCategories = 0;
+  private countOrganizationMembers = 0;
 
   private messageRef: FireLoopRef<Message>;
   private messageGraphRef: FireLoopRef<Message>;
   private messageSeeRef: FireLoopRef<Message>;
-  private deviceRef: FireLoopRef<Device>;
+  private deviceRef: FireLoopRef<any>;
+  private organizationRef: FireLoopRef<Organization>;
   private alertRef: FireLoopRef<Alert>;
   private categoryRef: FireLoopRef<Category>;
 
@@ -74,6 +77,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   public data = [];
   // Messages graph
   private graphRange = 'hourly';
+  private listDevicesId: Array<any> = [];
   private messageChartData: Array<any> = [];
   private messageChartLabels: Array<any> = [];
   public messageChartOptions = {
@@ -135,6 +139,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   constructor(private rt: RealTime,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
+              private deviceApi: DeviceApi,
               private route: ActivatedRoute,
               private router: Router) {
   }
@@ -147,17 +152,15 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
+    // console.log('localStorage', localStorage.getItem('filter'));
 
     //Check if organization view
     this.route.params.subscribe(params => {
 
-      if(params.id){
+      if (params.id) {
         this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
           this.organization = organization;
-          //console.log("Organization:", organization);
-
-          //Set filter for API calls
-          this.filter = {"organizationId": this.organization.id};
+          // this.countOrganizationMembers = organization.Members.length;
 
           //Check if real time and setup
           if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
@@ -165,10 +168,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           else
             this.rt.onAuthenticated().subscribe(() => this.setup());
         });
-      }else{
-
-        //Set filter for API calls
-        this.filter = {"userId": this.user.id};
+      } else {
 
         //Check if real time and setup
         if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
@@ -178,18 +178,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
       }
       //console.log("Router", params);
     });
-
-
-    /*if (
-      this.rt.connection.isConnected() &&
-      this.rt.connection.authenticated
-    ) {
-      this.rt.onReady().subscribe(() => this.setup());
-    } else {
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-      this.rt.onReady().subscribe();
-    }*/
-
   }
 
   setup(): void {
@@ -197,14 +185,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categorySub = this.categoryRef.on('change', {where: this.filter}).subscribe(
-      (categories: Category[]) => {
-        this.categories = categories;
-        if(!this.organization){
+    this.categorySub = this.categoryRef.on('change',  {where: {userId: this.user.id}}).subscribe(
+      (results: any[]) => {
+        console.log("category sub", results);
+        if (!this.organization) {
           this.userApi.countCategories(this.user.id).subscribe(result => {
             this.countCategories = result.count;
           });
-        }else{
+        } else {
           this.organizationApi.countCategories(this.organization.id).subscribe(result => {
             this.countCategories = result.count;
           });
@@ -212,71 +200,105 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
 
     // Devices
+
+    // Listen to changes
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceSub = this.deviceRef.on('change',
       {
-        limit: 10,
-        order: 'updatedAt DESC',
-        include: ['Parser', 'Category', {
-          relation: 'Messages',
-          scope: {
-            skip: 0,
-            limit: 1,
-            order: 'createdAt DESC'
-          }
-        }],
-        where: this.filter
+        limit: 1,
+        order: 'createdAt DESC',
+        where: {userId: this.user.id}
       }).subscribe(
-      (devices: Device[]) => {
-        //console.log(devices);
-        this.devices = devices;
-        if(!this.organization){
-          this.userApi.countDevices(this.user.id).subscribe(result => {
-            this.countDevices = result.count;
+      (results: any[]) => {
+        console.log("device sub", results);
+        if (!this.organization) {
+
+          //Get user devices
+          this.userApi.getDevices(this.user.id,
+            {
+              include: ['Parser', 'Category', {
+                relation: 'Messages',
+                scope: {
+                  skip: 0,
+                  limit: 1,
+                  order: 'createdAt DESC'
+                }
+              }],
+              order: 'createdAt DESC'
+            }).subscribe(devices => {
+            console.log("devices :", devices);
+            if (devices) {
+              this.devices = devices;
+              this.countDevices = devices.length;
+            }
           });
-        }else{
-          this.organizationApi.countDevices(this.organization.id).subscribe(result => {
-            this.countDevices = result.count;
+        } else {
+
+          // Get organization devices
+          this.organizationApi.getDevices(this.organization.id,
+            {
+              include: ['Parser', 'Category', {
+                relation: 'Messages',
+                scope: {
+                  skip: 0,
+                  limit: 1,
+                  order: 'createdAt DESC'
+                }
+              }],
+              order: 'createdAt DESC'
+            }).subscribe(devices => {
+            console.log("devices :", devices);
+            if (devices) {
+              this.devices = devices;
+              this.countDevices = devices.length;
+            }
           });
+
         }
 
       });
 
+
     // Messages
+
+    // Listen to messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     this.messageSub = this.messageRef.on('change', {
       limit: 1,
       order: 'createdAt DESC',
-      where: this.filter
+      where: {userId: this.user.id}
     }).subscribe(
-      (messages: Message[]) => {
-        this.messages = messages;
-        if(!this.organization){
+      (results: any[]) => {
+        console.log("messages sub", results);
+        if (!this.organization) {
           this.userApi.countMessages(this.user.id).subscribe(result => {
             this.countMessages = result.count;
           });
-        }else {
-          this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-            this.countMessages = result.count;
-          });
+        } else {
+          // this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+          //   this.countMessages = result.count;
+          // });
         }
 
       });
 
     // Alerts
-    this.alertRef = this.rt.FireLoop.ref<Alert>(Alert);
-    this.alertSub = this.alertRef.on('change', {
-      where: {
-        userId: this.user.id
-      }
-    }).subscribe((alerts: Alert[]) => {
-      this.alerts = alerts;
-      this.userApi.countAlerts(this.user.id, {
-        active: true
-      }).subscribe(result => {
-        this.countAlerts = result.count;
+    // Listen to alerts - Not needed for organization
+    if (!this.organization){
+      this.alertRef = this.rt.FireLoop.ref<Alert>(Alert);
+      this.alertSub = this.alertRef.on('change', {
+        where: {
+          userId: this.user.id
+        }
+      }).subscribe((alerts: Alert[]) => {
+        this.alerts = alerts;
+        this.userApi.countAlerts(this.user.id, {
+          active: true
+        }).subscribe(result => {
+          this.countAlerts = result.count;
+        });
       });
-    });
+    }
 
     this.getMessagesGraph(this.graphRange);
   }
@@ -307,12 +329,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.messageChartData = [];
     // this.data = [];
 
+    // this.devices.forEach(device => {
+    //   const item: any = {
+    //     "deviceId": device.id
+    //   };
+    //   this.listDevicesId.push(item);
+    // });
+
     // Messages
     this.messageGraphRef = this.rt.FireLoop.ref<Message>(Message);
     this.messageGraphSub = this.messageRef.stats(
       {
         range: this.graphRange,
-        where: this.filter
+        where: {"userId": this.user.id}
       }
     ).subscribe((stats: any) => {
 
@@ -364,6 +393,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
     if (this.alertRef) this.alertRef.dispose();
     if (this.alertSub) this.alertSub.unsubscribe();
 
+    if (this.organizationRef) this.organizationRef.dispose();
+    if (this.organizationSub) this.organizationSub.unsubscribe();
+
 
   }
 
@@ -396,7 +428,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Message
     this.messageSeeRef = this.rt.FireLoop.ref<Message>(Message);
-    this.messageSeeSub = this.messageRef.on('change',
+    this.messageSeeSub = this.messageSeeRef.on('change',
       {
         limit: 1,
         order: 'createdAt DESC',

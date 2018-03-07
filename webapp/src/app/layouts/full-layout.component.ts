@@ -140,25 +140,19 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.getDashboards();
     this.getOrganizations();
 
-    // Counts
-    this.userApi.countCategories(this.user.id).subscribe(result => {
-      this.countCategories = result.count;
-    });
-    this.userApi.countDevices(this.user.id).subscribe(result => {
-      this.countDevices = result.count;
-    });
-    this.userApi.countMessages(this.user.id).subscribe(result => {
-      this.countMessages = result.count;
-    });
-    this.userApi.countAlerts(this.user.id).subscribe(result => {
-      this.countAlerts = result.count;
-    });
-    this.parserApi.count().subscribe(result => {
-      this.countParsers = result.count;
-    });
-    this.userApi.countConnectors(this.user.id).subscribe(result => {
-      this.countConnectors = result.count;
-    });
+    if(!this.organization){
+
+      //Count
+      this.userApi.countAlerts(this.user.id).subscribe(result => {
+        this.countAlerts = result.count;
+      });
+      this.parserApi.count().subscribe(result => {
+        this.countParsers = result.count;
+      });
+      this.userApi.countConnectors(this.user.id).subscribe(result => {
+        this.countConnectors = result.count;
+      });
+    }
 
     // Dashboards
     this.dashboardRef = this.rt.FireLoop.ref<Dashboard>(Dashboard);
@@ -173,7 +167,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     // Categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categorySub = this.categoryRef.on('change', {where: this.filter}).subscribe(
+    this.categorySub = this.categoryRef.on('change', {where: this.user.id}).subscribe(
       (categories: Category[]) => {
 
         if(!this.organization){
@@ -201,7 +195,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
             order: 'createdAt DESC'
           }
         }],
-        where: this.filter
+        where: this.user.id
       }).subscribe(
       (devices: Device[]) => {
         //console.log(devices);
@@ -223,7 +217,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.messageSub = this.messageRef.on('change', {
       limit: 1,
       order: 'createdAt DESC',
-      where: this.filter
+      where: this.user.id
     }).subscribe(
       (messages: Message[]) => {
 
@@ -323,14 +317,15 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           };
           this.selectUsers.push(item);
         });
-        const myself = {
-          id: this.user.id,
-          itemName: this.user.email
-        };
-        this.selectedUsers.push(myself);
-      });
-    }
 
+      });
+    };
+
+    const myself = {
+      id: this.user.id,
+      itemName: this.user.email
+    };
+    this.selectedUsers.push(myself);
     this.createOrganizationModal.show();
   }
 
@@ -354,8 +349,12 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       });
 
     });
-
-
   }
+
+  // setAdminView():void {
+  //   localStorage.setItem('adminView', 'true');
+  //   this.filter = {};
+  //   this.setup();
+  // }
 
 }

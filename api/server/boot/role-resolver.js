@@ -1,4 +1,4 @@
-  // import { BootScript } from '@mean-expert/boot-script';
+// import { BootScript } from '@mean-expert/boot-script';
 //
 // @BootScript()
 // class Role {
@@ -10,7 +10,7 @@
 //
 // module.exports = Role;
 
-module.exports = function(app) {
+module.exports = function (app) {
   var Role = app.models.Role;
   var User = app.models.user;
   var RoleMapping = app.models.RoleMapping;
@@ -22,24 +22,27 @@ module.exports = function(app) {
   // Role.hasMany(User, {through: RoleMapping, foreignKey: 'roleId'});
 
 
-  // Role.registerResolver('organizationMember', function(role, context, cb) {
-  //   function reject() {
-  //     process.nextTick(function() {
-  //       cb(null, false);
-  //     });
-  //   }
-  // });
+  Role.registerResolver('organizationMember', function (role, context, cb) {
 
-  /*Role.registerResolver('teamMember', function(role, context, cb) {
+    //cb(null, true);
+
+    // console.log("Role: ", role);
+    //console.log("context: ", context);
+
     function reject() {
-      process.nextTick(function() {
-        cb(null, false);
+      console.log("Reject");
+      process.nextTick(function () {
+        cb("Error", false);
       });
+
     }
 
-    // if the target model is not project
-    if (context.modelName !== 'project') {
-      return reject();
+    function authorize() {
+      console.log("Authorize");
+      process.nextTick(function () {
+        cb(null, true);
+      });
+
     }
 
     // do not allow anonymous users
@@ -48,25 +51,42 @@ module.exports = function(app) {
       return reject();
     }
 
-    // check if userId is in team table for the given project id
-    context.model.findById(context.modelId, function(err, project) {
-      if (err || !project)
+    //if the target model is not project
+    if (context.modelName !== 'Organization') {
+      return reject();
+    }
+
+
+    context.model.findById(context.modelId, {include: 'Members'}, function (err, object) {
+
+      if (err || !object) {
         return reject();
+      }else{
 
-      var Team = app.models.Team;
-      Team.count({
-        ownerId: project.ownerId,
-        memberId: userId
-      }, function(err, count) {
-        if (err) {
-          console.log(err);
-          return cb(null, false);
-        }
+      if (!object.Members) {
+        return reject();
+      }else {
 
-        cb(null, count > 0); // true = is a team member
-      });
+        //Check if user is a member of the organization
+        //console.log(object);
+        var members = object.toJSON().Members;
+        members.forEach(function (member, index, array) {
+
+          if (member.id.toString() === userId.toString()) {
+            return authorize();
+          } else {
+            if (index === array.length - 1) {
+              return reject();
+            }
+          }
+        });
+
+      }}
+
     });
-  });*/
+
+
+  });
 
 
 };
