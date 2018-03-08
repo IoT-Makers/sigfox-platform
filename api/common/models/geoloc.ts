@@ -51,9 +51,11 @@ class Geoloc {
       return console.error('Missing "message"', message);
     }
 
+    let hasLocation = false;
+
     // Build the Geoloc object
     const geoloc = new this.model.app.models.Geoloc;
-    geoloc.type = 'GPS';
+    geoloc.type = 'gps';
     geoloc.location = new loopback.GeoPoint({lat: 0, lng: 0});
     geoloc.createdAt = message.createdAt;
     geoloc.userId = message.userId;
@@ -62,23 +64,26 @@ class Geoloc {
 
     message.data_parsed.forEach((p: any) => {
       // Check if there is geoloc in parsed data
-      if (p.key === 'lat') {
+      if (p.key === 'lat' && p.value >= -90 && p.value <= 90) {
+        hasLocation = true;
         geoloc.location.lat = p.value;
-      } else if (p.key === 'lng') {
+      } else if (p.key === 'lng' && p.value >= -180 && p.value <= 180) {
         geoloc.location.lng = p.value;
       }
     });
 
-    // Creating a new Geoloc
-    this.model.app.models.Geoloc.create(
-      geoloc,
-      (err: any, geolocInstance: any) => {
-        if (err) {
-          console.error(err);
-        } else {
-          console.log('Created geoloc as: ', geolocInstance);
-        }
-      });
+    if (hasLocation) {
+      // Creating a new Geoloc
+      this.model.app.models.Geoloc.create(
+        geoloc,
+        (err: any, geolocInstance: any) => {
+          if (err) {
+            console.error(err);
+          } else {
+            console.log('Created geoloc as: ', geolocInstance);
+          }
+        });
+    }
   }
 
   createSigfox(req: any, data: any, next: Function): void {

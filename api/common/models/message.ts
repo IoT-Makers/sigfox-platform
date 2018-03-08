@@ -552,7 +552,7 @@ class Message {
                       }
                       // Check if there is geoloc in parsed data
                       if (o.key === 'lat') {
-                        geoloc.type = 'GPS';
+                        geoloc.type = 'gps';
                         geoloc.createdAt = message.createdAt;
                         geoloc.location.lat = o.value;
                       } else if (o.key === 'lng') {

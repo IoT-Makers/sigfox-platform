@@ -105,7 +105,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     {id: 'custom', itemName: 'Custom'},
   ];
   private selectGeolocType = [
-    {id: 'GPS', itemName: 'GPS'},
+    {id: 'gps', itemName: 'GPS'},
     {id: 'sigfox', itemName: 'Sigfox'},
     {id: 'preferGPS', itemName: 'Prefer GPS'}
   ];
@@ -766,13 +766,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 device.Messages.reverse();
               });
 
-              if (widget.options.geolocType === 'GPS') {
+              if (widget.options.geolocType === 'gps') {
                 widget.data.forEach(device => {
-                  device.Messages = _.filter(device.Messages, {geoloc: [{type: 'GPS'}]});
+                  device.Messages = _.filter(device.Messages, {geoloc: [{type: 'gps'}]});
                   // Filter others
                   device.Messages.forEach((message, i) => {
                     message.geoloc.forEach((geoloc, j) => {
-                      if (geoloc.type !== 'GPS') {
+                      if (geoloc.type !== 'gps') {
                         device.Messages[i].geoloc.splice(j, 1);
                       }
                     });

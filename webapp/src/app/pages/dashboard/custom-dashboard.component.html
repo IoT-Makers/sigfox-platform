@@ -137,7 +137,7 @@
                       <!-- End Circle -->
                     </ng-container>
                     <!-- Geoloc GPS -->
-                    <ng-container *ngIf="geoloc.type === 'GPS'">
+                    <ng-container *ngIf="geoloc.type === 'gps'">
                       <agm-marker [zIndex]="3" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/markers/marker-gps.png'">
                         <agm-info-window id="{{geoloc.type + '_' + device.id}}">
                           <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
@@ -403,7 +403,7 @@
                         </agm-circle>
                         <!-- End Circle -->
                       </ng-container>
-                      <ng-container *ngIf="geoloc.type === 'GPS'">
+                      <ng-container *ngIf="geoloc.type === 'gps'">
                         <agm-marker
                           (mouseOut)="markerOut(0)"
                           (mouseOver)="markerOver(0)"
@@ -460,7 +460,7 @@
                         </agm-circle>
                         <!-- End Circle -->
                       </ng-container>
-                      <ng-container *ngIf="geoloc.type === 'GPS'">
+                      <ng-container *ngIf="geoloc.type === 'gps'">
                         <agm-marker
                           (mouseOut)="markerOut(device.Messages.length-1)"
                           (mouseOver)="markerOver(device.Messages.length-1)"
@@ -534,7 +534,7 @@
                                 <!-- End Circle -->
                               </ng-container>
                               <!-- Geoloc GPS -->
-                              <ng-container *ngIf="geoloc.type === 'GPS'">
+                              <ng-container *ngIf="geoloc.type === 'gps'">
                                 <agm-marker
                                   (mouseOut)="markerOut(i)"
                                   (mouseOver)="markerOver(i)"
@@ -613,7 +613,7 @@
                                 <!-- End Circle -->
                               </ng-container>
                               <!-- Geoloc GPS -->
-                              <ng-container *ngIf="geoloc.type === 'GPS'">
+                              <ng-container *ngIf="geoloc.type === 'gps'">
                                 <agm-marker
                                   (mouseOut)="markerOut(i)"
                                   (mouseOver)="markerOver(i)"

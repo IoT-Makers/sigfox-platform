@@ -182,7 +182,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
               and: [
                 {createdAt: {gte: this.dateBegin.toISOString()}},
                 {createdAt: {lte: this.dateEnd.toISOString()}},
-                {type: 'GPS'}
+                {type: 'gps'}
               ],
             }
           }
@@ -222,7 +222,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
                 {createdAt: {lte: this.dateEnd.toISOString()}}
               ],
               or : [
-                {type: 'GPS'},
+                {type: 'gps'},
                 {type: 'sigfox'}
               ]
             }
@@ -233,7 +233,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
         const geolocs = devices[0].Geolocs;
         if (geolocs.length > 0) {
           geolocs.forEach((geoloc: Geoloc, i) => {
-            if (geoloc.type === 'GPS') {
+            if (geoloc.type === 'gps') {
               geolocs.forEach((g: Geoloc) => {
                 if (g.messageId === geoloc.messageId && g.type === 'sigfox') {
                   geolocs.splice(i, 1);
@@ -315,11 +315,11 @@ export class TrackingComponent implements OnInit, OnDestroy {
             }
             if (this.gpsOnly) {
               // Message contains GPS
-              this.geolocs = _.filter(this.geolocs, {geoloc: [{type: 'GPS'}]});
+              this.geolocs = _.filter(this.geolocs, {geoloc: [{type: 'gps'}]});
               // Filter others
               this.geolocs.forEach((message, i) => {
                 message.geoloc.forEach((geoloc, j) => {
-                  if (geoloc.type !== 'GPS') {
+                  if (geoloc.type !== 'gps') {
                     this.geolocs[i].geoloc.splice(j, 1);
                   }
                 });

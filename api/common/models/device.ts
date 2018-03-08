@@ -342,6 +342,7 @@ class Device {
     const Device = this.model.app.models.Device;
     const Parser = this.model.app.models.Parser;
     const Message = this.model.app.models.Message;
+    const Geoloc = this.model.app.models.Geoloc;
 
     const response: any = {};
 
@@ -378,51 +379,33 @@ class Device {
                         if (err) {
                           next(err, null);
                         } else {
-                          // console.log(data_parsed);
-                          const geoloc: any = {};
                           if (data_parsed) {
-
                             message.data_parsed = data_parsed;
-                            message.data_parsed.forEach((o: any) => {
-                              // Check if there is geoloc in parsed data
-                              if (o.key === 'geoloc')
-                                geoloc.type = o.value;
-                              else if (o.key === 'lat')
-                                geoloc.lat = o.value;
-                              else if (o.key === 'lng')
-                                geoloc.lng = o.value;
-                              else if (o.key === 'precision')
-                                geoloc.precision = o.value;
-                            });
-
-                            if (geoloc.type && geoloc.lat && geoloc.lng) {
-                              let addGeoloc = true;
-                              if (!message.geoloc) message.geoloc = [];
-                              else {
-                                message.geoloc.forEach((geo: any) => {
-                                  if (geo.type === geoloc.type) addGeoloc = false;
-                                });
-
-                                if (addGeoloc) message.geoloc.push(geoloc);
-                              }
-                            }
                             Message.upsert(message, function (err: any, messageUpdated: any) {
-                              // console.log(messageUpdated);
+                              if (!err) {
+                                // Check if there is Geoloc in payload and create Geoloc object
+                                Geoloc.createFromParsedPayload(
+                                  messageUpdated,
+                                  function (err: any, res: any) {
+                                    if (err) {
+                                      next(err, null);
+                                    } else {
+                                      console.log(res);
+                                    }
+                                  });
+                              } else {
+                                response.message = 'An error occured while adding geoloc.';
+                                next(null, response);
+                              }
+                              if (msgCount === device.Messages.length - 1) {
+                                // Send the response
+                                response.message = 'Success';
+                                next(null, response);
+                              }
                             });
                           }
                         }
                       });
-                    }
-                    // Send the result when all messages have been processed and store last data_parsed in device
-                    if (msgCount === device.Messages.length - 1) {
-                      // Update the device
-                      device.data_parsed = device.Messages[0].data_parsed;
-                      Device.upsert(device, function (err: any, deviceUpdated: any) {
-                        // console.log(deviceUpdated);
-                      });
-                      // Send the response
-                      response.message = 'Success';
-                      next(null, response);
                     }
                   });
                 } else {

@@ -51,7 +51,7 @@
               <!-- End Circle -->
             </ng-container>
             <!-- Geoloc GPS -->
-            <ng-container *ngIf="geoloc.type === 'GPS'">
+            <ng-container *ngIf="geoloc.type === 'gps'">
               <agm-marker
                 [zIndex]="3"
                 [latitude]="geoloc.lat"
@@ -297,7 +297,7 @@
                               <strong>Sigfox Geoloc</strong>
                             </a>
                           </ng-container>
-                          <ng-container *ngIf="geoloc.type === 'GPS'">
+                          <ng-container *ngIf="geoloc.type === 'gps'">
                             <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-gps">
                               <i class="fa fa-map-marker fa-2x"></i>
                               <br>

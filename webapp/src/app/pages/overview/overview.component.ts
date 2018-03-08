@@ -222,13 +222,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
               include: ['Parser', 'Category', {
                 relation: 'Messages',
                 scope: {
-                  limit: 1,
+                  limit: 2,
                   order: 'createdAt DESC'
                 }
-              }, {
+              },  {
                 relation: 'Geolocs',
                 scope: {
-                  limit: 1,
+                  limit: 2,
                   order: 'createdAt DESC'
                 }
               }],
@@ -354,7 +354,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.messageGraphSub = this.messageRef.stats(
       {
         range: this.graphRange,
-        where: {"userId": this.user.id}
+        where: {'userId': this.user.id}
       }
     ).subscribe((stats: any) => {
 

@@ -225,7 +225,7 @@
                   </agm-circle>
                   <!-- End Circle -->
                 </ng-container>
-                <ng-container *ngIf="geoloc.type === 'GPS'">
+                <ng-container *ngIf="geoloc.type === 'gps'">
                   <agm-marker
                     (mouseOut)="markerOut(i)"
                     (mouseOver)="markerOver(i)"
@@ -282,7 +282,7 @@
                   </agm-circle>
                   <!-- End Circle -->
                 </ng-container>
-                <ng-container *ngIf="geoloc.type === 'GPS'">
+                <ng-container *ngIf="geoloc.type === 'gps'">
                   <agm-marker
                     (mouseOut)="markerOut(i)"
                     (mouseOver)="markerOver(i)"
@@ -342,7 +342,7 @@
                   <!-- End Circle -->
                 </ng-container>
                 <!-- Geoloc GPS -->
-                <ng-container *ngIf="geoloc.type === 'GPS'">
+                <ng-container *ngIf="geoloc.type === 'gps'">
                   <agm-marker
                     (mouseOut)="markerOut(i)"
                     (mouseOver)="markerOver(i)"
