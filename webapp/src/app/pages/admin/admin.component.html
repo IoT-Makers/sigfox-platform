@@ -81,10 +81,12 @@
 
                           <td class="text-center">
                             <div class="btn-group-sm">
-                              <button class="btn btn-outline-primary btn-round" tooltip="Edit user"
+                              <button class="btn btn-outline-primary btn-round" tooltip="Edit user" disabled
                                       (click)="editUser(user)"><i class="fa fa-pencil fa-lg"></i></button>
-                              <button class="btn btn-outline-danger btn-round" tooltip="Delete user"
+                              <button class="btn btn-outline-danger btn-round" tooltip="Delete user" disabled
                                       (click)="showRemoveModal(user)"><i class="fa fa-trash fa-lg"></i></button>
+                              <button class="btn btn-outline-success btn-round" tooltip="Grant admin access"
+                                      (click)="grantAdminAccess(user)"><i class="fa fa-star fa-lg"></i></button>
                             </div>
                           </td>
                         </tr>

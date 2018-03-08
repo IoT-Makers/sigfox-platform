@@ -5,14 +5,15 @@
     <p>Don't forget you can set your username by clicking on your email on the top right corner.</p>
   </alert>
 
-  <alert type="warning" dismissOnTimeout="5000" [dismissible]="true">
+  <alert *ngIf="!organization" type="warning" dismissOnTimeout="5000" [dismissible]="true">
     <p>Please keep in mind this platform is under active development.</p>
   </alert>
 
-  <alert type="danger" [dismissible]="true">
+  <alert *ngIf="!organization" type="danger" [dismissible]="true">
     <ul>
       <li>Callback connectors have changed! New endpoints have been created in order to optimize server performance.</li>
       <li>Geolocs are now stored as persisted models. This new model is accessible via API.</li>
+      <!--<li>Please <a (click)="upgrade()" href>upgrade</a> your application.</li>-->
     </ul>
   </alert>
 
