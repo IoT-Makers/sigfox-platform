@@ -48,42 +48,45 @@ module.exports = function (app) {
     // do not allow anonymous users
     var userId = context.accessToken.userId;
     if (!userId) {
+      console.log("callback 1: !userId");
       return reject();
     }
-
     //if the target model is not project
-    if (context.modelName !== 'Organization') {
+    else if (context.modelName === 'Organization') {
+
+      context.model.findById(context.modelId, {include: 'Members'}, function (err, object) {
+
+        if (err || !object) {
+          return reject();
+        } else if (!object.Members) {
+          console.log("callback 2: No members");
+          return reject();
+        } else {
+
+          //Check if user is a member of the organization
+          //console.log(object);
+          var members = object.toJSON().Members;
+          var authorized = false;
+          members.forEach(function (member, index, array) {
+
+            if (member.id.toString() === userId.toString()) {
+              console.log("callback 3: Authorize");
+              authorized = true;
+              return authorize();
+            } else if (index === array.length -1 && authorized === false){
+              console.log("callback 4: Member not in organization");
+              if (!cb) return reject();
+            }
+          });
+
+        }
+
+      });
+    }else{
+      console.log("callback 5: else");
       return reject();
     }
 
-
-    context.model.findById(context.modelId, {include: 'Members'}, function (err, object) {
-
-      if (err || !object) {
-        return reject();
-      }else{
-
-      if (!object.Members) {
-        return reject();
-      }else {
-
-        //Check if user is a member of the organization
-        //console.log(object);
-        var members = object.toJSON().Members;
-        members.forEach(function (member, index, array) {
-
-          if (member.id.toString() === userId.toString()) {
-            return authorize();
-          } else {
-            if (index === array.length - 1) {
-              return reject();
-            }
-          }
-        });
-
-      }}
-
-    });
 
 
   });
