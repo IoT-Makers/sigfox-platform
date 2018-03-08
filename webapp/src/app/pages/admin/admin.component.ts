@@ -1,6 +1,6 @@
-import {Component, OnDestroy, OnInit, ViewChild, ViewChildren} from '@angular/core';
-import {AppSetting, Category, Device, FireLoopRef, Organization, User} from '../../shared/sdk/models';
-import {AppSettingApi ,CategoryApi, DeviceApi, RealTime, UserApi, OrganizationApi} from '../../shared/sdk/services';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AppSetting, Organization, User} from '../../shared/sdk/models';
+import {AppSettingApi, OrganizationApi, RealTime, UserApi} from '../../shared/sdk/services';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 @Component({
@@ -60,7 +60,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   getUsers(): void {
     this.user = this.userApi.getCachedCurrent();
-    this.userApi.find({include: "roles", order: 'updatedAt DESC'}).subscribe((users: User[]) => {
+    this.userApi.find({include: 'roles', order: 'updatedAt DESC'}).subscribe((users: User[]) => {
       this.users = users;
       console.log(users);
     });
@@ -73,8 +73,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   getOrganizations(): void {
-    console.log("getOrga");
-    this.organizationApi.find({include:"Members"}).subscribe((organizations: Organization[]) => {
+    console.log('getOrga');
+    this.organizationApi.find({include:'Members'}).subscribe((organizations: Organization[]) => {
       this.organizations = organizations;
       console.log(organizations);
     });
@@ -103,7 +103,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   grantAdminAccess(user):void{
 
-    // this.userApi.linkRoles(user.id, "5a5cd4c2f90f49359c8b2ef0").subscribe(result=>{
+    // this.userApi.linkRoles(user.id, '5a5cd4c2f90f49359c8b2ef0').subscribe(result=>{
     //   console.log(result);
     //   this.getUsers();
     // })

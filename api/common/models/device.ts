@@ -246,8 +246,7 @@ class Device {
             ).then((result: any) => {
               // console.log("Length: ", result.data.length);
               // console.log("Next: ", result.paging.next);
-              result.data.forEach((messageInstance: any) => {
-
+              result.data.forEach((messageInstance: any, msgCounter: number) => {
                 reception = [];
                 messageInstance.rinfos.forEach((o: any) => {
                   const rinfo: any = {
@@ -302,30 +301,46 @@ class Device {
                         geoloc.userId = messagePostProcess.userId;
                         geoloc.messageId = messagePostProcess.id;
                         geoloc.deviceId = messagePostProcess.deviceId;
-                        // Creating a new Geoloc
-                        this.model.app.models.Geoloc.upsert(
+                        // Find or create a new Geoloc
+                        this.model.app.models.Geoloc.findOrCreate(
+                          {
+                            where: {
+                              and: [
+                                {type: geoloc.type},
+                                {location: geoloc.location},
+                                {createdAt: geoloc.createdAt},
+                                {userId: geoloc.userId},
+                                {messageId: geoloc.messageId},
+                                {deviceId: geoloc.deviceId}
+                              ]
+                            }
+                          },
                           geoloc,
-                          (err: any, geolocInstance: any) => {
+                          (err: any, geolocInstance: any, created: boolean) => {
                             if (err) {
                               console.error(err);
                             } else {
-                              console.log('Created geoloc as: ', geolocInstance);
+                              if (created) {
+                                console.log('Created geoloc as: ', geolocInstance);
+                              } else {
+                                console.log('Skipped geoloc creation.');
+                              }
                             }
                           });
                       }
                     }
                   });
 
-                message = {};
-
+                if (msgCounter === result.data.length - 1) {
+                  next(null, result);
+                }
               });
-
-              next(null, result);
             }).catch((err: any) => {
-              if (err.statusCode === '403')
+              if (err.statusCode === '403') {
                 next(err, 'Your Sigfox API credentials are not allowed to do so.');
-              else
+              } else {
                 next(err, null);
+              }
             });
 
           } else {
@@ -398,6 +413,7 @@ class Device {
                               }
                               if (msgCount === device.Messages.length - 1) {
                                 // Send the response
+                                console.log('Successfully parsed all messages.');
                                 response.message = 'Success';
                                 next(null, response);
                               }

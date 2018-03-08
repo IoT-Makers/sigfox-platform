@@ -507,25 +507,34 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
        * TODO: periode glissante
        *
        */
-      // Month in milliseconds
+        // Month in milliseconds
       const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;
 
       this.newWidget.filter = {
         limit: 50,
         order: 'updatedAt DESC',
-        include: [{
-          relation: 'Geolocs',
-          scope: {
-            limit: 500,
+        include: [
+          {
+            relation: 'Messages',
             order: 'createdAt DESC',
-            where: {
-              createdAt: {gte: this.selectedDateTimeBegin.toISOString()}
+            scope: {
+              limit: 500,
+              order: 'createdAt DESC',
+              where: {
+                and: [{createdAt: {gte: this.selectedDateTimeBegin.toISOString()}}]
+              },
+              include: [{
+                relation: 'Geolocs',
+                scope: {
+                  where: {type: this.newWidget.options.geolocType},
+                  limit: 5,
+                  order: 'createdAt DESC'
+                }
+              }]
             }
-          }
-        }],
+          }],
         where: {
-          or: [
-          ]
+          or: []
         }
       };
     }
@@ -711,7 +720,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     });
 
     if (this.newWidget.type === 'tracking' || this.newWidget.type === 'line' || this.newWidget.type === 'bar') {
-      this.selectedDateTimeBegin = new Date(this.newWidget.filter.include[0].scope.where.and[1].createdAt.gte);
+      this.selectedDateTimeBegin = new Date(this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte);
       this.dateTimeSettings.placeholder = moment(this.selectedDateTimeBegin).format('MMM-DD-YYYY hh:mm A');
     }
   }
@@ -766,41 +775,55 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 device.Messages.reverse();
               });
 
-              if (widget.options.geolocType === 'gps') {
+              if (widget.options.geolocType === 'preferGPS') {
                 widget.data.forEach(device => {
-                  device.Messages = _.filter(device.Messages, {geoloc: [{type: 'gps'}]});
-                  // Filter others
                   device.Messages.forEach((message, i) => {
-                    message.geoloc.forEach((geoloc, j) => {
+                    let hasSigfox = false;
+                    if (message.Geolocs.length > 1) {
+                      message.Geolocs.forEach((geoloc, j) => {
+                        if (geoloc.type === 'sigfox')
+                          hasSigfox = true;
+                        if (hasSigfox)
+                          device.Messages[i].Geolocs.splice(j, 1);
+                      });
+                    }
+                  });
+                });
+              }
+
+              /*if (widget.options.geolocType === 'gps') {
+                widget.data.forEach(device => {
+                  device.Messages.forEach((message, i) => {
+                    message.Geolocs.forEach((geoloc, j) => {
                       if (geoloc.type !== 'gps') {
-                        device.Messages[i].geoloc.splice(j, 1);
+                        device.Messages[i].Geolocs.splice(j, 1);
                       }
                     });
                   });
                 });
               } else if (widget.options.geolocType === 'sigfox') {
                 widget.data.forEach(device => {
-                  // Message contains Sigfox
-                  device.Messages = _.filter(device.Messages, {geoloc: [{type: 'sigfox'}]});
-                  // Filter others
                   device.Messages.forEach((message, i) => {
-                    message.geoloc.forEach((geoloc, j) => {
+                    message.Geolocs.forEach((geoloc, j) => {
                       if (geoloc.type !== 'sigfox') {
-                        device.Messages[i].geoloc.splice(j, 1);
+                        device.Messages[i].Geolocs.splice(j, 1);
                       }
                     });
                   });
                 });
-              } else if (widget.options.geolocType === 'preferGPS') {
+              }*/
+
+              if (widget.options.directions) {
                 widget.data.forEach(device => {
+                  device.Geolocs = [];
                   device.Messages.forEach((message, i) => {
-                    let hasSigfox = false;
-                    if (message.geoloc.length > 1) {
-                      message.geoloc.forEach((geoloc, j) => {
-                        if (geoloc.type === 'sigfox')
-                          hasSigfox = true;
-                        if (hasSigfox)
-                          device.Messages[i].geoloc.splice(j, 1);
+                    if (message.Geolocs.length === 1) {
+                      device.Geolocs.push(device.Messages[i].Geolocs[0]);
+                    } else if (message.Geolocs.length > 1) {
+                      message.Geolocs.forEach((geoloc, j) => {
+                        if (geoloc.type !== 'sigfox') {
+                          device.Geolocs.push(device.Messages[i].Geolocs[j]);
+                        }
                       });
                     }
                   });
@@ -810,7 +833,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
             // Gauge
             else if (widget.type === 'gauge') {
-              const lastData_parsed = _.filter(widget.data[0].data_parsed, {key: widget.options.keys[0]})[0];
+              const lastData_parsed = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
               widget.value = lastData_parsed.value;
               widget.unit = lastData_parsed.unit;
               widget.label = this.formatTableColumn(lastData_parsed.key);

@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Alert, Category, Device, FireLoopRef, Message, Organization, Parser, User} from '../../shared/sdk/models';
+import {Alert, Category, Device, FireLoopRef, Message, Organization, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
@@ -219,7 +219,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           //Get user devices
           this.userApi.getDevices(this.user.id,
             {
-              include: ['Parser', 'Category', {
+              include: ['Category', {
                 relation: 'Messages',
                 order: 'createdAt DESC',
                 scope: {
@@ -246,7 +246,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           // Get organization devices
           this.organizationApi.getDevices(this.organization.id,
             {
-              include: ['Parser', 'Category', {
+              include: ['Category', {
                 relation: 'Messages',
                 order: 'createdAt DESC',
                 scope: {

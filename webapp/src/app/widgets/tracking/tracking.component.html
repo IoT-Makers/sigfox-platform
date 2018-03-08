@@ -185,7 +185,7 @@
         <!-- End Polylines -->
 
         <!-- Markers -->
-        <!--<agm-marker-cluster [styles]="clusterStyles">-->
+        <agm-marker-cluster [styles]="clusterStyles">
           <ng-container *ngFor="let geoloc of geolocs; let i = index">
             <ng-container [ngSwitch]=i>
               <!-- Start Point -->
@@ -367,7 +367,7 @@
 
 
           </ng-container>
-       <!-- </agm-marker-cluster>-->
+        </agm-marker-cluster>
         <!-- End Markers -->
 
         <agm-directions *ngIf="directionsRoutes"

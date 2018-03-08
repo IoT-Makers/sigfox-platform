@@ -73,14 +73,30 @@ class Geoloc {
     });
 
     if (hasLocation) {
-      // Creating a new Geoloc
-      this.model.app.models.Geoloc.create(
+      // Find or create a new Geoloc
+      this.model.app.models.Geoloc.findOrCreate(
+        {
+          where: {
+            and: [
+              {type: geoloc.type},
+              {location: geoloc.location},
+              {createdAt: geoloc.createdAt},
+              {userId: geoloc.userId},
+              {messageId: geoloc.messageId},
+              {deviceId: geoloc.deviceId}
+            ]
+          }
+        },
         geoloc,
-        (err: any, geolocInstance: any) => {
+        (err: any, geolocInstance: any, created: boolean) => {
           if (err) {
             console.error(err);
           } else {
-            console.log('Created geoloc as: ', geolocInstance);
+            if (created) {
+              console.log('Created geoloc as: ', geolocInstance);
+            } else {
+              console.log('Skipped geoloc creation.');
+            }
           }
         });
     }

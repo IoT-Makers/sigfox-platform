@@ -113,10 +113,10 @@
                        [mapTypeId]="widget.options.mapTypeId !== 'custom' && widget.options.mapTypeId ? widget.options.mapTypeId : 'roadmap'"
                        [styles]="widget.options.style ? widget.options.style : ''">
                 <ng-container *ngFor="let device of widget.data; let i = index">
-                  <ng-container *ngFor="let geoloc of device.location">
+                  <ng-container *ngFor="let geoloc of device.Geolocs">
                     <!-- Geoloc Sigfox -->
                     <ng-container *ngIf="geoloc.type === 'sigfox'">
-                      <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="3" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/markers/marker-sigfox.png'">
+                      <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="3" [latitude]="geoloc.location.lat" [longitude]="geoloc.location.lng" [iconUrl]="'assets/img/markers/marker-sigfox.png'">
                         <agm-info-window id="{{geoloc.type + '_' + device.id}}">
                           <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
                           <br>
@@ -132,13 +132,13 @@
                         </agm-info-window>
                       </agm-marker>
                       <!-- Circle -->
-                      <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]" [zIndex]="1" [strokePosition]="CENTER" [strokeWeight]="1" [strokeColor]="'#8d5dd1'" [fillOpacity]="0.1" [fillColor]="'#8d5dd1'" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [radius]="geoloc.precision">
+                      <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]" [zIndex]="1" [strokePosition]="CENTER" [strokeWeight]="1" [strokeColor]="'#8d5dd1'" [fillOpacity]="0.1" [fillColor]="'#8d5dd1'" [latitude]="geoloc.location.lat" [longitude]="geoloc.location.lng" [radius]="geoloc.precision">
                       </agm-circle>
                       <!-- End Circle -->
                     </ng-container>
                     <!-- Geoloc GPS -->
                     <ng-container *ngIf="geoloc.type === 'gps'">
-                      <agm-marker [zIndex]="3" [latitude]="geoloc.lat" [longitude]="geoloc.lng" [iconUrl]="'assets/img/markers/marker-gps.png'">
+                      <agm-marker [zIndex]="3" [latitude]="geoloc.location.lat" [longitude]="geoloc.location.lng" [iconUrl]="'assets/img/markers/marker-gps.png'">
                         <agm-info-window id="{{geoloc.type + '_' + device.id}}">
                           <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
                           <br>
@@ -350,16 +350,16 @@
                        [styles]="widget.options.style ? widget.options.style : '' ">
 
                 <ng-container *ngFor="let device of widget.data; let i = index">
-                  <ng-container *ngIf="device.visibility && device.Geolocs.length > 0">
+                  <ng-container *ngIf="device.visibility">
                     <!-- Polylines -->
                     <agm-polyline *ngIf="widget.options.polylines"
                                   [zIndex]="2"
                                   [geodesic]="true"
                                   [strokeColor]="device.color"
                                   [strokeOpacity]="0.5">
-                      <ng-container *ngFor="let marker of device.Geolocs">
-                        <ng-container *ngFor="let geoloc of marker.geoloc">
-                          <agm-polyline-point [latitude]="geoloc.lat" [longitude]="geoloc.lng">
+                      <ng-container *ngFor="let message of device.Messages">
+                        <ng-container *ngFor="let geoloc of message.Geolocs">
+                          <agm-polyline-point [latitude]="geoloc.location.lat" [longitude]="geoloc.location.lng">
                           </agm-polyline-point>
                         </ng-container>
                       </ng-container>
@@ -368,14 +368,14 @@
 
                     <!-- Markers -->
                     <!-- Start Point -->
-                    <ng-container *ngFor="let geoloc of device.Geolocs[0].geoloc">
+                    <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
                       <ng-container *ngIf="geoloc.type === 'sigfox'">
                         <agm-marker
                           (mouseOut)="markerOut(0)"
                           (mouseOver)="markerOver(0)"
                           [zIndex]="4"
-                          [latitude]="geoloc.lat"
-                          [longitude]="geoloc.lng"
+                          [latitude]="geoloc.location.lat"
+                          [longitude]="geoloc.location.lng"
                           [iconUrl]="'assets/img/markers/marker-start.png'">
                           <agm-info-window>
                             <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
@@ -397,8 +397,8 @@
                                     [strokeColor]="'#8d5dd1'"
                                     [fillOpacity]="0.1"
                                     [fillColor]="'#8d5dd1'"
-                                    [latitude]="geoloc.lat"
-                                    [longitude]="geoloc.lng"
+                                    [latitude]="geoloc.location.lat"
+                                    [longitude]="geoloc.location.lng"
                                     [radius]="geoloc.precision">
                         </agm-circle>
                         <!-- End Circle -->
@@ -408,8 +408,8 @@
                           (mouseOut)="markerOut(0)"
                           (mouseOver)="markerOver(0)"
                           [zIndex]="4"
-                          [latitude]="geoloc.lat"
-                          [longitude]="geoloc.lng"
+                          [latitude]="geoloc.location.lat"
+                          [longitude]="geoloc.location.lng"
                           [iconUrl]="'assets/img/markers/marker-start.png'">
                           <agm-info-window>
                             <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
@@ -425,14 +425,14 @@
                     </ng-container>
                     <!-- End Start Point -->
                     <!-- Finish Point -->
-                    <ng-container *ngFor="let geoloc of device.Messages[device.Messages.length-1].geoloc">
+                    <ng-container *ngFor="let geoloc of device.Messages[device.Messages.length-1].Geolocs">
                       <ng-container *ngIf="geoloc.type === 'sigfox'">
                         <agm-marker
                           (mouseOut)="markerOut(device.Messages.length-1)"
                           (mouseOver)="markerOver(device.Messages.length-1)"
                           [zIndex]="4"
-                          [latitude]="geoloc.lat"
-                          [longitude]="geoloc.lng"
+                          [latitude]="geoloc.location.lat"
+                          [longitude]="geoloc.location.lng"
                           [iconUrl]="'assets/img/markers/marker-finish.png'">
                           <agm-info-window>
                             <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
@@ -454,8 +454,8 @@
                                     [strokeColor]="'#8d5dd1'"
                                     [fillOpacity]="0.1"
                                     [fillColor]="'#8d5dd1'"
-                                    [latitude]="geoloc.lat"
-                                    [longitude]="geoloc.lng"
+                                    [latitude]="geoloc.location.lat"
+                                    [longitude]="geoloc.location.lng"
                                     [radius]="geoloc.precision">
                         </agm-circle>
                         <!-- End Circle -->
@@ -465,8 +465,8 @@
                           (mouseOut)="markerOut(device.Messages.length-1)"
                           (mouseOver)="markerOver(device.Messages.length-1)"
                           [zIndex]="4"
-                          [latitude]="geoloc.lat"
-                          [longitude]="geoloc.lng"
+                          [latitude]="geoloc.location.lat"
+                          [longitude]="geoloc.location.lng"
                           [iconUrl]="'assets/img/markers/marker-finish.png'">
                           <agm-info-window>
                             <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
@@ -483,7 +483,7 @@
                     <!-- End Finish Point -->
 
                     <agm-marker-cluster *ngIf="newWidget.options.cluster" [styles]="clusterStyles">
-                      <ng-container *ngFor="let marker of device.Messages; let i = index">
+                      <ng-container *ngFor="let message of device.Messages; let i = index">
                         <ng-container [ngSwitch]=i>
                           <!-- Start Point -->
                           <ng-container *ngSwitchCase="0">
@@ -496,15 +496,15 @@
 
                           <!-- Default -->
                           <ng-container *ngSwitchDefault>
-                            <ng-container *ngFor="let geoloc of marker.geoloc">
+                            <ng-container *ngFor="let geoloc of message.Geolocs">
                               <!-- Geoloc Sigfox -->
                               <ng-container *ngIf="geoloc.type === 'sigfox'">
                                 <agm-marker
                                   (mouseOut)="markerOut(i)"
                                   (mouseOver)="markerOver(i)"
                                   [zIndex]="3"
-                                  [latitude]="geoloc.lat"
-                                  [longitude]="geoloc.lng"
+                                  [latitude]="geoloc.location.lat"
+                                  [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-sigfox.png'">
                                   <agm-info-window>
                                     <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
@@ -527,8 +527,8 @@
                                             [strokeColor]="'#8d5dd1'"
                                             [fillOpacity]="0.1"
                                             [fillColor]="'#8d5dd1'"
-                                            [latitude]="geoloc.lat"
-                                            [longitude]="geoloc.lng"
+                                            [latitude]="geoloc.location.lat"
+                                            [longitude]="geoloc.location.lng"
                                             [radius]="geoloc.precision">
                                 </agm-circle>
                                 <!-- End Circle -->
@@ -539,8 +539,8 @@
                                   (mouseOut)="markerOut(i)"
                                   (mouseOver)="markerOver(i)"
                                   [zIndex]="3"
-                                  [latitude]="geoloc.lat"
-                                  [longitude]="geoloc.lng"
+                                  [latitude]="geoloc.location.lat"
+                                  [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-gps.png'">
                                   <agm-info-window>
                                     <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
@@ -556,13 +556,11 @@
                             </ng-container>
                           </ng-container>
                           <!-- End Default -->
-
-
                         </ng-container>
                       </ng-container>
                     </agm-marker-cluster>
                     <ng-container *ngIf="!newWidget.options.cluster">
-                      <ng-container *ngFor="let marker of device.Messages; let i = index">
+                      <ng-container *ngFor="let message of device.Messages; let i = index">
                         <ng-container [ngSwitch]=i>
                           <!-- Start Point -->
                           <ng-container *ngSwitchCase="0">
@@ -575,15 +573,15 @@
 
                           <!-- Default -->
                           <ng-container *ngSwitchDefault>
-                            <ng-container *ngFor="let geoloc of marker.geoloc">
+                            <ng-container *ngFor="let geoloc of message.Geolocs">
                               <!-- Geoloc Sigfox -->
                               <ng-container *ngIf="geoloc.type === 'sigfox'">
                                 <agm-marker
                                   (mouseOut)="markerOut(i)"
                                   (mouseOver)="markerOver(i)"
                                   [zIndex]="3"
-                                  [latitude]="geoloc.lat"
-                                  [longitude]="geoloc.lng"
+                                  [latitude]="geoloc.location.lat"
+                                  [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-sigfox.png'">
                                   <agm-info-window>
                                     <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
@@ -606,8 +604,8 @@
                                             [strokeColor]="'#8d5dd1'"
                                             [fillOpacity]="0.1"
                                             [fillColor]="'#8d5dd1'"
-                                            [latitude]="geoloc.lat"
-                                            [longitude]="geoloc.lng"
+                                            [latitude]="geoloc.location.lat"
+                                            [longitude]="geoloc.location.lng"
                                             [radius]="geoloc.precision">
                                 </agm-circle>
                                 <!-- End Circle -->
@@ -618,8 +616,8 @@
                                   (mouseOut)="markerOut(i)"
                                   (mouseOver)="markerOver(i)"
                                   [zIndex]="3"
-                                  [latitude]="geoloc.lat"
-                                  [longitude]="geoloc.lng"
+                                  [latitude]="geoloc.location.lat"
+                                  [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-gps.png'">
                                   <agm-info-window>
                                     <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
@@ -1100,11 +1098,11 @@
                 <label class="col-md-3 form-control-label">Geoloc type
                 </label>
                 <div class="col-md-9">
-                  <angular2-multiselect #selectOne
+                  <angular2-multiselect #selectOneGeolocType
                                         name="geolocType"
                                         [data]="selectGeolocType"
                                         [(ngModel)]="selectedGeolocType"
-                                        (onSelect)="newWidget.options.geolocType = $event.id; selectOne.isActive = false;"
+                                        (onSelect)="newWidget.options.geolocType = $event.id; selectOneGeolocType.isActive = false; setFilter(newWidget.type);"
                                         [settings]="selectOneSettings"
                                         required>
                   </angular2-multiselect>
