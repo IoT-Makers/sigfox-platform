@@ -214,6 +214,7 @@ class user {
     this.model.app.models.Device.destroyAll({userId: userId}, (error: any, result: any) => { });
     this.model.app.models.Message.destroyAll({userId: userId}, (error: any, result: any) => { });
     this.model.app.models.Alert.destroyAll({userId: userId}, (error: any, result: any) => { });
+    this.model.app.models.Geoloc.destroyAll({userId: userId}, (error: any, result: any) => { });
     this.model.app.models.Connector.destroyAll({userId: userId}, (error: any, result: any) => { });
     this.model.app.models.AccessToken.destroyAll({userId: userId}, (error: any, result: any) => { });
     // this.model.app.models.Dashboard.destroyAll({userId: userId}, (error: any, result: any) => { });

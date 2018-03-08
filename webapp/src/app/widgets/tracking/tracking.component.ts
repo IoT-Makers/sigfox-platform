@@ -195,7 +195,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
         this.geolocs = devices[0].Geolocs;
         if (this.geolocs.length > 0) {
           // Center map
-          this.mapPosition = this.geolocs[this.geolocs.length - 1][0];
+          this.mapPosition = this.geolocs[this.geolocs.length - 1].location;
           this.mapZoom = 14;
           this.searchResult = 'Showing ' + this.geolocs.length + ' markers for device ID: ' + this.selectedDevice.id;
 
@@ -369,7 +369,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     this.user = this.userApi.getCachedCurrent();
 
     // Get devices
-    this.userApi.getDevices(this.user.id).subscribe((devices: Device[]) => {
+    this.userApi.getDevices(this.user.id, {order: 'updatedAt DESC'}).subscribe((devices: Device[]) => {
       devices.forEach(device => {
         const item = {
           id: device.id,

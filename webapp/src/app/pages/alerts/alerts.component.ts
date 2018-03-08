@@ -255,10 +255,19 @@ export class AlertsComponent implements OnInit, OnDestroy {
     // Reset the selectable keys
     this.selectKeys = [];
     // Fetch all the keys belonging to selected devices
-    this.userApi.getDevices(this.user.id, {where: {id: deviceId}}).subscribe((devices: Device[]) => {
+    this.userApi.getDevices(this.user.id, {
+      where: {id: deviceId},
+      include: [{
+        relation: 'Messages',
+        scope: {
+          limit: 1,
+          order: 'createdAt DESC'
+        }
+      }]
+    }).subscribe((devices: Device[]) => {
       console.log(devices);
-      if (devices[0].data_parsed) {
-        devices[0].data_parsed.forEach((p: Property) => {
+      if (devices[0].Messages[0].data_parsed) {
+        devices[0].Messages[0].data_parsed.forEach((p: Property) => {
           const item = {
             id: p.key,
             itemName: p.key

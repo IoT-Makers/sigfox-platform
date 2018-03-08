@@ -627,7 +627,7 @@ class Message {
             } else {
               console.log('Created message as: ', messageInstance);
               // Check if there is Geoloc in payload and create Geoloc object
-              this.model.app.models.Geoloc.createFromPayload(
+              this.model.app.models.Geoloc.createFromParsedPayload(
                 messageInstance,
                 function (err: any, res: any) {
                   if (err) {
@@ -653,7 +653,7 @@ class Message {
           } else {
             console.log('Created message as: ', messageInstance);
             // Check if there is Geoloc in payload and create Geoloc object
-            this.model.app.models.Geoloc.createFromPayload(
+            this.model.app.models.Geoloc.createFromParsedPayload(
               messageInstance,
               function (err: any, res: any) {
                 if (err) {

@@ -14,7 +14,7 @@ const loopback = require('loopback');
     beforeSave: { name: 'before save', type: 'operation' }
   },
   remotes: {
-    createFromPayload: {
+    createFromParsedPayload: {
       returns : { arg: 'result', type: 'array' },
       http    : { path: '/from-payload', verb: 'post' },
       accepts: [
@@ -45,7 +45,7 @@ class Geoloc {
     next();
   }
 
-  private createFromPayload(message: any, req: any): void {
+  private createFromParsedPayload(message: any, req: any): void {
     if (typeof message === 'undefined'
       || typeof message.data_parsed === 'undefined') {
       return console.error('Missing "message"', message);

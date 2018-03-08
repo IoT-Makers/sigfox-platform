@@ -350,14 +350,14 @@
                        [styles]="widget.options.style ? widget.options.style : '' ">
 
                 <ng-container *ngFor="let device of widget.data; let i = index">
-                  <ng-container *ngIf="device.visibility && device.Messages.length > 0">
+                  <ng-container *ngIf="device.visibility && device.Geolocs.length > 0">
                     <!-- Polylines -->
                     <agm-polyline *ngIf="widget.options.polylines"
                                   [zIndex]="2"
                                   [geodesic]="true"
                                   [strokeColor]="device.color"
                                   [strokeOpacity]="0.5">
-                      <ng-container *ngFor="let marker of device.Messages">
+                      <ng-container *ngFor="let marker of device.Geolocs">
                         <ng-container *ngFor="let geoloc of marker.geoloc">
                           <agm-polyline-point [latitude]="geoloc.lat" [longitude]="geoloc.lng">
                           </agm-polyline-point>
@@ -368,7 +368,7 @@
 
                     <!-- Markers -->
                     <!-- Start Point -->
-                    <ng-container *ngFor="let geoloc of device.Messages[0].geoloc">
+                    <ng-container *ngFor="let geoloc of device.Geolocs[0].geoloc">
                       <ng-container *ngIf="geoloc.type === 'sigfox'">
                         <agm-marker
                           (mouseOut)="markerOut(0)"
@@ -646,7 +646,7 @@
                                     [directionsDisplayStore]="device.directionsDisplayStore"
                                     [travelMode]="'DRIVING'"
                                     [routesColor]="device.color"
-                                    [geolocMessages]="device.Messages">
+                                    [geolocs]="device.Geolocs">
                     </agm-directions>
                   </ng-container>
                 </ng-container>

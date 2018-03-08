@@ -2,7 +2,7 @@ import {Model} from '@mean-expert/model';
 import * as _ from 'lodash';
 
 const moment = require('moment');
-const request = require('request');
+const loopback = require('loopback');
 
 /**
  * @module Device
@@ -95,26 +95,13 @@ class Device {
           console.error('Device not found for suppression.');
           next(err, 'Device not found for suppression.');
         } else if (deviceInstance) {
-          console.log('Deleting device ' + deviceId + ' and all its corresponding messages.');
+          console.log('Deleting device ' + deviceId + ' and all its corresponding messages, alerts & geolocs.');
 
-          // Delete messages
-          this.model.app.models.Message.destroyAll({deviceId: deviceId}, (err: any, result: any) => {
-            if (!err) {
-              // Delete alerts
-              this.model.app.models.Alert.destroyAll({deviceId: deviceId}, (err: any, result: any) => {
-                if (!err) {
-                  // Delete device
-                  this.model.destroyById(deviceId, (error: any, result: any) => {
-                    next(null, result);
-                  });
-                } else {
-                  next(err, 'Error for alerts suppression with device ID ' + deviceId);
-                }
-              });
-            } else {
-              next(err, 'Error for messages suppression with device ID ' + deviceId);
-            }
-          });
+          this.model.app.models.Device.destroyAll({id: deviceId}, (error: any, result: any) => { });
+          this.model.app.models.Message.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
+          this.model.app.models.Alert.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
+          this.model.app.models.Geoloc.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
+
         }
       });
   }
@@ -249,7 +236,6 @@ class Device {
             // let messages: any[] = [];
             let message: any;
             let reception: any[] = [];
-            let geoloc: any[] = [];
 
             const credentials = new Buffer(sigfoxApiLogin + ':' + sigfoxApiPassword).toString('base64');
 
@@ -274,15 +260,6 @@ class Device {
                   };
                   reception.push(rinfo);
                 });
-                if (messageInstance.computedLocation) {
-                  geoloc = [{
-                    type: 'sigfox',
-                    lat: messageInstance.computedLocation.lat,
-                    lng: messageInstance.computedLocation.lng,
-                    precision: messageInstance.computedLocation.radius,
-                    createdAt: new Date(messageInstance.time * 1000)
-                  }];
-                }
 
                 message = {
                   userId: userId,
@@ -291,7 +268,6 @@ class Device {
                   seqNumber: messageInstance.seqNumber,
                   data: messageInstance.data,
                   reception: reception,
-                  geoloc: geoloc,
                   createdAt: new Date(messageInstance.time * 1000),
                   updatedAt: new Date(messageInstance.time * 1000),
                 };
@@ -314,7 +290,29 @@ class Device {
                       if (created) {
                         console.log('Created new message.');
                       } else {
-                        console.log('Found an existing message: ');
+                        console.log('Found an existing message.');
+                      }
+
+                      if (messageInstance.computedLocation) {
+                        // Build the Geoloc object
+                        const geoloc = new this.model.app.models.Geoloc;
+                        geoloc.type = 'sigfox';
+                        geoloc.location = new loopback.GeoPoint({lat: messageInstance.computedLocation.lat, lng: messageInstance.computedLocation.lng});
+                        geoloc.precision = messageInstance.computedLocation.radius;
+                        geoloc.createdAt = messagePostProcess.createdAt;
+                        geoloc.userId = messagePostProcess.userId;
+                        geoloc.messageId = messagePostProcess.id;
+                        geoloc.deviceId = messagePostProcess.deviceId;
+                        // Creating a new Geoloc
+                        this.model.app.models.Geoloc.upsert(
+                          geoloc,
+                          (err: any, geolocInstance: any) => {
+                            if (err) {
+                              console.error(err);
+                            } else {
+                              console.log('Created geoloc as: ', geolocInstance);
+                            }
+                          });
                       }
                     }
                   });

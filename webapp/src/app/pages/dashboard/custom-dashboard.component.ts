@@ -506,16 +506,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         limit: 50,
         order: 'updatedAt DESC',
         include: [{
-          relation: 'Messages',
+          relation: 'Geolocs',
           scope: {
-            fields: ['geoloc', 'createdAt'],
             limit: 500,
             order: 'createdAt DESC',
             where: {
-              and: [
-                { geoloc: { neq: null } },
-                { createdAt: {gte: this.selectedDateTimeBegin.toISOString()} }
-              ]
+              createdAt: {gte: this.selectedDateTimeBegin.toISOString()}
             }
           }
         }],
@@ -580,8 +576,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.userApi.getDevices(this.user.id, this.newWidget.filter).subscribe((devices: Device[]) => {
       console.log(devices);
       devices.forEach((device: Device, i) => {
-        if (device.data_parsed) {
-          device.data_parsed.forEach(o => {
+        if (device.Messages[0].data_parsed) {
+          device.Messages[0].data_parsed.forEach(o => {
             const item = {
               id: o.key,
               itemName: o.key + ' (' + device.id + ')'
@@ -821,10 +817,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
               // Loop each device for this widget
               widget.data.forEach((device: Device) => {
-                const data_parsed = device.data_parsed;
+                const data_parsed = device.Messages[0].data_parsed;
                 // Loop each keys chosen for this widget
                 widget.options.keys.forEach((key) => {
-                  const o = _.filter(device.data_parsed, {key: key})[0];
+                  const o = _.filter(device.Messages[0].data_parsed, {key: key})[0];
                   console.log(device.id, o);
                   if (o) {
                     keys_units.push(o);
@@ -943,10 +939,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
               // Loop each device for this widget
               widget.data.forEach((device: Device) => {
-                const data_parsed = device.data_parsed;
+                const data_parsed = device.Messages[0].data_parsed;
                 // Loop each keys chosen for this widget
                 widget.options.keys.forEach((key) => {
-                  const o = _.filter(device.data_parsed, {key: key})[0];
+                  const o = _.filter(device.Messages[0].data_parsed, {key: key})[0];
                   console.log(device.id, o);
                   if (o) {
                     keys_units.push(o);
