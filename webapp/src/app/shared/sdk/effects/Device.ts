@@ -1,18 +1,15 @@
 /* tslint:disable */
-import { map, catchError, mergeMap } from 'rxjs/operators'
-import { of } from 'rxjs/observable/of';
-import { concat } from 'rxjs/observable/concat';
-import { Injectable, Inject } from '@angular/core';
-import { Effect, Actions } from '@ngrx/effects';
+import {catchError, map, mergeMap} from 'rxjs/operators';
+import {of} from 'rxjs/observable/of';
+import {concat} from 'rxjs/observable/concat';
+import {Inject, Injectable} from '@angular/core';
+import {Actions, Effect} from '@ngrx/effects';
 
-import { LoopbackAction } from '../models/BaseModels';
-import { BaseLoopbackEffects } from './base';
-import { resolver } from './resolver';
-
-import * as actions from '../actions';
-import { DeviceActionTypes, DeviceActions } from '../actions/Device';
-import { LoopbackErrorActions } from '../actions/error';
-import { DeviceApi } from '../services/index';
+import {LoopbackAction} from '../models/BaseModels';
+import {BaseLoopbackEffects} from './base';
+import {DeviceActions, DeviceActionTypes} from '../actions/Device';
+import {LoopbackErrorActions} from '../actions/error';
+import {DeviceApi} from '../services/index';
 
 @Injectable()
 export class DeviceEffects extends BaseLoopbackEffects {
@@ -31,13 +28,13 @@ export class DeviceEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public deleteDeviceMessagesAlerts$ = this.actions$
-    .ofType(DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS).pipe(
+  public deleteDeviceMessagesAlertsGeolocs$ = this.actions$
+    .ofType(DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.device.deleteDeviceMessagesAlerts(action.payload.deviceId, action.payload.req).pipe(
-          map((response: any) => new DeviceActions.deleteDeviceMessagesAlertsSuccess(action.payload.id, response, action.meta)),
+        this.device.deleteDeviceMessagesAlertsGeolocs(action.payload.deviceId, action.payload.req).pipe(
+          map((response: any) => new DeviceActions.deleteDeviceMessagesAlertsGeolocsSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
-            of(new DeviceActions.deleteDeviceMessagesAlertsFail(error, action.meta)),
+            of(new DeviceActions.deleteDeviceMessagesAlertsGeolocsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

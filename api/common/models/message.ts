@@ -239,6 +239,8 @@ class Message {
   }
 
   putMessage(req: any, data: any, next: Function): void {
+    next('CALLBACKS have been optimized, modify them accordingly (see "Connectors" page)', data);
+    /*
     if (typeof data.deviceId  === 'undefined' || typeof data.time  === 'undefined' || typeof data.seqNumber === 'undefined')
       next('Missing "deviceId", "time" and "seqNumber"', data);
 
@@ -343,10 +345,10 @@ class Message {
             // Build the formatted geoloc object
             const geolocSigfox = new this.model.app.models.Geoloc;
             geolocSigfox.type = message.geoloc[0].type;
-            /**
+            /!**
              * TODO: FORCE TO USE LOCATION OBJECT (not directly lat & lng in body but the following: { "geoloc": [{ type: "sigfox", location: { lat: x, lng: x }, precision: x }] )
              * @type {loopback.GeoPoint}
-             */
+             *!/
             if (message.geoloc[0].lat && message.geoloc[0].lng) {
               const location = {lat: message.geoloc[0].lat, lng: message.geoloc[0].lng};
               geolocSigfox.location = new loopback.GeoPoint(location);
@@ -552,7 +554,7 @@ class Message {
                       }
                       // Check if there is geoloc in parsed data
                       if (o.key === 'lat') {
-                        geoloc.type = 'gps';
+                        geoloc.type = 'GPS';
                         geoloc.createdAt = message.createdAt;
                         geoloc.location.lat = o.value;
                       } else if (o.key === 'lng') {
@@ -595,7 +597,7 @@ class Message {
             }
           }
         }
-      });
+      });*/
   }
 
   private createMessageAndSendResponse(message: any, next: Function) {

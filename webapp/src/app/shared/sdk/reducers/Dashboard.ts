@@ -1,10 +1,10 @@
 /* tslint:disable */
-import { Action, createSelector } from '@ngrx/store';
-import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { BaseReducerFactory } from './base';
-import { Dashboard, DashboardInterface } from '../models';
-import { LoopbackAction } from '../models/BaseModels';
-import { DashboardActionTypes } from '../actions';
+import {createSelector} from '@ngrx/store';
+import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
+import {BaseReducerFactory} from './base';
+import {Dashboard, DashboardInterface} from '../models';
+import {LoopbackAction} from '../models/BaseModels';
+import {DashboardActionTypes} from '../actions';
 
 
 export interface DashboardsState extends EntityState<Dashboard | DashboardInterface> {

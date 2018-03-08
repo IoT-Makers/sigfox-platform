@@ -32,13 +32,13 @@ const loopback = require('loopback');
       returns: {arg: 'result', type: 'array'},
       http: {path: '/time-series', verb: 'get'}
     },
-    deleteDeviceMessagesAlerts: {
+    deleteDeviceMessagesAlertsGeolocs: {
       accepts: [
         {arg: 'deviceId', type: 'string', required: true},
         {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
       http: {
-        path: '/Messages',
+        path: '/delete-device-messages-alerts-geolocs',
         verb: 'delete'
       },
       returns: {root: true}
@@ -78,7 +78,7 @@ class Device {
   constructor(public model: any) {
   }
 
-  deleteDeviceMessagesAlerts(deviceId: string, req: any, next: Function): void {
+  deleteDeviceMessagesAlertsGeolocs(deviceId: string, req: any, next: Function): void {
     // Obtain the userId with the access_token of ctx
     const userId = req.accessToken.userId;
     // Find device
@@ -97,11 +97,10 @@ class Device {
         } else if (deviceInstance) {
           console.log('Deleting device ' + deviceId + ' and all its corresponding messages, alerts & geolocs.');
 
-          this.model.app.models.Device.destroyAll({id: deviceId}, (error: any, result: any) => { });
+          this.model.app.models.Device.destroyAll({id: deviceId}, (error: any, result: any) => { if(!err) next(null, 'Success'); });
           this.model.app.models.Message.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
           this.model.app.models.Alert.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
           this.model.app.models.Geoloc.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
-
         }
       });
   }

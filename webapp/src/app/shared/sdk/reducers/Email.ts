@@ -1,10 +1,10 @@
 /* tslint:disable */
-import { Action, createSelector } from '@ngrx/store';
-import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { BaseReducerFactory } from './base';
-import { Email, EmailInterface } from '../models';
-import { LoopbackAction } from '../models/BaseModels';
-import { EmailActionTypes } from '../actions';
+import {createSelector} from '@ngrx/store';
+import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
+import {BaseReducerFactory} from './base';
+import {Email, EmailInterface} from '../models';
+import {LoopbackAction} from '../models/BaseModels';
+import {EmailActionTypes} from '../actions';
 
 
 export interface EmailsState extends EntityState<Email | EmailInterface> {

@@ -1,8 +1,8 @@
 /* tslint:disable */
-import { Action } from '@ngrx/store';
-import { type } from '../util';
-import { BaseLoopbackActionTypesFactory, BaseLoopbackActionsFactory } from './base';
-import { LoopBackFilter, SDKToken, Organization } from '../models';
+import {Action} from '@ngrx/store';
+import {type} from '../util';
+import {BaseLoopbackActionsFactory, BaseLoopbackActionTypesFactory} from './base';
+import {LoopBackFilter, Organization} from '../models';
 
 export const OrganizationActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Organization'), {
@@ -197,7 +197,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Members
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdMembers: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_MEMBERS;
@@ -209,11 +209,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * findByIdMembersSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdMembersSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_MEMBERS_SUCCESS;
@@ -228,7 +228,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdMembersFail: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_MEMBERS_FAIL;
@@ -243,7 +243,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Members
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdMembers: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_MEMBERS;
@@ -255,11 +255,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * destroyByIdMembersSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdMembersSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_MEMBERS_SUCCESS;
@@ -274,7 +274,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdMembersFail: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_MEMBERS_FAIL;
@@ -292,7 +292,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdMembers: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_MEMBERS;
@@ -304,11 +304,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * updateByIdMembersSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdMembersSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_MEMBERS_SUCCESS;
@@ -323,7 +323,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdMembersFail: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_MEMBERS_FAIL;
@@ -341,7 +341,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkMembers: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_MEMBERS;
@@ -353,11 +353,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * linkMembersSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkMembersSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_MEMBERS_SUCCESS;
@@ -372,7 +372,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkMembersFail: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_MEMBERS_FAIL;
@@ -387,7 +387,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Members
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkMembers: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_MEMBERS;
@@ -399,11 +399,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * unlinkMembersSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkMembersSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_MEMBERS_SUCCESS;
@@ -418,7 +418,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkMembersFail: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_MEMBERS_FAIL;
@@ -433,7 +433,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Messages
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdMessages: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_MESSAGES;
@@ -445,11 +445,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * findByIdMessagesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdMessagesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_MESSAGES_SUCCESS;
@@ -464,7 +464,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdMessagesFail: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_MESSAGES_FAIL;
@@ -479,7 +479,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Messages
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdMessages: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_MESSAGES;
@@ -491,11 +491,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * destroyByIdMessagesSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdMessagesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_MESSAGES_SUCCESS;
@@ -510,7 +510,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdMessagesFail: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_MESSAGES_FAIL;
@@ -528,7 +528,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdMessages: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_MESSAGES;
@@ -540,11 +540,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * updateByIdMessagesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdMessagesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_MESSAGES_SUCCESS;
@@ -559,7 +559,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdMessagesFail: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_MESSAGES_FAIL;
@@ -577,7 +577,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkMessages: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_MESSAGES;
@@ -589,11 +589,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * linkMessagesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkMessagesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_MESSAGES_SUCCESS;
@@ -608,7 +608,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkMessagesFail: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_MESSAGES_FAIL;
@@ -623,7 +623,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Messages
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkMessages: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_MESSAGES;
@@ -635,11 +635,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * unlinkMessagesSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkMessagesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_MESSAGES_SUCCESS;
@@ -654,7 +654,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkMessagesFail: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_MESSAGES_FAIL;
@@ -669,7 +669,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Devices
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdDevices: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_DEVICES;
@@ -681,11 +681,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * findByIdDevicesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdDevicesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_DEVICES_SUCCESS;
@@ -700,7 +700,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdDevicesFail: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_DEVICES_FAIL;
@@ -715,7 +715,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Devices
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdDevices: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_DEVICES;
@@ -727,11 +727,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * destroyByIdDevicesSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdDevicesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_DEVICES_SUCCESS;
@@ -746,7 +746,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdDevicesFail: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_DEVICES_FAIL;
@@ -764,7 +764,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdDevices: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_DEVICES;
@@ -776,11 +776,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * updateByIdDevicesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdDevicesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_DEVICES_SUCCESS;
@@ -795,7 +795,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdDevicesFail: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_DEVICES_FAIL;
@@ -813,7 +813,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkDevices: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_DEVICES;
@@ -825,11 +825,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * linkDevicesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkDevicesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_DEVICES_SUCCESS;
@@ -844,7 +844,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkDevicesFail: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_DEVICES_FAIL;
@@ -859,7 +859,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Devices
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkDevices: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_DEVICES;
@@ -871,11 +871,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * unlinkDevicesSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkDevicesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_DEVICES_SUCCESS;
@@ -890,7 +890,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkDevicesFail: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_DEVICES_FAIL;
@@ -905,7 +905,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Categories
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdCategories: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_CATEGORIES;
@@ -917,11 +917,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * findByIdCategoriesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdCategoriesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_CATEGORIES_SUCCESS;
@@ -936,7 +936,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdCategoriesFail: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_CATEGORIES_FAIL;
@@ -951,7 +951,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Categories
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdCategories: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_CATEGORIES;
@@ -963,11 +963,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * destroyByIdCategoriesSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdCategoriesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_CATEGORIES_SUCCESS;
@@ -982,7 +982,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdCategoriesFail: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_CATEGORIES_FAIL;
@@ -1000,7 +1000,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdCategories: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_CATEGORIES;
@@ -1012,11 +1012,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * updateByIdCategoriesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdCategoriesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_CATEGORIES_SUCCESS;
@@ -1031,7 +1031,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdCategoriesFail: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_CATEGORIES_FAIL;
@@ -1049,7 +1049,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkCategories: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_CATEGORIES;
@@ -1061,11 +1061,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * linkCategoriesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkCategoriesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_CATEGORIES_SUCCESS;
@@ -1080,7 +1080,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkCategoriesFail: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_CATEGORIES_FAIL;
@@ -1095,7 +1095,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Categories
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkCategories: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_CATEGORIES;
@@ -1107,11 +1107,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * unlinkCategoriesSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkCategoriesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_CATEGORIES_SUCCESS;
@@ -1126,7 +1126,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkCategoriesFail: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_CATEGORIES_FAIL;
@@ -1141,7 +1141,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Dashboards
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdDashboards: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_DASHBOARDS;
@@ -1153,11 +1153,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * findByIdDashboardsSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdDashboardsSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_DASHBOARDS_SUCCESS;
@@ -1172,7 +1172,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   findByIdDashboardsFail: class implements Action {
     public readonly type = OrganizationActionTypes.FIND_BY_ID_DASHBOARDS_FAIL;
@@ -1187,7 +1187,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Dashboards
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdDashboards: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_DASHBOARDS;
@@ -1199,11 +1199,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * destroyByIdDashboardsSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdDashboardsSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_DASHBOARDS_SUCCESS;
@@ -1218,7 +1218,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   destroyByIdDashboardsFail: class implements Action {
     public readonly type = OrganizationActionTypes.DESTROY_BY_ID_DASHBOARDS_FAIL;
@@ -1236,7 +1236,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdDashboards: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_DASHBOARDS;
@@ -1248,11 +1248,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * updateByIdDashboardsSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdDashboardsSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_DASHBOARDS_SUCCESS;
@@ -1267,7 +1267,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   updateByIdDashboardsFail: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_DASHBOARDS_FAIL;
@@ -1285,7 +1285,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkDashboards: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_DASHBOARDS;
@@ -1297,11 +1297,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * linkDashboardsSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkDashboardsSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_DASHBOARDS_SUCCESS;
@@ -1316,7 +1316,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   linkDashboardsFail: class implements Action {
     public readonly type = OrganizationActionTypes.LINK_DASHBOARDS_FAIL;
@@ -1331,7 +1331,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * @param {any} id Organization id
    * @param {any} fk Foreign key for Dashboards
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkDashboards: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_DASHBOARDS;
@@ -1343,11 +1343,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * unlinkDashboardsSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkDashboardsSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_DASHBOARDS_SUCCESS;
@@ -1362,7 +1362,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   unlinkDashboardsFail: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_DASHBOARDS_FAIL;
@@ -1375,9 +1375,9 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * Queries Members of Organization.
    *
    * @param {any} id Organization id
-   * @param {object} filter 
+   * @param {object} filter
    * @param {any} meta (optional).
-   * 
+   *
    */
   getMembers: class implements Action {
     public readonly type = OrganizationActionTypes.GET_MEMBERS;
@@ -1389,11 +1389,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * getMembersSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   *
+   * @param {any} id
+   * @param {object[]} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   getMembersSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.GET_MEMBERS_SUCCESS;
@@ -1408,7 +1408,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   getMembersFail: class implements Action {
     public readonly type = OrganizationActionTypes.GET_MEMBERS_FAIL;
@@ -1425,7 +1425,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   createMembers: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MEMBERS;
@@ -1437,11 +1437,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * createMembersSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   createMembersSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MEMBERS_SUCCESS;
@@ -1456,7 +1456,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   createMembersFail: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MEMBERS_FAIL;
@@ -1470,24 +1470,24 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} id Organization id
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteMembers: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_MEMBERS;
-      
+
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteMembersSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteMembersSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_MEMBERS_SUCCESS;
-  
+
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -1495,7 +1495,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteMembersFail: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_MEMBERS_FAIL;
@@ -1508,9 +1508,9 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * Queries Messages of Organization.
    *
    * @param {any} id Organization id
-   * @param {object} filter 
+   * @param {object} filter
    * @param {any} meta (optional).
-   * 
+   *
    */
   getMessages: class implements Action {
     public readonly type = OrganizationActionTypes.GET_MESSAGES;
@@ -1522,11 +1522,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * getMessagesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   *
+   * @param {any} id
+   * @param {object[]} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   getMessagesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.GET_MESSAGES_SUCCESS;
@@ -1541,7 +1541,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   getMessagesFail: class implements Action {
     public readonly type = OrganizationActionTypes.GET_MESSAGES_FAIL;
@@ -1558,7 +1558,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   createMessages: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MESSAGES;
@@ -1570,11 +1570,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * createMessagesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   createMessagesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MESSAGES_SUCCESS;
@@ -1589,7 +1589,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   createMessagesFail: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MESSAGES_FAIL;
@@ -1603,24 +1603,24 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} id Organization id
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteMessages: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_MESSAGES;
-      
+
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteMessagesSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteMessagesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_MESSAGES_SUCCESS;
-  
+
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -1628,7 +1628,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteMessagesFail: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_MESSAGES_FAIL;
@@ -1641,9 +1641,9 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * Queries Devices of Organization.
    *
    * @param {any} id Organization id
-   * @param {object} filter 
+   * @param {object} filter
    * @param {any} meta (optional).
-   * 
+   *
    */
   getDevices: class implements Action {
     public readonly type = OrganizationActionTypes.GET_DEVICES;
@@ -1655,11 +1655,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * getDevicesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   *
+   * @param {any} id
+   * @param {object[]} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   getDevicesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.GET_DEVICES_SUCCESS;
@@ -1674,7 +1674,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   getDevicesFail: class implements Action {
     public readonly type = OrganizationActionTypes.GET_DEVICES_FAIL;
@@ -1691,7 +1691,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   createDevices: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_DEVICES;
@@ -1703,11 +1703,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * createDevicesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   createDevicesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_DEVICES_SUCCESS;
@@ -1722,7 +1722,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   createDevicesFail: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_DEVICES_FAIL;
@@ -1736,24 +1736,24 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} id Organization id
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteDevices: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_DEVICES;
-      
+
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteDevicesSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteDevicesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_DEVICES_SUCCESS;
-  
+
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -1761,7 +1761,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteDevicesFail: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_DEVICES_FAIL;
@@ -1774,9 +1774,9 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * Queries Categories of Organization.
    *
    * @param {any} id Organization id
-   * @param {object} filter 
+   * @param {object} filter
    * @param {any} meta (optional).
-   * 
+   *
    */
   getCategories: class implements Action {
     public readonly type = OrganizationActionTypes.GET_CATEGORIES;
@@ -1788,11 +1788,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * getCategoriesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   *
+   * @param {any} id
+   * @param {object[]} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   getCategoriesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.GET_CATEGORIES_SUCCESS;
@@ -1807,7 +1807,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   getCategoriesFail: class implements Action {
     public readonly type = OrganizationActionTypes.GET_CATEGORIES_FAIL;
@@ -1824,7 +1824,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   createCategories: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_CATEGORIES;
@@ -1836,11 +1836,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * createCategoriesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   createCategoriesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_CATEGORIES_SUCCESS;
@@ -1855,7 +1855,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   createCategoriesFail: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_CATEGORIES_FAIL;
@@ -1869,24 +1869,24 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} id Organization id
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteCategories: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_CATEGORIES;
-      
+
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteCategoriesSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteCategoriesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_CATEGORIES_SUCCESS;
-  
+
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -1894,7 +1894,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteCategoriesFail: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_CATEGORIES_FAIL;
@@ -1907,9 +1907,9 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    * Queries Dashboards of Organization.
    *
    * @param {any} id Organization id
-   * @param {object} filter 
+   * @param {object} filter
    * @param {any} meta (optional).
-   * 
+   *
    */
   getDashboards: class implements Action {
     public readonly type = OrganizationActionTypes.GET_DASHBOARDS;
@@ -1921,11 +1921,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * getDashboardsSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   *
+   * @param {any} id
+   * @param {object[]} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   getDashboardsSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.GET_DASHBOARDS_SUCCESS;
@@ -1940,7 +1940,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   getDashboardsFail: class implements Action {
     public readonly type = OrganizationActionTypes.GET_DASHBOARDS_FAIL;
@@ -1957,7 +1957,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   createDashboards: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_DASHBOARDS;
@@ -1969,11 +1969,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * createDashboardsSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   createDashboardsSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_DASHBOARDS_SUCCESS;
@@ -1988,7 +1988,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   createDashboardsFail: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_DASHBOARDS_FAIL;
@@ -2002,24 +2002,24 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} id Organization id
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteDashboards: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_DASHBOARDS;
-      
+
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteDashboardsSuccess Action.
-   * 
-   * @param {any} id 
+   *
+   * @param {any} id
    * This method returns no data.
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteDashboardsSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_DASHBOARDS_SUCCESS;
-  
+
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -2027,7 +2027,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   deleteDashboardsFail: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_DASHBOARDS_FAIL;
@@ -2044,7 +2044,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyMembers: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_MEMBERS;
@@ -2056,11 +2056,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * createManyMembersSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   *
+   * @param {any} id
+   * @param {object[]} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyMembersSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_MEMBERS_SUCCESS;
@@ -2075,7 +2075,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyMembersFail: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_MEMBERS_FAIL;
@@ -2092,7 +2092,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyMessages: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_MESSAGES;
@@ -2104,11 +2104,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * createManyMessagesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   *
+   * @param {any} id
+   * @param {object[]} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyMessagesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_MESSAGES_SUCCESS;
@@ -2123,7 +2123,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyMessagesFail: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_MESSAGES_FAIL;
@@ -2140,7 +2140,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyDevices: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_DEVICES;
@@ -2152,11 +2152,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * createManyDevicesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   *
+   * @param {any} id
+   * @param {object[]} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyDevicesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_DEVICES_SUCCESS;
@@ -2171,7 +2171,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyDevicesFail: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_DEVICES_FAIL;
@@ -2188,7 +2188,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyCategories: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_CATEGORIES;
@@ -2200,11 +2200,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * createManyCategoriesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   *
+   * @param {any} id
+   * @param {object[]} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyCategoriesSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_CATEGORIES_SUCCESS;
@@ -2219,7 +2219,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyCategoriesFail: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_CATEGORIES_FAIL;
@@ -2236,7 +2236,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyDashboards: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_DASHBOARDS;
@@ -2248,11 +2248,11 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
   /**
    * createManyDashboardsSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   *
+   * @param {any} id
+   * @param {object[]} data
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyDashboardsSuccess: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_DASHBOARDS_SUCCESS;
@@ -2267,7 +2267,7 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
   createManyDashboardsFail: class implements Action {
     public readonly type = OrganizationActionTypes.CREATE_MANY_DASHBOARDS_FAIL;

@@ -1,10 +1,10 @@
 /* tslint:disable */
-import { Action, createSelector } from '@ngrx/store';
-import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { BaseReducerFactory } from './base';
-import { Organization, OrganizationInterface } from '../models';
-import { LoopbackAction } from '../models/BaseModels';
-import { OrganizationActionTypes } from '../actions';
+import {createSelector} from '@ngrx/store';
+import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
+import {BaseReducerFactory} from './base';
+import {Organization, OrganizationInterface} from '../models';
+import {LoopbackAction} from '../models/BaseModels';
+import {OrganizationActionTypes} from '../actions';
 
 
 export interface OrganizationsState extends EntityState<Organization | OrganizationInterface> {
