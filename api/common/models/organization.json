@@ -69,6 +69,7 @@
       "accessType": "*",
       "property": [
         "find",
+        "findById",
         "findOne",
         "count",
         "__count__Devices",

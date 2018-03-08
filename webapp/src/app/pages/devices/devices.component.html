@@ -182,6 +182,33 @@
                     <i class="fa fa-share"></i> &nbsp; Share
                   </button>
                 </div>
+                <div *ngIf="deviceToEdit.Organizations.length>0" class="col col-md-12">
+                  <p></p>
+                  <table class="table table-hover table-outline" [mfData]="deviceToEdit.Organizations" #mf="mfDataTable" [mfRowsOnPage]="20">
+                    <thead class="thead-inverse">
+                    <tr>
+                      <th class="text-center">
+                        <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                      </th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let orga of mf.data; let i = index">
+                      <td class="text-center">
+                        <a [routerLink]="['/organization/'+orga.id]"><strong class="text-device">{{orga.name}}</strong></a>
+                      </td>
+                      <td class="text-center">
+
+                          <button class="btn btn-outline-primary btn-round" tooltip="Unshare this device"
+                                  (click)="unshare(orga, deviceToEdit, i)"><i class="fa fa-sign-out fa-lg"></i></button>
+
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+
               </tab>
             </tabset>
           </form>

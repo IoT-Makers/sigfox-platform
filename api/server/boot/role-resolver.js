@@ -15,6 +15,8 @@ module.exports = function (app) {
   var User = app.models.user;
   var RoleMapping = app.models.RoleMapping;
 
+  var errorMessage = "";
+
   RoleMapping.settings.strictObjectIDCoercion = true;
 
   // RoleMapping.belongsTo(User);
@@ -30,7 +32,7 @@ module.exports = function (app) {
     //console.log("context: ", context);
 
     function reject() {
-      console.log("Reject");
+      //console.log("Reject");
       process.nextTick(function () {
         cb("Error", false);
       });
@@ -38,7 +40,7 @@ module.exports = function (app) {
     }
 
     function authorize() {
-      console.log("Authorize");
+      //console.log("Authorize");
       process.nextTick(function () {
         cb(null, true);
       });
@@ -48,7 +50,7 @@ module.exports = function (app) {
     // do not allow anonymous users
     var userId = context.accessToken.userId;
     if (!userId) {
-      console.log("callback 1: !userId");
+      //console.log("callback 1: !userId");
       return reject();
     }
     //if the target model is not project
@@ -59,7 +61,7 @@ module.exports = function (app) {
         if (err || !object) {
           return reject();
         } else if (!object.Members) {
-          console.log("callback 2: No members");
+          //console.log("callback 2: No members");
           return reject();
         } else {
 
@@ -70,11 +72,11 @@ module.exports = function (app) {
           members.forEach(function (member, index, array) {
 
             if (member.id.toString() === userId.toString()) {
-              console.log("callback 3: Authorize");
+              //console.log("callback 3: Authorize");
               authorized = true;
               return authorize();
             } else if (index === array.length -1 && authorized === false){
-              console.log("callback 4: Member not in organization");
+              //console.log("callback 4: Member not in organization");
               if (!cb) return reject();
             }
           });
@@ -83,7 +85,7 @@ module.exports = function (app) {
 
       });
     }else{
-      console.log("callback 5: else");
+      //console.log("callback 5: else");
       return reject();
     }
 

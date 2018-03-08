@@ -131,9 +131,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceSub = this.deviceRef.on('change',
       {
-        limit: 1000,
+        limit: 100,
         order: 'updatedAt DESC',
-        include: ['Parser', 'Category', {
+        include: ['Parser', 'Category', 'Organizations', {
           relation: 'Messages',
           scope: {
             limit: 100,
@@ -362,9 +362,25 @@ export class DevicesComponent implements OnInit, OnDestroy {
       this.organizationApi.linkDevices(orga.id, deviceId).subscribe(results =>{
         console.log(results);
         this.shareDeviceWithOrganizationModal.hide();
+        this.organizationApi.findById(orga.id).subscribe((org: Organization) => {
+          this.deviceToEdit.Organizations.push(org);
+        })
+        // if(this.deviceToEdit.Organizations){
+        //
+        // }
+
       })
     })
+  }
 
+  unshare(orga, device, index): void{
+    this.organizationApi.unlinkDevices(orga.id, device.id).subscribe(results =>{
+      console.log(results);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The device has been removed from ' + orga.name + ".");
+      this.deviceToEdit.Organizations.slice(index);
+    })
   }
 
   // getOrganizations(): void {
