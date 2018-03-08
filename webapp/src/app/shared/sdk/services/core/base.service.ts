@@ -1,17 +1,19 @@
 /* tslint:disable */
-import {Inject, Injectable, Optional} from '@angular/core';
-import {Headers, Http, Request, RequestOptions} from '@angular/http';
-import {JSONSearchParams} from './search.params';
-import {ErrorHandler} from './error.service';
-import {LoopBackAuth} from './auth.service';
-import {LoopBackConfig} from '../../lb.config';
-import {LoopBackFilter} from '../../models/BaseModels';
-import {SDKModels} from '../custom/SDKModels';
-import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
+import { Injectable, Inject, Optional } from '@angular/core';
+import { Http, Headers, Request, RequestOptions } from '@angular/http';
+import { NgModule, ModuleWithProviders } from '@angular/core';
+import { JSONSearchParams } from './search.params';
+import { ErrorHandler } from './error.service';
+import { LoopBackAuth } from './auth.service';
+import { LoopBackConfig } from '../../lb.config';
+import { LoopBackFilter, AccessToken } from '../../models/BaseModels';
+import { SDKModels } from '../custom/SDKModels';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import {SocketConnection} from '../../sockets/socket.connections';
+import { SocketConnection } from '../../sockets/socket.connections';
 // Making Sure EventSource Type is available to avoid compilation issues.
 declare var EventSource: any;
 /**
@@ -85,7 +87,7 @@ export abstract class BaseLoopBackApi {
       // that are the actual body, Custom remote method properties are different and need
       // to be wrapped into a body object
       let body: any;
-      let postBodyKeys = typeof postBody === 'object' ? Object.keys(postBody) : [];
+      let postBodyKeys = typeof postBody === 'object' ? Object.keys(postBody) : []
       if (postBodyKeys.length === 1) {
         body = postBody[postBodyKeys.shift()];
       } else {
@@ -105,7 +107,7 @@ export abstract class BaseLoopBackApi {
       /**
       CODE BELOW WILL GENERATE THE FOLLOWING ISSUES:
       - https://github.com/mean-expert-official/loopback-sdk-builder/issues/356
-      - https://github.com/mean-expert-official/loopback-sdk-builder/issues/328
+      - https://github.com/mean-expert-official/loopback-sdk-builder/issues/328 
       if (urlParams.where) {
         headers.append('where', JSON.stringify(urlParams.where));
         delete urlParams.where;
@@ -590,7 +592,7 @@ export abstract class BaseLoopBackApi {
       source.addEventListener('data', emit);
       source.onerror = emit;
     } else {
-      console.warn('SDK Builder: EventSource is not supported');
+      console.warn('SDK Builder: EventSource is not supported'); 
     }
     return subject.asObservable();
   }

@@ -1,8 +1,8 @@
 /* tslint:disable */
-import {Action} from '@ngrx/store';
-import {type} from '../util';
-import {BaseLoopbackActionsFactory, BaseLoopbackActionTypesFactory} from './base';
-import {LoopBackFilter, User} from '../models';
+import { Action } from '@ngrx/store';
+import { type } from '../util';
+import { BaseLoopbackActionTypesFactory, BaseLoopbackActionsFactory } from './base';
+import { LoopBackFilter, SDKToken, User } from '../models';
 
 export const UserActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('User'), {
@@ -322,7 +322,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for accessTokens
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdAccessTokens: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ACCESSTOKENS;
@@ -334,11 +334,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * findByIdAccessTokensSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdAccessTokensSuccess: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ACCESSTOKENS_SUCCESS;
@@ -353,7 +353,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdAccessTokensFail: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ACCESSTOKENS_FAIL;
@@ -368,7 +368,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for accessTokens
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdAccessTokens: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ACCESSTOKENS;
@@ -380,11 +380,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * destroyByIdAccessTokensSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdAccessTokensSuccess: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ACCESSTOKENS_SUCCESS;
@@ -399,7 +399,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdAccessTokensFail: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ACCESSTOKENS_FAIL;
@@ -417,7 +417,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdAccessTokens: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ACCESSTOKENS;
@@ -429,11 +429,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * updateByIdAccessTokensSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdAccessTokensSuccess: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ACCESSTOKENS_SUCCESS;
@@ -448,7 +448,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdAccessTokensFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ACCESSTOKENS_FAIL;
@@ -463,7 +463,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for roles
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdRoles: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ROLES;
@@ -475,11 +475,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * findByIdRolesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdRolesSuccess: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ROLES_SUCCESS;
@@ -494,7 +494,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdRolesFail: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ROLES_FAIL;
@@ -509,7 +509,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for roles
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdRoles: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ROLES;
@@ -521,11 +521,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * destroyByIdRolesSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdRolesSuccess: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ROLES_SUCCESS;
@@ -540,7 +540,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdRolesFail: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ROLES_FAIL;
@@ -558,7 +558,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdRoles: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ROLES;
@@ -570,11 +570,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * updateByIdRolesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdRolesSuccess: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ROLES_SUCCESS;
@@ -589,7 +589,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdRolesFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ROLES_FAIL;
@@ -607,7 +607,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   linkRoles: class implements Action {
     public readonly type = UserActionTypes.LINK_ROLES;
@@ -619,11 +619,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * linkRolesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   linkRolesSuccess: class implements Action {
     public readonly type = UserActionTypes.LINK_ROLES_SUCCESS;
@@ -638,7 +638,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   linkRolesFail: class implements Action {
     public readonly type = UserActionTypes.LINK_ROLES_FAIL;
@@ -653,7 +653,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for roles
    * @param {any} meta (optional).
-   *
+   * 
    */
   unlinkRoles: class implements Action {
     public readonly type = UserActionTypes.UNLINK_ROLES;
@@ -665,11 +665,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * unlinkRolesSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   unlinkRolesSuccess: class implements Action {
     public readonly type = UserActionTypes.UNLINK_ROLES_SUCCESS;
@@ -684,7 +684,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   unlinkRolesFail: class implements Action {
     public readonly type = UserActionTypes.UNLINK_ROLES_FAIL;
@@ -699,7 +699,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Dashboards
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdDashboards: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_DASHBOARDS;
@@ -711,11 +711,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * findByIdDashboardsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdDashboardsSuccess: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_DASHBOARDS_SUCCESS;
@@ -730,7 +730,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdDashboardsFail: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_DASHBOARDS_FAIL;
@@ -745,7 +745,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Dashboards
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdDashboards: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_DASHBOARDS;
@@ -757,11 +757,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * destroyByIdDashboardsSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdDashboardsSuccess: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_DASHBOARDS_SUCCESS;
@@ -776,7 +776,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdDashboardsFail: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_DASHBOARDS_FAIL;
@@ -794,7 +794,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdDashboards: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_DASHBOARDS;
@@ -806,11 +806,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * updateByIdDashboardsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdDashboardsSuccess: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_DASHBOARDS_SUCCESS;
@@ -825,7 +825,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdDashboardsFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_DASHBOARDS_FAIL;
@@ -840,7 +840,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Categories
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdCategories: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_CATEGORIES;
@@ -852,11 +852,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * findByIdCategoriesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdCategoriesSuccess: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_CATEGORIES_SUCCESS;
@@ -871,7 +871,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdCategoriesFail: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_CATEGORIES_FAIL;
@@ -886,7 +886,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Categories
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdCategories: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_CATEGORIES;
@@ -898,11 +898,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * destroyByIdCategoriesSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdCategoriesSuccess: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_CATEGORIES_SUCCESS;
@@ -917,7 +917,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdCategoriesFail: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_CATEGORIES_FAIL;
@@ -935,7 +935,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdCategories: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_CATEGORIES;
@@ -947,11 +947,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * updateByIdCategoriesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdCategoriesSuccess: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_CATEGORIES_SUCCESS;
@@ -966,7 +966,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdCategoriesFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_CATEGORIES_FAIL;
@@ -981,7 +981,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Devices
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdDevices: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_DEVICES;
@@ -993,11 +993,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * findByIdDevicesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdDevicesSuccess: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_DEVICES_SUCCESS;
@@ -1012,7 +1012,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdDevicesFail: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_DEVICES_FAIL;
@@ -1027,7 +1027,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Devices
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdDevices: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_DEVICES;
@@ -1039,11 +1039,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * destroyByIdDevicesSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdDevicesSuccess: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_DEVICES_SUCCESS;
@@ -1058,7 +1058,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdDevicesFail: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_DEVICES_FAIL;
@@ -1076,7 +1076,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdDevices: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_DEVICES;
@@ -1088,11 +1088,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * updateByIdDevicesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdDevicesSuccess: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_DEVICES_SUCCESS;
@@ -1107,7 +1107,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdDevicesFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_DEVICES_FAIL;
@@ -1122,7 +1122,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Messages
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdMessages: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_MESSAGES;
@@ -1134,11 +1134,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * findByIdMessagesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdMessagesSuccess: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_MESSAGES_SUCCESS;
@@ -1153,7 +1153,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdMessagesFail: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_MESSAGES_FAIL;
@@ -1168,7 +1168,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Messages
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdMessages: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_MESSAGES;
@@ -1180,11 +1180,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * destroyByIdMessagesSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdMessagesSuccess: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_MESSAGES_SUCCESS;
@@ -1199,7 +1199,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdMessagesFail: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_MESSAGES_FAIL;
@@ -1217,7 +1217,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdMessages: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_MESSAGES;
@@ -1229,11 +1229,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * updateByIdMessagesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdMessagesSuccess: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_MESSAGES_SUCCESS;
@@ -1248,7 +1248,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdMessagesFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_MESSAGES_FAIL;
@@ -1263,7 +1263,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Organizations
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdOrganizations: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ORGANIZATIONS;
@@ -1275,11 +1275,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * findByIdOrganizationsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdOrganizationsSuccess: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ORGANIZATIONS_SUCCESS;
@@ -1294,7 +1294,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdOrganizationsFail: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ORGANIZATIONS_FAIL;
@@ -1309,7 +1309,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Organizations
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdOrganizations: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ORGANIZATIONS;
@@ -1321,11 +1321,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * destroyByIdOrganizationsSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdOrganizationsSuccess: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ORGANIZATIONS_SUCCESS;
@@ -1340,7 +1340,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdOrganizationsFail: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ORGANIZATIONS_FAIL;
@@ -1358,7 +1358,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdOrganizations: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ORGANIZATIONS;
@@ -1370,11 +1370,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * updateByIdOrganizationsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdOrganizationsSuccess: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ORGANIZATIONS_SUCCESS;
@@ -1389,7 +1389,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdOrganizationsFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ORGANIZATIONS_FAIL;
@@ -1407,7 +1407,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   linkOrganizations: class implements Action {
     public readonly type = UserActionTypes.LINK_ORGANIZATIONS;
@@ -1419,11 +1419,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * linkOrganizationsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   linkOrganizationsSuccess: class implements Action {
     public readonly type = UserActionTypes.LINK_ORGANIZATIONS_SUCCESS;
@@ -1438,7 +1438,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   linkOrganizationsFail: class implements Action {
     public readonly type = UserActionTypes.LINK_ORGANIZATIONS_FAIL;
@@ -1453,7 +1453,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Organizations
    * @param {any} meta (optional).
-   *
+   * 
    */
   unlinkOrganizations: class implements Action {
     public readonly type = UserActionTypes.UNLINK_ORGANIZATIONS;
@@ -1465,11 +1465,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * unlinkOrganizationsSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   unlinkOrganizationsSuccess: class implements Action {
     public readonly type = UserActionTypes.UNLINK_ORGANIZATIONS_SUCCESS;
@@ -1484,7 +1484,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   unlinkOrganizationsFail: class implements Action {
     public readonly type = UserActionTypes.UNLINK_ORGANIZATIONS_FAIL;
@@ -1499,7 +1499,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Alerts
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdAlerts: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ALERTS;
@@ -1511,11 +1511,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * findByIdAlertsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdAlertsSuccess: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ALERTS_SUCCESS;
@@ -1530,7 +1530,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdAlertsFail: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_ALERTS_FAIL;
@@ -1545,7 +1545,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Alerts
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdAlerts: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ALERTS;
@@ -1557,11 +1557,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * destroyByIdAlertsSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdAlertsSuccess: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ALERTS_SUCCESS;
@@ -1576,7 +1576,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdAlertsFail: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_ALERTS_FAIL;
@@ -1594,7 +1594,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdAlerts: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ALERTS;
@@ -1606,11 +1606,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * updateByIdAlertsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdAlertsSuccess: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ALERTS_SUCCESS;
@@ -1625,7 +1625,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdAlertsFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_ALERTS_FAIL;
@@ -1640,7 +1640,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Connectors
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdConnectors: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_CONNECTORS;
@@ -1652,11 +1652,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * findByIdConnectorsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdConnectorsSuccess: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_CONNECTORS_SUCCESS;
@@ -1671,7 +1671,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   findByIdConnectorsFail: class implements Action {
     public readonly type = UserActionTypes.FIND_BY_ID_CONNECTORS_FAIL;
@@ -1686,7 +1686,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * @param {any} id user id
    * @param {any} fk Foreign key for Connectors
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdConnectors: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_CONNECTORS;
@@ -1698,11 +1698,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * destroyByIdConnectorsSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdConnectorsSuccess: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_CONNECTORS_SUCCESS;
@@ -1717,7 +1717,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   destroyByIdConnectorsFail: class implements Action {
     public readonly type = UserActionTypes.DESTROY_BY_ID_CONNECTORS_FAIL;
@@ -1735,7 +1735,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdConnectors: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_CONNECTORS;
@@ -1747,11 +1747,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * updateByIdConnectorsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdConnectorsSuccess: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_CONNECTORS_SUCCESS;
@@ -1766,7 +1766,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   updateByIdConnectorsFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_CONNECTORS_FAIL;
@@ -1779,9 +1779,9 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * Queries accessTokens of user.
    *
    * @param {any} id user id
-   * @param {object} filter
+   * @param {object} filter 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getAccessTokens: class implements Action {
     public readonly type = UserActionTypes.GET_ACCESSTOKENS;
@@ -1793,11 +1793,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * getAccessTokensSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getAccessTokensSuccess: class implements Action {
     public readonly type = UserActionTypes.GET_ACCESSTOKENS_SUCCESS;
@@ -1812,7 +1812,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   getAccessTokensFail: class implements Action {
     public readonly type = UserActionTypes.GET_ACCESSTOKENS_FAIL;
@@ -1829,7 +1829,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createAccessTokens: class implements Action {
     public readonly type = UserActionTypes.CREATE_ACCESSTOKENS;
@@ -1841,11 +1841,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createAccessTokensSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createAccessTokensSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_ACCESSTOKENS_SUCCESS;
@@ -1860,7 +1860,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createAccessTokensFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_ACCESSTOKENS_FAIL;
@@ -1874,24 +1874,24 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} id user id
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteAccessTokens: class implements Action {
     public readonly type = UserActionTypes.DELETE_ACCESSTOKENS;
-
+      
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteAccessTokensSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteAccessTokensSuccess: class implements Action {
     public readonly type = UserActionTypes.DELETE_ACCESSTOKENS_SUCCESS;
-
+  
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -1899,7 +1899,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteAccessTokensFail: class implements Action {
     public readonly type = UserActionTypes.DELETE_ACCESSTOKENS_FAIL;
@@ -1912,9 +1912,9 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * Queries roles of user.
    *
    * @param {any} id user id
-   * @param {object} filter
+   * @param {object} filter 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getRoles: class implements Action {
     public readonly type = UserActionTypes.GET_ROLES;
@@ -1926,11 +1926,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * getRolesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getRolesSuccess: class implements Action {
     public readonly type = UserActionTypes.GET_ROLES_SUCCESS;
@@ -1945,7 +1945,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   getRolesFail: class implements Action {
     public readonly type = UserActionTypes.GET_ROLES_FAIL;
@@ -1962,7 +1962,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createRoles: class implements Action {
     public readonly type = UserActionTypes.CREATE_ROLES;
@@ -1974,11 +1974,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createRolesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createRolesSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_ROLES_SUCCESS;
@@ -1993,7 +1993,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createRolesFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_ROLES_FAIL;
@@ -2007,24 +2007,24 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} id user id
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteRoles: class implements Action {
     public readonly type = UserActionTypes.DELETE_ROLES;
-
+      
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteRolesSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteRolesSuccess: class implements Action {
     public readonly type = UserActionTypes.DELETE_ROLES_SUCCESS;
-
+  
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -2032,7 +2032,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteRolesFail: class implements Action {
     public readonly type = UserActionTypes.DELETE_ROLES_FAIL;
@@ -2045,9 +2045,9 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * Queries Dashboards of user.
    *
    * @param {any} id user id
-   * @param {object} filter
+   * @param {object} filter 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getDashboards: class implements Action {
     public readonly type = UserActionTypes.GET_DASHBOARDS;
@@ -2059,11 +2059,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * getDashboardsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getDashboardsSuccess: class implements Action {
     public readonly type = UserActionTypes.GET_DASHBOARDS_SUCCESS;
@@ -2078,7 +2078,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   getDashboardsFail: class implements Action {
     public readonly type = UserActionTypes.GET_DASHBOARDS_FAIL;
@@ -2095,7 +2095,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createDashboards: class implements Action {
     public readonly type = UserActionTypes.CREATE_DASHBOARDS;
@@ -2107,11 +2107,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createDashboardsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createDashboardsSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_DASHBOARDS_SUCCESS;
@@ -2126,7 +2126,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createDashboardsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_DASHBOARDS_FAIL;
@@ -2140,24 +2140,24 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} id user id
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteDashboards: class implements Action {
     public readonly type = UserActionTypes.DELETE_DASHBOARDS;
-
+      
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteDashboardsSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteDashboardsSuccess: class implements Action {
     public readonly type = UserActionTypes.DELETE_DASHBOARDS_SUCCESS;
-
+  
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -2165,7 +2165,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteDashboardsFail: class implements Action {
     public readonly type = UserActionTypes.DELETE_DASHBOARDS_FAIL;
@@ -2178,9 +2178,9 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * Queries Categories of user.
    *
    * @param {any} id user id
-   * @param {object} filter
+   * @param {object} filter 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getCategories: class implements Action {
     public readonly type = UserActionTypes.GET_CATEGORIES;
@@ -2192,11 +2192,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * getCategoriesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getCategoriesSuccess: class implements Action {
     public readonly type = UserActionTypes.GET_CATEGORIES_SUCCESS;
@@ -2211,7 +2211,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   getCategoriesFail: class implements Action {
     public readonly type = UserActionTypes.GET_CATEGORIES_FAIL;
@@ -2228,7 +2228,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createCategories: class implements Action {
     public readonly type = UserActionTypes.CREATE_CATEGORIES;
@@ -2240,11 +2240,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createCategoriesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createCategoriesSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_CATEGORIES_SUCCESS;
@@ -2259,7 +2259,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createCategoriesFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_CATEGORIES_FAIL;
@@ -2273,24 +2273,24 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} id user id
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteCategories: class implements Action {
     public readonly type = UserActionTypes.DELETE_CATEGORIES;
-
+      
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteCategoriesSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteCategoriesSuccess: class implements Action {
     public readonly type = UserActionTypes.DELETE_CATEGORIES_SUCCESS;
-
+  
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -2298,7 +2298,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteCategoriesFail: class implements Action {
     public readonly type = UserActionTypes.DELETE_CATEGORIES_FAIL;
@@ -2311,9 +2311,9 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * Queries Devices of user.
    *
    * @param {any} id user id
-   * @param {object} filter
+   * @param {object} filter 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getDevices: class implements Action {
     public readonly type = UserActionTypes.GET_DEVICES;
@@ -2325,11 +2325,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * getDevicesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getDevicesSuccess: class implements Action {
     public readonly type = UserActionTypes.GET_DEVICES_SUCCESS;
@@ -2344,7 +2344,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   getDevicesFail: class implements Action {
     public readonly type = UserActionTypes.GET_DEVICES_FAIL;
@@ -2361,7 +2361,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createDevices: class implements Action {
     public readonly type = UserActionTypes.CREATE_DEVICES;
@@ -2373,11 +2373,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createDevicesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createDevicesSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_DEVICES_SUCCESS;
@@ -2392,7 +2392,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createDevicesFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_DEVICES_FAIL;
@@ -2406,24 +2406,24 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} id user id
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteDevices: class implements Action {
     public readonly type = UserActionTypes.DELETE_DEVICES;
-
+      
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteDevicesSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteDevicesSuccess: class implements Action {
     public readonly type = UserActionTypes.DELETE_DEVICES_SUCCESS;
-
+  
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -2431,7 +2431,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteDevicesFail: class implements Action {
     public readonly type = UserActionTypes.DELETE_DEVICES_FAIL;
@@ -2444,9 +2444,9 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * Queries Messages of user.
    *
    * @param {any} id user id
-   * @param {object} filter
+   * @param {object} filter 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getMessages: class implements Action {
     public readonly type = UserActionTypes.GET_MESSAGES;
@@ -2458,11 +2458,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * getMessagesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getMessagesSuccess: class implements Action {
     public readonly type = UserActionTypes.GET_MESSAGES_SUCCESS;
@@ -2477,7 +2477,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   getMessagesFail: class implements Action {
     public readonly type = UserActionTypes.GET_MESSAGES_FAIL;
@@ -2494,7 +2494,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createMessages: class implements Action {
     public readonly type = UserActionTypes.CREATE_MESSAGES;
@@ -2506,11 +2506,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createMessagesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createMessagesSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_MESSAGES_SUCCESS;
@@ -2525,7 +2525,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createMessagesFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MESSAGES_FAIL;
@@ -2539,24 +2539,24 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} id user id
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteMessages: class implements Action {
     public readonly type = UserActionTypes.DELETE_MESSAGES;
-
+      
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteMessagesSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteMessagesSuccess: class implements Action {
     public readonly type = UserActionTypes.DELETE_MESSAGES_SUCCESS;
-
+  
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -2564,7 +2564,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteMessagesFail: class implements Action {
     public readonly type = UserActionTypes.DELETE_MESSAGES_FAIL;
@@ -2577,9 +2577,9 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * Queries Organizations of user.
    *
    * @param {any} id user id
-   * @param {object} filter
+   * @param {object} filter 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getOrganizations: class implements Action {
     public readonly type = UserActionTypes.GET_ORGANIZATIONS;
@@ -2591,11 +2591,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * getOrganizationsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getOrganizationsSuccess: class implements Action {
     public readonly type = UserActionTypes.GET_ORGANIZATIONS_SUCCESS;
@@ -2610,7 +2610,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   getOrganizationsFail: class implements Action {
     public readonly type = UserActionTypes.GET_ORGANIZATIONS_FAIL;
@@ -2627,7 +2627,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createOrganizations: class implements Action {
     public readonly type = UserActionTypes.CREATE_ORGANIZATIONS;
@@ -2639,11 +2639,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createOrganizationsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createOrganizationsSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_ORGANIZATIONS_SUCCESS;
@@ -2658,7 +2658,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createOrganizationsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_ORGANIZATIONS_FAIL;
@@ -2672,24 +2672,24 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} id user id
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteOrganizations: class implements Action {
     public readonly type = UserActionTypes.DELETE_ORGANIZATIONS;
-
+      
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteOrganizationsSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteOrganizationsSuccess: class implements Action {
     public readonly type = UserActionTypes.DELETE_ORGANIZATIONS_SUCCESS;
-
+  
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -2697,7 +2697,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteOrganizationsFail: class implements Action {
     public readonly type = UserActionTypes.DELETE_ORGANIZATIONS_FAIL;
@@ -2710,9 +2710,9 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * Queries Alerts of user.
    *
    * @param {any} id user id
-   * @param {object} filter
+   * @param {object} filter 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getAlerts: class implements Action {
     public readonly type = UserActionTypes.GET_ALERTS;
@@ -2724,11 +2724,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * getAlertsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getAlertsSuccess: class implements Action {
     public readonly type = UserActionTypes.GET_ALERTS_SUCCESS;
@@ -2743,7 +2743,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   getAlertsFail: class implements Action {
     public readonly type = UserActionTypes.GET_ALERTS_FAIL;
@@ -2760,7 +2760,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createAlerts: class implements Action {
     public readonly type = UserActionTypes.CREATE_ALERTS;
@@ -2772,11 +2772,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createAlertsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createAlertsSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_ALERTS_SUCCESS;
@@ -2791,7 +2791,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createAlertsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_ALERTS_FAIL;
@@ -2805,24 +2805,24 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} id user id
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteAlerts: class implements Action {
     public readonly type = UserActionTypes.DELETE_ALERTS;
-
+      
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteAlertsSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteAlertsSuccess: class implements Action {
     public readonly type = UserActionTypes.DELETE_ALERTS_SUCCESS;
-
+  
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -2830,7 +2830,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteAlertsFail: class implements Action {
     public readonly type = UserActionTypes.DELETE_ALERTS_FAIL;
@@ -2843,9 +2843,9 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * Queries Connectors of user.
    *
    * @param {any} id user id
-   * @param {object} filter
+   * @param {object} filter 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getConnectors: class implements Action {
     public readonly type = UserActionTypes.GET_CONNECTORS;
@@ -2857,11 +2857,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * getConnectorsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   getConnectorsSuccess: class implements Action {
     public readonly type = UserActionTypes.GET_CONNECTORS_SUCCESS;
@@ -2876,7 +2876,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   getConnectorsFail: class implements Action {
     public readonly type = UserActionTypes.GET_CONNECTORS_FAIL;
@@ -2893,7 +2893,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createConnectors: class implements Action {
     public readonly type = UserActionTypes.CREATE_CONNECTORS;
@@ -2905,11 +2905,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createConnectorsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createConnectorsSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_CONNECTORS_SUCCESS;
@@ -2924,7 +2924,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createConnectorsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_CONNECTORS_FAIL;
@@ -2938,24 +2938,24 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} id user id
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteConnectors: class implements Action {
     public readonly type = UserActionTypes.DELETE_CONNECTORS;
-
+      
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * deleteConnectorsSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteConnectorsSuccess: class implements Action {
     public readonly type = UserActionTypes.DELETE_CONNECTORS_SUCCESS;
-
+  
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -2963,7 +2963,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   deleteConnectorsFail: class implements Action {
     public readonly type = UserActionTypes.DELETE_CONNECTORS_FAIL;
@@ -2984,7 +2984,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   login: class implements Action {
     public readonly type = UserActionTypes.LOGIN;
@@ -2996,20 +2996,20 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * loginSuccess Action.
-   *
-   * @param {any} id
-   * Le corps de réponse contient les propriétés de AccessToken créées lors de la connexion.
-   * En fonction de la valeur du paramètre `include`, le corps peut contenir des propriétés supplémentaires :
-   *
-   *   - `user` - `U+007BUserU+007D` - Données de l'utilisateur connecté. (`include=user`)
-   *
+   * 
+   * @param {any} id 
+   * The response body contains properties of the AccessToken created on login.
+   * Depending on the value of `include` parameter, the body may contain additional properties:
+   * 
+   *   - `user` - `U+007BUserU+007D` - Data of the currently logged in user. (`include=user`)
+   * 
    *
    * @param {any} meta (optional).
-   *
+   * 
    */
   loginSuccess: class implements Action {
     public readonly type = UserActionTypes.LOGIN_SUCCESS;
-
+  
     constructor(public payload: any, public meta?: any) {}
   },
   /**
@@ -3017,7 +3017,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   loginFail: class implements Action {
     public readonly type = UserActionTypes.LOGIN_FAIL;
@@ -3033,24 +3033,24 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method does not accept any data. Supply an empty object.
    * @param {any} meta (optional).
-   *
+   * 
    */
   logout: class implements Action {
     public readonly type = UserActionTypes.LOGOUT;
-
+      
     constructor(public meta?: any) {}
   },
   /**
    * logoutSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   logoutSuccess: class implements Action {
     public readonly type = UserActionTypes.LOGOUT_SUCCESS;
-
+  
     constructor(public meta?: any) {}
   },
   /**
@@ -3058,7 +3058,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   logoutFail: class implements Action {
     public readonly type = UserActionTypes.LOGOUT_FAIL;
@@ -3075,20 +3075,20 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method does not accept any data. Supply an empty object.
    * @param {any} meta (optional).
-   *
+   * 
    */
   verify: class implements Action {
     public readonly type = UserActionTypes.VERIFY;
-
+      
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * verifySuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   verifySuccess: class implements Action {
     public readonly type = UserActionTypes.VERIFY_SUCCESS;
@@ -3103,7 +3103,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   verifyFail: class implements Action {
     public readonly type = UserActionTypes.VERIFY_FAIL;
@@ -3115,11 +3115,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    * confirm Action.
    * Confirm a user registration with identity verification token.
    *
-   * @param {string} uid
-   * @param {string} token
-   * @param {string} redirect
+   * @param {string} uid 
+   * @param {string} token 
+   * @param {string} redirect 
    * @param {any} meta (optional).
-   *
+   * 
    */
   confirm: class implements Action {
     public readonly type = UserActionTypes.CONFIRM;
@@ -3131,11 +3131,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * confirmSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   confirmSuccess: class implements Action {
     public readonly type = UserActionTypes.CONFIRM_SUCCESS;
@@ -3150,7 +3150,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   confirmFail: class implements Action {
     public readonly type = UserActionTypes.CONFIRM_FAIL;
@@ -3166,20 +3166,20 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   resetPassword: class implements Action {
     public readonly type = UserActionTypes.RESET_PASSWORD;
-
+      
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * resetPasswordSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   resetPasswordSuccess: class implements Action {
     public readonly type = UserActionTypes.RESET_PASSWORD_SUCCESS;
@@ -3194,7 +3194,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   resetPasswordFail: class implements Action {
     public readonly type = UserActionTypes.RESET_PASSWORD_FAIL;
@@ -3208,11 +3208,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {object} data Request data.
    *
-   *  - `oldPassword` – `{string}` -
+   *  - `oldPassword` – `{string}` - 
    *
-   *  - `newPassword` – `{string}` -
+   *  - `newPassword` – `{string}` - 
    * @param {any} meta (optional).
-   *
+   * 
    */
   changePassword: class implements Action {
     public readonly type = UserActionTypes.CHANGE_PASSWORD;
@@ -3224,11 +3224,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * changePasswordSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   changePasswordSuccess: class implements Action {
     public readonly type = UserActionTypes.CHANGE_PASSWORD_SUCCESS;
@@ -3243,7 +3243,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   changePasswordFail: class implements Action {
     public readonly type = UserActionTypes.CHANGE_PASSWORD_FAIL;
@@ -3257,22 +3257,22 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {object} data Request data.
    *
-   *  - `newPassword` – `{string}` -
+   *  - `newPassword` – `{string}` - 
    * @param {any} meta (optional).
-   *
+   * 
    */
   setPassword: class implements Action {
     public readonly type = UserActionTypes.SET_PASSWORD;
-
+      
     constructor(public payload: any, public meta?: any) {}
   },
   /**
    * setPasswordSuccess Action.
-   *
-   * @param {any} id
+   * 
+   * @param {any} id 
    * This method returns no data.
    * @param {any} meta (optional).
-   *
+   * 
    */
   setPasswordSuccess: class implements Action {
     public readonly type = UserActionTypes.SET_PASSWORD_SUCCESS;
@@ -3287,7 +3287,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   setPasswordFail: class implements Action {
     public readonly type = UserActionTypes.SET_PASSWORD_FAIL;
@@ -3304,7 +3304,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyAccessTokens: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ACCESSTOKENS;
@@ -3316,11 +3316,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createManyAccessTokensSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyAccessTokensSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ACCESSTOKENS_SUCCESS;
@@ -3335,7 +3335,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyAccessTokensFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ACCESSTOKENS_FAIL;
@@ -3352,7 +3352,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyRoles: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ROLES;
@@ -3364,11 +3364,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createManyRolesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyRolesSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ROLES_SUCCESS;
@@ -3383,7 +3383,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyRolesFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ROLES_FAIL;
@@ -3400,7 +3400,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyDashboards: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_DASHBOARDS;
@@ -3412,11 +3412,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createManyDashboardsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyDashboardsSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_DASHBOARDS_SUCCESS;
@@ -3431,7 +3431,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyDashboardsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_DASHBOARDS_FAIL;
@@ -3448,7 +3448,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyCategories: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_CATEGORIES;
@@ -3460,11 +3460,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createManyCategoriesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyCategoriesSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_CATEGORIES_SUCCESS;
@@ -3479,7 +3479,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyCategoriesFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_CATEGORIES_FAIL;
@@ -3496,7 +3496,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyDevices: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_DEVICES;
@@ -3508,11 +3508,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createManyDevicesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyDevicesSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_DEVICES_SUCCESS;
@@ -3527,7 +3527,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyDevicesFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_DEVICES_FAIL;
@@ -3544,7 +3544,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyMessages: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_MESSAGES;
@@ -3556,11 +3556,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createManyMessagesSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyMessagesSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_MESSAGES_SUCCESS;
@@ -3575,7 +3575,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyMessagesFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_MESSAGES_FAIL;
@@ -3592,7 +3592,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyOrganizations: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ORGANIZATIONS;
@@ -3604,11 +3604,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createManyOrganizationsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyOrganizationsSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ORGANIZATIONS_SUCCESS;
@@ -3623,7 +3623,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyOrganizationsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ORGANIZATIONS_FAIL;
@@ -3640,7 +3640,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyAlerts: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ALERTS;
@@ -3652,11 +3652,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createManyAlertsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyAlertsSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ALERTS_SUCCESS;
@@ -3671,7 +3671,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyAlertsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_ALERTS_FAIL;
@@ -3688,7 +3688,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * This method expects a subset of model properties as request parameters.
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyConnectors: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_CONNECTORS;
@@ -3700,11 +3700,11 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
   /**
    * createManyConnectorsSuccess Action.
-   *
-   * @param {any} id
-   * @param {object[]} data
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyConnectorsSuccess: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_CONNECTORS_SUCCESS;
@@ -3719,7 +3719,7 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createManyConnectorsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_CONNECTORS_FAIL;

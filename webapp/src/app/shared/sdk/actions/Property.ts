@@ -1,6 +1,8 @@
 /* tslint:disable */
-import {BaseLoopbackActionsFactory, BaseLoopbackActionTypesFactory} from './base';
-import {Property} from '../models';
+import { Action } from '@ngrx/store';
+import { type } from '../util';
+import { BaseLoopbackActionTypesFactory, BaseLoopbackActionsFactory } from './base';
+import { LoopBackFilter, SDKToken, Property } from '../models';
 
 export const PropertyActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Property'), {

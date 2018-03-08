@@ -1,12 +1,11 @@
 /* tslint:disable */
-import {Inject, Injectable, NgZone} from '@angular/core';
-import {SocketDriver} from './socket.driver';
-import {AccessToken} from '../models';
-import {Subject} from 'rxjs/Subject';
-import {Observable} from 'rxjs/Observable';
+import { Injectable, Inject, NgZone } from '@angular/core';
+import { SocketDriver } from './socket.driver';
+import { AccessToken } from '../models';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/share';
-import {LoopBackConfig} from '../lb.config';
-
+import { LoopBackConfig } from '../lb.config';
 /**
 * @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
 * @module SocketConnection
@@ -85,7 +84,7 @@ export class SocketConnection {
       // Listen for connection
       this.on('connect', () => {
         this.subjects.onConnect.next('connected');
-        // Authenticate or start heartbeat now
+        // Authenticate or start heartbeat now    
         this.emit('authentication', token);
       });
       // Listen for authentication
@@ -93,12 +92,12 @@ export class SocketConnection {
         this.authenticated = true;
         this.subjects.onAuthenticated.next();
         this.heartbeater();
-      });
+      })
       // Listen for authentication
       this.on('unauthorized', (err: any) => {
         this.authenticated = false;
         this.subjects.onUnAuthorized.next(err);
-      });
+      })
       // Listen for disconnections
       this.on('disconnect', (status: any) => this.subjects.onDisconnect.next(status));
     } else if (this.socket && !this.socket.connected){

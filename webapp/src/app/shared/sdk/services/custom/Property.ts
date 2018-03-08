@@ -1,14 +1,17 @@
 /* tslint:disable */
-import {Inject, Injectable, Optional} from '@angular/core';
-import {Http} from '@angular/http';
-import {SDKModels} from './SDKModels';
-import {BaseLoopBackApi} from '../core/base.service';
-import {LoopBackConfig} from '../../lb.config';
-import {LoopBackAuth} from '../core/auth.service';
-import {JSONSearchParams} from '../core/search.params';
-import {ErrorHandler} from '../core/error.service';
-import {Observable} from 'rxjs/Rx';
-import {SocketConnection} from '../../sockets/socket.connections';
+import { Injectable, Inject, Optional } from '@angular/core';
+import { Http, Response } from '@angular/http';
+import { SDKModels } from './SDKModels';
+import { BaseLoopBackApi } from '../core/base.service';
+import { LoopBackConfig } from '../../lb.config';
+import { LoopBackAuth } from '../core/auth.service';
+import { LoopBackFilter,  } from '../../models/BaseModels';
+import { JSONSearchParams } from '../core/search.params';
+import { ErrorHandler } from '../core/error.service';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Rx';
+import { Property } from '../../models/Property';
+import { SocketConnection } from '../../sockets/socket.connections';
 
 
 /**
@@ -39,7 +42,7 @@ export class PropertyApi extends BaseLoopBackApi {
    *
    * Data properties:
    *
-   *  - `result` – `{any}` -
+   *  - `result` – `{any}` - 
    */
   public myRemote(customHeaders?: Function): Observable<any> {
     let _method: string = "GET";

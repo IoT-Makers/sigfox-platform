@@ -1,9 +1,18 @@
 /* tslint:disable */
-import {Inject, Injectable} from '@angular/core';
-import {Actions, Effect} from '@ngrx/effects';
-import {BaseLoopbackEffects} from './base';
-import {PropertyActions, PropertyActionTypes} from '../actions/Property';
-import {PropertyApi} from '../services/index';
+import { map, catchError, mergeMap } from 'rxjs/operators'
+import { of } from 'rxjs/observable/of';
+import { concat } from 'rxjs/observable/concat';
+import { Injectable, Inject } from '@angular/core';
+import { Effect, Actions } from '@ngrx/effects';
+
+import { LoopbackAction } from '../models/BaseModels';
+import { BaseLoopbackEffects } from './base';
+import { resolver } from './resolver';
+
+import * as actions from '../actions';
+import { PropertyActionTypes, PropertyActions } from '../actions/Property';
+import { LoopbackErrorActions } from '../actions/error';
+import { PropertyApi } from '../services/index';
 
 @Injectable()
 export class PropertyEffects extends BaseLoopbackEffects {
