@@ -1,10 +1,10 @@
 /* tslint:disable */
-import {createSelector} from '@ngrx/store';
-import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
-import {BaseReducerFactory} from './base';
-import {AppSetting, AppSettingInterface} from '../models';
-import {LoopbackAction} from '../models/BaseModels';
-import {AppSettingActionTypes} from '../actions';
+import { Action, createSelector } from '@ngrx/store';
+import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import { BaseReducerFactory } from './base';
+import { AppSetting, AppSettingInterface } from '../models';
+import { LoopbackAction } from '../models/BaseModels';
+import { AppSettingActionTypes } from '../actions';
 
 
 export interface AppSettingsState extends EntityState<AppSetting | AppSettingInterface> {

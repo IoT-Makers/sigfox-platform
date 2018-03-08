@@ -1,14 +1,17 @@
 /* tslint:disable */
-import {Inject, Injectable, Optional} from '@angular/core';
-import {Http} from '@angular/http';
-import {SDKModels} from './SDKModels';
-import {BaseLoopBackApi} from '../core/base.service';
-import {LoopBackConfig} from '../../lb.config';
-import {LoopBackAuth} from '../core/auth.service';
-import {JSONSearchParams} from '../core/search.params';
-import {ErrorHandler} from '../core/error.service';
-import {Observable} from 'rxjs/Rx';
-import {SocketConnection} from '../../sockets/socket.connections';
+import { Injectable, Inject, Optional } from '@angular/core';
+import { Http, Response } from '@angular/http';
+import { SDKModels } from './SDKModels';
+import { BaseLoopBackApi } from '../core/base.service';
+import { LoopBackConfig } from '../../lb.config';
+import { LoopBackAuth } from '../core/auth.service';
+import { LoopBackFilter,  } from '../../models/BaseModels';
+import { JSONSearchParams } from '../core/search.params';
+import { ErrorHandler } from '../core/error.service';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Rx';
+import { Message } from '../../models/Message';
+import { SocketConnection } from '../../sockets/socket.connections';
 
 
 /**
@@ -35,9 +38,9 @@ export class MessageApi extends BaseLoopBackApi {
    *
    * @param {object} data Request data.
    *
-   *  - `req` – `{object}` -
+   *  - `req` – `{object}` - 
    *
-   *  - `data` – `{object}` -
+   *  - `data` – `{object}` - 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -68,9 +71,9 @@ export class MessageApi extends BaseLoopBackApi {
    *
    * @param {object} data Request data.
    *
-   *  - `req` – `{object}` -
+   *  - `req` – `{object}` - 
    *
-   *  - `data` – `{object}` -
+   *  - `data` – `{object}` - 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned

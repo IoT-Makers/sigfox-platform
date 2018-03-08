@@ -1,14 +1,14 @@
 /* tslint:disable */
-import {catchError, map, switchMap, take} from 'rxjs/operators';
-import {Injectable} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {ActivatedRouteSnapshot, CanActivate} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
-import {of} from 'rxjs/observable/of';
+import { take, map, switchMap, catchError } from 'rxjs/operators'
+import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { CanActivate, ActivatedRouteSnapshot } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
 
-import {PropertyApi} from '../services/index';
-import {getPropertyById} from '../reducers/Property';
-import {PropertyActions} from '../actions/Property';
+import { PropertyApi } from '../services/index';
+import { getPropertyById } from '../reducers/Property';
+import { PropertyActions } from '../actions/Property';
 
 @Injectable()
 export class PropertyExistsGuard implements CanActivate {

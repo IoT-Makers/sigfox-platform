@@ -154,10 +154,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.mapZoom = 10;
 
     // Message geoloc
-    if (message.geoloc && message.geoloc.length > 0) {
-      this.geolocs = message.geoloc;
-      this.mapLat = message.geoloc[0].lat;
-      this.mapLng = message.geoloc[0].lng;
+    if (message.Geolocs && message.Geolocs.length > 0) {
+      this.geolocs = message.Geolocs;
+      this.mapLat = message.Geolocs[0].lat;
+      this.mapLng = message.Geolocs[0].lng;
       // Show map
       this.mapModal.show();
       this.mapModal.onShown.subscribe((reason: string) => {
@@ -179,9 +179,9 @@ export class MessagesComponent implements OnInit, OnDestroy {
                 this.receptions[i].lat = Number(reception.lat);
                 this.receptions[i].lng = Number(reception.lng);
               });
-              if (!message.geoloc) {
-                this.mapLat = this.receptions[0].lat;
-                this.mapLng = this.receptions[0].lng;
+              if (!message.Geolocs) {
+                this.mapLat = this.receptions[0].location.lat;
+                this.mapLng = this.receptions[0].location.lng;
               }
               this.mapModal.onShown.subscribe((reason: string) => {
                 this.agmMap.triggerResize();

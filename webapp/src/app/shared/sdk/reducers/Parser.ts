@@ -1,10 +1,10 @@
 /* tslint:disable */
-import {createSelector} from '@ngrx/store';
-import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
-import {BaseReducerFactory} from './base';
-import {Parser, ParserInterface} from '../models';
-import {LoopbackAction} from '../models/BaseModels';
-import {ParserActionTypes} from '../actions';
+import { Action, createSelector } from '@ngrx/store';
+import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import { BaseReducerFactory } from './base';
+import { Parser, ParserInterface } from '../models';
+import { LoopbackAction } from '../models/BaseModels';
+import { ParserActionTypes } from '../actions';
 
 
 export interface ParsersState extends EntityState<Parser | ParserInterface> {

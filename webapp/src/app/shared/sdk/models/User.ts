@@ -1,5 +1,16 @@
 /* tslint:disable */
-import {AccessToken, Alert, Category, Connector, Dashboard, Device, Geoloc, Message, Organization, Widget} from '../index';
+import {
+  AccessToken,
+  Dashboard,
+  Category,
+  Device,
+  Message,
+  Geoloc,
+  Organization,
+  Alert,
+  Connector,
+  Widget
+} from '../index';
 
 declare var Object: any;
 export interface UserInterface {

@@ -1,21 +1,21 @@
 /* tslint:disable */
-import {AuthGuard} from './auth.guard';
-import {EmailExistsGuard} from './Email';
-import {AccessTokenExistsGuard} from './AccessToken';
-import {DeviceExistsGuard} from './Device';
-import {ParserExistsGuard} from './Parser';
-import {CategoryExistsGuard} from './Category';
-import {MessageExistsGuard} from './Message';
-import {GeolocExistsGuard} from './Geoloc';
-import {AppSettingExistsGuard} from './AppSetting';
-import {DashboardExistsGuard} from './Dashboard';
-import {UserExistsGuard} from './User';
-import {OrganizationExistsGuard} from './Organization';
-import {AlertExistsGuard} from './Alert';
-import {ReceptionExistsGuard} from './Reception';
-import {ConnectorExistsGuard} from './Connector';
-import {WidgetExistsGuard} from './Widget';
-import {PropertyExistsGuard} from './Property';
+import { AuthGuard } from './auth.guard';
+import { EmailExistsGuard } from './Email';
+import { AccessTokenExistsGuard } from './AccessToken';
+import { DeviceExistsGuard } from './Device';
+import { ParserExistsGuard } from './Parser';
+import { CategoryExistsGuard } from './Category';
+import { MessageExistsGuard } from './Message';
+import { GeolocExistsGuard } from './Geoloc';
+import { AppSettingExistsGuard } from './AppSetting';
+import { DashboardExistsGuard } from './Dashboard';
+import { UserExistsGuard } from './User';
+import { OrganizationExistsGuard } from './Organization';
+import { AlertExistsGuard } from './Alert';
+import { ReceptionExistsGuard } from './Reception';
+import { ConnectorExistsGuard } from './Connector';
+import { WidgetExistsGuard } from './Widget';
+import { PropertyExistsGuard } from './Property';
 
 export const LOOPBACK_GUARDS_PROVIDERS = [
   AuthGuard,

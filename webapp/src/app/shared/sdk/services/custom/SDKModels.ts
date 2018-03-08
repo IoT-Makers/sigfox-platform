@@ -1,21 +1,21 @@
 /* tslint:disable */
-import {Injectable} from '@angular/core';
-import {Email} from '../../models/Email';
-import {AccessToken} from '../../models/AccessToken';
-import {Device} from '../../models/Device';
-import {Parser} from '../../models/Parser';
-import {Category} from '../../models/Category';
-import {Message} from '../../models/Message';
-import {Geoloc} from '../../models/Geoloc';
-import {AppSetting} from '../../models/AppSetting';
-import {Dashboard} from '../../models/Dashboard';
-import {User} from '../../models/User';
-import {Organization} from '../../models/Organization';
-import {Alert} from '../../models/Alert';
-import {Reception} from '../../models/Reception';
-import {Connector} from '../../models/Connector';
-import {Widget} from '../../models/Widget';
-import {Property} from '../../models/Property';
+import { Injectable } from '@angular/core';
+import { Email } from '../../models/Email';
+import { AccessToken } from '../../models/AccessToken';
+import { Device } from '../../models/Device';
+import { Parser } from '../../models/Parser';
+import { Category } from '../../models/Category';
+import { Message } from '../../models/Message';
+import { Geoloc } from '../../models/Geoloc';
+import { AppSetting } from '../../models/AppSetting';
+import { Dashboard } from '../../models/Dashboard';
+import { User } from '../../models/User';
+import { Organization } from '../../models/Organization';
+import { Alert } from '../../models/Alert';
+import { Reception } from '../../models/Reception';
+import { Connector } from '../../models/Connector';
+import { Widget } from '../../models/Widget';
+import { Property } from '../../models/Property';
 
 export interface Models { [name: string]: any }
 
@@ -39,7 +39,7 @@ export class SDKModels {
     Connector: Connector,
     Widget: Widget,
     Property: Property,
-
+    
   };
 
   public get(modelName: string): any {

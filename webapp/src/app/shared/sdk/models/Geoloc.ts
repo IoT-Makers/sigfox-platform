@@ -1,5 +1,7 @@
 /* tslint:disable */
-import {GeoPoint} from '../index';
+import {
+  GeoPoint
+} from '../index';
 
 declare var Object: any;
 export interface GeolocInterface {

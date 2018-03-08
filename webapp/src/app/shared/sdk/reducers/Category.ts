@@ -1,10 +1,10 @@
 /* tslint:disable */
-import {createSelector} from '@ngrx/store';
-import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
-import {BaseReducerFactory} from './base';
-import {Category, CategoryInterface} from '../models';
-import {LoopbackAction} from '../models/BaseModels';
-import {CategoryActionTypes} from '../actions';
+import { Action, createSelector } from '@ngrx/store';
+import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import { BaseReducerFactory } from './base';
+import { Category, CategoryInterface } from '../models';
+import { LoopbackAction } from '../models/BaseModels';
+import { CategoryActionTypes } from '../actions';
 
 
 export interface CategorysState extends EntityState<Category | CategoryInterface> {

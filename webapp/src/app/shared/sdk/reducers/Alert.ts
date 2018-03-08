@@ -1,10 +1,10 @@
 /* tslint:disable */
-import {createSelector} from '@ngrx/store';
-import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
-import {BaseReducerFactory} from './base';
-import {Alert, AlertInterface} from '../models';
-import {LoopbackAction} from '../models/BaseModels';
-import {AlertActionTypes} from '../actions';
+import { Action, createSelector } from '@ngrx/store';
+import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import { BaseReducerFactory } from './base';
+import { Alert, AlertInterface } from '../models';
+import { LoopbackAction } from '../models/BaseModels';
+import { AlertActionTypes } from '../actions';
 
 
 export interface AlertsState extends EntityState<Alert | AlertInterface> {
