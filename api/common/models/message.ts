@@ -638,6 +638,8 @@ class Message {
                     console.log(res);
                   }
                 });
+              // Calculate success rate and update device
+              this.updateDeviceSuccessRate(messageInstance.deviceId);
             }
           });
         // ack is true
@@ -664,10 +666,51 @@ class Message {
                   console.log(res);
                 }
               });
+            // Calculate success rate and update device
+            this.updateDeviceSuccessRate(messageInstance.deviceId);
+
             next(null, messageInstance);
           }
         });
     }
+  }
+
+  private updateDeviceSuccessRate(deviceId: string) {
+    const Device = this.model.app.models.Device;
+    Device.findOne(
+      {
+        where: {id: deviceId},
+        limit: 1,
+        include: [{
+          relation: 'Messages',
+          limit: 100,
+          order: 'createdAt DESC'
+        }]
+      },
+      function (err: any, device: any) {
+        if (err) {
+          console.error(err);
+        } else {
+          device = device.toJSON();
+          let attendedNbMessages: number;
+          attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber + 1;
+          if (device.Messages[device.Messages.length - 1].seqNumber > device.Messages[0].seqNumber) {
+            attendedNbMessages += 4095;
+          }
+          device.success_rate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
+
+          Device.upsert(
+            device,
+            function (err: any, deviceUpdated: any) {
+              if (err) {
+                console.error(err);
+              } else {
+                console.log('Updated device as: ' + deviceUpdated);
+              }
+            });
+        }
+      });
+
   }
 
   // Example Operation Hook

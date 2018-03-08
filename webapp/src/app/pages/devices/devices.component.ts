@@ -137,7 +137,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
           relation: 'Messages',
           order: 'createdAt DESC',
           scope: {
-            limit: 100,
+            limit: 1,
             order: 'createdAt DESC',
             include: [{
               relation: 'Geolocs',
@@ -154,27 +154,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
       }
     ).subscribe((devices: Device[]) => {
       this.devices = devices;
-      this.devices.forEach((device: any) => {
-        device.successRate = 0;
-        /*device.Messages.forEach((message: Message, i) => {
-          if (message.seqNumber && i !== device.Messages.length - 1) {
-            if (device.Messages[i + 1].seqNumber) {
-              if ((message.seqNumber - device.Messages[i + 1].seqNumber) !== 1) {
-                device.successRate += (message.seqNumber - device.Messages[i + 1].seqNumber) - 1;
-                console.log('Missing between', message.seqNumber + ' and ' + device.Messages[i + 1].seqNumber);
-                console.log('Missing', message.seqNumber - device.Messages[i + 1].seqNumber - 1);
-              }
-            }
-          }
-        });*/
-        let attendedNbMessages: number;
-        attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber + 1;
-        if (device.Messages[device.Messages.length - 1].seqNumber > device.Messages[0].seqNumber)
-          attendedNbMessages += 4095;
-        device.successRate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
-        //device.successRate = ((device.successRate / attendedNbMessages) * 100).toFixed(2);
-        console.log(device.id, {nbMessages: device.Messages.length, attendedNbMessages: attendedNbMessages, successRate: device.successRate});
-      });
       console.log(this.devices);
     });
 
