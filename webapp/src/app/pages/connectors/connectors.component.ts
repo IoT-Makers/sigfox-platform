@@ -69,7 +69,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
     // Get the logged in User object (avatar, email, ...)
     this.getUser();
-    this.callbackURL = this.document.location.origin + '/api/Messages/sigfox';
+    this.callbackURL = this.document.location.origin + '/api';
 
     // Real Time
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)

@@ -502,6 +502,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
     // Tracking
     else if (type === 'tracking') {
+      /*****
+       *
+       * TODO: periode glissante
+       *
+       */
+      // Month in milliseconds
+      const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;
+
       this.newWidget.filter = {
         limit: 50,
         order: 'updatedAt DESC',

@@ -5,7 +5,7 @@ import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
-import {UserApi, OrganizationApi, DeviceApi} from '../../shared/sdk/services/custom';
+import {DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -160,9 +160,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
       if (params.id) {
         this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
           this.organization = organization;
-          this.organizationApi.countMembers(this.organization.id).subscribe(result =>{
+          this.organizationApi.countMembers(this.organization.id).subscribe(result => {
             this.countOrganizationMembers = result.count;
-            console.log("members", result.count)
+            console.log('Members', result.count);
           });
 
           //Check if real time and setup
@@ -190,7 +190,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
     this.categorySub = this.categoryRef.on('change',  {where: {userId: this.user.id}}).subscribe(
       (results: any[]) => {
-        console.log("category sub", results);
+        console.log('Category sub', results);
         if (!this.organization) {
           this.userApi.countCategories(this.user.id).subscribe(result => {
             this.countCategories = result.count;
@@ -213,7 +213,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         where: {userId: this.user.id}
       }).subscribe(
       (results: any[]) => {
-        console.log("device sub", results);
+        console.log('Device sub', results);
         if (!this.organization) {
 
           //Get user devices
@@ -222,14 +222,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
               include: ['Parser', 'Category', {
                 relation: 'Messages',
                 scope: {
-                  skip: 0,
+                  limit: 1,
+                  order: 'createdAt DESC'
+                }
+              }, {
+                relation: 'Geolocs',
+                scope: {
                   limit: 1,
                   order: 'createdAt DESC'
                 }
               }],
               order: 'createdAt DESC'
             }).subscribe(devices => {
-            console.log("devices :", devices);
+            console.log('Devices: ', devices);
             if (devices) {
               this.devices = devices;
               this.countDevices = devices.length;
@@ -243,14 +248,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
               include: ['Parser', 'Category', {
                 relation: 'Messages',
                 scope: {
-                  skip: 0,
+                  limit: 1,
+                  order: 'createdAt DESC'
+                }
+              }, {
+                relation: 'Geolocs',
+                scope: {
                   limit: 1,
                   order: 'createdAt DESC'
                 }
               }],
               order: 'createdAt DESC'
             }).subscribe(devices => {
-            console.log("devices :", devices);
+            console.log('Devices: ', devices);
             if (devices) {
               this.devices = devices;
               this.countDevices = devices.length;
@@ -272,7 +282,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       where: {userId: this.user.id}
     }).subscribe(
       (results: any[]) => {
-        console.log("messages sub", results);
+        console.log('Messages sub', results);
         if (!this.organization) {
           this.userApi.countMessages(this.user.id).subscribe(result => {
             this.countMessages = result.count;
@@ -287,7 +297,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Alerts
     // Listen to alerts - Not needed for organization
-    if (!this.organization){
+    if (!this.organization) {
       this.alertRef = this.rt.FireLoop.ref<Alert>(Alert);
       this.alertSub = this.alertRef.on('change', {
         where: {
