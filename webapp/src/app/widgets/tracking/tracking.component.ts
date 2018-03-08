@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {GoogleMapsAPIWrapper} from '@agm/core';
 import {GeolocApi} from '../../shared/sdk/services/custom/Geoloc';
 import {Device} from '../../shared/sdk/models/Device';
-import {FireLoopRef, Geoloc, User} from '../../shared/sdk/models';
+import {FireLoopRef, Geoloc, GeoPoint, User} from '../../shared/sdk/models';
 import {UserApi} from '../../shared/sdk/services/custom';
 import {SelectComponent} from 'ng2-select';
 import {Subscription} from 'rxjs/Subscription';
@@ -63,7 +63,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   public polylines = false;
 
   private markerInterval = 0;
-  private mapPosition = {'lat': 48.86795, 'lng': 2.334070};
+  private mapPosition: GeoPoint = {lat: 48.86795, lng: 2.334070};
   private mapZoom = 3;
   private mapStyle = [{
     "featureType": "landscape",
@@ -162,59 +162,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     this.geolocs = [];
     this.searchResult = 'Searching for geolocation messages for this device ID.';
 
-    if (this.gpsPrefer) {
-      // Get and listen devices
-      this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-      this.deviceSub = this.deviceRef.on('change', {
-        where: {
-          and: [
-            {userId: this.user.id},
-            {id: this.selectedDevice.id}
-          ]
-        },
-        limit: 1,
-        include: [{
-          relation: 'Geolocs',
-          scope: {
-            limit: 3000,
-            order: 'createdAt DESC',
-            where: {
-              and: [
-                {createdAt: {gte: this.dateBegin.toISOString()}},
-                {createdAt: {lte: this.dateEnd.toISOString()}}
-              ],
-              or : [
-                {type: 'GPS'},
-                {type: 'sigfox'}
-              ]
-            }
-          }
-        }]
-      }).subscribe((devices: Device[]) => {
-        console.log(devices);
-        this.geolocs = devices[0].Geolocs;
-        if (this.geolocs.length > 0) {
-          // Center map
-          this.mapPosition = this.geolocs[this.geolocs.length - 1].location;
-          this.mapZoom = 14;
-          this.searchResult = 'Showing ' + this.geolocs.length + ' markers for device ID: ' + this.selectedDevice.id;
-
-          this.geolocs.forEach((geoloc: Geoloc, i) => {
-            if (geoloc.type === 'GPS') {
-              this.geolocs.forEach((g: Geoloc) => {
-                if (g.messageId === geoloc.messageId && g.type === 'sigfox') {
-                  this.geolocs.splice(i, 1);
-                }
-              });
-            }
-          });
-
-        } else {
-          this.searchResult = 'No markers to show with these filters for device ID: ' + this.selectedDevice.id;
-          console.log(this.geolocs);
-        }
-      });
-    } else if (this.gpsOnly) {
+    if (this.gpsOnly) {
       // Get and listen devices
       this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
       this.deviceSub = this.deviceRef.on('change', {
@@ -247,6 +195,58 @@ export class TrackingComponent implements OnInit, OnDestroy {
           this.mapPosition = this.geolocs[this.geolocs.length - 1][0];
           this.mapZoom = 14;
           this.searchResult = 'Showing ' + this.geolocs.length + ' markers for device ID: ' + this.selectedDevice.id;
+        } else {
+          this.searchResult = 'No markers to show with these filters for device ID: ' + this.selectedDevice.id;
+          console.log(this.geolocs);
+        }
+      });
+    } else if (this.gpsPrefer) {
+      // Get and listen devices
+      this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+      this.deviceSub = this.deviceRef.on('change', {
+        where: {
+          and: [
+            {userId: this.user.id},
+            {id: this.selectedDevice.id}
+          ]
+        },
+        limit: 1,
+        include: [{
+          relation: 'Geolocs',
+          scope: {
+            limit: 3000,
+            order: 'createdAt DESC',
+            where: {
+              and: [
+                {createdAt: {gte: this.dateBegin.toISOString()}},
+                {createdAt: {lte: this.dateEnd.toISOString()}}
+              ],
+              or : [
+                {type: 'GPS'},
+                {type: 'sigfox'}
+              ]
+            }
+          }
+        }]
+      }).subscribe((devices: Device[]) => {
+        console.log(devices);
+        const geolocs = devices[0].Geolocs;
+        if (geolocs.length > 0) {
+          geolocs.forEach((geoloc: Geoloc, i) => {
+            if (geoloc.type === 'GPS') {
+              geolocs.forEach((g: Geoloc) => {
+                if (g.messageId === geoloc.messageId && g.type === 'sigfox') {
+                  geolocs.splice(i, 1);
+                }
+              });
+            }
+          });
+          this.geolocs = geolocs;
+          // Center map
+          this.mapPosition = this.geolocs[this.geolocs.length - 1].location;
+          this.mapZoom = 14;
+          this.searchResult = 'Showing ' + this.geolocs.length + ' markers for device ID: ' + this.selectedDevice.id;
+
         } else {
           this.searchResult = 'No markers to show with these filters for device ID: ' + this.selectedDevice.id;
           console.log(this.geolocs);
