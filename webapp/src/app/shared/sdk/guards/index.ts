@@ -6,11 +6,11 @@ import {DeviceExistsGuard} from './Device';
 import {ParserExistsGuard} from './Parser';
 import {CategoryExistsGuard} from './Category';
 import {MessageExistsGuard} from './Message';
+import {GeolocExistsGuard} from './Geoloc';
 import {AppSettingExistsGuard} from './AppSetting';
 import {DashboardExistsGuard} from './Dashboard';
 import {UserExistsGuard} from './User';
 import {OrganizationExistsGuard} from './Organization';
-import {GeolocExistsGuard} from './Geoloc';
 import {AlertExistsGuard} from './Alert';
 import {ReceptionExistsGuard} from './Reception';
 import {ConnectorExistsGuard} from './Connector';
@@ -25,11 +25,11 @@ export const LOOPBACK_GUARDS_PROVIDERS = [
 	ParserExistsGuard,
 	CategoryExistsGuard,
 	MessageExistsGuard,
+	GeolocExistsGuard,
 	AppSettingExistsGuard,
 	DashboardExistsGuard,
 	UserExistsGuard,
 	OrganizationExistsGuard,
-	GeolocExistsGuard,
 	AlertExistsGuard,
 	ReceptionExistsGuard,
 	ConnectorExistsGuard,
@@ -44,11 +44,11 @@ export * from './Device';
 export * from './Parser';
 export * from './Category';
 export * from './Message';
+export * from './Geoloc';
 export * from './AppSetting';
 export * from './Dashboard';
 export * from './User';
 export * from './Organization';
-export * from './Geoloc';
 export * from './Alert';
 export * from './Reception';
 export * from './Connector';

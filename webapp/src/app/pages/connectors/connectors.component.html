@@ -185,16 +185,18 @@
               "time": {time},
               "seqNumber": {seqNumber},
               "reception": [{
-              "id": "{station}",
-              "RSSI": {rssi},
-              "SNR": {snr}
+                  "id": "{station}",
+                  "RSSI": {rssi},
+                  "SNR": {snr}
               }],
-              "geoloc": [{
-              "type": "sigfox",
-              "lat": {lat},
-              "lng": {lng},
-              "precision": {radius}
-              }]
+              "geoloc": {
+                  "type": "sigfox",
+                  "location": {
+                    "lat": {lat},
+                    "lng": {lng}
+                  },
+                  "precision": {radius}
+              }
               }'
               }}</code>
             </p>

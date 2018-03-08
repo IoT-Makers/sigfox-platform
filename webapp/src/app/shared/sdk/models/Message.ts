@@ -10,13 +10,13 @@ export interface MessageInterface {
   "downlinkData"?: string;
   "ack"?: boolean;
   "reception"?: Array<any>;
-  "geoloc"?: Array<any>;
   "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: any;
   "organizationId"?: any;
   Device?: any;
+  Geolocs?: any[];
   user?: any;
   Organization?: any;
 }
@@ -30,13 +30,13 @@ export class Message implements MessageInterface {
   "downlinkData": string = '';
   "ack": boolean = false;
   "reception": Array<any> = <any>[];
-  "geoloc": Array<any> = <any>[];
   "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
   "organizationId": any = <any>null;
   Device: any = null;
+  Geolocs: any[] = null;
   user: any = null;
   Organization: any = null;
   constructor(data?: MessageInterface) {
@@ -104,10 +104,6 @@ export class Message implements MessageInterface {
           name: 'reception',
           type: 'Array&lt;any&gt;'
         },
-        "geoloc": {
-          name: 'geoloc',
-          type: 'Array&lt;any&gt;'
-        },
         "id": {
           name: 'id',
           type: 'any'
@@ -137,6 +133,14 @@ export class Message implements MessageInterface {
           relationType: 'belongsTo',
                   keyFrom: 'deviceId',
           keyTo: 'id'
+        },
+        Geolocs: {
+          name: 'Geolocs',
+          type: 'any[]',
+          model: '',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'messageId'
         },
         user: {
           name: 'user',

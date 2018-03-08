@@ -1,18 +1,18 @@
 /* tslint:disable */
-import { map, catchError, mergeMap } from 'rxjs/operators'
-import { of } from 'rxjs/observable/of';
-import { concat } from 'rxjs/observable/concat';
-import { Injectable, Inject } from '@angular/core';
-import { Effect, Actions } from '@ngrx/effects';
+import {catchError, map, mergeMap} from 'rxjs/operators';
+import {of} from 'rxjs/observable/of';
+import {concat} from 'rxjs/observable/concat';
+import {Inject, Injectable} from '@angular/core';
+import {Actions, Effect} from '@ngrx/effects';
 
-import { LoopbackAction } from '../models/BaseModels';
-import { BaseLoopbackEffects } from './base';
-import { resolver } from './resolver';
+import {LoopbackAction} from '../models/BaseModels';
+import {BaseLoopbackEffects} from './base';
+import {resolver} from './resolver';
 
 import * as actions from '../actions';
-import { UserActionTypes, UserActions } from '../actions/User';
-import { LoopbackErrorActions } from '../actions/error';
-import { UserApi } from '../services/index';
+import {UserActions, UserActionTypes} from '../actions/User';
+import {LoopbackErrorActions} from '../actions/error';
+import {UserApi} from '../services/index';
 
 @Injectable()
 export class UserEffects extends BaseLoopbackEffects {
@@ -342,6 +342,57 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public findByIdGeolocs$ = this.actions$
+    .ofType(UserActionTypes.FIND_BY_ID_GEOLOCS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.findByIdGeolocs(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Geoloc', 'findByIdSuccess'),
+            of(new UserActions.findByIdGeolocsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.findByIdGeolocsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public destroyByIdGeolocs$ = this.actions$
+    .ofType(UserActionTypes.DESTROY_BY_ID_GEOLOCS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.destroyByIdGeolocs(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Geoloc', 'deleteByIdSuccess'),
+            of(new UserActions.destroyByIdGeolocsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.destroyByIdGeolocsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public updateByIdGeolocs$ = this.actions$
+    .ofType(UserActionTypes.UPDATE_BY_ID_GEOLOCS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.updateByIdGeolocs(action.payload.id, action.payload.fk, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Geoloc', 'findByIdSuccess'),
+            of(new UserActions.updateByIdGeolocsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.updateByIdGeolocsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public findByIdOrganizations$ = this.actions$
     .ofType(UserActionTypes.FIND_BY_ID_ORGANIZATIONS).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -522,6 +573,57 @@ export class UserEffects extends BaseLoopbackEffects {
           )),
           catchError((error: any) => concat(
             of(new UserActions.updateByIdConnectorsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public findByIdWidgets$ = this.actions$
+    .ofType(UserActionTypes.FIND_BY_ID_WIDGETS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.findByIdWidgets(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Widget', 'findByIdSuccess'),
+            of(new UserActions.findByIdWidgetsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.findByIdWidgetsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public destroyByIdWidgets$ = this.actions$
+    .ofType(UserActionTypes.DESTROY_BY_ID_WIDGETS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.destroyByIdWidgets(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Widget', 'deleteByIdSuccess'),
+            of(new UserActions.destroyByIdWidgetsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.destroyByIdWidgetsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public updateByIdWidgets$ = this.actions$
+    .ofType(UserActionTypes.UPDATE_BY_ID_WIDGETS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.updateByIdWidgets(action.payload.id, action.payload.fk, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Widget', 'findByIdSuccess'),
+            of(new UserActions.updateByIdWidgetsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.updateByIdWidgetsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -811,6 +913,54 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public getGeolocs$ = this.actions$
+    .ofType(UserActionTypes.GET_GEOLOCS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.getGeolocs(action.payload.id, action.payload.filter).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Geoloc', 'findSuccess'),
+            of(new UserActions.getGeolocsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.getGeolocsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createGeolocs$ = this.actions$
+    .ofType(UserActionTypes.CREATE_GEOLOCS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createGeolocs(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Geoloc', 'findSuccess'),
+            of(new UserActions.createGeolocsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createGeolocsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public deleteGeolocs$ = this.actions$
+    .ofType(UserActionTypes.DELETE_GEOLOCS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.deleteGeolocs(action.payload.id).pipe(
+          map((response: any) => new UserActions.deleteGeolocsSuccess(action.payload, action.meta)),
+          catchError((error: any) => concat(
+            of(new UserActions.deleteGeolocsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public getOrganizations$ = this.actions$
     .ofType(UserActionTypes.GET_ORGANIZATIONS).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -948,6 +1098,54 @@ export class UserEffects extends BaseLoopbackEffects {
           map((response: any) => new UserActions.deleteConnectorsSuccess(action.payload, action.meta)),
           catchError((error: any) => concat(
             of(new UserActions.deleteConnectorsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public getWidgets$ = this.actions$
+    .ofType(UserActionTypes.GET_WIDGETS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.getWidgets(action.payload.id, action.payload.filter).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Widget', 'findSuccess'),
+            of(new UserActions.getWidgetsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.getWidgetsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createWidgets$ = this.actions$
+    .ofType(UserActionTypes.CREATE_WIDGETS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createWidgets(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Widget', 'findSuccess'),
+            of(new UserActions.createWidgetsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createWidgetsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public deleteWidgets$ = this.actions$
+    .ofType(UserActionTypes.DELETE_WIDGETS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.deleteWidgets(action.payload.id).pipe(
+          map((response: any) => new UserActions.deleteWidgetsSuccess(action.payload, action.meta)),
+          catchError((error: any) => concat(
+            of(new UserActions.deleteWidgetsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -1152,6 +1350,23 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public createManyGeolocs$ = this.actions$
+    .ofType(UserActionTypes.CREATE_MANY_GEOLOCS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createManyGeolocs(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Geoloc', 'findSuccess'),
+            of(new UserActions.createManyGeolocsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createManyGeolocsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public createManyOrganizations$ = this.actions$
     .ofType(UserActionTypes.CREATE_MANY_ORGANIZATIONS).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -1196,6 +1411,23 @@ export class UserEffects extends BaseLoopbackEffects {
           )),
           catchError((error: any) => concat(
             of(new UserActions.createManyConnectorsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createManyWidgets$ = this.actions$
+    .ofType(UserActionTypes.CREATE_MANY_WIDGETS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createManyWidgets(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Widget', 'findSuccess'),
+            of(new UserActions.createManyWidgetsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createManyWidgetsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

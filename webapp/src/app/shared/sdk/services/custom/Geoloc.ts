@@ -1,17 +1,15 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
-import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
-import { JSONSearchParams } from '../core/search.params';
-import { ErrorHandler } from '../core/error.service';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Rx';
-import { Geoloc } from '../../models/Geoloc';
-import { SocketConnection } from '../../sockets/socket.connections';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {Http} from '@angular/http';
+import {SDKModels} from './SDKModels';
+import {BaseLoopBackApi} from '../core/base.service';
+import {LoopBackConfig} from '../../lb.config';
+import {LoopBackAuth} from '../core/auth.service';
+import {JSONSearchParams} from '../core/search.params';
+import {ErrorHandler} from '../core/error.service';
+import {Observable} from 'rxjs/Rx';
+import {Geoloc} from '../../models/Geoloc';
+import {SocketConnection} from '../../sockets/socket.connections';
 
 
 /**
@@ -36,13 +34,13 @@ export class GeolocApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId the device ID to track
+   * @param {object} data Request data.
    *
-   * @param {string} dateBegin the starting date-time
+   *  - `req` – `{object}` -
    *
-   * @param {string} dateEnd the ending date-time
+   *  - `data` – `{object}` -
    *
-   * @returns {object[]} An empty reference that will be
+   * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
@@ -51,16 +49,15 @@ export class GeolocApi extends BaseLoopBackApi {
    * This usually means the response is a `Geoloc` object.)
    * </em>
    */
-  public getGeolocsByDeviceId(deviceId: any, dateBegin: any = {}, dateEnd: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
+  public createSigfox(req: any = {}, data: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Geolocs/tracking";
+    "/Geolocs/sigfox";
     let _routeParams: any = {};
-    let _postBody: any = {};
+    let _postBody: any = {
+      data: data
+    };
     let _urlParams: any = {};
-    if (typeof deviceId !== 'undefined' && deviceId !== null) _urlParams.deviceId = deviceId;
-    if (typeof dateBegin !== 'undefined' && dateBegin !== null) _urlParams.dateBegin = dateBegin;
-    if (typeof dateEnd !== 'undefined' && dateEnd !== null) _urlParams.dateEnd = dateEnd;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

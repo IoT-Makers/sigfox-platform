@@ -9,6 +9,11 @@
     <p>Please keep in mind this platform is under active development.</p>
   </alert>
 
+  <alert type="danger" [dismissible]="true">
+    <p>- Callback connectors have changed! New endpoints have been created in order to optimise server performance.</p>
+    <p>- Geolocs are now stored as persisted models. This new model is accessible via API.</p>
+  </alert>
+
   <div class="card-group">
     <div class="card" [routerLink]="['/categories']">
       <div class="card-block">

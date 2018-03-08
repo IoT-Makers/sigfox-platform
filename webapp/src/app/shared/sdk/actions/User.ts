@@ -86,6 +86,18 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   UPDATE_BY_ID_MESSAGES_SUCCESS: type('[User] updateByIdMessages success'),
   UPDATE_BY_ID_MESSAGES_FAIL: type('[User] updateByIdMessages fail'),
 
+  FIND_BY_ID_GEOLOCS: type('[User] findByIdGeolocs'),
+  FIND_BY_ID_GEOLOCS_SUCCESS: type('[User] findByIdGeolocs success'),
+  FIND_BY_ID_GEOLOCS_FAIL: type('[User] findByIdGeolocs fail'),
+
+  DESTROY_BY_ID_GEOLOCS: type('[User] destroyByIdGeolocs'),
+  DESTROY_BY_ID_GEOLOCS_SUCCESS: type('[User] destroyByIdGeolocs success'),
+  DESTROY_BY_ID_GEOLOCS_FAIL: type('[User] destroyByIdGeolocs fail'),
+
+  UPDATE_BY_ID_GEOLOCS: type('[User] updateByIdGeolocs'),
+  UPDATE_BY_ID_GEOLOCS_SUCCESS: type('[User] updateByIdGeolocs success'),
+  UPDATE_BY_ID_GEOLOCS_FAIL: type('[User] updateByIdGeolocs fail'),
+
   FIND_BY_ID_ORGANIZATIONS: type('[User] findByIdOrganizations'),
   FIND_BY_ID_ORGANIZATIONS_SUCCESS: type('[User] findByIdOrganizations success'),
   FIND_BY_ID_ORGANIZATIONS_FAIL: type('[User] findByIdOrganizations fail'),
@@ -129,6 +141,18 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   UPDATE_BY_ID_CONNECTORS: type('[User] updateByIdConnectors'),
   UPDATE_BY_ID_CONNECTORS_SUCCESS: type('[User] updateByIdConnectors success'),
   UPDATE_BY_ID_CONNECTORS_FAIL: type('[User] updateByIdConnectors fail'),
+
+  FIND_BY_ID_WIDGETS: type('[User] findByIdWidgets'),
+  FIND_BY_ID_WIDGETS_SUCCESS: type('[User] findByIdWidgets success'),
+  FIND_BY_ID_WIDGETS_FAIL: type('[User] findByIdWidgets fail'),
+
+  DESTROY_BY_ID_WIDGETS: type('[User] destroyByIdWidgets'),
+  DESTROY_BY_ID_WIDGETS_SUCCESS: type('[User] destroyByIdWidgets success'),
+  DESTROY_BY_ID_WIDGETS_FAIL: type('[User] destroyByIdWidgets fail'),
+
+  UPDATE_BY_ID_WIDGETS: type('[User] updateByIdWidgets'),
+  UPDATE_BY_ID_WIDGETS_SUCCESS: type('[User] updateByIdWidgets success'),
+  UPDATE_BY_ID_WIDGETS_FAIL: type('[User] updateByIdWidgets fail'),
 
   GET_ACCESSTOKENS: type('[User] getAccessTokens'),
   GET_ACCESSTOKENS_SUCCESS: type('[User] getAccessTokens success'),
@@ -202,6 +226,18 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   DELETE_MESSAGES_SUCCESS: type('[User] deleteMessages success'),
   DELETE_MESSAGES_FAIL: type('[User] deleteMessages fail'),
 
+  GET_GEOLOCS: type('[User] getGeolocs'),
+  GET_GEOLOCS_SUCCESS: type('[User] getGeolocs success'),
+  GET_GEOLOCS_FAIL: type('[User] getGeolocs fail'),
+
+  CREATE_GEOLOCS: type('[User] createGeolocs'),
+  CREATE_GEOLOCS_SUCCESS: type('[User] createGeolocs success'),
+  CREATE_GEOLOCS_FAIL: type('[User] createGeolocs fail'),
+
+  DELETE_GEOLOCS: type('[User] deleteGeolocs'),
+  DELETE_GEOLOCS_SUCCESS: type('[User] deleteGeolocs success'),
+  DELETE_GEOLOCS_FAIL: type('[User] deleteGeolocs fail'),
+
   GET_ORGANIZATIONS: type('[User] getOrganizations'),
   GET_ORGANIZATIONS_SUCCESS: type('[User] getOrganizations success'),
   GET_ORGANIZATIONS_FAIL: type('[User] getOrganizations fail'),
@@ -237,6 +273,18 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   DELETE_CONNECTORS: type('[User] deleteConnectors'),
   DELETE_CONNECTORS_SUCCESS: type('[User] deleteConnectors success'),
   DELETE_CONNECTORS_FAIL: type('[User] deleteConnectors fail'),
+
+  GET_WIDGETS: type('[User] getWidgets'),
+  GET_WIDGETS_SUCCESS: type('[User] getWidgets success'),
+  GET_WIDGETS_FAIL: type('[User] getWidgets fail'),
+
+  CREATE_WIDGETS: type('[User] createWidgets'),
+  CREATE_WIDGETS_SUCCESS: type('[User] createWidgets success'),
+  CREATE_WIDGETS_FAIL: type('[User] createWidgets fail'),
+
+  DELETE_WIDGETS: type('[User] deleteWidgets'),
+  DELETE_WIDGETS_SUCCESS: type('[User] deleteWidgets success'),
+  DELETE_WIDGETS_FAIL: type('[User] deleteWidgets fail'),
 
   LOGIN: type('[User] login'),
   LOGIN_SUCCESS: type('[User] login success'),
@@ -290,6 +338,10 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   CREATE_MANY_MESSAGES_SUCCESS: type('[User] createManyMessages success'),
   CREATE_MANY_MESSAGES_FAIL: type('[User] createManyMessages fail'),
 
+  CREATE_MANY_GEOLOCS: type('[User] createManyGeolocs'),
+  CREATE_MANY_GEOLOCS_SUCCESS: type('[User] createManyGeolocs success'),
+  CREATE_MANY_GEOLOCS_FAIL: type('[User] createManyGeolocs fail'),
+
   CREATE_MANY_ORGANIZATIONS: type('[User] createManyOrganizations'),
   CREATE_MANY_ORGANIZATIONS_SUCCESS: type('[User] createManyOrganizations success'),
   CREATE_MANY_ORGANIZATIONS_FAIL: type('[User] createManyOrganizations fail'),
@@ -301,6 +353,10 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   CREATE_MANY_CONNECTORS: type('[User] createManyConnectors'),
   CREATE_MANY_CONNECTORS_SUCCESS: type('[User] createManyConnectors success'),
   CREATE_MANY_CONNECTORS_FAIL: type('[User] createManyConnectors fail'),
+
+  CREATE_MANY_WIDGETS: type('[User] createManyWidgets'),
+  CREATE_MANY_WIDGETS_SUCCESS: type('[User] createManyWidgets success'),
+  CREATE_MANY_WIDGETS_FAIL: type('[User] createManyWidgets fail'),
 
 }, {
   /**
@@ -1257,6 +1313,147 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
 
   /**
+   * findByIdGeolocs Action.
+   * Find a related item by id for Geolocs.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Geolocs
+   * @param {any} meta (optional).
+   *
+   */
+  findByIdGeolocs: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_GEOLOCS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * findByIdGeolocsSuccess Action.
+   *
+   * @param {any} id
+   * @param {object} data
+   * @param {any} meta (optional).
+   *
+   */
+  findByIdGeolocsSuccess: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_GEOLOCS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * findByIdGeolocsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  findByIdGeolocsFail: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_GEOLOCS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * destroyByIdGeolocs Action.
+   * Delete a related item by id for Geolocs.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Geolocs
+   * @param {any} meta (optional).
+   *
+   */
+  destroyByIdGeolocs: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_GEOLOCS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * destroyByIdGeolocsSuccess Action.
+   *
+   * @param {any} id
+   * This method returns no data.
+   * @param {any} meta (optional).
+   *
+   */
+  destroyByIdGeolocsSuccess: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_GEOLOCS_SUCCESS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * destroyByIdGeolocsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  destroyByIdGeolocsFail: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_GEOLOCS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * updateByIdGeolocs Action.
+   * Update a related item by id for Geolocs.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Geolocs
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   *
+   */
+  updateByIdGeolocs: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_GEOLOCS;
+      public payload: {id: any, fk: any, data: any};
+
+    constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk, data};
+    }
+  },
+  /**
+   * updateByIdGeolocsSuccess Action.
+   *
+   * @param {any} id
+   * @param {object} data
+   * @param {any} meta (optional).
+   *
+   */
+  updateByIdGeolocsSuccess: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_GEOLOCS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * updateByIdGeolocsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  updateByIdGeolocsFail: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_GEOLOCS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
    * findByIdOrganizations Action.
    * Find a related item by id for Organizations.
    *
@@ -1770,6 +1967,147 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   updateByIdConnectorsFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_CONNECTORS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * findByIdWidgets Action.
+   * Find a related item by id for Widgets.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Widgets
+   * @param {any} meta (optional).
+   *
+   */
+  findByIdWidgets: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_WIDGETS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * findByIdWidgetsSuccess Action.
+   *
+   * @param {any} id
+   * @param {object} data
+   * @param {any} meta (optional).
+   *
+   */
+  findByIdWidgetsSuccess: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_WIDGETS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * findByIdWidgetsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  findByIdWidgetsFail: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_WIDGETS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * destroyByIdWidgets Action.
+   * Delete a related item by id for Widgets.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Widgets
+   * @param {any} meta (optional).
+   *
+   */
+  destroyByIdWidgets: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_WIDGETS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * destroyByIdWidgetsSuccess Action.
+   *
+   * @param {any} id
+   * This method returns no data.
+   * @param {any} meta (optional).
+   *
+   */
+  destroyByIdWidgetsSuccess: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_WIDGETS_SUCCESS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * destroyByIdWidgetsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  destroyByIdWidgetsFail: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_WIDGETS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * updateByIdWidgets Action.
+   * Update a related item by id for Widgets.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Widgets
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   *
+   */
+  updateByIdWidgets: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_WIDGETS;
+      public payload: {id: any, fk: any, data: any};
+
+    constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk, data};
+    }
+  },
+  /**
+   * updateByIdWidgetsSuccess Action.
+   *
+   * @param {any} id
+   * @param {object} data
+   * @param {any} meta (optional).
+   *
+   */
+  updateByIdWidgetsSuccess: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_WIDGETS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * updateByIdWidgetsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  updateByIdWidgetsFail: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_WIDGETS_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },
@@ -2573,6 +2911,139 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
 
   /**
+   * getGeolocs Action.
+   * Queries Geolocs of user.
+   *
+   * @param {any} id user id
+   * @param {object} filter
+   * @param {any} meta (optional).
+   *
+   */
+  getGeolocs: class implements Action {
+    public readonly type = UserActionTypes.GET_GEOLOCS;
+      public payload: {id: any, filter: LoopBackFilter};
+
+    constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, filter};
+    }
+  },
+  /**
+   * getGeolocsSuccess Action.
+   *
+   * @param {any} id
+   * @param {object[]} data
+   * @param {any} meta (optional).
+   *
+   */
+  getGeolocsSuccess: class implements Action {
+    public readonly type = UserActionTypes.GET_GEOLOCS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * getGeolocsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  getGeolocsFail: class implements Action {
+    public readonly type = UserActionTypes.GET_GEOLOCS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * createGeolocs Action.
+   * Creates a new instance in Geolocs of this model.
+   *
+   * @param {any} id user id
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   *
+   */
+  createGeolocs: class implements Action {
+    public readonly type = UserActionTypes.CREATE_GEOLOCS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createGeolocsSuccess Action.
+   *
+   * @param {any} id
+   * @param {object} data
+   * @param {any} meta (optional).
+   *
+   */
+  createGeolocsSuccess: class implements Action {
+    public readonly type = UserActionTypes.CREATE_GEOLOCS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createGeolocsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  createGeolocsFail: class implements Action {
+    public readonly type = UserActionTypes.CREATE_GEOLOCS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * deleteGeolocs Action.
+   * Deletes all Geolocs of this model.
+   *
+   * @param {any} id user id
+   * @param {any} meta (optional).
+   *
+   */
+  deleteGeolocs: class implements Action {
+    public readonly type = UserActionTypes.DELETE_GEOLOCS;
+
+    constructor(public payload: any, public meta?: any) {}
+  },
+  /**
+   * deleteGeolocsSuccess Action.
+   *
+   * @param {any} id
+   * This method returns no data.
+   * @param {any} meta (optional).
+   *
+   */
+  deleteGeolocsSuccess: class implements Action {
+    public readonly type = UserActionTypes.DELETE_GEOLOCS_SUCCESS;
+
+    constructor(public payload: any, public meta?: any) {}
+  },
+  /**
+   * deleteGeolocsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  deleteGeolocsFail: class implements Action {
+    public readonly type = UserActionTypes.DELETE_GEOLOCS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
    * getOrganizations Action.
    * Queries Organizations of user.
    *
@@ -2967,6 +3438,139 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   deleteConnectorsFail: class implements Action {
     public readonly type = UserActionTypes.DELETE_CONNECTORS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * getWidgets Action.
+   * Queries Widgets of user.
+   *
+   * @param {any} id user id
+   * @param {object} filter
+   * @param {any} meta (optional).
+   *
+   */
+  getWidgets: class implements Action {
+    public readonly type = UserActionTypes.GET_WIDGETS;
+      public payload: {id: any, filter: LoopBackFilter};
+
+    constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, filter};
+    }
+  },
+  /**
+   * getWidgetsSuccess Action.
+   *
+   * @param {any} id
+   * @param {object[]} data
+   * @param {any} meta (optional).
+   *
+   */
+  getWidgetsSuccess: class implements Action {
+    public readonly type = UserActionTypes.GET_WIDGETS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * getWidgetsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  getWidgetsFail: class implements Action {
+    public readonly type = UserActionTypes.GET_WIDGETS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * createWidgets Action.
+   * Creates a new instance in Widgets of this model.
+   *
+   * @param {any} id user id
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   *
+   */
+  createWidgets: class implements Action {
+    public readonly type = UserActionTypes.CREATE_WIDGETS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createWidgetsSuccess Action.
+   *
+   * @param {any} id
+   * @param {object} data
+   * @param {any} meta (optional).
+   *
+   */
+  createWidgetsSuccess: class implements Action {
+    public readonly type = UserActionTypes.CREATE_WIDGETS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createWidgetsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  createWidgetsFail: class implements Action {
+    public readonly type = UserActionTypes.CREATE_WIDGETS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * deleteWidgets Action.
+   * Deletes all Widgets of this model.
+   *
+   * @param {any} id user id
+   * @param {any} meta (optional).
+   *
+   */
+  deleteWidgets: class implements Action {
+    public readonly type = UserActionTypes.DELETE_WIDGETS;
+
+    constructor(public payload: any, public meta?: any) {}
+  },
+  /**
+   * deleteWidgetsSuccess Action.
+   *
+   * @param {any} id
+   * This method returns no data.
+   * @param {any} meta (optional).
+   *
+   */
+  deleteWidgetsSuccess: class implements Action {
+    public readonly type = UserActionTypes.DELETE_WIDGETS_SUCCESS;
+
+    constructor(public payload: any, public meta?: any) {}
+  },
+  /**
+   * deleteWidgetsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  deleteWidgetsFail: class implements Action {
+    public readonly type = UserActionTypes.DELETE_WIDGETS_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },
@@ -3584,6 +4188,54 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
 
   /**
+   * createManyGeolocs Action.
+   * Creates a new instance in Geolocs of this model.
+   *
+   * @param {any} id user id
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   *
+   */
+  createManyGeolocs: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_GEOLOCS;
+      public payload: {id: any, data: any[]};
+
+    constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createManyGeolocsSuccess Action.
+   *
+   * @param {any} id
+   * @param {object[]} data
+   * @param {any} meta (optional).
+   *
+   */
+  createManyGeolocsSuccess: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_GEOLOCS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createManyGeolocsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  createManyGeolocsFail: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_GEOLOCS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
    * createManyOrganizations Action.
    * Creates a new instance in Organizations of this model.
    *
@@ -3723,6 +4375,54 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   createManyConnectorsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_CONNECTORS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * createManyWidgets Action.
+   * Creates a new instance in Widgets of this model.
+   *
+   * @param {any} id user id
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   *
+   */
+  createManyWidgets: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_WIDGETS;
+      public payload: {id: any, data: any[]};
+
+    constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createManyWidgetsSuccess Action.
+   *
+   * @param {any} id
+   * @param {object[]} data
+   * @param {any} meta (optional).
+   *
+   */
+  createManyWidgetsSuccess: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_WIDGETS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createManyWidgetsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   *
+   */
+  createManyWidgetsFail: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_WIDGETS_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

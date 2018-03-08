@@ -3,12 +3,9 @@
 declare var Object: any;
 export interface DeviceInterface {
   "id": string;
-  "creation"?: Date;
   "name"?: string;
   "success_rate"?: number;
-  "data_parsed"?: Array<any>;
   "downlinkData"?: string;
-  "location"?: Array<any>;
   "properties"?: Array<any>;
   "createdAt"?: Date;
   "updatedAt"?: Date;
@@ -19,6 +16,7 @@ export interface DeviceInterface {
   Parser?: any;
   Category?: any;
   Messages?: any[];
+  Geolocs?: any[];
   user?: any;
   Organization?: any;
   Alerts?: any[];
@@ -26,12 +24,9 @@ export interface DeviceInterface {
 
 export class Device implements DeviceInterface {
   "id": string = '';
-  "creation": Date = new Date(0);
   "name": string = '';
   "success_rate": number = 0;
-  "data_parsed": Array<any> = <any>[];
   "downlinkData": string = '';
-  "location": Array<any> = <any>[];
   "properties": Array<any> = <any>[];
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
@@ -42,6 +37,7 @@ export class Device implements DeviceInterface {
   Parser: any = null;
   Category: any = null;
   Messages: any[] = null;
+  Geolocs: any[] = null;
   user: any = null;
   Organization: any = null;
   Alerts: any[] = null;
@@ -82,10 +78,6 @@ export class Device implements DeviceInterface {
           name: 'id',
           type: 'string'
         },
-        "creation": {
-          name: 'creation',
-          type: 'Date'
-        },
         "name": {
           name: 'name',
           type: 'string'
@@ -94,17 +86,9 @@ export class Device implements DeviceInterface {
           name: 'success_rate',
           type: 'number'
         },
-        "data_parsed": {
-          name: 'data_parsed',
-          type: 'Array&lt;any&gt;'
-        },
         "downlinkData": {
           name: 'downlinkData',
           type: 'string'
-        },
-        "location": {
-          name: 'location',
-          type: 'Array&lt;any&gt;'
         },
         "properties": {
           name: 'properties',
@@ -154,6 +138,14 @@ export class Device implements DeviceInterface {
         },
         Messages: {
           name: 'Messages',
+          type: 'any[]',
+          model: '',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'deviceId'
+        },
+        Geolocs: {
+          name: 'Geolocs',
           type: 'any[]',
           model: '',
           relationType: 'hasMany',

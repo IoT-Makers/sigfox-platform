@@ -8,11 +8,11 @@ import {DeviceActions, DeviceActionTypes} from './Device';
 import {ParserActions, ParserActionTypes} from './Parser';
 import {CategoryActions, CategoryActionTypes} from './Category';
 import {MessageActions, MessageActionTypes} from './Message';
+import {GeolocActions, GeolocActionTypes} from './Geoloc';
 import {AppSettingActions, AppSettingActionTypes} from './AppSetting';
 import {DashboardActions, DashboardActionTypes} from './Dashboard';
 import {UserActions, UserActionTypes} from './User';
 import {OrganizationActions, OrganizationActionTypes} from './Organization';
-import {GeolocActions, GeolocActionTypes} from './Geoloc';
 import {AlertActions, AlertActionTypes} from './Alert';
 import {ReceptionActions, ReceptionActionTypes} from './Reception';
 import {ConnectorActions, ConnectorActionTypes} from './Connector';
@@ -28,11 +28,11 @@ export {
 	ParserActionTypes, ParserActions,
 	CategoryActionTypes, CategoryActions,
 	MessageActionTypes, MessageActions,
+	GeolocActionTypes, GeolocActions,
 	AppSettingActionTypes, AppSettingActions,
 	DashboardActionTypes, DashboardActions,
 	UserActionTypes, UserActions,
 	OrganizationActionTypes, OrganizationActions,
-	GeolocActionTypes, GeolocActions,
 	AlertActionTypes, AlertActions,
 	ReceptionActionTypes, ReceptionActions,
 	ConnectorActionTypes, ConnectorActions,

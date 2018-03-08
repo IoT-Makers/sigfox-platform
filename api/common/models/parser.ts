@@ -14,7 +14,7 @@ import {Model} from '@mean-expert/model';
   remotes: {
     parsePayload: {
       returns : { arg: 'result', type: 'array' },
-      http    : { path: '/:id/payload', verb: 'get' },
+      http    : { path: '/parse-payload', verb: 'post' },
       accepts: [
         {arg: 'fn', type: 'string', required: true, description: 'Parser function'},
         {arg: 'payload', type: 'string', required: true, description: 'Sigfox payload (12 bytes max)'},
@@ -34,16 +34,12 @@ class Parser {
   }
 
   parsePayload(fn: Function, payload: string, req: any, next: Function): void {
-
     const userId = req.accessToken.userId;
     if (!userId) {
-      next(null, 'Please login or use a valid access token');
+      next(null, 'Please login or use a valid access token.');
     }
-
-    // console.log(payload.length);
-
     if (payload.length > 24) {
-      next(null, 'Sigfox payload cannot be more than 12 bytes');
+      next(null, 'Sigfox payload cannot be more than 12 bytes.');
     }
 
     // Here we will decode the Sigfox payload and search for geoloc to be extracted and store in the Message

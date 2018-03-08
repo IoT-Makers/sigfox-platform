@@ -1,17 +1,14 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
-import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
-import { JSONSearchParams } from '../core/search.params';
-import { ErrorHandler } from '../core/error.service';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Rx';
-import { Message } from '../../models/Message';
-import { SocketConnection } from '../../sockets/socket.connections';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {Http} from '@angular/http';
+import {SDKModels} from './SDKModels';
+import {BaseLoopBackApi} from '../core/base.service';
+import {LoopBackConfig} from '../../lb.config';
+import {LoopBackAuth} from '../core/auth.service';
+import {JSONSearchParams} from '../core/search.params';
+import {ErrorHandler} from '../core/error.service';
+import {Observable} from 'rxjs/Rx';
+import {SocketConnection} from '../../sockets/socket.connections';
 
 
 /**
@@ -38,9 +35,9 @@ export class MessageApi extends BaseLoopBackApi {
    *
    * @param {object} data Request data.
    *
-   *  - `req` – `{object}` - 
+   *  - `req` – `{object}` -
    *
-   *  - `data` – `{object}` - 
+   *  - `data` – `{object}` -
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -55,6 +52,39 @@ export class MessageApi extends BaseLoopBackApi {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Messages/sigfox";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `req` – `{object}` -
+   *
+   *  - `data` – `{object}` -
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Message` object.)
+   * </em>
+   */
+  public createSigfox(req: any = {}, data: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Messages/sigfox/v2";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data

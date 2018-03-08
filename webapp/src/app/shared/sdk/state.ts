@@ -10,11 +10,11 @@ import {DeviceEffects} from './effects/Device';
 import {ParserEffects} from './effects/Parser';
 import {CategoryEffects} from './effects/Category';
 import {MessageEffects} from './effects/Message';
+import {GeolocEffects} from './effects/Geoloc';
 import {AppSettingEffects} from './effects/AppSetting';
 import {DashboardEffects} from './effects/Dashboard';
 import {UserEffects} from './effects/User';
 import {OrganizationEffects} from './effects/Organization';
-import {GeolocEffects} from './effects/Geoloc';
 import {AlertEffects} from './effects/Alert';
 import {ReceptionEffects} from './effects/Reception';
 import {ConnectorEffects} from './effects/Connector';
@@ -29,11 +29,11 @@ export interface LoopbackStateInterface {
   Parsers: reducers.ParsersState;
   Categorys: reducers.CategorysState;
   Messages: reducers.MessagesState;
+  Geolocs: reducers.GeolocsState;
   AppSettings: reducers.AppSettingsState;
   Dashboards: reducers.DashboardsState;
   Users: reducers.UsersState;
   Organizations: reducers.OrganizationsState;
-  Geolocs: reducers.GeolocsState;
   Alerts: reducers.AlertsState;
   Receptions: reducers.ReceptionsState;
   Connectors: reducers.ConnectorsState;
@@ -49,11 +49,11 @@ export const LoopbackReducer = {
 	Parsers: reducers.ParsersReducer,
 	Categorys: reducers.CategorysReducer,
 	Messages: reducers.MessagesReducer,
+	Geolocs: reducers.GeolocsReducer,
 	AppSettings: reducers.AppSettingsReducer,
 	Dashboards: reducers.DashboardsReducer,
 	Users: reducers.UsersReducer,
 	Organizations: reducers.OrganizationsReducer,
-	Geolocs: reducers.GeolocsReducer,
 	Alerts: reducers.AlertsReducer,
 	Receptions: reducers.ReceptionsReducer,
 	Connectors: reducers.ConnectorsReducer,
@@ -69,11 +69,11 @@ export const LoopbackEffects = [
   ParserEffects,
   CategoryEffects,
   MessageEffects,
+  GeolocEffects,
   AppSettingEffects,
   DashboardEffects,
   UserEffects,
   OrganizationEffects,
-  GeolocEffects,
   AlertEffects,
   ReceptionEffects,
   ConnectorEffects,

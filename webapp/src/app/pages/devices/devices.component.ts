@@ -291,8 +291,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
         child.close();
     });
 
-    this.mapLat = geoloc.lat;
-    this.mapLng = geoloc.lng;
+    this.mapLat = geoloc.location.lat;
+    this.mapLng = geoloc.location.lng;
     this.mapZoom = 12;
   }
 

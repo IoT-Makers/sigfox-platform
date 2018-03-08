@@ -1,18 +1,15 @@
 /* tslint:disable */
-import { map, catchError, mergeMap } from 'rxjs/operators'
-import { of } from 'rxjs/observable/of';
-import { concat } from 'rxjs/observable/concat';
-import { Injectable, Inject } from '@angular/core';
-import { Effect, Actions } from '@ngrx/effects';
+import {catchError, map, mergeMap} from 'rxjs/operators';
+import {of} from 'rxjs/observable/of';
+import {concat} from 'rxjs/observable/concat';
+import {Inject, Injectable} from '@angular/core';
+import {Actions, Effect} from '@ngrx/effects';
 
-import { LoopbackAction } from '../models/BaseModels';
-import { BaseLoopbackEffects } from './base';
-import { resolver } from './resolver';
-
-import * as actions from '../actions';
-import { MessageActionTypes, MessageActions } from '../actions/Message';
-import { LoopbackErrorActions } from '../actions/error';
-import { MessageApi } from '../services/index';
+import {LoopbackAction} from '../models/BaseModels';
+import {BaseLoopbackEffects} from './base';
+import {MessageActions, MessageActionTypes} from '../actions/Message';
+import {LoopbackErrorActions} from '../actions/error';
+import {MessageApi} from '../services/index';
 
 @Injectable()
 export class MessageEffects extends BaseLoopbackEffects {
@@ -24,6 +21,20 @@ export class MessageEffects extends BaseLoopbackEffects {
           map((response: any) => new MessageActions.putMessageSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
             of(new MessageActions.putMessageFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createSigfox$ = this.actions$
+    .ofType(MessageActionTypes.CREATE_SIGFOX).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.message.createSigfox(action.payload.req, action.payload.data).pipe(
+          map((response: any) => new MessageActions.createSigfoxSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new MessageActions.createSigfoxFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

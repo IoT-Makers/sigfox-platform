@@ -99,7 +99,20 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
-          "putMessage": true
+          "putMessage": true,
+          "createSigfox": true
+        }
+      }
+    }
+  },
+  "Geoloc": {
+    "dataSource": "mongodb",
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "createSigfox": true
         }
       }
     }
@@ -122,10 +135,6 @@
   },
   "Organization": {
     "dataSource": "mongodb",
-    "public": true
-  },
-  "Geoloc": {
-    "dataSource": null,
     "public": true
   },
   "Alert": {

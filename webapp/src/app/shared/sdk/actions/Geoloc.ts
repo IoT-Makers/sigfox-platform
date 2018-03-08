@@ -1,49 +1,51 @@
 /* tslint:disable */
-import { Action } from '@ngrx/store';
-import { type } from '../util';
-import { BaseLoopbackActionTypesFactory, BaseLoopbackActionsFactory } from './base';
-import { LoopBackFilter, SDKToken, Geoloc } from '../models';
+import {Action} from '@ngrx/store';
+import {type} from '../util';
+import {BaseLoopbackActionsFactory, BaseLoopbackActionTypesFactory} from './base';
+import {Geoloc} from '../models';
 
 export const GeolocActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Geoloc'), {
-  GET_GEOLOCS_BY_DEVICE_ID: type('[Geoloc] getGeolocsByDeviceId'),
-  GET_GEOLOCS_BY_DEVICE_ID_SUCCESS: type('[Geoloc] getGeolocsByDeviceId success'),
-  GET_GEOLOCS_BY_DEVICE_ID_FAIL: type('[Geoloc] getGeolocsByDeviceId fail'),
+  CREATE_SIGFOX: type('[Geoloc] createSigfox'),
+  CREATE_SIGFOX_SUCCESS: type('[Geoloc] createSigfox success'),
+  CREATE_SIGFOX_FAIL: type('[Geoloc] createSigfox fail'),
 
 });
 export const GeolocActions =
 Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
 
   /**
-   * getGeolocsByDeviceId Action.
+   * createSigfox Action.
    * <em>
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId the device ID to track
-   * @param {string} dateBegin the starting date-time
-   * @param {string} dateEnd the ending date-time
+   * @param {object} data Request data.
+   *
+   *  - `req` – `{object}` -
+   *
+   *  - `data` – `{object}` -
    * @param {any} meta (optional).
-   * 
+   *
    */
-  getGeolocsByDeviceId: class implements Action {
-    public readonly type = GeolocActionTypes.GET_GEOLOCS_BY_DEVICE_ID;
-      public payload: {deviceId: any, dateBegin: any, dateEnd: any};
+  createSigfox: class implements Action {
+    public readonly type = GeolocActionTypes.CREATE_SIGFOX;
+      public payload: {req: any, data: any};
 
-    constructor(deviceId: any, dateBegin: any = {}, dateEnd: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {deviceId, dateBegin, dateEnd};
+    constructor(req: any = {}, data: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {req, data};
     }
   },
   /**
-   * getGeolocsByDeviceIdSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
+   * createSigfoxSuccess Action.
+   *
+   * @param {any} id
+   * @param {object} data
    * @param {any} meta (optional).
-   * 
+   *
    */
-  getGeolocsByDeviceIdSuccess: class implements Action {
-    public readonly type = GeolocActionTypes.GET_GEOLOCS_BY_DEVICE_ID_SUCCESS;
+  createSigfoxSuccess: class implements Action {
+    public readonly type = GeolocActionTypes.CREATE_SIGFOX_SUCCESS;
       public payload: {id: any, data: any};
 
     constructor(id: any, data: any, public meta?: any) {
@@ -51,14 +53,14 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
     }
   },
   /**
-   * getGeolocsByDeviceIdFail Action.
+   * createSigfoxFail Action.
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   * 
+   *
    */
-  getGeolocsByDeviceIdFail: class implements Action {
-    public readonly type = GeolocActionTypes.GET_GEOLOCS_BY_DEVICE_ID_FAIL;
+  createSigfoxFail: class implements Action {
+    public readonly type = GeolocActionTypes.CREATE_SIGFOX_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

@@ -72,6 +72,11 @@
       "model": "Dashboard",
       "foreignKey": "userId"
     },
+    "Widgets": {
+      "type": "hasMany",
+      "model": "Widget",
+      "foreignKey": "userId"
+    },
     "Categories": {
       "type": "hasMany",
       "model": "Category",
@@ -87,14 +92,19 @@
       "model": "Message",
       "foreignKey": "userId"
     },
+    "Alerts": {
+      "type": "hasMany",
+      "model": "Alert",
+      "foreignKey": "userId"
+    },
     "Connectors": {
       "type": "hasMany",
       "model": "Connector",
       "foreignKey": "userId"
     },
-    "Alerts": {
+    "Geolocs": {
       "type": "hasMany",
-      "model": "Alert",
+      "model": "Geoloc",
       "foreignKey": "userId"
     }
   },

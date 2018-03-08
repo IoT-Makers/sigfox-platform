@@ -1,29 +1,26 @@
 /* tslint:disable */
-import { map, catchError, mergeMap } from 'rxjs/operators'
-import { of } from 'rxjs/observable/of';
-import { concat } from 'rxjs/observable/concat';
-import { Injectable, Inject } from '@angular/core';
-import { Effect, Actions } from '@ngrx/effects';
+import {catchError, map, mergeMap} from 'rxjs/operators';
+import {of} from 'rxjs/observable/of';
+import {concat} from 'rxjs/observable/concat';
+import {Inject, Injectable} from '@angular/core';
+import {Actions, Effect} from '@ngrx/effects';
 
-import { LoopbackAction } from '../models/BaseModels';
-import { BaseLoopbackEffects } from './base';
-import { resolver } from './resolver';
-
-import * as actions from '../actions';
-import { GeolocActionTypes, GeolocActions } from '../actions/Geoloc';
-import { LoopbackErrorActions } from '../actions/error';
-import { GeolocApi } from '../services/index';
+import {LoopbackAction} from '../models/BaseModels';
+import {BaseLoopbackEffects} from './base';
+import {GeolocActions, GeolocActionTypes} from '../actions/Geoloc';
+import {LoopbackErrorActions} from '../actions/error';
+import {GeolocApi} from '../services/index';
 
 @Injectable()
 export class GeolocEffects extends BaseLoopbackEffects {
   @Effect()
-  public getGeolocsByDeviceId$ = this.actions$
-    .ofType(GeolocActionTypes.GET_GEOLOCS_BY_DEVICE_ID).pipe(
+  public createSigfox$ = this.actions$
+    .ofType(GeolocActionTypes.CREATE_SIGFOX).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.geoloc.getGeolocsByDeviceId(action.payload.deviceId, action.payload.dateBegin, action.payload.dateEnd).pipe(
-          map((response: any) => new GeolocActions.getGeolocsByDeviceIdSuccess(action.payload.id, response, action.meta)),
+        this.geoloc.createSigfox(action.payload.req, action.payload.data).pipe(
+          map((response: any) => new GeolocActions.createSigfoxSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
-            of(new GeolocActions.getGeolocsByDeviceIdFail(error, action.meta)),
+            of(new GeolocActions.createSigfoxFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

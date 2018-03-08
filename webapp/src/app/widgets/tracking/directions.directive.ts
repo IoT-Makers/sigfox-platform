@@ -1,6 +1,6 @@
 import {AfterContentInit, Directive, Input, OnDestroy} from '@angular/core';
 import {GoogleMapsAPIWrapper} from '@agm/core';
-import {Geoloc, Message} from '../../shared/sdk/models';
+import {Geoloc} from '../../shared/sdk/models';
 
 declare let google: any;
 
@@ -10,7 +10,7 @@ declare let google: any;
 
 export class DirectionsDirective implements AfterContentInit, OnDestroy {
 
-  @Input() geolocMessages: Message[];
+  @Input() geolocs: Geoloc[];
   @Input() routesColor: string;
   @Input() directionsDisplayStore: any[];
   @Input() travelMode: string;
@@ -20,7 +20,7 @@ export class DirectionsDirective implements AfterContentInit, OnDestroy {
 
   ngAfterContentInit() {
     console.log('DirectionsDirective: ngAfterContentInit');
-    if (this.geolocMessages.length > 1)
+    if (this.geolocs.length > 1)
       this.buildDirections();
   }
 
@@ -37,26 +37,24 @@ export class DirectionsDirective implements AfterContentInit, OnDestroy {
     this.directionsDisplayStore = [];
     console.log('--------------------------------');
 
-    let messages: Message[] = [];
-    const startCoord = this.geolocMessages[0].geoloc[0];
-    const endCoord = this.geolocMessages[this.geolocMessages.length - 1].geoloc[0];
+    let geolocs: Geoloc[] = [];
+    const startCoord = this.geolocs[0].location;
+    const endCoord = this.geolocs[this.geolocs.length - 1].location;
 
-    const routes = Math.floor(this.geolocMessages.length / 23) !== 0 ? Math.floor(this.geolocMessages.length / 23) : 1;
+    const routes = Math.floor(this.geolocs.length / 23) !== 0 ? Math.floor(this.geolocs.length / 23) : 1;
     console.log('Number of routes (23 geolocs per routes)', routes);
     for (let i = 0; i < routes; i++) {
       let waypoints = [];
-      messages = this.geolocMessages.slice(i * 23, (i + 1) * 23);
+      geolocs = this.geolocs.slice(i * 23, (i + 1) * 23);
       /*console.log("i*23", i*23);
       console.log("(i+1)*23-1", (i+1)*23);
 
       console.log("messagesCount", messages.length);
       console.log(messages);*/
 
-      messages.forEach((message: Message) => {
-        message.geoloc.forEach((geoloc: Geoloc) => {
-          const latLng = new google.maps.LatLng(geoloc.lat, geoloc.lng);
-          waypoints.push({location: latLng, stopover: true});
-        });
+      geolocs.forEach((geoloc: Geoloc) => {
+        const latLng = new google.maps.LatLng(geoloc.location.lat, geoloc.location.lng);
+        waypoints.push({location: latLng, stopover: true});
       });
 
       //console.log(waypoints);

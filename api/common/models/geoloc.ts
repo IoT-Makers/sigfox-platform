@@ -1,6 +1,6 @@
-import { Model } from '@mean-expert/model';
+import {Model} from '@mean-expert/model';
 
-const moment = require('moment');
+const loopback = require('loopback');
 
 /**
  * @module Geoloc
@@ -14,17 +14,23 @@ const moment = require('moment');
     beforeSave: { name: 'before save', type: 'operation' }
   },
   remotes: {
-    getGeolocsByDeviceId: {
+    createFromPayload: {
+      returns : { arg: 'result', type: 'array' },
+      http    : { path: '/from-payload', verb: 'post' },
       accepts: [
-        {arg: 'deviceId', type: 'string', required: true, description: 'the device ID to track'},
-        {arg: 'dateBegin', type: 'string', default: moment().subtract(1, 'hours'), description: 'the starting date-time'},
-        {arg: 'dateEnd', type: 'string', default: moment(), description: 'the ending date-time'}
+        {arg: 'message', type: 'Message', required: true, description: 'The message object'}
+      ],
+    },
+    createSigfox: {
+      accepts: [
+        {arg: 'req', type: 'object', http: {source: 'req'}},
+        {arg: 'data', type: 'object', required: true, http: { source: 'body' }}
       ],
       http: {
-        path: '/tracking',
-        verb: 'get'
+        path: '/sigfox',
+        verb: 'post'
       },
-      returns: {type: ['Message'], root: true}
+      returns: {type: 'Geoloc', root: true}
     }
   }
 })
@@ -39,42 +45,96 @@ class Geoloc {
     next();
   }
 
-  // Get all geoloc messages belonging to a device (by id and/or date)
-  getGeolocsByDeviceId(deviceId: string, dateBegin: string, dateEnd: string, next: Function): void {
+  private createFromPayload(message: any, req: any): void {
+    if (typeof message === 'undefined'
+      || typeof message.data_parsed === 'undefined') {
+      return console.error('Missing "message"', message);
+    }
 
-    let messages: any;
+    // Build the Geoloc object
+    const geoloc = new this.model.app.models.Geoloc;
+    geoloc.type = 'GPS';
+    geoloc.location = new loopback.GeoPoint({lat: 0, lng: 0});
+    geoloc.createdAt = message.createdAt;
+    geoloc.userId = message.userId;
+    geoloc.messageId = message.id;
+    geoloc.deviceId = message.deviceId;
 
-    // Get messages of device ID where geoloc is defined and filtered by date
-    this.model.app.models.Device.findById(
-      deviceId,
-      {
-        include: [
-          {
-            relation: 'Messages',
-            scope: {
-              fields: ['geoloc', 'createdAt'],
-              where: {
-                and: [
-                  {createdAt: {gte: dateBegin}},
-                  {createdAt: {lte: dateEnd}},
-                  {geoloc: {neq: null}}
-                ]}
-            }
-          }]
-      },
-      (err: any, device: any) => {
-        if (err || !device) {
-          console.error('Error searching tracking for device ' + deviceId, err);
+    message.data_parsed.forEach((p: any) => {
+      // Check if there is geoloc in parsed data
+      if (p.key === 'lat') {
+        geoloc.location.lat = p.value;
+      } else if (p.key === 'lng') {
+        geoloc.location.lng = p.value;
+      }
+    });
+
+    // Creating a new Geoloc
+    this.model.app.models.Geoloc.create(
+      geoloc,
+      (err: any, geolocInstance: any) => {
+        if (err) {
+          console.error(err);
         } else {
-          device = device.toJSON();
-          messages =  device.Messages;
-
-          // console.log("device:", device);
-          // console.log("messages", messages);
-
+          console.log('Created geoloc as: ', geolocInstance);
         }
-        next(err, messages);
       });
+  }
+
+  createSigfox(req: any, data: any, next: Function): void {
+    if (typeof data.geoloc === 'undefined'
+      || typeof data.deviceId  === 'undefined'
+      || typeof data.time  === 'undefined'
+      || typeof data.seqNumber === 'undefined') {
+      next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
+    }
+    // Obtain the userId with the access_token of ctx
+    const userId = req.accessToken.userId;
+
+    // Find the corresponding message in order to retrieve its message ID
+    this.model.app.models.Message.findOne({
+      where: {
+        and: [
+          {deviceId: data.deviceId},
+          {time: data.time},
+          {seqNumber: data.seqNumber}
+        ]
+      }
+    }, (err: any, messageInstance: any) => {
+      if (err) {
+        console.error(err);
+        next(err, data);
+      } else {
+        if (messageInstance) {
+          console.log('Found the corresponding message.');
+          // Build the Geoloc object
+          const geoloc = new this.model.app.models.Geoloc;
+          geoloc.type = 'sigfox';
+          geoloc.location = new loopback.GeoPoint(data.geoloc.location);
+          geoloc.precision = data.geoloc.precision;
+          geoloc.createdAt = messageInstance.createdAt;
+          geoloc.userId = userId;
+          geoloc.messageId = messageInstance.id;
+          geoloc.deviceId = messageInstance.deviceId;
+
+          // Creating a new Geoloc
+          this.model.app.models.Geoloc.create(
+            geoloc,
+            (err: any, geolocInstance: any) => {
+              if (err) {
+                console.error(err);
+                next(err, geolocInstance);
+              } else {
+                console.log('Created geoloc as: ', geolocInstance);
+                next(null, geolocInstance);
+              }
+            });
+        } else {
+          const err = 'No corresponding message found, check if UPLINK or BIDIR callbacks have been set too (on the Sigfox Backend)!';
+          next(err, null);
+        }
+      }
+    });
   }
 }
 

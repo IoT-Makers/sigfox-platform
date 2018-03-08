@@ -6,6 +6,24 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "FireLoop": true,
+    "TimeStamp": {
+      "required": false
+    },
+    "Stats": [
+      {
+        "method": "stats",
+        "endpoint": "/stats",
+        "description": "Statistical information for Property registers.",
+        "type": "model",
+        "count": {
+          "on": "createdAt",
+          "by": "index"
+        }
+      }
+    ]
+  },
   "properties": {
     "key": {
       "type": "string",
@@ -25,23 +43,5 @@
   "validations": [],
   "relations": {},
   "acls": [],
-  "methods": {},
-  "mixins": {
-    "FireLoop": true,
-    "TimeStamp": {
-      "required": false
-    },
-    "Stats": [
-      {
-        "method": "stats",
-        "endpoint": "/stats",
-        "description": "Statistical information for Property registers.",
-        "type": "model",
-        "count": {
-          "on": "createdAt",
-          "by": "index"
-        }
-      }
-    ]
-  }
+  "methods": {}
 }

@@ -31,27 +31,14 @@
       "id": true,
       "required": true
     },
-    "creation": {
-      "type": "date"
-    },
     "name": {
       "type": "string"
     },
     "success_rate": {
       "type": "number"
     },
-    "data_parsed": {
-      "type": [
-        "Property"
-      ]
-    },
     "downlinkData": {
       "type": "string"
-    },
-    "location": {
-      "type": [
-        "Geoloc"
-      ]
     },
     "properties": {
       "type": [
@@ -79,6 +66,11 @@
     "Messages": {
       "type": "hasMany",
       "model": "Message",
+      "foreignKey": "deviceId"
+    },
+    "Geolocs": {
+      "type": "hasMany",
+      "model": "Geoloc",
       "foreignKey": "deviceId"
     },
     "Alerts": {

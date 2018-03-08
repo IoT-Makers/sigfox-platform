@@ -1,14 +1,5 @@
 /* tslint:disable */
-import {
-  AccessToken,
-  Dashboard,
-  Category,
-  Device,
-  Message,
-  Organization,
-  Alert,
-  Connector
-} from '../index';
+import {AccessToken, Alert, Category, Connector, Dashboard, Device, Geoloc, Message, Organization, Widget} from '../index';
 
 declare var Object: any;
 export interface UserInterface {
@@ -33,9 +24,11 @@ export interface UserInterface {
   Categories?: Category[];
   Devices?: Device[];
   Messages?: Message[];
+  Geolocs?: Geoloc[];
   Organizations?: Organization[];
   Alerts?: Alert[];
   Connectors?: Connector[];
+  Widgets?: Widget[];
 }
 
 export class User implements UserInterface {
@@ -60,9 +53,11 @@ export class User implements UserInterface {
   Categories: Category[] = null;
   Devices: Device[] = null;
   Messages: Message[] = null;
+  Geolocs: Geoloc[] = null;
   Organizations: Organization[] = null;
   Alerts: Alert[] = null;
   Connectors: Connector[] = null;
+  Widgets: Widget[] = null;
   constructor(data?: UserInterface) {
     Object.assign(this, data);
   }
@@ -209,6 +204,14 @@ export class User implements UserInterface {
                   keyFrom: 'id',
           keyTo: 'userId'
         },
+        Geolocs: {
+          name: 'Geolocs',
+          type: 'Geoloc[]',
+          model: 'Geoloc',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
+        },
         Organizations: {
           name: 'Organizations',
           type: 'Organization[]',
@@ -231,6 +234,14 @@ export class User implements UserInterface {
           name: 'Connectors',
           type: 'Connector[]',
           model: 'Connector',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
+        },
+        Widgets: {
+          name: 'Widgets',
+          type: 'Widget[]',
+          model: 'Widget',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'userId'

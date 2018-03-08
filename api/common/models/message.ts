@@ -1,5 +1,7 @@
 import {Model} from '@mean-expert/model';
 
+const loopback = require('loopback');
+
 /**
  * @module Message
  * @description
@@ -22,6 +24,17 @@ import {Model} from '@mean-expert/model';
         verb: 'put'
       },
       returns: {type: 'Message', root: true}
+    },
+    createSigfox: {
+      accepts: [
+        {arg: 'req', type: 'object', http: {source: 'req'}},
+        {arg: 'data', type: 'object', required: true, http: { source: 'body' }}
+      ],
+      http: {
+        path: '/sigfox/v2',
+        verb: 'put'
+      },
+      returns: {type: 'Message', root: true}
     }
   }
 })
@@ -30,7 +43,204 @@ class Message {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) { }
 
+  createSigfox(req: any, data: any, next: Function): void {
+    if (typeof data.deviceId  === 'undefined'
+      || typeof data.time  === 'undefined'
+      || typeof data.seqNumber === 'undefined') {
+      next('Missing "deviceId", "time" and "seqNumber"', data);
+    }
+
+    // Obtain the userId with the access_token of ctx
+    const userId = req.accessToken.userId;
+
+    // Create a new message object
+    let message = new this.model;
+    message = data;
+
+    // Store the userId in the message
+    message.userId = userId;
+
+    // Set the createdAt time
+    message.createdAt = new Date(message.time * 1000);
+
+    // Create a new device object
+    const device = new this.model.app.models.Device;
+    device.id = message.deviceId;
+    device.userId = userId;
+    if (message.deviceNamePrefix)
+      device.name = message.deviceNamePrefix + '_' + message.deviceId;
+    if (message.parserId)
+      device.parserId = message.parserId;
+    if (message.categoryId)
+      device.categoryId = message.categoryId;
+    if (message.downlinkData)
+      device.downlinkData = message.downlinkData;
+
+    // Store the message duplicate flag and parserId
+    const duplicate = message.duplicate;
+    const parserId = message.parserId;
+
+    // Sanitize message to be saved - get rid of useless information
+    delete message.duplicate;
+    delete message.deviceNamePrefix;
+    delete message.parserId;
+    delete message.categoryId;
+    delete message.downlinkData;
+
+    // Check if the device exists or create it
+    this.model.app.models.Device.findOrCreate(
+      {where: {id: message.deviceId}, include: ['Alerts', 'Parser']}, // find
+      device, // create
+      (err: any, deviceInstance: any, created: boolean) => { // callback
+        if (err) {
+          console.error('Error creating device.', err);
+          next(err, data);
+        } else {
+          deviceInstance = deviceInstance.toJSON();
+          if (created) console.log('Created new device.');
+          else console.log('Found an existing device.');
+
+          // If message is a duplicate
+          if (duplicate) {
+            this.model.findOne({
+              where: {
+                and: [
+                  {deviceId: data.deviceId},
+                  {time: data.time},
+                  {seqNumber: data.seqNumber}
+                ]
+              }
+            }, (err: any, messageInstance: any) => {
+              if (err) {
+                console.error(err);
+                next(err, data);
+              } else {
+                if (messageInstance) {
+                  console.log('Found the corresponding message and storing reception in it.');
+                  messageInstance.reception.push(data.reception[0]);
+                  this.model.upsert(
+                    messageInstance,
+                    (err: any, messageInstance: any) => {
+                      if (err) {
+                        console.error(err);
+                        next(err, messageInstance);
+                      } else {
+                        console.log('Updated message as: ', messageInstance);
+                        next(null, messageInstance);
+                      }
+                    });
+
+                } else {
+                  // No corresponding message found
+                  const err = 'Error - No corresponding message found, did you first receive a message containing duplicate = false?';
+                  console.error(err);
+                  next(err, data);
+                }
+              }
+            });
+          } // if(duplicate)
+
+          // Parse message, create message, send result to backend with downlink payload or not if the data is not null and a parser is set
+          else {
+            if ((deviceInstance.Parser || parserId) && message.data) {
+              // If the device is not linked to a parser
+              if (!deviceInstance.Parser && parserId) {
+                deviceInstance.parserId = parserId;
+                // Save a parser in the device and parse the message
+                console.log('Associating parser to device.');
+                this.model.app.models.Device.upsert(
+                  deviceInstance, (err: any, deviceInstance: any) => {
+                    if (err) {
+                      console.error(err);
+                      next(err, data);
+                    } else {
+                      this.model.app.models.Device.findOne({
+                        where: {id: deviceInstance.id},
+                        include: ['Alerts', 'Parser']
+                      }, (err: any, deviceInstance: any) => {
+                        if (err) {
+                          console.error(err);
+                          next(err, data);
+                        } else {
+                          deviceInstance = deviceInstance.toJSON();
+                          console.log('Updated device as: ', deviceInstance);
+
+                          // Decode the payload
+                          this.model.app.models.Parser.parsePayload(
+                            Function('payload', deviceInstance.Parser.function),
+                            message.data,
+                            req,
+                            function (err: any, data_parsed: any) {
+                              if (err) {
+                                next(err, null);
+                              } else {
+                                message.data_parsed = data_parsed;
+                              }
+                            });
+
+                          // Trigger alerts (if any)
+                          this.model.app.models.Alert.triggerByDevice(
+                            message.data_parsed,
+                            deviceInstance,
+                            req,
+                            function (err: any, res: any) {
+                              if (err) {
+                                next(err, null);
+                              } else {
+                                console.log(res);
+                              }
+                            });
+
+                          // Create message
+                          this.createMessageAndSendResponse(message, next);
+                        }
+                      });
+                    }
+                  });
+              } else {
+                console.warn('Found parser!');
+
+                // Decode the payload
+                this.model.app.models.Parser.parsePayload(
+                  Function('payload', deviceInstance.Parser.function),
+                  message.data,
+                  req,
+                  function (err: any, data_parsed: any) {
+                    if (err) {
+                      next(err, null);
+                    } else {
+                      message.data_parsed = data_parsed;
+                    }
+                  });
+
+                // Trigger alerts (if any)
+                this.model.app.models.Alert.triggerByDevice(
+                  message.data_parsed,
+                  deviceInstance,
+                  req,
+                  function (err: any, res: any) {
+                    if (err) {
+                      next(err, null);
+                    } else {
+                      console.log(res);
+                    }
+                  });
+
+                // Create message
+                this.createMessageAndSendResponse(message, next);
+              }
+            } else { // No parser & no data
+              // Create message
+              this.createMessageAndSendResponse(message, next);
+            }
+          }
+        }
+      });
+  }
+
   putMessage(req: any, data: any, next: Function): void {
+    if (typeof data.deviceId  === 'undefined' || typeof data.time  === 'undefined' || typeof data.seqNumber === 'undefined')
+      next('Missing "deviceId", "time" and "seqNumber"', data);
 
     // Obtain the userId with the access_token of ctx
     const userId = req.accessToken.userId;
@@ -45,9 +255,6 @@ class Message {
     const parserId = message.parserId;
     const categoryId = message.categoryId;
     const downlinkData = message.downlinkData;
-
-    if (typeof message.deviceId  === 'undefined' || typeof message.time  === 'undefined' || typeof message.seqNumber === 'undefined')
-      next('Missing "deviceId", "time" and "seqNumber"', message);
     // Set the createdAt time
     message.createdAt = new Date(message.time * 1000);
 
@@ -136,8 +343,16 @@ class Message {
             // Build the formatted geoloc object
             const geolocSigfox = new this.model.app.models.Geoloc;
             geolocSigfox.type = message.geoloc[0].type;
-            geolocSigfox.lat = message.geoloc[0].lat;
-            geolocSigfox.lng = message.geoloc[0].lng;
+            /**
+             * TODO: FORCE TO USE LOCATION OBJECT (not directly lat & lng in body but the following: { "geoloc": [{ type: "sigfox", location: { lat: x, lng: x }, precision: x }] )
+             * @type {loopback.GeoPoint}
+             */
+            if (message.geoloc[0].lat && message.geoloc[0].lng) {
+              const location = {lat: message.geoloc[0].lat, lng: message.geoloc[0].lng};
+              geolocSigfox.location = new loopback.GeoPoint(location);
+            } else {
+              geolocSigfox.location = new loopback.GeoPoint(message.geoloc[0].location);
+            }
             geolocSigfox.precision = message.geoloc[0].precision;
             // Store the formatted geoloc in the message to be saved
             message.geoloc[0] = geolocSigfox;
@@ -336,27 +551,26 @@ class Message {
                         });
                       }
                       // Check if there is geoloc in parsed data
-                      if (o.key === 'geoloc')
-                        geoloc.type = o.value;
-                      else if (o.key === 'lat')
-                        geoloc.lat = o.value;
-                      else if (o.key === 'lng')
-                        geoloc.lng = o.value;
-                      else if (o.key === 'precision')
+                      if (o.key === 'lat') {
+                        geoloc.type = 'GPS';
+                        geoloc.createdAt = message.createdAt;
+                        geoloc.location.lat = o.value;
+                      } else if (o.key === 'lng') {
+                        geoloc.location.lng = o.value;
+                      } else if (o.key === 'precision') {
                         geoloc.precision = o.value;
+                      }
                     });
 
-                    if (geoloc.type) {
-                      if (geoloc.type === 'GPS' && geoloc.lat >= -90 && geoloc.lat <= 90  && geoloc.lng >= -180 && geoloc.lng <= 180) {
-                        console.log('There is GPS geoloc in the parsed data: storing it in message & updating device location.');
-                        if (!message.geoloc)
-                          message.geoloc = [];
-                        message.geoloc.push(geoloc);
-                        // Update the device location geoloc array
-                        deviceToUpdate.location = [geoloc];
-                      } else {
-                        console.log('There is another geoloc in the parsed data: storing it in message & updating device location.');
-                      }
+                    if (geoloc.lat >= -90 && geoloc.lat <= 90  && geoloc.lng >= -180 && geoloc.lng <= 180) {
+                      console.log('There is GPS geoloc in the parsed data: storing it in message & updating device location.');
+                      if (!message.geoloc)
+                        message.geoloc = [];
+                      message.geoloc.push(geoloc);
+                      // Update the device location geoloc array
+                      deviceToUpdate.location = [geoloc];
+                    } else {
+                      console.log('There is another geoloc in the parsed data: storing it in message & updating device location.');
                     }
 
                     // Update the device with parsed data objects keys & geoloc if present
@@ -371,21 +585,20 @@ class Message {
                         }
                       });
 
-                    this.createMessageAndSendResponse(message, next, this.model);
+                    this.createMessageAndSendResponse(message, next);
                   }
                 });
             } // if (deviceInstance.parserId || parserId)
 
             else {
-              this.createMessageAndSendResponse(message, next, this.model);
+              this.createMessageAndSendResponse(message, next);
             }
           }
         }
       });
   }
 
-
-  private createMessageAndSendResponse(message: any, next: Function, messageModel: any) {
+  private createMessageAndSendResponse(message: any, next: Function) {
     // Ack from BIDIR callback
     if (message.ack) {
       let result;
@@ -405,7 +618,7 @@ class Message {
           };
         }
         // Creating new message with its downlink data
-        messageModel.create(
+        this.model.create(
           message,
           (err: any, messageInstance: any) => {
             if (err) {
@@ -413,6 +626,16 @@ class Message {
               next(err, messageInstance);
             } else {
               console.log('Created message as: ', messageInstance);
+              // Check if there is Geoloc in payload and create Geoloc object
+              this.model.app.models.Geoloc.createFromPayload(
+                messageInstance,
+                function (err: any, res: any) {
+                  if (err) {
+                    next(err, null);
+                  } else {
+                    console.log(res);
+                  }
+                });
             }
           });
         // ack is true
@@ -421,7 +644,7 @@ class Message {
     } else {
       // ack is false
       // Creating new message with no downlink data
-      messageModel.create(
+      this.model.create(
         message,
         (err: any, messageInstance: any) => {
           if (err) {
@@ -429,17 +652,21 @@ class Message {
             next(err, messageInstance);
           } else {
             console.log('Created message as: ', messageInstance);
+            // Check if there is Geoloc in payload and create Geoloc object
+            this.model.app.models.Geoloc.createFromPayload(
+              messageInstance,
+              function (err: any, res: any) {
+                if (err) {
+                  next(err, null);
+                } else {
+                  console.log(res);
+                }
+              });
             next(null, messageInstance);
           }
         });
     }
   }
-
-  private sendAlerts(message: any, next: Function){
-
-    next();
-  }
-
 
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {

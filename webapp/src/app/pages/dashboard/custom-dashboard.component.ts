@@ -600,6 +600,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.toasterService.pop('error', 'Error', 'Please select at least one category or device.');
       return;
     }
+    this.newWidget.userId = this.user.id;
     this.dashboardApi.createWidgets(this.dashboard.id, this.newWidget).subscribe(widget => {
       console.log(widget);
       this.loadWidgets();
