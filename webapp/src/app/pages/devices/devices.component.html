@@ -11,18 +11,18 @@
                [mapTypeControl]="true"
                [fullscreenControl]="true">
         <ng-container *ngFor="let device of devices; let i = index">
-          <ng-container *ngFor="let geoloc of device.location">
+          <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
             <!-- Geoloc Sigfox -->
             <ng-container *ngIf="geoloc.type === 'sigfox'">
               <agm-marker
                 (mouseOut)="markerOut(i)"
                 (mouseOver)="markerOver(i)"
                 [zIndex]="3"
-                [latitude]="geoloc.lat"
-                [longitude]="geoloc.lng"
+                [latitude]="geoloc.location.lat"
+                [longitude]="geoloc.location.lng"
                 [iconUrl]="'assets/img/markers/marker-sigfox.png'">
                 <agm-info-window
-                  id="{{geoloc.type + '_' + device.id}}">
+                  id="{{geoloc.id}}">
                   <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
                   <br>
                   <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
@@ -44,8 +44,8 @@
                           [strokeColor]="'#8d5dd1'"
                           [fillOpacity]="0.1"
                           [fillColor]="'#8d5dd1'"
-                          [latitude]="geoloc.lat"
-                          [longitude]="geoloc.lng"
+                          [latitude]="geoloc.location.lat"
+                          [longitude]="geoloc.location.lng"
                           [radius]="geoloc.precision">
               </agm-circle>
               <!-- End Circle -->
@@ -54,11 +54,11 @@
             <ng-container *ngIf="geoloc.type === 'gps'">
               <agm-marker
                 [zIndex]="3"
-                [latitude]="geoloc.lat"
-                [longitude]="geoloc.lng"
+                [latitude]="geoloc.location.lat"
+                [longitude]="geoloc.location.lng"
                 [iconUrl]="'assets/img/markers/marker-gps.png'">
                 <agm-info-window
-                  id="{{geoloc.type + '_' + device.id}}">
+                  id="{{geoloc.id}}">
                   <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
                   <br>
                   <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
@@ -250,7 +250,7 @@
                   <mfDefaultSorter by="downlinkData"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
                 </th>
                 <th *ngIf="!edit" class="text-center">
-                  <mfDefaultSorter by="location"><i class="fa fa-sort"></i> Geoloc</mfDefaultSorter>
+                  Geoloc
                 </th>
                 <th class="text-center">
                   <mfDefaultSorter by="updatedAt"><i class="fa fa-sort"></i> Last Message</mfDefaultSorter>
@@ -286,19 +286,19 @@
                   </div>
                 </td>
                 <td *ngIf="!edit" class="text-center">
-                  <div *ngIf="device.location">
-                    <div *ngFor="let geoloc of device.location">
+                  <div *ngIf="device.Messages[0].Geolocs">
+                    <div *ngFor="let geoloc of device.Messages[0].Geolocs">
                       <div class="row">
                         <div class="col col-12">
                           <ng-container *ngIf="geoloc.type === 'sigfox'">
-                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-sigfox">
+                            <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)" class="small text-geoloc-sigfox">
                               <i class="fa fa-map-marker fa-2x"></i>
                               <br>
                               <strong>Sigfox Geoloc</strong>
                             </a>
                           </ng-container>
                           <ng-container *ngIf="geoloc.type === 'gps'">
-                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)" class="small text-geoloc-gps">
+                            <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)" class="small text-geoloc-gps">
                               <i class="fa fa-map-marker fa-2x"></i>
                               <br>
                               <strong>GPS</strong>

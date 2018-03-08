@@ -77,8 +77,8 @@
                 <small *ngIf="message.Device">{{message.Device.name}}</small>
               </td>
               <td class="text-center">
-                <div *ngIf="message.geoloc">
-                  <div *ngFor="let geoloc of message.geoloc">
+                <div *ngIf="message.Geolocs">
+                  <div *ngFor="let geoloc of message.Geolocs">
                     <div class="row">
                       <div class="col col-7">
                         <ng-container *ngIf="geoloc.type == 'sigfox'">
@@ -98,9 +98,9 @@
                       </div>
                       <div class="col col-5 text-left">
                           <span class="small text-muted">
-                            Lat: {{geoloc.lat| number:'.1-3'}}
+                            Lat: {{geoloc.location.lat | number:'.1-3'}}
                             <br>
-                            Lng: {{geoloc.lng| number:'.1-3'}}
+                            Lng: {{geoloc.location.lng | number:'.1-3'}}
                           </span>
                       </div>
                     </div>
@@ -179,8 +179,8 @@
             <ng-container *ngIf="geoloc.type === 'sigfox'">
               <agm-marker
                 [zIndex]="3"
-                [latitude]="geoloc.lat"
-                [longitude]="geoloc.lng"
+                [latitude]="geoloc.location.lat"
+                [longitude]="geoloc.location.lng"
                 [iconUrl]="'assets/img/markers/marker-sigfox.png'">
                 <agm-info-window>
                   <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
@@ -199,8 +199,8 @@
                           [strokeColor]="'#8d5dd1'"
                           [fillOpacity]="0.1"
                           [fillColor]="'#8d5dd1'"
-                          [latitude]="geoloc.lat"
-                          [longitude]="geoloc.lng"
+                          [latitude]="geoloc.location.lat"
+                          [longitude]="geoloc.location.lng"
                           [radius]="geoloc.precision">
               </agm-circle>
               <!-- End Circle -->
@@ -209,8 +209,8 @@
             <ng-container *ngIf="geoloc.type === 'gps'">
               <agm-marker
                 [zIndex]="3"
-                [latitude]="geoloc.lat"
-                [longitude]="geoloc.lng"
+                [latitude]="geoloc.location.lat"
+                [longitude]="geoloc.location.lng"
                 [iconUrl]="'assets/img/markers/marker-gps.png'">
                 <agm-info-window>
                   <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>

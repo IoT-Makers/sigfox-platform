@@ -104,7 +104,7 @@
                      [zoom]="mapZoom"
                      [fullscreenControl]="true">
               <ng-container *ngFor="let device of devices; let i = index">
-                <ng-container *ngFor="let geoloc of device.Geolocs">
+                <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
                   <!-- Geoloc Sigfox -->
                   <ng-container *ngIf="geoloc.type === 'sigfox'">
                     <agm-marker
@@ -115,7 +115,7 @@
                       [longitude]="geoloc.location.lng"
                       [iconUrl]="'assets/img/markers/marker-sigfox.png'">
                       <agm-info-window
-                        id="{{geoloc.type + '_' + device.id}}">
+                        id="{{geoloc.id}}">
                         <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
                         <br>
                         <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
@@ -151,7 +151,7 @@
                       [longitude]="geoloc.location.lng"
                       [iconUrl]="'assets/img/markers/marker-gps.png'">
                       <agm-info-window
-                        id="{{geoloc.type + '_' + device.id}}">
+                        id="{{geoloc.id}}">
                         <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
                         <br>
                         <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
@@ -338,33 +338,33 @@
             </div>
           </div>
 
-          <div *ngIf="message && message.geoloc" class="col-sm-12 col-md-12">
+          <div *ngIf="message && message.Geolocs" class="col-sm-12 col-md-12">
             <div class="card">
               <div class="card-header">
                 <i class="fa fa-map-marker fa-lg"></i> <strong> Location</strong>
               </div>
               <div class="card-block">
-                <agm-map [latitude]="message.geoloc[0].lat"
-                         [longitude]="message.geoloc[0].lng"
+                <agm-map [latitude]="message.Geolocs[0].location.lat"
+                         [longitude]="message.Geolocs[0].location.lng"
                          [zoom]="10"
                          [zoomControl]="false"
                          [streetViewControl]="false"
                          [mapTypeControl]="false"
                          [fullscreenControl]="false">
-                  <ng-container *ngFor="let geoloc of message.geoloc">
+                  <ng-container *ngFor="let geoloc of message.Geolocs">
                     <!-- Geoloc Sigfox -->
                     <ng-container *ngIf="geoloc.type === 'sigfox'">
                       <agm-marker
                         [zIndex]="3"
-                        [latitude]="geoloc.lat"
-                        [longitude]="geoloc.lng"
+                        [latitude]="geoloc.location.lat"
+                        [longitude]="geoloc.location.lng"
                         [iconUrl]="'assets/img/markers/marker-sigfox.png'">
                         <agm-info-window>
                           <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
                           <br>
-                          <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                          <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                           <br>
-                          <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                          <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                           <br>
                           <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
                         </agm-info-window>
@@ -376,8 +376,8 @@
                                   [strokeColor]="'#8d5dd1'"
                                   [fillOpacity]="0.1"
                                   [fillColor]="'#8d5dd1'"
-                                  [latitude]="geoloc.lat"
-                                  [longitude]="geoloc.lng"
+                                  [latitude]="geoloc.location.lat"
+                                  [longitude]="geoloc.location.lng"
                                   [radius]="geoloc.precision">
                       </agm-circle>
                       <!-- End Circle -->
@@ -386,8 +386,8 @@
                     <ng-container *ngIf="geoloc.type === 'gps'">
                       <agm-marker
                         [zIndex]="3"
-                        [latitude]="geoloc.lat"
-                        [longitude]="geoloc.lng"
+                        [latitude]="geoloc.location.lat"
+                        [longitude]="geoloc.location.lng"
                         [iconUrl]="'assets/img/markers/marker-gps.png'">
                         <agm-info-window>
                           <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
@@ -453,11 +453,11 @@
                   </div>
                 </td>
                 <td class="text-center">
-                  <div *ngIf="device.location">
-                    <div *ngFor="let geoloc of device.location">
+                  <div *ngIf="device.Messages[0].Geolocs">
+                    <div *ngFor="let geoloc of device.Messages[0].Geolocs">
 
                       <ng-container *ngIf="geoloc.type === 'sigfox'">
-                        <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
+                        <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)"
                            class="small text-geoloc-sigfox">
                           <i class="fa fa-map-marker fa-2x"></i>
                           <br>
@@ -465,7 +465,7 @@
                         </a>
                       </ng-container>
                       <ng-container *ngIf="geoloc.type === 'gps'">
-                        <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
+                        <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)"
                            class="small text-geoloc-gps">
                           <i class="fa fa-map-marker fa-2x"></i>
                           <br>

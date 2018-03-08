@@ -2,7 +2,7 @@ import {Category, Connector, Device, FireLoopRef, Geoloc, Organization, Parser, 
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {AgmInfoWindow} from '@agm/core';
-import {DeviceApi, UserApi, AppSettingApi, OrganizationApi} from '../../shared/sdk/services/custom';
+import {DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 
@@ -135,9 +135,17 @@ export class DevicesComponent implements OnInit, OnDestroy {
         order: 'updatedAt DESC',
         include: ['Parser', 'Category', 'Organizations', {
           relation: 'Messages',
+          order: 'createdAt DESC',
           scope: {
             limit: 100,
-            order: 'createdAt DESC'
+            order: 'createdAt DESC',
+            include: [{
+              relation: 'Geolocs',
+              scope: {
+                limit: 5,
+                order: 'createdAt DESC'
+              }
+            }]
           }
         }],
         where: {
@@ -298,11 +306,11 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.confirmParseModal.hide();
   }
 
-  zoomOnDevice(elementId: string, geoloc: Geoloc): void {
+  zoomOnDevice(geoloc: Geoloc): void {
     window.scrollTo(0, 0);
     this.agmInfoWindow.forEach((child) => {
       // console.log(child['_el'].nativeElement.id);
-      if (child['_el'].nativeElement.id === elementId)
+      if (child['_el'].nativeElement.id === geoloc.id)
         child.open();
       else
         child.close();
@@ -359,28 +367,28 @@ export class DevicesComponent implements OnInit, OnDestroy {
     console.log(this.selectedOrganizations);
     console.log(deviceId);
     this.selectedOrganizations.forEach(orga => {
-      this.organizationApi.linkDevices(orga.id, deviceId).subscribe(results =>{
+      this.organizationApi.linkDevices(orga.id, deviceId).subscribe(results => {
         console.log(results);
         this.shareDeviceWithOrganizationModal.hide();
         this.organizationApi.findById(orga.id).subscribe((org: Organization) => {
           this.deviceToEdit.Organizations.push(org);
-        })
+        });
         // if(this.deviceToEdit.Organizations){
         //
         // }
 
-      })
-    })
+      });
+    });
   }
 
-  unshare(orga, device, index): void{
-    this.organizationApi.unlinkDevices(orga.id, device.id).subscribe(results =>{
+  unshare(orga, device, index): void {
+    this.organizationApi.unlinkDevices(orga.id, device.id).subscribe(results => {
       console.log(results);
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'The device has been removed from ' + orga.name + ".");
+      this.toast = this.toasterService.pop('success', 'Success', 'The device has been removed from ' + orga.name + '.');
       this.deviceToEdit.Organizations.slice(index);
-    })
+    });
   }
 
   // getOrganizations(): void {

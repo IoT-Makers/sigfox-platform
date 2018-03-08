@@ -87,7 +87,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.messageFilter = {
       limit: 100,
       order: 'createdAt DESC',
-      include: ['Device'],
+      include: ['Device', 'Geolocs'],
       where: {
         userId: this.user.id
       }
@@ -98,7 +98,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
         this.messageFilter = {
           limit: 100,
           order: 'createdAt DESC',
-          include: ['Device'],
+          include: ['Device', 'Geolocs'],
           where: {
             userId: this.user.id,
             deviceId: this.filterQuery
@@ -156,8 +156,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
     // Message geoloc
     if (message.Geolocs && message.Geolocs.length > 0) {
       this.geolocs = message.Geolocs;
-      this.mapLat = message.Geolocs[0].lat;
-      this.mapLng = message.Geolocs[0].lng;
+      this.mapLat = message.Geolocs[0].location.lat;
+      this.mapLng = message.Geolocs[0].location.lng;
       // Show map
       this.mapModal.show();
       this.mapModal.onShown.subscribe((reason: string) => {

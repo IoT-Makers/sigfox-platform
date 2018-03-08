@@ -221,18 +221,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
             {
               include: ['Parser', 'Category', {
                 relation: 'Messages',
+                order: 'createdAt DESC',
                 scope: {
-                  limit: 2,
-                  order: 'createdAt DESC'
+                  limit: 1,
+                  order: 'createdAt DESC',
+                  include: [{
+                    relation: 'Geolocs',
+                    scope: {
+                      limit: 5,
+                      order: 'createdAt DESC'
+                    }
+                  }]
                 }
-              },  {
-                relation: 'Geolocs',
-                scope: {
-                  limit: 2,
-                  order: 'createdAt DESC'
-                }
-              }],
-              order: 'createdAt DESC'
+              }]
             }).subscribe(devices => {
             console.log('Devices: ', devices);
             if (devices) {
@@ -247,18 +248,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
             {
               include: ['Parser', 'Category', {
                 relation: 'Messages',
+                order: 'createdAt DESC',
                 scope: {
                   limit: 1,
-                  order: 'createdAt DESC'
+                  order: 'createdAt DESC',
+                  include: [{
+                    relation: 'Geolocs',
+                    scope: {
+                      limit: 5,
+                      order: 'createdAt DESC'
+                    }
+                  }]
                 }
-              }, {
-                relation: 'Geolocs',
-                scope: {
-                  limit: 1,
-                  order: 'createdAt DESC'
-                }
-              }],
-              order: 'createdAt DESC'
+              }]
             }).subscribe(devices => {
             console.log('Devices: ', devices);
             if (devices) {
@@ -416,7 +418,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.see = false;
   }
 
-  seeDevice(device): void {
+  seeDevice(device: Device): void {
     this.see = true;
 
     // Dispose and unsubscribe to clean the real time connection
@@ -439,45 +441,18 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.battery = undefined;
     this.message = undefined;
 
-    // Message
-    this.messageSeeRef = this.rt.FireLoop.ref<Message>(Message);
-    this.messageSeeSub = this.messageSeeRef.on('change',
-      {
-        limit: 1,
-        order: 'createdAt DESC',
-        where: {
-          and: [
-            {userId: this.user.id},
-            {deviceId: device.id}
-          ]
-        }
-      }
-    ).subscribe((messages: Message[]) => {
-      const message = messages[0];
-      //console.log('message', message);
+    // Used for time & geoloc
+    this.message = device.Messages[0];
 
-      // Used for time & geoloc
-      this.message = message;
-
-      this.humidity = _.filter(message.data_parsed, {key: 'humidity'})[0];
-      this.temperature = _.filter(message.data_parsed, {key: 'temperature'})[0];
-      this.altitude = _.filter(message.data_parsed, {key: 'altitude'})[0];
-      this.pressure = _.filter(message.data_parsed, {key: 'pressure'})[0];
-      this.speed = _.filter(message.data_parsed, {key: 'speed'})[0];
-      this.light = _.filter(message.data_parsed, {key: 'light'})[0];
-      this.alert = _.filter(message.data_parsed, {key: 'alert'})[0];
-      this.mode = _.filter(message.data_parsed, {key: 'mode'})[0];
-      this.battery = _.filter(message.data_parsed, {key: 'battery'})[0];
-
-      // Notification
-      if (this.isFirstSubscribeMessage)
-        this.lastMessage = message;
-      if ((this.lastMessage.time !== message.time) && !this.isFirstSubscribeMessage) {
-        this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
-        this.lastMessage = message;
-      }
-      this.isFirstSubscribeMessage = false;
-    });
+    this.humidity = _.filter(this.message.data_parsed, {key: 'humidity'})[0];
+    this.temperature = _.filter(this.message.data_parsed, {key: 'temperature'})[0];
+    this.altitude = _.filter(this.message.data_parsed, {key: 'altitude'})[0];
+    this.pressure = _.filter(this.message.data_parsed, {key: 'pressure'})[0];
+    this.speed = _.filter(this.message.data_parsed, {key: 'speed'})[0];
+    this.light = _.filter(this.message.data_parsed, {key: 'light'})[0];
+    this.alert = _.filter(this.message.data_parsed, {key: 'alert'})[0];
+    this.mode = _.filter(this.message.data_parsed, {key: 'mode'})[0];
+    this.battery = _.filter(this.message.data_parsed, {key: 'battery'})[0];
   }
 
 
@@ -495,11 +470,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.isCircleVisible[i] = true;
   }
 
-  zoomOnDevice(elementId: string, geoloc: Geoloc): void {
+  zoomOnDevice(geoloc: Geoloc): void {
     this.cancelSee();
     this.agmInfoWindow.forEach((child) => {
       // console.log(child['_el'].nativeElement.id);
-      if (child['_el'].nativeElement.id === elementId)
+      if (child['_el'].nativeElement.id === geoloc.id)
         child.open();
       else
         child.close();
