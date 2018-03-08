@@ -72,6 +72,7 @@
         "findById",
         "findOne",
         "count",
+        "__count__Members",
         "__count__Devices",
         "__get__Devices",
         "__find__Devices",

@@ -113,6 +113,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
+  leaveOrganization(item): void{
+    this.organizationApi.unlinkMembers(item.id, this.user.id).subscribe(result => {
+      this.getOrganizations();
+    })
+  }
+
   ngOnInit() {
     console.log('Profile: ngOnInit');
 

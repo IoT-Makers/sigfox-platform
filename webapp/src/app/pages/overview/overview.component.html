@@ -40,13 +40,26 @@
         </div>
       </div>
     </div>
-    <div class="card" [routerLink]="['/alerts']">
+    <div *ngIf="!organization" class="card" [routerLink]="['/alerts']">
       <div class="card-block">
         <div class="h1 text-alert text-right mb-2">
           <i class="fa fa-bell"></i>
         </div>
         <div class="h4 mb-0">{{countAlerts}}</div>
         <small class="text-alert text-uppercase font-weight-bold">Active alerts</small>
+        <div class="progress progress-xs mt-1 mb-0">
+          <div class="progress-bar bg-alert" role="progressbar" style="width: 100%" aria-valuenow="100"
+               aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="organization" class="card">
+      <div class="card-block">
+        <div class="h1 text-alert text-right mb-2">
+          <i class="fa fa-users"></i>
+        </div>
+        <div class="h4 mb-0">{{countOrganizationMembers}}</div>
+        <small class="text-alert text-uppercase font-weight-bold">Members</small>
         <div class="progress progress-xs mt-1 mb-0">
           <div class="progress-bar bg-alert" role="progressbar" style="width: 100%" aria-valuenow="100"
                aria-valuemin="0" aria-valuemax="100"></div>

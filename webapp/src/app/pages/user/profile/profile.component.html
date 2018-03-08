@@ -143,9 +143,9 @@
 
                 <td class="text-center">
                   <div class="btn-group-sm">
-                    <button class="btn btn-outline-primary btn-round" tooltip="Leave organization" disabled
+                    <button class="btn btn-outline-primary btn-round" tooltip="Leave organization"
                             (click)="leaveOrganization(item)"><i class="fa fa-sign-out fa-lg"></i></button>
-                    <button class="btn btn-outline-danger btn-round" tooltip="Delete organization" disabled
+                    <button class="btn btn-outline-danger btn-round" tooltip="Delete organization" *ngIf="item.ownerId === user.id"
                             (click)="deleteOrganization(item)"><i class="fa fa-trash fa-lg"></i></button>
                   </div>
                 </td>

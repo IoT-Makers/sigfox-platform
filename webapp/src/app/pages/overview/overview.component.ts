@@ -160,7 +160,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
       if (params.id) {
         this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
           this.organization = organization;
-          // this.countOrganizationMembers = organization.Members.length;
+          this.organizationApi.countMembers(this.organization.id).subscribe(result =>{
+            this.countOrganizationMembers = result.count;
+            console.log("members", result.count)
+          });
 
           //Check if real time and setup
           if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
