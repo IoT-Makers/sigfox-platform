@@ -73,6 +73,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   getOrganizations(): void {
+    console.log("getOrga");
     this.organizationApi.find({include:"Members"}).subscribe((organizations: Organization[]) => {
       this.organizations = organizations;
       console.log(organizations);
@@ -98,6 +99,15 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.appSettingApi.upsert(setting).subscribe((setting: any)=> {
       console.log(setting);
     });
+  }
+
+  grantAdminAccess(user):void{
+
+    // this.userApi.linkRoles(user.id, "5a5cd4c2f90f49359c8b2ef0").subscribe(result=>{
+    //   console.log(result);
+    //   this.getUsers();
+    // })
+
   }
 
 
