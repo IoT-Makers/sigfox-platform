@@ -482,7 +482,7 @@
                     </ng-container>
                     <!-- End Finish Point -->
 
-                    <agm-marker-cluster [styles]="clusterStyles">
+                    <agm-marker-cluster *ngIf="newWidget.options.cluster" [styles]="clusterStyles">
                       <ng-container *ngFor="let marker of device.Messages; let i = index">
                         <ng-container [ngSwitch]=i>
                           <!-- Start Point -->
@@ -561,6 +561,85 @@
                         </ng-container>
                       </ng-container>
                     </agm-marker-cluster>
+                    <ng-container *ngIf="!newWidget.options.cluster">
+                      <ng-container *ngFor="let marker of device.Messages; let i = index">
+                        <ng-container [ngSwitch]=i>
+                          <!-- Start Point -->
+                          <ng-container *ngSwitchCase="0">
+                          </ng-container>
+                          <!-- End Start Point -->
+                          <!-- Finish Point -->
+                          <ng-container *ngSwitchCase="device.Messages.length - 1">
+                          </ng-container>
+                          <!-- End Finish Point -->
+
+                          <!-- Default -->
+                          <ng-container *ngSwitchDefault>
+                            <ng-container *ngFor="let geoloc of marker.geoloc">
+                              <!-- Geoloc Sigfox -->
+                              <ng-container *ngIf="geoloc.type === 'sigfox'">
+                                <agm-marker
+                                  (mouseOut)="markerOut(i)"
+                                  (mouseOver)="markerOver(i)"
+                                  [zIndex]="3"
+                                  [latitude]="geoloc.lat"
+                                  [longitude]="geoloc.lng"
+                                  [iconUrl]="'assets/img/markers/marker-sigfox.png'">
+                                  <agm-info-window>
+                                    <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                                    <br>
+                                    <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                                    <br>
+                                    <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                                    <br>
+                                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                    <br>
+                                    <strong><b>Position: </b> n°{{i}}</strong>
+                                  </agm-info-window>
+                                </agm-marker>
+
+                                <!-- Circle -->
+                                <agm-circle *ngIf="circlePrecision || isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                                            [zIndex]="1"
+                                            [strokePosition]="CENTER"
+                                            [strokeWeight]="1"
+                                            [strokeColor]="'#8d5dd1'"
+                                            [fillOpacity]="0.1"
+                                            [fillColor]="'#8d5dd1'"
+                                            [latitude]="geoloc.lat"
+                                            [longitude]="geoloc.lng"
+                                            [radius]="geoloc.precision">
+                                </agm-circle>
+                                <!-- End Circle -->
+                              </ng-container>
+                              <!-- Geoloc GPS -->
+                              <ng-container *ngIf="geoloc.type === 'GPS'">
+                                <agm-marker
+                                  (mouseOut)="markerOut(i)"
+                                  (mouseOver)="markerOver(i)"
+                                  [zIndex]="3"
+                                  [latitude]="geoloc.lat"
+                                  [longitude]="geoloc.lng"
+                                  [iconUrl]="'assets/img/markers/marker-gps.png'">
+                                  <agm-info-window>
+                                    <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                                    <br>
+                                    <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                                    <br>
+                                    <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                                    <br>
+                                    <strong><b>Position: </b> n°{{i}}</strong>
+                                  </agm-info-window>
+                                </agm-marker>
+                              </ng-container>
+                            </ng-container>
+                          </ng-container>
+                          <!-- End Default -->
+
+
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
                     <!-- End Markers -->
 
                     <agm-directions *ngIf="widget.options.directions"
@@ -955,6 +1034,19 @@
               </div>
 
               <div class="form-group row">
+                <label class="col-md-3 form-control-label">Marker clustering<br>
+                </label>
+                <div class="col-md-9">
+                  <label class="switch switch-text switch-primary">
+                    <input type="checkbox" [checked]="newWidget.options.cluster"
+                           (change)="newWidget.options.cluster = !newWidget.options.cluster" class="switch-input" checked="">
+                    <span class="switch-label" data-on="On" data-off="Off"></span>
+                    <span class="switch-handle"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group row">
                 <label class="col-md-3 form-control-label">Default zoom<br>
                   <small>Between 1 and 13</small>
                 </label>
@@ -989,6 +1081,20 @@
                   </angular2-date-picker>
                 </div>
               </div>
+
+              <!--<div class="form-group row">
+                <label class="col-md-3 form-control-label">Or:
+                </label>
+                <div class="col-md-9">
+                  <angular2-multiselect #selectOneTrackingDuration
+                                        name="trackingDuration"
+                                        [data]="selectTrackingDuration"
+                                        [(ngModel)]="selectedTrackingDuration"
+                                        (onSelect)="newWidget.options.trackingDuration = $event.id; selectOne.isActive = false;"
+                                        [settings]="selectOneSettings"
+                                        required>
+                </div>
+              </div>-->
 
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Geoloc type

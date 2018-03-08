@@ -5,6 +5,7 @@ export interface DeviceInterface {
   "id": string;
   "creation"?: Date;
   "name"?: string;
+  "success_rate"?: number;
   "data_parsed"?: Array<any>;
   "downlinkData"?: string;
   "location"?: Array<any>;
@@ -26,6 +27,7 @@ export class Device implements DeviceInterface {
   "id": string = '';
   "creation": Date = new Date(0);
   "name": string = '';
+  "success_rate": number = 0;
   "data_parsed": Array<any> = <any>[];
   "downlinkData": string = '';
   "location": Array<any> = <any>[];
@@ -85,6 +87,10 @@ export class Device implements DeviceInterface {
         "name": {
           name: 'name',
           type: 'string'
+        },
+        "success_rate": {
+          name: 'success_rate',
+          type: 'number'
         },
         "data_parsed": {
           name: 'data_parsed',

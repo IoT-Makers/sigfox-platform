@@ -1,7 +1,8 @@
 {
   "name": "Reception",
+  "plural": "Receptions",
   "base": "Model",
-  "idInjection": true,
+  "idInjection": false,
   "options": {
     "validateUpsert": true
   },

@@ -1,15 +1,12 @@
 /* tslint:disable */
-import {
-  Device,
-  Organization
-} from '../index';
+import {Device, Organization} from '../index';
 
 declare var Object: any;
 export interface ParserInterface {
   "name": string;
   "description"?: string;
   "function"?: string;
-  "available_properties"?: Array<any>;
+  "properties"?: Array<any>;
   "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
@@ -22,7 +19,7 @@ export class Parser implements ParserInterface {
   "name": string = '';
   "description": string = '';
   "function": string = '';
-  "available_properties": Array<any> = <any>[];
+  "properties": Array<any> = <any>[];
   "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
@@ -74,8 +71,8 @@ export class Parser implements ParserInterface {
           name: 'function',
           type: 'string'
         },
-        "available_properties": {
-          name: 'available_properties',
+        "properties": {
+          name: 'properties',
           type: 'Array&lt;any&gt;'
         },
         "id": {

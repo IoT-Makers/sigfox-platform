@@ -1,11 +1,5 @@
 /* tslint:disable */
-import {
-  User,
-  Message,
-  Device,
-  Category,
-  Dashboard
-} from '../index';
+import {Category, Dashboard, Device, Message, User} from '../index';
 
 declare var Object: any;
 export interface OrganizationInterface {

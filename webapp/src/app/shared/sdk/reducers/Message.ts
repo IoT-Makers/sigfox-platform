@@ -1,12 +1,14 @@
 /* tslint:disable */
-import { Action, createSelector } from '@ngrx/store';
-import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { BaseReducerFactory } from './base';
-import { Message, MessageInterface } from '../models';
-import { LoopbackAction } from '../models/BaseModels';
-import { MessageActionTypes } from '../actions';
+import {createSelector} from '@ngrx/store';
+import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
+import {BaseReducerFactory} from './base';
+import {Message, MessageInterface} from '../models';
+import {LoopbackAction} from '../models/BaseModels';
+import {MessageActionTypes} from '../actions';
 
-export interface MessagesState extends EntityState<Message | MessageInterface> {};
+
+export interface MessagesState extends EntityState<Message | MessageInterface> {
+}
 
 export const MessageAdapter: EntityAdapter<Message | MessageInterface> = createEntityAdapter<Message | MessageInterface>();
 

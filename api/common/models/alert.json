@@ -34,6 +34,13 @@
       "type": "boolean",
       "default": true
     },
+    "one_shot": {
+      "type": "boolean",
+      "default": false
+    },
+    "last_trigger": {
+      "type": "date"
+    },
     "key": {
       "type": "string",
       "required": true
@@ -60,9 +67,6 @@
     },
     "message": {
       "type": "string"
-    },
-    "last_trigger": {
-      "type": "date"
     }
   },
   "validations": [],

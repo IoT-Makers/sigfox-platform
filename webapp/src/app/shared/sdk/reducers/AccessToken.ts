@@ -1,12 +1,14 @@
 /* tslint:disable */
-import { Action, createSelector } from '@ngrx/store';
-import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { BaseReducerFactory } from './base';
-import { AccessToken, AccessTokenInterface } from '../models';
-import { LoopbackAction } from '../models/BaseModels';
-import { AccessTokenActionTypes } from '../actions';
+import {createSelector} from '@ngrx/store';
+import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
+import {BaseReducerFactory} from './base';
+import {AccessToken, AccessTokenInterface} from '../models';
+import {LoopbackAction} from '../models/BaseModels';
+import {AccessTokenActionTypes} from '../actions';
 
-export interface AccessTokensState extends EntityState<AccessToken | AccessTokenInterface> {};
+
+export interface AccessTokensState extends EntityState<AccessToken | AccessTokenInterface> {
+}
 
 export const AccessTokenAdapter: EntityAdapter<AccessToken | AccessTokenInterface> = createEntityAdapter<AccessToken | AccessTokenInterface>();
 

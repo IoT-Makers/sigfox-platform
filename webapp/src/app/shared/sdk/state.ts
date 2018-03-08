@@ -1,24 +1,25 @@
 /* tslint:disable */
-import { SDKToken } from './models/BaseModels';
+import {SDKToken} from './models/BaseModels';
 
 import * as reducers from './reducers/index';
 
-import { LoopbackAuthEffects } from './effects/auth';
-import { EmailEffects } from './effects/Email';
-import { AccessTokenEffects } from './effects/AccessToken';
-import { DeviceEffects } from './effects/Device';
-import { ParserEffects } from './effects/Parser';
-import { CategoryEffects } from './effects/Category';
-import { MessageEffects } from './effects/Message';
-import { AppSettingEffects } from './effects/AppSetting';
-import { DashboardEffects } from './effects/Dashboard';
-import { UserEffects } from './effects/User';
-import { OrganizationEffects } from './effects/Organization';
-import { GeolocEffects } from './effects/Geoloc';
-import { AlertEffects } from './effects/Alert';
-import { ReceptionEffects } from './effects/Reception';
-import { ConnectorEffects } from './effects/Connector';
-import { WidgetEffects } from './effects/Widget';
+import {LoopbackAuthEffects} from './effects/auth';
+import {EmailEffects} from './effects/Email';
+import {AccessTokenEffects} from './effects/AccessToken';
+import {DeviceEffects} from './effects/Device';
+import {ParserEffects} from './effects/Parser';
+import {CategoryEffects} from './effects/Category';
+import {MessageEffects} from './effects/Message';
+import {AppSettingEffects} from './effects/AppSetting';
+import {DashboardEffects} from './effects/Dashboard';
+import {UserEffects} from './effects/User';
+import {OrganizationEffects} from './effects/Organization';
+import {GeolocEffects} from './effects/Geoloc';
+import {AlertEffects} from './effects/Alert';
+import {ReceptionEffects} from './effects/Reception';
+import {ConnectorEffects} from './effects/Connector';
+import {WidgetEffects} from './effects/Widget';
+import {PropertyEffects} from './effects/Property';
 
 export interface LoopbackStateInterface {
   LoopbackAuth: SDKToken;
@@ -37,7 +38,8 @@ export interface LoopbackStateInterface {
   Receptions: reducers.ReceptionsState;
   Connectors: reducers.ConnectorsState;
   Widgets: reducers.WidgetsState;
-};
+  Propertys: reducers.PropertysState;
+}
 
 export const LoopbackReducer = {
   LoopbackAuth: reducers.LoopbackAuthReducer,
@@ -56,6 +58,7 @@ export const LoopbackReducer = {
 	Receptions: reducers.ReceptionsReducer,
 	Connectors: reducers.ConnectorsReducer,
 	Widgets: reducers.WidgetsReducer,
+	Propertys: reducers.PropertysReducer,
 };
 
 export const LoopbackEffects = [
@@ -75,4 +78,5 @@ export const LoopbackEffects = [
   ReceptionEffects,
   ConnectorEffects,
   WidgetEffects,
+  PropertyEffects,
 ];

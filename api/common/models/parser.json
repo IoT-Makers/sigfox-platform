@@ -37,9 +37,9 @@
     "function": {
       "type": "string"
     },
-    "available_properties": {
+    "properties": {
       "type": [
-        "object"
+        "Property"
       ]
     }
   },

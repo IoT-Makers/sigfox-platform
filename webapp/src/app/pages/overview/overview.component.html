@@ -1,5 +1,14 @@
 <div class="animated fadeIn">
 
+  <alert *ngIf="!user.username" type="info" dismissOnTimeout="5000" [dismissible]="true">
+    <h4 class="alert-heading">Hey! <i class="fa fa-smile-o"></i></h4>
+    <p>Don't forget you can set your username by clicking on your email on the top right corner.</p>
+  </alert>
+
+  <alert type="warning" dismissOnTimeout="5000" [dismissible]="true">
+    <p>Please keep in mind this platform is under active development.</p>
+  </alert>
+
   <div class="card-group">
     <div class="card" [routerLink]="['/categories']">
       <div class="card-block">
@@ -158,7 +167,6 @@
       </div>
     </div> <!-- !see -->
 
-
     <div *ngIf="see" class="col-md-6">
       <div class="card">
         <div class="card-header">
@@ -175,6 +183,11 @@
               </div>
               <div class="card-block mx-auto text-center">
                 <p class="lead">{{message.createdAt | date:"yyyy/MM/dd - HH:mm:ss"}}</p>
+                <div class="text-justify" *ngIf="message.data_parsed">
+                  <div *ngFor="let o of message.data_parsed">
+                    <small *ngIf="o.value">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
