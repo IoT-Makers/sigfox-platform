@@ -14,11 +14,10 @@ export interface MessageInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: any;
-  "organizationId"?: any;
   Device?: any;
   Geolocs?: any[];
   user?: any;
-  Organization?: any;
+  Organizations?: any[];
 }
 
 export class Message implements MessageInterface {
@@ -34,11 +33,10 @@ export class Message implements MessageInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
-  "organizationId": any = <any>null;
   Device: any = null;
   Geolocs: any[] = null;
   user: any = null;
-  Organization: any = null;
+  Organizations: any[] = null;
   constructor(data?: MessageInterface) {
     Object.assign(this, data);
   }
@@ -120,10 +118,6 @@ export class Message implements MessageInterface {
           name: 'userId',
           type: 'any'
         },
-        "organizationId": {
-          name: 'organizationId',
-          type: 'any'
-        },
       },
       relations: {
         Device: {
@@ -150,13 +144,15 @@ export class Message implements MessageInterface {
                   keyFrom: 'userId',
           keyTo: 'id'
         },
-        Organization: {
-          name: 'Organization',
-          type: 'any',
+        Organizations: {
+          name: 'Organizations',
+          type: 'any[]',
           model: '',
-          relationType: 'belongsTo',
-                  keyFrom: 'organizationId',
-          keyTo: 'id'
+          relationType: 'hasMany',
+          modelThrough: 'OrganizationMessage',
+          keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'messageId'
         },
       }
     }

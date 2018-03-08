@@ -1,8 +1,8 @@
 /* tslint:disable */
-import {Action} from '@ngrx/store';
-import {type} from '../util';
-import {BaseLoopbackActionsFactory, BaseLoopbackActionTypesFactory} from './base';
-import {LoopBackFilter, Organization} from '../models';
+import { Action } from '@ngrx/store';
+import { type } from '../util';
+import { BaseLoopbackActionTypesFactory, BaseLoopbackActionsFactory } from './base';
+import { LoopBackFilter, SDKToken, Organization } from '../models';
 
 export const OrganizationActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Organization'), {
@@ -38,6 +38,14 @@ Object.assign(BaseLoopbackActionTypesFactory('Organization'), {
   UPDATE_BY_ID_MESSAGES_SUCCESS: type('[Organization] updateByIdMessages success'),
   UPDATE_BY_ID_MESSAGES_FAIL: type('[Organization] updateByIdMessages fail'),
 
+  LINK_MESSAGES: type('[Organization] linkMessages'),
+  LINK_MESSAGES_SUCCESS: type('[Organization] linkMessages success'),
+  LINK_MESSAGES_FAIL: type('[Organization] linkMessages fail'),
+
+  UNLINK_MESSAGES: type('[Organization] unlinkMessages'),
+  UNLINK_MESSAGES_SUCCESS: type('[Organization] unlinkMessages success'),
+  UNLINK_MESSAGES_FAIL: type('[Organization] unlinkMessages fail'),
+
   FIND_BY_ID_DEVICES: type('[Organization] findByIdDevices'),
   FIND_BY_ID_DEVICES_SUCCESS: type('[Organization] findByIdDevices success'),
   FIND_BY_ID_DEVICES_FAIL: type('[Organization] findByIdDevices fail'),
@@ -49,6 +57,14 @@ Object.assign(BaseLoopbackActionTypesFactory('Organization'), {
   UPDATE_BY_ID_DEVICES: type('[Organization] updateByIdDevices'),
   UPDATE_BY_ID_DEVICES_SUCCESS: type('[Organization] updateByIdDevices success'),
   UPDATE_BY_ID_DEVICES_FAIL: type('[Organization] updateByIdDevices fail'),
+
+  LINK_DEVICES: type('[Organization] linkDevices'),
+  LINK_DEVICES_SUCCESS: type('[Organization] linkDevices success'),
+  LINK_DEVICES_FAIL: type('[Organization] linkDevices fail'),
+
+  UNLINK_DEVICES: type('[Organization] unlinkDevices'),
+  UNLINK_DEVICES_SUCCESS: type('[Organization] unlinkDevices success'),
+  UNLINK_DEVICES_FAIL: type('[Organization] unlinkDevices fail'),
 
   FIND_BY_ID_CATEGORIES: type('[Organization] findByIdCategories'),
   FIND_BY_ID_CATEGORIES_SUCCESS: type('[Organization] findByIdCategories success'),
@@ -62,6 +78,14 @@ Object.assign(BaseLoopbackActionTypesFactory('Organization'), {
   UPDATE_BY_ID_CATEGORIES_SUCCESS: type('[Organization] updateByIdCategories success'),
   UPDATE_BY_ID_CATEGORIES_FAIL: type('[Organization] updateByIdCategories fail'),
 
+  LINK_CATEGORIES: type('[Organization] linkCategories'),
+  LINK_CATEGORIES_SUCCESS: type('[Organization] linkCategories success'),
+  LINK_CATEGORIES_FAIL: type('[Organization] linkCategories fail'),
+
+  UNLINK_CATEGORIES: type('[Organization] unlinkCategories'),
+  UNLINK_CATEGORIES_SUCCESS: type('[Organization] unlinkCategories success'),
+  UNLINK_CATEGORIES_FAIL: type('[Organization] unlinkCategories fail'),
+
   FIND_BY_ID_DASHBOARDS: type('[Organization] findByIdDashboards'),
   FIND_BY_ID_DASHBOARDS_SUCCESS: type('[Organization] findByIdDashboards success'),
   FIND_BY_ID_DASHBOARDS_FAIL: type('[Organization] findByIdDashboards fail'),
@@ -73,6 +97,14 @@ Object.assign(BaseLoopbackActionTypesFactory('Organization'), {
   UPDATE_BY_ID_DASHBOARDS: type('[Organization] updateByIdDashboards'),
   UPDATE_BY_ID_DASHBOARDS_SUCCESS: type('[Organization] updateByIdDashboards success'),
   UPDATE_BY_ID_DASHBOARDS_FAIL: type('[Organization] updateByIdDashboards fail'),
+
+  LINK_DASHBOARDS: type('[Organization] linkDashboards'),
+  LINK_DASHBOARDS_SUCCESS: type('[Organization] linkDashboards success'),
+  LINK_DASHBOARDS_FAIL: type('[Organization] linkDashboards fail'),
+
+  UNLINK_DASHBOARDS: type('[Organization] unlinkDashboards'),
+  UNLINK_DASHBOARDS_SUCCESS: type('[Organization] unlinkDashboards success'),
+  UNLINK_DASHBOARDS_FAIL: type('[Organization] unlinkDashboards fail'),
 
   GET_MEMBERS: type('[Organization] getMembers'),
   GET_MEMBERS_SUCCESS: type('[Organization] getMembers success'),
@@ -536,6 +568,101 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
 
   /**
+   * linkMessages Action.
+   * Add a related item by id for Messages.
+   *
+   * @param {any} id Organization id
+   * @param {any} fk Foreign key for Messages
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  linkMessages: class implements Action {
+    public readonly type = OrganizationActionTypes.LINK_MESSAGES;
+      public payload: {id: any, fk: any, data: any};
+
+    constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk, data};
+    }
+  },
+  /**
+   * linkMessagesSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  linkMessagesSuccess: class implements Action {
+    public readonly type = OrganizationActionTypes.LINK_MESSAGES_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * linkMessagesFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  linkMessagesFail: class implements Action {
+    public readonly type = OrganizationActionTypes.LINK_MESSAGES_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * unlinkMessages Action.
+   * Remove the Messages relation to an item by id.
+   *
+   * @param {any} id Organization id
+   * @param {any} fk Foreign key for Messages
+   * @param {any} meta (optional).
+   * 
+   */
+  unlinkMessages: class implements Action {
+    public readonly type = OrganizationActionTypes.UNLINK_MESSAGES;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * unlinkMessagesSuccess Action.
+   * 
+   * @param {any} id 
+   * This method returns no data.
+   * @param {any} meta (optional).
+   * 
+   */
+  unlinkMessagesSuccess: class implements Action {
+    public readonly type = OrganizationActionTypes.UNLINK_MESSAGES_SUCCESS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * unlinkMessagesFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  unlinkMessagesFail: class implements Action {
+    public readonly type = OrganizationActionTypes.UNLINK_MESSAGES_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
    * findByIdDevices Action.
    * Find a related item by id for Devices.
    *
@@ -672,6 +799,101 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    */
   updateByIdDevicesFail: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_DEVICES_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * linkDevices Action.
+   * Add a related item by id for Devices.
+   *
+   * @param {any} id Organization id
+   * @param {any} fk Foreign key for Devices
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  linkDevices: class implements Action {
+    public readonly type = OrganizationActionTypes.LINK_DEVICES;
+      public payload: {id: any, fk: any, data: any};
+
+    constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk, data};
+    }
+  },
+  /**
+   * linkDevicesSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  linkDevicesSuccess: class implements Action {
+    public readonly type = OrganizationActionTypes.LINK_DEVICES_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * linkDevicesFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  linkDevicesFail: class implements Action {
+    public readonly type = OrganizationActionTypes.LINK_DEVICES_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * unlinkDevices Action.
+   * Remove the Devices relation to an item by id.
+   *
+   * @param {any} id Organization id
+   * @param {any} fk Foreign key for Devices
+   * @param {any} meta (optional).
+   * 
+   */
+  unlinkDevices: class implements Action {
+    public readonly type = OrganizationActionTypes.UNLINK_DEVICES;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * unlinkDevicesSuccess Action.
+   * 
+   * @param {any} id 
+   * This method returns no data.
+   * @param {any} meta (optional).
+   * 
+   */
+  unlinkDevicesSuccess: class implements Action {
+    public readonly type = OrganizationActionTypes.UNLINK_DEVICES_SUCCESS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * unlinkDevicesFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  unlinkDevicesFail: class implements Action {
+    public readonly type = OrganizationActionTypes.UNLINK_DEVICES_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },
@@ -818,6 +1040,101 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
   },
 
   /**
+   * linkCategories Action.
+   * Add a related item by id for Categories.
+   *
+   * @param {any} id Organization id
+   * @param {any} fk Foreign key for Categories
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  linkCategories: class implements Action {
+    public readonly type = OrganizationActionTypes.LINK_CATEGORIES;
+      public payload: {id: any, fk: any, data: any};
+
+    constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk, data};
+    }
+  },
+  /**
+   * linkCategoriesSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  linkCategoriesSuccess: class implements Action {
+    public readonly type = OrganizationActionTypes.LINK_CATEGORIES_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * linkCategoriesFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  linkCategoriesFail: class implements Action {
+    public readonly type = OrganizationActionTypes.LINK_CATEGORIES_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * unlinkCategories Action.
+   * Remove the Categories relation to an item by id.
+   *
+   * @param {any} id Organization id
+   * @param {any} fk Foreign key for Categories
+   * @param {any} meta (optional).
+   * 
+   */
+  unlinkCategories: class implements Action {
+    public readonly type = OrganizationActionTypes.UNLINK_CATEGORIES;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * unlinkCategoriesSuccess Action.
+   * 
+   * @param {any} id 
+   * This method returns no data.
+   * @param {any} meta (optional).
+   * 
+   */
+  unlinkCategoriesSuccess: class implements Action {
+    public readonly type = OrganizationActionTypes.UNLINK_CATEGORIES_SUCCESS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * unlinkCategoriesFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  unlinkCategoriesFail: class implements Action {
+    public readonly type = OrganizationActionTypes.UNLINK_CATEGORIES_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
    * findByIdDashboards Action.
    * Find a related item by id for Dashboards.
    *
@@ -954,6 +1271,101 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    */
   updateByIdDashboardsFail: class implements Action {
     public readonly type = OrganizationActionTypes.UPDATE_BY_ID_DASHBOARDS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * linkDashboards Action.
+   * Add a related item by id for Dashboards.
+   *
+   * @param {any} id Organization id
+   * @param {any} fk Foreign key for Dashboards
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  linkDashboards: class implements Action {
+    public readonly type = OrganizationActionTypes.LINK_DASHBOARDS;
+      public payload: {id: any, fk: any, data: any};
+
+    constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk, data};
+    }
+  },
+  /**
+   * linkDashboardsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  linkDashboardsSuccess: class implements Action {
+    public readonly type = OrganizationActionTypes.LINK_DASHBOARDS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * linkDashboardsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  linkDashboardsFail: class implements Action {
+    public readonly type = OrganizationActionTypes.LINK_DASHBOARDS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * unlinkDashboards Action.
+   * Remove the Dashboards relation to an item by id.
+   *
+   * @param {any} id Organization id
+   * @param {any} fk Foreign key for Dashboards
+   * @param {any} meta (optional).
+   * 
+   */
+  unlinkDashboards: class implements Action {
+    public readonly type = OrganizationActionTypes.UNLINK_DASHBOARDS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * unlinkDashboardsSuccess Action.
+   * 
+   * @param {any} id 
+   * This method returns no data.
+   * @param {any} meta (optional).
+   * 
+   */
+  unlinkDashboardsSuccess: class implements Action {
+    public readonly type = OrganizationActionTypes.UNLINK_DASHBOARDS_SUCCESS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * unlinkDashboardsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  unlinkDashboardsFail: class implements Action {
+    public readonly type = OrganizationActionTypes.UNLINK_DASHBOARDS_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

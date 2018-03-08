@@ -110,7 +110,9 @@ export class Organization implements OrganizationInterface {
           type: 'Message[]',
           model: 'Message',
           relationType: 'hasMany',
-                  keyFrom: 'id',
+          modelThrough: 'OrganizationMessage',
+          keyThrough: 'messageId',
+          keyFrom: 'id',
           keyTo: 'organizationId'
         },
         Devices: {
@@ -118,7 +120,9 @@ export class Organization implements OrganizationInterface {
           type: 'Device[]',
           model: 'Device',
           relationType: 'hasMany',
-                  keyFrom: 'id',
+          modelThrough: 'OrganizationDevice',
+          keyThrough: 'deviceId',
+          keyFrom: 'id',
           keyTo: 'organizationId'
         },
         Categories: {
@@ -126,7 +130,9 @@ export class Organization implements OrganizationInterface {
           type: 'Category[]',
           model: 'Category',
           relationType: 'hasMany',
-                  keyFrom: 'id',
+          modelThrough: 'OrganizationCategory',
+          keyThrough: 'categoryId',
+          keyFrom: 'id',
           keyTo: 'organizationId'
         },
         Dashboards: {
@@ -134,8 +140,10 @@ export class Organization implements OrganizationInterface {
           type: 'Dashboard[]',
           model: 'Dashboard',
           relationType: 'hasMany',
-                  keyFrom: 'id',
-          keyTo: 'dashboardId'
+          modelThrough: 'OrganizationDashboard',
+          keyThrough: 'dashboardId',
+          keyFrom: 'id',
+          keyTo: 'organizationId'
         },
       }
     }

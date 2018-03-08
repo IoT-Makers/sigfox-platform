@@ -39,6 +39,11 @@
       "type": "hasMany",
       "model": "Widget",
       "foreignKey": "dashboardId"
+    },
+    "Organizations": {
+      "type": "hasAndBelongsToMany",
+      "model": "Organization",
+      "foreignKey": "organizationId"
     }
   },
   "acls": [],

@@ -1,7 +1,7 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {UserApi} from '../../../shared/sdk/services/custom/User';
+import {UserApi, OrganizationApi} from '../../../shared/sdk/services';
 import {DOCUMENT} from '@angular/common';
-import {User} from '../../../shared/sdk/models';
+import {Organization, User} from '../../../shared/sdk/models';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {FullLayoutComponent} from '../../../layouts/full-layout.component';
 import {Router} from '@angular/router';
@@ -15,6 +15,9 @@ import {RealTime} from "../../../shared/sdk/services";
 export class ProfileComponent implements OnInit, OnDestroy {
 
   private user: User;
+
+  private organization: Organization;
+  private organizations: Organization[] = [];
 
   @ViewChild('updatePasswordModal') updatePasswordModal: any;
   @ViewChild('updateUserModal') updateUserModal: any;
@@ -37,6 +40,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   constructor(@Inject(DOCUMENT) private document: any,
               private rt: RealTime,
               private userApi: UserApi,
+              private organizationApi: OrganizationApi,
               toasterService: ToasterService,
               private router: Router) {
     this.toasterService = toasterService;
@@ -46,6 +50,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.user = this.userApi.getCachedCurrent();
     this.userApi.findById(this.user.id, {}).subscribe((user: User) => {
       this.user = user;
+    });
+  }
+
+  getOrganizations(): void {
+    this.userApi.getOrganizations(this.user.id, {include:"Members"}).subscribe((organizations: Organization[]) => {
+      this.organizations = organizations;
+      console.log(organizations);
     });
   }
 
@@ -102,12 +113,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
+  leaveOrganization(item): void{
+    this.organizationApi.unlinkMembers(item.id, this.user.id).subscribe(result => {
+      this.getOrganizations();
+    })
+  }
+
   ngOnInit() {
     console.log('Profile: ngOnInit');
 
 
     // Get the logged in User object
     this.getUser();
+    this.getOrganizations();
   }
 
   ngOnDestroy() {

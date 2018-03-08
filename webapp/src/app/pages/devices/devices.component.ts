@@ -1,8 +1,8 @@
-import {Category, Connector, Device, FireLoopRef, Geoloc, Parser, User} from '../../shared/sdk/models';
+import {Category, Connector, Device, FireLoopRef, Geoloc, Organization, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {AgmInfoWindow} from '@agm/core';
-import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
+import {DeviceApi, UserApi, AppSettingApi, OrganizationApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 
@@ -16,10 +16,14 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   private user: User;
 
+  private organization: Organization;
+  private organizations: Organization[] = [];
+
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
   @ViewChild('confirmModal') confirmModal: any;
   @ViewChild('confirmDBModal') confirmDBModal: any;
   @ViewChild('confirmParseModal') confirmParseModal: any;
+  @ViewChild('shareDeviceWithOrganizationModal') shareDeviceWithOrganizationModal: any;
 
   private isCircleVisible: boolean[] = [];
 
@@ -40,6 +44,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
   private deviceToEdit: Device = new Device();
   private deviceToRemove: Device = new Device();
 
+  private selectOrganizations: Array<any> = [];
+  private selectedOrganizations: Array<any> = [];
+
   private edit = false;
   private loadingFromBackend = false;
   private parseMessages = false;
@@ -58,8 +65,18 @@ export class DevicesComponent implements OnInit, OnDestroy {
       animation: 'fade'
     });
 
+  private selectOrganizationsSettings = {
+    singleSelection: false,
+    text: 'Select organizations',
+    selectAllText: 'Select all',
+    unSelectAllText: 'Unselect all',
+    enableSearchFilter: true,
+    classes: 'select-category'
+  };
+
   constructor(private rt: RealTime,
               private userApi: UserApi,
+              private organizationApi: OrganizationApi,
               private deviceApi: DeviceApi,
               private elRef: ElementRef,
               toasterService: ToasterService) {
@@ -114,9 +131,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceSub = this.deviceRef.on('change',
       {
-        limit: 1000,
+        limit: 100,
         order: 'updatedAt DESC',
-        include: ['Parser', 'Category', {
+        include: ['Parser', 'Category', 'Organizations', {
           relation: 'Messages',
           scope: {
             limit: 100,
@@ -320,5 +337,57 @@ export class DevicesComponent implements OnInit, OnDestroy {
     });
     this.confirmModal.hide();
   }
+
+  showShareDeviceWithOrganizationModal(): void{
+    this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
+      this.organizations = organizations;
+      console.log(organizations);
+      this.organizations.forEach(result => {
+        const item = {
+          id: result.id,
+          itemName: result.name
+        };
+        this.selectOrganizations.push(item);
+      });
+      this.shareDeviceWithOrganizationModal.show();
+    });
+
+
+  }
+
+  shareDeviceWithOrganization(deviceId): void{
+    console.log(this.selectedOrganizations);
+    console.log(deviceId);
+    this.selectedOrganizations.forEach(orga => {
+      this.organizationApi.linkDevices(orga.id, deviceId).subscribe(results =>{
+        console.log(results);
+        this.shareDeviceWithOrganizationModal.hide();
+        this.organizationApi.findById(orga.id).subscribe((org: Organization) => {
+          this.deviceToEdit.Organizations.push(org);
+        })
+        // if(this.deviceToEdit.Organizations){
+        //
+        // }
+
+      })
+    })
+  }
+
+  unshare(orga, device, index): void{
+    this.organizationApi.unlinkDevices(orga.id, device.id).subscribe(results =>{
+      console.log(results);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The device has been removed from ' + orga.name + ".");
+      this.deviceToEdit.Organizations.slice(index);
+    })
+  }
+
+  // getOrganizations(): void {
+  //   this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
+  //     this.organizations = organizations;
+  //     console.log(organizations);
+  //   });
+  // }
 }
 

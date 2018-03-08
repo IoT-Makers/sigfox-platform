@@ -12,13 +12,12 @@ export interface DeviceInterface {
   "parserId"?: any;
   "categoryId"?: any;
   "userId"?: any;
-  "organizationId"?: any;
   Parser?: any;
   Category?: any;
   Messages?: any[];
   Geolocs?: any[];
   user?: any;
-  Organization?: any;
+  Organizations?: any[];
   Alerts?: any[];
 }
 
@@ -33,13 +32,12 @@ export class Device implements DeviceInterface {
   "parserId": any = <any>null;
   "categoryId": any = <any>null;
   "userId": any = <any>null;
-  "organizationId": any = <any>null;
   Parser: any = null;
   Category: any = null;
   Messages: any[] = null;
   Geolocs: any[] = null;
   user: any = null;
-  Organization: any = null;
+  Organizations: any[] = null;
   Alerts: any[] = null;
   constructor(data?: DeviceInterface) {
     Object.assign(this, data);
@@ -114,10 +112,6 @@ export class Device implements DeviceInterface {
           name: 'userId',
           type: 'any'
         },
-        "organizationId": {
-          name: 'organizationId',
-          type: 'any'
-        },
       },
       relations: {
         Parser: {
@@ -160,13 +154,15 @@ export class Device implements DeviceInterface {
                   keyFrom: 'userId',
           keyTo: 'id'
         },
-        Organization: {
-          name: 'Organization',
-          type: 'any',
+        Organizations: {
+          name: 'Organizations',
+          type: 'any[]',
           model: '',
-          relationType: 'belongsTo',
-                  keyFrom: 'organizationId',
-          keyTo: 'id'
+          relationType: 'hasMany',
+          modelThrough: 'OrganizationDevice',
+          keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'deviceId'
         },
         Alerts: {
           name: 'Alerts',

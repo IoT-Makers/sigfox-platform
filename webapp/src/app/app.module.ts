@@ -15,7 +15,8 @@ import {SDKBrowserModule} from './shared/sdk/index';
 import {AuthGuard} from './_guards/auth.guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AgmCoreModule} from '@agm/core';
-import {ModalModule} from "ng2-bootstrap";
+import {ModalModule, TooltipModule} from "ng2-bootstrap";
+import {AngularMultiSelectModule} from "angular2-multiselect-dropdown/angular2-multiselect-dropdown";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -29,9 +30,11 @@ import {ModalModule} from "ng2-bootstrap";
     ModalModule.forRoot(),
     ChartsModule,
     SDKBrowserModule.forRoot(),
+    TooltipModule.forRoot(),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
-    })
+    }),
+    AngularMultiSelectModule
   ],
   declarations: [
     AppComponent,
@@ -41,7 +44,6 @@ import {ModalModule} from "ng2-bootstrap";
     BreadcrumbsComponent,
     SIDEBAR_TOGGLE_DIRECTIVES,
     AsideToggleDirective
-
     //AssetsComponent
   ],
   providers: [

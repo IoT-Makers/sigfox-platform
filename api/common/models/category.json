@@ -46,6 +46,11 @@
       "model": "user",
       "foreignKey": "userId"
     },
+    "Organizations": {
+      "type": "hasAndBelongsToMany",
+      "model": "Organization",
+      "foreignKey": "organizationId"
+    },
     "Devices": {
       "type": "hasMany",
       "model": "Device",
@@ -75,12 +80,6 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$owner",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "organizationMember",
       "permission": "ALLOW"
     }
   ],

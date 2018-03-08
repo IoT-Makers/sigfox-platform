@@ -240,7 +240,7 @@ export class FireLoopRef<T> {
         that.socket.removeListener(nowEvent, pullNow);
       }
       sbj.next(data);
-    }
+    };
     this.socket.on(nowEvent, pullNow);
     return sbj.asObservable();
   }

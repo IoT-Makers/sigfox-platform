@@ -87,7 +87,7 @@ export abstract class BaseLoopBackApi {
       // that are the actual body, Custom remote method properties are different and need
       // to be wrapped into a body object
       let body: any;
-      let postBodyKeys = typeof postBody === 'object' ? Object.keys(postBody) : [];
+      let postBodyKeys = typeof postBody === 'object' ? Object.keys(postBody) : []
       if (postBodyKeys.length === 1) {
         body = postBody[postBodyKeys.shift()];
       } else {

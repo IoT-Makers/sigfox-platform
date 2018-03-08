@@ -5,8 +5,9 @@ module.exports = function(app){
   var AppSetting = app.models.AppSetting;
 
   var settings = [
-    {key: "canUserRegister", value: "true"},
-    {key: "canUserCreateOrganization", value: true}
+    {key: "canUserRegister", value: "true", type: "boolean"},
+    {key: "canUserCreateOrganization", value: true, type: "boolean"},
+    {key: "showDeviceSuccessRate", value: false, type: "boolean"}
   ];
 
   settings.forEach(function (setting) {
@@ -14,8 +15,8 @@ module.exports = function(app){
       if (err) {
         console.error(err);
       }
-      (created) ? console.log('created: ', createdObject)
-        : console.log('found: ', createdObject);
+      // (created) ? console.log('created: ', createdObject)
+      //   : console.log('found: ', createdObject);
     });
   });
 
