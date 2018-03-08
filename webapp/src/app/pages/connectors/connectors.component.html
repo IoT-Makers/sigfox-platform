@@ -175,7 +175,7 @@
           <div class="card-block">
             <p>Type: <strong>SERVICE</strong> | <strong>GEOLOC</strong></p>
             <p>Url pattern: <strong tooltip="Click to copy" click-copy (click)="toastClick()">{{ callbackURL + '/Geolocs/sigfox'}}</strong></p>
-            <p>Use HTTP Method: <strong>PUT</strong></p>
+            <p>Use HTTP Method: <strong>POST</strong></p>
             <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span class="text-danger" tooltip="Click to copy" click-copy (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
             </p>
             <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong></p>
@@ -184,11 +184,6 @@
               "deviceId": "{device}",
               "time": {time},
               "seqNumber": {seqNumber},
-              "reception": [{
-                  "id": "{station}",
-                  "RSSI": {rssi},
-                  "SNR": {snr}
-              }],
               "geoloc": {
                   "location": {
                     "lat": {lat},
