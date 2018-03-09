@@ -135,7 +135,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
         order: 'updatedAt DESC',
         include: ['Parser', 'Category', 'Organizations', {
           relation: 'Messages',
-          order: 'createdAt DESC',
           scope: {
             limit: 1,
             order: 'createdAt DESC',
