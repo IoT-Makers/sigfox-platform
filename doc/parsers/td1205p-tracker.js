@@ -106,13 +106,6 @@ if (payload.length == 24) {
     parsedData.push(obj);
     obj = {};
 
-    obj.key = "geoloc";
-    obj.value = "GPS";
-    obj.type = "string";
-    obj.unit = "";
-    parsedData.push(obj);
-    obj = {};
-
     var sat = parseInt(frame[6], 2);
     //console.log('nbSat:', frame[6]);
     //console.log('nbSat:', sat);
@@ -200,13 +193,6 @@ if (payload.length == 2 || payload.length == 4) {
     obj.key = "hdop";
     obj.value = null;
     obj.type = "number";
-    obj.unit = "";
-    parsedData.push(obj);
-    obj = {};
-
-    obj.key = "geoloc";
-    obj.value = "";
-    obj.type = "string";
     obj.unit = "";
     parsedData.push(obj);
     obj = {};

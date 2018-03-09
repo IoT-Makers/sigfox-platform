@@ -290,9 +290,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
             this.countMessages = result.count;
           });
         } else {
-          // this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-          //   this.countMessages = result.count;
-          // });
+          this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+            this.countMessages = result.count;
+          });
         }
 
       });

@@ -33,6 +33,7 @@
                   <th *ngIf="!edit" class="text-center">Description</th>
                   <th class="text-center">Properties</th>
                   <th class="text-center">Associated devices</th>
+                  <th class="text-center">Organizations</th>
                   <th *ngIf="!edit" class="text-center">Action</th>
                 </tr>
                 </thead>
@@ -69,12 +70,27 @@
                       </div>
                     </div>
                   </td>
+                  <td>
+                    <div *ngIf="!category.Organizations" class="small text-muted">Not shared</div>
+                    <div *ngIf="category.Organizations">
+                      <div class="small text-center text-device" *ngFor="let orga of category.Organizations; let i = index">
+                        <strong [routerLink]="['/organization/'+orga.id]">{{orga.name}}</strong>
+                      </div>
+                    </div>
+                  </td>
                   <td *ngIf="!edit" class="text-center">
                     <div class="btn-group-sm">
                       <button class="btn btn-outline-primary btn-round" tooltip="Edit category"
                               (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
                       <button class="btn btn-outline-danger btn-round" tooltip="Delete category"
                               (click)="openConfirmModal(category)"><i class="fa fa-trash fa-lg"></i></button>
+                      <button class="btn btn-outline-primary btn-round" tooltip="Share this device" (click)="$event.preventDefault(); showShareCategoryWithOrganizationModal(category)">
+                        <i class="fa fa-share"></i>
+                      </button>
+                      <div class="col col-md-12">
+
+
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -187,6 +203,52 @@
       <div class="modal-footer">
         <button class="btn btn-sm btn-danger" (click)="remove()">Delete</button>
         <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div bsModal #shareCategoryWithOrganizationModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="shareCategoryWithOrganizationModal"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Share category <b>{{categoryToEdit.name}}</b> with an organization</h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="shareCategoryWithOrganization(categoryToEdit.id)" class="form-horizontal" #editForm="ngForm">
+
+
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Select organizations</label>
+            <div class="col-md-9">
+              <angular2-multiselect name="selectOrganizations"
+                                    [data]="selectOrganizations"
+                                    [(ngModel)]="selectedOrganizations"
+                                    [settings]="selectOrganizationsSettings">
+              </angular2-multiselect>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-6 form-control-label">Share all associated devices</label>
+            <div class="col-md-6">
+              <label class="switch switch-sm switch-3d switch-success-outline-alt">
+                <input [(ngModel)]="shareAssociatedDevices" type="checkbox" [ngModelOptions]="{standalone: true}"
+                       class="switch-input">
+                <span class="switch-label"></span>
+                <span class="switch-handle"></span>
+              </label>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-success" (click)="shareCategoryWithOrganization(categoryToEdit, shareAssociatedDevices)">Share</button>
+        <button class="btn btn-sm btn-default" (click)="shareCategoryWithOrganizationModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
