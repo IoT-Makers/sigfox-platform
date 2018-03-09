@@ -688,8 +688,8 @@ class Message {
         limit: 1,
         include: [{
           relation: 'Messages',
-          order: 'createdAt DESC',
           scope: {
+            order: 'createdAt DESC',
             limit: 100
           }
         }]

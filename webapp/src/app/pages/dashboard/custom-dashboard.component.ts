@@ -444,7 +444,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         include: [
           {
             relation: 'Messages',
-            order: 'createdAt DESC',
             scope: {
               limit: 1,
               order: 'createdAt DESC',
