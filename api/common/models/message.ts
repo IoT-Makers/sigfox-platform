@@ -601,6 +601,9 @@ class Message {
   }
 
   private createMessageAndSendResponse(message: any, next: Function) {
+
+    const Message = this.model;
+
     // Ack from BIDIR callback
     if (message.ack) {
       let result;
@@ -620,7 +623,7 @@ class Message {
           };
         }
         // Creating new message with its downlink data
-        this.model.create(
+        Message.create(
           message,
           (err: any, messageInstance: any) => {
             if (err) {
