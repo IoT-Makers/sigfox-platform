@@ -643,6 +643,7 @@ class Message {
                 });
               // Calculate success rate and update device
               this.updateDeviceSuccessRate(messageInstance.deviceId);
+              this.linkMessageToOrganization(messageInstance);
             }
           });
         // ack is true
@@ -671,6 +672,7 @@ class Message {
               });
             // Calculate success rate and update device
             this.updateDeviceSuccessRate(messageInstance.deviceId);
+            this.linkMessageToOrganization(messageInstance);
 
             next(null, messageInstance);
           }
@@ -715,7 +717,23 @@ class Message {
             });
         }
       });
+  }
 
+  private linkMessageToOrganization(message: any){
+
+    const Device = this.model.app.models.Device;
+
+    Device.findOne({where:{'id': message.deviceId}, include: 'Organizations'}, function(err:any, device:any){
+      //console.log(device);
+      if(device.Organizations){
+        device.toJSON().Organizations.forEach(function(orga: any){
+            message.Organizations.add(orga.id, function (err: any, result: any) {
+              //console.log("Linked message with organization", result);
+            });
+
+        })
+      }
+    })
   }
 
   // Example Operation Hook
