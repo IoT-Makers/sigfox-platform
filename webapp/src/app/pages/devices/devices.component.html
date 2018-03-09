@@ -324,7 +324,8 @@
                   </div>
                 </td>
                 <td *ngIf="!edit" class="text-center">
-                  <strong tooltip="Based on the last 100 received">{{device.success_rate ? device.success_rate + ' %' : 'No messages yet'}}</strong>
+                  <strong *ngIf="device.success_rate" tooltip="Based on the last 100 received">{{device.success_rate + ' %'}}</strong>
+                  <span *ngIf="!device.success_rate">N/A</span>
                 </td>
                 <td class="text-center">
                   <div class="btn-group-sm">

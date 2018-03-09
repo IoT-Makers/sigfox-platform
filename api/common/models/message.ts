@@ -683,8 +683,10 @@ class Message {
         limit: 1,
         include: [{
           relation: 'Messages',
-          limit: 100,
-          order: 'createdAt DESC'
+          order: 'createdAt DESC',
+          scope: {
+            limit: 100
+          }
         }]
       },
       function (err: any, device: any) {
