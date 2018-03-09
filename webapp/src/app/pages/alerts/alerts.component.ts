@@ -132,6 +132,11 @@ export class AlertsComponent implements OnInit, OnDestroy {
           this.selectConnectors.push(item);
         }
       });
+      if (connectors.length === 0) {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('warning', 'Warning', 'Please create a connector in the "Connectors" page first.');
+      }
     });
   }
 

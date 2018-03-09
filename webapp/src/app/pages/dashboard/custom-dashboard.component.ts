@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DashboardApi, RealTime, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {FireLoopRef, Message, Parser} from '../../shared/sdk/models';
+import {FireLoopRef, Geoloc, Message, Parser} from '../../shared/sdk/models';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
@@ -107,7 +107,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private selectGeolocType = [
     {id: 'gps', itemName: 'GPS'},
     {id: 'sigfox', itemName: 'Sigfox'},
-    {id: 'preferGPS', itemName: 'Prefer GPS'}
+    {id: 'preferGps', itemName: 'Prefer GPS'},
+    {id: 'all', itemName: 'All kinds'}
   ];
   private selectOneSettings = {
     singleSelection: true,
@@ -440,17 +441,23 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.newWidget.filter = {
         limit: 100,
         order: 'updatedAt DESC',
-        include: [{
-          relation: 'Messages',
-          scope: {
-            skip: 0,
-            limit: 1,
-            order: 'createdAt DESC'
-          }
-        }],
+        include: [
+          {
+            relation: 'Messages',
+            order: 'createdAt DESC',
+            scope: {
+              limit: 1,
+              order: 'createdAt DESC',
+              include: [{
+                relation: 'Geolocs',
+                scope: {
+                  limit: 5
+                }
+              }]
+            }
+          }],
         where: {
-          or: [
-          ]
+          or: []
         }
       };
     }
@@ -510,33 +517,73 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         // Month in milliseconds
       const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;
 
-      this.newWidget.filter = {
-        limit: 50,
-        order: 'updatedAt DESC',
-        include: [
-          {
+      if (this.newWidget.options.geolocType === 'preferGps') {
+        this.newWidget.filter = {
+          where: {
+            or: []
+          },
+          limit: 10,
+          include: [{
             relation: 'Messages',
             order: 'createdAt DESC',
             scope: {
-              limit: 500,
+              limit: 1000,
+              fields: ['id'],
               order: 'createdAt DESC',
               where: {
-                and: [{createdAt: {gte: this.selectedDateTimeBegin.toISOString()}}]
+                and: [
+                  {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}}
+                ]
               },
               include: [{
                 relation: 'Geolocs',
                 scope: {
-                  where: {type: this.newWidget.options.geolocType},
-                  limit: 5,
-                  order: 'createdAt DESC'
+                  limit: 5
                 }
               }]
             }
-          }],
-        where: {
-          or: []
-        }
-      };
+          }]
+        };
+      } else if (this.newWidget.options.geolocType === 'gps' || this.newWidget.options.geolocType === 'sigfox') {
+        this.newWidget.filter = {
+          where: {
+            or: []
+          },
+          limit: 10,
+          order: 'updatedAt DESC',
+          include: [{
+            relation: 'Geolocs',
+            scope: {
+              where: {
+                and: [
+                  {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}},
+                  {type: this.newWidget.options.geolocType},
+                ]
+              },
+              limit: 1000
+            }
+          }]
+        };
+      } else if (this.newWidget.options.geolocType === 'all') {
+        this.newWidget.filter = {
+          where: {
+            or: []
+          },
+          limit: 10,
+          order: 'updatedAt DESC',
+          include: [{
+            relation: 'Geolocs',
+            scope: {
+              where: {
+                and: [
+                  {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}}
+                ]
+              },
+              limit: 1000
+            }
+          }]
+        };
+      }
     }
 
     // Line & Bar
@@ -552,8 +599,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             order: 'createdAt DESC',
             where: {
               and: [
-                { data_parsed: { neq: null } },
-                { createdAt: {gte: this.selectedDateTimeBegin.toISOString()} }
+                { createdAt: {gte: this.selectedDateTimeBegin.toISOString()} },
+                { data_parsed: { neq: null } }
               ]
             }
           }
@@ -565,10 +612,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-    // Reset filters arrays
+// Reset filters arrays
     this.newWidget.options.keys = [];
     this.newWidget.filter.where.or = [];
-    // Set filter arrays by looping on selected data
+// Set filter arrays by looping on selected data
     this.selectedKeys.forEach( (item: any) => {
       this.newWidget.options.keys.push(item.id);
     });
@@ -771,61 +818,23 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 device.visibility = false;
                 device.directionsDisplayStore = [];
                 device.color = this.getRandomColor();
-                // Reverse the array to trace route from eldest to newest position
-                device.Messages.reverse();
               });
 
-              if (widget.options.geolocType === 'preferGPS') {
-                widget.data.forEach(device => {
-                  device.Messages.forEach((message, i) => {
-                    let hasSigfox = false;
-                    if (message.Geolocs.length > 1) {
-                      message.Geolocs.forEach((geoloc, j) => {
-                        if (geoloc.type === 'sigfox')
-                          hasSigfox = true;
-                        if (hasSigfox)
-                          device.Messages[i].Geolocs.splice(j, 1);
-                      });
-                    }
-                  });
-                });
-              }
-
-              /*if (widget.options.geolocType === 'gps') {
-                widget.data.forEach(device => {
-                  device.Messages.forEach((message, i) => {
-                    message.Geolocs.forEach((geoloc, j) => {
-                      if (geoloc.type !== 'gps') {
-                        device.Messages[i].Geolocs.splice(j, 1);
-                      }
-                    });
-                  });
-                });
-              } else if (widget.options.geolocType === 'sigfox') {
-                widget.data.forEach(device => {
-                  device.Messages.forEach((message, i) => {
-                    message.Geolocs.forEach((geoloc, j) => {
-                      if (geoloc.type !== 'sigfox') {
-                        device.Messages[i].Geolocs.splice(j, 1);
-                      }
-                    });
-                  });
-                });
-              }*/
-
-              if (widget.options.directions) {
-                widget.data.forEach(device => {
+              if (widget.options.geolocType === 'preferGps') {
+                widget.data.forEach((device: any) => {
+                  device.directionsDisplayStore = [];
                   device.Geolocs = [];
-                  device.Messages.forEach((message, i) => {
-                    if (message.Geolocs.length === 1) {
-                      device.Geolocs.push(device.Messages[i].Geolocs[0]);
-                    } else if (message.Geolocs.length > 1) {
-                      message.Geolocs.forEach((geoloc, j) => {
-                        if (geoloc.type !== 'sigfox') {
-                          device.Geolocs.push(device.Messages[i].Geolocs[j]);
-                        }
-                      });
-                    }
+                  device.Messages.forEach((message: any) => {
+                    message.Geolocs.forEach((geoloc: Geoloc, i) => {
+                      device.Geolocs.push(geoloc);
+                      if (message.Geolocs.length > 1) {
+                        message.Geolocs.forEach((g: Geoloc) => {
+                          if (g.messageId === geoloc.messageId && g.type === 'sigfox') {
+                            device.Geolocs.splice(g, 1);
+                          }
+                        });
+                      }
+                    });
                   });
                 });
               }
