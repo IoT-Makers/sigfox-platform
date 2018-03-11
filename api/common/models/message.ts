@@ -633,6 +633,7 @@ class Message {
               next(err, messageInstance);
             } else {
               console.log('Created message as: ', messageInstance);
+              messageInstance = messageInstance.toJSON();
               // Check if there is Geoloc in payload and create Geoloc object
               Geoloc.createFromParsedPayload(
                 messageInstance,
@@ -663,6 +664,7 @@ class Message {
             next(err, messageInstance);
           } else {
             console.log('Created message as: ', messageInstance);
+            messageInstance = messageInstance.toJSON();
             // Check if there is Geoloc in payload and create Geoloc object
             Geoloc.createFromParsedPayload(
               messageInstance,

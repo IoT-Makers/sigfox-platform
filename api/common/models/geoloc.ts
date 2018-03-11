@@ -46,6 +46,9 @@ class Geoloc {
   }
 
   private createFromParsedPayload(message: any, req: any): void {
+    // Models
+    const Geoloc = this.model;
+
     if (typeof message === 'undefined'
       || typeof message.data_parsed === 'undefined') {
       return console.error('Missing "message"', message);
@@ -54,7 +57,7 @@ class Geoloc {
     let hasLocation = false;
 
     // Build the Geoloc object
-    const geoloc = new this.model.app.models.Geoloc;
+    const geoloc = new Geoloc;
     geoloc.type = 'gps';
     geoloc.location = new loopback.GeoPoint({lat: 0, lng: 0});
     geoloc.createdAt = message.createdAt;
@@ -74,7 +77,7 @@ class Geoloc {
 
     if (hasLocation) {
       // Find or create a new Geoloc
-      this.model.app.models.Geoloc.findOrCreate(
+      Geoloc.findOrCreate(
         {
           where: {
             and: [
@@ -103,6 +106,10 @@ class Geoloc {
   }
 
   createSigfox(req: any, data: any, next: Function): void {
+    // Models
+    const Geoloc = this.model;
+    const Message = this.model.app.models.Message;
+
     if (typeof data.geoloc === 'undefined'
       || typeof data.deviceId  === 'undefined'
       || typeof data.time  === 'undefined'
@@ -113,7 +120,7 @@ class Geoloc {
     const userId = req.accessToken.userId;
 
     // Find the corresponding message in order to retrieve its message ID
-    this.model.app.models.Message.findOne({
+    Message.findOne({
       where: {
         and: [
           {deviceId: data.deviceId},
@@ -139,7 +146,7 @@ class Geoloc {
           geoloc.deviceId = messageInstance.deviceId;
 
           // Creating a new Geoloc
-          this.model.app.models.Geoloc.create(
+          Geoloc.create(
             geoloc,
             (err: any, geolocInstance: any) => {
               if (err) {
