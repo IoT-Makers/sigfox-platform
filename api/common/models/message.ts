@@ -601,13 +601,15 @@ class Message {
   }
 
   private createMessageAndSendResponse(message: any, next: Function) {
-
+    // Models
     const Message = this.model;
+    const Device = this.model.app.models.Device;
+    const Geoloc = this.model.app.models.Geoloc;
 
     // Ack from BIDIR callback
     if (message.ack) {
       let result;
-      this.model.app.models.Device.findOne({where: {id: message.deviceId}}, function (err: any, device: any) {
+      Device.findOne({where: {id: message.deviceId}}, function (err: any, device: any) {
         if (device.downlinkData) {
           message.downlinkData = device.downlinkData;
           result = {
@@ -632,7 +634,7 @@ class Message {
             } else {
               console.log('Created message as: ', messageInstance);
               // Check if there is Geoloc in payload and create Geoloc object
-              this.model.app.models.Geoloc.createFromParsedPayload(
+              Geoloc.createFromParsedPayload(
                 messageInstance,
                 function (err: any, res: any) {
                   if (err) {
@@ -643,6 +645,7 @@ class Message {
                 });
               // Calculate success rate and update device
               this.updateDeviceSuccessRate(messageInstance.deviceId);
+              // Share message to organizations if any
               this.linkMessageToOrganization(messageInstance);
             }
           });
@@ -652,7 +655,7 @@ class Message {
     } else {
       // ack is false
       // Creating new message with no downlink data
-      this.model.create(
+      Message.create(
         message,
         (err: any, messageInstance: any) => {
           if (err) {
@@ -661,7 +664,7 @@ class Message {
           } else {
             console.log('Created message as: ', messageInstance);
             // Check if there is Geoloc in payload and create Geoloc object
-            this.model.app.models.Geoloc.createFromParsedPayload(
+            Geoloc.createFromParsedPayload(
               messageInstance,
               function (err: any, res: any) {
                 if (err) {
@@ -672,6 +675,7 @@ class Message {
               });
             // Calculate success rate and update device
             this.updateDeviceSuccessRate(messageInstance.deviceId);
+            // Share message to organizations if any
             this.linkMessageToOrganization(messageInstance);
 
             next(null, messageInstance);
@@ -681,6 +685,7 @@ class Message {
   }
 
   private updateDeviceSuccessRate(deviceId: string) {
+    // Model
     const Device = this.model.app.models.Device;
     Device.findOne(
       {
@@ -719,21 +724,20 @@ class Message {
       });
   }
 
-  private linkMessageToOrganization(message: any){
+  private linkMessageToOrganization(message: any) {
 
     const Device = this.model.app.models.Device;
 
-    Device.findOne({where:{'id': message.deviceId}, include: 'Organizations'}, function(err:any, device:any){
+    Device.findOne({where: {'id': message.deviceId}, include: 'Organizations'}, function(err:any, device:any){
       //console.log(device);
-      if(device.Organizations){
+      if (device.Organizations) {
         device.toJSON().Organizations.forEach(function(orga: any){
             message.Organizations.add(orga.id, function (err: any, result: any) {
               //console.log("Linked message with organization", result);
             });
-
-        })
+        });
       }
-    })
+    });
   }
 
   // Example Operation Hook
