@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Email } from '../../models/Email';
 import { AccessToken } from '../../models/AccessToken';
+import { Role } from '../../models/Role';
 import { Device } from '../../models/Device';
 import { Parser } from '../../models/Parser';
 import { Category } from '../../models/Category';
@@ -25,6 +26,7 @@ export class SDKModels {
   private models: Models = {
     Email: Email,
     AccessToken: AccessToken,
+    Role: Role,
     Device: Device,
     Parser: Parser,
     Category: Category,

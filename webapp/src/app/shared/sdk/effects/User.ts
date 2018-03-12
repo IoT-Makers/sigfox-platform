@@ -72,7 +72,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.FIND_BY_ID_ROLES).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.findByIdRoles(action.payload.id, action.payload.fk).pipe(
-          map((response: any) => new UserActions.findByIdRolesSuccess(action.payload.id, response, action.meta)),
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Role', 'findByIdSuccess'),
+            of(new UserActions.findByIdRolesSuccess(action.payload.id, response, action.meta))
+          )),
           catchError((error: any) => concat(
             of(new UserActions.findByIdRolesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
@@ -86,7 +89,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.DESTROY_BY_ID_ROLES).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.destroyByIdRoles(action.payload.id, action.payload.fk).pipe(
-          map((response: any) => new UserActions.destroyByIdRolesSuccess(action.payload.id, action.payload.fk, action.meta)),
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Role', 'deleteByIdSuccess'),
+            of(new UserActions.destroyByIdRolesSuccess(action.payload.id, response, action.meta))
+          )),
           catchError((error: any) => concat(
             of(new UserActions.destroyByIdRolesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
@@ -100,7 +106,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.UPDATE_BY_ID_ROLES).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.updateByIdRoles(action.payload.id, action.payload.fk, action.payload.data).pipe(
-          map((response: any) => new UserActions.updateByIdRolesSuccess(action.payload.id, response, action.meta)),
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Role', 'findByIdSuccess'),
+            of(new UserActions.updateByIdRolesSuccess(action.payload.id, response, action.meta))
+          )),
           catchError((error: any) => concat(
             of(new UserActions.updateByIdRolesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
@@ -114,7 +123,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.LINK_ROLES).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.linkRoles(action.payload.id, action.payload.fk, action.payload.data).pipe(
-          map((response: any) => new UserActions.linkRolesSuccess(action.payload.id, response, action.meta)),
+          mergeMap((response: any) => concat(
+          of(new actions['RoleMappingActions'].createSuccess(response, action.meta)),
+          of(new UserActions.linkRolesSuccess(action.payload.id, response, action.meta))
+        )),
           catchError((error: any) => concat(
             of(new UserActions.linkRolesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
@@ -128,7 +140,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.UNLINK_ROLES).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.unlinkRoles(action.payload.id, action.payload.fk).pipe(
-          map((response: any) => new UserActions.unlinkRolesSuccess(action.payload.id, action.payload.fk, action.meta)),
+          mergeMap((response: any) => concat(
+          of(new actions['RoleMappingActions'].deleteByIdSuccess(response.id, action.meta)),
+          of(new UserActions.unlinkRolesSuccess(action.payload.id, response, action.meta))
+        )),
           catchError((error: any) => concat(
             of(new UserActions.unlinkRolesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
@@ -683,7 +698,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.GET_ROLES).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.getRoles(action.payload.id, action.payload.filter).pipe(
-          map((response: any) => new UserActions.getRolesSuccess(action.payload.id, response, action.meta)),
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Role', 'findSuccess'),
+            of(new UserActions.getRolesSuccess(action.payload.id, response, action.meta))
+          )),
           catchError((error: any) => concat(
             of(new UserActions.getRolesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
@@ -697,7 +715,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.CREATE_ROLES).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.createRoles(action.payload.id, action.payload.data).pipe(
-          map((response: any) => new UserActions.createRolesSuccess(action.payload.id, response, action.meta)),
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Role', 'findSuccess'),
+            of(new UserActions.createRolesSuccess(action.payload.id, response, action.meta))
+          )),
           catchError((error: any) => concat(
             of(new UserActions.createRolesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
@@ -1272,7 +1293,10 @@ export class UserEffects extends BaseLoopbackEffects {
     .ofType(UserActionTypes.CREATE_MANY_ROLES).pipe(
       mergeMap((action: LoopbackAction) =>
         this.user.createManyRoles(action.payload.id, action.payload.data).pipe(
-          map((response: any) => new UserActions.createManyRolesSuccess(action.payload.id, response, action.meta)),
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Role', 'findSuccess'),
+            of(new UserActions.createManyRolesSuccess(action.payload.id, response, action.meta))
+          )),
           catchError((error: any) => concat(
             of(new UserActions.createManyRolesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))

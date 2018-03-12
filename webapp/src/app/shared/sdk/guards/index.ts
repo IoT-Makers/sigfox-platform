@@ -2,6 +2,7 @@
 import { AuthGuard } from './auth.guard';
 import { EmailExistsGuard } from './Email';
 import { AccessTokenExistsGuard } from './AccessToken';
+import { RoleExistsGuard } from './Role';
 import { DeviceExistsGuard } from './Device';
 import { ParserExistsGuard } from './Parser';
 import { CategoryExistsGuard } from './Category';
@@ -21,6 +22,7 @@ export const LOOPBACK_GUARDS_PROVIDERS = [
   AuthGuard,
 	EmailExistsGuard,
 	AccessTokenExistsGuard,
+	RoleExistsGuard,
 	DeviceExistsGuard,
 	ParserExistsGuard,
 	CategoryExistsGuard,
@@ -40,6 +42,7 @@ export const LOOPBACK_GUARDS_PROVIDERS = [
 export * from './auth.guard';
 export * from './Email';
 export * from './AccessToken';
+export * from './Role';
 export * from './Device';
 export * from './Parser';
 export * from './Category';

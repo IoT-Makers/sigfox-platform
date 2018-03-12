@@ -51,6 +51,7 @@ import { SocketConnection } from './sockets/socket.connections';
 import { RealTime } from './services/core/real.time';
 import { EmailApi } from './services/custom/Email';
 import { AccessTokenApi } from './services/custom/AccessToken';
+import { RoleApi } from './services/custom/Role';
 import { DeviceApi } from './services/custom/Device';
 import { ParserApi } from './services/custom/Parser';
 import { CategoryApi } from './services/custom/Category';
@@ -98,6 +99,7 @@ export class SDKBrowserModule {
         RealTime,
         EmailApi,
         AccessTokenApi,
+        RoleApi,
         DeviceApi,
         ParserApi,
         CategoryApi,

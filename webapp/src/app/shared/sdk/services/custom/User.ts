@@ -13,6 +13,7 @@ import { Observable } from 'rxjs/Rx';
 import { User } from '../../models/User';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { AccessToken } from '../../models/AccessToken';
+import { Role } from '../../models/Role';
 import { Dashboard } from '../../models/Dashboard';
 import { Category } from '../../models/Category';
 import { Device } from '../../models/Device';
@@ -2606,10 +2607,10 @@ export class UserApi extends BaseLoopBackApi {
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * Le corps de réponse contient les propriétés de AccessToken créées lors de la connexion.
-   * En fonction de la valeur du paramètre `include`, le corps peut contenir des propriétés supplémentaires :
+   * The response body contains properties of the AccessToken created on login.
+   * Depending on the value of `include` parameter, the body may contain additional properties:
    * 
-   *   - `user` - `U+007BUserU+007D` - Données de l'utilisateur connecté. (`include=user`)
+   *   - `user` - `U+007BUserU+007D` - Data of the currently logged in user. (`include=user`)
    * 
    *
    */

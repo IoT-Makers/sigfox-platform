@@ -60,7 +60,7 @@
   },
   "Role": {
     "dataSource": "mongodb",
-    "public": false
+    "public": true
   },
   "Device": {
     "dataSource": "mongodb",

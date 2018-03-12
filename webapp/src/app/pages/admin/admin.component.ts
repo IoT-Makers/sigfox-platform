@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AppSetting, Organization, User} from '../../shared/sdk/models';
-import {AppSettingApi, OrganizationApi, RealTime, UserApi} from '../../shared/sdk/services';
+import {AppSettingApi, OrganizationApi, RealTime, UserApi, RoleApi} from '../../shared/sdk/services';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 @Component({
@@ -36,6 +36,7 @@ export class AdminComponent implements OnInit, OnDestroy {
               private userApi: UserApi,
               private appSettingApi: AppSettingApi,
               private organizationApi: OrganizationApi,
+              private roleApi: RoleApi,
               private toasterService: ToasterService) {
 
     this.toasterService = toasterService;
@@ -103,10 +104,17 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   grantAdminAccess(user):void{
 
-    // this.userApi.linkRoles(user.id, '5a5cd4c2f90f49359c8b2ef0').subscribe(result=>{
-    //   console.log(result);
-    //   this.getUsers();
-    // })
+    console.log("user: ", user);
+
+
+    this.roleApi.findOne({where: {name:'admin'}}).subscribe((admin:any)=>{
+      console.log("admin: ", admin);
+
+      this.userApi.linkRoles(user.id, admin.id, {'principalType': 'USER', 'roleId': admin.id, 'principalId': user.id}).subscribe(result=>{
+        console.log(result);
+        this.getUsers();
+      })
+    });
 
   }
 

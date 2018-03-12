@@ -1,8 +1,8 @@
 /* tslint:disable */
-import {Action} from '@ngrx/store';
-import {type} from '../util';
-import {BaseLoopbackActionsFactory, BaseLoopbackActionTypesFactory} from './base';
-import {Geoloc} from '../models';
+import { Action } from '@ngrx/store';
+import { type } from '../util';
+import { BaseLoopbackActionTypesFactory, BaseLoopbackActionsFactory } from './base';
+import { LoopBackFilter, SDKToken, Geoloc } from '../models';
 
 export const GeolocActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Geoloc'), {
@@ -22,11 +22,11 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
    *
    * @param {object} data Request data.
    *
-   *  - `req` – `{object}` -
+   *  - `req` – `{object}` - 
    *
-   *  - `data` – `{object}` -
+   *  - `data` – `{object}` - 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createSigfox: class implements Action {
     public readonly type = GeolocActionTypes.CREATE_SIGFOX;
@@ -38,11 +38,11 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
   },
   /**
    * createSigfoxSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createSigfoxSuccess: class implements Action {
     public readonly type = GeolocActionTypes.CREATE_SIGFOX_SUCCESS;
@@ -57,7 +57,7 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createSigfoxFail: class implements Action {
     public readonly type = GeolocActionTypes.CREATE_SIGFOX_FAIL;

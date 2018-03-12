@@ -1,8 +1,8 @@
 /* tslint:disable */
-import {Action} from '@ngrx/store';
-import {type} from '../util';
-import {BaseLoopbackActionsFactory, BaseLoopbackActionTypesFactory} from './base';
-import {Message} from '../models';
+import { Action } from '@ngrx/store';
+import { type } from '../util';
+import { BaseLoopbackActionTypesFactory, BaseLoopbackActionsFactory } from './base';
+import { LoopBackFilter, SDKToken, Message } from '../models';
 
 export const MessageActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Message'), {
@@ -26,11 +26,11 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    *
    * @param {object} data Request data.
    *
-   *  - `req` – `{object}` -
+   *  - `req` – `{object}` - 
    *
-   *  - `data` – `{object}` -
+   *  - `data` – `{object}` - 
    * @param {any} meta (optional).
-   *
+   * 
    */
   putMessage: class implements Action {
     public readonly type = MessageActionTypes.PUT_MESSAGE;
@@ -42,11 +42,11 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
   },
   /**
    * putMessageSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   putMessageSuccess: class implements Action {
     public readonly type = MessageActionTypes.PUT_MESSAGE_SUCCESS;
@@ -61,7 +61,7 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   putMessageFail: class implements Action {
     public readonly type = MessageActionTypes.PUT_MESSAGE_FAIL;
@@ -77,11 +77,11 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    *
    * @param {object} data Request data.
    *
-   *  - `req` – `{object}` -
+   *  - `req` – `{object}` - 
    *
-   *  - `data` – `{object}` -
+   *  - `data` – `{object}` - 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createSigfox: class implements Action {
     public readonly type = MessageActionTypes.CREATE_SIGFOX;
@@ -93,11 +93,11 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
   },
   /**
    * createSigfoxSuccess Action.
-   *
-   * @param {any} id
-   * @param {object} data
+   * 
+   * @param {any} id 
+   * @param {object} data 
    * @param {any} meta (optional).
-   *
+   * 
    */
   createSigfoxSuccess: class implements Action {
     public readonly type = MessageActionTypes.CREATE_SIGFOX_SUCCESS;
@@ -112,7 +112,7 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    *
    * @param {any} payload
    * @param {any} meta (optional).
-   *
+   * 
    */
   createSigfoxFail: class implements Action {
     public readonly type = MessageActionTypes.CREATE_SIGFOX_FAIL;

@@ -1,6 +1,7 @@
 /* tslint:disable */
 import {
   AccessToken,
+  Role,
   Dashboard,
   Category,
   Device,
@@ -30,7 +31,7 @@ export interface UserInterface {
   "updatedAt"?: Date;
   "password"?: string;
   accessTokens?: AccessToken[];
-  roles?: any[];
+  roles?: Role[];
   Dashboards?: Dashboard[];
   Categories?: Category[];
   Devices?: Device[];
@@ -59,7 +60,7 @@ export class User implements UserInterface {
   "updatedAt": Date = new Date(0);
   "password": string = '';
   accessTokens: AccessToken[] = null;
-  roles: any[] = null;
+  roles: Role[] = null;
   Dashboards: Dashboard[] = null;
   Categories: Category[] = null;
   Devices: Device[] = null;
@@ -175,8 +176,8 @@ export class User implements UserInterface {
         },
         roles: {
           name: 'roles',
-          type: 'any[]',
-          model: '',
+          type: 'Role[]',
+          model: 'Role',
           relationType: 'hasMany',
           modelThrough: 'RoleMapping',
           keyThrough: 'roleId',

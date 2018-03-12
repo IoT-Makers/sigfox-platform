@@ -1,14 +1,12 @@
 /* tslint:disable */
-import {createSelector} from '@ngrx/store';
-import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
-import {BaseReducerFactory} from './base';
-import {Widget, WidgetInterface} from '../models';
-import {LoopbackAction} from '../models/BaseModels';
-import {WidgetActionTypes} from '../actions';
+import { Action, createSelector } from '@ngrx/store';
+import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import { BaseReducerFactory } from './base';
+import { Widget, WidgetInterface } from '../models';
+import { LoopbackAction } from '../models/BaseModels';
+import { WidgetActionTypes } from '../actions';
 
-
-export interface WidgetsState extends EntityState<Widget | WidgetInterface> {
-}
+export interface WidgetsState extends EntityState<Widget | WidgetInterface> {};
 
 export const WidgetAdapter: EntityAdapter<Widget | WidgetInterface> = createEntityAdapter<Widget | WidgetInterface>();
 

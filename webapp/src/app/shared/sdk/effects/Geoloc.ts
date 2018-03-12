@@ -1,15 +1,18 @@
 /* tslint:disable */
-import {catchError, map, mergeMap} from 'rxjs/operators';
-import {of} from 'rxjs/observable/of';
-import {concat} from 'rxjs/observable/concat';
-import {Inject, Injectable} from '@angular/core';
-import {Actions, Effect} from '@ngrx/effects';
+import { map, catchError, mergeMap } from 'rxjs/operators'
+import { of } from 'rxjs/observable/of';
+import { concat } from 'rxjs/observable/concat';
+import { Injectable, Inject } from '@angular/core';
+import { Effect, Actions } from '@ngrx/effects';
 
-import {LoopbackAction} from '../models/BaseModels';
-import {BaseLoopbackEffects} from './base';
-import {GeolocActions, GeolocActionTypes} from '../actions/Geoloc';
-import {LoopbackErrorActions} from '../actions/error';
-import {GeolocApi} from '../services/index';
+import { LoopbackAction } from '../models/BaseModels';
+import { BaseLoopbackEffects } from './base';
+import { resolver } from './resolver';
+
+import * as actions from '../actions';
+import { GeolocActionTypes, GeolocActions } from '../actions/Geoloc';
+import { LoopbackErrorActions } from '../actions/error';
+import { GeolocApi } from '../services/index';
 
 @Injectable()
 export class GeolocEffects extends BaseLoopbackEffects {
