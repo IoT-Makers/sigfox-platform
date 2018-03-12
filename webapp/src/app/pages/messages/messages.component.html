@@ -85,7 +85,7 @@
                           <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-sigfox">
                             <i class="fa fa-map-marker fa-2x"></i>
                             <br>
-                            <strong>Sigfox Network</strong>
+                            <strong>Sigfox</strong>
                           </a>
                         </ng-container>
                         <ng-container *ngIf="geoloc.type == 'gps'">
@@ -175,7 +175,7 @@
           </ng-container>
           <!-- Message Geoloc -->
           <ng-container *ngFor="let geoloc of geolocs">
-            <!-- Geoloc Sigfox -->
+            <!-- Sigfox -->
             <ng-container *ngIf="geoloc.type === 'sigfox'">
               <agm-marker
                 [zIndex]="3"

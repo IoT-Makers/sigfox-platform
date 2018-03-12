@@ -34,7 +34,7 @@
     <div class="card" [routerLink]="['/devices']">
       <div class="card-block">
         <div class="h1 text-device text-right mb-2">
-          <i class="fa fa-thermometer-half"></i>
+          <i class="fa fa-microchip"></i>
         </div>
         <div class="h4 mb-0">{{countDevices}}</div>
         <small class="text-device text-uppercase font-weight-bold">Devices</small>
@@ -107,7 +107,7 @@
               <ng-container *ngFor="let device of devices; let i = index">
                 <ng-container *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
                   <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
-                    <!-- Geoloc Sigfox -->
+                    <!-- Sigfox -->
                     <ng-container *ngIf="geoloc.type === 'sigfox'">
                       <agm-marker
                         (mouseOut)="markerOut(i)"
@@ -355,7 +355,7 @@
                          [mapTypeControl]="false"
                          [fullscreenControl]="false">
                   <ng-container *ngFor="let geoloc of message.Geolocs">
-                    <!-- Geoloc Sigfox -->
+                    <!-- Sigfox -->
                     <ng-container *ngIf="geoloc.type === 'sigfox'">
                       <agm-marker
                         [zIndex]="3"
@@ -415,7 +415,7 @@
     <div class="col-sm-12 col-md-6">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-thermometer fa-lg text-device"></i> <strong>Devices</strong> <small>(10 latest)</small>
+          <i class="fa fa-microchip fa-lg text-device"></i> <strong>Devices</strong> <small>(10 latest)</small>
         </div>
         <div class="card-block">
           <ng-container *ngIf="!devices.length">
@@ -464,7 +464,7 @@
                            class="small text-geoloc-sigfox">
                           <i class="fa fa-map-marker fa-2x"></i>
                           <br>
-                          <strong>Sigfox Geoloc</strong>
+                          <strong>Sigfox</strong>
                         </a>
                       </ng-container>
                       <ng-container *ngIf="geoloc.type === 'gps'">

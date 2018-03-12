@@ -1,11 +1,10 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Category, Dashboard, Device, Organization, FireLoopRef, Message, Parser, User} from '../shared/sdk/models';
+import {Category, Dashboard, Device, FireLoopRef, Message, Organization, Parser, User} from '../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
-import {ParserApi, UserApi, OrganizationApi} from '../shared/sdk/services/custom';
+import {OrganizationApi, ParserApi, UserApi} from '../shared/sdk/services/custom';
 import {RealTime} from '../shared/sdk/services/core';
 import * as _ from 'lodash';
-import {getOrganizations} from "../shared/sdk/reducers";
 
 @Component({
   templateUrl: './full-layout.component.html'
@@ -85,20 +84,20 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       this.user.roles = roles;
       if (_.filter(this.user.roles, {name: 'admin'}).length !== 0) {
         this.admin = true;
-        console.log("Admin: ", this.admin);
+        console.log('Admin: ', this.admin);
       }
     });
 
     //Check if organization view
     this.route.params.subscribe(params => {
 
-      if(params.id){
+      if (params.id) {
         this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
           this.organization = organization;
-          //console.log("Organization:", organization);
+          //console.log('Organization:', organization);
 
           //Set filter for API calls
-          this.filter = {"organizationId": this.organization.id};
+          this.filter = {'organizationId': this.organization.id};
 
           // Real Time
           if (
@@ -114,7 +113,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       }else{
 
         //Set filter for API calls
-        this.filter = {"userId": this.user.id};
+        this.filter = {'userId': this.user.id};
 
         //Check if real time and setup
         // Real Time
@@ -128,7 +127,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.rt.onReady().subscribe(() => this.setup());
         }
       }
-      //console.log("Router", params);
+      //console.log('Router', params);
     });
 
   }
@@ -156,7 +155,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     // Dashboards
     this.dashboardRef = this.rt.FireLoop.ref<Dashboard>(Dashboard);
-    this.dashboardSub = this.dashboardRef.on('change', {
+    this.dashboardSub = this.dashboardRef.on('value', {
       where: {userId: this.user.id},
       order: 'createdAt DESC'
     }).subscribe(
@@ -167,14 +166,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     // Categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categorySub = this.categoryRef.on('change', {where: this.user.id}).subscribe(
+    this.categorySub = this.categoryRef.on('value', {where: this.user.id}).subscribe(
       (categories: Category[]) => {
 
-        if(!this.organization){
+        if (!this.organization) {
           this.userApi.countCategories(this.user.id).subscribe(result => {
             this.countCategories = result.count;
           });
-        }else{
+        } else {
           this.organizationApi.countCategories(this.organization.id).subscribe(result => {
             this.countCategories = result.count;
           });
@@ -183,7 +182,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     // Devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-    this.deviceSub = this.deviceRef.on('change',
+    this.deviceSub = this.deviceRef.on('value',
       {
         limit: 10,
         order: 'updatedAt DESC',
@@ -200,11 +199,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       (devices: Device[]) => {
         //console.log(devices);
 
-        if(!this.organization){
+        if (!this.organization) {
           this.userApi.countDevices(this.user.id).subscribe(result => {
             this.countDevices = result.count;
           });
-        }else{
+        } else {
           this.organizationApi.countDevices(this.organization.id).subscribe(result => {
             this.countDevices = result.count;
           });
@@ -214,23 +213,22 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-    this.messageSub = this.messageRef.on('change', {
+    this.messageSub = this.messageRef.on('value', {
       limit: 1,
       order: 'createdAt DESC',
       where: this.user.id
     }).subscribe(
       (messages: Message[]) => {
 
-        if(!this.organization){
+        if (!this.organization) {
           this.userApi.countMessages(this.user.id).subscribe(result => {
             this.countMessages = result.count;
           });
-        }else {
+        } else {
           this.organizationApi.countMessages(this.organization.id).subscribe(result => {
             this.countMessages = result.count;
           });
         }
-
       });
 
   }
@@ -319,8 +317,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         });
 
       });
-    };
-
+    }
     const myself = {
       id: this.user.id,
       itemName: this.user.email
@@ -336,12 +333,12 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     console.log(orga);
     console.log(this.selectedUsers);
     this.organizationApi.create(orga).subscribe((organization: Organization)=>{
-      console.log("Organization created", organization);
+      console.log('Organization created', organization);
 
       this.selectedUsers.forEach((user: any, index, array) => {
         this.organizationApi.linkMembers(organization.id, user.id).subscribe((result) =>{
-          console.log("result after linking member: ", result);
-          if(index === array.length -1 ){
+          console.log('result after linking member: ', result);
+          if (index === array.length - 1) {
             this.getOrganizations();
             this.createOrganizationModal.hide();
           }

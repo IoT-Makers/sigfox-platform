@@ -219,6 +219,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
           //Get user devices
           this.userApi.getDevices(this.user.id,
             {
+              limit: 10,
+              order: 'updatedAt DESC',
               include: ['Category', {
                 relation: 'Messages',
                 order: 'createdAt DESC',
@@ -246,6 +248,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
           // Get organization devices
           this.organizationApi.getDevices(this.organization.id,
             {
+              limit: 10,
+              order: 'updatedAt DESC',
               include: ['Category', {
                 relation: 'Messages',
                 order: 'createdAt DESC',

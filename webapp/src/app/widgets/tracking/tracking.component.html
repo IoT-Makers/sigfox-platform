@@ -307,7 +307,7 @@
               <!-- Default -->
               <ng-container *ngSwitchDefault>
                 <agm-marker-cluster *ngIf="clustering" [styles]="clusterStyles">
-                  <!-- Geoloc Sigfox -->
+                  <!-- Sigfox -->
                   <ng-container *ngIf="geoloc.type === 'sigfox'">
                     <agm-marker
                       (mouseOut)="markerOut(i)"
@@ -365,7 +365,7 @@
                   </ng-container>
                 </agm-marker-cluster>
                 <ng-container *ngIf="!clustering">
-                  <!-- Geoloc Sigfox -->
+                  <!-- Sigfox -->
                   <ng-container *ngIf="geoloc.type === 'sigfox'">
                     <agm-marker
                       (mouseOut)="markerOut(i)"

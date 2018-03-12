@@ -110,6 +110,8 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     this.dateBegin.setDate(this.dateBegin.getDate() - 7);
     this.dateBeginSettings.placeholder = this.dateBegin.toISOString();
     this.dateEndSettings.placeholder = this.dateEnd.toISOString();
+    this.dateBeginSettings.placeholder = moment(this.dateBegin).format('MMM-DD-YYYY hh:mm A');
+    this.dateEndSettings.placeholder =  moment(this.dateEnd).format('MMM-DD-YYYY hh:mm A');
 
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();

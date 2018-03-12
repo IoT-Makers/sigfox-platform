@@ -239,7 +239,7 @@ class Message {
   }
 
   putMessage(req: any, data: any, next: Function): void {
-    next('CALLBACKS have been optimized, modify them accordingly (see "Connectors" page)', data);
+    next('DEPRECATED: callbacks have been optimized => modify them accordingly (see "Connectors" page)', data);
     /*
     if (typeof data.deviceId  === 'undefined' || typeof data.time  === 'undefined' || typeof data.seqNumber === 'undefined')
       next('Missing "deviceId", "time" and "seqNumber"', data);
@@ -686,7 +686,7 @@ class Message {
     }
   }
 
-  private updateDeviceSuccessRate(deviceId: string) {
+  public updateDeviceSuccessRate(deviceId: string) {
     // Model
     const Device = this.model.app.models.Device;
     Device.findOne(
@@ -726,8 +726,8 @@ class Message {
       });
   }
 
-  private linkMessageToOrganization(message: any) {
-
+  public linkMessageToOrganization(message: any) {
+    // Model
     const Device = this.model.app.models.Device;
 
     Device.findOne({where: {'id': message.deviceId}, include: 'Organizations'}, function(err:any, device:any){
@@ -746,11 +746,6 @@ class Message {
   beforeSave(ctx: any, next: Function): void {
     console.log('Message: Before Save');
     next();
-  }
-
-  // Example Remote Method
-  myRemote(next: Function): void {
-    this.model.find(next);
   }
 }
 
