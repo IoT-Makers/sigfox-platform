@@ -115,7 +115,7 @@
                 <ng-container *ngFor="let device of widget.data; let i = index">
                   <ng-container *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
                     <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
-                      <!-- Geoloc Sigfox -->
+                      <!-- Sigfox -->
                       <ng-container *ngIf="geoloc.type === 'sigfox'">
                         <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="3" [latitude]="geoloc.location.lat" [longitude]="geoloc.location.lng" [iconUrl]="'assets/img/markers/marker-sigfox.png'">
                           <agm-info-window id="{{geoloc.id}}">
@@ -488,7 +488,7 @@
                         <!-- Default -->
                         <ng-container *ngSwitchDefault>
                           <agm-marker-cluster *ngIf="widget.options.clustering" [styles]="clusterStyles">
-                            <!-- Geoloc Sigfox -->
+                            <!-- Sigfox -->
                             <ng-container *ngIf="geoloc.type === 'sigfox'">
                               <agm-marker
                                 (mouseOut)="markerOut(i)"
@@ -546,7 +546,7 @@
                             </ng-container>
                           </agm-marker-cluster>
                           <ng-container *ngIf="!widget.options.clustering">
-                            <!-- Geoloc Sigfox -->
+                            <!-- Sigfox -->
                             <ng-container *ngIf="geoloc.type === 'sigfox'">
                               <agm-marker
                                 (mouseOut)="markerOut(i)"

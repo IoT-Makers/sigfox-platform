@@ -93,8 +93,8 @@ export class ParsersComponent implements OnInit, OnDestroy {
     // Parsers
     this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
     this.parserSub = this.parserRef.on('change', {
-        include: ['Devices']
-      }).subscribe(
+      include: ['Devices']
+    }).subscribe(
       (parsers: Parser[]) => {
         this.parsers = parsers;
         console.log(this.parsers);
@@ -160,6 +160,8 @@ export class ParsersComponent implements OnInit, OnDestroy {
     this.userApi.getDevices(this.user.id, {where: {
         parserId: this.parserToEdit.id
       }}).subscribe((devices: Device[]) => {
+      // Disconnect real-time to avoid app crashing
+      this.rt.connection.disconnect();
       // Loop in all the devices linked to this parser
       devices.forEach((device: Device) => {
         // Parse all messages belonging to this device
@@ -176,7 +178,8 @@ export class ParsersComponent implements OnInit, OnDestroy {
           }
         });
       });
-      // console.log(result);
+      //this.rt.onReady().subscribe();
+      //console.log(result);
     });
   }
 

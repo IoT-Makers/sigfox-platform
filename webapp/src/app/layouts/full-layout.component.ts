@@ -1,11 +1,10 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Category, Dashboard, Device, Organization, FireLoopRef, Message, Parser, User} from '../shared/sdk/models';
+import {Category, Dashboard, Device, FireLoopRef, Message, Organization, Parser, User} from '../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
-import {ParserApi, UserApi, OrganizationApi} from '../shared/sdk/services/custom';
+import {OrganizationApi, ParserApi, UserApi} from '../shared/sdk/services/custom';
 import {RealTime} from '../shared/sdk/services/core';
 import * as _ from 'lodash';
-import {getOrganizations} from "../shared/sdk/reducers";
 
 @Component({
   templateUrl: './full-layout.component.html'
@@ -86,7 +85,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       this.user.roles = roles;
       if (_.filter(this.user.roles, {name: 'admin'}).length !== 0) {
         this.admin = true;
-        console.log("Admin: ", this.admin);
+        console.log('Admin: ', this.admin);
       }
     });
 
@@ -94,14 +93,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
 
       console.log("params full layout", params);
-      if(params.id){
+      if (params.id) {
         this.params = params;
         this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
           this.organization = organization;
-          //console.log("Organization:", organization);
+          //console.log('Organization:', organization);
 
           //Set filter for API calls
-          this.filter = {"organizationId": this.organization.id};
+          this.filter = {'organizationId': this.organization.id};
 
           // Real Time
           if (
@@ -114,9 +113,9 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
             this.rt.onReady().subscribe(() => this.setup());
           }
         });
-      }else{
+      } else {
         //Set filter for API calls
-        this.filter = {"userId": this.user.id};
+        this.filter = {'userId': this.user.id};
 
         //Check if real time and setup
         // Real Time
@@ -130,7 +129,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.rt.onReady().subscribe(() => this.setup());
         }
       }
-      //console.log("Router", params);
+      //console.log('Router', params);
     });
 
   }
@@ -142,7 +141,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.getDashboards();
     this.getOrganizations();
 
-    if(!this.organization){
+    if (!this.organization) {
 
       //Count
       this.userApi.countAlerts(this.user.id).subscribe(result => {
@@ -172,11 +171,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.categorySub = this.categoryRef.on('change', {where: this.user.id}).subscribe(
       (categories: Category[]) => {
 
-        if(!this.organization){
+        if (!this.organization) {
           this.userApi.countCategories(this.user.id).subscribe(result => {
             this.countCategories = result.count;
           });
-        }else{
+        } else {
           this.organizationApi.countCategories(this.organization.id).subscribe(result => {
             this.countCategories = result.count;
           });
@@ -202,11 +201,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       (devices: Device[]) => {
         //console.log(devices);
 
-        if(!this.organization){
+        if (!this.organization) {
           this.userApi.countDevices(this.user.id).subscribe(result => {
             this.countDevices = result.count;
           });
-        }else{
+        } else {
           this.organizationApi.countDevices(this.organization.id).subscribe(result => {
             this.countDevices = result.count;
           });
@@ -223,16 +222,15 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     }).subscribe(
       (messages: Message[]) => {
 
-        if(!this.organization){
+        if (!this.organization) {
           this.userApi.countMessages(this.user.id).subscribe(result => {
             this.countMessages = result.count;
           });
-        }else {
+        } else {
           this.organizationApi.countMessages(this.organization.id).subscribe(result => {
             this.countMessages = result.count;
           });
         }
-
       });
 
   }
@@ -319,12 +317,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.setup();
       });
     }
-
   }
 
   newOrganisation(): void {
 
-    if(this.admin){
+    if (this.admin) {
       this.userApi.find({fields:{email:true, id:true}}).subscribe((results: User[]) => {
         //console.log(results);
         results.forEach((result: any) => {
@@ -336,8 +333,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         });
 
       });
-    };
-
+    }
     const myself = {
       id: this.user.id,
       itemName: this.user.email
@@ -353,18 +349,17 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     console.log(orga);
     console.log(this.selectedUsers);
     this.organizationApi.create(orga).subscribe((organization: Organization)=>{
-      console.log("Organization created", organization);
+      console.log('Organization created', organization);
 
       this.selectedUsers.forEach((user: any, index, array) => {
         this.organizationApi.linkMembers(organization.id, user.id).subscribe((result) =>{
-          console.log("result after linking member: ", result);
-          if(index === array.length -1 ){
+          console.log('result after linking member: ', result);
+          if (index === array.length - 1) {
             this.getOrganizations();
             this.createOrganizationModal.hide();
           }
         });
       });
-
     });
   }
 

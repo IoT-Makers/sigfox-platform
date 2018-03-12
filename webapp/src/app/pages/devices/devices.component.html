@@ -13,7 +13,7 @@
         <ng-container *ngFor="let device of devices; let i = index">
           <ng-container *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
             <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
-              <!-- Geoloc Sigfox -->
+              <!-- Sigfox -->
               <ng-container *ngIf="geoloc.type === 'sigfox'">
                 <agm-marker
                   (mouseOut)="markerOut(i)"
@@ -229,7 +229,7 @@
     <div [ngClass]="(edit)?'col-md-6 col-xs-12':'col-12 col-sm-12'">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-thermometer fa-lg text-device"></i> <strong>Devices</strong>
+          <i class="fa fa-microchip fa-lg text-device"></i> <strong>Devices</strong>
         </div>
         <div class="card-block">
           <ng-container *ngIf="!devices.length">
@@ -260,7 +260,9 @@
                 <th *ngIf="!edit" class="text-center">
                   <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>
                 </th>
-                <th *ngIf="!edit" class="text-center">Success Rate</th>
+                <th *ngIf="!edit" class="text-center">
+                  <mfDefaultSorter by="success_rate"><i class="fa fa-sort"></i> Success Rate</mfDefaultSorter>
+                </th>
                 <th class="text-center">Action</th>
               </tr>
               </thead>
@@ -296,7 +298,7 @@
                             <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)" class="small text-geoloc-sigfox">
                               <i class="fa fa-map-marker fa-2x"></i>
                               <br>
-                              <strong>Sigfox Geoloc</strong>
+                              <strong>Sigfox</strong>
                             </a>
                           </ng-container>
                           <ng-container *ngIf="geoloc.type === 'gps'">

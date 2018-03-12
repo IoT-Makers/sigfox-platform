@@ -79,7 +79,7 @@
 
               <!--Save & Delete-->
               <div class="mt-1 btn-group">
-                <button type="button" class="btn btn-success" data-toggle="modal" (click)="update(parser)">
+                <button type="button" class="btn btn-success" data-toggle="modal" (click)="updateBtn.disabled = false; update(parser);">
                   Save code
                 </button>
                 <button type="button" class="btn btn-danger" data-toggle="modal" (click)="showRemoveModal(parser)">
@@ -133,7 +133,7 @@
         Would you like to parse all messages linked to this parser (name: <b>{{parserToEdit.name}}</b>) ?
       </div>
       <div class="modal-footer">
-        <button class="btn btn-sm btn-primary" (click)="updateParsedData()">Parse all messages</button>
+        <button #updateBtn class="btn btn-sm btn-primary" (click)="updateParsedData(); updateBtn.disabled = true">Parse all messages</button>
         <button class="btn btn-sm btn-default" (click)="confirmParseModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->

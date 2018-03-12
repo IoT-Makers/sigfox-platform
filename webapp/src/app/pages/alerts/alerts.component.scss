@@ -1,16 +1,16 @@
 .checkbox {
-  padding-left: 0px; }
+  padding: 0px; }
 .checkbox label {
   display: inline-block;
   position: relative;
-  padding-left: 0px; }
+  padding: 0px; }
 .checkbox label::before {
   content: "";
   display: inline-block;
   width: 20px;
   height: 20px;
   left: 0;
-  margin-left: 0px;
+  margin: 0px;
   border: 1px solid #cccccc;
   border-radius: 3px;
   background-color: #fff;
@@ -24,7 +24,7 @@
   height: 16px;
   left: 0;
   top: 0;
-  margin-left: 0px;
+  margin: 0px;
   padding-left: 3px;
   padding-top: 1px;
   font-size: 11px;

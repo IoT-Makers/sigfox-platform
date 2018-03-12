@@ -93,7 +93,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
       this.connectors = connectors;
     });
 
-    this.edit = false;
     // Hide all circles by default
     this.setCircles();
     // Real Time
@@ -266,6 +265,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   parseAllMessages(deviceId: string): void {
     this.parseMessages = true;
+    // Disconnect real-time to avoid app crashing
+    this.rt.connection.disconnect();
     this.deviceApi.parseAllMessages(deviceId, null, null).subscribe(result => {
       this.parseMessages = false;
       if (result.message === 'Success') {
@@ -278,8 +279,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('warning', 'Warning', result.message);
       }
-
-      // console.log(result);
+      //this.rt.onReady().subscribe();
+      //console.log(result);
     });
     this.confirmParseModal.hide();
   }
@@ -337,8 +338,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
       });
       this.shareDeviceWithOrganizationModal.show();
     });
-
-
   }
 
   shareDeviceWithOrganization(deviceId): void{
