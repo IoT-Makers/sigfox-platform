@@ -103,7 +103,7 @@
             </div>
           </ng-container>
 
-
+          <ng-container *ngIf="organizations.length">
           <!--Table-->
           <div class="table-responsive">
             <table class="table table-hover table-outline" [mfData]="organizations" #mf="mfDataTable"
@@ -153,6 +153,9 @@
               </tbody>
             </table>
           </div>
+          </ng-container>
+
+
 
         </div>
       </div>

@@ -319,7 +319,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
     }
 
-    this.getMessagesGraph(this.graphRange);
+    if(!this.organization){
+      this.getMessagesGraph(this.graphRange);
+    }
+
   }
 
   getMessagesGraph(option: string): void {

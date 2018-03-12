@@ -19,6 +19,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private selectUsers: Array<Object> = [];
   private organization: Organization;
   private filter: any;
+  private params: any = {};
 
   private newOrganization = new Organization();
   private organizations: Organization[] = [];
@@ -91,7 +92,9 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     //Check if organization view
     this.route.params.subscribe(params => {
 
+      console.log("params full layout", params);
       if (params.id) {
+        this.params = params;
         this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
           this.organization = organization;
           //console.log('Organization:', organization);
@@ -110,8 +113,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
             this.rt.onReady().subscribe(() => this.setup());
           }
         });
-      }else{
-
+      } else {
         //Set filter for API calls
         this.filter = {'userId': this.user.id};
 
@@ -139,7 +141,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.getDashboards();
     this.getOrganizations();
 
-    if(!this.organization){
+    if (!this.organization) {
 
       //Count
       this.userApi.countAlerts(this.user.id).subscribe(result => {
@@ -155,7 +157,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     // Dashboards
     this.dashboardRef = this.rt.FireLoop.ref<Dashboard>(Dashboard);
-    this.dashboardSub = this.dashboardRef.on('value', {
+    this.dashboardSub = this.dashboardRef.on('change', {
       where: {userId: this.user.id},
       order: 'createdAt DESC'
     }).subscribe(
@@ -166,7 +168,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     // Categories
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categorySub = this.categoryRef.on('value', {where: this.user.id}).subscribe(
+    this.categorySub = this.categoryRef.on('change', {where: this.user.id}).subscribe(
       (categories: Category[]) => {
 
         if (!this.organization) {
@@ -182,7 +184,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     // Devices
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-    this.deviceSub = this.deviceRef.on('value',
+    this.deviceSub = this.deviceRef.on('change',
       {
         limit: 10,
         order: 'updatedAt DESC',
@@ -213,7 +215,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     // Messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-    this.messageSub = this.messageRef.on('value', {
+    this.messageSub = this.messageRef.on('change', {
       limit: 1,
       order: 'createdAt DESC',
       where: this.user.id
@@ -288,24 +290,38 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   getDashboards(): void {
-    this.userApi.getDashboards(this.user.id).subscribe((dashboards: Dashboard[]) => {
-      this.dashboards = dashboards;
-    });
+    if(!this.organization){
+      this.userApi.getDashboards(this.user.id).subscribe((dashboards: Dashboard[]) => {
+        this.dashboards = dashboards;
+      });
+    }else{
+      this.organizationApi.getDashboards(this.organization.id).subscribe((dashboards: Dashboard[]) => {
+        this.dashboards = dashboards;
+      });
+    }
+
   }
 
   newDashboard(): void {
     const dashboard = {
-      name: 'New dashboard'
+      name: 'New shared dashboard'
     };
-    this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard => {
-      console.log(dashboard);
-      this.setup();
-    });
+    if(!this.organization){
+      this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard => {
+        console.log(dashboard);
+        this.setup();
+      });
+    }else{
+      this.organizationApi.createDashboards(this.organization.id, dashboard).subscribe(dashboard => {
+        console.log(dashboard);
+        this.setup();
+      });
+    }
   }
 
   newOrganisation(): void {
 
-    if(this.admin){
+    if (this.admin) {
       this.userApi.find({fields:{email:true, id:true}}).subscribe((results: User[]) => {
         //console.log(results);
         results.forEach((result: any) => {
@@ -344,7 +360,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           }
         });
       });
-
     });
   }
 
