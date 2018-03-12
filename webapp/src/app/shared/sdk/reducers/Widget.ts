@@ -6,7 +6,9 @@ import { Widget, WidgetInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { WidgetActionTypes } from '../actions';
 
-export interface WidgetsState extends EntityState<Widget | WidgetInterface> {};
+
+export interface WidgetsState extends EntityState<Widget | WidgetInterface> {
+}
 
 export const WidgetAdapter: EntityAdapter<Widget | WidgetInterface> = createEntityAdapter<Widget | WidgetInterface>();
 

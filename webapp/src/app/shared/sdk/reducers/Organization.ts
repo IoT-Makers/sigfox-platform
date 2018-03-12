@@ -6,7 +6,9 @@ import { Organization, OrganizationInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { OrganizationActionTypes } from '../actions';
 
-export interface OrganizationsState extends EntityState<Organization | OrganizationInterface> {};
+
+export interface OrganizationsState extends EntityState<Organization | OrganizationInterface> {
+}
 
 export const OrganizationAdapter: EntityAdapter<Organization | OrganizationInterface> = createEntityAdapter<Organization | OrganizationInterface>();
 

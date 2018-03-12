@@ -41,7 +41,7 @@ export interface LoopbackStateInterface {
   Connectors: reducers.ConnectorsState;
   Widgets: reducers.WidgetsState;
   Propertys: reducers.PropertysState;
-};
+}
 
 export const LoopbackReducer = {
   LoopbackAuth: reducers.LoopbackAuthReducer,

@@ -203,7 +203,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
 
     // Devices
-
     // Listen to changes
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceSub = this.deviceRef.on('change',
@@ -240,7 +239,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
             console.log('Devices: ', devices);
             if (devices) {
               this.devices = devices;
-              this.countDevices = devices.length;
+              this.userApi.countDevices(this.user.id).subscribe(result => {
+                this.countDevices = result.count;
+              });
             }
           });
         } else {
@@ -269,7 +270,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
             console.log('Devices: ', devices);
             if (devices) {
               this.devices = devices;
-              this.countDevices = devices.length;
+              this.organizationApi.countDevices(this.organization.id).subscribe(result => {
+                this.countDevices = result.count;
+              });
             }
           });
 
@@ -279,7 +282,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
 
     // Messages
-
     // Listen to messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     this.messageSub = this.messageRef.on('change', {
