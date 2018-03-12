@@ -600,9 +600,9 @@ class Message {
       });*/
   }
 
-  private createMessageAndSendResponse(message: any, next: Function) {
+  createMessageAndSendResponse(message: any, next: Function) {
     // Models
-    const Message = this.model;
+    const Message = this;
     const Device = this.model.app.models.Device;
     const Geoloc = this.model.app.models.Geoloc;
 
@@ -625,7 +625,7 @@ class Message {
           };
         }
         // Creating new message with its downlink data
-        Message.create(
+        Message.model.create(
           message,
           (err: any, messageInstance: any) => {
             if (err) {
@@ -633,7 +633,6 @@ class Message {
               next(err, messageInstance);
             } else {
               console.log('Created message as: ', messageInstance);
-              messageInstance = messageInstance.toJSON();
               // Check if there is Geoloc in payload and create Geoloc object
               Geoloc.createFromParsedPayload(
                 messageInstance,
@@ -645,9 +644,9 @@ class Message {
                   }
                 });
               // Calculate success rate and update device
-              this.updateDeviceSuccessRate(messageInstance.deviceId);
+              Message.updateDeviceSuccessRate(messageInstance.deviceId);
               // Share message to organizations if any
-              this.linkMessageToOrganization(messageInstance);
+              Message.linkMessageToOrganization(messageInstance);
             }
           });
         // ack is true
@@ -656,7 +655,7 @@ class Message {
     } else {
       // ack is false
       // Creating new message with no downlink data
-      Message.create(
+      Message.model.create(
         message,
         (err: any, messageInstance: any) => {
           if (err) {
@@ -664,7 +663,6 @@ class Message {
             next(err, messageInstance);
           } else {
             console.log('Created message as: ', messageInstance);
-            messageInstance = messageInstance.toJSON();
             // Check if there is Geoloc in payload and create Geoloc object
             Geoloc.createFromParsedPayload(
               messageInstance,
@@ -676,9 +674,9 @@ class Message {
                 }
               });
             // Calculate success rate and update device
-            this.updateDeviceSuccessRate(messageInstance.deviceId);
+            Message.updateDeviceSuccessRate(messageInstance.deviceId);
             // Share message to organizations if any
-            this.linkMessageToOrganization(messageInstance);
+            Message.linkMessageToOrganization(messageInstance);
 
             next(null, messageInstance);
           }
@@ -686,7 +684,7 @@ class Message {
     }
   }
 
-  public updateDeviceSuccessRate(deviceId: string) {
+  updateDeviceSuccessRate(deviceId: string) {
     // Model
     const Device = this.model.app.models.Device;
     Device.findOne(
@@ -726,7 +724,7 @@ class Message {
       });
   }
 
-  public linkMessageToOrganization(message: any) {
+  linkMessageToOrganization(message: any) {
     // Model
     const Device = this.model.app.models.Device;
 
