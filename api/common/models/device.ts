@@ -309,7 +309,6 @@ class Device {
                                 {type: geoloc.type},
                                 {location: geoloc.location},
                                 {createdAt: geoloc.createdAt},
-                                {userId: geoloc.userId},
                                 {messageId: geoloc.messageId},
                                 {deviceId: geoloc.deviceId}
                               ]

@@ -373,7 +373,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   saveDashboard(): void {
-
     if (!this.organization) {
       this.userApi.updateByIdDashboards(this.user.id, this.dashboard.id, this.dashboard).subscribe(result => {
         console.log(result);

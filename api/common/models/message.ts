@@ -602,7 +602,8 @@ class Message {
 
   createMessageAndSendResponse(message: any, next: Function) {
     // Models
-    const Message = this;
+    const thisMessage = this;
+    const Message = this.model;
     const Device = this.model.app.models.Device;
     const Geoloc = this.model.app.models.Geoloc;
 
@@ -625,7 +626,7 @@ class Message {
           };
         }
         // Creating new message with its downlink data
-        Message.model.create(
+        Message.create(
           message,
           (err: any, messageInstance: any) => {
             if (err) {
@@ -644,9 +645,9 @@ class Message {
                   }
                 });
               // Calculate success rate and update device
-              Message.updateDeviceSuccessRate(messageInstance.deviceId);
+              thisMessage.updateDeviceSuccessRate(messageInstance.deviceId);
               // Share message to organizations if any
-              Message.linkMessageToOrganization(messageInstance);
+              thisMessage.linkMessageToOrganization(messageInstance);
             }
           });
         // ack is true
@@ -655,7 +656,7 @@ class Message {
     } else {
       // ack is false
       // Creating new message with no downlink data
-      Message.model.create(
+      Message.create(
         message,
         (err: any, messageInstance: any) => {
           if (err) {
@@ -674,9 +675,9 @@ class Message {
                 }
               });
             // Calculate success rate and update device
-            Message.updateDeviceSuccessRate(messageInstance.deviceId);
+            thisMessage.updateDeviceSuccessRate(messageInstance.deviceId);
             // Share message to organizations if any
-            Message.linkMessageToOrganization(messageInstance);
+            thisMessage.linkMessageToOrganization(messageInstance);
 
             next(null, messageInstance);
           }

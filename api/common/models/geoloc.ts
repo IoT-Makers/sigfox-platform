@@ -159,6 +159,27 @@ class Geoloc {
             });
         } else {
           const err = 'No corresponding message found, check if UPLINK or BIDIR callbacks have been set too (on the Sigfox Backend)!';
+          /**
+           * TODO: Check below - maybe create an acknowledge service connector
+           */
+          // Saving a message anyway
+          const message = new Message;
+          message.userId = userId;
+          message.deviceId = data.deviceId;
+          message.time = data.time;
+          message.seqNumber = data.seqNumber;
+          message.createdAt = new Date(data.time * 1000);
+          message.data = 'ACK uplink ?';
+          Message.create(
+            message,
+            (err: any, messageInstance: any) => {
+              if (err) {
+                console.error(err);
+                next(err, messageInstance);
+              } else {
+                console.log('Created message as: ', messageInstance);
+              }
+            });
           next(err, null);
         }
       }
