@@ -45,7 +45,8 @@ export const routes: Routes = [
       title: 'Organization'
     },
     children: [
-      {path: '', loadChildren: './pages/overview/overview.module#OverviewModule'}
+      {path: '', loadChildren: './pages/overview/overview.module#OverviewModule'},
+      {path: 'dashboard/:id', loadChildren: './pages/dashboard/custom-dashboard.module#CustomDashboardModule'},
     ]
   },
   {path: 'not-found', loadChildren: './pages/not-found/not-found.module#NotFoundModule'},

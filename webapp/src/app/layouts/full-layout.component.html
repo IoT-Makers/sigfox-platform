@@ -205,9 +205,20 @@
     <nav class="sidebar-nav" *ngIf="organization">
       <ul class="nav">
 
+        <li class="nav-title">
+          Dashboards
+          <button class="pull-right btn-round btn-outline-success btn-sm" routerLinkActive="active" tooltip="Create dashboard" placement="bottom"
+                  (click)="newDashboard()" style="outline: none"><i class="fa fa-plus-circle"></i></button>
+        </li>
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['/organization/', organization.id]"><i class="fa fa-dashboard text-white"></i> Overview </a>
         </li>
+        <ng-container *ngIf="dashboards">
+        <li class="nav-item" *ngFor="let dashboard of dashboards">
+          <a class="nav-link" routerLinkActive="active"
+             [routerLink]="['dashboard', dashboard.id]"><i class="fa {{dashboard.icon ? dashboard.icon : null}}"></i>{{dashboard.name}}</a>
+        </li>
+        </ng-container>
 
         <!--<li class="nav-item">
         <a class="nav-link" routerLinkActive="active" [routerLink]="['/demo']"><i class="fa fa-cube"></i> Demo <span class="badge badge-info"></span></a>
