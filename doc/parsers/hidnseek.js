@@ -49,12 +49,18 @@ bytes[3] = parseInt(payload.substring(22, 24), 16);
 var view = new DataView(buffer);
 cpx = view.getUint32(0, true);
 
+// Mode
+mode = cpx & 7;
+
+// Battery
+battery = (cpx >> 3) & 0x7f;
+
 // Altitude
 altitude = 0x1fff & cpx >> 19;
 if (altitude > 4096 && mode < 3) altitude = (altitude - 3840) * 16;
 
 // Speed
-speed = (cpx >> 12) & 0xff;
+speed = (cpx >> 12) & 0x7f;
 if (speed > 102) speed = (speed - 94) * 16;
 else if (speed > 90) speed = (speed - 60) * 3;
 
@@ -74,12 +80,6 @@ switch (cap) {
         cap = "W";
         break;
 }
-
-// Battery
-battery = (cpx >> 3) & 0xff;
-
-// Mode
-mode = cpx & 7;
 
 // Store objects in parsedData array
 if (mode === 4 && altitude === 0) {

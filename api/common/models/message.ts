@@ -73,8 +73,8 @@ class Message {
       device.parserId = message.parserId;
     if (message.categoryId)
       device.categoryId = message.categoryId;
-    if (message.downlinkData)
-      device.downlinkData = message.downlinkData;
+    if (message.data_downlink)
+      device.data_downlink = message.data_downlink;
 
     // Store the message duplicate flag and parserId
     const duplicate = message.duplicate;
@@ -85,7 +85,7 @@ class Message {
     delete message.deviceNamePrefix;
     delete message.parserId;
     delete message.categoryId;
-    delete message.downlinkData;
+    delete message.data_downlink;
 
     // Check if the device exists or create it
     this.model.app.models.Device.findOrCreate(
@@ -256,7 +256,7 @@ class Message {
     const deviceNamePrefix = message.deviceNamePrefix;
     const parserId = message.parserId;
     const categoryId = message.categoryId;
-    const downlinkData = message.downlinkData;
+    const data_downlink = message.data_downlink;
     // Set the createdAt time
     message.createdAt = new Date(message.time * 1000);
 
@@ -266,7 +266,7 @@ class Message {
     delete message.deviceNamePrefix;
     delete message.parserId;
     delete message.categoryId;
-    delete message.downlinkData;
+    delete message.data_downlink;
 
 
     // Create a new device object
@@ -279,8 +279,8 @@ class Message {
       device.parserId = parserId;
     if (categoryId)
       device.categoryId = categoryId;
-    if (downlinkData)
-      device.downlinkData = downlinkData;
+    if (data_downlink)
+      device.data_downlink = data_downlink;
 
 
     // Check if the device exists
@@ -611,11 +611,11 @@ class Message {
     if (message.ack) {
       let result;
       Device.findOne({where: {id: message.deviceId}}, function (err: any, device: any) {
-        if (device.downlinkData) {
-          message.downlinkData = device.downlinkData;
+        if (device.data_downlink) {
+          message.data_downlink = device.data_downlink;
           result = {
             [message.deviceId]: {
-              downlinkData: device.downlinkData
+              data_downlink: device.data_downlink
             }
           };
         } else {

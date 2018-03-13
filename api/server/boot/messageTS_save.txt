@@ -150,7 +150,7 @@ class Message {
         if (device.dl_payload) {
           ctx.result = {
             [data.deviceId]: {
-              downlinkData: device.dl_payload
+              data_downlink: device.dl_payload
             }
           }
         } else {

@@ -46,8 +46,11 @@
         "Property"
       ]
     },
-    "downlinkData": {
+    "data_downlink": {
       "type": "string"
+    },
+    "acknowledge": {
+      "type": "boolean"
     },
     "ack": {
       "type": "boolean"

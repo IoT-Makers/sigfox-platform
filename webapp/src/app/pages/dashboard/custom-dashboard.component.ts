@@ -450,7 +450,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       });
       this.newWidget.options.tableColumnOptions.push({
         model: 'device',
-        key: 'downlinkData',
+        key: 'data_downlink',
         type: 'string',
         as: 'Downlink'
       });

@@ -152,11 +152,11 @@
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label">Downlink payload</label>
                   <div class="col-md-9">
-                    <input #downlinkData="ngModel" type="text" class="form-control"
+                    <input #data_downlink="ngModel" type="text" class="form-control"
                            placeholder="Downlink payload in HEX"
-                           name="downlinkData" maxlength="16" pattern="([a-fA-F0-9]{16})$"
-                           [(ngModel)]="deviceToEdit.downlinkData">
-                    <div [hidden]="downlinkData.valid || downlinkData.pristine"
+                           name="data_downlink" maxlength="16" pattern="([a-fA-F0-9]{16})$"
+                           [(ngModel)]="deviceToEdit.data_downlink">
+                    <div [hidden]="data_downlink.valid || data_downlink.pristine"
                          class="text-danger">
                       Length must be 8 bytes, in hexadecimal
                     </div>
@@ -249,7 +249,7 @@
                   <mfDefaultSorter by="id"><i class="fa fa-sort"></i> ID</mfDefaultSorter>
                 </th>
                 <th class="text-center">
-                  <mfDefaultSorter by="downlinkData"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
+                  <mfDefaultSorter by="data_downlink"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
                 </th>
                 <th *ngIf="!edit" class="text-center">
                   Geoloc
@@ -284,9 +284,9 @@
                     <span class="text-gray-dark">Category: </span>
                     <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
                   </div>
-                  <div *ngIf="device.downlinkData" class="small">
+                  <div *ngIf="device.data_downlink" class="small">
                     <span class="text-gray-dark">Downlink: </span>
-                    <span class="text-message">{{device.downlinkData}}</span>
+                    <span class="text-message">{{device.data_downlink}}</span>
                   </div>
                 </td>
                 <td *ngIf="!edit" class="text-center">

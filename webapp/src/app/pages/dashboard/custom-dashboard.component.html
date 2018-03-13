@@ -173,7 +173,7 @@
                     <mfDefaultSorter by="id"><i class="fa fa-sort"></i> ID</mfDefaultSorter>
                   </th>
                   <th class="text-center">
-                    <mfDefaultSorter by="downlinkData"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
+                    <mfDefaultSorter by="data_downlink"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
                   </th>
                   <th class="text-center">Last Message</th>
                   <th class="text-center">
@@ -202,9 +202,9 @@
                       <span class="text-gray-dark">Category: </span>
                       <strong class="text-category">{{device.Category ? device.Category.name : "None"}}</strong>
                     </div>
-                    <div *ngIf="device.downlinkData" class="small">
+                    <div *ngIf="device.data_downlink" class="small">
                       <span class="text-gray-dark">Downlink: </span>
-                      <strong class="text-message">{{device.downlinkData}}</strong>
+                      <strong class="text-message">{{device.data_downlink}}</strong>
                     </div>
                   </td>
 

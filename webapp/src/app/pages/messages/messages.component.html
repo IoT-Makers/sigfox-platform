@@ -67,8 +67,11 @@
                     <small *ngIf="o.value">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
                   </div>
                 </div>
-                <div class="mt-1" *ngIf="message.downlinkData">
-                  Downlink: <span class="text-danger" title="Downlink payload">{{message.downlinkData}}</span>
+                <div class="mt-1" *ngIf="message.data_downlink">
+                  Downlink: <span class="text-danger" title="Downlink payload">{{message.data_downlink}}</span>
+                </div>
+                <div class="mt-1" *ngIf="message.acknowledge">
+                  Acknowledge: <span class="text-danger" title="Acknowledged by device">{{message.acknowledge}}</span>
                 </div>
               </td>
               <td class="text-center text-device">

@@ -37,7 +37,7 @@
     "success_rate": {
       "type": "number"
     },
-    "downlinkData": {
+    "data_downlink": {
       "type": "string"
     },
     "properties": {

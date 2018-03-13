@@ -7,7 +7,8 @@ export interface MessageInterface {
   "seqNumber": number;
   "data"?: string;
   "data_parsed"?: Array<any>;
-  "downlinkData"?: string;
+  "data_downlink"?: string;
+  "acknowledge"?: boolean;
   "ack"?: boolean;
   "reception"?: Array<any>;
   "id"?: any;
@@ -26,7 +27,8 @@ export class Message implements MessageInterface {
   "seqNumber": number = 0;
   "data": string = '';
   "data_parsed": Array<any> = <any>[];
-  "downlinkData": string = '';
+  "data_downlink": string = '';
+  "acknowledge": boolean = false;
   "ack": boolean = false;
   "reception": Array<any> = <any>[];
   "id": any = <any>null;
@@ -90,9 +92,13 @@ export class Message implements MessageInterface {
           name: 'data_parsed',
           type: 'Array&lt;any&gt;'
         },
-        "downlinkData": {
-          name: 'downlinkData',
+        "data_downlink": {
+          name: 'data_downlink',
           type: 'string'
+        },
+        "acknowledge": {
+          name: 'acknowledge',
+          type: 'boolean'
         },
         "ack": {
           name: 'ack',

@@ -169,7 +169,7 @@ class Geoloc {
           message.time = data.time;
           message.seqNumber = data.seqNumber;
           message.createdAt = new Date(data.time * 1000);
-          message.data = 'Downlink acknowledged by device (TBD)';
+          message.acknowledge = true;
           Message.create(
             message,
             (err: any, messageInstance: any) => {
