@@ -1,10 +1,11 @@
-import {Category, Connector, Device, FireLoopRef, Geoloc, Organization, Parser, User} from '../../shared/sdk/models';
+import {Category, Connector, Device, FireLoopRef, Geoloc, Message, Organization, Parser, Property, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {AgmInfoWindow} from '@agm/core';
 import {DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Angular2Csv} from 'angular2-csv';
 
 
 @Component({
@@ -111,6 +112,48 @@ export class DevicesComponent implements OnInit, OnDestroy {
     }*/
   }
 
+  downloadCsv() {
+    const options = {
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalseparator: '.',
+      showLabels: true,
+      showTitle: false,
+      useBom: true
+    };
+
+    this.userApi.getMessages(this.user.id, {
+      where: {deviceId: this.deviceToEdit.id},
+      include: ['Geolocs']
+    }).subscribe((messages: Message[]) => {
+      const data: any = [];
+
+      messages.forEach((message: Message) => {
+        const obj: any = {};
+        obj.seqNumber = message.seqNumber;
+        obj.createdAt = message.createdAt;
+        obj.data = message.data;
+        if (obj.ack) {
+          obj.ack = message.ack;
+        }
+        if (obj.data_downlink) {
+          obj.data_downlink = message.data_downlink;
+        }
+        message.data_parsed.forEach((p: Property) => {
+          obj[p.key] = p.value;
+        });
+        message.Geolocs.forEach((geoloc: Geoloc) => {
+          obj.lat = geoloc.location.lat;
+          obj.lng = geoloc.location.lng;
+          if (geoloc.precision) {
+            obj.precision = geoloc.precision;
+          }
+        });
+        data.push(obj);
+      });
+      new Angular2Csv(data, 'sigfox_platform_export', options);
+    });
+  }
   setCircles() {
     for (let i = 0; i < this.devices.length; i++) {
       this.isCircleVisible.push(false);

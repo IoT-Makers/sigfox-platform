@@ -9,7 +9,7 @@ import {ModalModule, TabsModule, TooltipModule} from 'ng2-bootstrap';
 import {ToasterModule} from 'angular2-toaster';
 import {LaddaModule} from 'angular2-ladda';
 import {DataTableModule} from 'angular2-datatable';
-import {AngularMultiSelectModule} from "angular2-multiselect-dropdown/angular2-multiselect-dropdown";
+import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 
 @NgModule({
   imports: [

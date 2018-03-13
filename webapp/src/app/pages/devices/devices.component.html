@@ -180,6 +180,12 @@
                 </div>
                 <div class="col col-md-12">
                   <p></p>
+                  <button tooltip="Download messages (CSV)" class="btn btn-round btn-info btn-ladda" data-style="slide-up" (click)="$event.preventDefault(); downloadCsv();">
+                    <i class="fa fa-download"></i> &nbsp; Download
+                  </button>
+                </div>
+                <div class="col col-md-12">
+                  <p></p>
                   <button tooltip="Share this device" class="btn btn-round btn-info btn-ladda" data-style="slide-up" (click)="$event.preventDefault(); showShareDeviceWithOrganizationModal()">
                     <i class="fa fa-share"></i> &nbsp; Share
                   </button>

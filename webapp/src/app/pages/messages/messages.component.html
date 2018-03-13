@@ -64,14 +64,14 @@
                 <span class="text-message">{{message.data}}</span>
                 <div class="text-justify" *ngIf="message.data_parsed">
                   <div *ngFor="let o of message.data_parsed">
-                    <small *ngIf="o.value">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
+                    <small *ngIf="o.value || o.value === 0">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
                   </div>
                 </div>
                 <div class="mt-1" *ngIf="message.data_downlink">
                   Downlink: <span class="text-danger" title="Downlink payload">{{message.data_downlink}}</span>
                 </div>
                 <div class="mt-1" *ngIf="message.acknowledge">
-                  Acknowledge: <span class="text-danger" title="Acknowledged by device">{{message.acknowledge}}</span>
+                  Acknowledge: <span class="text-success" title="Acknowledged by device">{{message.acknowledge}}</span>
                 </div>
               </td>
               <td class="text-center text-device">

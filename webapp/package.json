@@ -41,6 +41,7 @@
     "@types/lodash": "^4.14.92",
     "@types/node": "^6.0.96",
     "angular-calendar": "^0.11.0",
+    "angular2-csv": "^0.2.5",
     "angular2-datatable": "^0.6.0",
     "angular2-ladda": "^1.2.3",
     "angular2-moment": "^1.7.1",
