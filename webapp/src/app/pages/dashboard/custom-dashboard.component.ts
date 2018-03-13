@@ -242,8 +242,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-
-
     // this.ngOnDestroy();
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
@@ -254,7 +252,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.dashboardId = params.id;
 
       this.route.parent.parent.params.subscribe(parentParams => {
-        console.log("parent param", parentParams);
+        console.log('Parent param', parentParams);
 
         if (parentParams.id) {
           this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
@@ -480,10 +478,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           }
 
           devices.forEach(device => {
-            if (device.data_parsed) {
-              device.data_parsed.forEach(o => {
+            if (device.Messages[0].data_parsed) {
+              device.Messages[0].data_parsed.forEach(o => {
                 const object: any = {
-                  model: 'device.data_parsed',
+                  model: 'device.Messages[0].data_parsed',
                   key: o.key,
                   type: o.type,
                   as: o.key + ' (' + device.id + ')'
@@ -523,10 +521,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           }
 
           devices.forEach(device => {
-            if (device.data_parsed) {
-              device.data_parsed.forEach(o => {
+            if (device.Messages[0].data_parsed) {
+              device.Messages[0].data_parsed.forEach(o => {
                 const object: any = {
-                  model: 'device.data_parsed',
+                  model: 'device.Messages[0].data_parsed',
                   key: o.key,
                   type: o.type,
                   as: o.key + ' (' + device.id + ')'
@@ -607,7 +605,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         include: ['Parser', 'Category', {
           relation: 'Messages',
           scope: {
-            skip: 0,
             limit: 1,
             order: 'createdAt DESC'
           }
@@ -746,10 +743,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-// Reset filters arrays
+    // Reset filters arrays
     this.newWidget.options.keys = [];
     this.newWidget.filter.where.or = [];
-// Set filter arrays by looping on selected data
+    // Set filter arrays by looping on selected data
     this.selectedKeys.forEach((item: any) => {
       this.newWidget.options.keys.push(item.id);
     });
@@ -771,11 +768,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     // Prepare widget keys object
     this.newWidget.options.keys = [];
     // Fetch all the keys belonging to selected devices
-
-
-    this.getDevicesWithFilter(this.newWidget.filter).subscribe((devices: any[]) => {
+    const filter = this.newWidget.filter;
+    if (this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte) {
+      filter.include[0].scope.where.and[0] = {};
+      filter.include[0].scope.limit = 1;
+    }
+    this.getDevicesWithFilter(filter).subscribe((devices: any[]) => {
       console.log(devices);
-      devices.forEach((device: Device, i) => {
+      devices.forEach((device: Device) => {
         if (device.Messages[0].data_parsed) {
           device.Messages[0].data_parsed.forEach(o => {
             const item = {
