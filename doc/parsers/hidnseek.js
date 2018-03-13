@@ -42,10 +42,10 @@ var bits_32 = view.getFloat32(0, true);
 // Cpx - uint 4 bytes - 32 bits little endian
 var buffer = new ArrayBuffer(4);
 var bytes = new Uint8Array(buffer);
-bytes[0] = parseInt(payload.substring(16, 18), 16);
-bytes[1] = parseInt(payload.substring(18, 20), 16);
-bytes[2] = parseInt(payload.substring(20, 22), 16);
-bytes[3] = parseInt(payload.substring(22, 24), 16);
+bytes[0] = parseInt(payload.slice(16, 18), 16);
+bytes[1] = parseInt(payload.slice(18, 20), 16);
+bytes[2] = parseInt(payload.slice(20, 22), 16);
+bytes[3] = parseInt(payload.slice(22, 24), 16);
 var view = new DataView(buffer);
 cpx = view.getUint32(0, true);
 
