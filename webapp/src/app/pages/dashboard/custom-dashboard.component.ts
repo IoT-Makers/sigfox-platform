@@ -310,15 +310,18 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             });
           });
 
+
+
         }
+      });
+      this.dashboardApi.findById(params.id).subscribe((result: Dashboard) => {
+        console.log(result);
+        this.dashboard = result;
+        this.loadWidgets();
       });
     });
 
-    this.dashboardApi.findById(this.dashboardId).subscribe((result: Dashboard) => {
-      console.log(result);
-      this.dashboard = result;
-      this.loadWidgets();
-    });
+
 
 
   }
