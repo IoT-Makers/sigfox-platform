@@ -7,6 +7,22 @@
     "name": "mongodb",
     "connector": "mongodb"
   },
+  "applicationEmail": {
+    "name": "applicationEmail",
+    "connector": "mail",
+    "transports": [
+      {
+        "type": "smtp",
+        "host": "smtp.mailgun.org",
+        "secure": true,
+        "port": 465,
+        "auth": {
+          "user": "postmaster@thenorthweb.com",
+          "pass": "dbe6e02c67249943f27d62fc4396fd78-833f99c3-e631ff78"
+        }
+      }
+    ]
+  },
   "freeMobile": {
     "name": "freeMobile",
     "connector": "rest",

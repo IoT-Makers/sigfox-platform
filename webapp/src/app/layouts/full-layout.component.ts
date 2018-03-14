@@ -290,11 +290,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   getDashboards(): void {
-    if (!this.organization) {
+    if(!this.organization){
       this.userApi.getDashboards(this.user.id).subscribe((dashboards: Dashboard[]) => {
         this.dashboards = dashboards;
       });
-    } else {
+    }else{
       this.organizationApi.getDashboards(this.organization.id).subscribe((dashboards: Dashboard[]) => {
         this.dashboards = dashboards;
       });
@@ -303,18 +303,21 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   newDashboard(): void {
-    if (!this.organization) {
-      const dashboard = {
-        name: 'New dashboard'
-      };
+
+    const dashboard = {
+      name: 'New dashboard'
+    };
+
+    if(this.organization){
+      dashboard.name = 'Shared dashboard'
+    }
+
+    if(!this.organization){
       this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard => {
         console.log(dashboard);
         this.setup();
       });
-    } else {
-      const dashboard = {
-        name: 'New shared dashboard'
-      };
+    }else{
       this.organizationApi.createDashboards(this.organization.id, dashboard).subscribe(dashboard => {
         console.log(dashboard);
         this.setup();
@@ -325,7 +328,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   newOrganisation(): void {
 
     if (this.admin) {
-      this.userApi.find({fields: {email: true, id: true}}).subscribe((results: User[]) => {
+      this.userApi.find({fields:{email:true, id:true}}).subscribe((results: User[]) => {
         //console.log(results);
         results.forEach((result: any) => {
           const item = {
@@ -345,17 +348,17 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.createOrganizationModal.show();
   }
 
-  createOrganization(orga: any): void {
+  createOrganization(orga:any): void {
 
     orga.ownerId = this.user.id;
 
     console.log(orga);
     console.log(this.selectedUsers);
-    this.organizationApi.create(orga).subscribe((organization: Organization) => {
+    this.organizationApi.create(orga).subscribe((organization: Organization)=>{
       console.log('Organization created', organization);
 
       this.selectedUsers.forEach((user: any, index, array) => {
-        this.organizationApi.linkMembers(organization.id, user.id).subscribe((result) => {
+        this.organizationApi.linkMembers(organization.id, user.id).subscribe((result) =>{
           console.log('result after linking member: ', result);
           if (index === array.length - 1) {
             this.getOrganizations();

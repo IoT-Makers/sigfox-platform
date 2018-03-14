@@ -1,4 +1,5 @@
 import {Model} from '@mean-expert/model';
+const path = require('path');
 
 /**
  * @module user
@@ -73,10 +74,7 @@ class user {
 
   afterRemoteCreate(ctx: any, userInstance: any, next: any) {
 
-    // let organization = {
-    //   name: userInstance.email,
-    //   ownerId: userInstance.id,
-    // };
+
     userInstance.email = userInstance.email.toLocaleLowerCase();
 
     const adminRole = {
@@ -175,29 +173,34 @@ class user {
         }
       });
 
-    /*userInstance.Organizations.create(
-      organization,
-      (err: any, organizationInstance: any) => {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(organizationInstance);
-          console.log(user);
-        }
-        next();
-      });
+    const options = {
+      type: 'email',
+      to: userInstance.email,
+      from: 'noreply@thenorthweb.com',
+      subject: 'Merci de votre inscription.',
+      template: path.resolve(__dirname, '../../server/views/welcome.ejs'),
+      redirect: '',
+      user: user
+    };
 
-    this.model.app.models.Organization.create(
-      organization,
-      (err: any, response: any) => {
-        if (err) {
-          console.log(err);
-        }else {
-          console.log(response);
-          this.model.app.models.Organization.link();
-        }
-        next();
-      });*/
+    // userInstance.verify(options, function (err:any, response:any, next:Function) {
+    //   if (err) {
+    //     console.log(err);
+    //     ctx.res.status(err.status || 500);
+    //   }
+    //
+    //   console.log('> verification email sent:', response);
+    //
+    //   context.res.status(response.status).json('response', {
+    //     title: 'Signed up successfully',
+    //     content: 'Please check your email and click on the verification link ' +
+    //     'before logging in.',
+    //     redirectTo: '/',
+    //     redirectToLinkText: 'Log in'
+    //   });
+    //
+    // });
+
   }
 
   // Delete user method

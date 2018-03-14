@@ -11,7 +11,7 @@
           <div class="card-block">
             <div *ngFor="let setting of settings">
               <label>{{setting.key}}:</label>
-              <label class="switch switch-sm switch-3d switch-success-outline-alt">
+              <label *ngIf="setting.type === 'boolean'" class="switch switch-sm switch-3d switch-success-outline-alt">
                 <input (change)="changeSetting(setting)" [(ngModel)]="setting.value" type="checkbox"
                        class="switch-input">
                 <span class="switch-label"></span>

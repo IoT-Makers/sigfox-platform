@@ -45,7 +45,7 @@
     "Members": {
       "type": "hasAndBelongsToMany",
       "model": "user",
-      "foreignKey":"memberId"
+      "foreignKey": "memberId"
     },
     "Messages": {
       "type": "hasAndBelongsToMany",
@@ -67,10 +67,10 @@
   "acls": [
     {
       "accessType": "*",
-      "property": "*",
       "principalType": "ROLE",
       "principalId": "admin",
-      "permission": "ALLOW"
+      "permission": "ALLOW",
+      "property": "*"
     },
     {
       "accessType": "*",
@@ -92,6 +92,9 @@
     },
     {
       "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "organizationMember",
+      "permission": "ALLOW",
       "property": [
         "findById",
         "findOne",
@@ -114,10 +117,7 @@
         "__get__Dashboards",
         "__find__Dashboards",
         "__findOne__Dashboards"
-      ],
-      "principalType": "ROLE",
-      "principalId": "organizationMember",
-      "permission": "ALLOW"
+      ]
     }
   ],
   "methods": {}

@@ -34,7 +34,7 @@
       "type": "string",
       "required": true
     },
-    "type" :{
+    "type": {
       "type": "string",
       "required": true
     }
