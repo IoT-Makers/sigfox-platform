@@ -6,6 +6,7 @@ import {DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services/cus
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Angular2Csv} from 'angular2-csv';
+import * as moment from 'moment';
 
 
 @Component({
@@ -131,22 +132,36 @@ export class DevicesComponent implements OnInit, OnDestroy {
       include: ['Geolocs']
     }).subscribe((messages: Message[]) => {
       const data: any = [];
-      console.log(messages.length);
+
       messages.forEach((message: Message, i) => {
         const obj: any = {};
         if (options.headers.indexOf('seqNumber') === -1) {
           options.headers.push('seqNumber');
+
+          options.headers.push('createdAt');
+          options.headers.push('createdAt_old');
           options.headers.push('year');
           options.headers.push('month');
           options.headers.push('day');
+          options.headers.push('hours');
+          options.headers.push('minutes');
+          options.headers.push('seconds');
+
           options.headers.push('data');
           options.headers.push('ack');
           options.headers.push('data_downlink');
         }
         obj.seqNumber = message.seqNumber;
+
+        obj.createdAt = moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss');
+        obj.createdAt_old = message.createdAt;
         obj.year = new Date(message.createdAt).getFullYear();
         obj.month = new Date(message.createdAt).getMonth() + 1;
         obj.day = new Date(message.createdAt).getDate();
+        obj.hours = new Date(message.createdAt).getHours();
+        obj.minutes  = new Date(message.createdAt).getMinutes();
+        obj.seconds = new Date(message.createdAt).getSeconds();
+
         obj.data = message.data;
         obj.ack = message.ack;
         obj.data_downlink = message.data_downlink;
@@ -169,8 +184,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
         });
         data.push(obj);
       });
-      const today = new Date();
-      const filename = today.getFullYear() + '.' + (today.getMonth() + 1) + '.' + today.getDate() + '_' + this.deviceToEdit.id + '_export';
+      const today = moment().format('YYYY.MM.DD');
+      const filename = today + '_' + this.deviceToEdit.id + '_export';
       new Angular2Csv(data, filename, options);
       this.loadingDownload = false;
     }, (err: any) => {
