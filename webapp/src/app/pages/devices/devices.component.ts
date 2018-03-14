@@ -144,9 +144,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
           options.headers.push('data_downlink');
         }
         obj.seqNumber = message.seqNumber;
-        obj.year = message.createdAt.getFullYear();
-        obj.month = message.createdAt.getMonth() + 1;
-        obj.day = message.createdAt.getDate();
+        obj.year = new Date(message.createdAt).getFullYear();
+        obj.month = new Date(message.createdAt).getMonth() + 1;
+        obj.day = new Date(message.createdAt).getDate();
         obj.data = message.data;
         obj.ack = message.ack;
         obj.data_downlink = message.data_downlink;
@@ -170,7 +170,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
         data.push(obj);
       });
       const today = new Date();
-      const filename = today.getFullYear() + '.' + (today.getMonth() + 1).toString() + '.' + today.getDate() + '_' + this.deviceToEdit.id + '_export';
+      const filename = today.getFullYear() + '.' + (today.getMonth() + 1) + '.' + today.getDate() + '_' + this.deviceToEdit.id + '_export';
       new Angular2Csv(data, filename, options);
       this.loadingDownload = false;
     }, (err: any) => {
