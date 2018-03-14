@@ -50,7 +50,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   private edit = false;
   private loadingFromBackend = false;
-  private parseMessages = false;
+  private loadingParseMessages = false;
+  private loadingDownload = false;
 
   private mapLat = 48.858093;
   private mapLng = 2.294694;
@@ -113,13 +114,16 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   downloadCsv() {
+    this.loadingDownload = true;
+
     const options = {
       fieldSeparator: ',',
       quoteStrings: '"',
       decimalseparator: '.',
       showLabels: true,
       showTitle: false,
-      useBom: true
+      useBom: true,
+      headers: []
     };
 
     this.userApi.getMessages(this.user.id, {
@@ -127,31 +131,49 @@ export class DevicesComponent implements OnInit, OnDestroy {
       include: ['Geolocs']
     }).subscribe((messages: Message[]) => {
       const data: any = [];
-
-      messages.forEach((message: Message) => {
+      console.log(messages.length);
+      messages.forEach((message: Message, i) => {
         const obj: any = {};
+        if (options.headers.indexOf('seqNumber') === -1) {
+          options.headers.push('seqNumber');
+          options.headers.push('createdAt');
+          options.headers.push('data');
+          options.headers.push('ack');
+          options.headers.push('data_downlink');
+        }
         obj.seqNumber = message.seqNumber;
         obj.createdAt = message.createdAt;
         obj.data = message.data;
-        if (obj.ack) {
-          obj.ack = message.ack;
-        }
-        if (obj.data_downlink) {
-          obj.data_downlink = message.data_downlink;
-        }
+        obj.ack = message.ack;
+        obj.data_downlink = message.data_downlink;
+
         message.data_parsed.forEach((p: Property) => {
+          if (options.headers.indexOf(p.key) === -1) {
+            options.headers.push(p.key);
+          }
           obj[p.key] = p.value;
         });
         message.Geolocs.forEach((geoloc: Geoloc) => {
-          obj.lat = geoloc.location.lat;
-          obj.lng = geoloc.location.lng;
-          if (geoloc.precision) {
-            obj.precision = geoloc.precision;
+          if (options.headers.indexOf('lat_' + geoloc.type) === -1) {
+            options.headers.push('lat_' + geoloc.type);
+            options.headers.push('lng_' + geoloc.type);
+            options.headers.push('precision_' + geoloc.type);
           }
+          obj['lat_' + geoloc.type] = geoloc.location.lat;
+          obj['lng_' + geoloc.type] = geoloc.location.lng;
+          obj['precision_' + geoloc.type] = geoloc.precision;
         });
         data.push(obj);
       });
-      new Angular2Csv(data, 'sigfox_platform_export', options);
+      const today = new Date();
+      const filename = today.getFullYear() + '.' + today.getMonth() + 1 + '.' + today.getDate() + '_' + this.deviceToEdit.id + '_export';
+      new Angular2Csv(data, filename, options);
+      this.loadingDownload = false;
+    }, (err: any) => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      this.loadingDownload = false;
     });
   }
   setCircles() {
@@ -307,17 +329,17 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   parseAllMessages(deviceId: string): void {
-    this.parseMessages = true;
+    this.loadingParseMessages = true;
     // Disconnect real-time to avoid app crashing
     this.rt.connection.disconnect();
     this.deviceApi.parseAllMessages(deviceId, null, null).subscribe(result => {
-      this.parseMessages = false;
+      this.loadingParseMessages = false;
       if (result.message === 'Success') {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
       } else {
-        this.parseMessages = false;
+        this.loadingParseMessages = false;
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('warning', 'Warning', result.message);

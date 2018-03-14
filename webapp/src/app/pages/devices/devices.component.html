@@ -168,25 +168,25 @@
 
                 <div class="col col-md-12 mb-1">
                   <p *ngIf="loadingFromBackend" class="font-italic font-weight-bold">This operation can take time...</p>
-                  <button tooltip="Retrieve messages from Sigfox Backend" class="btn btn-round btn-info btn-ladda" data-style="slide-up" [ladda]='loadingFromBackend' (click)="$event.preventDefault(); showRetrievalModal()">
+                  <button tooltip="Retrieve messages from Sigfox Backend" class="btn btn-round btn-outline-primary btn-ladda" data-style="slide-up" [ladda]='loadingFromBackend' (click)="$event.preventDefault(); showRetrievalModal()">
                     <i class="fa fa-database"></i> &nbsp; Retrieve
                   </button>
                 </div>
                 <div class="col col-md-12">
                   <p *ngIf="parseMessages" class="font-italic font-weight-bold">This operation can take time...</p>
-                  <button tooltip="Decode all messages for current parser" class="btn btn-round btn-info btn-ladda" data-style="slide-up" [ladda]='parseMessages' (click)="$event.preventDefault(); showParseModal()">
+                  <button tooltip="Decode all messages for current parser" class="btn btn-round btn-outline-primary btn-ladda" data-style="slide-up" [ladda]='loadingParseMessages' (click)="$event.preventDefault(); showParseModal()">
                     <i class="fa fa-code"></i> &nbsp; Parse
                   </button>
                 </div>
                 <div class="col col-md-12">
                   <p></p>
-                  <button tooltip="Download messages (CSV)" class="btn btn-round btn-info btn-ladda" data-style="slide-up" (click)="$event.preventDefault(); downloadCsv();">
+                  <button tooltip="Download messages (CSV)" class="btn btn-round btn-outline-success btn-ladda" data-style="slide-up" [ladda]='loadingDownload' (click)="$event.preventDefault(); downloadCsv();">
                     <i class="fa fa-download"></i> &nbsp; Download
                   </button>
                 </div>
                 <div class="col col-md-12">
                   <p></p>
-                  <button tooltip="Share this device" class="btn btn-round btn-info btn-ladda" data-style="slide-up" (click)="$event.preventDefault(); showShareDeviceWithOrganizationModal()">
+                  <button tooltip="Share this device" class="btn btn-round btn-outline-warning btn-ladda" data-style="slide-up" (click)="$event.preventDefault(); showShareDeviceWithOrganizationModal()">
                     <i class="fa fa-share"></i> &nbsp; Share
                   </button>
                 </div>
@@ -442,7 +442,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Share device <b>{{deviceToEdit.id}}</b> with an organization</h4>
+        <h4 class="modal-title">Share this device <b>{{deviceToEdit.id}}</b> with an organization</h4>
         <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
