@@ -27,7 +27,7 @@
 
         <div class="dropdown-header text-center"><strong>Organizations</strong></div>
 
-        <button href="#" class="dropdown-item text-center" *ngFor="let orga of organizations" [routerLink]="['/organization/'+orga.id]">
+        <button href="#" class="dropdown-item" *ngFor="let orga of organizations" [routerLink]="['/organization/'+orga.id]">
           <img src="{{orga.logo}}" height="30px" class="img-avatar"> {{orga.name}}
         </button>
         <button href="#" class="dropdown-item text-center" (click)="newOrganisation()">
@@ -67,6 +67,14 @@
         <i class="fa fa-user"> </i>
       </a>
     </li>
+
+    <!--Edit orga-->
+    <li *ngIf="organization.ownerId === user.id" class="nav-item" tooltip="Edit organization" placement="bottom">
+      <a class="nav-link" (click)="newOrganisation(organization)">
+        <i class="fa fa-pencil text-primary"></i>
+      </a>
+    </li>
+
 
     <!--Organization-->
     <li class="nav-item dropdown" dropdown placement="bottom right">
@@ -259,7 +267,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Create an organization</h4>
+        <h4 class="modal-title">Create / Update an organization</h4>
         <button type="button" class="close" (click)="createOrganizationModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -301,7 +309,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="createOrganizationModal.hide()">Close</button>
-        <button type="button" class="btn btn-success" (click)="createOrganization(newOrganization)">Create</button>
+        <button type="button" class="btn btn-success" (click)="createOrganization(newOrganization)">Create / Update</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

@@ -325,7 +325,30 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  newOrganisation(): void {
+  newOrganisation(orga): void {
+    this.selectedUsers = [];
+    this.selectUsers = [];
+
+    if(orga){
+      console.log(orga);
+      this.newOrganization = orga;
+      this.organizationApi.getMembers(orga.id).subscribe(members=>{
+        members.forEach(member=>{
+          const user = {
+            id: member.id,
+            itemName: member.email
+          };
+          this.selectedUsers.push(user);
+        })
+      });
+    }else{
+      this.newOrganization = new Organization();
+      const myself = {
+        id: this.user.id,
+        itemName: this.user.email
+      };
+      this.selectedUsers.push(myself);
+    }
 
     if (this.admin) {
       this.userApi.find({fields:{email:true, id:true}}).subscribe((results: User[]) => {
@@ -340,11 +363,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
       });
     }
-    const myself = {
-      id: this.user.id,
-      itemName: this.user.email
-    };
-    this.selectedUsers.push(myself);
+
     this.createOrganizationModal.show();
   }
 
@@ -354,7 +373,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     console.log(orga);
     console.log(this.selectedUsers);
-    this.organizationApi.create(orga).subscribe((organization: Organization)=>{
+    this.organizationApi.upsert(orga).subscribe((organization: Organization)=>{
       console.log('Organization created', organization);
 
       this.selectedUsers.forEach((user: any, index, array) => {
