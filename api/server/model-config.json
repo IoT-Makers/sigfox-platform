@@ -114,8 +114,8 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
-          "putMessage": true,
-          "createSigfox": true
+          "putSigfox": true,
+          "download": true
         }
       }
     }
@@ -127,7 +127,7 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
-          "createSigfox": true
+          "postSigfox": true
         }
       }
     }

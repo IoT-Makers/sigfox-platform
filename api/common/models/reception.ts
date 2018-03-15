@@ -44,7 +44,7 @@ class Reception {
 
   // Get all base stations reached by the latest message belonging to a device
   getBaseStationsByDeviceId(deviceId: string, messageTime: number, req: any, next: Function): void {
-    // Obtain the userId with the access_token of ctx
+    // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
     this.model.app.models.Connector.findOne(

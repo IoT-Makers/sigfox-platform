@@ -51,7 +51,7 @@ export class GeolocApi extends BaseLoopBackApi {
    * This usually means the response is a `Geoloc` object.)
    * </em>
    */
-  public createSigfox(req: any = {}, data: any, customHeaders?: Function): Observable<any> {
+  public postSigfox(req: any = {}, data: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Geolocs/sigfox";

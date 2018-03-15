@@ -79,7 +79,7 @@ class Device {
   }
 
   deleteDeviceMessagesAlertsGeolocs(deviceId: string, req: any, next: Function): void {
-    // Obtain the userId with the access_token of ctx
+    // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
     // Find device
     this.model.findOne(
@@ -113,7 +113,7 @@ class Device {
 
 
   timeSeries(deviceId: string, dateBegin: string, dateEnd: string, req: any, next: Function): void {
-    // Obtain the userId with the access_token of ctx
+    // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
     const result: any = {

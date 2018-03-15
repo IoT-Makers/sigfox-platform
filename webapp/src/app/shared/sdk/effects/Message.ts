@@ -17,13 +17,13 @@ import { MessageApi } from '../services/index';
 @Injectable()
 export class MessageEffects extends BaseLoopbackEffects {
   @Effect()
-  public putMessage$ = this.actions$
-    .ofType(MessageActionTypes.PUT_MESSAGE).pipe(
+  public download$ = this.actions$
+    .ofType(MessageActionTypes.DOWNLOAD).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.message.putMessage(action.payload.req, action.payload.data).pipe(
-          map((response: any) => new MessageActions.putMessageSuccess(action.payload.id, response, action.meta)),
+        this.message.download(action.payload.deviceId, action.payload.type, action.payload.req, action.payload.res).pipe(
+          map((response: any) => new MessageActions.downloadSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
-            of(new MessageActions.putMessageFail(error, action.meta)),
+            of(new MessageActions.downloadFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -31,13 +31,13 @@ export class MessageEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public createSigfox$ = this.actions$
-    .ofType(MessageActionTypes.CREATE_SIGFOX).pipe(
+  public putSigfox$ = this.actions$
+    .ofType(MessageActionTypes.PUT_SIGFOX).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.message.createSigfox(action.payload.req, action.payload.data).pipe(
-          map((response: any) => new MessageActions.createSigfoxSuccess(action.payload.id, response, action.meta)),
+        this.message.putSigfox(action.payload.req, action.payload.data).pipe(
+          map((response: any) => new MessageActions.putSigfoxSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
-            of(new MessageActions.createSigfoxFail(error, action.meta)),
+            of(new MessageActions.putSigfoxFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

@@ -36,11 +36,13 @@ export class MessageApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {object} data Request data.
+   * @param {string} deviceId 
    *
-   *  - `req` – `{object}` - 
+   * @param {string} type 
    *
-   *  - `data` – `{object}` - 
+   * @param {object} req 
+   *
+   * @param {object} res 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -51,14 +53,15 @@ export class MessageApi extends BaseLoopBackApi {
    * This usually means the response is a `Message` object.)
    * </em>
    */
-  public putMessage(req: any = {}, data: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "PUT";
+  public download(deviceId: any, type: any, req: any = {}, res: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Messages/sigfox";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      data: data
+    "/Messages/download/:deviceId/:type";
+    let _routeParams: any = {
+      deviceId: deviceId,
+      type: type
     };
+    let _postBody: any = {};
     let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
@@ -84,7 +87,7 @@ export class MessageApi extends BaseLoopBackApi {
    * This usually means the response is a `Message` object.)
    * </em>
    */
-  public createSigfox(req: any = {}, data: any, customHeaders?: Function): Observable<any> {
+  public putSigfox(req: any = {}, data: any, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Messages/sigfox/v2";

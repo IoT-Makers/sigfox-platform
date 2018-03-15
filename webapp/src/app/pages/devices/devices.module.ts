@@ -10,6 +10,7 @@ import {ToasterModule} from 'angular2-toaster';
 import {LaddaModule} from 'angular2-ladda';
 import {DataTableModule} from 'angular2-datatable';
 import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-m
     AgmCoreModule,
     LaddaModule,
     ToasterModule.forRoot(),
-    AngularMultiSelectModule
+    AngularMultiSelectModule,
+    HttpClientModule
   ],
   declarations: [
     DevicesComponent

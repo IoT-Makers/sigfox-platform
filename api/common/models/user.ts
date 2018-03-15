@@ -205,7 +205,7 @@ class user {
 
   // Delete user method
   afterRemoteDelete(ctx: any, result: any, next: Function): void {
-    // Obtain the userId with the access_token of ctx
+    // Obtain the userId with the access token of ctx
 
     // console.log(ctx.args.id);
     // console.log(result);

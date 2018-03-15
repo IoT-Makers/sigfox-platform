@@ -6,16 +6,16 @@ import { LoopBackFilter, SDKToken, Geoloc } from '../models';
 
 export const GeolocActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Geoloc'), {
-  CREATE_SIGFOX: type('[Geoloc] createSigfox'),
-  CREATE_SIGFOX_SUCCESS: type('[Geoloc] createSigfox success'),
-  CREATE_SIGFOX_FAIL: type('[Geoloc] createSigfox fail'),
+  POST_SIGFOX: type('[Geoloc] postSigfox'),
+  POST_SIGFOX_SUCCESS: type('[Geoloc] postSigfox success'),
+  POST_SIGFOX_FAIL: type('[Geoloc] postSigfox fail'),
 
 });
 export const GeolocActions =
 Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
 
   /**
-   * createSigfox Action.
+   * postSigfox Action.
    * <em>
          * (The remote method definition does not provide any description.)
          * </em>
@@ -28,8 +28,8 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
    * @param {any} meta (optional).
    * 
    */
-  createSigfox: class implements Action {
-    public readonly type = GeolocActionTypes.CREATE_SIGFOX;
+  postSigfox: class implements Action {
+    public readonly type = GeolocActionTypes.POST_SIGFOX;
       public payload: {req: any, data: any};
 
     constructor(req: any = {}, data: any, customHeaders?: Function, public meta?: any) {
@@ -37,15 +37,15 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
     }
   },
   /**
-   * createSigfoxSuccess Action.
+   * postSigfoxSuccess Action.
    * 
    * @param {any} id 
    * @param {object} data 
    * @param {any} meta (optional).
    * 
    */
-  createSigfoxSuccess: class implements Action {
-    public readonly type = GeolocActionTypes.CREATE_SIGFOX_SUCCESS;
+  postSigfoxSuccess: class implements Action {
+    public readonly type = GeolocActionTypes.POST_SIGFOX_SUCCESS;
       public payload: {id: any, data: any};
 
     constructor(id: any, data: any, public meta?: any) {
@@ -53,14 +53,14 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
     }
   },
   /**
-   * createSigfoxFail Action.
+   * postSigfoxFail Action.
    *
    * @param {any} payload
    * @param {any} meta (optional).
    * 
    */
-  createSigfoxFail: class implements Action {
-    public readonly type = GeolocActionTypes.CREATE_SIGFOX_FAIL;
+  postSigfoxFail: class implements Action {
+    public readonly type = GeolocActionTypes.POST_SIGFOX_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

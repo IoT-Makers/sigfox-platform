@@ -37,12 +37,6 @@
     "location": {
       "type": "Geoloc"
     },
-    "sigfoxBackendApiLogin": {
-      "type": "string"
-    },
-    "sigfoxBackendApiPassword": {
-      "type": "string"
-    },
     "devAccessTokens": {
       "type": [
         "AccessToken"

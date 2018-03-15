@@ -14,14 +14,14 @@ const loopback = require('loopback');
     beforeSave: { name: 'before save', type: 'operation' }
   },
   remotes: {
-    createFromParsedPayload: {
+    postFromParsedPayload: {
       returns : { arg: 'result', type: 'array' },
       http    : { path: '/from-payload', verb: 'post' },
       accepts: [
         {arg: 'message', type: 'Message', required: true, description: 'The message object'}
       ],
     },
-    createSigfox: {
+    postSigfox: {
       accepts: [
         {arg: 'req', type: 'object', http: {source: 'req'}},
         {arg: 'data', type: 'object', required: true, http: { source: 'body' }}
@@ -45,7 +45,7 @@ class Geoloc {
     next();
   }
 
-  private createFromParsedPayload(message: any, req: any): void {
+  private postFromParsedPayload(message: any, req: any): void {
     // Models
     const Geoloc = this.model;
 
@@ -105,7 +105,7 @@ class Geoloc {
     }
   }
 
-  createSigfox(req: any, data: any, next: Function): void {
+  postSigfox(req: any, data: any, next: Function): void {
     // Models
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
@@ -116,7 +116,7 @@ class Geoloc {
       || typeof data.seqNumber === 'undefined') {
       next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
     }
-    // Obtain the userId with the access_token of ctx
+    // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
     // Find the corresponding message in order to retrieve its message ID

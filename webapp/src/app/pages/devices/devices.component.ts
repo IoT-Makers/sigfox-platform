@@ -1,13 +1,14 @@
-import {Category, Connector, Device, FireLoopRef, Geoloc, Message, Organization, Parser, Property, User} from '../../shared/sdk/models';
+import {Category, Connector, Device, FireLoopRef, Geoloc, Organization, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {AgmInfoWindow} from '@agm/core';
-import {DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
+import {DeviceApi, MessageApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {Angular2Csv} from 'angular2-csv';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {DOCUMENT} from '@angular/common';
+import {saveAs} from 'file-saver';
 import * as moment from 'moment';
-
 
 @Component({
   selector: 'app-devices',
@@ -82,7 +83,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
               private organizationApi: OrganizationApi,
               private deviceApi: DeviceApi,
               private elRef: ElementRef,
-              toasterService: ToasterService) {
+              toasterService: ToasterService,
+              @Inject(DOCUMENT) private document: any,
+              private messageApi: MessageApi,
+              private http: HttpClient) {
     this.toasterService = toasterService;
   }
 
@@ -116,84 +120,22 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   downloadCsv() {
     this.loadingDownload = true;
+    const url = this.document.location + '/api/Messages/download/' + this.deviceToEdit.id + '/csv?access_token=' + this.userApi.getCurrentToken().id;
 
-    const options = {
-      fieldSeparator: ',',
-      quoteStrings: '"',
-      decimalseparator: '.',
-      showLabels: true,
-      showTitle: false,
-      useBom: true,
-      headers: []
-    };
-
-    this.userApi.getMessages(this.user.id, {
-      where: {deviceId: this.deviceToEdit.id},
-      include: ['Geolocs']
-    }).subscribe((messages: Message[]) => {
-      const data: any = [];
-
-      messages.forEach((message: Message, i) => {
-        const obj: any = {};
-        if (options.headers.indexOf('seqNumber') === -1) {
-          options.headers.push('seqNumber');
-
-          options.headers.push('createdAt');
-          options.headers.push('createdAt_old');
-          options.headers.push('year');
-          options.headers.push('month');
-          options.headers.push('day');
-          options.headers.push('hours');
-          options.headers.push('minutes');
-          options.headers.push('seconds');
-
-          options.headers.push('data');
-          options.headers.push('ack');
-          options.headers.push('data_downlink');
-        }
-        obj.seqNumber = message.seqNumber;
-
-        obj.createdAt = moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss');
-        obj.createdAt_old = message.createdAt;
-        obj.year = new Date(message.createdAt).getFullYear();
-        obj.month = new Date(message.createdAt).getMonth() + 1;
-        obj.day = new Date(message.createdAt).getDate();
-        obj.hours = new Date(message.createdAt).getHours();
-        obj.minutes  = new Date(message.createdAt).getMinutes();
-        obj.seconds = new Date(message.createdAt).getSeconds();
-
-        obj.data = message.data;
-        obj.ack = message.ack;
-        obj.data_downlink = message.data_downlink;
-
-        message.data_parsed.forEach((p: Property) => {
-          if (options.headers.indexOf(p.key) === -1) {
-            options.headers.push(p.key);
-          }
-          obj[p.key] = p.value;
-        });
-        message.Geolocs.forEach((geoloc: Geoloc) => {
-          if (options.headers.indexOf('lat_' + geoloc.type) === -1) {
-            options.headers.push('lat_' + geoloc.type);
-            options.headers.push('lng_' + geoloc.type);
-            options.headers.push('precision_' + geoloc.type);
-          }
-          obj['lat_' + geoloc.type] = geoloc.location.lat;
-          obj['lng_' + geoloc.type] = geoloc.location.lng;
-          obj['precision_' + geoloc.type] = geoloc.precision;
-        });
-        data.push(obj);
-      });
+    this.http.get(url, {responseType: 'blob'}).subscribe(res => {
+      const blob: Blob = new Blob([res], {type: 'text/csv'});
       const today = moment().format('YYYY.MM.DD');
-      const filename = today + '_' + this.deviceToEdit.id + '_export';
-      new Angular2Csv(data, filename, options);
+      const filename = today + '_' + this.deviceToEdit.id + '_export.csv';
+      saveAs(blob, filename);
       this.loadingDownload = false;
-    }, (err: any) => {
+    }, err => {
+      console.log(err);
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      this.toast = this.toasterService.pop('error', 'Error', 'Server error');
       this.loadingDownload = false;
     });
+
   }
   setCircles() {
     for (let i = 0; i < this.devices.length; i++) {
