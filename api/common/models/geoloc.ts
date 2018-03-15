@@ -14,7 +14,7 @@ const loopback = require('loopback');
     beforeSave: { name: 'before save', type: 'operation' }
   },
   remotes: {
-    postFromParsedPayload: {
+    createFromParsedPayload: {
       returns : { arg: 'result', type: 'array' },
       http    : { path: '/from-payload', verb: 'post' },
       accepts: [
@@ -45,7 +45,7 @@ class Geoloc {
     next();
   }
 
-  private postFromParsedPayload(message: any, req: any): void {
+  private createFromParsedPayload(message: any, req: any): void {
     // Models
     const Geoloc = this.model;
 
