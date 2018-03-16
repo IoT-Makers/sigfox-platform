@@ -64,11 +64,11 @@ class Organization {
 
     //console.log(Organization.prototype.__link__Messages);
     //console.log(ctx);
-    Message.find({where:{'deviceId': data.deviceId}, fields: {'id': true}}, function (err: any, messages:any) {
+    Message.find({where: {'deviceId': data.deviceId}, fields: {'id': true}}, function (err: any, messages: any) {
       //console.log(messages);
-      Organization.findById(data.organizationId, function(err: any, orga:any) {
+      Organization.findById(data.organizationId, function(err: any, orga: any) {
         //console.log(orga);
-        messages.forEach((message:any) => {
+        messages.forEach((message: any) => {
           orga.Messages.remove(message.id, function (err: any, result: any) {
             //console.log(result);
           });

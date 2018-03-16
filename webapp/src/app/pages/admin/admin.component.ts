@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AppSetting, Organization, User} from '../../shared/sdk/models';
-import {AppSettingApi, OrganizationApi, RealTime, UserApi, RoleApi} from '../../shared/sdk/services';
+import {AppSettingApi, OrganizationApi, RealTime, RoleApi, UserApi} from '../../shared/sdk/services';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 @Component({
@@ -68,14 +68,14 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   getAppSettings(): void {
-    this.appSettingApi.find().subscribe((settings: AppSetting[])=> {
+    this.appSettingApi.find().subscribe((settings: AppSetting[]) => {
       this.settings = settings;
     });
   }
 
   getOrganizations(): void {
     console.log('getOrga');
-    this.organizationApi.find({include:'Members'}).subscribe((organizations: Organization[]) => {
+    this.organizationApi.find({include: 'Members'}).subscribe((organizations: Organization[]) => {
       this.organizations = organizations;
       console.log(organizations);
     });
@@ -95,25 +95,25 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeSetting(setting: AppSetting): void{
+  changeSetting(setting: AppSetting): void {
     //setting.value = !setting.value;
-    this.appSettingApi.upsert(setting).subscribe((setting: any)=> {
+    this.appSettingApi.upsert(setting).subscribe((setting: any) => {
       console.log(setting);
     });
   }
 
-  grantAdminAccess(user):void{
+  grantAdminAccess(user): void {
 
-    console.log("user: ", user);
+    console.log('user: ', user);
 
 
-    this.roleApi.findOne({where: {name:'admin'}}).subscribe((admin:any)=>{
-      console.log("admin: ", admin);
+    this.roleApi.findOne({where: {name: 'admin'}}).subscribe((admin: any) => {
+      console.log('admin: ', admin);
 
-      this.userApi.linkRoles(user.id, admin.id, {'principalType': 'USER', 'roleId': admin.id, 'principalId': user.id}).subscribe(result=>{
+      this.userApi.linkRoles(user.id, admin.id, {'principalType': 'USER', 'roleId': admin.id, 'principalId': user.id}).subscribe(result => {
         console.log(result);
         this.getUsers();
-      })
+      });
     });
 
   }

@@ -1,5 +1,3 @@
-// Core Admin Variables
-
 $enable-sidebar-nav-rounded: false;
 
 $border-color: $gray-light;
@@ -7,19 +5,17 @@ $layout-transition-speed: .25s;
 
 // Custom Colors
 $sigfox: #230068;
-
 $category: #e76c52;
 $device: #6AB187;
 $message: #5b9bd3;
 $alert: #e73c36;
+$parser: #55b6e4;
+$connector: #db5faf;
+$profile: #ae2e75;
+$organization: #00A39E;
 
 $tracking: #915749;
 $analytic: #debedf;
-
-$parser: #55b6e4;
-$connector: #db5faf;
-
-$profile: #ae2e75;
 
 // Geoloc Markers
 $geoloc-sigfox: #792faa;
@@ -28,7 +24,6 @@ $geoloc-wifi: #2F2A30;
 $geoloc-ble: #3c58ce;
 
 // Social Colors
-
 $facebook: #3b5998;
 $twitter: #00aced;
 $linkedin: #4875b4;
@@ -57,7 +52,6 @@ $foursquare: #1073af;
 $vimeo: #aad450;
 
 // Navbar
-
 $navbar-height:                     55px;
 $navbar-bg:                         #fff;
 $navbar-border: (
@@ -85,7 +79,6 @@ $navbar-active-color:               darken($navbar-color, 20%);
 $navbar-disabled-color:             lighter($navbar-color, 20%);
 
 // Sidebar
-
 $sidebar-width:                     250px;
 $mobile-sidebar-width:              250px;
 $sidebar-padding:                   0;
@@ -98,7 +91,6 @@ $sidebar-footer-bg:                 rgba(0,0,0,.2);
 $sidebar-borders:                   none;
 
 // Sidebar Navigation
-
 $sidebar-nav-color:                 #fff;
 $sidebar-nav-title-padding-y:       .75rem;
 $sidebar-nav-title-padding-x:       1rem;
@@ -126,7 +118,6 @@ $sidebar-nav-dropdown-bg:           darken($sidebar-bg, 3%);
 $sidebar-nav-dropdown-borders:      0;
 
 // Top Navigation
-
 $top-nav-bg:                        #fff;
 $top-nav-color:                     $body-color;
 $top-nav-borders: (
@@ -151,11 +142,9 @@ $top-nav-active-bg:                 $brand-primary;
 $top-nav-height:                    $navbar-height - 15px;
 
 // Breadcrumb
-
 $breadcrumb-borders:                0;
 
 // Aside
-
 $aside-menu-width:                  250px;
 $aside-menu-color:                  $gray-dark;
 $aside-menu-bg:                     #fff;
@@ -171,7 +160,6 @@ $aside-menu-nav-padding-y:          .75rem;
 $aside-menu-nav-padding-x:          1rem;
 
 // Footer
-
 $footer-height: 50px;
 $footer-bg:     $gray-lightest;
 $footer-color:  $body-color;
@@ -184,6 +172,5 @@ $footer-borders: (
 );
 
 // Cards
-
 $card-icon-bg:                      transparent;
 $card-icon-color:                   $body-color;

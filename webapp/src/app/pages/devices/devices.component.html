@@ -186,7 +186,7 @@
                 </div>
                 <div class="col col-md-12">
                   <p></p>
-                  <button tooltip="Share this device" class="btn btn-round btn-warning btn-ladda" data-style="slide-up" (click)="$event.preventDefault(); showShareDeviceWithOrganizationModal()">
+                  <button tooltip="Share this device" class="btn btn-round btn-organization btn-ladda" data-style="slide-up" (click)="$event.preventDefault(); showShareDeviceWithOrganizationModal()">
                     <i class="fa fa-share"></i> &nbsp; Share
                   </button>
                 </div>
@@ -204,13 +204,11 @@
                     <tbody>
                     <tr *ngFor="let orga of mf.data; let i = index">
                       <td class="text-center">
-                        <a [routerLink]="['/organization/'+orga.id]"><strong class="text-device">{{orga.name}}</strong></a>
+                        <a [routerLink]="['/organization/'+orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
                       </td>
                       <td class="text-center">
-
-                        <button class="btn btn-outline-primary btn-round" tooltip="Unshare this device"
+                        <button class="btn btn-outline-organization btn-round" tooltip="Unshare this device"
                                 (click)="unshare(orga, deviceToEdit, i)"><i class="fa fa-sign-out fa-lg"></i></button>
-
                       </td>
                     </tr>
                     </tbody>
@@ -465,7 +463,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-sm btn-success" (click)="shareDeviceWithOrganization(deviceToEdit.id)">Share</button>
+        <button class="btn btn-sm btn-organization" (click)="shareDeviceWithOrganization(deviceToEdit.id)">Share</button>
         <button class="btn btn-sm btn-default" (click)="shareDeviceWithOrganizationModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->

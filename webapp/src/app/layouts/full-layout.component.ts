@@ -61,7 +61,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     selectAllText: 'Select all',
     unSelectAllText: 'Unselect all',
     enableSearchFilter: true,
-    classes: 'select-category'
+    classes: 'select-organization'
   };
 
   constructor(private rt: RealTime,
