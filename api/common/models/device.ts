@@ -338,7 +338,7 @@ class Device {
 
                 // Done
                 if (msgCounter === result.data.length - 1) {
-                  Message.updateDeviceSuccessRate(messageInstance.device);
+                  this.updateDeviceSuccessRate(messageInstance.device);
                   next(null, result);
                 }
               });
@@ -442,6 +442,46 @@ class Device {
         }
       }
     });
+  }
+
+  updateDeviceSuccessRate(deviceId: string) {
+    // Model
+    const Device = this.model.app.models.Device;
+    Device.findOne(
+      {
+        where: {id: deviceId},
+        limit: 1,
+        include: [{
+          relation: 'Messages',
+          scope: {
+            order: 'createdAt DESC',
+            limit: 100
+          }
+        }]
+      },
+      function (err: any, device: any) {
+        if (err) {
+          console.error(err);
+        } else {
+          device = device.toJSON();
+          let attendedNbMessages: number;
+          attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber + 1;
+          if (device.Messages[device.Messages.length - 1].seqNumber > device.Messages[0].seqNumber) {
+            attendedNbMessages += 4095;
+          }
+          device.success_rate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
+
+          Device.upsert(
+            device,
+            function (err: any, deviceUpdated: any) {
+              if (err) {
+                console.error(err);
+              } else {
+                console.log('Updated device as: ' + deviceUpdated);
+              }
+            });
+        }
+      });
   }
 }
 
