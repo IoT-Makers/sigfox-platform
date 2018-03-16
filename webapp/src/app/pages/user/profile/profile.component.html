@@ -92,7 +92,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-building fa-lg"></i> <strong>Organizations</strong>
+          <i class="fa fa-building fa-lg text-organization"></i> <strong>Organizations</strong>
         </div>
         <div class="card-block">
           <ng-container *ngIf="!organizations.length">
@@ -131,19 +131,19 @@
                   </div>
                 </td>
                 <td class="text-center">
-                  <div class="">
+                  <div class="text-organization font-weight-bold">
                     {{item.name}}
                   </div>
                 </td>
                 <td class="text-center">
-                  <div class="">
+                  <div class="font-weight-bold">
                     {{item.Members.length}}
                   </div>
                 </td>
 
                 <td class="text-center">
                   <div class="btn-group-sm">
-                    <button class="btn btn-outline-primary btn-round" tooltip="Leave organization"
+                    <button class="btn btn-outline-organization btn-round" tooltip="Leave organization"
                             (click)="leaveOrganization(item)"><i class="fa fa-sign-out fa-lg"></i></button>
                     <button class="btn btn-outline-danger btn-round" tooltip="Delete organization" *ngIf="item.ownerId === user.id"
                             (click)="deleteOrganization(item)"><i class="fa fa-trash fa-lg"></i></button>

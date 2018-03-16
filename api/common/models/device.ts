@@ -208,13 +208,19 @@ class Device {
   }
 
   getMessagesFromSigfoxBackend(deviceId: string, limit: number, before: number, req: any, next: Function): void {
+    // Models
+    const Device = this.model;
+    const Message = this.model.app.models.Message;
+    const Geoloc = this.model.app.models.Geoloc;
+    const Connector = this.model.app.models.Connector;
+
     const userId = req.accessToken.userId;
 
     if (!limit) {
       limit = 100;
     }
 
-    this.model.app.models.Connector.findOne(
+    Connector.findOne(
       {
         where: {
           userId: userId,
@@ -269,7 +275,7 @@ class Device {
                   createdAt: new Date(messageInstance.time * 1000),
                   updatedAt: new Date(messageInstance.time * 1000),
                 };
-                this.model.app.models.Message.findOrCreate(
+                Message.findOrCreate(
                   {
                     where: {
                       and: [
@@ -293,7 +299,7 @@ class Device {
 
                       if (messageInstance.computedLocation) {
                         // Build the Geoloc object
-                        const geoloc = new this.model.app.models.Geoloc;
+                        const geoloc = new Geoloc;
                         geoloc.type = 'sigfox';
                         geoloc.location = new loopback.GeoPoint({lat: messageInstance.computedLocation.lat, lng: messageInstance.computedLocation.lng});
                         geoloc.precision = messageInstance.computedLocation.radius;
@@ -302,7 +308,7 @@ class Device {
                         geoloc.messageId = messagePostProcess.id;
                         geoloc.deviceId = messagePostProcess.deviceId;
                         // Find or create a new Geoloc
-                        this.model.app.models.Geoloc.findOrCreate(
+                        Geoloc.findOrCreate(
                           {
                             where: {
                               and: [
@@ -330,7 +336,9 @@ class Device {
                     }
                   });
 
+                // Done
                 if (msgCounter === result.data.length - 1) {
+                  Message.updateDeviceSuccessRate(messageInstance.device);
                   next(null, result);
                 }
               });
