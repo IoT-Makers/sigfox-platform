@@ -560,15 +560,16 @@ class Device {
           messages.forEach((message: any) => {
             message = message.toJSON();
             const obj: any = {};
+            const date = new Date(message.createdAt);
 
             obj.seqNumber = message.seqNumber;
             obj.createdAt = moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss');
-            obj.year = new Date(message.createdAt).getFullYear();
-            obj.month = new Date(message.createdAt).getMonth() + 1;
-            obj.day = new Date(message.createdAt).getDate();
-            obj.hours = new Date(message.createdAt).getHours();
-            obj.minutes = new Date(message.createdAt).getMinutes();
-            obj.seconds = new Date(message.createdAt).getSeconds();
+            obj.year = date.getFullYear();
+            obj.month = date.getMonth() + 1;
+            obj.day = date.getDate();
+            obj.hours = date.getHours();
+            obj.minutes = date.getMinutes();
+            obj.seconds = date.getSeconds();
             obj.data = message.data;
             obj.ack = message.ack;
             obj.data_downlink = message.data_downlink;

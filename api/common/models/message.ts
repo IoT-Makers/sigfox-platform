@@ -106,6 +106,9 @@ class Message {
               } else {
                 if (messageInstance) {
                   console.log('Found the corresponding message and storing reception in it.');
+                  if (!messageInstance.reception) {
+                    messageInstance.reception = [];
+                  }
                   messageInstance.reception.push(data.reception[0]);
                   this.model.upsert(
                     messageInstance,
