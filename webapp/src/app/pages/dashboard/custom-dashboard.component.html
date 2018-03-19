@@ -623,7 +623,7 @@
           <!-- End Tracking widget -->
 
           <!-- Alert -->
-          <ng-container *ngIf="widget.type === 'alert'">
+          <!--<ng-container *ngIf="widget.type === 'alert'">
             <div class="row" *ngIf="widget.data && widget.data[0].data_parsed">
               <div class="col-md-12 mb-1">
                 <ng-container *ngFor="let o of widget.data[0].data_parsed">
@@ -640,7 +640,7 @@
                 </ng-container>
               </div>
             </div>
-          </ng-container>
+          </ng-container>-->
           <!-- End Alert -->
 
           <!-- Gauge -->
@@ -680,7 +680,7 @@
             </div>
           </ng-container>-->
 
-          <ng-container *ngIf="widget.type!='map' && widget.type!='table' && widget.type!='tracking' && widget.type!='alert' && widget.type!='gauge' && widget.type!='line' && widget.type!='bar'">
+          <ng-container *ngIf="widget.type!='map' && widget.type!='table' && widget.type!='tracking' && widget.type!='gauge' && widget.type!='line' && widget.type!='bar'">
             {{widget.type}}
           </ng-container>
         </div>
@@ -1105,17 +1105,17 @@
             <!-- End Tracking widget -->
 
             <!-- Alert widget -->
-            <ng-container *ngIf="newWidget.type === 'alert'">
+            <!--<ng-container *ngIf="newWidget.type === 'alert'">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Device
                 </label>
                 <div class="col-md-9">
-                  <angular2-multiselect #selectOne
+                  <angular2-multiselect #selectOneDevice
                                         name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(newWidget.type); loadKeys(); selectOne.isActive = false;"
+                                        (onSelect)="setFilter(newWidget.type); loadKeys(); selectOneDevice.isActive = false;"
                                         (onDeSelect)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
@@ -1123,18 +1123,18 @@
               <div class="form-group row" *ngIf="selectedDevices.length > 0">
                 <label class="col-md-3 form-control-label">Key</label>
                 <div class="col-md-9">
-                  <angular2-multiselect #selectOne
+                  <angular2-multiselect #selectOneKey
                                         name="selectKeys"
                                         [data]="selectKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
                                         (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelect)="setFilter(newWidget.type); selectOne.isActive = false;"
+                                        (onSelect)="setFilter(newWidget.type); selectOneKey.isActive = false;"
                                         required>
                   </angular2-multiselect>
                 </div>
               </div>
-            </ng-container>
+            </ng-container>-->
             <!-- End Alert widget -->
 
             <!-- Gauge widget -->
@@ -1143,12 +1143,12 @@
                 <label class="col-md-3 form-control-label">Device
                 </label>
                 <div class="col-md-9">
-                  <angular2-multiselect #selectOne
+                  <angular2-multiselect #selectOneDevice
                                         name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(newWidget.type); loadKeys(); selectOne.isActive = false;"
+                                        (onSelect)="setFilter(newWidget.type); loadKeys(); selectOneDevice.isActive = false;"
                                         (onDeSelect)="setFilter(newWidget.type);">
                   </angular2-multiselect>
                 </div>
@@ -1156,13 +1156,13 @@
               <div class="form-group row" *ngIf="selectedDevices.length > 0">
                 <label class="col-md-3 form-control-label">Key</label>
                 <div class="col-md-9">
-                  <angular2-multiselect #selectOne
+                  <angular2-multiselect #selectOneKey
                                         name="selectKeys"
                                         [data]="selectKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
                                         (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelect)="setFilter(newWidget.type); selectOne.isActive = false;">
+                                        (onSelect)="setFilter(newWidget.type); selectOneKey.isActive = false;">
                   </angular2-multiselect>
                 </div>
               </div>

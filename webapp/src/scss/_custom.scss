@@ -185,6 +185,21 @@ agm-map {
     background: $color !important;
   }
 
+  // Select one
+  .select-one-#{$variant} {
+    color: #ccc;
+  }
+  .select-one-#{$variant} .c-token{
+    background: $color !important;
+  }
+  .select-one-#{$variant} .pure-checkbox label::before {
+    border-radius: 100% !important;
+    border-color: $color !important;
+  }
+  .select-one-#{$variant} .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
+    background: $color !important;
+  }
+
   // Switch
   .switch-#{$variant} {
     @include switch-variant($color);
@@ -197,8 +212,9 @@ agm-map {
   }
 }
 
+// Custom selects
 .select-one {
-}
+ }
 .select-one .c-token{
 }
 .select-one .pure-checkbox label::before {

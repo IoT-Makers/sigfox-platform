@@ -93,7 +93,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     {id: 'map', itemName: 'Map'},
     {id: 'table', itemName: 'Table'},
     {id: 'tracking', itemName: 'Tracking'},
-    {id: 'alert', itemName: 'Alert'},
     {id: 'gauge', itemName: 'Gauge'},
     {id: 'line', itemName: 'Line graph'},
     {id: 'bar', itemName: 'Bar graph'}
@@ -619,7 +618,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
 
     // Alert & Gauge
-    else if (type === 'alert' || type === 'gauge') {
+    else if (type === 'gauge') {
       this.newWidget.filter = {
         limit: 1,
         order: 'updatedAt DESC',
@@ -772,7 +771,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.newWidget.options.keys = [];
     // Fetch all the keys belonging to selected devices
     const filter = this.newWidget.filter;
-    if (this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte) {
+    if (this.newWidget.filter.include[0].scope.where.and[0].createdAt && this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte) {
       filter.include[0].scope.where.and[0] = {};
       filter.include[0].scope.limit = 1;
     }
@@ -1143,11 +1142,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                       if (line.key === key) {
                         widget.chartData[w] = {};
                         // Set key
-                        if (line.unit !== '') {
-                          widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
-                        } else {
-                          widget.chartData[w].key = line.key + ' - ' + device.id;
-                        }
+
+                        widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
                         // Set values
                         widget.chartData[w].values = [];
                         device.Messages.forEach((message) => {
