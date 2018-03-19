@@ -42,7 +42,7 @@ class Category {
     next();
   }
 
-  download(categoryId: string, type: string, req: any, res: any, next: Function): void {
+  download(categoryId: string, type: string, req: any, res: any, next: Function) {
     // Model
     const Category = this.model;
     const Device = this.model.app.models.Device;
@@ -65,25 +65,7 @@ class Category {
             {id: categoryId}
           ]
         },
-        include: [{
-          relation: 'Devices',
-          scope: {
-            order: 'createdAt DESC',
-            include: [{
-              relation: 'Messages',
-              scope: {
-                order: 'createdAt DESC',
-                include: [{
-                  relation: 'Geolocs',
-                  scope: {
-                    limit: 5,
-                    order: 'createdAt DESC'
-                  }
-                }]
-              }
-            }]
-          }
-        }]
+        include: ['Devices']
       }, function (err: any, category: any) {
         if (err) {
           console.error(err);
@@ -120,8 +102,9 @@ class Category {
           options.fields.push('ack');
           options.fields.push('data_downlink');
 
+          let nbProcessedDevices = 0;
           category.Devices.forEach((device: any, i: number) => {
-            /*Device.findOne(
+            Device.findOne(
               {
                 where: {
                   and: [
@@ -146,57 +129,59 @@ class Category {
                 if (err) {
                   console.error(err);
                   res.send(err);
-                } else {*/
+                } else {
+                  device = device.toJSON();
+                  device.Messages.forEach((message: any) => {
+                    const obj: any = {};
 
-            device.Messages.forEach((message: any) => {
-              const obj: any = {};
+                    obj.deviceId = message.deviceId;
+                    obj.seqNumber = message.seqNumber;
+                    obj.createdAt = moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss');
+                    obj.year = new Date(message.createdAt).getFullYear();
+                    obj.month = new Date(message.createdAt).getMonth() + 1;
+                    obj.day = new Date(message.createdAt).getDate();
+                    obj.hours = new Date(message.createdAt).getHours();
+                    obj.minutes = new Date(message.createdAt).getMinutes();
+                    obj.seconds = new Date(message.createdAt).getSeconds();
+                    obj.data = message.data;
+                    obj.ack = message.ack;
+                    obj.data_downlink = message.data_downlink;
 
-              obj.deviceId = message.deviceId;
-              obj.seqNumber = message.seqNumber;
-              obj.createdAt = moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss');
-              obj.year = new Date(message.createdAt).getFullYear();
-              obj.month = new Date(message.createdAt).getMonth() + 1;
-              obj.day = new Date(message.createdAt).getDate();
-              obj.hours = new Date(message.createdAt).getHours();
-              obj.minutes = new Date(message.createdAt).getMinutes();
-              obj.seconds = new Date(message.createdAt).getSeconds();
-              obj.data = message.data;
-              obj.ack = message.ack;
-              obj.data_downlink = message.data_downlink;
-
-              message.data_parsed.forEach((p: any) => {
-                if (options.fields.indexOf(p.key) === -1) {
-                  options.fields.push(p.key);
+                    if (message.data_parsed) {
+                    message.data_parsed.forEach((p: any) => {
+                      if (options.fields.indexOf(p.key) === -1) {
+                        options.fields.push(p.key);
+                      }
+                      obj[p.key] = p.value;
+                    });
+                    }
+                    message.Geolocs.forEach((geoloc: any) => {
+                      if (options.fields.indexOf('lat_' + geoloc.type) === -1) {
+                        options.fields.push('lat_' + geoloc.type);
+                        options.fields.push('lng_' + geoloc.type);
+                        options.fields.push('precision_' + geoloc.type);
+                      }
+                      obj['lat_' + geoloc.type] = geoloc.location.lat;
+                      obj['lng_' + geoloc.type] = geoloc.location.lng;
+                      obj['precision_' + geoloc.type] = geoloc.precision;
+                    });
+                    data.push(obj);
+                  });
+                  ++nbProcessedDevices;
+                  // If all devices are treated
+                  if (data.length > 0 && nbProcessedDevices === category.Devices.length) {
+                    try {
+                      csv = json2csv(data, options);
+                      console.log('Done CSV processing.');
+                    } catch (err) {
+                      console.error(err);
+                    }
+                    //res.status(200).send({data: csv});
+                    res.send(csv);
+                    //next();
+                  }
                 }
-                obj[p.key] = p.value;
               });
-              message.Geolocs.forEach((geoloc: any) => {
-                if (options.fields.indexOf('lat_' + geoloc.type) === -1) {
-                  options.fields.push('lat_' + geoloc.type);
-                  options.fields.push('lng_' + geoloc.type);
-                  options.fields.push('precision_' + geoloc.type);
-                }
-                obj['lat_' + geoloc.type] = geoloc.location.lat;
-                obj['lng_' + geoloc.type] = geoloc.location.lng;
-                obj['precision_' + geoloc.type] = geoloc.precision;
-              });
-              data.push(obj);
-            });
-
-            // If all devices are treated
-            if (data.length > 0 && i === category.Devices.length - 1) {
-              try {
-                csv = json2csv(data, options);
-                console.log('Done CSV processing.');
-              } catch (err) {
-                console.error(err);
-              }
-              //res.status(200).send({data: csv});
-              res.send(csv);
-              //next();
-            }
-            /*  }
-            });*/
           });
         }
       });
