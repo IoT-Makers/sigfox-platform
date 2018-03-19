@@ -222,7 +222,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
               order: 'updatedAt DESC',
               include: ['Category', {
                 relation: 'Messages',
-                order: 'createdAt DESC',
                 scope: {
                   limit: 1,
                   order: 'createdAt DESC',
@@ -253,7 +252,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
               order: 'updatedAt DESC',
               include: ['Category', {
                 relation: 'Messages',
-                order: 'createdAt DESC',
                 scope: {
                   limit: 1,
                   order: 'createdAt DESC',

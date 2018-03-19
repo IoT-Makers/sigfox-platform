@@ -1013,7 +1013,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                       if (line.key === key) {
                         widget.chartData[w] = {};
                         // Set key
-                        widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
+                        if (line.unit !== '') {
+                          widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
+                        } else {
+                          widget.chartData[w].key = line.key + ' - ' + device.id;
+                        }
                         // Set values
                         widget.chartData[w].values = [];
                         device.Messages.forEach((message) => {
@@ -1139,7 +1143,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                       if (line.key === key) {
                         widget.chartData[w] = {};
                         // Set key
-                        widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
+                        if (line.unit !== '') {
+                          widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
+                        } else {
+                          widget.chartData[w].key = line.key + ' - ' + device.id;
+                        }
                         // Set values
                         widget.chartData[w].values = [];
                         device.Messages.forEach((message) => {

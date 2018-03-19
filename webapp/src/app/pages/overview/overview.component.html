@@ -195,7 +195,7 @@
                 <p class="lead">{{message.createdAt | date:"yyyy/MM/dd - HH:mm:ss"}}</p>
                 <div class="text-justify" *ngIf="message.data_parsed">
                   <div *ngFor="let o of message.data_parsed">
-                    <small *ngIf="o.value">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
+                    <small *ngIf="o.value || o.value === 0">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
                   </div>
                 </div>
               </div>
@@ -272,7 +272,45 @@
                 <i class="fa fa-battery-three-quarters fa-lg"></i> <strong> Battery</strong>
               </div>
               <div class="card-block mx-auto">
-                <ngx-gauge #gauge
+                <div *ngIf="battery.unit === '%'" id="battery">
+                  <div class="bottom"></div>
+                  <ng-container *ngIf="mobile">
+                    <div class="middle" [style.width]="'125px'">
+                    <span class="glass" [style.width]="'125px'">
+                      <h4 class="font-weight-bold mt-2 text-center">{{battery.value}} %</h4>
+                    </span>
+                      <div *ngIf="battery.value > 50" class="fill-green" [style.width]="battery.value + '%'"></div>
+                      <div *ngIf="battery.value <= 50 && battery.value > 25" class="fill-orange" [style.width]="battery.value + '%'"></div>
+                      <div *ngIf="battery.value <= 25" class="fill-red" [style.width]="battery.value + '%'"></div>
+                    </div>
+                    <div class="top-b"></div>
+                    <div class="top-a"></div>
+                  </ng-container>
+                  <ng-container *ngIf="!mobile">
+                    <div class="middle">
+                    <span class="glass">
+                      <h4 class="font-weight-bold mt-2 text-center">{{battery.value}} %</h4>
+                    </span>
+                      <div *ngIf="battery.value > 50" class="fill-green" [style.width]="battery.value + '%'"></div>
+                      <div *ngIf="battery.value <= 50 && battery.value > 25" class="fill-orange" [style.width]="battery.value + '%'"></div>
+                      <div *ngIf="battery.value <= 25" class="fill-red" [style.width]="battery.value + '%'"></div>
+                    </div>
+                    <div class="top-b"></div>
+                    <div class="top-a"></div>
+                  </ng-container>
+                </div>
+                <!--<div id="reflection">
+                  <div class="fade"></div>
+                  <div class="bottom"></div>
+                  <div class="middle">
+                    <span class="glass"></span>
+                    <div class="fill"></div>
+                  </div>
+                  <div class="top-b"></div>
+                  <div class="top-a"></div>
+                </div>-->
+
+                <!--<ngx-gauge #gauge
                            *ngIf="battery.unit === '%'"
                            [type]="'arch'"
                            [size]="200"
@@ -282,7 +320,7 @@
                            [label]="'Battery'"
                            [append]="battery.unit"
                            [thresholds]="thresholdBattery">
-                </ngx-gauge>
+                </ngx-gauge>-->
                 <h1 *ngIf="battery.unit != '%'">{{battery.value}} <span class="small">{{battery.unit}}</span></h1>
               </div>
             </div>

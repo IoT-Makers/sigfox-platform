@@ -17,20 +17,6 @@ import { MessageApi } from '../services/index';
 @Injectable()
 export class MessageEffects extends BaseLoopbackEffects {
   @Effect()
-  public download$ = this.actions$
-    .ofType(MessageActionTypes.DOWNLOAD).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.message.download(action.payload.deviceId, action.payload.type, action.payload.req, action.payload.res).pipe(
-          map((response: any) => new MessageActions.downloadSuccess(action.payload.id, response, action.meta)),
-          catchError((error: any) => concat(
-            of(new MessageActions.downloadFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
   public putSigfox$ = this.actions$
     .ofType(MessageActionTypes.PUT_SIGFOX).pipe(
       mergeMap((action: LoopbackAction) =>

@@ -1,8 +1,6 @@
 import {Model} from '@mean-expert/model';
 
-const json2csv = require('json2csv').parse;
 const loopback = require('loopback');
-const moment = require('moment');
 
 /**
  * @module Message
@@ -16,19 +14,6 @@ const moment = require('moment');
     beforeSave: { name: 'before save', type: 'operation' }
   },
   remotes: {
-    download: {
-      accepts: [
-        {arg: 'deviceId', required: true, type: 'string', http: {source: 'path'}},
-        {arg: 'type', required: true, type: 'string', http: {source: 'path'}},
-        {arg: 'req', type: 'object', http: {source: 'req'}},
-        {arg: 'res', type: 'object', http: {source: 'res'}}
-      ],
-      http: {
-        path: '/download/:deviceId/:type',
-        verb: 'get'
-      },
-      returns: {type: 'object', root: true}
-    },
     putSigfox: {
       accepts: [
         {arg: 'req', type: 'object', http: {source: 'req'}},
@@ -381,114 +366,6 @@ class Message {
         });
       }
     });
-  }
-
-  download(deviceId: string, type: string, req: any, res: any, next: Function): void {
-    if ((type !== 'csv'
-        && type !== 'json')
-      || typeof deviceId === 'undefined') {
-      res.send('Missing "type" ("csv" or "json"), "deviceId"');
-    }
-
-    // Obtain the userId with the access token of ctx
-    const userId = req.accessToken.userId;
-
-    const datetime = new Date();
-    const today = moment().format('YYYY.MM.DD');
-    const filename = today + '_' + deviceId + '_export.csv';
-    res.set('Cache-Control', 'max-age=0, no-cache, must-revalidate, proxy-revalidate');
-    res.set('Last-Modified', datetime + 'GMT');
-    res.set('Content-Type', 'application/force-download');
-    res.set('Content-Type', 'application/octet-stream');
-    res.set('Content-Type', 'application/download');
-    res.set('Content-Disposition', 'attachment;filename=' + filename);
-    res.set('Content-Transfer-Encoding', 'binary');
-
-    this.model.find(
-      {
-        where: {
-          and: [
-            {userId: userId},
-            {deviceId: deviceId}
-          ]
-        },
-        include: ['Geolocs']
-      }, function (err: any, messages: any) {
-        if (err) {
-          console.error(err);
-          res.send(err);
-        } else {
-          const data: any = [];
-          let csv: any = [];
-
-          const options: any = {
-            fields: []
-          };
-
-          messages.forEach((message: any) => {
-            message = message.toJSON();
-
-            const obj: any = {};
-            if (options.fields.indexOf('seqNumber') === -1) {
-              options.fields.push('seqNumber');
-
-              options.fields.push('createdAt');
-              options.fields.push('year');
-              options.fields.push('month');
-              options.fields.push('day');
-              options.fields.push('hours');
-              options.fields.push('minutes');
-              options.fields.push('seconds');
-
-              options.fields.push('data');
-              options.fields.push('ack');
-              options.fields.push('data_downlink');
-            }
-            obj.seqNumber = message.seqNumber;
-
-            obj.createdAt = moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss');
-            obj.year = new Date(message.createdAt).getFullYear();
-            obj.month = new Date(message.createdAt).getMonth() + 1;
-            obj.day = new Date(message.createdAt).getDate();
-            obj.hours = new Date(message.createdAt).getHours();
-            obj.minutes = new Date(message.createdAt).getMinutes();
-            obj.seconds = new Date(message.createdAt).getSeconds();
-
-            obj.data = message.data;
-            obj.ack = message.ack;
-            obj.data_downlink = message.data_downlink;
-
-            message.data_parsed.forEach((p: any) => {
-              if (options.fields.indexOf(p.key) === -1) {
-                options.fields.push(p.key);
-              }
-              obj[p.key] = p.value;
-            });
-            message.Geolocs.forEach((geoloc: any) => {
-              if (options.fields.indexOf('lat_' + geoloc.type) === -1) {
-                options.fields.push('lat_' + geoloc.type);
-                options.fields.push('lng_' + geoloc.type);
-                options.fields.push('precision_' + geoloc.type);
-              }
-              obj['lat_' + geoloc.type] = geoloc.location.lat;
-              obj['lng_' + geoloc.type] = geoloc.location.lng;
-              obj['precision_' + geoloc.type] = geoloc.precision;
-            });
-            data.push(obj);
-          });
-          if (data.length > 0) {
-            try {
-              csv = json2csv(data, options);
-              console.log('Done CSV processing.');
-            } catch (err) {
-              console.error(err);
-            }
-          }
-          //res.status(200).send({data: csv});
-          res.send(csv);
-          //next();
-        }
-      });
   }
 
 // Example Operation Hook

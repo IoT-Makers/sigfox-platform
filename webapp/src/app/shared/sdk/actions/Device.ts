@@ -6,6 +6,10 @@ import { LoopBackFilter, SDKToken, Device } from '../models';
 
 export const DeviceActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Device'), {
+  DOWNLOAD: type('[Device] download'),
+  DOWNLOAD_SUCCESS: type('[Device] download success'),
+  DOWNLOAD_FAIL: type('[Device] download fail'),
+
   TIME_SERIES: type('[Device] timeSeries'),
   TIME_SERIES_SUCCESS: type('[Device] timeSeries success'),
   TIME_SERIES_FAIL: type('[Device] timeSeries fail'),
@@ -25,6 +29,56 @@ Object.assign(BaseLoopbackActionTypesFactory('Device'), {
 });
 export const DeviceActions =
 Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
+
+  /**
+   * download Action.
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} deviceId 
+   * @param {string} type 
+   * @param {object} req 
+   * @param {object} res 
+   * @param {any} meta (optional).
+   * 
+   */
+  download: class implements Action {
+    public readonly type = DeviceActionTypes.DOWNLOAD;
+      public payload: {deviceId: any, type: any, req: any, res: any};
+
+    constructor(deviceId: any, type: any, req: any = {}, res: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {deviceId, type, req, res};
+    }
+  },
+  /**
+   * downloadSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  downloadSuccess: class implements Action {
+    public readonly type = DeviceActionTypes.DOWNLOAD_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * downloadFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  downloadFail: class implements Action {
+    public readonly type = DeviceActionTypes.DOWNLOAD_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
 
   /**
    * timeSeries Action.

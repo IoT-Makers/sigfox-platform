@@ -17,6 +17,20 @@ import { DeviceApi } from '../services/index';
 @Injectable()
 export class DeviceEffects extends BaseLoopbackEffects {
   @Effect()
+  public download$ = this.actions$
+    .ofType(DeviceActionTypes.DOWNLOAD).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.device.download(action.payload.deviceId, action.payload.type, action.payload.req, action.payload.res).pipe(
+          map((response: any) => new DeviceActions.downloadSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new DeviceActions.downloadFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public timeSeries$ = this.actions$
     .ofType(DeviceActionTypes.TIME_SERIES).pipe(
       mergeMap((action: LoopbackAction) =>

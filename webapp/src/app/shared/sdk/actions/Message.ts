@@ -6,10 +6,6 @@ import { LoopBackFilter, SDKToken, Message } from '../models';
 
 export const MessageActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Message'), {
-  DOWNLOAD: type('[Message] download'),
-  DOWNLOAD_SUCCESS: type('[Message] download success'),
-  DOWNLOAD_FAIL: type('[Message] download fail'),
-
   PUT_SIGFOX: type('[Message] putSigfox'),
   PUT_SIGFOX_SUCCESS: type('[Message] putSigfox success'),
   PUT_SIGFOX_FAIL: type('[Message] putSigfox fail'),
@@ -17,56 +13,6 @@ Object.assign(BaseLoopbackActionTypesFactory('Message'), {
 });
 export const MessageActions =
 Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
-
-  /**
-   * download Action.
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {string} deviceId 
-   * @param {string} type 
-   * @param {object} req 
-   * @param {object} res 
-   * @param {any} meta (optional).
-   * 
-   */
-  download: class implements Action {
-    public readonly type = MessageActionTypes.DOWNLOAD;
-      public payload: {deviceId: any, type: any, req: any, res: any};
-
-    constructor(deviceId: any, type: any, req: any = {}, res: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {deviceId, type, req, res};
-    }
-  },
-  /**
-   * downloadSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
-   * @param {any} meta (optional).
-   * 
-   */
-  downloadSuccess: class implements Action {
-    public readonly type = MessageActionTypes.DOWNLOAD_SUCCESS;
-      public payload: {id: any, data: any};
-
-    constructor(id: any, data: any, public meta?: any) {
-      this.payload = {id, data};
-    }
-  },
-  /**
-   * downloadFail Action.
-   *
-   * @param {any} payload
-   * @param {any} meta (optional).
-   * 
-   */
-  downloadFail: class implements Action {
-    public readonly type = MessageActionTypes.DOWNLOAD_FAIL;
-
-    constructor(public payload: any, public meta?: any) { }
-  },
 
   /**
    * putSigfox Action.

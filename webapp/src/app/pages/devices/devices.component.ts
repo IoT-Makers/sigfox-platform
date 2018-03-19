@@ -135,8 +135,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
       this.toast = this.toasterService.pop('error', 'Error', 'Server error');
       this.loadingDownload = false;
     });
-
   }
+
   setCircles() {
     for (let i = 0; i < this.devices.length; i++) {
       this.isCircleVisible.push(false);

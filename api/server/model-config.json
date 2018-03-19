@@ -87,7 +87,8 @@
           "timeSeries": true,
           "deleteDeviceMessagesAlertsGeolocs": true,
           "getMessagesFromSigfoxBackend": true,
-          "parseAllMessages": true
+          "parseAllMessages": true,
+          "download": true
         }
       }
     }
@@ -102,7 +103,8 @@
     "options": {
       "remoting": {
         "sharedMethods": {
-          "*": false
+          "*": false,
+          "download": true
         }
       }
     }
@@ -114,8 +116,7 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
-          "putSigfox": true,
-          "download": true
+          "putSigfox": true
         }
       }
     }

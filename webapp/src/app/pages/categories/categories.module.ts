@@ -7,7 +7,9 @@ import {CategoriesRoutingModule} from './categories-routing.module';
 import {ToasterModule} from 'angular2-toaster';
 import {ModalModule, TooltipModule} from 'ng2-bootstrap';
 import {ClickCopyDirective} from './click-copy.directive';
-import {AngularMultiSelectModule} from "angular2-multiselect-dropdown/angular2-multiselect-dropdown";
+import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
+import {LaddaModule} from 'angular2-ladda';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -18,7 +20,9 @@ import {AngularMultiSelectModule} from "angular2-multiselect-dropdown/angular2-m
     ToasterModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
-    AngularMultiSelectModule
+    AngularMultiSelectModule,
+    LaddaModule,
+    HttpClientModule
   ],
   declarations: [
     CategoriesComponent,

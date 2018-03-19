@@ -28,7 +28,6 @@
               <table class="table table-hover table-outline">
                 <thead class="thead-inverse">
                 <tr>
-                  <th *ngIf="!edit" class="text-center">ID</th>
                   <th class="text-center">Name</th>
                   <th *ngIf="!edit" class="text-center">Description</th>
                   <th class="text-center">Properties</th>
@@ -39,11 +38,6 @@
                 </thead>
                 <tbody>
                 <tr *ngFor="let category of categories; let i = index">
-                  <td class="text-center" *ngIf="!edit">
-                    <div class="small text-category" tooltip="Click to copy" click-copy>
-                      {{category.id}}
-                    </div>
-                  </td>
                   <td class="text-center">
                     <strong class="text-category">{{category.name}}</strong>
                     <div class="small text-muted">Updated:
@@ -84,13 +78,14 @@
                               (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
                       <button class="btn btn-outline-danger btn-round" tooltip="Delete category"
                               (click)="openConfirmModal(category)"><i class="fa fa-trash fa-lg"></i></button>
-                      <button class="btn btn-outline-organization btn-round" tooltip="Share category" (click)="$event.preventDefault(); showShareCategoryWithOrganizationModal(category)">
+                      <button class="btn btn-outline-organization btn-round" tooltip="Share category"
+                              (click)="$event.preventDefault(); showShareCategoryWithOrganizationModal(category)">
                         <i class="fa fa-share"></i>
                       </button>
-                      <div class="col col-md-12">
-
-
-                      </div>
+                      <button class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
+                              (click)="$event.preventDefault(); downloadCsv(category);">
+                        <i class="fa fa-download"></i>
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -105,7 +100,7 @@
     <div *ngIf="edit" class="col-md-6">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-wrench fa-lg"></i> <strong>Edit Category</strong>
+          <i class="fa fa-wrench fa-lg"></i> <strong>Edit category</strong> - categoryId: <span class="text-category" tooltip="Click to copy" click-copy>{{categoryToEdit.id}}</span>
         </div>
         <div class="card-block">
           <form class="form-horizontal" #editForm="ngForm">

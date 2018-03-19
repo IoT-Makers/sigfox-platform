@@ -3,6 +3,8 @@ import * as _ from 'lodash';
 
 const moment = require('moment');
 const loopback = require('loopback');
+const json2csv = require('json2csv').parse;
+
 
 /**
  * @module Device
@@ -17,6 +19,19 @@ const loopback = require('loopback');
     access: {name: 'access', type: 'operation'}*/
   },
   remotes: {
+    download: {
+      accepts: [
+        {arg: 'deviceId', required: true, type: 'string', http: {source: 'path'}},
+        {arg: 'type', required: true, type: 'string', http: {source: 'path'}},
+        {arg: 'req', type: 'object', http: {source: 'req'}},
+        {arg: 'res', type: 'object', http: {source: 'res'}}
+      ],
+      http: {
+        path: '/download/:deviceId/:type',
+        verb: 'get'
+      },
+      returns: {type: 'object', root: true}
+    },
     timeSeries: {
       accepts: [
         {arg: 'deviceId', type: 'string', required: true, description: 'the deviceId'},
@@ -97,7 +112,7 @@ class Device {
         } else if (deviceInstance) {
           console.log('Deleting device ' + deviceId + ' and all its corresponding messages, alerts & geolocs.');
 
-          this.model.app.models.Device.destroyAll({id: deviceId}, (error: any, result: any) => { if(!err) next(null, 'Success'); });
+          this.model.app.models.Device.destroyAll({id: deviceId}, (error: any, result: any) => { if (!err) next(null, 'Success'); });
           this.model.app.models.Message.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
           this.model.app.models.Alert.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
           this.model.app.models.Geoloc.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
@@ -358,12 +373,13 @@ class Device {
   }
 
   parseAllMessages(deviceId: string, req: any, next: Function): void {
-    const userId = req.accessToken.userId;
-
+    // Models
     const Device = this.model.app.models.Device;
     const Parser = this.model.app.models.Parser;
     const Message = this.model.app.models.Message;
     const Geoloc = this.model.app.models.Geoloc;
+
+    const userId = req.accessToken.userId;
 
     const response: any = {};
 
@@ -446,7 +462,7 @@ class Device {
 
   updateDeviceSuccessRate(deviceId: string) {
     // Model
-    const Device = this.model.app.models.Device;
+    const Device = this.model;
     Device.findOne(
       {
         where: {id: deviceId},
@@ -483,6 +499,113 @@ class Device {
         }
       });
   }
+
+  download(deviceId: string, type: string, req: any, res: any, next: Function): void {
+    // Model
+    const Device = this.model;
+    const Message = this.model.app.models.Message;
+
+    if ((type !== 'csv'
+        && type !== 'json')
+      || typeof deviceId === 'undefined') {
+      res.send('Missing "type" ("csv" or "json"), "deviceId"');
+    }
+
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
+    const datetime = new Date();
+    const today = moment().format('YYYY.MM.DD');
+    const filename = today + '_' + deviceId + '_export.csv';
+    res.set('Cache-Control', 'max-age=0, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Last-Modified', datetime + 'GMT');
+    res.set('Content-Type', 'application/force-download');
+    res.set('Content-Type', 'application/octet-stream');
+    res.set('Content-Type', 'application/download');
+    res.set('Content-Disposition', 'attachment;filename=' + filename);
+    res.set('Content-Transfer-Encoding', 'binary');
+
+    Message.find(
+      {
+        where: {
+          and: [
+            {userId: userId},
+            {deviceId: deviceId}
+          ]
+        },
+        include: ['Geolocs'],
+        order: 'createdAt DESC'
+      }, function (err: any, messages: any) {
+        if (err) {
+          console.error(err);
+          res.send(err);
+        } else {
+          const data: any = [];
+          let csv: any = [];
+          const options: any = {
+            fields: []
+          };
+          options.fields.push('seqNumber');
+          options.fields.push('createdAt');
+          options.fields.push('year');
+          options.fields.push('month');
+          options.fields.push('day');
+          options.fields.push('hours');
+          options.fields.push('minutes');
+          options.fields.push('seconds');
+          options.fields.push('data');
+          options.fields.push('ack');
+          options.fields.push('data_downlink');
+
+          messages.forEach((message: any) => {
+            message = message.toJSON();
+            const obj: any = {};
+
+            obj.seqNumber = message.seqNumber;
+            obj.createdAt = moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss');
+            obj.year = new Date(message.createdAt).getFullYear();
+            obj.month = new Date(message.createdAt).getMonth() + 1;
+            obj.day = new Date(message.createdAt).getDate();
+            obj.hours = new Date(message.createdAt).getHours();
+            obj.minutes = new Date(message.createdAt).getMinutes();
+            obj.seconds = new Date(message.createdAt).getSeconds();
+            obj.data = message.data;
+            obj.ack = message.ack;
+            obj.data_downlink = message.data_downlink;
+
+            message.data_parsed.forEach((p: any) => {
+              if (options.fields.indexOf(p.key) === -1) {
+                options.fields.push(p.key);
+              }
+              obj[p.key] = p.value;
+            });
+            message.Geolocs.forEach((geoloc: any) => {
+              if (options.fields.indexOf('lat_' + geoloc.type) === -1) {
+                options.fields.push('lat_' + geoloc.type);
+                options.fields.push('lng_' + geoloc.type);
+                options.fields.push('precision_' + geoloc.type);
+              }
+              obj['lat_' + geoloc.type] = geoloc.location.lat;
+              obj['lng_' + geoloc.type] = geoloc.location.lng;
+              obj['precision_' + geoloc.type] = geoloc.precision;
+            });
+            data.push(obj);
+          });
+          if (data.length > 0) {
+            try {
+              csv = json2csv(data, options);
+              console.log('Done CSV processing.');
+            } catch (err) {
+              console.error(err);
+            }
+          }
+          //res.status(200).send({data: csv});
+          res.send(csv);
+          //next();
+        }
+      });
+  }
+
 }
 
 module.exports = Device;

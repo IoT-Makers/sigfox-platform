@@ -1,8 +1,12 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Category, Device, FireLoopRef, Organization, User} from '../../shared/sdk/models';
 import {CategoryApi, DeviceApi, RealTime, UserApi, OrganizationApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import * as moment from 'moment';
+import {HttpClient} from '@angular/common/http';
+import {DOCUMENT} from '@angular/common';
+import {saveAs} from 'file-saver';
 
 @Component({
   selector: 'app-categories',
@@ -15,6 +19,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   @ViewChild('confirmModal') confirmModal: any;
   @ViewChild('shareCategoryWithOrganizationModal') shareCategoryWithOrganizationModal: any;
+
+  private loadingDownload = false;
 
   private device: Device = new Device();
 
@@ -37,7 +43,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   private categoryToEdit: Category = new Category();
   private newCategory = false;
 
-  private shareAssociatedDevices: boolean = false;
+  private shareAssociatedDevices = false;
 
   public propertyType = ['string', 'number', 'geoloc', 'date', 'boolean'];
 
@@ -65,7 +71,9 @@ export class CategoriesComponent implements OnInit, OnDestroy {
               private deviceApi: DeviceApi,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
-              toasterService: ToasterService) {
+              toasterService: ToasterService,
+              @Inject(DOCUMENT) private document: any,
+              private http: HttpClient) {
     this.toasterService = toasterService;
   }
 
@@ -105,6 +113,25 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     ).subscribe((categories: Category[]) => {
       this.categories = categories;
       console.log(this.categories);
+    });
+  }
+
+  downloadCsv(category: Category) {
+    this.loadingDownload = true;
+    const url = this.document.location.origin + '/api/Categories/download/' + category.id + '/csv?access_token=' + this.userApi.getCurrentToken().id;
+
+    this.http.get(url, {responseType: 'blob'}).subscribe(res => {
+      const blob: Blob = new Blob([res], {type: 'text/csv'});
+      const today = moment().format('YYYY.MM.DD');
+      const filename = today + '_' + category.name + '_export.csv';
+      saveAs(blob, filename);
+      this.loadingDownload = false;
+    }, err => {
+      console.log(err);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', 'Server error');
+      this.loadingDownload = false;
     });
   }
 
