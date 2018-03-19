@@ -103,6 +103,14 @@
 
         <!-- Card body -->
         <div class="card-block">
+          <!-- Image -->
+          <ng-container *ngIf="widget.type === 'image'">
+            <div class="text-center mx-auto">
+              <img class="img-fluid" style="max-height: 300px" src="{{widget.image}}">
+            </div>
+          </ng-container>
+          <!-- End Image -->
+
           <!-- Map -->
           <ng-container *ngIf="widget.type === 'map'">
             <ng-container *ngIf="widget.data">
@@ -679,10 +687,6 @@
               </div>
             </div>
           </ng-container>-->
-
-          <ng-container *ngIf="widget.type!='map' && widget.type!='table' && widget.type!='tracking' && widget.type!='gauge' && widget.type!='line' && widget.type!='bar'">
-            {{widget.type}}
-          </ng-container>
         </div>
       </div>
       <!-- End For each widget -->
@@ -760,7 +764,7 @@
                                       name="selectWidgetType"
                                       [data]="selectWidgetType"
                                       [(ngModel)]="selectedWidgetType"
-                                      (onSelect)="newWidget.type = $event.id; log($event); selectOne.isActive = false;"
+                                      (onSelect)="newWidget.type = $event.id; selectOne.isActive = false;"
                                       (onDeSelect)="newWidget.type = ''"
                                       [settings]="selectOneSettings"
                                       required>
@@ -769,6 +773,22 @@
             </div>
 
             <hr *ngIf="editWidgetFlag">
+
+            <!-- Image widget -->
+            <ng-container *ngIf="newWidget.type === 'image'">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Image</label>
+                <div class="col-md-9">
+                  <input type="text"
+                         class="form-control"
+                         placeholder="Past the URL of the image here"
+                         name="newWidget.image"
+                         [(ngModel)]="newWidget.image"
+                         required>
+                </div>
+              </div>
+            </ng-container>
+            <!-- End Image widget -->
 
             <!-- Map widget -->
             <ng-container *ngIf="newWidget.type === 'map'">
@@ -780,10 +800,10 @@
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter(newWidget.type);"
-                                        (onDeSelect)="setFilter(newWidget.type);"
-                                        (onSelectAll)="setFilter(newWidget.type);"
-                                        (onDeSelectAll)="setFilter(newWidget.type);">
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();">
                   </angular2-multiselect>
                 </div>
 
@@ -792,10 +812,10 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter(newWidget.type);"
-                                        (onDeSelect)="setFilter(newWidget.type);"
-                                        (onSelectAll)="setFilter(newWidget.type);"
-                                        (onDeSelectAll)="setFilter(newWidget.type);">
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -859,10 +879,10 @@
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter(newWidget.type);"
-                                        (onDeSelect)="setFilter(newWidget.type);"
-                                        (onSelectAll)="setFilter(newWidget.type);"
-                                        (onDeSelectAll)="setFilter(newWidget.type);">
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();">
                   </angular2-multiselect>
                 </div>
 
@@ -871,10 +891,10 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter(newWidget.type);"
-                                        (onDeSelect)="setFilter(newWidget.type);"
-                                        (onSelectAll)="setFilter(newWidget.type);"
-                                        (onDeSelectAll)="setFilter(newWidget.type);">
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -932,10 +952,10 @@
                                           [data]="selectKeys"
                                           [(ngModel)]="selectedKeys"
                                           [settings]="selectKeysSettings"
-                                          (onSelect)="setFilter(newWidget.type)"
-                                          (onDeSelect)="setFilter(newWidget.type)"
-                                          (onSelectAll)="setFilter(newWidget.type)"
-                                          (onDeSelectAll)="setFilter(newWidget.type)"
+                                          (onSelect)="setFilter();"
+                                          (onDeSelect)="setFilter();"
+                                          (onSelectAll)="setFilter();"
+                                          (onDeSelectAll)="setFilter();"
                                           required>
                     </angular2-multiselect>
                   </div>
@@ -954,10 +974,10 @@
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter(newWidget.type);"
-                                        (onDeSelect)="setFilter(newWidget.type);"
-                                        (onSelectAll)="setFilter(newWidget.type);"
-                                        (onDeSelectAll)="setFilter(newWidget.type);">
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();">
                   </angular2-multiselect>
                 </div>
 
@@ -966,10 +986,10 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter(newWidget.type);"
-                                        (onDeSelect)="setFilter(newWidget.type);"
-                                        (onSelectAll)="setFilter(newWidget.type);"
-                                        (onDeSelectAll)="setFilter(newWidget.type);">
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1042,7 +1062,7 @@
                 <div class="col-md-9">
                   <angular2-date-picker name="dateTime"
                                         [(ngModel)]="selectedDateTimeBegin"
-                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter(newWidget.type)"
+                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter();"
                                         [settings]="dateTimeSettings"
                                         required>
                   </angular2-date-picker>
@@ -1071,7 +1091,7 @@
                                         name="geolocType"
                                         [data]="selectGeolocType"
                                         [(ngModel)]="selectedGeolocType"
-                                        (onSelect)="newWidget.options.geolocType = $event.id; selectOneGeolocType.isActive = false; setFilter(newWidget.type);"
+                                        (onSelect)="newWidget.options.geolocType = $event.id; selectOneGeolocType.isActive = false; setFilter();"
                                         [settings]="selectOneSettings"
                                         required>
                   </angular2-multiselect>
@@ -1115,8 +1135,8 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(newWidget.type); loadKeys(); selectOneDevice.isActive = false;"
-                                        (onDeSelect)="setFilter(newWidget.type);">
+                                        (onSelect)="setFilter(); loadKeys(); selectOneDevice.isActive = false;"
+                                        (onDeSelect)="setFilter();">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1128,8 +1148,8 @@
                                         [data]="selectKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
-                                        (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelect)="setFilter(newWidget.type); selectOneKey.isActive = false;"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelect)="setFilter(); selectOneKey.isActive = false;"
                                         required>
                   </angular2-multiselect>
                 </div>
@@ -1148,8 +1168,8 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(newWidget.type); loadKeys(); selectOneDevice.isActive = false;"
-                                        (onDeSelect)="setFilter(newWidget.type);">
+                                        (onSelect)="setFilter(); loadKeys(); selectOneDevice.isActive = false;"
+                                        (onDeSelect)="setFilter();">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1161,8 +1181,8 @@
                                         [data]="selectKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
-                                        (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelect)="setFilter(newWidget.type); selectOneKey.isActive = false;">
+                                        (onDeSelect)="setFilter();"
+                                        (onSelect)="setFilter(); selectOneKey.isActive = false;">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1179,10 +1199,10 @@
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter(newWidget.type);"
-                                        (onDeSelect)="setFilter(newWidget.type);"
-                                        (onSelectAll)="setFilter(newWidget.type);"
-                                        (onDeSelectAll)="setFilter(newWidget.type);">
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();">
                   </angular2-multiselect>
                 </div>
 
@@ -1191,10 +1211,10 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter(newWidget.type);"
-                                        (onDeSelect)="setFilter(newWidget.type);"
-                                        (onSelectAll)="setFilter(newWidget.type);"
-                                        (onDeSelectAll)="setFilter(newWidget.type);">
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1207,10 +1227,10 @@
                                         [data]="selectKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectKeysSettings"
-                                        (onSelect)="setFilter(newWidget.type)"
-                                        (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelectAll)="setFilter(newWidget.type)"
-                                        (onDeSelectAll)="setFilter(newWidget.type)"
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();"
                                         required>
                   </angular2-multiselect>
                 </div>
@@ -1222,7 +1242,7 @@
                 <div class="col-md-9">
                   <angular2-date-picker name="dateTime"
                                         [(ngModel)]="selectedDateTimeBegin"
-                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter(newWidget.type)"
+                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter();"
                                         [settings]="dateTimeSettings"
                                         required>
                   </angular2-date-picker>
@@ -1242,10 +1262,10 @@
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter(newWidget.type);"
-                                        (onDeSelect)="setFilter(newWidget.type);"
-                                        (onSelectAll)="setFilter(newWidget.type);"
-                                        (onDeSelectAll)="setFilter(newWidget.type);">
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();">
                   </angular2-multiselect>
                 </div>
 
@@ -1254,10 +1274,10 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter(newWidget.type);"
-                                        (onDeSelect)="setFilter(newWidget.type);"
-                                        (onSelectAll)="setFilter(newWidget.type);"
-                                        (onDeSelectAll)="setFilter(newWidget.type);">
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1270,10 +1290,10 @@
                                         [data]="selectKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectKeysSettings"
-                                        (onSelect)="setFilter(newWidget.type)"
-                                        (onDeSelect)="setFilter(newWidget.type)"
-                                        (onSelectAll)="setFilter(newWidget.type)"
-                                        (onDeSelectAll)="setFilter(newWidget.type)"
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();"
                                         required>
                   </angular2-multiselect>
                 </div>
@@ -1285,7 +1305,7 @@
                 <div class="col-md-9">
                   <angular2-date-picker name="dateTime"
                                         [(ngModel)]="selectedDateTimeBegin"
-                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter(newWidget.type)"
+                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter();"
                                         [settings]="dateTimeSettings"
                                         required>
                   </angular2-date-picker>

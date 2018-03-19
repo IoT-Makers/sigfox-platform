@@ -6,8 +6,8 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {FireLoopRef, Geoloc, Message, Organization, Parser} from '../../shared/sdk/models';
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import {OrganizationApi} from "../../shared/sdk/services/custom";
-import {Observable} from "rxjs/Rx";
+import {OrganizationApi} from '../../shared/sdk/services/custom';
+import {Observable} from 'rxjs/Rx';
 
 declare let d3: any;
 
@@ -90,8 +90,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     classes: 'select-one'
   };
   private selectWidgetType = [
-    {id: 'map', itemName: 'Map'},
+    {id: 'image', itemName: 'Image'},
     {id: 'table', itemName: 'Table'},
+    {id: 'map', itemName: 'Map (latest location)'},
     {id: 'tracking', itemName: 'Tracking'},
     {id: 'gauge', itemName: 'Gauge'},
     {id: 'line', itemName: 'Line graph'},
@@ -234,10 +235,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         };
       });
     }
-  }
-
-  log($event) {
-    console.log($event);
   }
 
   setup(): void {
@@ -572,10 +569,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     console.log(this.newWidget.options.columns);
   }
 
-  setFilter(type: string): void {
+  setFilter(): void {
     console.log('setFilter: START', this.newWidget);
+    // Image
+    if (this.newWidget.type === 'image') {
+      this.newWidget.filter = {};
+    }
     // Map
-    if (type === 'map') {
+    else if (this.newWidget.type === 'map') {
       this.newWidget.filter = {
         limit: 100,
         order: 'updatedAt DESC',
@@ -600,7 +601,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
 
     // Table
-    else if (type === 'table') {
+    else if (this.newWidget.type === 'table') {
       this.newWidget.filter = {
         limit: 100,
         order: 'updatedAt DESC',
@@ -618,7 +619,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
 
     // Alert & Gauge
-    else if (type === 'gauge') {
+    else if (this.newWidget.type === 'gauge') {
       this.newWidget.filter = {
         limit: 1,
         order: 'updatedAt DESC',
@@ -642,7 +643,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
 
     // Tracking
-    else if (type === 'tracking') {
+    else if (this.newWidget.type === 'tracking') {
       /*****
        *
        * TODO: periode glissante
@@ -721,7 +722,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
 
     // Line & Bar
-    else if (type === 'line' || type === 'bar') {
+    else if (this.newWidget.type === 'line' || this.newWidget.type === 'bar') {
       this.newWidget.filter = {
         limit: 10,
         order: 'updatedAt DESC',
@@ -795,7 +796,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   addWidget(): void {
-    if (this.newWidget.filter.where.or.length === 0) {
+    if (this.newWidget.type !== 'image' && this.newWidget.filter.where.or.length === 0) {
       this.toasterService.pop('error', 'Error', 'Please select at least one category or device.');
       return;
     }
@@ -819,7 +820,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   updateWidget(): void {
-    if (this.newWidget.filter.where.or.length === 0) {
+    if (this.newWidget.type !== 'image' && this.newWidget.filter.where.or.length === 0) {
       this.toasterService.pop('error', 'Error', 'Please select at least one category or device.');
       return;
     }
@@ -936,300 +937,300 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           // Devices
           /*this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
           this.deviceRef.on('change', widget.filter).subscribe((devices: any[]) => {*/
+          if (widget.type !== 'image') {
+            this.getDevicesWithFilter(widget.filter).subscribe((devices: any[]) => {
+              // Default data
+              widget.data = devices;
 
-          this.getDevicesWithFilter(widget.filter).subscribe((devices: any[]) => {
-            // Default data
-            widget.data = devices;
-
-            // Table
-            if (widget.type === 'table') {
-              if (widget.options.tableType === 'custom') {
-                widget.data = this.buildCustomTable(widget);
-                widget.extraData = devices;
+              // Table
+              if (widget.type === 'table') {
+                if (widget.options.tableType === 'custom') {
+                  widget.data = this.buildCustomTable(widget);
+                  widget.extraData = devices;
+                }
               }
-            }
 
-            // Map
-            else if (widget.type === 'map') {
+              // Map
+              else if (widget.type === 'map') {
 
-            }
+              }
 
-            // Tracking
-            else if (widget.type === 'tracking') {
-              // Default parameters
-              widget.data.forEach(device => {
-                device.visibility = false;
-                device.directionsDisplayStore = [];
-                device.color = this.getRandomColor();
-              });
-
-              if (widget.options.geolocType === 'preferGps') {
-                widget.data.forEach((device: any) => {
+              // Tracking
+              else if (widget.type === 'tracking') {
+                // Default parameters
+                widget.data.forEach(device => {
+                  device.visibility = false;
                   device.directionsDisplayStore = [];
-                  device.Geolocs = [];
-                  device.Messages.forEach((message: any) => {
-                    message.Geolocs.forEach((geoloc: Geoloc, i) => {
-                      device.Geolocs.push(geoloc);
-                      if (message.Geolocs.length > 1) {
-                        message.Geolocs.forEach((g: Geoloc) => {
-                          if (g.messageId === geoloc.messageId && g.type === 'sigfox') {
-                            device.Geolocs.splice(g, 1);
-                          }
-                        });
-                      }
+                  device.color = this.getRandomColor();
+                });
+
+                if (widget.options.geolocType === 'preferGps') {
+                  widget.data.forEach((device: any) => {
+                    device.directionsDisplayStore = [];
+                    device.Geolocs = [];
+                    device.Messages.forEach((message: any) => {
+                      message.Geolocs.forEach((geoloc: Geoloc, i) => {
+                        device.Geolocs.push(geoloc);
+                        if (message.Geolocs.length > 1) {
+                          message.Geolocs.forEach((g: Geoloc) => {
+                            if (g.messageId === geoloc.messageId && g.type === 'sigfox') {
+                              device.Geolocs.splice(g, 1);
+                            }
+                          });
+                        }
+                      });
                     });
                   });
+                }
+              }
+
+              // Gauge
+              else if (widget.type === 'gauge') {
+                const lastData_parsed = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
+                widget.value = lastData_parsed.value;
+                widget.unit = lastData_parsed.unit;
+                widget.label = this.formatTableColumn(lastData_parsed.key);
+              }
+
+              // Line
+              else if (widget.type === 'line') {
+                widget.chartData = [];
+                const keys_units = [];
+
+                let w = 0;
+
+                // Loop each device for this widget
+                widget.data.forEach((device: Device) => {
+                  const data_parsed = device.Messages[0].data_parsed;
+                  // Loop each keys chosen for this widget
+                  widget.options.keys.forEach((key) => {
+                    const o = _.filter(device.Messages[0].data_parsed, {key: key})[0];
+                    console.log(device.id, o);
+                    if (o) {
+                      keys_units.push(o);
+                      // Check if the device has this key
+                      data_parsed.forEach((line, k) => {
+                        if (line.key === key) {
+                          widget.chartData[w] = {};
+                          // Set key
+                          if (line.unit !== '') {
+                            widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
+                          } else {
+                            widget.chartData[w].key = line.key + ' - ' + device.id;
+                          }
+                          // Set values
+                          widget.chartData[w].values = [];
+                          device.Messages.forEach((message) => {
+                            const item = {
+                              label: new Date(message.createdAt),
+                              value: Number(_.filter(message.data_parsed,
+                                {key: key})[0].value)
+                            };
+                            widget.chartData[w].values.push(item);
+                          });
+                          data_parsed.splice(k, 1);
+                        }
+                      });
+                      w++;
+                    }
+                  });
+                });
+                widget.chartOptions = {
+                  chart: {
+                    type: 'lineWithFocusChart',
+                    height: 450,
+                    margin: {
+                      top: 20,
+                      right: 20,
+                      bottom: 50,
+                      left: 55
+                    },
+                    x: function (d) {
+                      return d.label;
+                    },
+                    y: function (d) {
+                      return d.value;
+                    },
+                    color: [],
+                    useVoronoi: true,
+                    isArea: true,
+                    noData: 'There is no data to display yet',
+                    xAxis: {
+                      axisLabel: 'Date',
+                      tickFormat: function (d) {
+                        return d3.time.format('%d %b %y')(new Date(d));
+                      }
+                    },
+                    x2Axis: {
+                      tickFormat: function (d) {
+                        return d3.time.format('%d %b %y')(new Date(d));
+                      }
+                    }
+                  }
+                };
+                // Dynamically add Y axis to chart
+                keys_units.forEach((key_unit: any) => {
+                  widget.chartOptions.chart.color.push(this.getRandomColor());
+                  if (keys_units.length === 1) {
+                    widget.chartOptions.chart['yAxis'] = {
+                      axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
+                      axisLabelDistance: -10
+                    };
+                  }
+                  /*if (i === 0) {
+                    widget.chartOptions.chart['yAxis'] = {
+                      axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
+                      axisLabelDistance: -10
+                    };
+                  } else {
+                    widget.chartOptions.chart['y' + i + 'Axis'] = {
+                      axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
+                      axisLabelDistance: -10
+                    };
+                  }*/
+                  widget.chartOptions.chart.tooltip = {
+                    contentGenerator: function (e) {
+                      const series = e.series[0];
+                      if (series.value === null) return;
+
+                      const rows =
+                        '<tr>' +
+                        '<td class="key">' + 'Date: ' + '</td>' +
+                        '<td class="x-value">' + d3.time.format('%d %b %y - %I:%M %p')(new Date(e.value)) + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td class="key">' + 'Value: ' + '</td>' +
+                        '<td class="x-value"><strong>' + (series.value ? series.value.toFixed(2) : 0) + '</strong></td>' +
+                        '</tr>';
+
+                      const header =
+                        '<thead>' +
+                        '<tr>' +
+                        '<td class="legend-color-guide"><div style="background-color: ' + series.color + ';"></div></td>' +
+                        '<td class="key"><strong>' + series.key + '</strong></td>' +
+                        '</tr>' +
+                        '</thead>';
+
+                      return '<table>' +
+                        header +
+                        '<tbody>' +
+                        rows +
+                        '</tbody>' +
+                        '</table>';
+                    }
+                  };
                 });
               }
-            }
 
-            // Gauge
-            else if (widget.type === 'gauge') {
-              const lastData_parsed = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
-              widget.value = lastData_parsed.value;
-              widget.unit = lastData_parsed.unit;
-              widget.label = this.formatTableColumn(lastData_parsed.key);
-            }
+              // Bar
+              else if (widget.type === 'bar') {
+                widget.chartData = [];
+                const keys_units = [];
 
-            // Line
-            else if (widget.type === 'line') {
-              widget.chartData = [];
-              const keys_units = [];
+                let w = 0;
 
-              let w = 0;
+                // Loop each device for this widget
+                widget.data.forEach((device: Device) => {
+                  const data_parsed = device.Messages[0].data_parsed;
+                  // Loop each keys chosen for this widget
+                  widget.options.keys.forEach((key) => {
+                    const o = _.filter(device.Messages[0].data_parsed, {key: key})[0];
+                    console.log(device.id, o);
+                    if (o) {
+                      keys_units.push(o);
+                      // Check if the device has this key
+                      data_parsed.forEach((line, k) => {
+                        if (line.key === key) {
+                          widget.chartData[w] = {};
+                          // Set key
 
-              // Loop each device for this widget
-              widget.data.forEach((device: Device) => {
-                const data_parsed = device.Messages[0].data_parsed;
-                // Loop each keys chosen for this widget
-                widget.options.keys.forEach((key) => {
-                  const o = _.filter(device.Messages[0].data_parsed, {key: key})[0];
-                  console.log(device.id, o);
-                  if (o) {
-                    keys_units.push(o);
-                    // Check if the device has this key
-                    data_parsed.forEach((line, k) => {
-                      if (line.key === key) {
-                        widget.chartData[w] = {};
-                        // Set key
-                        if (line.unit !== '') {
                           widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
-                        } else {
-                          widget.chartData[w].key = line.key + ' - ' + device.id;
+                          // Set values
+                          widget.chartData[w].values = [];
+                          device.Messages.forEach((message) => {
+                            const item = {
+                              label: new Date(message.createdAt),
+                              value: Number(_.filter(message.data_parsed,
+                                {key: key})[0].value)
+                            };
+                            widget.chartData[w].values.push(item);
+                          });
+                          data_parsed.splice(k, 1);
                         }
-                        // Set values
-                        widget.chartData[w].values = [];
-                        device.Messages.forEach((message) => {
-                          const item = {
-                            label: new Date(message.createdAt),
-                            value: Number(_.filter(message.data_parsed,
-                              {key: key})[0].value)
-                          };
-                          widget.chartData[w].values.push(item);
-                        });
-                        data_parsed.splice(k, 1);
-                      }
-                    });
-                    w++;
-                  }
+                      });
+                      w++;
+                    }
+                  });
                 });
-              });
-              widget.chartOptions = {
-                chart: {
-                  type: 'lineWithFocusChart',
-                  height: 450,
-                  margin: {
-                    top: 20,
-                    right: 20,
-                    bottom: 50,
-                    left: 55
-                  },
-                  x: function (d) {
-                    return d.label;
-                  },
-                  y: function (d) {
-                    return d.value;
-                  },
-                  color: [],
-                  useVoronoi: true,
-                  isArea: true,
-                  noData: 'There is no data to display yet',
-                  xAxis: {
-                    axisLabel: 'Date',
-                    tickFormat: function (d) {
-                      return d3.time.format('%d %b %y')(new Date(d));
-                    }
-                  },
-                  x2Axis: {
-                    tickFormat: function (d) {
-                      return d3.time.format('%d %b %y')(new Date(d));
-                    }
-                  }
-                }
-              };
-              // Dynamically add Y axis to chart
-              keys_units.forEach((key_unit: any) => {
-                widget.chartOptions.chart.color.push(this.getRandomColor());
-                if (keys_units.length === 1) {
-                  widget.chartOptions.chart['yAxis'] = {
-                    axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
-                    axisLabelDistance: -10
-                  };
-                }
-                /*if (i === 0) {
-                  widget.chartOptions.chart['yAxis'] = {
-                    axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
-                    axisLabelDistance: -10
-                  };
-                } else {
-                  widget.chartOptions.chart['y' + i + 'Axis'] = {
-                    axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
-                    axisLabelDistance: -10
-                  };
-                }*/
-                widget.chartOptions.chart.tooltip = {
-                  contentGenerator: function (e) {
-                    const series = e.series[0];
-                    if (series.value === null) return;
-
-                    const rows =
-                      '<tr>' +
-                      '<td class="key">' + 'Date: ' + '</td>' +
-                      '<td class="x-value">' + d3.time.format('%d %b %y - %I:%M %p')(new Date(e.value)) + '</td>' +
-                      '</tr>' +
-                      '<tr>' +
-                      '<td class="key">' + 'Value: ' + '</td>' +
-                      '<td class="x-value"><strong>' + (series.value ? series.value.toFixed(2) : 0) + '</strong></td>' +
-                      '</tr>';
-
-                    const header =
-                      '<thead>' +
-                      '<tr>' +
-                      '<td class="legend-color-guide"><div style="background-color: ' + series.color + ';"></div></td>' +
-                      '<td class="key"><strong>' + series.key + '</strong></td>' +
-                      '</tr>' +
-                      '</thead>';
-
-                    return '<table>' +
-                      header +
-                      '<tbody>' +
-                      rows +
-                      '</tbody>' +
-                      '</table>';
+                widget.chartOptions = {
+                  chart: {
+                    type: 'discreteBarChart',
+                    height: 450,
+                    margin: {
+                      top: 20,
+                      right: 20,
+                      bottom: 50,
+                      left: 55
+                    },
+                    x: function (d) {
+                      return d.label;
+                    },
+                    y: function (d) {
+                      return d.value;
+                    },
+                    color: [],
+                    useVoronoi: true,
+                    showXAxis: false,
+                    noData: 'There is no data to display yet',
                   }
                 };
-              });
-            }
-
-            // Bar
-            else if (widget.type === 'bar') {
-              widget.chartData = [];
-              const keys_units = [];
-
-              let w = 0;
-
-              // Loop each device for this widget
-              widget.data.forEach((device: Device) => {
-                const data_parsed = device.Messages[0].data_parsed;
-                // Loop each keys chosen for this widget
-                widget.options.keys.forEach((key) => {
-                  const o = _.filter(device.Messages[0].data_parsed, {key: key})[0];
-                  console.log(device.id, o);
-                  if (o) {
-                    keys_units.push(o);
-                    // Check if the device has this key
-                    data_parsed.forEach((line, k) => {
-                      if (line.key === key) {
-                        widget.chartData[w] = {};
-                        // Set key
-
-                        widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
-                        // Set values
-                        widget.chartData[w].values = [];
-                        device.Messages.forEach((message) => {
-                          const item = {
-                            label: new Date(message.createdAt),
-                            value: Number(_.filter(message.data_parsed,
-                              {key: key})[0].value)
-                          };
-                          widget.chartData[w].values.push(item);
-                        });
-                        data_parsed.splice(k, 1);
-                      }
-                    });
-                    w++;
+                // Dynamically add Y axis to chart
+                keys_units.forEach((key_unit: any) => {
+                  widget.chartOptions.chart.color.push(this.getRandomColor());
+                  if (keys_units.length === 1) {
+                    widget.chartOptions.chart['yAxis'] = {
+                      ticks: 5,
+                      axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
+                      axisLabelDistance: -10
+                    };
                   }
-                });
-              });
-              widget.chartOptions = {
-                chart: {
-                  type: 'discreteBarChart',
-                  height: 450,
-                  margin: {
-                    top: 20,
-                    right: 20,
-                    bottom: 50,
-                    left: 55
-                  },
-                  x: function (d) {
-                    return d.label;
-                  },
-                  y: function (d) {
-                    return d.value;
-                  },
-                  color: [],
-                  useVoronoi: true,
-                  showXAxis: false,
-                  noData: 'There is no data to display yet',
-                }
-              };
-              // Dynamically add Y axis to chart
-              keys_units.forEach((key_unit: any) => {
-                widget.chartOptions.chart.color.push(this.getRandomColor());
-                if (keys_units.length === 1) {
-                  widget.chartOptions.chart['yAxis'] = {
-                    ticks: 5,
-                    axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
-                    axisLabelDistance: -10
+                  widget.chartOptions.chart.tooltip = {
+                    contentGenerator: function (e) {
+                      const series = e.series[0];
+                      if (series.value === null) return;
+
+                      const rows =
+                        '<tr>' +
+                        '<td class="key">' + 'Date: ' + '</td>' +
+                        '<td class="x-value">' + d3.time.format('%d %b %y - %I:%M %p')(new Date(e.value)) + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td class="key">' + 'Value: ' + '</td>' +
+                        '<td class="x-value"><strong>' + (series.value ? series.value.toFixed(2) : 0) + '</strong></td>' +
+                        '</tr>';
+
+                      const header =
+                        '<thead>' +
+                        '<tr>' +
+                        '<td class="legend-color-guide"><div style="background-color: ' + series.color + ';"></div></td>' +
+                        '<td class="key"><strong>' + series.key + '</strong></td>' +
+                        '</tr>' +
+                        '</thead>';
+
+                      return '<table>' +
+                        header +
+                        '<tbody>' +
+                        rows +
+                        '</tbody>' +
+                        '</table>';
+                    }
                   };
-                }
-                widget.chartOptions.chart.tooltip = {
-                  contentGenerator: function (e) {
-                    const series = e.series[0];
-                    if (series.value === null) return;
+                });
+              }
 
-                    const rows =
-                      '<tr>' +
-                      '<td class="key">' + 'Date: ' + '</td>' +
-                      '<td class="x-value">' + d3.time.format('%d %b %y - %I:%M %p')(new Date(e.value)) + '</td>' +
-                      '</tr>' +
-                      '<tr>' +
-                      '<td class="key">' + 'Value: ' + '</td>' +
-                      '<td class="x-value"><strong>' + (series.value ? series.value.toFixed(2) : 0) + '</strong></td>' +
-                      '</tr>';
-
-                    const header =
-                      '<thead>' +
-                      '<tr>' +
-                      '<td class="legend-color-guide"><div style="background-color: ' + series.color + ';"></div></td>' +
-                      '<td class="key"><strong>' + series.key + '</strong></td>' +
-                      '</tr>' +
-                      '</thead>';
-
-                    return '<table>' +
-                      header +
-                      '<tbody>' +
-                      rows +
-                      '</tbody>' +
-                      '</table>';
-                  }
-                };
-              });
-            }
-
-            console.log('Widget loaded', widget);
-          });
-
+              console.log('Widget loaded', widget);
+            });
+          }
         });
       }
       this.dashboardReady = true;
