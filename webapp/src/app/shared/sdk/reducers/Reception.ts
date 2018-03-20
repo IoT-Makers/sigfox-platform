@@ -6,9 +6,7 @@ import { Reception, ReceptionInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { ReceptionActionTypes } from '../actions';
 
-
-export interface ReceptionsState extends EntityState<Reception | ReceptionInterface> {
-}
+export interface ReceptionsState extends EntityState<Reception | ReceptionInterface> {};
 
 export const ReceptionAdapter: EntityAdapter<Reception | ReceptionInterface> = createEntityAdapter<Reception | ReceptionInterface>();
 
