@@ -49,7 +49,7 @@
     "data_downlink": {
       "type": "string"
     },
-    "acknowledge": {
+    "downlinkAck": {
       "type": "boolean"
     },
     "ack": {

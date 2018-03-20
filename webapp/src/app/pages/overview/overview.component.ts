@@ -214,7 +214,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
       (results: any[]) => {
         console.log('Device sub', results);
         if (!this.organization) {
-
           //Get user devices
           this.userApi.getDevices(this.user.id,
             {
@@ -244,7 +243,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
             }
           });
         } else {
-
           // Get organization devices
           this.organizationApi.getDevices(this.organization.id,
             {
@@ -273,11 +271,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
               });
             }
           });
-
         }
-
       });
-
 
     // Messages
     // Listen to messages
@@ -298,7 +293,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
             this.countMessages = result.count;
           });
         }
-
       });
 
     // Alerts

@@ -37,7 +37,8 @@ const loopback = require('loopback');
 
 class Geoloc {
   // LoopBack model instance is injected in constructor
-  constructor(public model: any) {}
+  constructor(public model: any) {
+  }
 
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
@@ -97,6 +98,8 @@ class Geoloc {
           } else {
             if (created) {
               console.log('Created geoloc as: ', geolocInstance);
+              // Update device in order to trigger a real time upsert event
+              this.updateDeviceLastLocation(geolocInstance.deviceId);
             } else {
               console.log('Skipped geoloc creation.');
             }
@@ -111,8 +114,8 @@ class Geoloc {
     const Message = this.model.app.models.Message;
 
     if (typeof data.geoloc === 'undefined'
-      || typeof data.deviceId  === 'undefined'
-      || typeof data.time  === 'undefined'
+      || typeof data.deviceId === 'undefined'
+      || typeof data.time === 'undefined'
       || typeof data.seqNumber === 'undefined') {
       next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
     }
@@ -154,6 +157,8 @@ class Geoloc {
                 next(err, geolocInstance);
               } else {
                 console.log('Created geoloc as: ', geolocInstance);
+                // Update device in order to trigger a real time upsert event
+                this.updateDeviceLastLocation(geolocInstance.deviceId);
                 next(null, geolocInstance);
               }
             });
@@ -162,14 +167,14 @@ class Geoloc {
           /**
            * TODO: Check below - maybe create an acknowledge service connector
            */
-          // Saving a message anyway
+            // Saving a message anyway
           const message = new Message;
           message.userId = userId;
           message.deviceId = data.deviceId;
           message.time = data.time;
           message.seqNumber = data.seqNumber;
           message.createdAt = new Date(data.time * 1000);
-          message.acknowledge = true;
+          message.downlinkAck = true;
           Message.create(
             message,
             (err: any, messageInstance: any) => {
@@ -178,9 +183,35 @@ class Geoloc {
                 next(err, messageInstance);
               } else {
                 console.log('Created message as: ', messageInstance);
+                // Update device in order to trigger a real time upsert event
+                this.updateDeviceLastLocation(messageInstance.deviceId);
               }
             });
           next(err, null);
+        }
+      }
+    });
+  }
+
+  updateDeviceLastLocation(deviceId: string) {
+    // Models
+    const Device = this.model.app.models.Device;
+
+    Device.findOne({
+      where: {
+        id: deviceId
+      }
+    }, (err: any, deviceInstance: any) => {
+      if (err) {
+        console.error(err);
+      } else {
+        if (deviceInstance) {
+          deviceInstance.lastLocatedAt = new Date();
+          Device.upsert(deviceInstance, (err: any, deviceUpdated: any) => {
+            if (!err) {
+              console.log('Updated device lastLocatedAt date');
+            }
+          });
         }
       }
     });

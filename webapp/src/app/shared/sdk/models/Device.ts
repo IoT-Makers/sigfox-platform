@@ -4,9 +4,10 @@ declare var Object: any;
 export interface DeviceInterface {
   "id": string;
   "name"?: string;
-  "success_rate"?: number;
+  "successRate"?: number;
   "data_downlink"?: string;
   "properties"?: Array<any>;
+  "lastLocatedAt"?: Date;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "parserId"?: any;
@@ -24,9 +25,10 @@ export interface DeviceInterface {
 export class Device implements DeviceInterface {
   "id": string = '';
   "name": string = '';
-  "success_rate": number = 0;
+  "successRate": number = 0;
   "data_downlink": string = '';
   "properties": Array<any> = <any>[];
+  "lastLocatedAt": Date = new Date(0);
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "parserId": any = <any>null;
@@ -80,8 +82,8 @@ export class Device implements DeviceInterface {
           name: 'name',
           type: 'string'
         },
-        "success_rate": {
-          name: 'success_rate',
+        "successRate": {
+          name: 'successRate',
           type: 'number'
         },
         "data_downlink": {
@@ -91,6 +93,10 @@ export class Device implements DeviceInterface {
         "properties": {
           name: 'properties',
           type: 'Array&lt;any&gt;'
+        },
+        "lastLocatedAt": {
+          name: 'lastLocatedAt',
+          type: 'Date'
         },
         "createdAt": {
           name: 'createdAt',

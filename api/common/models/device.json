@@ -34,7 +34,7 @@
     "name": {
       "type": "string"
     },
-    "success_rate": {
+    "successRate": {
       "type": "number"
     },
     "data_downlink": {
@@ -44,6 +44,9 @@
       "type": [
         "object"
       ]
+    },
+    "lastLocatedAt": {
+      "type": "date"
     }
   },
   "validations": [],

@@ -118,9 +118,10 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   downloadCsv(category: Category) {
     this.loadingDownload = true;
-    const url = this.document.location.origin + '/api/Categories/download/' + category.id + '/csv?access_token=' + this.userApi.getCurrentToken().id;
+    const urla = this.document.location.origin + '/api/Categories/download/' + category.id + '/csv?access_token=' + this.userApi.getCurrentToken().id;
+    const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/csv?access_token=' + this.userApi.getCurrentToken().id;
 
-    this.http.get(url, {responseType: 'blob'}).subscribe(res => {
+    this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
       const blob: Blob = new Blob([res], {type: 'text/csv'});
       const today = moment().format('YYYY.MM.DD');
       const filename = today + '_' + category.name + '_export.csv';

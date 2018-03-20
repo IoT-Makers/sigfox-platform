@@ -485,7 +485,7 @@ class Device {
           if (device.Messages[device.Messages.length - 1].seqNumber > device.Messages[0].seqNumber) {
             attendedNbMessages += 4095;
           }
-          device.success_rate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
+          device.successRate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
 
           Device.upsert(
             device,
