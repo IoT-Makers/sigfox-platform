@@ -388,6 +388,12 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     });
   }
 
+  unlinkMember(organization:any, user:any): void{
+    this.organizationApi.unlinkMembers(organization.id, user.id).subscribe((result) =>{
+      console.log('result after unlinking member: ', result);
+    });
+  }
+
   // setAdminView():void {
   //   localStorage.setItem('adminView', 'true');
   //   this.filter = {};
