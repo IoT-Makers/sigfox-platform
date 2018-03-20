@@ -99,7 +99,7 @@ class Geoloc {
             if (created) {
               console.log('Created geoloc as: ', geolocInstance);
               // Update device in order to trigger a real time upsert event
-              this.updateDeviceLastLocation(geolocInstance.deviceId);
+              this.updateDeviceLastLocatedAt(geolocInstance.deviceId);
             } else {
               console.log('Skipped geoloc creation.');
             }
@@ -139,7 +139,7 @@ class Geoloc {
         if (messageInstance) {
           console.log('Found the corresponding message.');
           // Build the Geoloc object
-          const geoloc = new this.model.app.models.Geoloc;
+          const geoloc = new Geoloc;
           geoloc.type = 'sigfox';
           geoloc.location = new loopback.GeoPoint(data.geoloc.location);
           geoloc.precision = data.geoloc.precision;
@@ -158,7 +158,7 @@ class Geoloc {
               } else {
                 console.log('Created geoloc as: ', geolocInstance);
                 // Update device in order to trigger a real time upsert event
-                this.updateDeviceLastLocation(geolocInstance.deviceId);
+                this.updateDeviceLastLocatedAt(geolocInstance.deviceId);
                 next(null, geolocInstance);
               }
             });
@@ -184,7 +184,7 @@ class Geoloc {
               } else {
                 console.log('Created message as: ', messageInstance);
                 // Update device in order to trigger a real time upsert event
-                this.updateDeviceLastLocation(messageInstance.deviceId);
+                this.updateDeviceLastLocatedAt(messageInstance.deviceId);
               }
             });
           next(err, null);
@@ -193,7 +193,7 @@ class Geoloc {
     });
   }
 
-  updateDeviceLastLocation(deviceId: string) {
+  updateDeviceLastLocatedAt(deviceId: string) {
     // Models
     const Device = this.model.app.models.Device;
 

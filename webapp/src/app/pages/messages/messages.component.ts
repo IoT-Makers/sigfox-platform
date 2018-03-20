@@ -72,7 +72,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     "elementType": "all",
     "stylers": [{"hue": "#e9ebed"}, {"saturation": -78}, {"lightness": 67}, {"visibility": "simplified"}]
   }];
-  public filterQuery = '';
+  private filterQuery = '';
 
   constructor(private rt: RealTime,
               private userApi: UserApi,

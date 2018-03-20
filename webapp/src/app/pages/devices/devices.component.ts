@@ -19,6 +19,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   private user: User;
 
+  private filterQuery = '';
+
   private organization: Organization;
   private organizations: Organization[] = [];
 

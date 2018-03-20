@@ -7,10 +7,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 })
 export class DemoComponent implements OnInit, OnDestroy {
 
-  public filterQuery = '';
+  private filterQuery = '';
 
   constructor() {
-
   }
 
   ngOnInit(): void {
