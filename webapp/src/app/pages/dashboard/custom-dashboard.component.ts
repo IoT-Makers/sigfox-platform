@@ -161,7 +161,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   private dashboard: Dashboard;
   private dashboardReady = false;
-  private dashboardId: string = "";
+  private dashboardId = '';
 
   private editFlag = false;
   private newWidgetFlag = false;
@@ -933,7 +933,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.widgets = widgets;
       if (this.widgets) {
         // Build widgets
-        this.widgets.forEach((widget: any) => {
+        this.widgets.forEach((widget: any, countWidgets: number) => {
+          widget.ready = false;
           // Devices
           /*this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
           this.deviceRef.on('change', widget.filter).subscribe((devices: any[]) => {*/
@@ -1228,12 +1229,16 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 });
               }
 
-              console.log('Widget loaded', widget);
+              //console.log('Widget loaded', widget);
+              widget.ready = true;
+              // All widgets have been loaded
+              if (countWidgets === widgets.length - 1) {
+                this.dashboardReady = true;
+              }
             });
           }
         });
       }
-      this.dashboardReady = true;
     });
   }
 

@@ -166,7 +166,15 @@
   },
   "Reception": {
     "dataSource": null,
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "getBaseStationsByDeviceId": true
+        }
+      }
+    }
   },
   "Connector": {
     "dataSource": "mongodb",

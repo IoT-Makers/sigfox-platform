@@ -15,8 +15,8 @@ import {SDKBrowserModule} from './shared/sdk/index';
 import {AuthGuard} from './_guards/auth.guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AgmCoreModule} from '@agm/core';
-import {ModalModule, TooltipModule} from "ng2-bootstrap";
-import {AngularMultiSelectModule} from "angular2-multiselect-dropdown/angular2-multiselect-dropdown";
+import {ModalModule, TooltipModule} from 'ng2-bootstrap';
+import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 
 @NgModule({
   bootstrap: [AppComponent],
