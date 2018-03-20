@@ -300,6 +300,7 @@
               <angular2-multiselect name="selectUsers"
                                     [data]="selectUsers"
                                     [(ngModel)]="selectedUsers"
+                                    (onDeSelect)="unlinkMember(newOrganization, $event.id)"
                                     [settings]="selectUsersSettings">
               </angular2-multiselect>
             </div>
