@@ -378,11 +378,9 @@
                                       [geodesic]="true"
                                       [strokeColor]="device.color"
                                       [strokeOpacity]="0.5">
-                          <ng-container *ngFor="let message of device.Messages">
-                            <ng-container *ngFor="let geoloc of message.Geolocs">
-                              <agm-polyline-point [latitude]="geoloc.location.lat" [longitude]="geoloc.location.lng">
-                              </agm-polyline-point>
-                            </ng-container>
+                          <ng-container *ngFor="let geoloc of device.Geolocs">
+                            <agm-polyline-point [latitude]="geoloc.location.lat" [longitude]="geoloc.location.lng">
+                            </agm-polyline-point>
                           </ng-container>
                         </agm-polyline>
                         <!-- End Polylines -->
@@ -583,11 +581,9 @@
                                       [geodesic]="true"
                                       [strokeColor]="device.color"
                                       [strokeOpacity]="0.5">
-                          <ng-container *ngFor="let message of device.Messages">
-                            <ng-container *ngFor="let geoloc of message.Geolocs">
-                              <agm-polyline-point [latitude]="geoloc.location.lat" [longitude]="geoloc.location.lng">
-                              </agm-polyline-point>
-                            </ng-container>
+                          <ng-container *ngFor="let geoloc of device.Geolocs">
+                            <agm-polyline-point [latitude]="geoloc.location.lat" [longitude]="geoloc.location.lng">
+                            </agm-polyline-point>
                           </ng-container>
                         </agm-polyline>
                         <!-- End Polylines -->
@@ -824,7 +820,7 @@
             <!-- Chart -->
             <ng-container *ngIf="widget.type === 'line' || widget.type === 'bar'">
               <div *ngIf="widget.data">
-                <nvd3 [options]="widget.chartOptions" [data]="widget.data"></nvd3>
+                <nvd3 [options]="widget.options.chartOptions" [data]="widget.data"></nvd3>
               </div>
             </ng-container>
             <!-- End Chart -->
@@ -835,7 +831,7 @@
                   <canvas baseChart
                           [datasets]="widget.data"
                           [labels]="widget.chartLabels"
-                          [options]="widget.chartOptions"
+                          [options]="widget.options.chartOptions"
                           [legend]="true"
                           [chartType]="widget.chartType"></canvas>
                 </div>

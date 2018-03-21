@@ -1044,7 +1044,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 // Replace data with chart data
                 widget.data = chartData;
 
-                widget.chartOptions = {
+                widget.options.chartOptions = {
                   chart: {
                     type: 'lineWithFocusChart',
                     height: 450,
@@ -1079,25 +1079,25 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 };
                 // Dynamically add Y axis to chart
                 keys_units.forEach((key_unit: any) => {
-                  widget.chartOptions.chart.color.push(this.getRandomColor());
+                  widget.options.chartOptions.chart.color.push(this.getRandomColor());
                   if (keys_units.length === 1) {
-                    widget.chartOptions.chart['yAxis'] = {
+                    widget.options.chartOptions.chart['yAxis'] = {
                       axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
                       axisLabelDistance: -10
                     };
                   }
                   /*if (i === 0) {
-                    widget.chartOptions.chart['yAxis'] = {
+                    widget.options.chartOptions.chart['yAxis'] = {
                       axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
                       axisLabelDistance: -10
                     };
                   } else {
-                    widget.chartOptions.chart['y' + i + 'Axis'] = {
+                    widget.options.chartOptions.chart['y' + i + 'Axis'] = {
                       axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
                       axisLabelDistance: -10
                     };
                   }*/
-                  widget.chartOptions.chart.tooltip = {
+                  widget.options.chartOptions.chart.tooltip = {
                     contentGenerator: function (e) {
                       const series = e.series[0];
                       if (series.value === null) return;
@@ -1174,7 +1174,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 // Replace data with chart data
                 widget.data = chartData;
 
-                widget.chartOptions = {
+                widget.options.chartOptions = {
                   chart: {
                     type: 'discreteBarChart',
                     height: 450,
@@ -1198,15 +1198,15 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 };
                 // Dynamically add Y axis to chart
                 keys_units.forEach((key_unit: any) => {
-                  widget.chartOptions.chart.color.push(this.getRandomColor());
+                  widget.options.chartOptions.chart.color.push(this.getRandomColor());
                   if (keys_units.length === 1) {
-                    widget.chartOptions.chart['yAxis'] = {
+                    widget.options.chartOptions.chart['yAxis'] = {
                       ticks: 5,
                       axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
                       axisLabelDistance: -10
                     };
                   }
-                  widget.chartOptions.chart.tooltip = {
+                  widget.options.chartOptions.chart.tooltip = {
                     contentGenerator: function (e) {
                       const series = e.series[0];
                       if (series.value === null) return;
