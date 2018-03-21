@@ -258,6 +258,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
             // Categories
             this.organizationApi.getCategories(this.organization.id).subscribe((categories: Category[]) => {
+              this.selectCategories = [];
               this.categories = categories;
               this.categories.forEach((category: Category) => {
                 const item = {
@@ -269,6 +270,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             });
             // Devices
             this.organizationApi.getDevices(this.organization.id).subscribe((devices: Device[]) => {
+              this.selectDevices = [];
               this.devices = devices;
               this.devices.forEach((device: Device) => {
                 const item = {
@@ -285,6 +287,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
           // Categories
           this.userApi.getCategories(this.user.id).subscribe((categories: Category[]) => {
+            this.selectCategories = [];
             this.categories = categories;
             this.categories.forEach((category: Category) => {
               const item = {
@@ -296,6 +299,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           });
           // Devices
           this.userApi.getDevices(this.user.id).subscribe((devices: Device[]) => {
+            this.selectDevices = [];
             this.devices = devices;
             this.devices.forEach((device: Device) => {
               const item = {
@@ -392,13 +396,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     if (!this.organization) {
       this.userApi.destroyByIdDashboards(this.user.id, this.dashboard.id).subscribe(result => {
         this.router.navigate(['/']);
+        this.rt.onReady().subscribe();
       });
     } else {
       this.organizationApi.destroyByIdDashboards(this.organization.id, this.dashboard.id).subscribe(result => {
         this.router.navigate(['/organization/' + this.organization.id]);
+        this.rt.onReady().subscribe();
       });
     }
-
   }
 
   addNewWidget(): void {
@@ -929,9 +934,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   loadWidgets(): void {
     this.dashboardApi.getWidgets(this.dashboard.id).subscribe((widgets: any[]) => {
-      this.dashboardReady = false;
       this.widgets = widgets;
       if (this.widgets) {
+        this.dashboardReady = false;
         // Build widgets
         this.widgets.forEach((widget: any, countWidgets: number) => {
           widget.ready = false;
@@ -1231,13 +1236,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
               //console.log('Widget loaded', widget);
               widget.ready = true;
-              // All widgets have been loaded
-              if (countWidgets === widgets.length - 1) {
-                this.dashboardReady = true;
-              }
             });
           }
         });
+        this.dashboardReady = true;
       }
     });
   }
