@@ -6,9 +6,7 @@ import { Connector, ConnectorInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { ConnectorActionTypes } from '../actions';
 
-
-export interface ConnectorsState extends EntityState<Connector | ConnectorInterface> {
-}
+export interface ConnectorsState extends EntityState<Connector | ConnectorInterface> {};
 
 export const ConnectorAdapter: EntityAdapter<Connector | ConnectorInterface> = createEntityAdapter<Connector | ConnectorInterface>();
 
