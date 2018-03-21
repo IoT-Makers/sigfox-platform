@@ -185,24 +185,24 @@
               "time": {time},
               "seqNumber": {seqNumber},
               "geoloc": {
-                  "location": {
-                    "lat": {lat},
-                    "lng": {lng}
-                  },
-                  "precision": {radius}
+              "location": {
+              "lat": {lat},
+              "lng": {lng}
+              },
+              "precision": {radius}
               }
               }'
               }}</code>
             </p>
           </div>
         </accordion-group>
-        <!--<accordion-group>
+        <accordion-group>
           <div accordion-heading>
             <strong class="text-success">ACKNOWLEDGE</strong> <i class="fa fa-check-circle pull-right" aria-hidden="true"></i>
           </div>
           <div class="card-block">
             <p>Type: <strong>SERVICE</strong> | <strong>ACKNOWLEDGE</strong></p>
-            <p>Url pattern: <strong tooltip="Click to copy" click-copy (click)="toastClick()">{{ callbackURL }}</strong></p>
+            <p>Url pattern: <strong tooltip="Click to copy" click-copy (click)="toastClick()">{{ callbackURL + '/Messages/sigfox/acknowledge' }}</strong></p>
             <p>Use HTTP Method: <strong>PUT</strong></p>
             <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span class="text-danger" tooltip="Click to copy" click-copy (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
             </p>
@@ -211,33 +211,12 @@
               '{
               "deviceId": "{device}",
               "time": {time},
-              "seqNumber": 0,
-              "infoCode": {infoCode},
-              "infoMessage": "{infoMessage}",
-              "downlinkAck": {downlinkAck},
-              "downlinkOverusage": {downlinkOverusage},
-              "reception": [{
-              "id": "{station}",
-              "RSSI": {rssi},
-              "SNR": {snr}
-              }],
-              "data_parsed": [{
-              "key" : "downlinkAck",
-              "value" : {downlinkAck},
-              "type" : "boolean",
-              "unit" : ""
-              },
-              {
-              "key" : "downlinkOverusage",
-              "value" : {downlinkOverusage},
-              "type" : "boolean",
-              "unit" : ""
-              }]
+              "downlinkAck": {downlinkAck}
               }'
               }}</code>
             </p>
           </div>
-        </accordion-group>-->
+        </accordion-group>
       </accordion>
     </div>
   </div>

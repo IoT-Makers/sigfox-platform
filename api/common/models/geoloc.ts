@@ -10,9 +10,7 @@ const loopback = require('loopback');
  * Model Decorator
  **/
 @Model({
-  hooks: {
-    beforeSave: { name: 'before save', type: 'operation' }
-  },
+  hooks: { },
   remotes: {
     createFromParsedPayload: {
       returns : { arg: 'result', type: 'array' },
@@ -38,12 +36,6 @@ const loopback = require('loopback');
 class Geoloc {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-  }
-
-  // Example Operation Hook
-  beforeSave(ctx: any, next: Function): void {
-    console.log('Geoloc: Before Save');
-    next();
   }
 
   private createFromParsedPayload(message: any, req: any): void {

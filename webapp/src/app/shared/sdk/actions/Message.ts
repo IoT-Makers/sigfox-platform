@@ -10,6 +10,10 @@ Object.assign(BaseLoopbackActionTypesFactory('Message'), {
   PUT_SIGFOX_SUCCESS: type('[Message] putSigfox success'),
   PUT_SIGFOX_FAIL: type('[Message] putSigfox fail'),
 
+  PUT_SIGFOX_ACKNOWLEDGE: type('[Message] putSigfoxAcknowledge'),
+  PUT_SIGFOX_ACKNOWLEDGE_SUCCESS: type('[Message] putSigfoxAcknowledge success'),
+  PUT_SIGFOX_ACKNOWLEDGE_FAIL: type('[Message] putSigfoxAcknowledge fail'),
+
 });
 export const MessageActions =
 Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
@@ -61,6 +65,57 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   putSigfoxFail: class implements Action {
     public readonly type = MessageActionTypes.PUT_SIGFOX_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * putSigfoxAcknowledge Action.
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `req` – `{object}` - 
+   *
+   *  - `data` – `{object}` - 
+   * @param {any} meta (optional).
+   * 
+   */
+  putSigfoxAcknowledge: class implements Action {
+    public readonly type = MessageActionTypes.PUT_SIGFOX_ACKNOWLEDGE;
+      public payload: {req: any, data: any};
+
+    constructor(req: any = {}, data: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {req, data};
+    }
+  },
+  /**
+   * putSigfoxAcknowledgeSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  putSigfoxAcknowledgeSuccess: class implements Action {
+    public readonly type = MessageActionTypes.PUT_SIGFOX_ACKNOWLEDGE_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * putSigfoxAcknowledgeFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  putSigfoxAcknowledgeFail: class implements Action {
+    public readonly type = MessageActionTypes.PUT_SIGFOX_ACKNOWLEDGE_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

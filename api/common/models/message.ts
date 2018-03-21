@@ -10,9 +10,7 @@ const loopback = require('loopback');
  * Model Decorator
  **/
 @Model({
-  hooks: {
-    beforeSave: { name: 'before save', type: 'operation' }
-  },
+  hooks: { },
   remotes: {
     putSigfox: {
       accepts: [
@@ -21,6 +19,17 @@ const loopback = require('loopback');
       ],
       http: {
         path: '/sigfox/v2',
+        verb: 'put'
+      },
+      returns: {type: 'Message', root: true}
+    },
+    putSigfoxAcknowledge: {
+      accepts: [
+        {arg: 'req', type: 'object', http: {source: 'req'}},
+        {arg: 'data', type: 'object', required: true, http: { source: 'body' }}
+      ],
+      http: {
+        path: '/sigfox/acknowledge',
         verb: 'put'
       },
       returns: {type: 'Message', root: true}
@@ -33,6 +42,9 @@ class Message {
   constructor(public model: any) { }
 
   putSigfox(req: any, data: any, next: Function): void {
+    // Models
+    const Message = this.model;
+
     if (typeof data.deviceId  === 'undefined'
       || typeof data.time  === 'undefined'
       || typeof data.seqNumber === 'undefined') {
@@ -43,7 +55,7 @@ class Message {
     const userId = req.accessToken.userId;
 
     // Create a new message object
-    let message = new this.model;
+    let message = new Message;
     message = data;
 
     // Store the userId in the message
@@ -53,7 +65,7 @@ class Message {
     message.createdAt = new Date(message.time * 1000);
 
     // Create a new device object
-    const device = new this.model.app.models.Device;
+    const device = new Message.app.models.Device;
     device.id = message.deviceId;
     device.userId = userId;
     if (message.deviceNamePrefix)
@@ -77,7 +89,7 @@ class Message {
     delete message.data_downlink;
 
     // Check if the device exists or create it
-    this.model.app.models.Device.findOrCreate(
+    Message.app.models.Device.findOrCreate(
       {where: {id: message.deviceId}, include: ['Alerts', 'Parser']}, // find
       device, // create
       (err: any, deviceInstance: any, created: boolean) => { // callback
@@ -91,7 +103,7 @@ class Message {
 
           // If message is a duplicate
           if (duplicate) {
-            this.model.findOne({
+            Message.findOne({
               where: {
                 and: [
                   {deviceId: data.deviceId},
@@ -110,7 +122,7 @@ class Message {
                     messageInstance.reception = [];
                   }
                   messageInstance.reception.push(data.reception[0]);
-                  this.model.upsert(
+                  Message.upsert(
                     messageInstance,
                     (err: any, messageInstance: any) => {
                       if (err) {
@@ -140,13 +152,13 @@ class Message {
                 deviceInstance.parserId = parserId;
                 // Save a parser in the device and parse the message
                 console.log('Associating parser to device.');
-                this.model.app.models.Device.upsert(
+                Message.app.models.Device.upsert(
                   deviceInstance, (err: any, deviceInstance: any) => {
                     if (err) {
                       console.error(err);
                       next(err, data);
                     } else {
-                      this.model.app.models.Device.findOne({
+                      Message.app.models.Device.findOne({
                         where: {id: deviceInstance.id},
                         include: ['Alerts', 'Parser']
                       }, (err: any, deviceInstance: any) => {
@@ -158,7 +170,7 @@ class Message {
                           console.log('Updated device as: ', deviceInstance);
 
                           // Decode the payload
-                          this.model.app.models.Parser.parsePayload(
+                          Message.app.models.Parser.parsePayload(
                             Function('payload', deviceInstance.Parser.function),
                             message.data,
                             req,
@@ -171,7 +183,7 @@ class Message {
                             });
 
                           // Trigger alerts (if any)
-                          this.model.app.models.Alert.triggerByDevice(
+                          Message.app.models.Alert.triggerByDevice(
                             message.data_parsed,
                             deviceInstance,
                             req,
@@ -193,7 +205,7 @@ class Message {
                 console.warn('Found parser!');
 
                 // Decode the payload
-                this.model.app.models.Parser.parsePayload(
+                Message.app.models.Parser.parsePayload(
                   Function('payload', deviceInstance.Parser.function),
                   message.data,
                   req,
@@ -206,7 +218,7 @@ class Message {
                   });
 
                 // Trigger alerts (if any)
-                this.model.app.models.Alert.triggerByDevice(
+                Message.app.models.Alert.triggerByDevice(
                   message.data_parsed,
                   deviceInstance,
                   req,
@@ -371,10 +383,56 @@ class Message {
     });
   }
 
-// Example Operation Hook
-  beforeSave(ctx: any, next: Function): void {
-    console.log('Message: Before Save');
-    next();
+  putSigfoxAcknowledge(req: any, data: any, next: Function): void {
+    // Models
+    const Message = this.model;
+
+    if (typeof data.deviceId  === 'undefined'
+      || typeof data.time  === 'undefined'
+      || typeof data.downlinkAck === 'undefined') {
+      next('Missing "deviceId", "time" and "downlinkAck"', data);
+    }
+
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
+    // Find the message containing the ack request
+    Message.findOne({
+      where: {
+        and: [
+          {deviceId: data.deviceId},
+          {time: data.time},
+          {ack: true}
+        ]
+      }
+    }, (err: any, messageInstance: any) => {
+      if (err) {
+        console.error(err);
+        next(err, data);
+      } else {
+        if (messageInstance) {
+          console.log('Found the corresponding message and downlinkAck in it.');
+          messageInstance.downlinkAck = data.downlinkAck;
+          Message.upsert(
+            messageInstance,
+            (err: any, messageInstance: any) => {
+              if (err) {
+                console.error(err);
+                next(err, messageInstance);
+              } else {
+                console.log('Updated message as: ', messageInstance);
+                next(null, messageInstance);
+              }
+            });
+
+        } else {
+          // No corresponding message found
+          const err = 'Error - No corresponding message found, did you first receive a message containing ack = true?';
+          console.error(err);
+          next(err, data);
+        }
+      }
+    });
   }
 }
 

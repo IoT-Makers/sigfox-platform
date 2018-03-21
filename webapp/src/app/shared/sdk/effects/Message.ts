@@ -30,6 +30,20 @@ export class MessageEffects extends BaseLoopbackEffects {
       )
     );
 
+  @Effect()
+  public putSigfoxAcknowledge$ = this.actions$
+    .ofType(MessageActionTypes.PUT_SIGFOX_ACKNOWLEDGE).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.message.putSigfoxAcknowledge(action.payload.req, action.payload.data).pipe(
+          map((response: any) => new MessageActions.putSigfoxAcknowledgeSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new MessageActions.putSigfoxAcknowledgeFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
     /**
    * @author João Ribeiro <@JonnyBGod> <github:JonnyBGod>
    * @description

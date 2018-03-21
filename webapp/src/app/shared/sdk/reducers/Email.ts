@@ -6,7 +6,9 @@ import { Email, EmailInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { EmailActionTypes } from '../actions';
 
-export interface EmailsState extends EntityState<Email | EmailInterface> {};
+
+export interface EmailsState extends EntityState<Email | EmailInterface> {
+}
 
 export const EmailAdapter: EntityAdapter<Email | EmailInterface> = createEntityAdapter<Email | EmailInterface>();
 

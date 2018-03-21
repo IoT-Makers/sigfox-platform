@@ -76,8 +76,7 @@ export function BaseLoopbackActionTypesFactory(modelName: string): any {
   types['RESET_STATE'] = type('[' + modelName + '] Reset State');
 
   return types;
-};
-
+}
 /**
 * @module BaseLoopbackActionsFactory
 * @author João Ribeiro <@JonnyBGod> <github:JonnyBGod>
@@ -114,7 +113,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['CREATE_SUCCESS'];
 
     constructor(public payload: T, public meta?: any) { }
-  }
+  };
   /**
    * @method createFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -126,7 +125,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['CREATE_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method createMany
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -138,7 +137,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['CREATE_MANY'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method createManySuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -150,7 +149,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['CREATE_MANY_SUCCESS'];
 
     constructor(public payload: T[], public meta?: any) { }
-  }
+  };
   /**
    * @method createManyFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -162,7 +161,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['CREATE_MANY_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method findById
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -177,7 +176,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     constructor(id: any, filter: LoopBackFilter, public meta?: any) {
       this.payload = {id, filter};
     }
-  }
+  };
   /**
    * @method findByIdSuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -189,7 +188,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['FIND_BY_ID_SUCCESS'];
 
     constructor(public payload: T, public meta?: any) { }
-  }
+  };
   /**
    * @method findByIdFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -201,7 +200,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['FIND_BY_ID_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method find
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -213,7 +212,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['FIND'];
 
     constructor(public payload: LoopBackFilter = {}, public meta?: any) { }
-  }
+  };
   /**
    * @method findSuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -225,7 +224,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['FIND_SUCCESS'];
 
     constructor(public payload: T[], public meta?: any) { }
-  }
+  };
   /**
    * @method findFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -237,7 +236,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['FIND_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method findOne
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -249,7 +248,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['FIND_ONE'];
 
     constructor(public payload: LoopBackFilter = {}, public meta?: any) { }
-  }
+  };
   /**
    * @method findOneSuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -261,7 +260,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['FIND_ONE_SUCCESS'];
 
     constructor(public payload: T, public meta?: any) { }
-  }
+  };
   /**
    * @method findOneFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -273,7 +272,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['FIND_ONE_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method updateAll
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -288,7 +287,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     constructor(where: any = {}, data: any, public meta?: any) {
       this.payload = {where, data};
     }
-  }
+  };
   /**
    * @method updateAllSuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -300,7 +299,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['UPDATE_ALL_SUCCESS'];
 
     constructor(public where: any, public data: any, public meta?: any) { }
-  }
+  };
   /**
    * @method updateAllFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -312,7 +311,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['UPDATE_ALL_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method deleteById
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -324,7 +323,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['DELETE_BY_ID'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method deleteByIdSuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -336,7 +335,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['DELETE_BY_ID_SUCCESS'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method deleteByIdFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -348,7 +347,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['DELETE_BY_ID_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method updateAttributes
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -363,7 +362,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     constructor(id: any, data: T, public meta?: any) {
       this.payload = {id, data};
     }
-  }
+  };
   /**
    * @method updateAttributesSuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -375,7 +374,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['UPDATE_ATTRIBUTES_SUCCESS'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method updateAttributesFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -387,7 +386,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['UPDATE_ATTRIBUTES_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method upsert
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -399,7 +398,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['UPSERT'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method upsertSuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -411,7 +410,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['UPSERT_SUCCESS'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method upsertFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -423,7 +422,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['UPSERT_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method upsertWithWhere
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -438,7 +437,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     constructor(where: any = {}, data: any, public meta?: any) {
       this.payload = {where, data};
     }
-  }
+  };
   /**
    * @method upsertWithWhereSuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -450,7 +449,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['UPSERT_WITH_WHERE_SUCCESS'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method upsertWithWhereFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -462,7 +461,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['UPSERT_WITH_WHERE_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method replaceOrCreate
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -474,7 +473,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['REPLACE_OR_CREATE'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method replaceOrCreateSuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -486,7 +485,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['REPLACE_OR_CREATE_SUCCESS'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method replaceOrCreateFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -498,7 +497,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['REPLACE_OR_CREATE_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method replaceById
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -513,7 +512,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     constructor(id: any, data: any = {}, public meta?: any) {
       this.payload = {id, data};
     }
-  }
+  };
   /**
    * @method replaceByIdSuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -525,7 +524,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['REPLACE_BY_ID_SUCCESS'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method replaceByIdFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -537,7 +536,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['REPLACE_BY_ID_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method patchOrCreate
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -549,7 +548,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['PATCH_OR_CREATE'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method patchOrCreateSuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -561,7 +560,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['PATCH_OR_CREATE_SUCCESS'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method patchOrCreateFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -573,7 +572,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['PATCH_OR_CREATE_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method patchAttributes
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -588,7 +587,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     constructor(id: any, data: any = {}, public meta?: any) {
       this.payload = {id, data};
     }
-  }
+  };
   /**
    * @method patchAttributesSuccess
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -600,7 +599,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['PATCH_ATTRIBUTES_SUCCESS'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method patchAttributesFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -612,7 +611,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
     public readonly type = actionTypes['PATCH_ATTRIBUTES_FAIL'];
 
     constructor(public payload: any, public meta?: any) { }
-  }
+  };
   /**
    * @method guardFail
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -622,7 +621,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
    */
   actions.guardFail = class implements Action {
     public readonly type = actionTypes['GUARD_FAIL'];
-  }
+  };
   /**
    * @method resetState
    * @author João Ribeiro <t: JonnyBGod, gh: mean-expert-official>
@@ -632,7 +631,7 @@ export function BaseLoopbackActionsFactory<T>(actionTypes: any): any {
    */
   actions.resetState = class implements Action {
     public readonly type = actionTypes['RESET_STATE'];
-  }
+  };
 
   return actions;
-};
+}

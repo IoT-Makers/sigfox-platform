@@ -6,7 +6,9 @@ import { Role, RoleInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { RoleActionTypes } from '../actions';
 
-export interface RolesState extends EntityState<Role | RoleInterface> {};
+
+export interface RolesState extends EntityState<Role | RoleInterface> {
+}
 
 export const RoleAdapter: EntityAdapter<Role | RoleInterface> = createEntityAdapter<Role | RoleInterface>();
 

@@ -6,7 +6,9 @@ import { Parser, ParserInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { ParserActionTypes } from '../actions';
 
-export interface ParsersState extends EntityState<Parser | ParserInterface> {};
+
+export interface ParsersState extends EntityState<Parser | ParserInterface> {
+}
 
 export const ParserAdapter: EntityAdapter<Parser | ParserInterface> = createEntityAdapter<Parser | ParserInterface>();
 
