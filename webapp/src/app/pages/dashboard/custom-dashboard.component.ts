@@ -729,7 +729,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     // Line & Bar
     else if (this.newWidget.type === 'line' || this.newWidget.type === 'bar') {
       this.newWidget.filter = {
-        limit: 10,
+        limit: 50,
         order: 'updatedAt DESC',
         include: [{
           relation: 'Messages',
