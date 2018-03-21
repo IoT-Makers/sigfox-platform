@@ -14,6 +14,7 @@ export * from './Dashboard';
 export * from './User';
 export * from './Organization';
 export * from './Alert';
+export * from './AlertHistory';
 export * from './Reception';
 export * from './Connector';
 export * from './Widget';

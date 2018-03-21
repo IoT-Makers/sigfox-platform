@@ -13,6 +13,7 @@ import { Dashboard } from '../../models/Dashboard';
 import { User } from '../../models/User';
 import { Organization } from '../../models/Organization';
 import { Alert } from '../../models/Alert';
+import { AlertHistory } from '../../models/AlertHistory';
 import { Reception } from '../../models/Reception';
 import { Connector } from '../../models/Connector';
 import { Widget } from '../../models/Widget';
@@ -37,6 +38,7 @@ export class SDKModels {
     User: User,
     Organization: Organization,
     Alert: Alert,
+    AlertHistory: AlertHistory,
     Reception: Reception,
     Connector: Connector,
     Widget: Widget,

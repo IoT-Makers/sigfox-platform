@@ -182,7 +182,7 @@
                 </angular2-multiselect>
               </div>
             </div>
-            <ng-container *ngIf="alertToAdd.deviceId && alertToAdd.key">
+            <ng-container *ngIf="alertToEdit.deviceId && alertToEdit.key && alertToEdit.key !== 'geoloc_sigfox' && alertToEdit.key !== 'geoloc_gps'">
               <div class="form-group row">
                 <label class="offset-1 col-md-3 form-control-label">Exact value
                 </label>
@@ -233,6 +233,9 @@
                          [(ngModel)]="alertToAdd.message">
                 </div>
               </div>
+            </ng-container>
+            <ng-container *ngIf="alertToEdit.deviceId && alertToEdit.key && (alertToEdit.key === 'geoloc_sigfox' || alertToEdit.key === 'geoloc_gps')">
+
             </ng-container>
             <div class="form-group row" *ngIf="alertToAdd.deviceId && alertToAdd.key">
               <label class="col-md-3 form-control-label">Connectors
@@ -311,7 +314,7 @@
                 </angular2-multiselect>
               </div>
             </div>
-            <ng-container *ngIf="alertToEdit.deviceId && alertToEdit.key">
+            <ng-container *ngIf="alertToEdit.deviceId && alertToEdit.key && alertToEdit.key !== 'geoloc_sigfox' && alertToEdit.key !== 'geoloc_gps'">
               <div class="form-group row">
                 <label class="offset-1 col-md-3 form-control-label">Exact value
                 </label>

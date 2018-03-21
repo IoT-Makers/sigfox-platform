@@ -729,7 +729,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     // Line & Bar
     else if (this.newWidget.type === 'line' || this.newWidget.type === 'bar') {
       this.newWidget.filter = {
-        limit: 50,
+        limit: 20,
         order: 'updatedAt DESC',
         include: [{
           relation: 'Messages',
@@ -1000,7 +1000,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
               // Line
               else if (widget.type === 'line') {
-                widget.chartData = [];
+                const chartData = [];
                 const keys_units = [];
 
                 let w = 0;
@@ -1017,22 +1017,22 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                       // Check if the device has this key
                       data_parsed.forEach((line, k) => {
                         if (line.key === key) {
-                          widget.chartData[w] = {};
+                          chartData[w] = {};
                           // Set key
                           if (line.unit !== '') {
-                            widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
+                            chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
                           } else {
-                            widget.chartData[w].key = line.key + ' - ' + device.id;
+                            chartData[w].key = line.key + ' - ' + device.id;
                           }
                           // Set values
-                          widget.chartData[w].values = [];
+                          chartData[w].values = [];
                           device.Messages.forEach((message) => {
                             const item = {
                               label: new Date(message.createdAt),
                               value: Number(_.filter(message.data_parsed,
                                 {key: key})[0].value)
                             };
-                            widget.chartData[w].values.push(item);
+                            chartData[w].values.push(item);
                           });
                           data_parsed.splice(k, 1);
                         }
@@ -1041,6 +1041,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                     }
                   });
                 });
+                // Replace data with chart data
+                widget.data = chartData;
+
                 widget.chartOptions = {
                   chart: {
                     type: 'lineWithFocusChart',
@@ -1130,7 +1133,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
               // Bar
               else if (widget.type === 'bar') {
-                widget.chartData = [];
+                const chartData = [];
                 const keys_units = [];
 
                 let w = 0;
@@ -1147,19 +1150,19 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                       // Check if the device has this key
                       data_parsed.forEach((line, k) => {
                         if (line.key === key) {
-                          widget.chartData[w] = {};
+                          chartData[w] = {};
                           // Set key
 
-                          widget.chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
+                          chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
                           // Set values
-                          widget.chartData[w].values = [];
+                          chartData[w].values = [];
                           device.Messages.forEach((message) => {
                             const item = {
                               label: new Date(message.createdAt),
                               value: Number(_.filter(message.data_parsed,
                                 {key: key})[0].value)
                             };
-                            widget.chartData[w].values.push(item);
+                            chartData[w].values.push(item);
                           });
                           data_parsed.splice(k, 1);
                         }
@@ -1168,6 +1171,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                     }
                   });
                 });
+                // Replace data with chart data
+                widget.data = chartData;
+
                 widget.chartOptions = {
                   chart: {
                     type: 'discreteBarChart',
@@ -1288,7 +1294,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             obj.unit = row.data_parsed[index].unit;
           }
         }
-
         arrayAsRow.push(obj);
       });
       returnedArray.push(arrayAsRow);
@@ -1298,13 +1303,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   private getDevicesWithFilter(filter: any): Observable<any[]> {
-
     if (!this.organization) {
       return this.userApi.getDevices(this.user.id, filter);
     } else {
       return this.organizationApi.getDevices(this.organization.id, filter);
     }
-
   }
 
 // Map functions

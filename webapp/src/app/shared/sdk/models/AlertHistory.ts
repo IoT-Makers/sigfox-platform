@@ -4,7 +4,7 @@ import {
 } from '../index';
 
 declare var Object: any;
-export interface AlertInterface {
+export interface AlertHistoryInterface {
   "deviceId": string;
   "active"?: boolean;
   "one_shot"?: boolean;
@@ -30,7 +30,7 @@ export interface AlertInterface {
   Connector?: any;
 }
 
-export class Alert implements AlertInterface {
+export class AlertHistory implements AlertHistoryInterface {
   "deviceId": string = '';
   "active": boolean = true;
   "one_shot": boolean = false;
@@ -54,24 +54,24 @@ export class Alert implements AlertInterface {
   user: any = null;
   Organization: any = null;
   Connector: any = null;
-  constructor(data?: AlertInterface) {
+  constructor(data?: AlertHistoryInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Alert`.
+   * i.e. `AlertHistory`.
    */
   public static getModelName() {
-    return "Alert";
+    return "AlertHistory";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of Alert for dynamic purposes.
+  * This method creates an instance of AlertHistory for dynamic purposes.
   **/
-  public static factory(data: AlertInterface): Alert{
-    return new Alert(data);
+  public static factory(data: AlertHistoryInterface): AlertHistory{
+    return new AlertHistory(data);
   }
   /**
   * @method getModelDefinition
@@ -82,7 +82,7 @@ export class Alert implements AlertInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'Alert',
+      name: 'AlertHistory',
       plural: 'Alerts',
       path: 'Alerts',
       idName: 'id',

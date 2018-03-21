@@ -1,7 +1,6 @@
 {
-  "name": "Alert",
-  "plural": "Alerts",
-  "base": "PersistedModel",
+  "name": "AlertHistory",
+  "base": "Alert",
   "idInjection": true,
   "options": {
     "validateUpsert": true
@@ -16,7 +15,7 @@
       {
         "method": "stats",
         "endpoint": "/stats",
-        "description": "Statistical information for Alert registers.",
+        "description": "Statistical information for AlertHistory registers.",
         "type": "model",
         "count": {
           "on": "createdAt",
@@ -25,56 +24,7 @@
       }
     ]
   },
-  "properties": {
-    "deviceId": {
-      "type": "string",
-      "required": true
-    },
-    "active": {
-      "type": "boolean",
-      "default": true
-    },
-    "one_shot": {
-      "type": "boolean",
-      "default": false
-    },
-    "last_trigger": {
-      "type": "date"
-    },
-    "key": {
-      "type": "string",
-      "required": true
-    },
-    "value_exact": {
-      "type": "any",
-      "default": null
-    },
-    "value_min": {
-      "type": "any",
-      "default": null
-    },
-    "value_max": {
-      "type": "any",
-      "default": null
-    },
-    "value_less": {
-      "type": "any",
-      "default": null
-    },
-    "value_more": {
-      "type": "any",
-      "default": null
-    },
-    "location": {
-      "type": "GeoPoint"
-    },
-    "radius": {
-      "type": "number"
-    },
-    "message": {
-      "type": "string"
-    }
-  },
+  "properties": {},
   "validations": [],
   "relations": {
     "Connector": {

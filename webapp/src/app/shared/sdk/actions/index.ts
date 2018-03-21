@@ -15,6 +15,7 @@ import { DashboardActionTypes, DashboardActions } from './Dashboard';
 import { UserActionTypes, UserActions } from './User';
 import { OrganizationActionTypes, OrganizationActions } from './Organization';
 import { AlertActionTypes, AlertActions } from './Alert';
+import { AlertHistoryActionTypes, AlertHistoryActions } from './AlertHistory';
 import { ReceptionActionTypes, ReceptionActions } from './Reception';
 import { ConnectorActionTypes, ConnectorActions } from './Connector';
 import { WidgetActionTypes, WidgetActions } from './Widget';
@@ -36,6 +37,7 @@ export {
 	UserActionTypes, UserActions,
 	OrganizationActionTypes, OrganizationActions,
 	AlertActionTypes, AlertActions,
+	AlertHistoryActionTypes, AlertHistoryActions,
 	ReceptionActionTypes, ReceptionActions,
 	ConnectorActionTypes, ConnectorActions,
 	WidgetActionTypes, WidgetActions,

@@ -62,6 +62,7 @@ import { DashboardApi } from './services/custom/Dashboard';
 import { UserApi } from './services/custom/User';
 import { OrganizationApi } from './services/custom/Organization';
 import { AlertApi } from './services/custom/Alert';
+import { AlertHistoryApi } from './services/custom/AlertHistory';
 import { ReceptionApi } from './services/custom/Reception';
 import { ConnectorApi } from './services/custom/Connector';
 import { WidgetApi } from './services/custom/Widget';
@@ -110,6 +111,7 @@ export class SDKBrowserModule {
         UserApi,
         OrganizationApi,
         AlertApi,
+        AlertHistoryApi,
         ReceptionApi,
         ConnectorApi,
         WidgetApi,

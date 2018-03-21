@@ -824,7 +824,7 @@
             <!-- Chart -->
             <ng-container *ngIf="widget.type === 'line' || widget.type === 'bar'">
               <div *ngIf="widget.data">
-                <nvd3 [options]="widget.chartOptions" [data]="widget.chartData"></nvd3>
+                <nvd3 [options]="widget.chartOptions" [data]="widget.data"></nvd3>
               </div>
             </ng-container>
             <!-- End Chart -->
@@ -833,7 +833,7 @@
               <div *ngIf="widget.data">
                 <div style="display: block">
                   <canvas baseChart
-                          [datasets]="widget.chartData"
+                          [datasets]="widget.data"
                           [labels]="widget.chartLabels"
                           [options]="widget.chartOptions"
                           [legend]="true"

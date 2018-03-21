@@ -3,7 +3,7 @@ import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
-import {Alert, Connector, Device, FireLoopRef, Property, User} from '../../shared/sdk/models';
+import {Alert, Connector, Device, FireLoopRef, Geoloc, Property, User} from '../../shared/sdk/models';
 
 @Component({
   selector: 'app-alerts',
@@ -262,23 +262,51 @@ export class AlertsComponent implements OnInit, OnDestroy {
     // Fetch all the keys belonging to selected devices
     this.userApi.getDevices(this.user.id, {
       where: {id: deviceId},
-      include: [{
-        relation: 'Messages',
-        scope: {
-          limit: 1,
-          order: 'createdAt DESC'
-        }
-      }]
+      include: [
+        {
+          relation: 'Messages',
+          scope: {
+            limit: 1,
+            order: 'createdAt DESC'
+          }
+        },
+        {
+          relation: 'Geolocs',
+          scope: {
+            where: {type: 'sigfox'},
+            limit: 1,
+            order: 'createdAt DESC'
+          }
+        }]
     }).subscribe((devices: Device[]) => {
       console.log(devices);
+      // Store geoloc specific alert keys
+      if (devices[0].Geolocs) {
+        console.log(devices[0].Geolocs);
+        const item = {
+          id: 'geoloc_sigfox',
+          itemName: 'Geoloc Sigfox'
+        };
+        this.selectKeys.push(item);
+      }
+      // Store data_parsed keys
       if (devices[0].Messages[0].data_parsed) {
         devices[0].Messages[0].data_parsed.forEach((p: Property) => {
           const item = {
             id: p.key,
             itemName: p.key
           };
-          // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
           this.selectKeys.push(item);
+          if (item.id === 'lat') {
+            const item = {
+              id: 'geoloc_gps',
+              itemName: 'Geoloc GPS'
+            };
+            if (this.selectKeys.indexOf(item) === -1) {
+              this.selectKeys.push(item);
+              this.selectKeys.splice(1, 0, this.selectKeys.splice(this.selectKeys.indexOf(item), 1)[0]);
+            }
+          }
         });
       }
     });

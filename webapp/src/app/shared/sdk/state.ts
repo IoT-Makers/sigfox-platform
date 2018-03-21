@@ -17,6 +17,7 @@ import { DashboardEffects } from './effects/Dashboard';
 import { UserEffects } from './effects/User';
 import { OrganizationEffects } from './effects/Organization';
 import { AlertEffects } from './effects/Alert';
+import { AlertHistoryEffects } from './effects/AlertHistory';
 import { ReceptionEffects } from './effects/Reception';
 import { ConnectorEffects } from './effects/Connector';
 import { WidgetEffects } from './effects/Widget';
@@ -37,6 +38,7 @@ export interface LoopbackStateInterface {
   Users: reducers.UsersState;
   Organizations: reducers.OrganizationsState;
   Alerts: reducers.AlertsState;
+  AlertHistorys: reducers.AlertHistorysState;
   Receptions: reducers.ReceptionsState;
   Connectors: reducers.ConnectorsState;
   Widgets: reducers.WidgetsState;
@@ -58,6 +60,7 @@ export const LoopbackReducer = {
 	Users: reducers.UsersReducer,
 	Organizations: reducers.OrganizationsReducer,
 	Alerts: reducers.AlertsReducer,
+	AlertHistorys: reducers.AlertHistorysReducer,
 	Receptions: reducers.ReceptionsReducer,
 	Connectors: reducers.ConnectorsReducer,
 	Widgets: reducers.WidgetsReducer,
@@ -79,6 +82,7 @@ export const LoopbackEffects = [
   UserEffects,
   OrganizationEffects,
   AlertEffects,
+  AlertHistoryEffects,
   ReceptionEffects,
   ConnectorEffects,
   WidgetEffects,

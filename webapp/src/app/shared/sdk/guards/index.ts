@@ -13,6 +13,7 @@ import { DashboardExistsGuard } from './Dashboard';
 import { UserExistsGuard } from './User';
 import { OrganizationExistsGuard } from './Organization';
 import { AlertExistsGuard } from './Alert';
+import { AlertHistoryExistsGuard } from './AlertHistory';
 import { ReceptionExistsGuard } from './Reception';
 import { ConnectorExistsGuard } from './Connector';
 import { WidgetExistsGuard } from './Widget';
@@ -33,6 +34,7 @@ export const LOOPBACK_GUARDS_PROVIDERS = [
 	UserExistsGuard,
 	OrganizationExistsGuard,
 	AlertExistsGuard,
+	AlertHistoryExistsGuard,
 	ReceptionExistsGuard,
 	ConnectorExistsGuard,
 	WidgetExistsGuard,
@@ -53,6 +55,7 @@ export * from './Dashboard';
 export * from './User';
 export * from './Organization';
 export * from './Alert';
+export * from './AlertHistory';
 export * from './Reception';
 export * from './Connector';
 export * from './Widget';
