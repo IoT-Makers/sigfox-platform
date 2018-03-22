@@ -26,7 +26,9 @@
         "assets/css/glyphicons-filetypes.css",
         "assets/css/glyphicons-social.css",
         "../node_modules/ng-pick-datetime/assets/style/picker.min.css",
-        "../node_modules/nvd3/build/nv.d3.css"
+        "../node_modules/nvd3/build/nv.d3.css",
+        "../node_modules/leaflet/dist/leaflet.css",
+        "../node_modules/leaflet-draw/dist/leaflet.draw.css"
       ],
       "scripts": [
         "../node_modules/chart.js/dist/Chart.bundle.min.js",

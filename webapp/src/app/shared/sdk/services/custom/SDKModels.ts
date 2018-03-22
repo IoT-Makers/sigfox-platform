@@ -13,6 +13,8 @@ import { Dashboard } from '../../models/Dashboard';
 import { User } from '../../models/User';
 import { Organization } from '../../models/Organization';
 import { Alert } from '../../models/Alert';
+import { AlertValue } from '../../models/AlertValue';
+import { AlertGeofence } from '../../models/AlertGeofence';
 import { AlertHistory } from '../../models/AlertHistory';
 import { Reception } from '../../models/Reception';
 import { Connector } from '../../models/Connector';
@@ -38,6 +40,8 @@ export class SDKModels {
     User: User,
     Organization: Organization,
     Alert: Alert,
+    AlertValue: AlertValue,
+    AlertGeofence: AlertGeofence,
     AlertHistory: AlertHistory,
     Reception: Reception,
     Connector: Connector,

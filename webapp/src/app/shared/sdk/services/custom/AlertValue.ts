@@ -10,15 +10,15 @@ import { JSONSearchParams } from '../core/search.params';
 import { ErrorHandler } from '../core/error.service';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';
-import { Property } from '../../models/Property';
+import { AlertValue } from '../../models/AlertValue';
 import { SocketConnection } from '../../sockets/socket.connections';
 
 
 /**
- * Api services for the `Property` model.
+ * Api services for the `AlertValue` model.
  */
 @Injectable()
-export class PropertyApi extends BaseLoopBackApi {
+export class AlertValueApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(Http) protected http: Http,
@@ -33,9 +33,9 @@ export class PropertyApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Property`.
+   * i.e. `AlertValue`.
    */
   public getModelName() {
-    return "Property";
+    return "AlertValue";
   }
 }

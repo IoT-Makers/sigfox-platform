@@ -437,8 +437,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.pressure = undefined;
     this.speed = undefined;
     this.light = undefined;
-    this.alert = undefined;
-    this.mode = undefined;
     this.battery = undefined;
     this.message = undefined;
 
@@ -451,8 +449,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.pressure = _.filter(this.message.data_parsed, {key: 'pressure'})[0];
     this.speed = _.filter(this.message.data_parsed, {key: 'speed'})[0];
     this.light = _.filter(this.message.data_parsed, {key: 'light'})[0];
-    this.alert = _.filter(this.message.data_parsed, {key: 'alert'})[0];
-    this.mode = _.filter(this.message.data_parsed, {key: 'mode'})[0];
     this.battery = _.filter(this.message.data_parsed, {key: 'battery'})[0];
   }
 

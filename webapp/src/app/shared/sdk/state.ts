@@ -17,6 +17,8 @@ import { DashboardEffects } from './effects/Dashboard';
 import { UserEffects } from './effects/User';
 import { OrganizationEffects } from './effects/Organization';
 import { AlertEffects } from './effects/Alert';
+import { AlertValueEffects } from './effects/AlertValue';
+import { AlertGeofenceEffects } from './effects/AlertGeofence';
 import { AlertHistoryEffects } from './effects/AlertHistory';
 import { ReceptionEffects } from './effects/Reception';
 import { ConnectorEffects } from './effects/Connector';
@@ -38,6 +40,8 @@ export interface LoopbackStateInterface {
   Users: reducers.UsersState;
   Organizations: reducers.OrganizationsState;
   Alerts: reducers.AlertsState;
+  AlertValues: reducers.AlertValuesState;
+  AlertGeofences: reducers.AlertGeofencesState;
   AlertHistorys: reducers.AlertHistorysState;
   Receptions: reducers.ReceptionsState;
   Connectors: reducers.ConnectorsState;
@@ -60,6 +64,8 @@ export const LoopbackReducer = {
 	Users: reducers.UsersReducer,
 	Organizations: reducers.OrganizationsReducer,
 	Alerts: reducers.AlertsReducer,
+	AlertValues: reducers.AlertValuesReducer,
+	AlertGeofences: reducers.AlertGeofencesReducer,
 	AlertHistorys: reducers.AlertHistorysReducer,
 	Receptions: reducers.ReceptionsReducer,
 	Connectors: reducers.ConnectorsReducer,
@@ -82,6 +88,8 @@ export const LoopbackEffects = [
   UserEffects,
   OrganizationEffects,
   AlertEffects,
+  AlertValueEffects,
+  AlertGeofenceEffects,
   AlertHistoryEffects,
   ReceptionEffects,
   ConnectorEffects,

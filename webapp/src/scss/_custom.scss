@@ -86,6 +86,16 @@ agm-map {
   height: calc(100vh - 283px);
 }
 
+.modal {
+  visibility: hidden;
+  display: block;
+}
+
+.modal[aria-hidden='false'] {
+  visibility: visible;
+  display: block;
+}
+
 .btn-round {
   border-radius: 17px;
 }

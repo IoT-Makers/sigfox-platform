@@ -1244,6 +1244,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               widget.ready = true;
             });
           }
+          else {
+            widget.ready = true;
+          }
         });
         this.dashboardReady = true;
       }

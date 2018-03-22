@@ -189,7 +189,7 @@
           <div *ngIf="message" class="col-sm-12 col-md-12">
             <div class="card">
               <div class="card-header">
-                <i class="fa fa-clock-o fa-lg"></i> <strong> Latest message date & time</strong>
+                <i class="fa fa-clock-o fa-lg"></i> <strong> Latest message</strong>
               </div>
               <div class="card-block mx-auto text-center">
                 <p class="lead">{{message.createdAt | date:"yyyy/MM/dd - HH:mm:ss"}}</p>
@@ -359,27 +359,7 @@
             </div>
           </div>
 
-          <div *ngIf="alert && alert.value" class="col-sm-12 col-md-12">
-            <div class="card">
-              <div class="card-header">
-                <i class="fa fa-bell fa-lg"></i> <strong> Alert
-                <ng-container *ngIf="mode">- <span class="text-primary">{{mode.value | lowercase}}</span></ng-container>
-              </strong>
-              </div>
-              <div class="card-block mx-auto">
-                <div *ngIf="alert.value" class="text-danger text-center">
-                  <i class="fa fa-circle fa-5x"></i>
-                  <h3>{{alert.value}}</h3>
-                </div>
-                <div *ngIf="!alert.value" class="text-success text-center">
-                  <i class="fa fa-circle-o fa-5x"></i>
-                  <h3>{{alert.value}}</h3>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="message && message.Geolocs" class="col-sm-12 col-md-12">
+          <div *ngIf="message && message.Geolocs && message.Geolocs.length > 0" class="col-sm-12 col-md-12">
             <div class="card">
               <div class="card-header">
                 <i class="fa fa-map-marker fa-lg"></i> <strong> Location</strong>

@@ -12,6 +12,8 @@ export * from './Dashboard';
 export * from './User';
 export * from './Organization';
 export * from './Alert';
+export * from './AlertValue';
+export * from './AlertGeofence';
 export * from './AlertHistory';
 export * from './Reception';
 export * from './Connector';

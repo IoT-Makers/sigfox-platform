@@ -4,6 +4,7 @@
       "loopback/common/models",
       "loopback/server/models",
       "../common/models",
+      "../common/models/alert",
       "./models"
     ],
     "mixins": [
@@ -164,6 +165,14 @@
         }
       }
     }
+  },
+  "AlertValue": {
+    "dataSource": null,
+    "public": true
+  },
+  "AlertGeofence": {
+    "dataSource": null,
+    "public": true
   },
   "AlertHistory": {
     "dataSource": "mongodb",

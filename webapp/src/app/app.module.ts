@@ -17,6 +17,9 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AgmCoreModule} from '@agm/core';
 import {ModalModule, TooltipModule} from 'ng2-bootstrap';
 import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
+import {LeafletModule} from '@asymmetrik/ngx-leaflet';
+import {ToasterModule} from 'angular2-toaster';
+import {LeafletDrawModule} from '@asymmetrik/ngx-leaflet-draw';
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -31,9 +34,10 @@ import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-m
     ChartsModule,
     SDKBrowserModule.forRoot(),
     TooltipModule.forRoot(),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
-    }),
+    ToasterModule.forRoot(),
+    LeafletModule.forRoot(),
+    LeafletDrawModule.forRoot(),
+    AgmCoreModule.forRoot({apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'}),
     AngularMultiSelectModule
   ],
   declarations: [

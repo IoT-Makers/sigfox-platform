@@ -76,21 +76,26 @@
                   <div class="small text-gray-dark">
                     <strong>Key:</strong> {{alert.key}}
                   </div>
-                  <div class="small text-gray-dark" *ngIf="alert.value_min">
-                    <strong>Min value:</strong> {{alert.value_min}}
-                  </div>
-                  <div class="small text-gray-dark" *ngIf="alert.value_max">
-                    <strong>Max value:</strong> {{alert.value_max}}
-                  </div>
-                  <div class="small text-gray-dark" *ngIf="alert.value_less">
-                    <strong>Less than value:</strong> {{alert.value_less}}
-                  </div>
-                  <div class="small text-gray-dark" *ngIf="alert.value_more">
-                    <strong>More than value:</strong> {{alert.value_more}}
-                  </div>
-                  <div class="small text-gray-dark" *ngIf="alert.value_exact">
-                    <strong>Exact value:</strong> {{alert.value_exact}}
-                  </div>
+                  <ng-container *ngIf="alert.value">
+                    <div class="small text-gray-dark" *ngIf="alert.value.min">
+                      <strong>Min value:</strong> {{alert.value.min}}
+                    </div>
+                    <div class="small text-gray-dark" *ngIf="alert.value.max">
+                      <strong>Max value:</strong> {{alert.value.max}}
+                    </div>
+                    <div class="small text-gray-dark" *ngIf="alert.value.less">
+                      <strong>Less than value:</strong> {{alert.value.less}}
+                    </div>
+                    <div class="small text-gray-dark" *ngIf="alert.value.more">
+                      <strong>More than value:</strong> {{alert.value.more}}
+                    </div>
+                    <div class="small text-gray-dark" *ngIf="alert.value.exact">
+                      <strong>Exact value:</strong> {{alert.value.exact}}
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="alert.geofence">
+                    Geofence!
+                  </ng-container>
                   <div class="small text-gray-dark" *ngIf="alert.message">
                     <strong>Message:</strong> {{alert.message}}
                   </div>
@@ -134,193 +139,64 @@
 
 </div>
 
-<div bsModal #addAlertModal="bs-modal" class="modal fade" [config]="{ignoreBackdropClick: true}" tabindex="-1"
+<div bsModal #addOrEditAlertModal="bs-modal" class="modal fade" [config]="{ignoreBackdropClick: true}" tabindex="-1"
      role="dialog"
-     aria-labelledby="addAlertModal" aria-hidden="true">
+     (onShown)="loadMap()"
+     aria-labelledby="addOrEditAlertModal" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <!-- Form Begin -->
     <div class="modal-content">
-      <form class="form-horizontal" #addAlertForm="ngForm">
+      <form class="form-horizontal" #addOrEditForm="ngForm">
         <div class="modal-header">
-          <h4 class="modal-title">Add new alert</h4>
-          <button type="button" class="close" (click)="addAlertModal.hide()" aria-label="Close">
+          <h4 *ngIf="addAlertFlag" class="modal-title">Add alert</h4>
+          <h4 *ngIf="!addAlertFlag" class="modal-title">Edit alert</h4>
+          <button type="button" class="close" (click)="addOrEditAlertModal.hide()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <!-- Add Alert -->
+          <!-- Add or edit Alert -->
           <div class="col-md-12">
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Device
                 <small class="text-danger">(required)</small>
               </label>
               <div class="col-md-9">
-                <angular2-multiselect #selectDevicesAdd
+                <angular2-multiselect #selectDevicesAddOrEdit
                                       name="selectDevices"
                                       [data]="selectDevices"
                                       [(ngModel)]="selectedDevices"
                                       [settings]="selectOneDeviceSettings"
-                                      (onSelect)="alertToAdd.deviceId = $event.id; selectDevicesAdd.isActive = false; loadKeys($event.id)"
-                                      (onDeSelect)="alertToAdd.deviceId = null; alertToAdd.key = null;"
-                                      required>
-                </angular2-multiselect>
-              </div>
-            </div>
-            <div class="form-group row" *ngIf="alertToAdd.deviceId">
-              <label class="col-md-3 form-control-label">Key
-                <small class="text-danger">(required)</small>
-              </label>
-              <div class="col-md-9">
-                <angular2-multiselect #selectKeysAdd
-                                      name="selectKeys"
-                                      [data]="selectKeys"
-                                      [(ngModel)]="selectedKeys"
-                                      [settings]="selectOneSettings"
-                                      (onSelect)="alertToAdd.key = $event.id; selectKeysAdd.isActive = false;"
-                                      (onDeSelect)="alertToAdd.key = null"
-                                      required>
-                </angular2-multiselect>
-              </div>
-            </div>
-            <ng-container *ngIf="alertToEdit.deviceId && alertToEdit.key && alertToEdit.key !== 'geoloc_sigfox' && alertToEdit.key !== 'geoloc_gps'">
-              <div class="form-group row">
-                <label class="offset-1 col-md-3 form-control-label">Exact value
-                </label>
-                <div class="col-md-8">
-                  <input type="text" class="form-control" placeholder="Exact value" name="alertToAdd.value_exact"
-                         [(ngModel)]="alertToAdd.value_exact">
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <label class="offset-1 col-md-3 form-control-label">Between</label>
-                <div class="col-md-8">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <label class="form-control-label">Min value</label>
-                      <input type="number" class="form-control" name="alertToAdd.value_min"
-                             [(ngModel)]="alertToAdd.value_min">
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-control-label">Max value</label>
-                      <input type="number" class="form-control" name="alertToAdd.value_max"
-                             [(ngModel)]="alertToAdd.value_max">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="offset-1 col-md-3 form-control-label">Less than</label>
-                <div class="col-md-8">
-                  <input type="number" class="form-control" name="alertToAdd.value_less"
-                         [(ngModel)]="alertToAdd.value_less">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="offset-1 col-md-3 form-control-label">More than</label>
-                <div class="col-md-8">
-                  <input type="number" class="form-control" name="alertToAdd.value_more"
-                         [(ngModel)]="alertToAdd.value_more">
-                </div>
-              </div>
-              <hr class="offset-1">
-              <div class="form-group row">
-                <label class="offset-1 col-md-3 form-control-label">Custom message
-                  <small>(optional)</small>
-                </label>
-                <div class="col-md-8">
-                  <input type="text" class="form-control" placeholder="Message" name="alertToAdd.message"
-                         [(ngModel)]="alertToAdd.message">
-                </div>
-              </div>
-            </ng-container>
-            <ng-container *ngIf="alertToEdit.deviceId && alertToEdit.key && (alertToEdit.key === 'geoloc_sigfox' || alertToEdit.key === 'geoloc_gps')">
-
-            </ng-container>
-            <div class="form-group row" *ngIf="alertToAdd.deviceId && alertToAdd.key">
-              <label class="col-md-3 form-control-label">Connectors
-                <small class="text-danger">(required)</small>
-              </label>
-              <div class="col-md-9">
-                <angular2-multiselect name="selectConnectors"
-                                      [data]="selectConnectors"
-                                      [(ngModel)]="selectedConnectors"
-                                      [settings]="selectConnectorsSettings"
-                                      (onSelect)="setConnectors()"
-                                      (onDeSelect)="setConnectors()"
-                                      required>
-                </angular2-multiselect>
-              </div>
-            </div>
-          </div>
-          <!-- End Add Alert -->
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="addAlertModal.hide()">Close</button>
-          <button class="btn btn-success" [disabled]="!addAlertForm.form.valid" (click)="addAlert()"><i
-            class="fa fa-plus-circle"></i> Add alert
-          </button>
-        </div>
-      </form>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<div bsModal #editAlertModal="bs-modal" class="modal fade" [config]="{ignoreBackdropClick: true}" tabindex="-1"
-     role="dialog"
-     aria-labelledby="editAlertModal" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <!-- Form Begin -->
-    <div class="modal-content">
-      <form class="form-horizontal" #editAlertForm="ngForm">
-        <div class="modal-header">
-          <h4 class="modal-title">Edit alert</h4>
-          <button type="button" class="close" (click)="editAlertModal.hide()" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Edit Alert -->
-          <div class="col-md-12">
-            <div class="form-group row">
-              <label class="col-md-3 form-control-label">Device
-                <small class="text-danger">(required)</small>
-              </label>
-              <div class="col-md-9">
-                <angular2-multiselect #selectDevicesEdit
-                                      name="selectDevices"
-                                      [data]="selectDevices"
-                                      [(ngModel)]="selectedDevices"
-                                      [settings]="selectOneDeviceSettings"
-                                      (onSelect)="alertToEdit.deviceId = $event.id; selectDevicesEdit.isActive = false; loadKeys($event.id)"
-                                      (onDeSelect)="alertToEdit.deviceId = null; alertToEdit.key = null;"
+                                      (onSelect)="alertToAddOrEdit.deviceId = $event.id; selectDevicesAddOrEdit.isActive = false; loadKeys($event.id)"
+                                      (onDeSelect)="alertToAddOrEdit.deviceId = null; alertToAddOrEdit.key = null;"
                                       required="">
                 </angular2-multiselect>
               </div>
             </div>
-            <div class="form-group row" *ngIf="alertToEdit.deviceId">
+            <div class="form-group row" *ngIf="alertToAddOrEdit.deviceId">
               <label class="col-md-3 form-control-label">Key
                 <small class="text-danger">(required)</small>
               </label>
               <div class="col-md-9">
-                <angular2-multiselect #selectKeysEdit
+                <angular2-multiselect #selectKeysAddOrEdit
                                       name="selectKeys"
                                       [data]="selectKeys"
                                       [(ngModel)]="selectedKeys"
                                       [settings]="selectOneSettings"
-                                      (onSelect)="alertToEdit.key = $event.id; selectKeysEdit.isActive = false"
-                                      (onDeSelect)="alertToEdit.key = null"
+                                      (onSelect)="alertToAddOrEdit.key = $event.id; setAlertType(); selectKeysAddOrEdit.isActive = false"
+                                      (onDeSelect)="resetAlertFields();"
                                       required>
                 </angular2-multiselect>
               </div>
             </div>
-            <ng-container *ngIf="alertToEdit.deviceId && alertToEdit.key && alertToEdit.key !== 'geoloc_sigfox' && alertToEdit.key !== 'geoloc_gps'">
+
+            <ng-container *ngIf="alertToAddOrEdit.deviceId && alertToAddOrEdit.value">
               <div class="form-group row">
                 <label class="offset-1 col-md-3 form-control-label">Exact value
                 </label>
                 <div class="col-md-8">
-                  <input type="text" class="form-control" placeholder="Exact value" name="alertToEdit.value_exact"
-                         [(ngModel)]="alertToEdit.value_exact">
+                  <input type="text" class="form-control" placeholder="Exact value" name="alertToAddOrEdit.value.exact"
+                         [(ngModel)]="alertToAddOrEdit.value.exact">
                 </div>
               </div>
               <div class="form-group row">
@@ -329,13 +205,13 @@
                   <div class="row">
                     <div class="col-md-6">
                       <label class="form-control-label">Min value</label>
-                      <input type="number" class="form-control" name="alertToEdit.value_min"
-                             [(ngModel)]="alertToEdit.value_min">
+                      <input type="number" class="form-control" name="alertToAddOrEdit.value.min"
+                             [(ngModel)]="alertToAddOrEdit.value.min">
                     </div>
                     <div class="col-md-6">
                       <label class="form-control-label">Max value</label>
-                      <input type="number" class="form-control" name="alertToEdit.value_max"
-                             [(ngModel)]="alertToEdit.value_max">
+                      <input type="number" class="form-control" name="alertToAddOrEdit.value.max"
+                             [(ngModel)]="alertToAddOrEdit.value.max">
                     </div>
                   </div>
                 </div>
@@ -343,15 +219,15 @@
               <div class="form-group row">
                 <label class="offset-1 col-md-3 form-control-label">Less than</label>
                 <div class="col-md-8">
-                  <input type="number" class="form-control" name="alertToEdit.value_less"
-                         [(ngModel)]="alertToEdit.value_less">
+                  <input type="number" class="form-control" name="alertToAddOrEdit.value.less"
+                         [(ngModel)]="alertToAddOrEdit.value.less">
                 </div>
               </div>
               <div class="form-group row">
                 <label class="offset-1 col-md-3 form-control-label">More than</label>
                 <div class="col-md-8">
-                  <input type="number" class="form-control" name="alertToEdit.value_more"
-                         [(ngModel)]="alertToEdit.value_more">
+                  <input type="number" class="form-control" name="alertToAddOrEdit.value.more"
+                         [(ngModel)]="alertToAddOrEdit.value.more">
                 </div>
               </div>
               <hr class="offset-1">
@@ -360,12 +236,25 @@
                   <small>(optional)</small>
                 </label>
                 <div class="col-md-8">
-                  <input type="text" class="form-control" placeholder="Message" name="alertToEdit.message"
-                         [(ngModel)]="alertToEdit.message">
+                  <input type="text" class="form-control" placeholder="Message" name="alertToAddOrEdit.message"
+                         [(ngModel)]="alertToAddOrEdit.message">
                 </div>
               </div>
             </ng-container>
-            <div class="form-group row" *ngIf="alertToEdit.deviceId && alertToEdit.key">
+
+            <ng-container *ngIf="alertToAddOrEdit.deviceId && alertToAddOrEdit.geofence">
+              <div id="map"
+                   class="mb-1"
+                   style="height: 300px;"
+                   leaflet
+                   leafletDraw
+                   (leafletMapReady)="onMapReady($event)"
+                   [leafletOptions]="options"
+                   [leafletDrawOptions]="drawOptions">
+              </div>
+            </ng-container>
+
+            <div class="form-group row" *ngIf="alertToAddOrEdit.deviceId && alertToAddOrEdit.key">
               <label class="col-md-3 form-control-label">Connectors
                 <small class="text-danger">(required)</small>
               </label>
@@ -384,10 +273,9 @@
           <!-- End Edit Alert -->
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="editAlertModal.hide()">Close</button>
-          <button class="btn btn-primary" [disabled]="!editAlertForm.form.valid" (click)="editAlert()"><i
-            class="fa fa-check"></i> Update
-          </button>
+          <button type="button" class="btn btn-secondary" (click)="addOrEditAlertModal.hide()">Close</button>
+          <button *ngIf="addAlertFlag" class="btn btn-success" [disabled]="!addOrEditForm.form.valid" (click)="addAlert()"><i class="fa fa-plus-circle"></i> Add alert</button>
+          <button *ngIf="!addAlertFlag" class="btn btn-primary" [disabled]="!addOrEditForm.form.valid" (click)="editAlert()"><i class="fa fa-check"></i> Update</button>
         </div>
       </form>
     </div><!-- /.modal-content -->

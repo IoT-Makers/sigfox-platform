@@ -13,6 +13,8 @@ import { DashboardExistsGuard } from './Dashboard';
 import { UserExistsGuard } from './User';
 import { OrganizationExistsGuard } from './Organization';
 import { AlertExistsGuard } from './Alert';
+import { AlertValueExistsGuard } from './AlertValue';
+import { AlertGeofenceExistsGuard } from './AlertGeofence';
 import { AlertHistoryExistsGuard } from './AlertHistory';
 import { ReceptionExistsGuard } from './Reception';
 import { ConnectorExistsGuard } from './Connector';
@@ -34,6 +36,8 @@ export const LOOPBACK_GUARDS_PROVIDERS = [
 	UserExistsGuard,
 	OrganizationExistsGuard,
 	AlertExistsGuard,
+	AlertValueExistsGuard,
+	AlertGeofenceExistsGuard,
 	AlertHistoryExistsGuard,
 	ReceptionExistsGuard,
 	ConnectorExistsGuard,
@@ -55,6 +59,8 @@ export * from './Dashboard';
 export * from './User';
 export * from './Organization';
 export * from './Alert';
+export * from './AlertValue';
+export * from './AlertGeofence';
 export * from './AlertHistory';
 export * from './Reception';
 export * from './Connector';

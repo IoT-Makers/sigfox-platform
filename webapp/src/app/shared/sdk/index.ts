@@ -62,6 +62,8 @@ import { DashboardApi } from './services/custom/Dashboard';
 import { UserApi } from './services/custom/User';
 import { OrganizationApi } from './services/custom/Organization';
 import { AlertApi } from './services/custom/Alert';
+import { AlertValueApi } from './services/custom/AlertValue';
+import { AlertGeofenceApi } from './services/custom/AlertGeofence';
 import { AlertHistoryApi } from './services/custom/AlertHistory';
 import { ReceptionApi } from './services/custom/Reception';
 import { ConnectorApi } from './services/custom/Connector';
@@ -111,6 +113,8 @@ export class SDKBrowserModule {
         UserApi,
         OrganizationApi,
         AlertApi,
+        AlertValueApi,
+        AlertGeofenceApi,
         AlertHistoryApi,
         ReceptionApi,
         ConnectorApi,

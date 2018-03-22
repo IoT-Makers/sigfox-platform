@@ -1,7 +1,4 @@
 /* tslint:disable */
-import {
-  GeoPoint
-} from '../index';
 
 declare var Object: any;
 export interface AlertHistoryInterface {
@@ -10,13 +7,8 @@ export interface AlertHistoryInterface {
   "one_shot"?: boolean;
   "last_trigger"?: Date;
   "key": string;
-  "value_exact"?: any;
-  "value_min"?: any;
-  "value_max"?: any;
-  "value_less"?: any;
-  "value_more"?: any;
-  "location"?: GeoPoint;
-  "radius"?: number;
+  "value"?: any;
+  "geofence"?: Array<any>;
   "message"?: string;
   "id"?: any;
   "userId"?: any;
@@ -36,13 +28,8 @@ export class AlertHistory implements AlertHistoryInterface {
   "one_shot": boolean = false;
   "last_trigger": Date = new Date(0);
   "key": string = '';
-  "value_exact": any = <any>null;
-  "value_min": any = <any>null;
-  "value_max": any = <any>null;
-  "value_less": any = <any>null;
-  "value_more": any = <any>null;
-  "location": GeoPoint = <any>null;
-  "radius": number = 0;
+  "value": any = <any>null;
+  "geofence": Array<any> = <any>[];
   "message": string = '';
   "id": any = <any>null;
   "userId": any = <any>null;
@@ -109,38 +96,13 @@ export class AlertHistory implements AlertHistoryInterface {
           name: 'key',
           type: 'string'
         },
-        "value_exact": {
-          name: 'value_exact',
-          type: 'any',
-          default: <any>null
+        "value": {
+          name: 'value',
+          type: 'any'
         },
-        "value_min": {
-          name: 'value_min',
-          type: 'any',
-          default: <any>null
-        },
-        "value_max": {
-          name: 'value_max',
-          type: 'any',
-          default: <any>null
-        },
-        "value_less": {
-          name: 'value_less',
-          type: 'any',
-          default: <any>null
-        },
-        "value_more": {
-          name: 'value_more',
-          type: 'any',
-          default: <any>null
-        },
-        "location": {
-          name: 'location',
-          type: 'GeoPoint'
-        },
-        "radius": {
-          name: 'radius',
-          type: 'number'
+        "geofence": {
+          name: 'geofence',
+          type: 'Array&lt;any&gt;'
         },
         "message": {
           name: 'message',

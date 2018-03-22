@@ -3,33 +3,75 @@ import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
-import {Alert, Connector, Device, FireLoopRef, Geoloc, Property, User} from '../../shared/sdk/models';
+import {Alert, AlertGeofence, AlertValue, Connector, Device, FireLoopRef, Property, User} from '../../shared/sdk/models';
+import * as L from 'leaflet';
+import {CircleMarkerOptions, icon, LatLng, latLng, tileLayer} from 'leaflet';
 
 @Component({
   selector: 'app-alerts',
   templateUrl: './alerts.component.html',
   styleUrls: ['./alerts.component.scss']
 })
+
+
 export class AlertsComponent implements OnInit, OnDestroy {
 
   private user: User;
 
-  @ViewChild('addAlertModal') addAlertModal: any;
-  @ViewChild('editAlertModal') editAlertModal: any;
+  @ViewChild('addOrEditAlertModal') addOrEditAlertModal: any;
   @ViewChild('confirmModal') confirmModal: any;
+  @ViewChild('map') mapContainer;
+
+  // Map
+  private map: L.Map;
+  private circleMarkerOptions: CircleMarkerOptions = {
+    color: '#2ccf2f',
+    fillColor: '#5aee85'
+  };
+  private blueIconOptions: L.IconOptions = {
+    iconUrl: 'assets/img/markers/marker-icon.png',
+    shadowUrl: 'assets/img/markers/marker-shadow.png',
+    iconSize:     [25, 41], // size of the icon
+    iconAnchor:   [13, 41], // point of the icon which will correspond to marker's location
+    shadowSize:   [50, 64], // size of the shadow
+    shadowAnchor: [4, 62],  // the same for the shadow
+    popupAnchor:  [-2, -40] // point from which the popup should open relative to the iconAnchor
+  };
+  private options = {
+    layers: [
+      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
+    ],
+    zoom: 5,
+    center: latLng(48.856614, 2.352222)
+  };
+  private drawOptions = {
+    position: 'topright',
+    draw: {
+      marker: false,
+      polyline: false,
+      polygon: false,
+      rectangle: false,
+      circlemarker: false,
+      circle: {
+        shapeOptions: {
+          color: '#e2120b'
+        }
+      }
+    }
+  };
 
   private alertSub: Subscription;
 
   private alerts: Alert[] = [];
-  private alertToAdd: Alert = new Alert();
+  private addAlertFlag = false;
+  private alertToAddOrEdit: Alert = new Alert();
   private alertToRemove: Alert = new Alert();
-  private alertToEdit: Alert = new Alert();
 
   private alertRef: FireLoopRef<Alert>;
 
   private dateOrigin: Date = new Date(0);
 
-  // Select
+// Select
   private selectDevices: Array<Object> = [];
   private selectedDevices = [];
   private selectOneDeviceSettings = {
@@ -55,7 +97,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     classes: 'select-one'
   };
 
-  // Notifications
+// Notifications
   private toast;
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig =
@@ -73,11 +115,66 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.toasterService = toasterService;
   }
 
+  onMapReady(map: L.Map): void {
+    this.map = map;
+  }
+
+  onLayerAdd(e): void {
+    console.log(e);
+  }
+
+  onOverlayAdd(e): void {
+    console.log(e);
+  }
+
+  loadMap(): void {
+    this.map.invalidateSize();
+    this.map.locate({setView: true, maxZoom: 16});
+    this.map.on('locationfound', (e) => this.onLocationFound(e));
+    this.map.on('locationerror', (e) => this.onLocationError(e));
+    this.map.on('draw:created', (e) => this.onDrawCreated(e));
+    this.map.on('draw:removed', (e) => this.onDrawRemoved(e));
+
+    if (this.alertToAddOrEdit.geofence) {
+      this.alertToAddOrEdit.geofence.forEach((alertGeofence: AlertGeofence) => {
+        L.circle(new LatLng(alertGeofence.location.lat, alertGeofence.location.lng), alertGeofence.radius, this.circleMarkerOptions).addTo(this.map);
+      });
+    }
+  }
+
+  onLocationFound(e): void {
+    const radius = e.accuracy / 2;
+    const marker = L.marker(e.latlng, {icon: icon(this.blueIconOptions)}).addTo(this.map);
+    L.circle(e.latlng, radius).addTo(this.map);
+    marker.bindPopup('You are within <b>' + radius + '</b> meters from this point').openPopup();
+  }
+
+  onLocationError(e): void {
+    console.log(e.message);
+  }
+
+  onDrawCreated(e): void {
+    // console.log(this.map);
+    if (e.layerType === 'circle') {
+      /*const lat = e.layer._latlng.lat;
+      const lng = e.layer._latlng.lng;*/
+      const alertGeofence = new AlertGeofence();
+      alertGeofence.location = e.layer._latlng;
+      alertGeofence.radius = e.layer._mRadius;
+      alertGeofence.in = true;
+      this.alertToAddOrEdit.geofence.push(alertGeofence);
+    }
+  }
+
+  onDrawRemoved(e): void {
+    console.log(e);
+    this.alertToAddOrEdit.geofence = null;
+  }
+
   ngOnInit(): void {
     console.log('Alerts: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-
     // Real Time
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
       this.setup();
@@ -140,47 +237,41 @@ export class AlertsComponent implements OnInit, OnDestroy {
     });
   }
 
-  setDrawingMap(google) {
-    const map = google.map;
-    const drawingManager = new google.maps.drawing.DrawingManager({
-      drawingMode: google.maps.drawing.OverlayType.MARKER,
-      drawingControl: true,
-      drawingControlOptions: {
-        position: google.maps.ControlPosition.TOP_CENTER,
-        drawingModes: [
-          google.maps.drawing.OverlayType.MARKER,
-          google.maps.drawing.OverlayType.CIRCLE,
-          google.maps.drawing.OverlayType.POLYGON,
-          google.maps.drawing.OverlayType.POLYLINE,
-          google.maps.drawing.OverlayType.RECTANGLE
-        ]
-      },
-      /*markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},*/
-      circleOptions: {
-        fillColor: '#ff5b52',
-        fillOpacity: 1,
-        strokeWeight: 5,
-        clickable: false,
-        editable: true,
-        zIndex: 1
-      }
-    });
-    drawingManager.setMap(map);
+  setAlertType(): void {
+    if (this.alertToAddOrEdit.key.startsWith('geoloc_')) {
+      delete this.alertToAddOrEdit.value;
+      this.alertToAddOrEdit.geofence = [];
+    } else {
+      delete this.alertToAddOrEdit.geofence;
+      this.alertToAddOrEdit.value = new AlertValue();
+    }
+  }
+
+  resetAlertFields(): void {
+    this.alertToAddOrEdit.key = null;
+    delete this.alertToAddOrEdit.value;
+    delete this.alertToAddOrEdit.geofence;
   }
 
   openAddAlertModal(): void {
+    // Set flag
+    this.addAlertFlag = true;
     // Reset selects
     this.selectedDevices = [];
     this.selectedKeys = [];
     this.selectedConnectors = [];
     // New alert
-    this.alertToAdd = new Alert();
+    this.alertToAddOrEdit = new Alert();
+    // Delete geofence array by default
+    delete this.alertToAddOrEdit.geofence;
     // Open modal
-    this.addAlertModal.show();
+    this.addOrEditAlertModal.show();
   }
 
   openEditAlertModal(alert: Alert): void {
-    this.alertToEdit = alert;
+    // Set flag
+    this.addAlertFlag = false;
+    this.alertToAddOrEdit = alert;
     // Load keys for this device
     this.loadKeys(alert.deviceId);
     // Set selected values
@@ -194,8 +285,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
     if (alert.Connector) {
       this.selectedConnectors = [{id: alert.Connector.id, itemName: alert.Connector.name + ' (' + alert.Connector.type + ')'}];
     }
-
-    this.editAlertModal.show();
+    // Open modal
+    this.addOrEditAlertModal.show();
   }
 
   openConfirmModal(alert: Alert): void {
@@ -208,8 +299,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
      * TODO: implement multi connector (HasAndBelongsToMany relations?)
      */
     this.selectedConnectors.forEach((item: any) => {
-      this.alertToAdd.connectorId = item.id;
-      this.alertToEdit.connectorId = item.id;
+      this.alertToAddOrEdit.connectorId = item.id;
+      this.alertToAddOrEdit.connectorId = item.id;
     });
   }
 
@@ -227,7 +318,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   editAlert(): void {
-    this.alertRef.upsert(this.alertToEdit).subscribe(value => {
+    this.alertRef.upsert(this.alertToAddOrEdit).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
@@ -236,13 +327,13 @@ export class AlertsComponent implements OnInit, OnDestroy {
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
-    this.editAlertModal.hide();
+    this.addOrEditAlertModal.hide();
   }
 
   addAlert(): void {
-    delete this.alertToAdd.id;
-    this.alertToAdd.userId = this.user.id;
-    this.alertRef.upsert(this.alertToAdd).subscribe((alert: Alert) => {
+    delete this.alertToAddOrEdit.id;
+    this.alertToAddOrEdit.userId = this.user.id;
+    this.alertRef.upsert(this.alertToAddOrEdit).subscribe((alert: Alert) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
@@ -251,7 +342,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('error', 'Error', 'Please fill in the alert form.' + err.error.message);
     });
-    this.addAlertModal.hide();
+    this.addOrEditAlertModal.hide();
   }
 
   loadKeys(deviceId: string): void {
@@ -353,6 +444,5 @@ export class AlertsComponent implements OnInit, OnDestroy {
     if (this.alertRef) this.alertRef.dispose();
     if (this.alertSub) this.alertSub.unsubscribe();
   }
-
 }
 
