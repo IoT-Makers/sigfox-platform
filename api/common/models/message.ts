@@ -98,8 +98,12 @@ class Message {
           next(err, data);
         } else {
           deviceInstance = deviceInstance.toJSON();
-          if (created) console.log('Created new device.');
-          else console.log('Found an existing device.');
+          if (created) {
+            //console.log('Created new device.');
+          }
+          else{
+            //console.log('Found an existing device.');
+          }
 
           // If message is a duplicate
           if (duplicate) {
@@ -117,7 +121,7 @@ class Message {
                 next(err, data);
               } else {
                 if (messageInstance) {
-                  console.log('Found the corresponding message and storing reception in it.');
+                  //console.log('Found the corresponding message and storing reception in it.');
                   if (!messageInstance.reception) {
                     messageInstance.reception = [];
                   }
@@ -129,7 +133,7 @@ class Message {
                         console.error(err);
                         next(err, messageInstance);
                       } else {
-                        console.log('Updated message as: ', messageInstance);
+                        //console.log('Updated message as: ', messageInstance);
                         next(null, messageInstance);
                       }
                     });
@@ -151,8 +155,8 @@ class Message {
               if (!deviceInstance.Parser && parserId) {
                 deviceInstance.parserId = parserId;
                 // Save a parser in the device and parse the message
-                console.log('Associating parser to device.');
-                Message.app.models.Device.upsert(
+                //console.log('Associating parser to device.');
+                this.model.app.models.Device.upsert(
                   deviceInstance, (err: any, deviceInstance: any) => {
                     if (err) {
                       console.error(err);
@@ -167,7 +171,7 @@ class Message {
                           next(err, data);
                         } else {
                           deviceInstance = deviceInstance.toJSON();
-                          console.log('Updated device as: ', deviceInstance);
+                          //console.log('Updated device as: ', deviceInstance);
 
                           // Decode the payload
                           Message.app.models.Parser.parsePayload(
@@ -191,7 +195,7 @@ class Message {
                               if (err) {
                                 next(err, null);
                               } else {
-                                console.log(res);
+                                //console.log(res);
                               }
                             });
 
@@ -202,7 +206,7 @@ class Message {
                     }
                   });
               } else {
-                console.warn('Found parser!');
+                //console.log('Found parser!');
 
                 // Decode the payload
                 Message.app.models.Parser.parsePayload(
@@ -226,7 +230,7 @@ class Message {
                     if (err) {
                       next(err, null);
                     } else {
-                      console.log(res);
+                      //console.log(res);
                     }
                   });
 
@@ -275,7 +279,7 @@ class Message {
               console.error(err);
               next(err, messageInstance);
             } else {
-              console.log('Created message as: ', messageInstance);
+              //console.log('Created message as: ', messageInstance);
               // Check if there is Geoloc in payload and create Geoloc object
               Geoloc.createFromParsedPayload(
                 messageInstance,
@@ -283,7 +287,7 @@ class Message {
                   if (err) {
                     next(err, null);
                   } else {
-                    console.log(res);
+                    //console.log(res);
                   }
                 });
               // Calculate success rate and update device
@@ -305,7 +309,7 @@ class Message {
             console.error(err);
             next(err, messageInstance);
           } else {
-            console.log('Created message as: ', messageInstance);
+            //console.log('Created message as: ', messageInstance);
             // Check if there is Geoloc in payload and create Geoloc object
             Geoloc.createFromParsedPayload(
               messageInstance,
@@ -313,7 +317,7 @@ class Message {
                 if (err) {
                   next(err, null);
                 } else {
-                  console.log(res);
+                  //console.log(res);
                 }
               });
             // Calculate success rate and update device
@@ -360,7 +364,7 @@ class Message {
               if (err) {
                 console.error(err);
               } else {
-                console.log('Updated device as: ' + deviceUpdated);
+                //console.log('Updated device as: ' + deviceUpdated);
               }
             });
         }

@@ -610,7 +610,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.newWidget.filter = {
         limit: 100,
         order: 'updatedAt DESC',
-        include: ['Parser', 'Category', {
+        include: ['Parser', 'Category', 'Geolocs', {
           relation: 'Messages',
           scope: {
             limit: 1,
@@ -662,7 +662,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           where: {
             or: []
           },
-          limit: 10,
+          limit: 100,
           include: [{
             relation: 'Messages',
             order: 'createdAt DESC',
@@ -689,7 +689,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           where: {
             or: []
           },
-          limit: 10,
+          limit: 100,
           order: 'updatedAt DESC',
           include: [{
             relation: 'Geolocs',
@@ -709,7 +709,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           where: {
             or: []
           },
-          limit: 10,
+          limit: 100,
           order: 'updatedAt DESC',
           include: [{
             relation: 'Geolocs',
@@ -992,7 +992,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
               // Gauge
               else if (widget.type === 'gauge') {
-                const lastData_parsed = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
+                const lastData_parsed: any = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
                 widget.value = lastData_parsed.value;
                 widget.unit = lastData_parsed.unit;
                 widget.label = this.formatTableColumn(lastData_parsed.key);
@@ -1007,27 +1007,28 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
                 // Loop each device for this widget
                 widget.data.forEach((device: Device) => {
-                  const data_parsed = device.Messages[0].data_parsed;
+                  if(device.Messages[0]){
+                  const data_parsed: any = device.Messages[0].data_parsed;
                   // Loop each keys chosen for this widget
-                  widget.options.keys.forEach((key) => {
-                    const o = _.filter(device.Messages[0].data_parsed, {key: key})[0];
+                  widget.options.keys.forEach((key: any) => {
+                    const o: any = _.filter(device.Messages[0].data_parsed, {key: key})[0];
                     console.log(device.id, o);
                     if (o) {
                       keys_units.push(o);
                       // Check if the device has this key
-                      data_parsed.forEach((line, k) => {
+                      data_parsed.forEach((line: any, k) => {
                         if (line.key === key) {
                           chartData[w] = {};
                           // Set key
                           if (line.unit !== '') {
-                            chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
+                            chartData[w].key = (line.key + ' (' + line.unit + ')' + ' - ' + device.id)  + ' ' + (device.name ? device.name : '');
                           } else {
-                            chartData[w].key = line.key + ' - ' + device.id;
+                            chartData[w].key = (line.key + ' - ' + device.id) + ' ' + (device.name ? device.name : '');
                           }
                           // Set values
                           chartData[w].values = [];
-                          device.Messages.forEach((message) => {
-                            const item = {
+                          device.Messages.forEach((message: Message) => {
+                            const item: any = {
                               label: new Date(message.createdAt),
                               value: Number(_.filter(message.data_parsed,
                                 {key: key})[0].value)
@@ -1040,6 +1041,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                       w++;
                     }
                   });
+                }
                 });
                 // Replace data with chart data
                 widget.data = chartData;
@@ -1156,8 +1158,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                           chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
                           // Set values
                           chartData[w].values = [];
-                          device.Messages.forEach((message) => {
-                            const item = {
+                          device.Messages.forEach((message: Message) => {
+                            const item: any = {
                               label: new Date(message.createdAt),
                               value: Number(_.filter(message.data_parsed,
                                 {key: key})[0].value)
@@ -1297,6 +1299,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             obj.unit = row.data_parsed[index].unit;
           }
         }
+
         arrayAsRow.push(obj);
       });
       returnedArray.push(arrayAsRow);
