@@ -214,7 +214,7 @@ class Alert {
               const lat_device = _.filter(data_parsed, {key: 'lat'})[0];
               const lng_device = _.filter(data_parsed, {key: 'lng'})[0];
               if (lat_device && lng_device) {
-                const location_device = new loopback.GeoPoint({lat: lat_device, lng: lng_device});
+                const location_device = new loopback.GeoPoint({lat: Number(lat_device), lng: Number(lng_device)});
                 const location_geofence = new loopback.GeoPoint(alertGeofence.location);
                 const distanceToGeofence = location_device.distanceTo(location_geofence, {type: 'meters'});
                 console.log('Device distance to geofence point: ' + distanceToGeofence);
