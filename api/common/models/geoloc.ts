@@ -141,6 +141,20 @@ class Geoloc {
           geoloc.messageId = messageInstance.id;
           geoloc.deviceId = messageInstance.deviceId;
 
+          // Trigger alerts (if any)
+          Alert.triggerBySigfoxGeoloc(
+            geoloc.location.lat,
+            geoloc.location.lng,
+            geoloc.deviceId,
+            req,
+            function (err: any, res: any) {
+              if (err) {
+                next(err, null);
+              } else {
+                //console.log(res);
+              }
+            });
+
           // Creating a new Geoloc
           Geoloc.create(
             geoloc,
@@ -153,20 +167,6 @@ class Geoloc {
                 // Update device in order to trigger a real time upsert event
                 this.updateDeviceLastLocatedAt(geolocInstance.deviceId);
                 next(null, geolocInstance);
-              }
-            });
-
-          // Trigger alerts (if any)
-          Alert.triggerBySigfoxGeoloc(
-            geoloc.location.lat,
-            geoloc.location.lng,
-            geoloc.deviceId,
-            req,
-            function (err: any, res: any) {
-              if (err) {
-                next(err, null);
-              } else {
-                //console.log(res);
               }
             });
         } else {
