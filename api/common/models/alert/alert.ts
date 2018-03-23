@@ -157,19 +157,18 @@ class Alert {
                             alert.last_trigger = new Date();
                             Alert.upsert(
                               alert,
-                              (err: any, alert: any) => {
+                              (err: any, alertInstance: any) => {
                                 if (err) {
                                   console.error(err);
                                 } else {
-                                  console.log('Updated alert as: ', alert);
+                                  console.log('Updated alert as: ', alertInstance);
+                                  // Save triggered alerts in AlertHistory
+                                  AlertHistory.upsert(alertInstance, (err: any, alert: any) => {
+                                  });
                                 }
                               });
                             // Alert has been triggered, removing it from array
                             alerts.splice(index, 1);
-
-                            // Save triggered alerts in AlertHistory
-                            AlertHistory.upsert(alert, (err: any, alert: any) => {
-                            });
                           }
                         });
                     }
@@ -288,19 +287,18 @@ class Alert {
                         alert.last_trigger = new Date();
                         Alert.upsert(
                           alert,
-                          (err: any, alert: any) => {
+                          (err: any, alertInstance: any) => {
                             if (err) {
                               console.error(err);
                             } else {
-                              console.log('Updated alert as: ', alert);
+                              console.log('Updated alert as: ', alertInstance);
+                              // Save triggered alerts in AlertHistory
+                              AlertHistory.upsert(alertInstance, (err: any, alert: any) => {
+                              });
                             }
                           });
                         // Alert has been triggered, removing it from array
                         alerts.splice(index, 1);
-
-                        // Save triggered alerts in AlertHistory
-                        AlertHistory.upsert(alert, (err: any, alert: any) => {
-                        });
                       }
                     });
                 }
@@ -388,18 +386,17 @@ class Alert {
                       alert.last_trigger = new Date();
                       Alert.upsert(
                         alert,
-                        (err: any, alert: any) => {
+                        (err: any, alertInstance: any) => {
                           if (err) {
                             console.error(err);
                           } else {
-                            console.log('Updated alert as: ', alert);
+                            console.log('Updated alert as: ', alertInstance);
+                            // Save triggered alerts in AlertHistory
+                            AlertHistory.upsert(alertInstance, (err: any, alert: any) => { });
                           }
                         });
                       // Alert has been triggered, removing it from array
                       alerts.splice(index, 1);
-
-                      // Save triggered alerts in AlertHistory
-                      AlertHistory.upsert(alert, (err: any, alert: any) => { });
                     }
                   });
               }

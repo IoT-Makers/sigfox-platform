@@ -1,6 +1,7 @@
 {
   "name": "AlertHistory",
-  "base": "Alert",
+  "name": "AlertHistories",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
