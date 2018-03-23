@@ -58,9 +58,9 @@ class Alert {
           and: [
             {id: deviceId},
             {userId: userId}
-          ],
-          include: ['Alerts']
-        }
+          ]
+        },
+        include: ['Alerts']
       }, (err: any, deviceInstance: any) => {
         if (err || !deviceInstance) {
           console.error('Device not found.');
