@@ -1,6 +1,6 @@
 {
   "name": "AlertHistory",
-  "name": "AlertHistories",
+  "plural": "AlertHistories",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
