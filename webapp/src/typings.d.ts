@@ -3,3 +3,10 @@
 // https://www.typescriptlang.org/docs/handbook/writing-declaration-files.html
 
 declare var System: any;
+
+import * as L from 'leaflet';
+declare module 'leaflet' {
+  namespace control {
+    function fullscreen(v: any);
+  }
+}

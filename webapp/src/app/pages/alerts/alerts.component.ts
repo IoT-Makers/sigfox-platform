@@ -6,13 +6,13 @@ import {Subscription} from 'rxjs/Subscription';
 import {Alert, AlertGeofence, AlertValue, Connector, Device, FireLoopRef, Property, User} from '../../shared/sdk/models';
 import * as L from 'leaflet';
 import {CircleMarkerOptions, icon, LatLng, latLng, tileLayer} from 'leaflet';
+import '../../../../node_modules/leaflet.fullscreen/Control.FullScreen.js';
 
 @Component({
   selector: 'app-alerts',
   templateUrl: './alerts.component.html',
   styleUrls: ['./alerts.component.scss']
 })
-
 
 export class AlertsComponent implements OnInit, OnDestroy {
 
@@ -24,9 +24,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   // Map
   private map: L.Map;
+  private drawnItems: L.FeatureGroup = new L.FeatureGroup();
   private circleMarkerOptions: CircleMarkerOptions = {
-    color: '#2ccf2f',
-    fillColor: '#5aee85'
+    color: '#f88a47',
+    fillColor: '#ffb964'
   };
   private blueIconOptions: L.IconOptions = {
     iconUrl: 'assets/img/markers/marker-icon.png',
@@ -37,12 +38,15 @@ export class AlertsComponent implements OnInit, OnDestroy {
     shadowAnchor: [4, 62],  // the same for the shadow
     popupAnchor:  [-2, -40] // point from which the popup should open relative to the iconAnchor
   };
-  private options = {
+  private mapOptions = {
     layers: [
-      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
+      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' }),
+      this.drawnItems
     ],
     zoom: 5,
-    center: latLng(48.856614, 2.352222)
+    center: latLng(48.856614, 2.352222),
+    fullscreenControl: true,
+    trackResize: false
   };
   private drawOptions = {
     position: 'topright',
@@ -57,6 +61,9 @@ export class AlertsComponent implements OnInit, OnDestroy {
           color: '#e2120b'
         }
       }
+    },
+    edit: {
+      featureGroup: this.drawnItems
     }
   };
 
@@ -71,7 +78,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   private dateOrigin: Date = new Date(0);
 
-// Select
+  // Select
   private selectDevices: Array<Object> = [];
   private selectedDevices = [];
   private selectOneDeviceSettings = {
@@ -115,31 +122,33 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.toasterService = toasterService;
   }
 
+  /**
+   * Initialize map and drawing
+   */
   onMapReady(map: L.Map): void {
     this.map = map;
-  }
-
-  onLayerAdd(e): void {
-    console.log(e);
-  }
-
-  onOverlayAdd(e): void {
-    console.log(e);
-  }
-
-  loadMap(): void {
-    this.map.invalidateSize();
+    this.map.options.layers[0] = tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' });
+    /*this.map.options.zoom = 5;
+    this.map.options.center = latLng(48.856614, 2.352222);
+    this.map.options.trackResize = false;*/
     this.map.locate({setView: true, maxZoom: 16});
     this.map.on('locationfound', (e) => this.onLocationFound(e));
     this.map.on('locationerror', (e) => this.onLocationError(e));
-    this.map.on('draw:created', (e) => this.onDrawCreated(e));
-    this.map.on('draw:removed', (e) => this.onDrawRemoved(e));
+    this.map.on(L.Draw.Event.CREATED, (e) => this.onDrawCreated(e));
+    this.map.on(L.Draw.Event.EDITED, () => this.onDrawEdited());
+    this.map.on(L.Draw.Event.DELETED, () => this.onDrawDeleted());
+    console.log('Map ready!');
+  }
 
+  loadMapGeofence(): void {
+    this.drawnItems.clearLayers();
     if (this.alertToAddOrEdit.geofence) {
       this.alertToAddOrEdit.geofence.forEach((alertGeofence: AlertGeofence) => {
-        L.circle(new LatLng(alertGeofence.location.lat, alertGeofence.location.lng), alertGeofence.radius, this.circleMarkerOptions).addTo(this.map);
+        const circle = new L.Circle(new LatLng(alertGeofence.location.lat, alertGeofence.location.lng), alertGeofence.radius, this.circleMarkerOptions);
+        this.drawnItems.addLayer(circle);
       });
     }
+    console.log('Map loaded!');
   }
 
   onLocationFound(e): void {
@@ -154,21 +163,42 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   onDrawCreated(e): void {
-    // console.log(this.map);
-    if (e.layerType === 'circle') {
-      /*const lat = e.layer._latlng.lat;
-      const lng = e.layer._latlng.lng;*/
+    const type = e.layerType;
+    const layer = e.layer;
+    if (type === 'circle') {
       const alertGeofence = new AlertGeofence();
-      alertGeofence.location = e.layer._latlng;
-      alertGeofence.radius = e.layer._mRadius;
+      alertGeofence.location = layer.getLatLng();
+      alertGeofence.radius =  layer.getRadius();
       alertGeofence.in = true;
       this.alertToAddOrEdit.geofence.push(alertGeofence);
+      // Add circle to the map layer
+      this.drawnItems.addLayer(layer);
     }
+    console.log(this.alertToAddOrEdit.geofence);
   }
 
-  onDrawRemoved(e): void {
-    console.log(e);
-    this.alertToAddOrEdit.geofence = null;
+  onDrawEdited(): void {
+    this.alertToAddOrEdit.geofence = [];
+    this.drawnItems.eachLayer((layer: L.Circle) => {
+      const alertGeofence = new AlertGeofence();
+      alertGeofence.location = layer.getLatLng();
+      alertGeofence.radius =  layer.getRadius();
+      alertGeofence.in = true;
+      this.alertToAddOrEdit.geofence.push(alertGeofence);
+    });
+    console.log(this.alertToAddOrEdit.geofence);
+  }
+
+  onDrawDeleted(): void {
+    this.alertToAddOrEdit.geofence = [];
+    this.drawnItems.eachLayer((layer: L.Circle) => {
+      const alertGeofence = new AlertGeofence();
+      alertGeofence.location = layer.getLatLng();
+      alertGeofence.radius =  layer.getRadius();
+      alertGeofence.in = true;
+      this.alertToAddOrEdit.geofence.push(alertGeofence);
+    });
+    console.log(this.alertToAddOrEdit.geofence);
   }
 
   ngOnInit(): void {
@@ -241,6 +271,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
     if (this.alertToAddOrEdit.key.startsWith('geoloc_')) {
       delete this.alertToAddOrEdit.value;
       this.alertToAddOrEdit.geofence = [];
+      // Load map
+      this.loadMapGeofence();
     } else {
       delete this.alertToAddOrEdit.geofence;
       this.alertToAddOrEdit.value = new AlertValue();
@@ -287,6 +319,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
     }
     // Open modal
     this.addOrEditAlertModal.show();
+    // Load map
+    if (this.alertToAddOrEdit.geofence) {
+      this.loadMapGeofence();
+    }
   }
 
   openConfirmModal(alert: Alert): void {

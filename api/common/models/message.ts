@@ -44,6 +44,7 @@ class Message {
   putSigfox(req: any, data: any, next: Function): void {
     // Models
     const Message = this.model;
+    const Alert = this.model.app.models.Alert;
 
     if (typeof data.deviceId  === 'undefined'
       || typeof data.time  === 'undefined'
@@ -187,7 +188,7 @@ class Message {
                             });
 
                           // Trigger alerts (if any)
-                          Message.app.models.Alert.triggerByDevice(
+                          Alert.triggerByDevice(
                             message.data_parsed,
                             deviceInstance,
                             req,

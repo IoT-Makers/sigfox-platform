@@ -104,6 +104,7 @@ class Geoloc {
     // Models
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
+    const Alert = this.model.app.models.Alert;
 
     if (typeof data.geoloc === 'undefined'
       || typeof data.deviceId === 'undefined'
@@ -152,6 +153,20 @@ class Geoloc {
                 // Update device in order to trigger a real time upsert event
                 this.updateDeviceLastLocatedAt(geolocInstance.deviceId);
                 next(null, geolocInstance);
+              }
+            });
+
+          // Trigger alerts (if any)
+          Alert.triggerBySigfoxGeoloc(
+            geoloc.location.lat,
+            geoloc.location.lng,
+            geoloc.deviceId,
+            req,
+            function (err: any, res: any) {
+              if (err) {
+                next(err, null);
+              } else {
+                //console.log(res);
               }
             });
         } else {
