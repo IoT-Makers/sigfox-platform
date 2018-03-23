@@ -84,7 +84,7 @@ class Alert {
               alert.geofence.forEach((alertGeofence: any) => {
                 if (alertGeofence.in) {
                   if (lat && lng) {
-                    const location_device = new loopback.GeoPoint({lat: lat, lng: lng});
+                    const location_device = new loopback.GeoPoint({lat: Number(lat), lng: Number(lng)});
                     const location_geofence = new loopback.GeoPoint(alertGeofence.location);
                     const distanceToGeofence = location_device.distanceTo(location_geofence, {type: 'meters'});
                     console.log('Device distance to geofence point: ' + distanceToGeofence);
