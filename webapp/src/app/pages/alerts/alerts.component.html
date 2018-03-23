@@ -251,7 +251,7 @@
               </div>
             </ng-container>
 
-            <div class="form-group row">
+            <div class="form-group row" *ngIf="alertToAddOrEdit.deviceId && alertToAddOrEdit.key">
               <label class="offset-1 col-md-3 form-control-label">Custom message
                 <small>(optional)</small>
               </label>
