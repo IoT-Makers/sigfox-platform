@@ -41,11 +41,7 @@ class Alert {
 
   private triggerBySigfoxGeoloc(lat: number, lng: number, deviceId: string, req: any, next: Function): void {
     // Models
-    const Connector = this.model.app.models.Connector;
     const Device = this.model.app.models.Device;
-    const Email = this.model.app.models.Email;
-    const Alert = this.model.app.models.Alert;
-    const AlertHistory = this.model.app.models.AlertHistory;
 
     // Get userId
     const userId = req.accessToken.userId;
@@ -84,93 +80,19 @@ class Alert {
               alert.geofence.forEach((alertGeofence: any) => {
                 if (alertGeofence.in) {
                   if (lat && lng) {
-                    const location_device = new loopback.GeoPoint({lat: Number(lat), lng: Number(lng)});
+                    const location_device = new loopback.GeoPoint({lat: lat, lng: lng});
                     const location_geofence = new loopback.GeoPoint(alertGeofence.location);
                     const distanceToGeofence = location_device.distanceTo(location_geofence, {type: 'meters'});
                     console.log('Device distance to geofence point: ' + distanceToGeofence);
                     // Check trigger conditions
                     if (distanceToGeofence <= alertGeofence.radius) {
                       // Trigger alert
-                      Connector.findById(alert.connectorId,
-                        (err: any, connector: any) => {
-                          if (err) {
-                            console.error(err);
-                          } else if (connector) {
-                            let alertMessage = alert.message;
-                            if (!alert.message)
-                              alertMessage = 'Device distance to geofence point: ' + distanceToGeofence;
-
-                            if (connector.type === 'office-365') {
-                              console.log('Office 365 Email alert!');
-                              // Set the connector user and pass
-                              this.model.app.models.Email.dataSource.connector.transports[0].transporter.options.auth = {
-                                user: connector.login,
-                                pass: connector.password
-                              };
-                              const title = deviceInstance.name ? deviceInstance.name : deviceInstance.id;
-                              Email.send({
-                                to: connector.recipient,
-                                from: connector.login,
-                                subject: '[Sigfox Platform] - Alert for ' + title,
-                                text: alertMessage,
-                                html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alert.message + '</p>'
-                              }, function (err: any, mail: any) {
-                                if (err) console.error(err);
-                                else console.log('Email sent!');
-                              });
-                            }
-
-                            else if (connector.type === 'webhook') {
-                              console.log('Webhook alert!');
-                              this.model.app.dataSources.webhook.send(connector.url, connector.method, connector.password, alertMessage).then((result: any) => {
-                              }).catch((err: any) => {
-                                if (err) console.error('Webhook request error');
-                                else console.log('Webhook request sent!');
-                              });
-                            }
-
-                            else if (connector.type === 'free-mobile') {
-                              console.log('Free Mobile SMS alert!');
-                              this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, alertMessage).then((result: any) => {
-                              }).catch((err: any) => {
-                                if (err) console.error('Free Mobile error');
-                                else console.log('Free Mobile sent!');
-                              });
-                            }
-
-                            else if (connector.type === 'twilio') {
-                              console.log('Twilio SMS alert!');
-                              // TODO: implement twilio connector
-                            }
-
-                            else if (connector.type === 'mqtt') {
-                              console.log('MQTT alert!');
-                              const Client = require('strong-pubsub');
-                              const Adapter = require('strong-pubsub-mqtt');
-                              const client = new Client({host: connector.host, port: connector.port}, Adapter);
-                              client.publish(connector.topic, alertMessage);
-                            }
-
-                            // Check if alert is one shot only, if yes: deactivate it
-                            if (alert.one_shot) alert.active = false;
-                            // Update the alert last trigger time
-                            alert.last_trigger = new Date();
-                            Alert.upsert(
-                              alert,
-                              (err: any, alertInstance: any) => {
-                                if (err) {
-                                  console.error(err);
-                                } else {
-                                  console.log('Updated alert as: ', alertInstance);
-                                  // Save triggered alerts in AlertHistory
-                                  AlertHistory.upsert(alertInstance, (err: any, alert: any) => {
-                                  });
-                                }
-                              });
-                            // Alert has been triggered, removing it from array
-                            alerts.splice(index, 1);
-                          }
-                        });
+                      let alertMessage = alert.message;
+                      if (!alert.message)
+                        alertMessage = 'Device distance to geofence point: ' + distanceToGeofence;
+                      this.triggerAlert(alert, deviceInstance, alertMessage);
+                      // Alert has been triggered, removing it from array
+                      alerts.splice(index, 1);
                     }
                   }
                 }
@@ -183,12 +105,6 @@ class Alert {
   }
 
   private triggerByDevice(data_parsed: Array<any>, device: any, req: any, next: Function): void {
-    // Models
-    const Connector = this.model.app.models.Connector;
-    const Email = this.model.app.models.Email;
-    const Alert = this.model.app.models.Alert;
-    const AlertHistory = this.model.app.models.AlertHistory;
-
     // Get userId
     const userId = req.accessToken.userId;
     if (!userId) {
@@ -211,96 +127,22 @@ class Alert {
            */
           alert.geofence.forEach((alertGeofence: any) => {
             if (alertGeofence.in) {
-              const lat_device = _.filter(data_parsed, {key: 'lat'})[0];
-              const lng_device = _.filter(data_parsed, {key: 'lng'})[0];
+              const lat_device = +_.filter(data_parsed, {key: 'lat'})[0];
+              const lng_device = +_.filter(data_parsed, {key: 'lng'})[0];
               if (lat_device && lng_device) {
-                const location_device = new loopback.GeoPoint({lat: Number(lat_device), lng: Number(lng_device)});
+                const location_device = new loopback.GeoPoint({lat: lat_device, lng: lng_device});
                 const location_geofence = new loopback.GeoPoint(alertGeofence.location);
                 const distanceToGeofence = location_device.distanceTo(location_geofence, {type: 'meters'});
                 console.log('Device distance to geofence point: ' + distanceToGeofence);
                 // Check trigger conditions
                 if (distanceToGeofence <= alertGeofence.radius) {
                   // Trigger alert
-                  Connector.findById(alert.connectorId,
-                    (err: any, connector: any) => {
-                      if (err) {
-                        console.error(err);
-                      } else if (connector) {
-                        let alertMessage = alert.message;
-                        if (!alert.message)
-                          alertMessage = 'Device distance to geofence point: ' + distanceToGeofence;
-
-                        if (connector.type === 'office-365') {
-                          console.log('Office 365 Email alert!');
-                          // Set the connector user and pass
-                          this.model.app.models.Email.dataSource.connector.transports[0].transporter.options.auth = {
-                            user: connector.login,
-                            pass: connector.password
-                          };
-                          const title = device.name ? device.name : device.id;
-                          Email.send({
-                            to: connector.recipient,
-                            from: connector.login,
-                            subject: '[Sigfox Platform] - Alert for ' + title,
-                            text: alertMessage,
-                            html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alert.message + '</p>'
-                          }, function (err: any, mail: any) {
-                            if (err) console.error(err);
-                            else console.log('Email sent!');
-                          });
-                        }
-
-                        else if (connector.type === 'webhook') {
-                          console.log('Webhook alert!');
-                          this.model.app.dataSources.webhook.send(connector.url, connector.method, connector.password, alertMessage).then((result: any) => {
-                          }).catch((err: any) => {
-                            if (err) console.error('Webhook request error');
-                            else console.log('Webhook request sent!');
-                          });
-                        }
-
-                        else if (connector.type === 'free-mobile') {
-                          console.log('Free Mobile SMS alert!');
-                          this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, alertMessage).then((result: any) => {
-                          }).catch((err: any) => {
-                            if (err) console.error('Free Mobile error');
-                            else console.log('Free Mobile sent!');
-                          });
-                        }
-
-                        else if (connector.type === 'twilio') {
-                          console.log('Twilio SMS alert!');
-                          // TODO: implement twilio connector
-                        }
-
-                        else if (connector.type === 'mqtt') {
-                          console.log('MQTT alert!');
-                          const Client = require('strong-pubsub');
-                          const Adapter = require('strong-pubsub-mqtt');
-                          const client = new Client({host: connector.host, port: connector.port}, Adapter);
-                          client.publish(connector.topic, alertMessage);
-                        }
-
-                        // Check if alert is one shot only, if yes: deactivate it
-                        if (alert.one_shot) alert.active = false;
-                        // Update the alert last trigger time
-                        alert.last_trigger = new Date();
-                        Alert.upsert(
-                          alert,
-                          (err: any, alertInstance: any) => {
-                            if (err) {
-                              console.error(err);
-                            } else {
-                              console.log('Updated alert as: ', alertInstance);
-                              // Save triggered alerts in AlertHistory
-                              AlertHistory.upsert(alertInstance, (err: any, alert: any) => {
-                              });
-                            }
-                          });
-                        // Alert has been triggered, removing it from array
-                        alerts.splice(index, 1);
-                      }
-                    });
+                  let alertMessage = alert.message;
+                  if (!alert.message)
+                    alertMessage = 'Device distance to geofence point: ' + distanceToGeofence;
+                  this.triggerAlert(alert, device, alertMessage);
+                  // Alert has been triggered, removing it from array
+                  alerts.splice(index, 1);
                 }
               }
             }
@@ -320,85 +162,12 @@ class Alert {
                 || (alert.value.more && p.value > alert.value.more)
               ) {
                 // Trigger alert
-                Connector.findById(alert.connectorId,
-                  (err: any, connector: any) => {
-                    if (err) {
-                      console.error(err);
-                    } else if (connector) {
-                      let alertMessage = alert.message;
-                      if (!alert.message)
-                        alertMessage = p.key.charAt(0).toUpperCase() + p.key.slice(1) + ': ' + p.value + ' ' + p.unit;
-
-                      if (connector.type === 'office-365') {
-                        console.log('Office 365 Email alert!');
-                        // Set the connector user and pass
-                        this.model.app.models.Email.dataSource.connector.transports[0].transporter.options.auth = {
-                          user: connector.login,
-                          pass: connector.password
-                        };
-                        const title = device.name ? device.name : device.id;
-                        Email.send({
-                          to: connector.recipient,
-                          from: connector.login,
-                          subject: '[Sigfox Platform] - Alert for ' + title,
-                          text: alertMessage,
-                          html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alert.message + '</p>'
-                        }, function (err: any, mail: any) {
-                          if (err) console.error(err);
-                          else console.log('Email sent!');
-                        });
-                      }
-
-                      else if (connector.type === 'webhook') {
-                        console.log('Webhook alert!');
-                        this.model.app.dataSources.webhook.send(connector.url, connector.method, connector.password, alertMessage).then((result: any) => {
-                        }).catch((err: any) => {
-                          if (err) console.error('Webhook request error');
-                          else console.log('Webhook request sent!');
-                        });
-                      }
-
-                      else if (connector.type === 'free-mobile') {
-                        console.log('Free Mobile SMS alert!');
-                        this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, alertMessage).then((result: any) => {
-                        }).catch((err: any) => {
-                          if (err) console.error('Free Mobile error');
-                          else console.log('Free Mobile sent!');
-                        });
-                      }
-
-                      else if (connector.type === 'twilio') {
-                        console.log('Twilio SMS alert!');
-                        // TODO: implement twilio connector
-                      }
-
-                      else if (connector.type === 'mqtt') {
-                        console.log('MQTT alert!');
-                        const Client = require('strong-pubsub');
-                        const Adapter = require('strong-pubsub-mqtt');
-                        const client = new Client({host: connector.host, port: connector.port}, Adapter);
-                        client.publish(connector.topic, alertMessage);
-                      }
-
-                      // Check if alert is one shot only, if yes: deactivate it
-                      if (alert.one_shot) alert.active = false;
-                      // Update the alert last trigger time
-                      alert.last_trigger = new Date();
-                      Alert.upsert(
-                        alert,
-                        (err: any, alertInstance: any) => {
-                          if (err) {
-                            console.error(err);
-                          } else {
-                            console.log('Updated alert as: ', alertInstance);
-                            // Save triggered alerts in AlertHistory
-                            AlertHistory.upsert(alertInstance, (err: any, alert: any) => { });
-                          }
-                        });
-                      // Alert has been triggered, removing it from array
-                      alerts.splice(index, 1);
-                    }
-                  });
+                let alertMessage = alert.message;
+                if (!alert.message)
+                  alertMessage = p.key.charAt(0).toUpperCase() + p.key.slice(1) + ': ' + p.value + ' ' + p.unit;
+                this.triggerAlert(alert, device, alertMessage);
+                // Alert has been triggered, removing it from array
+                alerts.splice(index, 1);
               }
             }
           });
@@ -407,6 +176,90 @@ class Alert {
     });
     next(null, 'Processed alerts.');
   }
+
+  private triggerAlert(alert: any, device: any, alertMessage: string) {
+    // Models
+    const Connector = this.model.app.models.Connector;
+    const Email = this.model.app.models.Email;
+    const Alert = this.model.app.models.Alert;
+    const AlertHistory = this.model.app.models.AlertHistory;
+
+    Connector.findById(alert.connectorId,
+      (err: any, connector: any) => {
+        if (err) {
+          console.error(err);
+        } else if (connector) {
+          if (connector.type === 'office-365') {
+            console.log('Office 365 Email alert!');
+            // Set the connector user and pass
+            this.model.app.models.Email.dataSource.connector.transports[0].transporter.options.auth = {
+              user: connector.login,
+              pass: connector.password
+            };
+            const title = device.name ? device.name : device.id;
+            Email.send({
+              to: connector.recipient,
+              from: connector.login,
+              subject: '[Sigfox Platform] - Alert for ' + title,
+              text: alertMessage,
+              html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alert.message + '</p>'
+            }, function (err: any, mail: any) {
+              if (err) console.error(err);
+              else console.log('Email sent!');
+            });
+          }
+
+          else if (connector.type === 'webhook') {
+            console.log('Webhook alert!');
+            this.model.app.dataSources.webhook.send(connector.url, connector.method, connector.password, alertMessage).then((result: any) => {
+            }).catch((err: any) => {
+              if (err) console.error('Webhook request error');
+              else console.log('Webhook request sent!');
+            });
+          }
+
+          else if (connector.type === 'free-mobile') {
+            console.log('Free Mobile SMS alert!');
+            this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, alertMessage).then((result: any) => {
+            }).catch((err: any) => {
+              if (err) console.error('Free Mobile error');
+              else console.log('Free Mobile sent!');
+            });
+          }
+
+          else if (connector.type === 'twilio') {
+            console.log('Twilio SMS alert!');
+            // TODO: implement twilio connector
+          }
+
+          else if (connector.type === 'mqtt') {
+            console.log('MQTT alert!');
+            const Client = require('strong-pubsub');
+            const Adapter = require('strong-pubsub-mqtt');
+            const client = new Client({host: connector.host, port: connector.port}, Adapter);
+            client.publish(connector.topic, alertMessage);
+          }
+
+          // Check if alert is one shot only, if yes: deactivate it
+          if (alert.one_shot) alert.active = false;
+          // Update the alert last trigger time
+          alert.last_trigger = new Date();
+          Alert.upsert(
+            alert,
+            (err: any, alertInstance: any) => {
+              if (err) {
+                console.error(err);
+              } else {
+                console.log('Updated alert as: ', alertInstance);
+                // Save triggered alerts in AlertHistory
+                AlertHistory.upsert(alertInstance, (err: any, alert: any) => {
+                });
+              }
+            });
+        }
+      });
+  }
+
 }
 
 module.exports = Alert;
