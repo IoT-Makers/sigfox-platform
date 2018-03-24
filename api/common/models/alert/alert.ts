@@ -127,8 +127,8 @@ class Alert {
            */
           alert.geofence.forEach((alertGeofence: any) => {
             if (alertGeofence.in) {
-              const lat_device = +_.filter(data_parsed, {key: 'lat'})[0];
-              const lng_device = +_.filter(data_parsed, {key: 'lng'})[0];
+              const lat_device = +_.filter(data_parsed, {key: 'lat'})[0].value;
+              const lng_device = +_.filter(data_parsed, {key: 'lng'})[0].value;
               if (lat_device && lng_device) {
                 const location_device = new loopback.GeoPoint({lat: lat_device, lng: lng_device});
                 const location_geofence = new loopback.GeoPoint(alertGeofence.location);
