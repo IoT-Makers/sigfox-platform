@@ -1,6 +1,5 @@
 import {Model} from '@mean-expert/model';
 import * as _ from 'lodash';
-import {GeoPoint} from '../../../../webapp/src/app/shared/sdk/models/BaseModels';
 
 const loopback = require('loopback');
 
@@ -70,17 +69,17 @@ class Alert {
 
           const alerts = deviceInstance.Alerts;
 
-          // Loop in all the alerts
-          alerts.forEach((alert: any, index: any) => {
-            // Only check active alerts
-            if (alert.active && alert.geofence && alert.key === 'geoloc_sigfox') {
-              /**
-               *  Triggering alerts from "lat" and "lng" from Sigfox geoloc
-               *  If the key being read is set for an alert and if it is activated
-               */
-              alert.geofence.forEach((alertGeofence: any) => {
-                if (lat && lng) {
-                  const location_device = new loopback.GeoPoint({lat: Number(lat), lng: Number(lng)});
+          if (lat && lng) {
+            // Loop in all the alerts
+            alerts.forEach((alert: any, index: any) => {
+              // Only check active alerts
+              if (alert.active && alert.geofence && alert.key === 'geoloc_sigfox') {
+                /**
+                 *  Triggering alerts from "lat" and "lng" from Sigfox geoloc
+                 *  If the key being read is set for an alert and if it is activated
+                 */
+                const location_device = new loopback.GeoPoint({lat: Number(lat), lng: Number(lng)});
+                alert.geofence.forEach((alertGeofence: any) => {
                   // If geofence is a circle
                   if (alertGeofence.radius) {
                     // Check trigger conditions
@@ -97,7 +96,7 @@ class Alert {
                   // If geofence is a polygon
                   else {
                     // Check trigger conditions
-                    if (alertGeofence.in && this.isDeviceInsidePolygon(location_device, alertGeofence)) {
+                    if (alertGeofence.in && this.isDeviceInsidePolygon(location_device, alertGeofence.location)) {
                       // Trigger alert
                       let alertMessage = alert.message;
                       if (!alert.message)
@@ -107,10 +106,10 @@ class Alert {
                       alerts.splice(index, 1);
                     }
                   }
-                }
                 });
-            }
-          });
+              }
+            });
+          }
           next(null, 'Processed Sigfox geoloc alerts.');
         }
       });
@@ -158,7 +157,7 @@ class Alert {
               // If geofence is a polygon
               else {
                 // Check trigger conditions
-                if (alertGeofence.in && this.isDeviceInsidePolygon(location_device, alertGeofence)) {
+                if (alertGeofence.in && this.isDeviceInsidePolygon(location_device, alertGeofence.location)) {
                   // Trigger alert
                   let alertMessage = alert.message;
                   if (!alert.message)
@@ -266,7 +265,7 @@ class Alert {
           // Check if alert is one shot only, if yes: deactivate it
           if (alert.one_shot) alert.active = false;
           // Update the alert last trigger time
-          alert.last_trigger = new Date();
+          alert.triggeredAt = new Date();
           Alert.upsert(
             alert,
             (err: any, alertInstance: any) => {

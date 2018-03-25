@@ -45,7 +45,7 @@
         "object"
       ]
     },
-    "lastLocatedAt": {
+    "locatedAt": {
       "type": "date"
     }
   },

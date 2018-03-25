@@ -45,7 +45,7 @@
                   <mfDefaultSorter by="Connector.name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
                 </th>
                 <th class="text-center">
-                  <mfDefaultSorter by="last_trigger"><i class="fa fa-sort"></i> Last triggered</mfDefaultSorter>
+                  <mfDefaultSorter by="triggeredAt"><i class="fa fa-sort"></i> Last triggered</mfDefaultSorter>
                 </th>
                 <th class="text-center">Action</th>
               </tr>
@@ -120,10 +120,10 @@
                   <strong>{{alert.Connector ? alert.Connector.name: 'No connector'}}</strong>
                 </td>
                 <td class="text-center">
-                  <strong *ngIf="alert.last_trigger !== dateOrigin.toISOString()">
-                    {{alert.last_trigger | amTimeAgo}}
+                  <strong *ngIf="alert.triggeredAt !== dateOrigin.toISOString()">
+                    {{alert.triggeredAt | amTimeAgo}}
                   </strong>
-                  <span *ngIf="alert.last_trigger === dateOrigin.toISOString()" class="text-warning">
+                  <span *ngIf="alert.triggeredAt === dateOrigin.toISOString()" class="text-warning">
                     Not yet triggered
                   </span>
                 </td>

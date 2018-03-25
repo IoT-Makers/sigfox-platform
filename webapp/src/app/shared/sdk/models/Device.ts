@@ -7,7 +7,7 @@ export interface DeviceInterface {
   "successRate"?: number;
   "data_downlink"?: string;
   "properties"?: Array<any>;
-  "lastLocatedAt"?: Date;
+  "locatedAt"?: Date;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "parserId"?: any;
@@ -28,7 +28,7 @@ export class Device implements DeviceInterface {
   "successRate": number = 0;
   "data_downlink": string = '';
   "properties": Array<any> = <any>[];
-  "lastLocatedAt": Date = new Date(0);
+  "locatedAt": Date = new Date(0);
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "parserId": any = <any>null;
@@ -94,8 +94,8 @@ export class Device implements DeviceInterface {
           name: 'properties',
           type: 'Array&lt;any&gt;'
         },
-        "lastLocatedAt": {
-          name: 'lastLocatedAt',
+        "locatedAt": {
+          name: 'locatedAt',
           type: 'Date'
         },
         "createdAt": {

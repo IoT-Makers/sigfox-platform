@@ -269,7 +269,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.alertSub = this.alertRef.on('change',
       {
         limit: 1000,
-        order: 'last_trigger DESC',
+        order: 'triggeredAt DESC',
         include: ['Device', 'Connector'],
         where: {
           userId: this.user.id

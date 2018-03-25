@@ -38,7 +38,7 @@
       "type": "boolean",
       "default": false
     },
-    "last_trigger": {
+    "triggeredAt": {
       "type": "date"
     },
     "key": {

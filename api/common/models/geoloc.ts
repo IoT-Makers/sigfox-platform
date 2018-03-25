@@ -91,7 +91,7 @@ class Geoloc {
             if (created) {
               console.log('Created geoloc as: ', geolocInstance);
               // Update device in order to trigger a real time upsert event
-              this.updateDeviceLastLocatedAt(geolocInstance.deviceId);
+              this.updateDeviceLocatedAt(geolocInstance.deviceId);
             } else {
               console.log('Skipped geoloc creation.');
             }
@@ -165,7 +165,7 @@ class Geoloc {
               } else {
                 console.log('Created geoloc as: ', geolocInstance);
                 // Update device in order to trigger a real time upsert event
-                this.updateDeviceLastLocatedAt(geolocInstance.deviceId);
+                this.updateDeviceLocatedAt(geolocInstance.deviceId);
                 next(null, geolocInstance);
               }
             });
@@ -191,7 +191,7 @@ class Geoloc {
               } else {
                 console.log('Created message as: ', messageInstance);
                 // Update device in order to trigger a real time upsert event
-                this.updateDeviceLastLocatedAt(messageInstance.deviceId);
+                this.updateDeviceLocatedAt(messageInstance.deviceId);
               }
             });
           next(err, null);
@@ -200,7 +200,7 @@ class Geoloc {
     });
   }
 
-  updateDeviceLastLocatedAt(deviceId: string) {
+  updateDeviceLocatedAt(deviceId: string) {
     // Models
     const Device = this.model.app.models.Device;
 
@@ -213,10 +213,10 @@ class Geoloc {
         console.error(err);
       } else {
         if (deviceInstance) {
-          deviceInstance.lastLocatedAt = new Date();
+          deviceInstance.locatedAt = new Date();
           Device.upsert(deviceInstance, (err: any, deviceUpdated: any) => {
             if (!err) {
-              console.log('Updated device lastLocatedAt date');
+              console.log('Updated device locatedAt date');
             }
           });
         }

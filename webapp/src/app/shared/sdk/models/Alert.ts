@@ -5,7 +5,7 @@ export interface AlertInterface {
   "deviceId": string;
   "active"?: boolean;
   "one_shot"?: boolean;
-  "last_trigger"?: Date;
+  "triggeredAt"?: Date;
   "key": string;
   "value"?: any;
   "geofence"?: Array<any>;
@@ -26,7 +26,7 @@ export class Alert implements AlertInterface {
   "deviceId": string = '';
   "active": boolean = true;
   "one_shot": boolean = false;
-  "last_trigger": Date = new Date(0);
+  "triggeredAt": Date = new Date(0);
   "key": string = '';
   "value": any = <any>null;
   "geofence": Array<any> = <any>[];
@@ -88,8 +88,8 @@ export class Alert implements AlertInterface {
           type: 'boolean',
           default: false
         },
-        "last_trigger": {
-          name: 'last_trigger',
+        "triggeredAt": {
+          name: 'triggeredAt',
           type: 'Date'
         },
         "key": {
