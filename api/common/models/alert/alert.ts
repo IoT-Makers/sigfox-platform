@@ -73,7 +73,7 @@ class Alert {
           // Loop in all the alerts
           alerts.forEach((alert: any, index: any) => {
             // Only check active alerts
-            if (alert.active && alert.geofence) {
+            if (alert.active && alert.geofence && alert.key === 'geoloc_sigfox') {
               /**
                *  Triggering alerts from "lat" and "lng" from Sigfox geoloc
                *  If the key being read is set for an alert and if it is activated
@@ -132,7 +132,7 @@ class Alert {
     alerts.forEach((alert: any, index: any) => {
       // Only check active alerts
       if (alert.active) {
-        if (alert.geofence) {
+        if (alert.geofence && alert.key !== 'geoloc_sigfox') {
           /**
            *  Triggering alerts from "lat" and "lng" in "data_parsed"
            *  If the key being read is set for an alert and if it is activated
