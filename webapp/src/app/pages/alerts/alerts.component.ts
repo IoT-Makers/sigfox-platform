@@ -5,7 +5,7 @@ import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Alert, AlertGeofence, AlertValue, Connector, Device, FireLoopRef, Property, User} from '../../shared/sdk/models';
 import * as L from 'leaflet';
-import {CircleMarkerOptions, icon, LatLng, latLng, tileLayer} from 'leaflet';
+import {icon, LatLng, latLng, tileLayer} from 'leaflet';
 import '../../../../node_modules/leaflet.fullscreen/Control.FullScreen.js';
 
 @Component({
@@ -25,9 +25,17 @@ export class AlertsComponent implements OnInit, OnDestroy {
   // Map
   private map: L.Map;
   private drawnItems: L.FeatureGroup = new L.FeatureGroup();
-  private circleMarkerOptions: CircleMarkerOptions = {
-    color: '#f88a47',
-    fillColor: '#ffb964'
+  private locationOptions: L.CircleMarkerOptions = {
+    color: '#5fcfd8',
+    fillColor: ''
+  };
+  private circleOptions: L.CircleMarkerOptions = {
+    color: '#2ad826',
+    fillColor: '#5ae38b'
+  };
+  private polylineOptions: L.PolylineOptions = {
+    color: '#2ad826',
+    fillColor: '#5ae38b'
   };
   private blueIconOptions: L.IconOptions = {
     iconUrl: 'assets/img/markers/marker-icon.png',
@@ -53,9 +61,13 @@ export class AlertsComponent implements OnInit, OnDestroy {
     draw: {
       marker: false,
       polyline: false,
-      polygon: false,
       rectangle: false,
       circlemarker: false,
+      polygon: {
+        shapeOptions: {
+          color: '#e2120b'
+        }
+      },
       circle: {
         shapeOptions: {
           color: '#e2120b'
@@ -104,7 +116,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     classes: 'select-one'
   };
 
-// Notifications
+  // Notifications
   private toast;
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig =
@@ -144,9 +156,17 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.drawnItems.clearLayers();
     if (this.alertToAddOrEdit.geofence) {
       this.alertToAddOrEdit.geofence.forEach((alertGeofence: AlertGeofence) => {
-        const circle = new L.Circle(new LatLng(alertGeofence.location.lat, alertGeofence.location.lng), alertGeofence.radius, this.circleMarkerOptions);
-        this.drawnItems.addLayer(circle);
+        if (alertGeofence.radius) {
+          const circle = new L.Circle(new LatLng(alertGeofence.location[0].lat, alertGeofence.location[0].lng), alertGeofence.radius, this.circleOptions);
+          this.drawnItems.addLayer(circle);
+        } else {
+          const polygon = new L.Polygon(alertGeofence.location, this.polylineOptions);
+          this.drawnItems.addLayer(polygon);
+        }
       });
+      setTimeout(() => {
+        this.map.fitBounds(this.drawnItems.getBounds());
+      }, 500);
     }
     console.log('Map loaded!');
   }
@@ -154,7 +174,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   onLocationFound(e): void {
     const radius = e.accuracy / 2;
     const marker = L.marker(e.latlng, {icon: icon(this.blueIconOptions)}).addTo(this.map);
-    L.circle(e.latlng, radius).addTo(this.map);
+    L.circle(e.latlng, radius, this.locationOptions).addTo(this.map);
     marker.bindPopup('You are within <b>' + radius + '</b> meters from this point').openPopup();
   }
 
@@ -167,11 +187,18 @@ export class AlertsComponent implements OnInit, OnDestroy {
     const layer = e.layer;
     if (type === 'circle') {
       const alertGeofence = new AlertGeofence();
-      alertGeofence.location = layer.getLatLng();
+      alertGeofence.location[0] = layer.getLatLng();
       alertGeofence.radius =  layer.getRadius();
       alertGeofence.in = true;
       this.alertToAddOrEdit.geofence.push(alertGeofence);
       // Add circle to the map layer
+      this.drawnItems.addLayer(layer);
+    } else if (type === 'polygon') {
+      const alertGeofence = new AlertGeofence();
+      alertGeofence.location = layer.getLatLngs()[0];
+      alertGeofence.in = true;
+      this.alertToAddOrEdit.geofence.push(alertGeofence);
+      // Add polygon to the map layer
       this.drawnItems.addLayer(layer);
     }
     console.log(this.alertToAddOrEdit.geofence);
@@ -179,24 +206,39 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   onDrawEdited(): void {
     this.alertToAddOrEdit.geofence = [];
-    this.drawnItems.eachLayer((layer: L.Circle) => {
+    this.drawnItems.eachLayer((layer: any) => {
       const alertGeofence = new AlertGeofence();
-      alertGeofence.location = layer.getLatLng();
-      alertGeofence.radius =  layer.getRadius();
-      alertGeofence.in = true;
-      this.alertToAddOrEdit.geofence.push(alertGeofence);
+      if (layer instanceof L.Circle) {
+        alertGeofence.location[0] = layer.getLatLng();
+        alertGeofence.radius =  layer.getRadius();
+        alertGeofence.in = true;
+        this.alertToAddOrEdit.geofence.push(alertGeofence);
+      } else if (layer instanceof L.Polygon) {
+        layer = layer;
+        alertGeofence.location = layer.getLatLngs()[0];
+        alertGeofence.in = true;
+        this.alertToAddOrEdit.geofence.push(alertGeofence);
+      }
     });
+
     console.log(this.alertToAddOrEdit.geofence);
   }
 
   onDrawDeleted(): void {
     this.alertToAddOrEdit.geofence = [];
-    this.drawnItems.eachLayer((layer: L.Circle) => {
+    this.drawnItems.eachLayer((layer: any) => {
       const alertGeofence = new AlertGeofence();
-      alertGeofence.location = layer.getLatLng();
-      alertGeofence.radius =  layer.getRadius();
-      alertGeofence.in = true;
-      this.alertToAddOrEdit.geofence.push(alertGeofence);
+      if (layer instanceof L.Circle) {
+        alertGeofence.location[0] = layer.getLatLng();
+        alertGeofence.radius =  layer.getRadius();
+        alertGeofence.in = true;
+        this.alertToAddOrEdit.geofence.push(alertGeofence);
+      } else if (layer instanceof L.Polygon) {
+        layer = layer;
+        alertGeofence.location = layer.getLatLngs()[0];
+        alertGeofence.in = true;
+        this.alertToAddOrEdit.geofence.push(alertGeofence);
+      }
     });
     console.log(this.alertToAddOrEdit.geofence);
   }

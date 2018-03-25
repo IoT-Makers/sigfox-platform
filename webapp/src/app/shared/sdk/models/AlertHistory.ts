@@ -2,15 +2,8 @@
 
 declare var Object: any;
 export interface AlertHistoryInterface {
-  "deviceId": string;
-  "active"?: boolean;
-  "one_shot"?: boolean;
-  "last_trigger"?: Date;
-  "key": string;
-  "value"?: any;
-  "geofence"?: Array<any>;
-  "message"?: string;
   "id"?: any;
+  "deviceId"?: string;
   "userId"?: any;
   "organizationId"?: any;
   "createdAt"?: Date;
@@ -23,15 +16,8 @@ export interface AlertHistoryInterface {
 }
 
 export class AlertHistory implements AlertHistoryInterface {
-  "deviceId": string = '';
-  "active": boolean = true;
-  "one_shot": boolean = false;
-  "last_trigger": Date = new Date(0);
-  "key": string = '';
-  "value": any = <any>null;
-  "geofence": Array<any> = <any>[];
-  "message": string = '';
   "id": any = <any>null;
+  "deviceId": string = '';
   "userId": any = <any>null;
   "organizationId": any = <any>null;
   "createdAt": Date = new Date(0);
@@ -70,47 +56,17 @@ export class AlertHistory implements AlertHistoryInterface {
   public static getModelDefinition() {
     return {
       name: 'AlertHistory',
-      plural: 'Alerts',
-      path: 'Alerts',
+      plural: 'AlertHistories',
+      path: 'AlertHistories',
       idName: 'id',
       properties: {
-        "deviceId": {
-          name: 'deviceId',
-          type: 'string'
-        },
-        "active": {
-          name: 'active',
-          type: 'boolean',
-          default: true
-        },
-        "one_shot": {
-          name: 'one_shot',
-          type: 'boolean',
-          default: false
-        },
-        "last_trigger": {
-          name: 'last_trigger',
-          type: 'Date'
-        },
-        "key": {
-          name: 'key',
-          type: 'string'
-        },
-        "value": {
-          name: 'value',
-          type: 'any'
-        },
-        "geofence": {
-          name: 'geofence',
-          type: 'Array&lt;any&gt;'
-        },
-        "message": {
-          name: 'message',
-          type: 'string'
-        },
         "id": {
           name: 'id',
           type: 'any'
+        },
+        "deviceId": {
+          name: 'deviceId',
+          type: 'string'
         },
         "userId": {
           name: 'userId',

@@ -26,13 +26,11 @@
   },
   "properties": {
     "location": {
-      "type": "GeoPoint",
+      "type": ["GeoPoint"],
       "required": true
     },
     "radius": {
-      "type": "number",
-      "default": 1000,
-      "required": true
+      "type": "number"
     },
     "in": {
       "type": "boolean",

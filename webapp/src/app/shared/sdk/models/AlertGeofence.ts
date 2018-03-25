@@ -1,19 +1,16 @@
 /* tslint:disable */
-import {
-  GeoPoint
-} from '../index';
 
 declare var Object: any;
 export interface AlertGeofenceInterface {
-  "location": GeoPoint;
-  "radius": number;
+  "location": Array<any>;
+  "radius"?: number;
   "in": boolean;
   "id"?: number;
 }
 
 export class AlertGeofence implements AlertGeofenceInterface {
-  "location": GeoPoint = <any>null;
-  "radius": number = 1000;
+  "location": Array<any> = <any>[];
+  "radius": number = 0;
   "in": boolean = true;
   "id": number = 0;
   constructor(data?: AlertGeofenceInterface) {
@@ -51,12 +48,11 @@ export class AlertGeofence implements AlertGeofenceInterface {
       properties: {
         "location": {
           name: 'location',
-          type: 'GeoPoint'
+          type: 'Array&lt;any&gt;'
         },
         "radius": {
           name: 'radius',
-          type: 'number',
-          default: 1000
+          type: 'number'
         },
         "in": {
           name: 'in',

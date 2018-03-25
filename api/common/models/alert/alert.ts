@@ -1,5 +1,6 @@
 import {Model} from '@mean-expert/model';
 import * as _ from 'lodash';
+import {GeoPoint} from '../../../../webapp/src/app/shared/sdk/models/BaseModels';
 
 const loopback = require('loopback');
 
@@ -78,25 +79,36 @@ class Alert {
                *  If the key being read is set for an alert and if it is activated
                */
               alert.geofence.forEach((alertGeofence: any) => {
-                if (alertGeofence.in) {
-                  if (lat && lng) {
-                    const location_device = new loopback.GeoPoint({lat: lat, lng: lng});
-                    const location_geofence = new loopback.GeoPoint(alertGeofence.location);
-                    const distanceToGeofence = location_device.distanceTo(location_geofence, {type: 'meters'});
-                    console.log('Device distance to geofence point: ' + distanceToGeofence);
+                if (lat && lng) {
+                  const location_device = new loopback.GeoPoint({lat: Number(lat), lng: Number(lng)});
+                  // If geofence is a circle
+                  if (alertGeofence.radius) {
                     // Check trigger conditions
-                    if (distanceToGeofence <= alertGeofence.radius) {
+                    if (alertGeofence.in && this.isDeviceInsideCircle(location_device, alertGeofence)) {
                       // Trigger alert
                       let alertMessage = alert.message;
                       if (!alert.message)
-                        alertMessage = 'Device distance to geofence point: ' + distanceToGeofence;
+                        alertMessage = 'Device is in the circle!';
+                      this.triggerAlert(alert, deviceInstance, alertMessage);
+                      // Alert has been triggered, removing it from array
+                      alerts.splice(index, 1);
+                    }
+                  }
+                  // If geofence is a polygon
+                  else {
+                    // Check trigger conditions
+                    if (alertGeofence.in && this.isDeviceInsidePolygon(location_device, alertGeofence)) {
+                      // Trigger alert
+                      let alertMessage = alert.message;
+                      if (!alert.message)
+                        alertMessage = 'Device is in the polygon!';
                       this.triggerAlert(alert, deviceInstance, alertMessage);
                       // Alert has been triggered, removing it from array
                       alerts.splice(index, 1);
                     }
                   }
                 }
-              });
+                });
             }
           });
           next(null, 'Processed Sigfox geoloc alerts.');
@@ -126,20 +138,31 @@ class Alert {
            *  If the key being read is set for an alert and if it is activated
            */
           alert.geofence.forEach((alertGeofence: any) => {
-            if (alertGeofence.in) {
-              const lat_device = +_.filter(data_parsed, {key: 'lat'})[0].value;
-              const lng_device = +_.filter(data_parsed, {key: 'lng'})[0].value;
-              if (lat_device && lng_device) {
-                const location_device = new loopback.GeoPoint({lat: lat_device, lng: lng_device});
-                const location_geofence = new loopback.GeoPoint(alertGeofence.location);
-                const distanceToGeofence = location_device.distanceTo(location_geofence, {type: 'meters'});
-                console.log('Device distance to geofence point: ' + distanceToGeofence);
+            const lat_device = +_.filter(data_parsed, {key: 'lat'})[0].value;
+            const lng_device = +_.filter(data_parsed, {key: 'lng'})[0].value;
+            if (lat_device && lng_device) {
+              const location_device = new loopback.GeoPoint({lat: Number(lat_device), lng: Number(lng_device)});
+              // If geofence is a circle
+              if (alertGeofence.radius) {
                 // Check trigger conditions
-                if (distanceToGeofence <= alertGeofence.radius) {
+                if (alertGeofence.in && this.isDeviceInsideCircle(location_device, alertGeofence)) {
                   // Trigger alert
                   let alertMessage = alert.message;
                   if (!alert.message)
-                    alertMessage = 'Device distance to geofence point: ' + distanceToGeofence;
+                    alertMessage = 'Device is in the circle!';
+                  this.triggerAlert(alert, device, alertMessage);
+                  // Alert has been triggered, removing it from array
+                  alerts.splice(index, 1);
+                }
+              }
+              // If geofence is a polygon
+              else {
+                // Check trigger conditions
+                if (alertGeofence.in && this.isDeviceInsidePolygon(location_device, alertGeofence)) {
+                  // Trigger alert
+                  let alertMessage = alert.message;
+                  if (!alert.message)
+                    alertMessage = 'Device is in the polygon!';
                   this.triggerAlert(alert, device, alertMessage);
                   // Alert has been triggered, removing it from array
                   alerts.splice(index, 1);
@@ -258,6 +281,27 @@ class Alert {
             });
         }
       });
+  }
+
+  isDeviceInsideCircle(marker: any, alertGeofence: any): boolean {
+    let inside = false;
+    const location_geofence = new loopback.GeoPoint(alertGeofence.location[0]);
+    const distanceToGeofence = marker.distanceTo(location_geofence, {type: 'meters'});
+    if (distanceToGeofence <= alertGeofence.radius) inside = !inside;
+    return inside;
+  }
+
+  isDeviceInsidePolygon(marker: any, polygon: any): boolean {
+    const x = marker.lat, y = marker.lng;
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i].lat, yi = polygon[i].lng;
+      const xj = polygon[j].lat, yj = polygon[j].lng;
+      const intersect = ((yi > y) !== (yj > y))
+        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
   }
 
 }

@@ -95,11 +95,20 @@
                   </ng-container>
                   <ng-container *ngIf="alert.geofence">
                     <ng-container *ngFor="let geofence of alert.geofence; let i = index">
-                      <div class="small text-gray-dark">
+                      <div *ngIf="geofence.radius" class="small text-gray-dark">
                         <strong class="text-alert">{{i + 1}}. </strong>
-                        <strong>Lat:</strong> {{geofence.location.lat.toFixed(2)}}
-                        <strong>Lng:</strong> {{geofence.location.lng.toFixed(2)}}
-                        <strong *ngIf="geofence.radius">Radius:</strong> {{geofence.radius.toFixed(2)}} m
+                        <strong>Lat:</strong> {{geofence.location[0].lat.toFixed(2)}}
+                        <strong>Lng:</strong> {{geofence.location[0].lng.toFixed(2)}}
+                        <strong>Radius:</strong> {{geofence.radius.toFixed(2)}} m
+                      </div>
+                      <div *ngIf="!geofence.radius" class="small text-gray-dark">
+                        <ng-container *ngFor="let location of geofence.location; let i = index">
+                          <div class="small text-gray-dark">
+                            <strong class="text-alert">{{i + 1}}. </strong>
+                            <strong>Lat:</strong> {{location.lat.toFixed(2)}}
+                            <strong>Lng:</strong> {{location.lng.toFixed(2)}}
+                          </div>
+                        </ng-container>
                       </div>
                     </ng-container>
                   </ng-container>
