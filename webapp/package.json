@@ -78,6 +78,7 @@
     "ng2-dragula": "^1.5.0",
     "ng2-nvd3": "^2.0.0",
     "ng2-select": "^1.2.0",
+    "ngc-float-button": "^1.2.1",
     "ngx-bootstrap": "^2.0.2",
     "ngx-gauge": "^1.0.0-beta.2",
     "protractor": "^5.1.2",

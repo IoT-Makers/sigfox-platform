@@ -20,6 +20,9 @@ import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-m
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import {ToasterModule} from 'angular2-toaster';
 import {LeafletDrawModule} from '@asymmetrik/ngx-leaflet-draw';
+import {AdminGuard} from './_guards/admin.guard';
+import {DashboardGuard} from './_guards/dashboard.guard';
+import {OrganizationGuard} from './_guards/organization.guard';
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -52,6 +55,9 @@ import {LeafletDrawModule} from '@asymmetrik/ngx-leaflet-draw';
   ],
   providers: [
     AuthGuard,
+    AdminGuard,
+    DashboardGuard,
+    OrganizationGuard,
     {
       provide: LocationStrategy,
       useClass: HashLocationStrategy

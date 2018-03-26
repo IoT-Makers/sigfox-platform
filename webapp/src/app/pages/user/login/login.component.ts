@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AccessToken, AppSetting, User} from '../../../shared/sdk/models';
-import {UserApi, AppSettingApi} from '../../../shared/sdk/services';
-import {Router} from '@angular/router';
+import {AppSettingApi, UserApi} from '../../../shared/sdk/services';
+import {ActivatedRoute, Router} from '@angular/router';
 import * as _ from 'lodash';
 
 @Component({
@@ -15,6 +15,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   private user: User = new User();
   private errorMessage = '';
 
+  private returnUrl: string;
+
   private setting: AppSetting;
   private settings: AppSetting[] = [];
 
@@ -22,6 +24,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private userApi: UserApi,
               private appSettingApi: AppSettingApi,
+              private route: ActivatedRoute,
               private router: Router) {
   }
 
@@ -39,7 +42,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
         ).subscribe();
         // Redirect to the /dashboard
-        this.router.navigate(['/']);
+        this.router.navigateByUrl(this.returnUrl);
       }, err => {
         // console.log(err);
         if (err.statusCode === 401) {
@@ -54,13 +57,16 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Login: ngOnInit');
-    this.getAppSettings()
+    // Get return url from route parameters or default to '/'
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
+    this.getAppSettings();
   }
 
   getAppSettings(): void {
-    this.appSettingApi.find().subscribe((settings: AppSetting[])=> {
+    this.appSettingApi.find().subscribe((settings: AppSetting[]) => {
       this.settings = settings;
-      let temp = _.filter(settings, {key: 'canUserRegister'});
+      const temp = _.filter(settings, {key: 'canUserRegister'});
       this.canUserRegister = temp[0].value;
 
       //console.log(this.canUserRegister);

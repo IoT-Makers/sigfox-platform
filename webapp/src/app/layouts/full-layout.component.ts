@@ -92,7 +92,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     //Check if organization view
     this.route.params.subscribe(params => {
 
-      console.log("params full layout", params);
+      console.log('params full layout', params);
       if (params.id) {
         this.params = params;
         this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
@@ -290,11 +290,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   getDashboards(): void {
-    if(!this.organization){
+    if (!this.organization) {
       this.userApi.getDashboards(this.user.id).subscribe((dashboards: Dashboard[]) => {
         this.dashboards = dashboards;
       });
-    }else{
+    } else {
       this.organizationApi.getDashboards(this.organization.id).subscribe((dashboards: Dashboard[]) => {
         this.dashboards = dashboards;
       });
@@ -308,16 +308,16 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       name: 'New dashboard'
     };
 
-    if(this.organization){
-      dashboard.name = 'Shared dashboard'
+    if (this.organization){
+      dashboard.name = 'Shared dashboard';
     }
 
-    if(!this.organization){
+    if (!this.organization) {
       this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard => {
         console.log(dashboard);
         this.setup();
       });
-    }else{
+    } else {
       this.organizationApi.createDashboards(this.organization.id, dashboard).subscribe(dashboard => {
         console.log(dashboard);
         this.setup();
@@ -329,19 +329,19 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.selectedUsers = [];
     this.selectUsers = [];
 
-    if(orga){
+    if (orga) {
       console.log(orga);
       this.newOrganization = orga;
-      this.organizationApi.getMembers(orga.id).subscribe(members=>{
-        members.forEach(member=>{
+      this.organizationApi.getMembers(orga.id).subscribe(members => {
+        members.forEach(member => {
           const user = {
             id: member.id,
             itemName: member.email
           };
           this.selectedUsers.push(user);
-        })
+        });
       });
-    }else{
+    } else {
       this.newOrganization = new Organization();
       const myself = {
         id: this.user.id,
@@ -351,7 +351,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     }
 
     if (this.admin) {
-      this.userApi.find({fields:{email:true, id:true}}).subscribe((results: User[]) => {
+      this.userApi.find({fields: {email: true, id: true}}).subscribe((results: User[]) => {
         //console.log(results);
         results.forEach((result: any) => {
           const item = {
@@ -367,7 +367,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.createOrganizationModal.show();
   }
 
-  createOrganization(orga:any): void {
+  createOrganization(orga: any): void {
 
     orga.ownerId = this.user.id;
 
@@ -388,7 +388,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     });
   }
 
-  unlinkMember(organization:any, user:any): void{
+  unlinkMember(organization: any, user: any): void {
     this.organizationApi.unlinkMembers(organization.id, user.id).subscribe((result) =>{
       console.log('result after unlinking member: ', result);
     });
