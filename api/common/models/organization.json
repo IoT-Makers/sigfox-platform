@@ -37,7 +37,7 @@
     },
     "logo": {
       "type": "string",
-      "default": "https://www.shareicon.net/data/512x512/2017/07/13/888376_office_512x512.png"
+      "default": "https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png"
     }
   },
   "validations": [],
