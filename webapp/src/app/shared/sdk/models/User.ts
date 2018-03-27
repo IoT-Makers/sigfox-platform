@@ -16,7 +16,7 @@ import {
 declare var Object: any;
 export interface UserInterface {
   "avatar"?: string;
-  "lastLogin"?: Date;
+  "loggedAt"?: Date;
   "location"?: any;
   "devAccessTokens"?: Array<any>;
   "Email"?: any;
@@ -43,7 +43,7 @@ export interface UserInterface {
 
 export class User implements UserInterface {
   "avatar": string = 'https://www.shareicon.net/data/128x128/2016/08/04/806683_man_512x512.png';
-  "lastLogin": Date = new Date(0);
+  "loggedAt": Date = new Date(0);
   "location": any = <any>null;
   "devAccessTokens": Array<any> = <any>[];
   "Email": any = <any>null;
@@ -104,8 +104,8 @@ export class User implements UserInterface {
           type: 'string',
           default: 'https://www.shareicon.net/data/128x128/2016/08/04/806683_man_512x512.png'
         },
-        "lastLogin": {
-          name: 'lastLogin',
+        "loggedAt": {
+          name: 'loggedAt',
           type: 'Date'
         },
         "location": {
