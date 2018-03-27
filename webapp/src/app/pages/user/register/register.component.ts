@@ -66,7 +66,7 @@ export class RegisterComponent {
         this.userApi.patchAttributes(
           token.userId,
           {
-            'lastLogin': new Date()
+            'loggedAt': new Date()
           }
         ).subscribe();
         // Redirect to the /dashboard

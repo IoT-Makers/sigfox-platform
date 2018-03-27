@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.userApi.patchAttributes(
           token.userId,
           {
-            'lastLogin': new Date()
+            'loggedAt': new Date()
           }
         ).subscribe();
         // Redirect to the /dashboard

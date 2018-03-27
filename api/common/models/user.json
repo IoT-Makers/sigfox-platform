@@ -31,7 +31,7 @@
       "type": "string",
       "default": "https://www.shareicon.net/data/128x128/2016/08/04/806683_man_512x512.png"
     },
-    "lastLogin": {
+    "loggedAt": {
       "type": "date"
     },
     "location": {

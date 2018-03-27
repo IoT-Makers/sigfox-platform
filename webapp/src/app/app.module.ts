@@ -36,12 +36,12 @@ import {OrganizationGuard} from './_guards/organization.guard';
     ModalModule.forRoot(),
     ChartsModule,
     SDKBrowserModule.forRoot(),
-    TooltipModule.forRoot(),
     ToasterModule.forRoot(),
     LeafletModule.forRoot(),
     LeafletDrawModule.forRoot(),
     AgmCoreModule.forRoot({apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'}),
-    AngularMultiSelectModule
+    AngularMultiSelectModule,
+    TooltipModule.forRoot()
   ],
   declarations: [
     AppComponent,
