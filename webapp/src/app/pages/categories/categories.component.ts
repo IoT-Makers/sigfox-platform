@@ -63,7 +63,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     selectAllText: 'Select all',
     unSelectAllText: 'Unselect all',
     enableSearchFilter: true,
-    classes: 'select-category'
+    classes: 'select-organization'
   };
 
   constructor(private rt: RealTime,
@@ -118,8 +118,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   downloadCsv(category: Category) {
     this.loadingDownload = true;
-    const urla = this.document.location.origin + '/api/Categories/download/' + category.id + '/csv?access_token=' + this.userApi.getCurrentToken().id;
-    const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/csv?access_token=' + this.userApi.getCurrentToken().id;
+    const url = this.document.location.origin + '/api/Categories/download/' + category.id + '/csv?access_token=' + this.userApi.getCurrentToken().id;
 
     this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
       const blob: Blob = new Blob([res], {type: 'text/csv'});
@@ -198,11 +197,11 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.confirmModal.hide();
   }
 
-
-  showShareCategoryWithOrganizationModal(category): void{
+  showShareCategoryWithOrganizationModal(category): void {
     this.categoryToEdit = category;
     this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
       this.organizations = organizations;
+      this.selectOrganizations = [];
       console.log(organizations);
       this.organizations.forEach(result => {
         const item = {
@@ -213,8 +212,6 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       });
       this.shareCategoryWithOrganizationModal.show();
     });
-
-
   }
 
   shareCategoryWithOrganization(category, shareAssociatedDevices): void{
