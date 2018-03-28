@@ -49,7 +49,7 @@ class Category {
     const Message = this.model.app.models.Message;
 
     if ((type !== 'csv'
-        && type !== 'json')
+      && type !== 'json')
       || typeof categoryId === 'undefined') {
       res.send('Missing "type" ("csv" or "json"), "categoryId"');
     }
@@ -148,23 +148,25 @@ class Category {
                     obj.data_downlink = message.data_downlink;
 
                     if (message.data_parsed) {
-                    message.data_parsed.forEach((p: any) => {
-                      if (options.fields.indexOf(p.key) === -1) {
-                        options.fields.push(p.key);
-                      }
-                      obj[p.key] = p.value;
-                    });
+                      message.data_parsed.forEach((p: any) => {
+                        if (options.fields.indexOf(p.key) === -1) {
+                          options.fields.push(p.key);
+                        }
+                        obj[p.key] = p.value;
+                      });
                     }
-                    message.Geolocs.forEach((geoloc: any) => {
-                      if (options.fields.indexOf('lat_' + geoloc.type) === -1) {
-                        options.fields.push('lat_' + geoloc.type);
-                        options.fields.push('lng_' + geoloc.type);
-                        options.fields.push('precision_' + geoloc.type);
-                      }
-                      obj['lat_' + geoloc.type] = geoloc.location.lat;
-                      obj['lng_' + geoloc.type] = geoloc.location.lng;
-                      obj['precision_' + geoloc.type] = geoloc.precision;
-                    });
+                    if (message.Geolocs) {
+                      message.Geolocs.forEach((geoloc: any) => {
+                        if (options.fields.indexOf('lat_' + geoloc.type) === -1) {
+                          options.fields.push('lat_' + geoloc.type);
+                          options.fields.push('lng_' + geoloc.type);
+                          options.fields.push('precision_' + geoloc.type);
+                        }
+                        obj['lat_' + geoloc.type] = geoloc.location.lat;
+                        obj['lng_' + geoloc.type] = geoloc.location.lng;
+                        obj['precision_' + geoloc.type] = geoloc.precision;
+                      });
+                    }
                     data.push(obj);
                   });
                   ++nbProcessedDevices;
