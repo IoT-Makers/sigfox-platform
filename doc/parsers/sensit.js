@@ -1,3 +1,8 @@
+/*
+Downlink payloads:
+1h timeFrame: 00ff4c8f03017396
+10min timeFrame: 007f4c8f03017396
+ */
 var payload,
     battery,
     type,

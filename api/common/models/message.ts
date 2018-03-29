@@ -262,7 +262,7 @@ class Message {
           message.data_downlink = device.data_downlink;
           result = {
             [message.deviceId]: {
-              data_downlink: device.data_downlink
+              downlinkData: device.data_downlink
             }
           };
         } else {
