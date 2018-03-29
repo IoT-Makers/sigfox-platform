@@ -15,7 +15,8 @@ const json2csv = require('json2csv').parse;
  **/
 @Model({
   hooks: {
-    beforeSave: {name: 'before save', type: 'operation'}/*,
+    beforeSave: {name: 'before save', type: 'operation'},
+    beforeDelete: { name: 'before delete', type: 'operation' }/*,
     access: {name: 'access', type: 'operation'}*/
   },
   remotes: {
@@ -611,6 +612,29 @@ class Device {
       });
   }
 
+  // Before delete device, remove category organizaton links
+  beforeDelete(ctx: any, next: Function): void {
+    // Models
+    const Device = this.model;
+
+    Device.findOne({where: {id: ctx.where.id}, include: 'Organizations'}, (err: any, device: any) => {
+      // console.log(category);
+      if (!err) {
+        if (device.Organizations) {
+          device.toJSON().Organizations.forEach((orga: any) => {
+            device.Organizations.remove(orga.id, (err: any, result: any) => {
+              if (!err) {
+                console.log('Unlinked device from organization (' + orga.name + ')');
+              }
+            });
+          });
+        }
+        next(null, 'Unlinked device from organization');
+      } else {
+        next(err);
+      }
+    });
+  }
 }
 
 module.exports = Device;

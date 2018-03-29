@@ -204,7 +204,7 @@
                     <tbody>
                     <tr *ngFor="let orga of mf.data; let i = index">
                       <td class="text-center">
-                        <a [routerLink]="['/organization/'+orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
+                        <a [routerLink]="['/organization/' + orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
                       </td>
                       <td class="text-center">
                         <button class="btn btn-outline-organization btn-round" tooltip="Unshare this device"
@@ -346,10 +346,16 @@
                   <span *ngIf="!device.successRate">N/A</span>
                 </td>
                 <td class="text-center">
-                  <div class="btn-group-sm">
+                  <div *ngIf="!organization" class="btn-group-sm">
                     <button class="btn btn-outline-primary btn-round" tooltip="Edit device"
                             (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
                     <button class="btn btn-outline-danger btn-round" tooltip="Delete device"
+                            (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
+                  </div>
+                  <div *ngIf="organization" class="btn-group-sm">
+                    <button disabled class="btn btn-outline-primary btn-round" tooltip="Edit device"
+                            (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
+                    <button disabled class="btn btn-outline-danger btn-round" tooltip="Delete device"
                             (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
                   </div>
                 </td>

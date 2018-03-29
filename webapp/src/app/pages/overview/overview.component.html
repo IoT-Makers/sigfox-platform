@@ -11,14 +11,13 @@
 
   <alert *ngIf="!organization" type="danger" [dismissible]="true">
     <ul>
-      <li>Callback connectors have changed! New endpoints have been created in order to optimize server performance.</li>
-      <li>Geolocs are now stored as persisted models. This new model is accessible via API.</li>
+      <li>Organizations have evolved! Please be gentle with organization functions as it can break the platform at any moment...</li>
       <!--<li>Please <a (click)="upgrade()" href>upgrade</a> your application.</li>-->
     </ul>
   </alert>
 
   <div class="card-group">
-    <div class="card" [routerLink]="[!organization ? '/categories': '/organization/'+organization.id]">
+    <div class="card" [routerLink]="[!organization ? '/categories' : '/organization/' + organization.id + '/categories']">
       <div class="card-block">
         <div class="h1 text-category text-right mb-2">
           <i class="fa fa-tag"></i>
@@ -31,7 +30,7 @@
         </div>
       </div>
     </div>
-    <div class="card" [routerLink]="[!organization ? '/devices': '/organization/'+organization.id]">
+    <div class="card" [routerLink]="[!organization ? '/devices' : '/organization/' + organization.id + '/devices']">
       <div class="card-block">
         <div class="h1 text-device text-right mb-2">
           <i class="fa fa-microchip"></i>
@@ -44,7 +43,7 @@
         </div>
       </div>
     </div>
-    <div class="card" [routerLink]="[!organization ? '/messages': '/organization/'+organization.id]">
+    <div class="card" [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages']">
       <div class="card-block">
         <div class="h1 text-message text-right mb-2">
           <i class="fa fa-envelope"></i>

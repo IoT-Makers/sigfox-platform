@@ -10,7 +10,9 @@ const loopback = require('loopback');
  * Model Decorator
  **/
 @Model({
-  hooks: { },
+  hooks: {
+    beforeDelete: { name: 'before delete', type: 'operation' }
+  },
   remotes: {
     putSigfox: {
       accepts: [
@@ -376,11 +378,11 @@ class Message {
     // Model
     const Device = this.model.app.models.Device;
 
-    Device.findOne({where: {'id': message.deviceId}, include: 'Organizations'}, function(err: any, device: any) {
+    Device.findOne({where: {id: message.deviceId}, include: 'Organizations'}, (err: any, device: any) => {
       //console.log(device);
       if (device.Organizations) {
-        device.toJSON().Organizations.forEach(function(orga: any) {
-          message.Organizations.add(orga.id, function (err: any, result: any) {
+        device.toJSON().Organizations.forEach((orga: any) => {
+          message.Organizations.add(orga.id, (err: any, result: any) => {
             //console.log("Linked message with organization", result);
           });
         });
@@ -436,6 +438,30 @@ class Message {
           console.error(err);
           next(err, data);
         }
+      }
+    });
+  }
+
+  // Before delete message, remove category organizaton links
+  beforeDelete(ctx: any, next: Function): void {
+    // Models
+    const Message = this.model;
+
+    Message.findOne({where: {id: ctx.where.id}, include: 'Organizations'}, (err: any, message: any) => {
+      // console.log(category);
+      if (!err) {
+        if (message.Organizations) {
+          message.toJSON().Organizations.forEach((orga: any) => {
+            message.Organizations.remove(orga.id, (err: any, result: any) => {
+              if (!err) {
+                console.log('Unlinked device from organization (' + orga.name + ')');
+              }
+            });
+          });
+        }
+        next(null, 'Unlinked device from organization');
+      } else {
+        next(err);
       }
     });
   }

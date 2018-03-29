@@ -149,7 +149,7 @@ agm-map {
     background-color: darken($color, 10%);
     border-color: darken($color, 20%); }
   .btn-#{$variant}:focus, .fc button:focus, .btn-#{$variant}.focus, .fc button.focus {
-    box-shadow: 0 0 0 2px darken($color, 15%); }
+    box-shadow: 0 0 0 2px darken($color, 10%); }
   .btn-#{$variant}.disabled, .fc button.disabled, .btn-#{$variant}:disabled, .fc button:disabled {
     background-color: $color;
     border-color: $color; }
@@ -171,7 +171,7 @@ agm-map {
     background-color: $color;
     border-color: $color; }
   .btn-outline-#{$variant}:focus, .btn-outline-#{$variant}.focus {
-    box-shadow: 0 0 0 2px darken($color, 15%); }
+    box-shadow: 0 0 0 2px darken($color, 10%); }
   .btn-outline-#{$variant}.disabled, .btn-outline-#{$variant}:disabled {
     color: $color;
     background-color: transparent; }

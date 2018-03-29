@@ -72,6 +72,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
               private router: Router) {
   }
 
+  redirectToUserView(): void {
+    this.router.navigate(['/' + this.route.snapshot.firstChild.routeConfig.path]);
+  }
+
+  redirectToOgranizationView(orgId: string): void {
+    this.router.navigate(['/organization/' + orgId + '/' + this.route.snapshot.firstChild.routeConfig.path]);
+  }
+
 
   ngOnInit(): void {
     console.log('Full Layout: ngOnInit');
@@ -89,7 +97,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       }
     });
 
-    //Check if organization view
+    // Check if organization view
     this.route.params.subscribe(params => {
 
       console.log('params full layout', params);
@@ -97,9 +105,9 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.params = params;
         this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
           this.organization = organization;
-          //console.log('Organization:', organization);
+          // console.log('Organization:', organization);
 
-          //Set filter for API calls
+          // Set filter for API calls
           this.filter = {'organizationId': this.organization.id};
 
           // Real Time
@@ -138,11 +146,10 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     console.log('Setup Full layout');
     //this.ngOnDestroy();
 
-    this.getDashboards();
     this.getOrganizations();
+    this.getDashboards();
 
     if (!this.organization) {
-
       //Count
       this.userApi.countAlerts(this.user.id).subscribe(result => {
         this.countAlerts = result.count;
@@ -373,11 +380,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     console.log(orga);
     console.log(this.selectedUsers);
-    this.organizationApi.upsert(orga).subscribe((organization: Organization)=>{
+    this.organizationApi.upsert(orga).subscribe((organization: Organization) => {
       console.log('Organization created', organization);
 
       this.selectedUsers.forEach((user: any, index, array) => {
-        this.organizationApi.linkMembers(organization.id, user.id).subscribe((result) =>{
+        this.organizationApi.linkMembers(organization.id, user.id).subscribe((result) => {
           console.log('result after linking member: ', result);
           if (index === array.length - 1) {
             this.getOrganizations();

@@ -1,11 +1,12 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Connector, FireLoopRef, Geoloc, Message, User} from '../../shared/sdk/models';
+import {Connector, FireLoopRef, Geoloc, Message, Organization, User} from '../../shared/sdk/models';
 import {RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
 import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
 import {AgmMap} from '@agm/core';
 import {ActivatedRoute} from '@angular/router';
+import {OrganizationApi} from '../../shared/sdk/services/custom';
 
 @Component({
   selector: 'app-messages',
@@ -29,6 +30,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private messageSub: Subscription;
   private messages: Message[] = [];
   private messageRef: FireLoopRef<Message>;
+
+  private organization: Organization;
+  private organizations: Organization[] = [];
+
   private messageFilter: any;
   private isLimit_100 = false;
   private isLimit_500 = false;
@@ -76,6 +81,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
+              private organizationApi: OrganizationApi,
               private receptionApi: ReceptionApi,
               private route: ActivatedRoute) {
   }
@@ -87,10 +93,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.messageFilter = {
       limit: 100,
       order: 'createdAt DESC',
-      include: ['Device', 'Geolocs'],
-      where: {
-        userId: this.user.id
-      }
+      include: ['Device', 'Geolocs']
     };
     this.sub = this.route.params.subscribe(params => {
       this.filterQuery = params['id'];
@@ -100,39 +103,56 @@ export class MessagesComponent implements OnInit, OnDestroy {
           order: 'createdAt DESC',
           include: ['Device', 'Geolocs'],
           where: {
-            userId: this.user.id,
             deviceId: this.filterQuery
           }
         };
       }
     });
 
-    // Real Time
-    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-      this.setup();
-    else
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-    /*if (
-      this.rt.connection.isConnected() &&
-      this.rt.connection.authenticated
-    ) {
-      this.rt.onReady().subscribe(() => this.setup());
-    } else {
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-      this.rt.onReady().subscribe();
-    }*/
+    // Check if organization view
+    this.route.parent.parent.params.subscribe(parentParams => {
+      if (parentParams.id) {
+        this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
+          this.organization = organization;
+          // Check if real time and setup
+          if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+            this.setup();
+          else
+            this.rt.onAuthenticated().subscribe(() => this.setup());
+        });
+      } else {
+        // Check if real time and setup
+        if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+          this.setup();
+        else
+          this.rt.onAuthenticated().subscribe(() => this.setup());
+      }
+    });
   }
 
   setup(): void {
-    // this.ngOnDestroy();
-    // Messages
+    // Get and listen messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     // this.messageRef = this.userRef.make(this.user).child<Message>('Messages');
     this.messageSub = this.messageRef.on('change',
-      this.messageFilter
+      {limit: 1}
     ).subscribe((messages: Message[]) => {
-      this.messages = messages;
-      // console.log(this.messages);
+      console.log(messages);
+      if (!this.organization) {
+        // Get user devices
+        this.userApi.getMessages(this.user.id,
+          this.messageFilter
+        ).subscribe(messages => {
+          this.messages = messages;
+        });
+      } else {
+        // Get organization devices
+        this.organizationApi.getMessages(this.organization.id,
+          this.messageFilter
+        ).subscribe(messages => {
+          this.messages = messages;
+        });
+      }
     });
   }
 

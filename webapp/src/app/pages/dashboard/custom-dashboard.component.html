@@ -94,7 +94,7 @@
           <i class="fa {{widget.icon}} fa-lg"></i> <strong>{{widget.name}}</strong>
           <div class="btn-toolbar pull-right">
             <div class="btn-group">
-              <button class="btn btn-info" *ngIf="editFlag" (click)="editWidget(widget); updateWidgetModal.show()"><i class="fa fa-pencil"></i></button>
+              <button class="btn btn-info" *ngIf="editFlag" (click)="editWidget(widget); addOrEditWidgetModal.show()"><i class="fa fa-pencil"></i></button>
               <button class="btn btn-danger" *ngIf="editFlag" (click)="deleteWidget(widget)"><i class="fa fa-trash"></i></button>
             </div>
           </div>
@@ -847,15 +847,15 @@
 
 </div>
 
-<div bsModal #updateWidgetModal="bs-modal" class="modal fade" [config]="{ignoreBackdropClick: true}" tabindex="-1" role="dialog"
-     aria-labelledby="updateWidgetModal" aria-hidden="true">
+<div bsModal #addOrEditWidgetModal="bs-modal" class="modal fade" [config]="{ignoreBackdropClick: true}" tabindex="-1" role="dialog"
+     aria-labelledby="addOrEditWidgetModal" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <!-- Form Begin -->
     <div class="modal-content">
-      <form class="form-horizontal" #newWidgetForm="ngForm">
+      <form class="form-horizontal" #addOrEditWidgetForm="ngForm">
         <div class="modal-header">
           <h4 class="modal-title">{{newWidgetFlag ? "Add new widget" : "Edit widget"}}</h4>
-          <button type="button" class="close" (click)="updateWidgetModal.hide()" aria-label="Close">
+          <button type="button" class="close" (click)="addOrEditWidgetModal.hide()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -1470,11 +1470,11 @@
           <!-- End new widget -->
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="updateWidgetModal.hide()">Close</button>
-          <button class="btn btn-primary" *ngIf="newWidgetFlag" [disabled]="!newWidgetForm.form.valid" (click)="addWidget()"><i
+          <button type="button" class="btn btn-secondary" (click)="addOrEditWidgetModal.hide()">Close</button>
+          <button class="btn btn-primary" *ngIf="newWidgetFlag" [disabled]="!addOrEditWidgetForm.form.valid" (click)="addWidget()"><i
             class="fa fa-check"></i> Add widget
           </button>
-          <button class="btn btn-primary" *ngIf="editFlag" [disabled]="!newWidgetForm.form.valid" (click)="updateWidget()"><i
+          <button class="btn btn-primary" *ngIf="editFlag" [disabled]="!addOrEditWidgetForm.form.valid" (click)="updateWidget()"><i
             class="fa fa-check"></i> Update widget
           </button>
         </div>

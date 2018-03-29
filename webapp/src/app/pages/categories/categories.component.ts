@@ -1,12 +1,13 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Category, Device, FireLoopRef, Organization, User} from '../../shared/sdk/models';
-import {CategoryApi, DeviceApi, RealTime, UserApi, OrganizationApi} from '../../shared/sdk/services';
+import {CategoryApi, DeviceApi, OrganizationApi, RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import * as moment from 'moment';
 import {HttpClient} from '@angular/common/http';
 import {DOCUMENT} from '@angular/common';
 import {saveAs} from 'file-saver';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-categories',
@@ -72,6 +73,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               toasterService: ToasterService,
+              private route: ActivatedRoute,
               @Inject(DOCUMENT) private document: any,
               private http: HttpClient) {
     this.toasterService = toasterService;
@@ -82,37 +84,54 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     this.edit = false;
-    // Real Time
-    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-      this.setup();
-    else
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-    /*if (
-      this.rt.connection.isConnected() &&
-      this.rt.connection.authenticated
-    ) {
-      this.rt.onReady().subscribe(() => this.setup());
-    } else {
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-      this.rt.onReady().subscribe();
-    }*/
+
+    // Check if organization view
+    this.route.parent.parent.params.subscribe(parentParams => {
+      if (parentParams.id) {
+        this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
+          this.organization = organization;
+          // Check if real time and setup
+          if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+            this.setup();
+          else
+            this.rt.onAuthenticated().subscribe(() => this.setup());
+        });
+      } else {
+        // Check if real time and setup
+        if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+          this.setup();
+        else
+          this.rt.onAuthenticated().subscribe(() => this.setup());
+      }
+    });
   }
 
   setup(): void {
-    // this.ngOnDestroy();
-
     // Get and listen categories
+    const filter = {
+      include: ['Devices', 'Organizations'],
+    };
     this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
     this.categorySub = this.categoryRef.on('change',
-      {
-        include: ['Devices', 'Organizations'],
-        where: {
-          userId: this.user.id
-        }
-      }
+      {limit: 1}
     ).subscribe((categories: Category[]) => {
-      this.categories = categories;
-      console.log(this.categories);
+      if (!this.organization) {
+        // Get user categories
+        this.userApi.getCategories(this.user.id,
+          filter
+        ).subscribe(categories => {
+          console.log('Categories: ', categories);
+          this.categories = categories;
+        });
+      } else {
+        // Get organization categories
+        this.organizationApi.getCategories(this.organization.id,
+          filter
+        ).subscribe(categories => {
+          console.log('Categories: ', categories);
+          this.categories = categories;
+        });
+      }
     });
   }
 
@@ -186,6 +205,12 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   remove(): void {
     this.categoryRef.remove(this.categoryToRemove).subscribe(value => {
+      /*// Unlink categories
+      this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
+        organizations.forEach((orga: Organization) => {
+          this.organizationApi.unlinkCategories(orga.id, this.categoryToRemove.id).subscribe(value => {});
+        });
+      });*/
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Category was successfully removed.');
@@ -220,15 +245,14 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.selectedOrganizations.forEach(orga => {
       this.organizationApi.linkCategories(orga.id, category.id).subscribe(results => {
         console.log(results);
-        if(shareAssociatedDevices && category.Devices.length > 0){
+        if (shareAssociatedDevices && category.Devices.length > 0) {
           category.Devices.forEach(device => {
             this.selectedOrganizations.forEach(orga => {
               this.organizationApi.linkDevices(orga.id, device.id).subscribe(results => {
                 console.log(results);
-
               });
             });
-          })
+          });
         }
         this.shareCategoryWithOrganizationModal.hide();
         this.organizationApi.findById(orga.id).subscribe((org: Organization) => {

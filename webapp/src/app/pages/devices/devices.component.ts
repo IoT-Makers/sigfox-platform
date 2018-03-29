@@ -9,6 +9,7 @@ import {HttpClient} from '@angular/common/http';
 import {DOCUMENT} from '@angular/common';
 import {saveAs} from 'file-saver';
 import * as moment from 'moment';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-devices',
@@ -88,6 +89,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
               toasterService: ToasterService,
               @Inject(DOCUMENT) private document: any,
               private messageApi: MessageApi,
+              private route: ActivatedRoute,
               private http: HttpClient) {
     this.toasterService = toasterService;
   }
@@ -104,20 +106,26 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
     // Hide all circles by default
     this.setCircles();
-    // Real Time
-    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-      this.setup();
-    else
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-    /*if (
-      this.rt.connection.isConnected() &&
-      this.rt.connection.authenticated
-    ) {
-      this.rt.onReady().subscribe(() => this.setup());
-    } else {
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-      this.rt.onReady().subscribe();
-    }*/
+
+    // Check if organization view
+    this.route.parent.parent.params.subscribe(parentParams => {
+      if (parentParams.id) {
+        this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
+          this.organization = organization;
+          // Check if real time and setup
+          if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+            this.setup();
+          else
+            this.rt.onAuthenticated().subscribe(() => this.setup());
+        });
+      } else {
+        // Check if real time and setup
+        if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+          this.setup();
+        else
+          this.rt.onAuthenticated().subscribe(() => this.setup());
+      }
+    });
   }
 
   downloadCsv() {
@@ -155,32 +163,45 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   setup(): void {
     // Get and listen devices
+    const filter = {
+      limit: 100,
+      order: 'updatedAt DESC',
+      include: ['Parser', 'Category', 'Organizations', {
+        relation: 'Messages',
+        scope: {
+          limit: 1,
+          order: 'createdAt DESC',
+          include: [{
+            relation: 'Geolocs',
+            scope: {
+              limit: 5,
+              order: 'createdAt DESC'
+            }
+          }]
+        }
+      }]
+    };
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
     this.deviceSub = this.deviceRef.on('change',
-      {
-        limit: 100,
-        order: 'updatedAt DESC',
-        include: ['Parser', 'Category', 'Organizations', {
-          relation: 'Messages',
-          scope: {
-            limit: 1,
-            order: 'createdAt DESC',
-            include: [{
-              relation: 'Geolocs',
-              scope: {
-                limit: 5,
-                order: 'createdAt DESC'
-              }
-            }]
-          }
-        }],
-        where: {
-          userId: this.user.id
-        }
-      }
+      {limit: 1}
     ).subscribe((devices: Device[]) => {
-      this.devices = devices;
-      console.log(this.devices);
+      if (!this.organization) {
+        // Get user devices
+        this.userApi.getDevices(this.user.id,
+          filter
+        ).subscribe(devices => {
+          console.log('Devices: ', devices);
+          this.devices = devices;
+        });
+      } else {
+        // Get organization devices
+        this.organizationApi.getDevices(this.organization.id,
+          filter
+        ).subscribe(devices => {
+          console.log('Devices: ', devices);
+          this.devices = devices;
+        });
+      }
     });
 
     // Get and listen parsers
@@ -307,7 +328,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('warning', 'Warning', result.message);
       }
-      //this.rt.onReady().subscribe();
+      this.rt.onReady().subscribe();
       //console.log(result);
     });
     this.confirmParseModal.hide();

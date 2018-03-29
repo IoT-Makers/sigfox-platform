@@ -27,7 +27,7 @@
 
         <div class="dropdown-header text-center"><strong>Organizations</strong></div>
 
-        <button href="#" class="dropdown-item" *ngFor="let orga of organizations" [routerLink]="['/organization/'+orga.id]">
+        <button href="#" class="dropdown-item" *ngFor="let orga of organizations" (click)="redirectToOgranizationView(orga.id)">
           <img src="{{orga.logo}}" height="30px" class="img-avatar"> {{orga.name}}
         </button>
         <button href="#" class="dropdown-item text-center" (click)="newOrganisation()">
@@ -62,8 +62,8 @@
     </li>
 
     <!-- Switch to user -->
-    <li class="nav-item" tooltip="switch to user view" placement="left">
-      <a class="nav-link" [routerLink]="['/']">
+    <li class="nav-item" tooltip="Switch to user view" placement="left">
+      <a class="nav-link" (click)="redirectToUserView()">
         <i class="fa fa-user text-profile"> </i>
       </a>
     </li>
@@ -228,9 +228,30 @@
           </li>
         </ng-container>
 
-        <!--<li class="nav-item">
-        <a class="nav-link" routerLinkActive="active" [routerLink]="['/demo']"><i class="fa fa-cube"></i> Demo <span class="badge badge-info"></span></a>
-        </li>-->
+        <li class="divider"></li>
+
+        <li class="nav-title">
+          Information
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/organization/', organization.id, 'categories']">
+            <i class="fa fa-tag text-category"></i> Shared categories <span
+            class="badge badge-category">{{countCategories}}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/organization/', organization.id, 'devices']">
+            <i class="fa fa-microchip text-device"></i> Shared devices <span
+            class="badge badge-device">{{countDevices}}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/organization/', organization.id, 'messages']">
+            <i class="fa fa-envelope text-message"></i> Shared messages <span
+            class="badge badge-message">{{countMessages}}</span>
+          </a>
+        </li>
+
 
         <ng-container *ngIf="admin">
           <li class="nav-title">

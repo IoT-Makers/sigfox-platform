@@ -17,7 +17,7 @@ declare let d3: any;
 })
 export class CustomDashboardComponent implements OnInit, OnDestroy {
 
-  @ViewChild('updateWidgetModal') updateWidgetModal: any;
+  @ViewChild('addOrEditWidgetModal') addOrEditWidgetModal: any;
 
   private user: User;
 
@@ -320,10 +320,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         this.loadWidgets();
       });
     });
-
-
-
-
   }
 
   ngOnDestroy(): void {
@@ -429,7 +425,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.loadSelectFilters();
 
     this.newWidgetFlag = true;
-    this.updateWidgetModal.show();
+    this.addOrEditWidgetModal.show();
   }
 
   addTableType($event): void {
@@ -813,7 +809,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
       this.newWidgetFlag = false;
 
-      this.updateWidgetModal.hide();
+      this.addOrEditWidgetModal.hide();
     });
   }
 
@@ -844,7 +840,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.toasterService.pop('success', 'Success', 'The widget was successfully updated.');
 
       this.editWidgetFlag = false;
-      this.updateWidgetModal.hide();
+      this.addOrEditWidgetModal.hide();
     });
   }
 

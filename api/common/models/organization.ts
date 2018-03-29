@@ -37,14 +37,13 @@ class Organization {
     const Message = this.model.app.models.Message;
     const Organization = app.models.Organization;
 
-
     //console.log(Organization.prototype.__link__Messages);
     //console.log(ctx);
-    Message.find({where:{'deviceId': data.deviceId}, fields: {'id': true}}, function (err: any, messages:any) {
+    Message.find({where: {deviceId: data.deviceId}, fields: {'id': true}}, function (err: any, messages: any) {
       //console.log(messages);
       Organization.findById(data.organizationId, function(err: any, orga:any) {
         console.log(orga);
-        messages.forEach((message:any) => {
+        messages.forEach((message: any) => {
           orga.Messages.add(message.id, function (err: any, result: any) {
             console.log(result);
           });
@@ -54,17 +53,15 @@ class Organization {
     });
     next();
      //console.log(ctx);
-
   }
 
   afterRemoteUnlinkDevice(ctx: any, data: any, next: Function): void {
     const Message = this.model.app.models.Message;
     const Organization = app.models.Organization;
 
-
     //console.log(Organization.prototype.__link__Messages);
     //console.log(ctx);
-    Message.find({where: {'deviceId': data.deviceId}, fields: {'id': true}}, function (err: any, messages: any) {
+    Message.find({where: {deviceId: data.deviceId}, fields: {id: true}}, function (err: any, messages: any) {
       //console.log(messages);
       Organization.findById(data.organizationId, function(err: any, orga: any) {
         //console.log(orga);
@@ -78,8 +75,8 @@ class Organization {
     });
     next();
     //console.log(ctx);
-
   }
+
   // Example Remote Method
   myRemote(next: Function): void {
     this.model.find(next);

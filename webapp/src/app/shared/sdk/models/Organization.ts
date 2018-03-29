@@ -25,7 +25,7 @@ export interface OrganizationInterface {
 export class Organization implements OrganizationInterface {
   "name": string = 'My organization';
   "ownerId": string = '';
-  "logo": string = 'https://www.shareicon.net/data/512x512/2017/07/13/888376_office_512x512.png';
+  "logo": string = 'https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png';
   "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
@@ -79,7 +79,7 @@ export class Organization implements OrganizationInterface {
         "logo": {
           name: 'logo',
           type: 'string',
-          default: 'https://www.shareicon.net/data/512x512/2017/07/13/888376_office_512x512.png'
+          default: 'https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png'
         },
         "id": {
           name: 'id',

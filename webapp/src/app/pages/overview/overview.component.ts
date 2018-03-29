@@ -154,7 +154,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.user = this.userApi.getCachedCurrent();
     // console.log('localStorage', localStorage.getItem('filter'));
 
-    //Check if organization view
+    // Check if organization view
     this.route.params.subscribe(params => {
 
       if (params.id) {
@@ -165,7 +165,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
             console.log('Members', result.count);
           });
 
-          //Check if real time and setup
+          // Check if real time and setup
           if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
             this.setup();
           else
@@ -173,7 +173,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         });
       } else {
 
-        //Check if real time and setup
+        // Check if real time and setup
         if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
           this.setup();
         else
@@ -214,7 +214,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       (results: any[]) => {
         console.log('Device sub', results);
         if (!this.organization) {
-          //Get user devices
+          // Get user devices
           this.userApi.getDevices(this.user.id,
             {
               limit: 10,
@@ -313,7 +313,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
     }
 
-    if(!this.organization){
+    if (!this.organization) {
       this.getMessagesGraph(this.graphRange);
     }
 

@@ -1,5 +1,7 @@
 import {Model} from '@mean-expert/model';
 
+const app = require('../../server/server.js');
+
 const moment = require('moment');
 const json2csv = require('json2csv').parse;
 
@@ -12,7 +14,8 @@ const json2csv = require('json2csv').parse;
  **/
 @Model({
   hooks: {
-    beforeSave: { name: 'before save', type: 'operation' }
+    beforeSave: { name: 'before save', type: 'operation' },
+    beforeDelete: { name: 'before delete', type: 'operation' }
   },
   remotes: {
     download: {
@@ -41,6 +44,31 @@ class Category {
     console.log('Category: Before Save');
     next();
   }
+
+  // Before delete category, remove category organizaton links
+  beforeDelete(ctx: any, next: Function): void {
+    // Models
+    const Category = this.model;
+
+    Category.findOne({where: {id: ctx.where.id}, include: 'Organizations'}, (err: any, category: any) => {
+      // console.log(category);
+      if (!err) {
+        if (category.Organizations) {
+          category.toJSON().Organizations.forEach((orga: any) => {
+            category.Organizations.remove(orga.id, (err: any, result: any) => {
+              if (!err) {
+                console.log('Unlinked category from organization (' + orga.name + ')');
+              }
+            });
+          });
+        }
+        next(null, 'Unlinked category from organization');
+      } else {
+        next(err);
+      }
+    });
+  }
+
 
   download(categoryId: string, type: string, req: any, res: any, next: Function) {
     // Model

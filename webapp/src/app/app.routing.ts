@@ -49,7 +49,12 @@ export const routes: Routes = [
     },
     children: [
       {path: '', loadChildren: './pages/overview/overview.module#OverviewModule'},
+
       {path: 'dashboard/:id', loadChildren: './pages/dashboard/custom-dashboard.module#CustomDashboardModule'},
+
+      {path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule'},
+      {path: 'devices', loadChildren: './pages/devices/devices.module#DevicesModule'},
+      {path: 'messages', loadChildren: './pages/messages/messages.module#MessagesModule'},
     ]
   },
   {path: 'not-found', loadChildren: './pages/not-found/not-found.module#NotFoundModule'},
