@@ -1003,41 +1003,45 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
                 // Loop each device for this widget
                 widget.data.forEach((device: Device) => {
-                  if(device.Messages[0]){
-                  const data_parsed: any = device.Messages[0].data_parsed;
-                  // Loop each keys chosen for this widget
-                  widget.options.keys.forEach((key: any) => {
-                    const o: any = _.filter(device.Messages[0].data_parsed, {key: key})[0];
-                    console.log(device.id, o);
-                    if (o) {
-                      keys_units.push(o);
-                      // Check if the device has this key
-                      data_parsed.forEach((line: any, k) => {
-                        if (line.key === key) {
-                          chartData[w] = {};
-                          // Set key
-                          if (line.unit !== '') {
-                            chartData[w].key = (line.key + ' (' + line.unit + ')' + ' - ' + device.id)  + ' ' + (device.name ? device.name : '');
-                          } else {
-                            chartData[w].key = (line.key + ' - ' + device.id) + ' ' + (device.name ? device.name : '');
+                  if (device.Messages[0]) {
+                    const data_parsed: any = device.Messages[0].data_parsed;
+                    // Loop each keys chosen for this widget
+                    widget.options.keys.forEach((key: any) => {
+                      const o: any = _.filter(device.Messages[0].data_parsed, {key: key})[0];
+                      console.log(device.id, o);
+                      if (o) {
+                        keys_units.push(o);
+                        // Check if the device has this key and set the format to display
+                        data_parsed.forEach((line: any, k) => {
+                          if (line.key === key) {
+                            chartData[w] = {};
+                            // Set key
+                            if (widget.options.keys.length > 1) {
+                              if (line.unit !== '') {
+                                chartData[w].key = (line.key + ' (' + line.unit + ')' + ' - ' + device.id) + (device.name ? ' - ' + device.name : '');
+                              } else {
+                                chartData[w].key = (line.key + ' - ' + device.id) + (device.name ? ' - ' + device.name : '');
+                              }
+                            } else {
+                              chartData[w].key = device.id + (device.name ? ' - ' + device.name : '');
+                            }
+                            // Set values
+                            chartData[w].values = [];
+                            device.Messages.forEach((message: Message) => {
+                              const item: any = {
+                                label: new Date(message.createdAt),
+                                value: Number(_.filter(message.data_parsed,
+                                  {key: key})[0].value)
+                              };
+                              chartData[w].values.push(item);
+                            });
+                            data_parsed.splice(k, 1);
                           }
-                          // Set values
-                          chartData[w].values = [];
-                          device.Messages.forEach((message: Message) => {
-                            const item: any = {
-                              label: new Date(message.createdAt),
-                              value: Number(_.filter(message.data_parsed,
-                                {key: key})[0].value)
-                            };
-                            chartData[w].values.push(item);
-                          });
-                          data_parsed.splice(k, 1);
-                        }
-                      });
-                      w++;
-                    }
-                  });
-                }
+                        });
+                        w++;
+                      }
+                    });
+                  }
                 });
                 // Replace data with chart data
                 widget.data = chartData;
@@ -1138,36 +1142,45 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
                 // Loop each device for this widget
                 widget.data.forEach((device: Device) => {
-                  const data_parsed = device.Messages[0].data_parsed;
-                  // Loop each keys chosen for this widget
-                  widget.options.keys.forEach((key) => {
-                    const o = _.filter(device.Messages[0].data_parsed, {key: key})[0];
-                    console.log(device.id, o);
-                    if (o) {
-                      keys_units.push(o);
-                      // Check if the device has this key
-                      data_parsed.forEach((line, k) => {
-                        if (line.key === key) {
-                          chartData[w] = {};
-                          // Set key
+                  if (device.Messages[0]) {
+                    const data_parsed = device.Messages[0].data_parsed;
+                    // Loop each keys chosen for this widget
+                    widget.options.keys.forEach((key) => {
+                      const o = _.filter(device.Messages[0].data_parsed, {key: key})[0];
+                      console.log(device.id, o);
+                      if (o) {
+                        keys_units.push(o);
+                        // Check if the device has this key and set the format to display
+                        data_parsed.forEach((line, k) => {
+                          if (line.key === key) {
+                            chartData[w] = {};
+                            if (widget.options.keys.length > 1) {
+                              if (line.unit !== '') {
+                                chartData[w].key = (line.key + ' (' + line.unit + ')' + ' - ' + device.id) + (device.name ? ' - ' + device.name : '');
+                              } else {
+                                chartData[w].key = (line.key + ' - ' + device.id) + (device.name ? ' - ' + device.name : '');
+                              }
+                            } else {
+                              chartData[w].key = device.id + (device.name ? ' - ' + device.name : '');
+                            }
 
-                          chartData[w].key = line.key + ' (' + line.unit + ')' + ' - ' + device.id;
-                          // Set values
-                          chartData[w].values = [];
-                          device.Messages.forEach((message: Message) => {
-                            const item: any = {
-                              label: new Date(message.createdAt),
-                              value: Number(_.filter(message.data_parsed,
-                                {key: key})[0].value)
-                            };
-                            chartData[w].values.push(item);
-                          });
-                          data_parsed.splice(k, 1);
-                        }
-                      });
-                      w++;
-                    }
-                  });
+                            // Set values
+                            chartData[w].values = [];
+                            device.Messages.forEach((message: Message) => {
+                              const item: any = {
+                                label: new Date(message.createdAt),
+                                value: Number(_.filter(message.data_parsed,
+                                  {key: key})[0].value)
+                              };
+                              chartData[w].values.push(item);
+                            });
+                            data_parsed.splice(k, 1);
+                          }
+                        });
+                        w++;
+                      }
+                    });
+                  }
                 });
                 // Replace data with chart data
                 widget.data = chartData;

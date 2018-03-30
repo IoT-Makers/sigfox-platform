@@ -10,6 +10,10 @@ Object.assign(BaseLoopbackActionTypesFactory('Category'), {
   DOWNLOAD_SUCCESS: type('[Category] download success'),
   DOWNLOAD_FAIL: type('[Category] download fail'),
 
+  DOWNLOAD_FROM_ORGANIZATION: type('[Category] downloadFromOrganization'),
+  DOWNLOAD_FROM_ORGANIZATION_SUCCESS: type('[Category] downloadFromOrganization success'),
+  DOWNLOAD_FROM_ORGANIZATION_FAIL: type('[Category] downloadFromOrganization fail'),
+
 });
 export const CategoryActions =
 Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
@@ -60,6 +64,57 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   downloadFail: class implements Action {
     public readonly type = CategoryActionTypes.DOWNLOAD_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * downloadFromOrganization Action.
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} organizationId 
+   * @param {string} categoryId 
+   * @param {string} type 
+   * @param {object} req 
+   * @param {object} res 
+   * @param {any} meta (optional).
+   * 
+   */
+  downloadFromOrganization: class implements Action {
+    public readonly type = CategoryActionTypes.DOWNLOAD_FROM_ORGANIZATION;
+      public payload: {organizationId: any, categoryId: any, type: any, req: any, res: any};
+
+    constructor(organizationId: any, categoryId: any, type: any, req: any = {}, res: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {organizationId, categoryId, type, req, res};
+    }
+  },
+  /**
+   * downloadFromOrganizationSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  downloadFromOrganizationSuccess: class implements Action {
+    public readonly type = CategoryActionTypes.DOWNLOAD_FROM_ORGANIZATION_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * downloadFromOrganizationFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  downloadFromOrganizationFail: class implements Action {
+    public readonly type = CategoryActionTypes.DOWNLOAD_FROM_ORGANIZATION_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

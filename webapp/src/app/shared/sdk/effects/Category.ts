@@ -30,6 +30,20 @@ export class CategoryEffects extends BaseLoopbackEffects {
       )
     );
 
+  @Effect()
+  public downloadFromOrganization$ = this.actions$
+    .ofType(CategoryActionTypes.DOWNLOAD_FROM_ORGANIZATION).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.category.downloadFromOrganization(action.payload.organizationId, action.payload.categoryId, action.payload.type, action.payload.req, action.payload.res).pipe(
+          map((response: any) => new CategoryActions.downloadFromOrganizationSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new CategoryActions.downloadFromOrganizationFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
     /**
    * @author João Ribeiro <@JonnyBGod> <github:JonnyBGod>
    * @description

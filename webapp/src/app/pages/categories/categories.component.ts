@@ -135,14 +135,29 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
   }
 
-  download(fromOrganization: boolean, category: Category, type: string) {
+  downloadFromOrganization(organizationId: string, category: Category, type: string): void {
     this.loadingDownload = true;
-    let url = '';
-    if (fromOrganization) {
-      url = this.document.location.origin + '/api/Categories/downloadFromOrganization/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
-    } else {
-      url = this.document.location.origin + '/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
-    }
+    const url = this.document.location.origin + '/api/Categories/download/' + organizationId + '/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+
+    this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
+      const blob: Blob = new Blob([res], {type: 'text/csv'});
+      const today = moment().format('YYYY.MM.DD');
+      const filename = today + '_' + category.name + '_export.csv';
+      saveAs(blob, filename);
+      this.loadingDownload = false;
+    }, err => {
+      console.log(err);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', 'Server error');
+      this.loadingDownload = false;
+    });
+  }
+
+  download(category: Category, type: string): void {
+    this.loadingDownload = true;
+    const url = this.document.location.origin + '/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+
     this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
       const blob: Blob = new Blob([res], {type: 'text/csv'});
       const today = moment().format('YYYY.MM.DD');
