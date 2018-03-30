@@ -105,7 +105,8 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
-          "download": true
+          "download": true,
+          "downloadFromOrganization": true
         }
       }
     }

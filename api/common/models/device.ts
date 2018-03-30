@@ -503,7 +503,6 @@ class Device {
 
   download(deviceId: string, type: string, req: any, res: any, next: Function): void {
     // Model
-    const Device = this.model;
     const Message = this.model.app.models.Message;
 
     if ((type !== 'csv'
@@ -515,11 +514,9 @@ class Device {
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
-    const datetime = new Date();
     const today = moment().format('YYYY.MM.DD');
     const filename = today + '_' + deviceId + '_export.csv';
     res.set('Cache-Control', 'max-age=0, no-cache, must-revalidate, proxy-revalidate');
-    res.set('Last-Modified', datetime + 'GMT');
     res.set('Content-Type', 'application/force-download');
     res.set('Content-Type', 'application/octet-stream');
     res.set('Content-Type', 'application/download');
@@ -540,7 +537,7 @@ class Device {
         if (err) {
           console.error(err);
           res.send(err);
-        } else {
+        } else if (messages) {
           const data: any = [];
           let csv: any = [];
           const options: any = {
@@ -608,6 +605,8 @@ class Device {
           //res.status(200).send({data: csv});
           res.send(csv);
           //next();
+        } else {
+          next(null, 'Error occured - not allowed');
         }
       });
   }
