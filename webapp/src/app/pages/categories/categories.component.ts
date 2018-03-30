@@ -135,10 +135,14 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
   }
 
-  downloadCsv(category: Category) {
+  download(fromOrganization: boolean, category: Category, type: string) {
     this.loadingDownload = true;
-    const url = this.document.location.origin + '/api/Categories/download/' + category.id + '/csv?access_token=' + this.userApi.getCurrentToken().id;
-
+    let url = '';
+    if (fromOrganization) {
+      url = this.document.location.origin + '/api/Categories/downloadFromOrganization/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    } else {
+      url = this.document.location.origin + '/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    }
     this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
       const blob: Blob = new Blob([res], {type: 'text/csv'});
       const today = moment().format('YYYY.MM.DD');

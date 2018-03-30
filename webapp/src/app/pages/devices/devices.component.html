@@ -180,7 +180,7 @@
                 </div>
                 <div class="col col-md-12">
                   <p></p>
-                  <button tooltip="Download messages (CSV)" class="btn btn-round btn-success btn-ladda" data-style="slide-up" [ladda]='loadingDownload' (click)="$event.preventDefault(); downloadCsv();">
+                  <button tooltip="Download messages (CSV)" class="btn btn-round btn-success btn-ladda" data-style="slide-up" [ladda]='loadingDownload' (click)="$event.preventDefault(); download('csv');">
                     <i class="fa fa-download"></i> &nbsp; Download
                   </button>
                 </div>

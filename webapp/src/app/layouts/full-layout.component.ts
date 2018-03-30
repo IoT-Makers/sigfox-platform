@@ -77,7 +77,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   redirectToOgranizationView(orgId: string): void {
-    this.router.navigate(['/organization/' + orgId + '/' + this.route.snapshot.firstChild.routeConfig.path]);
+    if (
+      this.route.snapshot.firstChild.routeConfig.path === 'categories'
+      || this.route.snapshot.firstChild.routeConfig.path === 'devices'
+      || this.route.snapshot.firstChild.routeConfig.path === 'messages') {
+      this.router.navigate(['/organization/' + orgId + '/' + this.route.snapshot.firstChild.routeConfig.path]);
+    } else {
+      this.router.navigate(['/organization/' + orgId]);
+    }
   }
 
 

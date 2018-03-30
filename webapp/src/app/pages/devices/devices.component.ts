@@ -128,9 +128,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
     });
   }
 
-  downloadCsv() {
+  download(type: string) {
     this.loadingDownload = true;
-    const url = this.document.location.origin + '/api/Devices/download/' + this.deviceToEdit.id + '/csv?access_token=' + this.userApi.getCurrentToken().id;
+    const url = this.document.location.origin + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
 
     this.http.get(url, {responseType: 'blob'}).subscribe(res => {
       const blob: Blob = new Blob([res], {type: 'text/csv'});

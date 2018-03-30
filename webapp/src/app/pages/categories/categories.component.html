@@ -88,7 +88,7 @@
                         <i class="fa fa-share"></i>
                       </button>
                       <button class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
-                              (click)="$event.preventDefault(); downloadCsv(category);">
+                              (click)="$event.preventDefault(); download(false, category, 'csv');">
                         <i class="fa fa-download"></i>
                       </button>
                     </div>
@@ -102,7 +102,7 @@
                         <i class="fa fa-share"></i>
                       </button>
                       <button class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
-                              (click)="$event.preventDefault(); downloadCsv(category);">
+                              (click)="$event.preventDefault(); downloadFromOrganization(true, category, 'csv');">
                         <i class="fa fa-download"></i>
                       </button>
                     </div>
