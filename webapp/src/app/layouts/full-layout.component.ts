@@ -146,100 +146,109 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     console.log('Setup Full layout');
     //this.ngOnDestroy();
 
-    this.getOrganizations();
-    this.getDashboards();
+    this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
+      console.log(organizations);
+      this.organizations = organizations;
 
-    if (!this.organization) {
-      //Count
-      this.userApi.countAlerts(this.user.id).subscribe(result => {
-        this.countAlerts = result.count;
-      });
-      this.parserApi.count().subscribe(result => {
-        this.countParsers = result.count;
-      });
-      this.userApi.countConnectors(this.user.id).subscribe(result => {
-        this.countConnectors = result.count;
-      });
-    }
+      if (!this.organization) {
+        //Count
+        this.userApi.countAlerts(this.user.id).subscribe(result => {
+          this.countAlerts = result.count;
+        });
+        this.parserApi.count().subscribe(result => {
+          this.countParsers = result.count;
+        });
+        this.userApi.countConnectors(this.user.id).subscribe(result => {
+          this.countConnectors = result.count;
+        });
+      }
 
-    // Dashboards
-    this.dashboardRef = this.rt.FireLoop.ref<Dashboard>(Dashboard);
-    this.dashboardSub = this.dashboardRef.on('change', {
-      where: {userId: this.user.id},
-      order: 'createdAt DESC'
-    }).subscribe(
-      (dashboards: Dashboard[]) => {
-        console.log('Dashboard changed');
-        this.dashboards = dashboards;
-      });
-
-    // Categories
-    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categorySub = this.categoryRef.on('change', {where: this.user.id}).subscribe(
-      (categories: Category[]) => {
-
-        if (!this.organization) {
-          this.userApi.countCategories(this.user.id).subscribe(result => {
-            this.countCategories = result.count;
-          });
-        } else {
-          this.organizationApi.countCategories(this.organization.id).subscribe(result => {
-            this.countCategories = result.count;
-          });
-        }
-      });
-
-    // Devices
-    this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-    this.deviceSub = this.deviceRef.on('change',
-      {
-        limit: 10,
-        order: 'updatedAt DESC',
-        include: ['Parser', 'Category', {
-          relation: 'Messages',
-          scope: {
-            skip: 0,
-            limit: 1,
-            order: 'createdAt DESC'
+      // Dashboards
+      this.dashboardRef = this.rt.FireLoop.ref<Dashboard>(Dashboard);
+      this.dashboardSub = this.dashboardRef.on('change', {
+        where: {userId: this.user.id},
+        order: 'createdAt DESC'
+      }).subscribe(
+        (dashboards: Dashboard[]) => {
+          if (!this.organization) {
+            this.userApi.getDashboards(this.user.id).subscribe((dashboards: Dashboard[]) => {
+              this.dashboards = dashboards;
+            });
+          } else {
+            this.organizationApi.getDashboards(this.organization.id).subscribe((dashboards: Dashboard[]) => {
+              this.dashboards = dashboards;
+            });
           }
-        }],
+        });
+
+      // Categories
+      this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
+      this.categorySub = this.categoryRef.on('change', {where: this.user.id}).subscribe(
+        (categories: Category[]) => {
+
+          if (!this.organization) {
+            this.userApi.countCategories(this.user.id).subscribe(result => {
+              this.countCategories = result.count;
+            });
+          } else {
+            this.organizationApi.countCategories(this.organization.id).subscribe(result => {
+              this.countCategories = result.count;
+            });
+          }
+        });
+
+      // Devices
+      this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+      this.deviceSub = this.deviceRef.on('change',
+        {
+          limit: 10,
+          order: 'updatedAt DESC',
+          include: ['Parser', 'Category', {
+            relation: 'Messages',
+            scope: {
+              skip: 0,
+              limit: 1,
+              order: 'createdAt DESC'
+            }
+          }],
+          where: this.user.id
+        }).subscribe(
+        (devices: Device[]) => {
+          //console.log(devices);
+
+          if (!this.organization) {
+            this.userApi.countDevices(this.user.id).subscribe(result => {
+              this.countDevices = result.count;
+            });
+          } else {
+            this.organizationApi.countDevices(this.organization.id).subscribe(result => {
+              this.countDevices = result.count;
+            });
+          }
+
+        });
+
+      // Messages
+      this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+      this.messageSub = this.messageRef.on('change', {
+        limit: 1,
+        order: 'createdAt DESC',
         where: this.user.id
       }).subscribe(
-      (devices: Device[]) => {
-        //console.log(devices);
+        (messages: Message[]) => {
 
-        if (!this.organization) {
-          this.userApi.countDevices(this.user.id).subscribe(result => {
-            this.countDevices = result.count;
-          });
-        } else {
-          this.organizationApi.countDevices(this.organization.id).subscribe(result => {
-            this.countDevices = result.count;
-          });
-        }
+          if (!this.organization) {
+            this.userApi.countMessages(this.user.id).subscribe(result => {
+              this.countMessages = result.count;
+            });
+          } else {
+            this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+              this.countMessages = result.count;
+            });
+          }
+        });
 
-      });
-
-    // Messages
-    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-    this.messageSub = this.messageRef.on('change', {
-      limit: 1,
-      order: 'createdAt DESC',
-      where: this.user.id
-    }).subscribe(
-      (messages: Message[]) => {
-
-        if (!this.organization) {
-          this.userApi.countMessages(this.user.id).subscribe(result => {
-            this.countMessages = result.count;
-          });
-        } else {
-          this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-            this.countMessages = result.count;
-          });
-        }
-      });
-
+    });
   }
 
   ngOnDestroy(): void {
@@ -287,26 +296,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       console.log(error);
       this.router.navigate(['/login']);
     });
-  }
-
-  getOrganizations(): void {
-    this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
-      this.organizations = organizations;
-      console.log(organizations);
-    });
-  }
-
-  getDashboards(): void {
-    if (!this.organization) {
-      this.userApi.getDashboards(this.user.id).subscribe((dashboards: Dashboard[]) => {
-        this.dashboards = dashboards;
-      });
-    } else {
-      this.organizationApi.getDashboards(this.organization.id).subscribe((dashboards: Dashboard[]) => {
-        this.dashboards = dashboards;
-      });
-    }
-
   }
 
   newDashboard(): void {
@@ -387,8 +376,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.organizationApi.linkMembers(organization.id, user.id).subscribe((result) => {
           console.log('result after linking member: ', result);
           if (index === array.length - 1) {
-            this.getOrganizations();
-            this.createOrganizationModal.hide();
+            this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
+              console.log(organizations);
+              this.organizations = organizations;
+              this.createOrganizationModal.hide();
+            });
           }
         });
       });
@@ -396,8 +388,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   unlinkMember(organization: any, user: any): void {
-    this.organizationApi.unlinkMembers(organization.id, user.id).subscribe((result) =>{
-      console.log('result after unlinking member: ', result);
+    this.organizationApi.unlinkMembers(organization.id, user.id).subscribe((result) => {
+      console.log('Result after unlinking member: ', result);
     });
   }
 

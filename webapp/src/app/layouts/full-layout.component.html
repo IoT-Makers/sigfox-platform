@@ -62,14 +62,14 @@
     </li>
 
     <!-- Switch to user -->
-    <li class="nav-item" tooltip="Switch to user view" placement="left">
+    <li class="nav-item" style="cursor: pointer;" tooltip="Switch to user view" placement="left">
       <a class="nav-link" (click)="redirectToUserView()">
         <i class="fa fa-user text-profile"> </i>
       </a>
     </li>
 
     <!-- Edit orga -->
-    <li *ngIf="organization.ownerId === user.id" class="nav-item" tooltip="Edit organization" placement="left">
+    <li *ngIf="organization.ownerId === user.id" class="nav-item" style="cursor: pointer;" tooltip="Edit organization" placement="left">
       <a class="nav-link" (click)="newOrganisation(organization)">
         <i class="fa fa-pencil text-organization"></i>
       </a>
@@ -316,12 +316,12 @@
           </div>
 
           <div class="form-group row" *ngIf="admin">
-            <label class="col-md-3 form-control-label">Add users</label>
+            <label class="col-md-3 form-control-label">Select users</label>
             <div class="col-md-9">
               <angular2-multiselect name="selectUsers"
                                     [data]="selectUsers"
                                     [(ngModel)]="selectedUsers"
-                                    (onDeSelect)="unlinkMember(newOrganization, $event.id)"
+                                    (onDeSelect)="unlinkMember(newOrganization, $event)"
                                     [settings]="selectUsersSettings">
               </angular2-multiselect>
             </div>

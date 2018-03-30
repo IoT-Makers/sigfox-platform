@@ -92,7 +92,7 @@
                         <i class="fa fa-download"></i>
                       </button>
                     </div>
-                    <div *ngIf="!organization" class="btn-group-sm">
+                    <div *ngIf="organization" class="btn-group-sm">
                       <button disabled class="btn btn-outline-primary btn-round" tooltip="Edit category"
                               (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
                       <button disabled class="btn btn-outline-danger btn-round" tooltip="Delete category"

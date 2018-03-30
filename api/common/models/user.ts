@@ -15,6 +15,7 @@ const path = require('path');
     afterRemoteLogin: {name: 'login', type: 'afterRemote'},
     afterRemoteCreate: {name: 'create', type: 'afterRemote'},
     afterRemoteChangePassword: {name: 'changePassword', type: 'afterRemote'},
+    beforeRemoteDelete: {name: 'deleteById', type: 'beforeRemote'},
     afterRemoteDelete: {name: 'deleteById', type: 'afterRemote'}
   },
   remotes: {
@@ -73,7 +74,6 @@ class user {
   }
 
   afterRemoteCreate(ctx: any, userInstance: any, next: any) {
-
 
     userInstance.email = userInstance.email.toLocaleLowerCase();
 
@@ -203,24 +203,56 @@ class user {
 
   }
 
-  // Delete user method
+  // Before delete user method
+  beforeRemoteDelete(ctx: any, result: any, next: Function): void {
+    // Models
+    const User = this.model.app.models.User;
+
+    const userId = ctx.args.id;
+
+    User.findOne({where: {id: userId}, include: 'Organizations'}, (err: any, user: any) => {
+      if (user.Organizations) {
+        user.toJSON().Organizations.forEach((orga: any) => {
+          user.Organizations.remove(orga.id, (err: any, result: any) => {
+            if (!err) {
+              console.log('Unlinked user from organization (' + orga.name + ')');
+            }
+          });
+        });
+      }
+    });
+    next();
+  }
+
+  // After delete user method
   afterRemoteDelete(ctx: any, result: any, next: Function): void {
+    // Models
+    const RoleMapping = this.model.app.models.RoleMapping;
+    const Category = this.model.app.models.Category;
+    const Device = this.model.app.models.Device;
+    const Message = this.model.app.models.Message;
+    const Alert = this.model.app.models.Alert;
+    const AlertHistory = this.model.app.models.AlertHistory;
+    const Geoloc = this.model.app.models.Geoloc;
+    const Connector = this.model.app.models.Connector;
+    const AccessToken = this.model.app.models.AccessToken;
+
     // Obtain the userId with the access token of ctx
 
     // console.log(ctx.args.id);
     // console.log(result);
 
     const userId = ctx.args.id;
-
-    this.model.app.models.RoleMapping.destroyAll({principalId: userId}, (error: any, result: any) => { });
-    this.model.app.models.Category.destroyAll({userId: userId}, (error: any, result: any) => { });
-    this.model.app.models.Device.destroyAll({userId: userId}, (error: any, result: any) => { });
-    this.model.app.models.Message.destroyAll({userId: userId}, (error: any, result: any) => { });
-    this.model.app.models.Alert.destroyAll({userId: userId}, (error: any, result: any) => { });
-    this.model.app.models.AlertHistory.destroyAll({userId: userId}, (error: any, result: any) => { });
-    this.model.app.models.Geoloc.destroyAll({userId: userId}, (error: any, result: any) => { });
-    this.model.app.models.Connector.destroyAll({userId: userId}, (error: any, result: any) => { });
-    this.model.app.models.AccessToken.destroyAll({userId: userId}, (error: any, result: any) => { });
+/*
+    RoleMapping.destroyAll({principalId: userId}, (error: any, result: any) => { });
+    Category.destroyAll({userId: userId}, (error: any, result: any) => { });
+    Device.destroyAll({userId: userId}, (error: any, result: any) => { });
+    Message.destroyAll({userId: userId}, (error: any, result: any) => { });
+    Alert.destroyAll({userId: userId}, (error: any, result: any) => { });
+    AlertHistory.destroyAll({userId: userId}, (error: any, result: any) => { });
+    Geoloc.destroyAll({userId: userId}, (error: any, result: any) => { });
+    Connector.destroyAll({userId: userId}, (error: any, result: any) => { });
+    AccessToken.destroyAll({userId: userId}, (error: any, result: any) => { });*/
     // this.model.app.models.Dashboard.destroyAll({userId: userId}, (error: any, result: any) => { });
     // this.model.app.models.Widget.destroyAll({userId: userId}, (error: any, result: any) => { });
 
