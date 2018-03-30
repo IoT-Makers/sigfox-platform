@@ -67,7 +67,7 @@ class Category {
     Category.findOne({where: {id: ctx.where.id}, include: 'Organizations'}, (err: any, category: any) => {
       // console.log(category);
       if (!err) {
-        if (category.Organizations) {
+        if (category && category.Organizations) {
           category.toJSON().Organizations.forEach((orga: any) => {
             category.Organizations.remove(orga.id, (err: any, result: any) => {
               if (!err) {

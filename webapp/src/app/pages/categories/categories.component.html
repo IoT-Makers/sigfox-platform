@@ -72,7 +72,7 @@
                   <td>
                     <div *ngIf="!category.Organizations" class="small text-muted">Not shared</div>
                     <div *ngIf="category.Organizations">
-                      <div class="small text-center text-organization" *ngFor="let orga of category.Organizations; let i = index">
+                      <div class="text-center text-organization" *ngFor="let orga of category.Organizations; let i = index">
                         <strong [routerLink]="['/organization/', orga.id]">{{orga.name}}</strong>
                       </div>
                     </div>

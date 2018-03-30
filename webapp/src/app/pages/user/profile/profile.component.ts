@@ -1,11 +1,9 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {UserApi, OrganizationApi} from '../../../shared/sdk/services';
+import {OrganizationApi, RealTime, UserApi} from '../../../shared/sdk/services';
 import {DOCUMENT} from '@angular/common';
 import {Organization, User} from '../../../shared/sdk/models';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {FullLayoutComponent} from '../../../layouts/full-layout.component';
 import {Router} from '@angular/router';
-import {RealTime} from "../../../shared/sdk/services";
 
 @Component({
   selector: 'app-profile',
@@ -54,7 +52,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   getOrganizations(): void {
-    this.userApi.getOrganizations(this.user.id, {include:"Members"}).subscribe((organizations: Organization[]) => {
+    this.userApi.getOrganizations(this.user.id, {include: 'Members'}).subscribe((organizations: Organization[]) => {
       this.organizations = organizations;
       console.log(organizations);
     });
@@ -116,7 +114,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   leaveOrganization(item): void{
     this.organizationApi.unlinkMembers(item.id, this.user.id).subscribe(result => {
       this.getOrganizations();
-    })
+    });
   }
 
   ngOnInit() {

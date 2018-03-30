@@ -243,7 +243,7 @@ class user {
     // console.log(result);
 
     const userId = ctx.args.id;
-/*
+
     RoleMapping.destroyAll({principalId: userId}, (error: any, result: any) => { });
     Category.destroyAll({userId: userId}, (error: any, result: any) => { });
     Device.destroyAll({userId: userId}, (error: any, result: any) => { });
@@ -252,7 +252,7 @@ class user {
     AlertHistory.destroyAll({userId: userId}, (error: any, result: any) => { });
     Geoloc.destroyAll({userId: userId}, (error: any, result: any) => { });
     Connector.destroyAll({userId: userId}, (error: any, result: any) => { });
-    AccessToken.destroyAll({userId: userId}, (error: any, result: any) => { });*/
+    AccessToken.destroyAll({userId: userId}, (error: any, result: any) => { });
     // this.model.app.models.Dashboard.destroyAll({userId: userId}, (error: any, result: any) => { });
     // this.model.app.models.Widget.destroyAll({userId: userId}, (error: any, result: any) => { });
 

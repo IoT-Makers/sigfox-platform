@@ -619,7 +619,7 @@ class Device {
     Device.findOne({where: {id: ctx.where.id}, include: 'Organizations'}, (err: any, device: any) => {
       // console.log(category);
       if (!err) {
-        if (device.Organizations) {
+        if (device && device.Organizations) {
           device.toJSON().Organizations.forEach((orga: any) => {
             device.Organizations.remove(orga.id, (err: any, result: any) => {
               if (!err) {

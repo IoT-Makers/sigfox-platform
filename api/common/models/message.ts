@@ -450,7 +450,7 @@ class Message {
     Message.findOne({where: {id: ctx.where.id}, include: 'Organizations'}, (err: any, message: any) => {
       // console.log(category);
       if (!err) {
-        if (message.Organizations) {
+        if (message && message.Organizations) {
           message.toJSON().Organizations.forEach((orga: any) => {
             message.Organizations.remove(orga.id, (err: any, result: any) => {
               if (!err) {

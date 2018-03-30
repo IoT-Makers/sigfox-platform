@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {AppSetting, Organization, User} from '../../shared/sdk/models';
+import {AppSetting, Organization, Role, User} from '../../shared/sdk/models';
 import {AppSettingApi, OrganizationApi, RealTime, RoleApi, UserApi} from '../../shared/sdk/services';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
@@ -9,7 +9,7 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 })
 export class AdminComponent implements OnInit, OnDestroy {
 
-  private user: User;
+  private myUser: User;
   private userToRemove: User;
   private users: User[] = [];
 
@@ -23,7 +23,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   @ViewChild('confirmModal') confirmModal: any;
 
   // Notifications
-
+  private toast;
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
       tapToDismiss: true,
@@ -60,8 +60,17 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   getUsers(): void {
-    this.user = this.userApi.getCachedCurrent();
+    this.myUser = this.userApi.getCachedCurrent();
     this.userApi.find({include: 'roles', order: 'updatedAt DESC'}).subscribe((users: User[]) => {
+      users.forEach((user: any) => {
+        user.isAdmin = false;
+        user.roles.forEach((role: Role) => {
+          if (role.name === 'admin') {
+            user.isAdmin = true;
+            return;
+          }
+        });
+      });
       this.users = users;
       console.log(users);
     });
@@ -89,7 +98,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   deleteUser(): void {
     console.log(this.userToRemove);
     this.userApi.deleteById(this.userToRemove.id).subscribe((value: any) => {
-      this.toasterService.pop('success', 'Success', 'Account was deleted successfully.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Account was deleted successfully.');
       this.confirmModal.hide();
       this.getUsers();
     });
@@ -103,9 +114,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   grantAdminAccess(user): void {
-
     console.log('user: ', user);
-
 
     this.roleApi.findOne({where: {name: 'admin'}}).subscribe((admin: any) => {
       console.log('admin: ', admin);
@@ -115,7 +124,27 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.getUsers();
       });
     });
+  }
 
+  revokeAdminAccess(user): void {
+    console.log('user: ', user);
+
+    this.roleApi.findOne({where: {name: 'admin'}}).subscribe((admin: any) => {
+      console.log('admin: ', admin);
+
+      this.userApi.unlinkRoles(user.id, admin.id).subscribe(result => {
+        console.log(result);
+        this.getUsers();
+      });
+    });
+  }
+
+  deleteOrganization(orga: Organization): void {
+    this.organizationApi.deleteById(orga.id).subscribe((value: any) => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Organization was deleted successfully.');
+    });
   }
 
 

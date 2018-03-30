@@ -69,7 +69,7 @@
     </li>
 
     <!-- Edit orga -->
-    <li *ngIf="organization.ownerId === user.id" class="nav-item" style="cursor: pointer;" tooltip="Edit organization" placement="left">
+    <li *ngIf="organization.ownerId === user.id || admin === true" class="nav-item" style="cursor: pointer;" tooltip="Edit organization" placement="left">
       <a class="nav-link" (click)="newOrganisation(organization)">
         <i class="fa fa-pencil text-organization"></i>
       </a>
