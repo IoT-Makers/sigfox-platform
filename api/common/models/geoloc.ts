@@ -172,16 +172,15 @@ class Geoloc {
         } else {
           const err = 'No corresponding message found, check if UPLINK or BIDIR callbacks have been set too (on the Sigfox Backend)!';
           /**
-           * TODO: Check below - maybe create an acknowledge service connector
+           * TODO: Check below - OOB frame service status ?
            */
-            // Saving a message anyway
+          // Saving a message anyway
           const message = new Message;
           message.userId = userId;
           message.deviceId = data.deviceId;
           message.time = data.time;
           message.seqNumber = data.seqNumber;
           message.createdAt = new Date(data.time * 1000);
-          message.downlinkAck = true;
           Message.create(
             message,
             (err: any, messageInstance: any) => {
