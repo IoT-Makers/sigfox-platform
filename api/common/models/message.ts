@@ -442,11 +442,16 @@ class Message {
     });
   }
 
-  // Before delete message, remove category organizaton links
+  // Before delete message, remove geoloc & category organizaton links
   beforeDelete(ctx: any, next: Function): void {
     // Models
     const Message = this.model;
+    const Geoloc = this.model.app.models.Geoloc;
 
+    // Destroy geolocs corresponding to this device
+    Geoloc.destroyAll({messageId: ctx.where.id}, (error: any, result: any) => { console.log('Removed geoloc for messageId'); });
+
+    // Destroy organization link
     Message.findOne({where: {id: ctx.where.id}, include: 'Organizations'}, (err: any, message: any) => {
       // console.log(category);
       if (!err) {
