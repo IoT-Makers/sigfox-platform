@@ -1,4 +1,4 @@
-import {BootScript} from '@mean-expert/boot-script';
+import { BootScript } from '@mean-expert/boot-script';
 
 interface User {
   id: string;
@@ -8,18 +8,19 @@ interface User {
 }
 interface Socket { token: { userId: string }; }
 @BootScript()
-class OnDisconnect {
+class OnConnected {
   constructor(public app: any) {
-    app.on('socket-disconnect', (socket: Socket) => this.handlerDisconnected(socket));
+    //app.on('socket-authenticated', (socket: Socket) => this.handlerConnected(socket));
   }
-  handlerDisconnected(socket: Socket): void {
+  handlerConnected(socket: Socket): void {
+    console.log(socket);
     if (socket.token && socket.token.userId) {
       const userId = `${ socket.token.userId }`;
       this.app.models.user.findById(userId, (err: Error, user: User) => {
-        console.log('A user has been disconnected:', user.email);
-        user.updateAttributes({ connected: false });
+        console.log('A user has connected:', user.email);
+        user.updateAttributes({ connected: true, seenAt: new Date() });
       });
     }
   }
 }
-module.exports = OnDisconnect;
+module.exports = OnConnected;

@@ -20,7 +20,7 @@ export class DeviceEffects extends BaseLoopbackEffects {
   public download$ = this.actions$
     .ofType(DeviceActionTypes.DOWNLOAD).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.device.download(action.payload.deviceId, action.payload.type, action.payload.req, action.payload.res).pipe(
+        this.device.download(action.payload.id, action.payload.type, action.payload.req, action.payload.res).pipe(
           map((response: any) => new DeviceActions.downloadSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
             of(new DeviceActions.downloadFail(error, action.meta)),
@@ -66,20 +66,6 @@ export class DeviceEffects extends BaseLoopbackEffects {
           map((response: any) => new DeviceActions.getMessagesFromSigfoxBackendSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
             of(new DeviceActions.getMessagesFromSigfoxBackendFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
-  public parseAllMessages$ = this.actions$
-    .ofType(DeviceActionTypes.PARSE_ALL_MESSAGES).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.device.parseAllMessages(action.payload.id, action.payload.req).pipe(
-          map((response: any) => new DeviceActions.parseAllMessagesSuccess(action.payload.id, response, action.meta)),
-          catchError((error: any) => concat(
-            of(new DeviceActions.parseAllMessagesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

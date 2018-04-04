@@ -22,27 +22,27 @@ const json2csv = require('json2csv').parse;
   remotes: {
     download: {
       accepts: [
-        {arg: 'deviceId', required: true, type: 'string', http: {source: 'path'}},
+        {arg: 'id', required: true, type: 'string', http: {source: 'path'}},
         {arg: 'type', required: true, type: 'string', http: {source: 'path'}},
         {arg: 'req', type: 'object', http: {source: 'req'}},
         {arg: 'res', type: 'object', http: {source: 'res'}}
       ],
       http: {
-        path: '/download/:deviceId/:type',
+        path: '/download/:id/:type',
         verb: 'get'
       },
       returns: {type: 'object', root: true}
     },
     timeSeries: {
       accepts: [
-        {arg: 'deviceId', type: 'string', required: true, description: 'the deviceId'},
+        {arg: 'deviceId', type: 'string', required: true, description: 'Device Id'},
         {
           arg: 'dateBegin',
           type: 'string',
           default: moment().subtract(1, 'hours'),
-          description: 'the starting date-time'
+          description: 'The starting date-time'
         },
-        {arg: 'dateEnd', type: 'string', default: moment(), description: 'the ending date-time'},
+        {arg: 'dateEnd', type: 'string', default: moment(), description: 'The ending date-time'},
         {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
       returns: {arg: 'result', type: 'array'},
@@ -69,17 +69,6 @@ const json2csv = require('json2csv').parse;
       http: {
         path: '/:id/messages-from-sigfox-backend',
         verb: 'get'
-      },
-      returns: {type: [], root: true}
-    },
-    parseAllMessages: {
-      accepts: [
-        {arg: 'id', type: 'string', required: true, description: 'Device Id'},
-        {arg: 'req', type: 'object', http: {source: 'req'}}
-      ],
-      http: {
-        path: '/:id/parse-messages',
-        verb: 'put'
       },
       returns: {type: [], root: true}
     }
@@ -371,94 +360,6 @@ class Device {
           }
         }
       });
-  }
-
-  parseAllMessages(deviceId: string, req: any, next: Function): void {
-    // Models
-    const Device = this.model.app.models.Device;
-    const Parser = this.model.app.models.Parser;
-    const Message = this.model.app.models.Message;
-    const Geoloc = this.model.app.models.Geoloc;
-
-    const userId = req.accessToken.userId;
-
-    const response: any = {};
-
-    if (!userId) {
-      response.message = 'Please login or use a valid access token.';
-      next(null, response);
-    }
-
-    Device.findById(deviceId, {include: 'Messages'}, function (err: any, device: any) {
-
-      if (err) {
-        next(err, null);
-      } else {
-        device = device.toJSON();
-        // console.log(device);
-        if (!device.ParserId && !device.parserId) {
-          response.message = 'No parser associated to this device.';
-          next(null, response);
-        } else {
-          // console.log(device.Messages);
-          Parser.findById(
-            device.parserId,
-            (err: any, parserInstance: any) => {
-              if (err) {
-                console.log(err);
-                next(err, null);
-              } else if (parserInstance) {
-                const fn = Function('payload', parserInstance.function);
-
-                if (device.Messages) {
-                  device.Messages.forEach((message: any, msgCount: number) => {
-                    if (message.data) {
-                      Parser.parsePayload(fn, message.data, req, function (err: any, data_parsed: any) {
-                        if (err) {
-                          next(err, null);
-                        } else {
-                          if (data_parsed) {
-                            message.data_parsed = data_parsed;
-                            Message.upsert(message, function (err: any, messageUpdated: any) {
-                              if (!err) {
-                                // Check if there is Geoloc in payload and create Geoloc object
-                                Geoloc.createFromParsedPayload(
-                                  messageUpdated,
-                                  function (err: any, res: any) {
-                                    if (err) {
-                                      next(err, null);
-                                    } else {
-                                      console.log(res);
-                                    }
-                                  });
-                              } else {
-                                response.message = 'An error occured while adding geoloc.';
-                                next(null, response);
-                              }
-                              if (msgCount === device.Messages.length - 1) {
-                                // Send the response
-                                console.log('Successfully parsed all messages.');
-                                response.message = 'Success';
-                                next(null, response);
-                              }
-                            });
-                          }
-                        }
-                      });
-                    }
-                  });
-                } else {
-                  response.message = 'This device has no messages.';
-                  next(null, response);
-                }
-              } else {
-                response.message = 'This device has no parser.';
-                next(null, response);
-              }
-            });
-        }
-      }
-    });
   }
 
   updateDeviceSuccessRate(deviceId: string) {

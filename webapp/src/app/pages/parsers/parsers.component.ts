@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Device, FireLoopRef, Parser, User} from '../../shared/sdk/models';
+import {FireLoopRef, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
-import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
+import {ParserApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 @Component({
@@ -42,7 +42,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   constructor(private rt: RealTime,
               private userApi: UserApi,
               toasterService: ToasterService,
-              private deviceApi: DeviceApi) {
+              private parserApi: ParserApi) {
     this.toasterService = toasterService;
   }
 
@@ -157,29 +157,18 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   updateParsedData() {
-    this.userApi.getDevices(this.user.id, {where: {
-        parserId: this.parserToEdit.id
-      }}).subscribe((devices: Device[]) => {
-      // Disconnect real-time to avoid app crashing
-      this.rt.connection.disconnect();
-      // Loop in all the devices linked to this parser
-      devices.forEach((device: Device) => {
-        // Parse all messages belonging to this device
-        this.deviceApi.parseAllMessages(device.id, null, null).subscribe(result => {
-          if (result.message === 'Success') {
-            if (this.toast)
-              this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-            this.toast = this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
-            this.confirmParseModal.hide();
-          } else {
-            if (this.toast)
-              this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-            this.toast = this.toasterService.pop('warning', 'Warning', result.message);
-          }
-        });
-      });
-      //this.rt.onReady().subscribe();
-      //console.log(result);
+    // Disconnect real-time to avoid app crashing
+    this.parserApi.parseAllDevices(this.parserToEdit.id, null, null).subscribe(result => {
+      if (result.message === 'Success') {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
+        this.confirmParseModal.hide();
+      } else {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('warning', 'Warning', result.message);
+      }
     });
   }
 

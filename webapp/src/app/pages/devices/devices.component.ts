@@ -2,7 +2,7 @@ import {Category, Connector, Device, FireLoopRef, Geoloc, Organization, Parser, 
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {AgmInfoWindow} from '@agm/core';
-import {DeviceApi, MessageApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
+import {DeviceApi, MessageApi, OrganizationApi, ParserApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
@@ -84,6 +84,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   constructor(private rt: RealTime,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
+              private parserApi: ParserApi,
               private deviceApi: DeviceApi,
               private elRef: ElementRef,
               toasterService: ToasterService,
@@ -316,7 +317,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.loadingParseMessages = true;
     // Disconnect real-time to avoid app crashing
     this.rt.connection.disconnect();
-    this.deviceApi.parseAllMessages(deviceId, null, null).subscribe(result => {
+    this.parserApi.parseAllMessages(deviceId, null, null).subscribe(result => {
       this.loadingParseMessages = false;
       if (result.message === 'Success') {
         if (this.toast)

@@ -34,6 +34,9 @@
     "loggedAt": {
       "type": "date"
     },
+    "connected": {
+      "type": "boolean"
+    },
     "location": {
       "type": "Geoloc"
     },

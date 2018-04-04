@@ -152,6 +152,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
+
     // console.log('localStorage', localStorage.getItem('filter'));
 
     // Check if organization view

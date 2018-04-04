@@ -88,7 +88,6 @@
           "timeSeries": true,
           "deleteDeviceMessagesAlertsGeolocs": true,
           "getMessagesFromSigfoxBackend": true,
-          "parseAllMessages": true,
           "download": true
         }
       }
@@ -96,7 +95,17 @@
   },
   "Parser": {
     "dataSource": "mongodb",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "parseAllMessages": true,
+          "parseAllDevices": true,
+          "count": true
+        }
+      }
+    }
   },
   "Category": {
     "dataSource": "mongodb",

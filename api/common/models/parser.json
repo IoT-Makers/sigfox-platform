@@ -76,7 +76,13 @@
       "permission": "ALLOW"
     },
     {
-      "accessType": "EXECUTE",
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "user",
       "permission": "ALLOW"
