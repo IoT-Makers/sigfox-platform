@@ -220,6 +220,27 @@
             </p>
           </div>
         </accordion-group>
+        <accordion-group>
+          <div accordion-heading>
+            <strong class="text-success">STATUS</strong> <i class="fa fa-question-circle pull-right" aria-hidden="true"></i>
+          </div>
+          <div class="card-block">
+            <p>Type: <strong>SERVICE</strong> | <strong>STATUS</strong></p>
+            <p>Url pattern: <strong tooltip="Click to copy" click-copy (click)="toastClick()">{{ callbackURL + '/Messages/sigfox/status' }}</strong></p>
+            <p>Use HTTP Method: <strong>PUT</strong></p>
+            <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span class="text-danger" tooltip="Click to copy" click-copy (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
+            </p>
+            <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong></p>
+            <p>Body: <code class="text-center" tooltip="Click to copy" click-copy (click)="toastClick()">{{
+              '{
+              "deviceId": "{device}",
+              "time": {time},
+              "seqNumber": {seqNumber}
+              }'
+              }}</code>
+            </p>
+          </div>
+        </accordion-group>
       </accordion>
     </div>
   </div>

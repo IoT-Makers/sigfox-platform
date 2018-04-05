@@ -52,6 +52,9 @@
     "downlinkAck": {
       "type": "boolean"
     },
+    "deviceAck": {
+      "type": "boolean"
+    },
     "ack": {
       "type": "boolean"
     },

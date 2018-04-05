@@ -128,7 +128,8 @@
         "sharedMethods": {
           "*": false,
           "putSigfox": true,
-          "putSigfoxAcknowledge": true
+          "putSigfoxAcknowledge": true,
+          "postSigfoxStatus": true
         }
       }
     }

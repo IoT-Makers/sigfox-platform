@@ -35,6 +35,17 @@ const loopback = require('loopback');
         verb: 'put'
       },
       returns: {type: 'Message', root: true}
+    },
+    postSigfoxStatus: {
+      accepts: [
+        {arg: 'req', type: 'object', http: {source: 'req'}},
+        {arg: 'data', type: 'object', required: true, http: { source: 'body' }}
+      ],
+      http: {
+        path: '/sigfox/status',
+        verb: 'post'
+      },
+      returns: {type: 'Message', root: true}
     }
   }
 })
@@ -441,6 +452,40 @@ class Message {
       }
     });
   }
+
+  postSigfoxStatus(req: any, data: any, next: Function): void {
+    // Models
+    const Message = this.model;
+
+    if (typeof data.deviceId  === 'undefined'
+      || typeof data.time  === 'undefined'
+      || typeof data.seqNumber === 'undefined') {
+      next('Missing "deviceId", "time" and "seqNumber"', data);
+    }
+
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
+    // Create a new message object
+    const message = new Message;
+
+    message.deviceId = data.deviceId;
+    message.time = data.time;
+    message.seqNumber = data.seqNumber;
+    message.deviceAck = true;
+
+    // Find the message containing the ack request
+    Message.create(message, (err: any, messageInstance: any) => {
+      if (err) {
+        console.error(err);
+        next(err, data);
+      } else if (messageInstance) {
+        console.log('Created status message as: ', messageInstance);
+        next(null, messageInstance);
+      }
+    });
+  }
+
 
   // Before delete message, remove geoloc & category organizaton links
   beforeDelete(ctx: any, next: Function): void {
