@@ -1,7 +1,8 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {AppSetting, Organization, Role, User} from '../../shared/sdk/models';
+import {AppSetting, FireLoopRef, Organization, Role, User} from '../../shared/sdk/models';
 import {AppSettingApi, OrganizationApi, RealTime, RoleApi, UserApi} from '../../shared/sdk/services';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-messages',
@@ -18,6 +19,9 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private organization: Organization;
   private organizations: Organization[] = [];
+
+  private userRef: FireLoopRef<User>;
+  private userSub: Subscription;
 
   @ViewChild('updateUserModal') updateUserModal: any;
   @ViewChild('confirmModal') confirmModal: any;
@@ -61,7 +65,8 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   getUsers(): void {
     this.myUser = this.userApi.getCachedCurrent();
-    this.userApi.find({include: 'roles', order: 'updatedAt DESC'}).subscribe((users: User[]) => {
+    this.userRef = this.rt.FireLoop.ref<User>(User);
+    this.userSub = this.userRef.on('change', {include: 'roles', order: 'updatedAt DESC'}).subscribe((users: User[]) => {
       users.forEach((user: any) => {
         user.isAdmin = false;
         user.roles.forEach((role: Role) => {
@@ -72,7 +77,6 @@ export class AdminComponent implements OnInit, OnDestroy {
         });
       });
       this.users = users;
-      console.log(users);
     });
   }
 
@@ -150,6 +154,8 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Admin: ngOnDestroy');
+    if (this.userRef) this.userRef.dispose();
+    if (this.userSub) this.userSub.unsubscribe();
   }
 
 }
