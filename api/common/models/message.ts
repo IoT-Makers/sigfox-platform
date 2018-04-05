@@ -469,10 +469,12 @@ class Message {
     // Create a new message object
     const message = new Message;
 
+    message.userId = userId;
     message.deviceId = data.deviceId;
     message.time = data.time;
     message.seqNumber = data.seqNumber;
     message.deviceAck = true;
+    message.createdAt = new Date(data.time * 1000);
 
     // Find the message containing the ack request
     Message.create(message, (err: any, messageInstance: any) => {
@@ -485,7 +487,6 @@ class Message {
       }
     });
   }
-
 
   // Before delete message, remove geoloc & category organizaton links
   beforeDelete(ctx: any, next: Function): void {
