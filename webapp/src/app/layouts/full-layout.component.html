@@ -13,7 +13,7 @@
     <!-- User profile -->
     <li class="nav-item">
       <a href class="nav-link" [routerLink]="['/profile']">
-        <img src="{{user.avatar}}" class="img-avatar">
+        <img #avatarImg src="{{user.avatar}}" class="img-avatar">
         <span class="d-md-down-none font-weight-bold hidden-md-down">{{user.username || user.email}}  </span>
       </a>
     </li>

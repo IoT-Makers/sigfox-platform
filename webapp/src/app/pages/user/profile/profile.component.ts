@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {OrganizationApi, RealTime, UserApi} from '../../../shared/sdk/services';
 import {DOCUMENT} from '@angular/common';
 import {Organization, User} from '../../../shared/sdk/models';
@@ -17,6 +17,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private organization: Organization;
   private organizations: Organization[] = [];
 
+  @ViewChild('avatarImg') avatarImg: ElementRef;
   @ViewChild('updatePasswordModal') updatePasswordModal: any;
   @ViewChild('updateUserModal') updateUserModal: any;
   @ViewChild('deleteUserModal') deleteUserModal: any;
@@ -91,7 +92,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Profile was updated successfully.');
       this.updateUserModal.hide();
-      this.rt.onReady().subscribe();
+      //this.rt.onReady().subscribe();
     });
   }
 
@@ -111,7 +112,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  leaveOrganization(item): void{
+  leaveOrganization(item): void {
     this.organizationApi.unlinkMembers(item.id, this.user.id).subscribe(result => {
       this.getOrganizations();
     });
@@ -119,7 +120,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('Profile: ngOnInit');
-
 
     // Get the logged in User object
     this.getUser();

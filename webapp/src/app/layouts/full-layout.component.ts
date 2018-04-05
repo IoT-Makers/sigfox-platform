@@ -1,15 +1,17 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Category, Dashboard, Device, FireLoopRef, Message, Organization, Parser, User} from '../shared/sdk/models';
+import {Category, Dashboard, Device, FireLoopRef, Message, Organization, Parser, Role, User} from '../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import {OrganizationApi, ParserApi, UserApi} from '../shared/sdk/services/custom';
 import {RealTime} from '../shared/sdk/services/core';
-import * as _ from 'lodash';
 
 @Component({
   templateUrl: './full-layout.component.html'
 })
 export class FullLayoutComponent implements OnInit, OnDestroy {
+
+  private userRef: FireLoopRef<User>;
+  private userSub: Subscription;
 
   @ViewChild('createOrganizationModal') createOrganizationModal: any;
 
@@ -93,16 +95,16 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
-    console.log(this.user);
+    //console.log(this.user);
 
-    this.userApi.getRoles(this.user.id).subscribe(roles => {
+    /*this.userApi.getRoles(this.user.id).subscribe(roles => {
       //console.log('Roles: ', roles);
       this.user.roles = roles;
       if (_.filter(this.user.roles, {name: 'admin'}).length !== 0) {
         this.admin = true;
         console.log('Admin: ', this.admin);
       }
-    });
+    });*/
 
     // Check if organization view
     this.route.params.subscribe(params => {
@@ -140,8 +142,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         ) {
           this.rt.onReady().subscribe(() => this.setup());
         } else {
-          this.rt.onAuthenticated().subscribe(() => this.setup());
-          this.rt.onReady().subscribe(() => this.setup());
+          this.rt.onReady().subscribe( () => this.rt.onAuthenticated().subscribe(() => this.setup()));
         }
       }
       //console.log('Router', params);
@@ -152,6 +153,17 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   setup(): void {
     console.log('Setup Full layout');
     //this.ngOnDestroy();
+
+    this.userRef = this.rt.FireLoop.ref<User>(User);
+    this.userSub = this.userRef.on('change', {where: {id: this.user.id}, include: 'roles', order: 'updatedAt DESC'}).subscribe((users: User[]) => {
+      users[0].roles.forEach((role: Role) => {
+        if (role.name === 'admin') {
+          this.admin = true;
+          return;
+        }
+      });
+      this.user = users[0];
+    });
 
     this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
       console.log(organizations);
@@ -260,6 +272,9 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Full Layout: ngOnDestroy');
+    if (this.userRef) this.userRef.dispose();
+    if (this.userSub) this.userSub.unsubscribe();
+
     if (this.dashboardRef) this.dashboardRef.dispose();
     if (this.dashboardSub) this.dashboardSub.unsubscribe();
 

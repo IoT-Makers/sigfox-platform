@@ -54,7 +54,6 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.setup();
     else
       this.rt.onAuthenticated().subscribe(() => this.setup());
-
   }
 
   setup(): void {
