@@ -826,6 +826,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Sanitize
+    delete this.newWidget.ready;
     delete this.newWidget.data;
     delete this.newWidget.gaugeThresholdConfig;
 
@@ -953,11 +955,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 }
               }
 
-              // Gauge
-              else if (widget.type === 'gauge') {
-                widget.gaugeThresholdConfig = {[widget.options.min]: {color: '#13b22b'}, [(widget.options.min + widget.options.max) / 2]: {color: '#fc7d28'}, [widget.options.max]: {color: '#db2b2a'}};
-              }
-
               // Map
               else if (widget.type === 'map') {
 
@@ -998,6 +995,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 widget.value = lastData_parsed.value;
                 widget.unit = lastData_parsed.unit;
                 widget.label = this.formatTableColumn(lastData_parsed.key);
+                widget.gaugeThresholdConfig = {[widget.options.min]: {color: '#13b22b'}, [(widget.options.min + widget.options.max) / 2]: {color: '#fc7d28'}, [widget.options.max]: {color: '#db2b2a'}};
               }
 
               // Line
