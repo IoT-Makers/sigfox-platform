@@ -142,7 +142,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         ) {
           this.rt.onReady().subscribe(() => this.setup());
         } else {
-          this.rt.onReady().subscribe( () => this.rt.onAuthenticated().subscribe(() => this.setup()));
+          this.rt.onAuthenticated().subscribe(() => this.setup());
+          this.rt.onReady().subscribe( () => this.setup());
         }
       }
       //console.log('Router', params);
@@ -156,13 +157,15 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     this.userRef = this.rt.FireLoop.ref<User>(User);
     this.userSub = this.userRef.on('change', {where: {id: this.user.id}, include: 'roles', order: 'updatedAt DESC'}).subscribe((users: User[]) => {
-      users[0].roles.forEach((role: Role) => {
-        if (role.name === 'admin') {
-          this.admin = true;
-          return;
-        }
-      });
-      this.user = users[0];
+      if (users[0]) {
+        users[0].roles.forEach((role: Role) => {
+          if (role.name === 'admin') {
+            this.admin = true;
+            return;
+          }
+        });
+        this.user = users[0];
+      }
     });
 
     this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
