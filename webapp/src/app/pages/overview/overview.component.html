@@ -7,14 +7,14 @@
 
   <alert *ngIf="!organization" type="warning" dismissOnTimeout="5000" [dismissible]="true">
     <p>Please keep in mind this platform is under active development.</p>
+    <!--<li>Please <a (click)="upgrade()" href>upgrade</a> your application.</li>-->
   </alert>
 
-  <alert *ngIf="!organization" type="danger" [dismissible]="true">
+  <!--<alert *ngIf="!organization" type="danger" [dismissible]="true">
     <ul>
       <li>Organizations have evolved! Please be gentle with organization functions as it can break the platform at any moment...</li>
-      <!--<li>Please <a (click)="upgrade()" href>upgrade</a> your application.</li>-->
     </ul>
-  </alert>
+  </alert>-->
 
   <div class="card-group">
     <div class="card" [routerLink]="[!organization ? '/categories' : '/organization/' + organization.id + '/categories']">

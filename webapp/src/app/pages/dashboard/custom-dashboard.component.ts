@@ -827,6 +827,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
 
     delete this.newWidget.data;
+    delete this.newWidget.gaugeThresholdConfig;
 
     if (this.newWidget.options.style) {
       const myObject = eval(this.newWidget.options.style);
@@ -950,6 +951,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   widget.data = this.buildCustomTable(widget);
                   widget.extraData = devices;
                 }
+              }
+
+              // Gauge
+              else if (widget.type === 'gauge') {
+                widget.gaugeThresholdConfig = {[widget.options.min]: {color: '#13b22b'}, [(widget.options.min + widget.options.max) / 2]: {color: '#fc7d28'}, [widget.options.max]: {color: '#db2b2a'}};
               }
 
               // Map

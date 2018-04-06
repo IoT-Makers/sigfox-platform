@@ -805,6 +805,9 @@
             <ng-container *ngIf="widget.type === 'gauge'">
               <div *ngIf="widget.data" class="text-center">
                 <ngx-gauge #gauge
+                           [min]="widget.options.min"
+                           [max]="widget.options.max"
+                           [thresholds]="widget.gaugeThresholdConfig"
                            [type]="'arch'"
                            [size]="200"
                            [cap]="'round'"
@@ -1335,6 +1338,23 @@
                                         (onDeSelect)="setFilter();"
                                         (onSelect)="setFilter(); selectOneKey.isActive = false;">
                   </angular2-multiselect>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="offset-1 col-md-3 form-control-label">Gauge range</label>
+                <div class="col-md-8">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label class="form-control-label">Min value</label>
+                      <input type="number" class="form-control" name="newWidget.options.min"
+                             [(ngModel)]="newWidget.options.min">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-control-label">Max value</label>
+                      <input type="number" class="form-control" name="newWidget.options.max"
+                             [(ngModel)]="newWidget.options.max">
+                    </div>
+                  </div>
                 </div>
               </div>
             </ng-container>

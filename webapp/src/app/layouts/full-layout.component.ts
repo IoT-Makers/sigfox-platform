@@ -156,7 +156,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     //this.ngOnDestroy();
 
     this.userRef = this.rt.FireLoop.ref<User>(User);
-    this.userSub = this.userRef.on('change', {where: {id: this.user.id}, include: 'roles', order: 'updatedAt DESC'}).subscribe((users: User[]) => {
+    this.userSub = this.userRef.on('change', {where: {id: this.user.id}, include: 'roles', limit: 1}).subscribe((users: User[]) => {
       if (users[0]) {
         users[0].roles.forEach((role: Role) => {
           if (role.name === 'admin') {

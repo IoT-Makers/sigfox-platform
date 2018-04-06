@@ -18,7 +18,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
 
-  private user: User;
+  private user: User = new User();
 
   private organization: Organization;
   private filter: any;
