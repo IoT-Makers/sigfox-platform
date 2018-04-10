@@ -1,8 +1,3 @@
-/*
-Downlink payloads:
-1h timeFrame: 00ff4c8f03017396
-10min timeFrame: 007f4c8f03017396
- */
 var payload,
     battery,
     type,
@@ -118,7 +113,23 @@ if (mode === 'Light') {
     var byte = parseInt(payload.slice(4, 6), 16).toString(2);
     while (byte.length < 8)
         byte = '0' + byte;
-    var multiplier = parseInt(byte.slice(0, 2), 2) * 8;
+    var multiplier = parseInt(byte.slice(0, 2), 2);
+    switch (multiplier) {
+        case 0:
+            multiplier = 1;
+            break;
+        case 1:
+            multiplier = 8;
+            break;
+        case 2:
+            multiplier = 64;
+            break;
+        case 3:
+            multiplier = 2014;
+            break;
+        default:
+            multiplier = 'Unknown multiplier {' + multiplier + '}';
+    }
     light = parseInt(byte.slice(2, 8), 2);
     light = multiplier * light * 0.01;
 }
