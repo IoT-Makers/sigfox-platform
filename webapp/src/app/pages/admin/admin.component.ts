@@ -3,6 +3,17 @@ import {AppSetting, FireLoopRef, Organization, Role, User} from '../../shared/sd
 import {AppSettingApi, OrganizationApi, RealTime, RoleApi, UserApi} from '../../shared/sdk/services';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs/Subscription';
+import {
+  AlertApi,
+  CategoryApi,
+  ConnectorApi,
+  DashboardApi,
+  DeviceApi,
+  GeolocApi,
+  MessageApi,
+  ParserApi,
+  WidgetApi
+} from '../../shared/sdk/services/custom';
 
 @Component({
   selector: 'app-messages',
@@ -16,6 +27,18 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private setting: AppSetting;
   private settings: AppSetting[] = [];
+
+  // Application statistics
+  private countDashboards = 0;
+  private countWidgets = 0;
+  private countCategories = 0;
+  private countDevices = 0;
+  private countMessages = 0;
+  private countGeolocs = 0;
+  private countAlerts = 0;
+  private countParsers = 0;
+  private countConnectors = 0;
+  private countUsers = 0;
 
   private organization: Organization;
   private organizations: Organization[] = [];
@@ -37,9 +60,18 @@ export class AdminComponent implements OnInit, OnDestroy {
 
 
   constructor(private rt: RealTime,
+              private dashboardApi: DashboardApi,
+              private widgetApi: WidgetApi,
+              private categoryApi: CategoryApi,
+              private deviceApi: DeviceApi,
+              private messageApi: MessageApi,
+              private geolocApi: GeolocApi,
+              private alertApi: AlertApi,
+              private parserApi: ParserApi,
+              private connectorApi: ConnectorApi,
               private userApi: UserApi,
-              private appSettingApi: AppSettingApi,
               private organizationApi: OrganizationApi,
+              private appSettingApi: AppSettingApi,
               private roleApi: RoleApi,
               private toasterService: ToasterService) {
 
@@ -59,6 +91,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   setup(): void {
     this.getUsers();
     this.getAppSettings();
+    this.getAppStats();
     this.getOrganizations();
   }
 
@@ -76,6 +109,39 @@ export class AdminComponent implements OnInit, OnDestroy {
         });
       });
       this.users = users;
+    });
+  }
+
+  getAppStats(): void {
+    this.dashboardApi.count().subscribe(result => {
+      this.countDashboards = result.count;
+    });
+    this.widgetApi.count().subscribe(result => {
+      this.countWidgets = result.count;
+    });
+    this.categoryApi.count().subscribe(result => {
+      this.countCategories = result.count;
+    });
+    this.deviceApi.count().subscribe(result => {
+      this.countDevices = result.count;
+    });
+    this.messageApi.count().subscribe(result => {
+      this.countMessages = result.count;
+    });
+    this.geolocApi.count().subscribe(result => {
+      this.countGeolocs = result.count;
+    });
+    this.alertApi.count().subscribe(result => {
+      this.countAlerts = result.count;
+    });
+    this.parserApi.count().subscribe(result => {
+      this.countParsers = result.count;
+    });
+    this.connectorApi.count().subscribe(result => {
+      this.countConnectors = result.count;
+    });
+    this.userApi.count().subscribe(result => {
+      this.countUsers = result.count;
     });
   }
 

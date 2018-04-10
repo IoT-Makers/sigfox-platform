@@ -108,13 +108,16 @@ agm-map {
 
 @each $variant, $color in (
   sigfox: $sigfox,
+  dashboard: $dashboard,
+  widget: $widget,
   category: $category,
   device: $device,
   message: $message,
+  geoloc: $geoloc,
   alert: $alert,
   parser: $parser,
   connector: $connector,
-  profile: $profile,
+  user: $user,
   organization: $organization
 ) {
 

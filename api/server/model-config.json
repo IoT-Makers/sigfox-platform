@@ -85,6 +85,7 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
+          "count": true,
           "timeSeries": true,
           "deleteDeviceMessagesAlertsGeolocs": true,
           "getMessagesFromSigfoxBackend": true,
@@ -100,9 +101,9 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
+          "count": true,
           "parseAllMessages": true,
-          "parseAllDevices": true,
-          "count": true
+          "parseAllDevices": true
         }
       }
     }
@@ -114,6 +115,7 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
+          "count": true,
           "download": true,
           "downloadFromOrganization": true
         }
@@ -127,6 +129,7 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
+          "count": true,
           "putSigfox": true,
           "putSigfoxAcknowledge": true,
           "postSigfoxStatus": true
@@ -141,6 +144,7 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
+          "count": true,
           "postSigfox": true
         }
       }
@@ -172,7 +176,8 @@
     "options": {
       "remoting": {
         "sharedMethods": {
-          "*": false
+          "*": false,
+          "count": true
         }
       }
     }
@@ -214,7 +219,8 @@
     "options": {
       "remoting": {
         "sharedMethods": {
-          "*": false
+          "*": false,
+          "count": true
         }
       }
     }

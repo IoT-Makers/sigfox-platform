@@ -24,6 +24,160 @@
 
         <accordion-group>
           <div accordion-heading>
+            <h4 class="text-center">Application Statistics</h4>
+          </div>
+          <div class="card-block">
+            <div class="row">
+              <div class="col-md-3 card">
+                <div class="card-block">
+                  <div class="h1 text-dashboard text-right mb-2">
+                    <i class="fa fa-dashboard"></i>
+                  </div>
+                  <div class="h4 mb-0">{{countDashboards}}</div>
+                  <small class="text-dashboard text-uppercase font-weight-bold">Total Dashboards</small>
+                  <div class="progress progress-xs mt-1 mb-0">
+                    <div class="progress-bar bg-dashboard" role="progressbar" style="width: 100%" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 card">
+                <div class="card-block">
+                  <div class="h1 text-widget text-right mb-2">
+                    <i class="fa fa-line-chart"></i>
+                  </div>
+                  <div class="h4 mb-0">{{countWidgets}}</div>
+                  <small class="text-widget text-uppercase font-weight-bold">Total Widgets</small>
+                  <div class="progress progress-xs mt-1 mb-0">
+                    <div class="progress-bar bg-widget" role="progressbar" style="width: 100%" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 card">
+                <div class="card-block">
+                  <div class="h1 text-category text-right mb-2">
+                    <i class="fa fa-tag"></i>
+                  </div>
+                  <div class="h4 mb-0">{{countCategories}}</div>
+                  <small class="text-category text-uppercase font-weight-bold">Total Categories</small>
+                  <div class="progress progress-xs mt-1 mb-0">
+                    <div class="progress-bar bg-category" role="progressbar" style="width: 100%" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 card">
+                <div class="card-block">
+                  <div class="h1 text-device text-right mb-2">
+                    <i class="fa fa-microchip"></i>
+                  </div>
+                  <div class="h4 mb-0">{{countDevices}}</div>
+                  <small class="text-device text-uppercase font-weight-bold">Devices</small>
+                  <div class="progress progress-xs mt-1 mb-0">
+                    <div class="progress-bar bg-device" role="progressbar" style="width: 100%" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 card">
+                <div class="card-block">
+                  <div class="h1 text-message text-right mb-2">
+                    <i class="fa fa-envelope"></i>
+                  </div>
+                  <div class="h4 mb-0">{{countMessages}}</div>
+                  <small class="text-message text-uppercase font-weight-bold">Total Messages</small>
+                  <div class="progress progress-xs mt-1 mb-0">
+                    <div class="progress-bar bg-message" role="progressbar" style="width: 100%" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 card">
+                <div class="card-block">
+                  <div class="h1 text-geoloc text-right mb-2">
+                    <i class="fa fa-map-marker"></i>
+                  </div>
+                  <div class="h4 mb-0">{{countGeolocs}}</div>
+                  <small class="text-geoloc text-uppercase font-weight-bold">Total Geolocs</small>
+                  <div class="progress progress-xs mt-1 mb-0">
+                    <div class="progress-bar bg-geoloc" role="progressbar" style="width: 100%" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 card">
+                <div class="card-block">
+                  <div class="h1 text-alert text-right mb-2">
+                    <i class="fa fa-bell"></i>
+                  </div>
+                  <div class="h4 mb-0">{{countAlerts}}</div>
+                  <small class="text-alert text-uppercase font-weight-bold">Total Alerts</small>
+                  <div class="progress progress-xs mt-1 mb-0">
+                    <div class="progress-bar bg-alert" role="progressbar" style="width: 100%" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 card">
+                <div class="card-block">
+                  <div class="h1 text-parser text-right mb-2">
+                    <i class="fa fa-code"></i>
+                  </div>
+                  <div class="h4 mb-0">{{countParsers}}</div>
+                  <small class="text-parser text-uppercase font-weight-bold">Total Parsers</small>
+                  <div class="progress progress-xs mt-1 mb-0">
+                    <div class="progress-bar bg-parser" role="progressbar" style="width: 100%" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 card">
+                <div class="card-block">
+                  <div class="h1 text-connector text-right mb-2">
+                    <i class="fa fa-plug"></i>
+                  </div>
+                  <div class="h4 mb-0">{{countConnectors}}</div>
+                  <small class="text-connector text-uppercase font-weight-bold">Total Connectors</small>
+                  <div class="progress progress-xs mt-1 mb-0">
+                    <div class="progress-bar bg-connector" role="progressbar" style="width: 100%" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 card">
+                <div class="card-block">
+                  <div class="h1 text-user text-right mb-2">
+                    <i class="fa fa-user"></i>
+                  </div>
+                  <div class="h4 mb-0">{{countUsers}}</div>
+                  <small class="text-user text-uppercase font-weight-bold">Total Users</small>
+                  <div class="progress progress-xs mt-1 mb-0">
+                    <div class="progress-bar bg-user" role="progressbar" style="width: 100%" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 card">
+                <div class="card-block">
+                  <div class="h1 text-organization text-right mb-2">
+                    <i class="fa fa-users"></i>
+                  </div>
+                  <div class="h4 mb-0">{{organizations.length}}</div>
+                  <small class="text-organization text-uppercase font-weight-bold">Total Organizations</small>
+                  <div class="progress progress-xs mt-1 mb-0">
+                    <div class="progress-bar bg-organization" role="progressbar" style="width: 100%" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </accordion-group>
+
+        <accordion-group>
+          <div accordion-heading>
             <h4 class="text-center">Users</h4>
           </div>
           <div class="card-block">
@@ -84,7 +238,7 @@
                       <strong class="">{{user.updatedAt | amTimeAgo}}</strong>
                     </td>
                     <td class="text-center">
-                      <p *ngFor="let role of user.roles;" class="text-profile">{{role.name}}</p>
+                      <p *ngFor="let role of user.roles;" class="text-user">{{role.name}}</p>
                     </td>
 
                     <td class="text-center">
