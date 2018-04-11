@@ -203,6 +203,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
         }
       });
 
+    /**
+     * TODO: Manage real time in a better way !
+     *
+     */
+
     // Devices
     // Listen to changes
     this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
