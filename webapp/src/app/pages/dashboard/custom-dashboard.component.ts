@@ -973,18 +973,17 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   widget.data.forEach((device: any) => {
                     device.directionsDisplayStore = [];
                     device.Geolocs = [];
+                    console.log('preferGps - device.Messages', device.Messages);
                     device.Messages.forEach((message: any) => {
-                      message.Geolocs.forEach((geoloc: Geoloc, i) => {
+                      message.Geolocs.forEach((geoloc: Geoloc) => {
                         device.Geolocs.push(geoloc);
-                        if (message.Geolocs.length > 1) {
-                          message.Geolocs.forEach((g: Geoloc) => {
-                            if (g.messageId === geoloc.messageId && g.type === 'sigfox') {
-                              device.Geolocs.splice(g, 1);
-                            }
-                          });
+                        if (message.Geolocs.length > 1 && geoloc.type !== 'gps') {
+                          device.Geolocs.splice(geoloc, 1);
                         }
                       });
                     });
+                    console.log('preferGps - device.Geolocs', device.Geolocs);
+
                   });
                 }
               }

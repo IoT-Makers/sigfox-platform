@@ -3,6 +3,7 @@ import {AccessToken, AppSetting, User} from '../../../shared/sdk/models';
 import {AppSettingApi, UserApi} from '../../../shared/sdk/services';
 import {ActivatedRoute, Router} from '@angular/router';
 import * as _ from 'lodash';
+import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 @Component({
   selector: 'app-login',
@@ -22,10 +23,22 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private canUserRegister: any = false;
 
+  // Notifications
+  private toast;
+  private toasterService: ToasterService;
+  public toasterconfig: ToasterConfig =
+    new ToasterConfig({
+      tapToDismiss: true,
+      timeout: 5000,
+      animation: 'fade'
+    });
+
   constructor(private userApi: UserApi,
               private appSettingApi: AppSettingApi,
               private route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              toasterService: ToasterService) {
+    this.toasterService = toasterService;
   }
 
   onLogin(): void {
@@ -46,6 +59,9 @@ export class LoginComponent implements OnInit, OnDestroy {
       }, err => {
         // console.log(err);
         if (err.statusCode === 401) {
+          if (this.toast)
+            this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+          this.toast = this.toasterService.pop('error', 'Error', 'Invalid username or password.');
           this.errorMessage = 'Invalid username or password.';
         } else if (err.statusCode === 500) {
           this.errorMessage = 'Internal server error';

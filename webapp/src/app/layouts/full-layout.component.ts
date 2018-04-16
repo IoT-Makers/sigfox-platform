@@ -329,7 +329,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       name: 'New dashboard'
     };
 
-    if (this.organization){
+    if (this.organization) {
       dashboard.name = 'Shared dashboard';
     }
 
@@ -337,11 +337,13 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard => {
         console.log(dashboard);
         this.setup();
+        this.router.navigate(['/dashboard/' + dashboard.id]);
       });
     } else {
       this.organizationApi.createDashboards(this.organization.id, dashboard).subscribe(dashboard => {
         console.log(dashboard);
         this.setup();
+        this.router.navigate(['/organization/' + this.organization.id + '/dashboard/' + dashboard.id]);
       });
     }
   }
