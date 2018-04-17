@@ -973,7 +973,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   widget.data.forEach((device: any) => {
                     device.directionsDisplayStore = [];
                     device.Geolocs = [];
-                    console.log('preferGps - device.Messages', device.Messages);
+                    //console.log('preferGps - device.Messages', device.Messages);
                     device.Messages.forEach((message: any) => {
                       message.Geolocs.forEach((geoloc: Geoloc) => {
                         device.Geolocs.push(geoloc);
@@ -982,8 +982,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                         }
                       });
                     });
-                    console.log('preferGps - device.Geolocs', device.Geolocs);
-
+                    //console.log('preferGps - device.Geolocs', device.Geolocs);
                   });
                 }
               }
