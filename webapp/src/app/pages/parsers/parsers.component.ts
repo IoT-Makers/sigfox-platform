@@ -144,17 +144,17 @@ export class ParsersComponent implements OnInit, OnDestroy {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully updated.');
+
+      if (parser.Devices.length > 0) {
+        this.parserToEdit = parser;
+        this.confirmParseModal.show();
+      }
+
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('error', 'Error', err.message);
     });
-
-    //console.log(parser.Devices);
-    if (parser.Devices.length > 0) {
-      this.parserToEdit = parser;
-      this.confirmParseModal.show();
-    }
   }
 
   updateParsedData() {
