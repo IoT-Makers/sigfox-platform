@@ -7,6 +7,7 @@ import {
   Device,
   Message,
   Geoloc,
+  Parser,
   Organization,
   Alert,
   Connector,
@@ -17,6 +18,7 @@ declare var Object: any;
 export interface UserInterface {
   "avatar"?: string;
   "loggedAt"?: Date;
+  "connected"?: boolean;
   "location"?: any;
   "devAccessTokens"?: Array<any>;
   "Email"?: any;
@@ -35,6 +37,7 @@ export interface UserInterface {
   Devices?: Device[];
   Messages?: Message[];
   Geolocs?: Geoloc[];
+  Parsers?: Parser[];
   Organizations?: Organization[];
   Alerts?: Alert[];
   Connectors?: Connector[];
@@ -44,6 +47,7 @@ export interface UserInterface {
 export class User implements UserInterface {
   "avatar": string = 'https://www.shareicon.net/data/128x128/2016/08/04/806683_man_512x512.png';
   "loggedAt": Date = new Date(0);
+  "connected": boolean = false;
   "location": any = <any>null;
   "devAccessTokens": Array<any> = <any>[];
   "Email": any = <any>null;
@@ -62,6 +66,7 @@ export class User implements UserInterface {
   Devices: Device[] = null;
   Messages: Message[] = null;
   Geolocs: Geoloc[] = null;
+  Parsers: Parser[] = null;
   Organizations: Organization[] = null;
   Alerts: Alert[] = null;
   Connectors: Connector[] = null;
@@ -107,6 +112,10 @@ export class User implements UserInterface {
         "loggedAt": {
           name: 'loggedAt',
           type: 'Date'
+        },
+        "connected": {
+          name: 'connected',
+          type: 'boolean'
         },
         "location": {
           name: 'location',
@@ -208,6 +217,14 @@ export class User implements UserInterface {
           name: 'Geolocs',
           type: 'Geoloc[]',
           model: 'Geoloc',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
+        },
+        Parsers: {
+          name: 'Parsers',
+          type: 'Parser[]',
+          model: 'Parser',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'userId'

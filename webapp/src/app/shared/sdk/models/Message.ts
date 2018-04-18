@@ -9,6 +9,7 @@ export interface MessageInterface {
   "data_parsed"?: Array<any>;
   "data_downlink"?: string;
   "downlinkAck"?: boolean;
+  "deviceAck"?: boolean;
   "ack"?: boolean;
   "reception"?: Array<any>;
   "id"?: any;
@@ -29,6 +30,7 @@ export class Message implements MessageInterface {
   "data_parsed": Array<any> = <any>[];
   "data_downlink": string = '';
   "downlinkAck": boolean = false;
+  "deviceAck": boolean = false;
   "ack": boolean = false;
   "reception": Array<any> = <any>[];
   "id": any = <any>null;
@@ -98,6 +100,10 @@ export class Message implements MessageInterface {
         },
         "downlinkAck": {
           name: 'downlinkAck',
+          type: 'boolean'
+        },
+        "deviceAck": {
+          name: 'deviceAck',
           type: 'boolean'
         },
         "ack": {

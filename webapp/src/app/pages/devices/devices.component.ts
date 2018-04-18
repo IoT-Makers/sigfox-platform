@@ -31,6 +31,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
   @ViewChild('confirmParseModal') confirmParseModal: any;
   @ViewChild('shareDeviceWithOrganizationModal') shareDeviceWithOrganizationModal: any;
 
+  // Flags
+  private devicesReady = false;
+
   private isCircleVisible: boolean[] = [];
 
   private connectors: Connector[] = [];
@@ -193,6 +196,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
         ).subscribe(devices => {
           console.log('Devices: ', devices);
           this.devices = devices;
+          this.devicesReady = true;
         });
       } else {
         // Get organization devices
@@ -201,6 +205,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
         ).subscribe(devices => {
           console.log('Devices: ', devices);
           this.devices = devices;
+          this.devicesReady = true;
         });
       }
     });

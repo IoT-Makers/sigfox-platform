@@ -246,12 +246,15 @@
           </div>
         </div>
         <div class="card-block">
-          <ng-container *ngIf="!devices.length">
-            No devices yet...
+          <ng-container *ngIf="!devicesReady">
+            Loading devices...
             <div class="sk-double-bounce">
               <div class="sk-child sk-double-bounce1"></div>
               <div class="sk-child sk-double-bounce2"></div>
             </div>
+          </ng-container>
+          <ng-container *ngIf="devicesReady && !devices.length">
+            No devices yet...
           </ng-container>
 
           <!-- Table -->
@@ -283,7 +286,7 @@
               <tbody>
               <tr *ngFor="let device of mf.data; let i = index">
                 <td class="text-center">
-                  <a [routerLink]="['/device-messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
+                  <a [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
                 </td>
                 <td>
                   <div class="small">

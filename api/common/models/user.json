@@ -89,6 +89,11 @@
       "model": "Message",
       "foreignKey": "userId"
     },
+    "Geolocs": {
+      "type": "hasMany",
+      "model": "Geoloc",
+      "foreignKey": "userId"
+    },
     "Alerts": {
       "type": "hasMany",
       "model": "Alert",
@@ -99,9 +104,9 @@
       "model": "Connector",
       "foreignKey": "userId"
     },
-    "Geolocs": {
+    "Parsers": {
       "type": "hasMany",
-      "model": "Geoloc",
+      "model": "Parser",
       "foreignKey": "userId"
     }
   },

@@ -4,13 +4,17 @@
       <i class="fa fa-envelope fa-lg text-message"></i> <strong>Messages</strong>
     </div>
     <div class="card-block">
-      <ng-container *ngIf="!messages.length">
-        No messages yet...
+      <ng-container *ngIf="!messagesReady">
+        Loading messages...
         <div class="sk-double-bounce">
           <div class="sk-child sk-double-bounce1"></div>
           <div class="sk-child sk-double-bounce2"></div>
         </div>
       </ng-container>
+      <ng-container *ngIf="messagesReady && !messages.length">
+        No messages yet...
+      </ng-container>
+
       <ng-container *ngIf="messages.length>0">
         <div class="row mb-1">
           <div class="col-md-6">

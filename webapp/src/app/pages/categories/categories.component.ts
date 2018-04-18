@@ -21,6 +21,9 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   @ViewChild('confirmModal') confirmModal: any;
   @ViewChild('shareCategoryWithOrganizationModal') shareCategoryWithOrganizationModal: any;
 
+  // Flags
+  private categoriesReady = false;
+
   private loadingDownload = false;
 
   private device: Device = new Device();
@@ -122,6 +125,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
         ).subscribe(categories => {
           console.log('Categories: ', categories);
           this.categories = categories;
+          this.categoriesReady = true;
         });
       } else {
         // Get organization categories
@@ -130,6 +134,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
         ).subscribe(categories => {
           console.log('Categories: ', categories);
           this.categories = categories;
+          this.categoriesReady = true;
         });
       }
     });

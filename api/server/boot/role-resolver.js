@@ -55,8 +55,7 @@ module.exports = function (app) {
     }
     //if the target model is not project
     else if (context.modelName === 'Organization') {
-      if(!context.modelId){
-
+      if (!context.modelId) {
         //Is admin?
         User.findById(userId, {include : 'roles'}, function(err, object){
           var roles = object.toJSON().roles;
@@ -72,7 +71,7 @@ module.exports = function (app) {
 
         });
 
-      }else {
+      } else {
         context.model.findById(context.modelId, {include: 'Members'}, function (err, object) {
           if (err || !object) {
             return reject();
@@ -96,17 +95,13 @@ module.exports = function (app) {
                 if (!cb) return reject();
               }
             });
-
           }
-
         });
       }
-    }else{
+    } else {
       //console.log("callback 5: else");
       return reject();
     }
-
   });
-
 
 };

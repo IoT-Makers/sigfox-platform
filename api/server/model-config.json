@@ -96,17 +96,7 @@
   },
   "Parser": {
     "dataSource": "mongodb",
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "*": false,
-          "count": true,
-          "parseAllMessages": true,
-          "parseAllDevices": true
-        }
-      }
-    }
+    "public": true
   },
   "Category": {
     "dataSource": "mongodb",

@@ -98,6 +98,18 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   UPDATE_BY_ID_GEOLOCS_SUCCESS: type('[User] updateByIdGeolocs success'),
   UPDATE_BY_ID_GEOLOCS_FAIL: type('[User] updateByIdGeolocs fail'),
 
+  FIND_BY_ID_PARSERS: type('[User] findByIdParsers'),
+  FIND_BY_ID_PARSERS_SUCCESS: type('[User] findByIdParsers success'),
+  FIND_BY_ID_PARSERS_FAIL: type('[User] findByIdParsers fail'),
+
+  DESTROY_BY_ID_PARSERS: type('[User] destroyByIdParsers'),
+  DESTROY_BY_ID_PARSERS_SUCCESS: type('[User] destroyByIdParsers success'),
+  DESTROY_BY_ID_PARSERS_FAIL: type('[User] destroyByIdParsers fail'),
+
+  UPDATE_BY_ID_PARSERS: type('[User] updateByIdParsers'),
+  UPDATE_BY_ID_PARSERS_SUCCESS: type('[User] updateByIdParsers success'),
+  UPDATE_BY_ID_PARSERS_FAIL: type('[User] updateByIdParsers fail'),
+
   FIND_BY_ID_ORGANIZATIONS: type('[User] findByIdOrganizations'),
   FIND_BY_ID_ORGANIZATIONS_SUCCESS: type('[User] findByIdOrganizations success'),
   FIND_BY_ID_ORGANIZATIONS_FAIL: type('[User] findByIdOrganizations fail'),
@@ -238,6 +250,18 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   DELETE_GEOLOCS_SUCCESS: type('[User] deleteGeolocs success'),
   DELETE_GEOLOCS_FAIL: type('[User] deleteGeolocs fail'),
 
+  GET_PARSERS: type('[User] getParsers'),
+  GET_PARSERS_SUCCESS: type('[User] getParsers success'),
+  GET_PARSERS_FAIL: type('[User] getParsers fail'),
+
+  CREATE_PARSERS: type('[User] createParsers'),
+  CREATE_PARSERS_SUCCESS: type('[User] createParsers success'),
+  CREATE_PARSERS_FAIL: type('[User] createParsers fail'),
+
+  DELETE_PARSERS: type('[User] deleteParsers'),
+  DELETE_PARSERS_SUCCESS: type('[User] deleteParsers success'),
+  DELETE_PARSERS_FAIL: type('[User] deleteParsers fail'),
+
   GET_ORGANIZATIONS: type('[User] getOrganizations'),
   GET_ORGANIZATIONS_SUCCESS: type('[User] getOrganizations success'),
   GET_ORGANIZATIONS_FAIL: type('[User] getOrganizations fail'),
@@ -341,6 +365,10 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   CREATE_MANY_GEOLOCS: type('[User] createManyGeolocs'),
   CREATE_MANY_GEOLOCS_SUCCESS: type('[User] createManyGeolocs success'),
   CREATE_MANY_GEOLOCS_FAIL: type('[User] createManyGeolocs fail'),
+
+  CREATE_MANY_PARSERS: type('[User] createManyParsers'),
+  CREATE_MANY_PARSERS_SUCCESS: type('[User] createManyParsers success'),
+  CREATE_MANY_PARSERS_FAIL: type('[User] createManyParsers fail'),
 
   CREATE_MANY_ORGANIZATIONS: type('[User] createManyOrganizations'),
   CREATE_MANY_ORGANIZATIONS_SUCCESS: type('[User] createManyOrganizations success'),
@@ -1449,6 +1477,147 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   updateByIdGeolocsFail: class implements Action {
     public readonly type = UserActionTypes.UPDATE_BY_ID_GEOLOCS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * findByIdParsers Action.
+   * Find a related item by id for Parsers.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Parsers
+   * @param {any} meta (optional).
+   * 
+   */
+  findByIdParsers: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_PARSERS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * findByIdParsersSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  findByIdParsersSuccess: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_PARSERS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * findByIdParsersFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  findByIdParsersFail: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_PARSERS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * destroyByIdParsers Action.
+   * Delete a related item by id for Parsers.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Parsers
+   * @param {any} meta (optional).
+   * 
+   */
+  destroyByIdParsers: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_PARSERS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * destroyByIdParsersSuccess Action.
+   * 
+   * @param {any} id 
+   * This method returns no data.
+   * @param {any} meta (optional).
+   * 
+   */
+  destroyByIdParsersSuccess: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_PARSERS_SUCCESS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * destroyByIdParsersFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  destroyByIdParsersFail: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_PARSERS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * updateByIdParsers Action.
+   * Update a related item by id for Parsers.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Parsers
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  updateByIdParsers: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_PARSERS;
+      public payload: {id: any, fk: any, data: any};
+
+    constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk, data};
+    }
+  },
+  /**
+   * updateByIdParsersSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  updateByIdParsersSuccess: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_PARSERS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * updateByIdParsersFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  updateByIdParsersFail: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_PARSERS_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },
@@ -3044,6 +3213,139 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
 
   /**
+   * getParsers Action.
+   * Queries Parsers of user.
+   *
+   * @param {any} id user id
+   * @param {object} filter 
+   * @param {any} meta (optional).
+   * 
+   */
+  getParsers: class implements Action {
+    public readonly type = UserActionTypes.GET_PARSERS;
+      public payload: {id: any, filter: LoopBackFilter};
+
+    constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, filter};
+    }
+  },
+  /**
+   * getParsersSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  getParsersSuccess: class implements Action {
+    public readonly type = UserActionTypes.GET_PARSERS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * getParsersFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  getParsersFail: class implements Action {
+    public readonly type = UserActionTypes.GET_PARSERS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * createParsers Action.
+   * Creates a new instance in Parsers of this model.
+   *
+   * @param {any} id user id
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  createParsers: class implements Action {
+    public readonly type = UserActionTypes.CREATE_PARSERS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createParsersSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  createParsersSuccess: class implements Action {
+    public readonly type = UserActionTypes.CREATE_PARSERS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createParsersFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  createParsersFail: class implements Action {
+    public readonly type = UserActionTypes.CREATE_PARSERS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * deleteParsers Action.
+   * Deletes all Parsers of this model.
+   *
+   * @param {any} id user id
+   * @param {any} meta (optional).
+   * 
+   */
+  deleteParsers: class implements Action {
+    public readonly type = UserActionTypes.DELETE_PARSERS;
+      
+    constructor(public payload: any, public meta?: any) {}
+  },
+  /**
+   * deleteParsersSuccess Action.
+   * 
+   * @param {any} id 
+   * This method returns no data.
+   * @param {any} meta (optional).
+   * 
+   */
+  deleteParsersSuccess: class implements Action {
+    public readonly type = UserActionTypes.DELETE_PARSERS_SUCCESS;
+  
+    constructor(public payload: any, public meta?: any) {}
+  },
+  /**
+   * deleteParsersFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  deleteParsersFail: class implements Action {
+    public readonly type = UserActionTypes.DELETE_PARSERS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
    * getOrganizations Action.
    * Queries Organizations of user.
    *
@@ -4231,6 +4533,54 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   createManyGeolocsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_GEOLOCS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * createManyParsers Action.
+   * Creates a new instance in Parsers of this model.
+   *
+   * @param {any} id user id
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  createManyParsers: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_PARSERS;
+      public payload: {id: any, data: any[]};
+
+    constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createManyParsersSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  createManyParsersSuccess: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_PARSERS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createManyParsersFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  createManyParsersFail: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_PARSERS_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

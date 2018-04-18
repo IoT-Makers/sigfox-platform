@@ -23,11 +23,18 @@
         </div>
 
         <div class="card-block">
-          <ng-container *ngIf="!categories.length">
+          <ng-container *ngIf="!categoriesReady">
+            Loading categories...
+            <div class="sk-double-bounce">
+              <div class="sk-child sk-double-bounce1"></div>
+              <div class="sk-child sk-double-bounce2"></div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="categoriesReady && !categories.length">
             No categories yet...
           </ng-container>
-          <ng-container *ngIf="categories.length > 0">
 
+          <ng-container *ngIf="categories.length > 0">
             <!--Table-->
             <div class="table-responsive">
               <table class="table table-hover table-outline">
@@ -65,7 +72,7 @@
                     <div *ngIf="!category.Devices" class="small text-muted">No devices yet</div>
                     <div *ngIf="category.Devices">
                       <div class="small text-center text-device" *ngFor="let device of category.Devices; let i = index">
-                        <strong [routerLink]="['/device-messages', device.id]">{{device.id}}</strong>
+                        <strong [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]">{{device.id}}</strong>
                       </div>
                     </div>
                   </td>

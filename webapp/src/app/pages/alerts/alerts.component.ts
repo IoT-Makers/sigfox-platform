@@ -22,6 +22,9 @@ export class AlertsComponent implements OnInit, OnDestroy {
   @ViewChild('confirmModal') confirmModal: any;
   @ViewChild('map') mapContainer;
 
+  // Flags
+  private alertsReady = false;
+
   // Map
   private map: L.Map;
   private drawnItems: L.FeatureGroup = new L.FeatureGroup();
@@ -278,6 +281,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     ).subscribe((alerts: Alert[]) => {
       this.alerts = alerts;
       console.log(this.alerts);
+      this.alertsReady = true;
     });
 
     // Devices

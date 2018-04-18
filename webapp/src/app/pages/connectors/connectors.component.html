@@ -263,12 +263,15 @@
           </div>
         </div>
         <div class="card-block">
-          <ng-container *ngIf="!connectors.length">
-            No connectors yet...
+          <ng-container *ngIf="!connectorsReady">
+            Loading connectors...
             <div class="sk-double-bounce">
               <div class="sk-child sk-double-bounce1"></div>
               <div class="sk-child sk-double-bounce2"></div>
             </div>
+          </ng-container>
+          <ng-container *ngIf="connectorsReady && !connectors.length">
+            No connectors yet...
           </ng-container>
 
           <!-- Table -->

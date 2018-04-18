@@ -91,13 +91,17 @@
           <i class="fa fa-map-marker fa-lg text-tracking"></i> <strong>Map</strong> <small>(10 latest)</small>
         </div>
         <div class="card-block">
-          <ng-container *ngIf="!devices.length" class="card-block">
-            No devices yet...
+          <ng-container *ngIf="!devicesReady">
+            Loading devices...
             <div class="sk-double-bounce">
               <div class="sk-child sk-double-bounce1"></div>
               <div class="sk-child sk-double-bounce2"></div>
             </div>
           </ng-container>
+          <ng-container *ngIf="devicesReady && !devices.length">
+            No devices yet...
+          </ng-container>
+
           <ng-container *ngIf="devices.length > 0">
             <agm-map [latitude]="mapLat"
                      [longitude]="mapLng"
@@ -435,12 +439,15 @@
           <i class="fa fa-microchip fa-lg text-device"></i> <strong>Devices</strong> <small>(10 latest)</small>
         </div>
         <div class="card-block">
-          <ng-container *ngIf="!devices.length">
-            No devices yet...
+          <ng-container *ngIf="!devicesReady">
+            Loading devices...
             <div class="sk-double-bounce">
               <div class="sk-child sk-double-bounce1"></div>
               <div class="sk-child sk-double-bounce2"></div>
             </div>
+          </ng-container>
+          <ng-container *ngIf="devicesReady && !devices.length">
+            No devices yet...
           </ng-container>
 
           <!--Table-->
@@ -462,7 +469,7 @@
                           (click)="seeDevice(device)"><i class="fa fa-eye fa-lg"></i></button>
                 </td>
                 <td class="text-center">
-                  <a [routerLink]="['/device-messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
+                  <a [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
                   <div class="small" *ngIf="device.name">
                     <span class="text-gray-dark">Name: </span>
                     <span class="text-device">{{device.name ? device.name : "None"}}</span>
@@ -525,13 +532,17 @@
       <strong>Received messages</strong>
     </div>
     <div class="card-block">
-      <ng-container *ngIf="hasNoMessageChartData">
-        No messages yet...
+      <ng-container *ngIf="!messagesReady">
+        Loading messages...
         <div class="sk-double-bounce">
           <div class="sk-child sk-double-bounce1"></div>
           <div class="sk-child sk-double-bounce2"></div>
         </div>
       </ng-container>
+      <ng-container *ngIf="messagesReady && hasNoMessageChartData">
+        No messages yet...
+      </ng-container>
+
       <ng-container *ngIf="!hasNoMessageChartData">
         <div class="row">
           <div *ngIf="mobile" class="col-md-12">

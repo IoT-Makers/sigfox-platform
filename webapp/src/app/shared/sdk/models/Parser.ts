@@ -9,8 +9,10 @@ export interface ParserInterface {
   "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
+  "userId"?: any;
   "organizationId"?: any;
   Devices?: any[];
+  user?: any;
   Organization?: any;
 }
 
@@ -22,8 +24,10 @@ export class Parser implements ParserInterface {
   "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
+  "userId": any = <any>null;
   "organizationId": any = <any>null;
   Devices: any[] = null;
+  user: any = null;
   Organization: any = null;
   constructor(data?: ParserInterface) {
     Object.assign(this, data);
@@ -86,6 +90,10 @@ export class Parser implements ParserInterface {
           name: 'updatedAt',
           type: 'Date'
         },
+        "userId": {
+          name: 'userId',
+          type: 'any'
+        },
         "organizationId": {
           name: 'organizationId',
           type: 'any'
@@ -99,6 +107,14 @@ export class Parser implements ParserInterface {
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'parserId'
+        },
+        user: {
+          name: 'user',
+          type: 'any',
+          model: '',
+          relationType: 'belongsTo',
+                  keyFrom: 'userId',
+          keyTo: 'id'
         },
         Organization: {
           name: 'Organization',

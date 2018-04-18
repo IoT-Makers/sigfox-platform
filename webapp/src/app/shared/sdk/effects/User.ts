@@ -408,6 +408,57 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public findByIdParsers$ = this.actions$
+    .ofType(UserActionTypes.FIND_BY_ID_PARSERS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.findByIdParsers(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Parser', 'findByIdSuccess'),
+            of(new UserActions.findByIdParsersSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.findByIdParsersFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public destroyByIdParsers$ = this.actions$
+    .ofType(UserActionTypes.DESTROY_BY_ID_PARSERS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.destroyByIdParsers(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Parser', 'deleteByIdSuccess'),
+            of(new UserActions.destroyByIdParsersSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.destroyByIdParsersFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public updateByIdParsers$ = this.actions$
+    .ofType(UserActionTypes.UPDATE_BY_ID_PARSERS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.updateByIdParsers(action.payload.id, action.payload.fk, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Parser', 'findByIdSuccess'),
+            of(new UserActions.updateByIdParsersSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.updateByIdParsersFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public findByIdOrganizations$ = this.actions$
     .ofType(UserActionTypes.FIND_BY_ID_ORGANIZATIONS).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -982,6 +1033,54 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public getParsers$ = this.actions$
+    .ofType(UserActionTypes.GET_PARSERS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.getParsers(action.payload.id, action.payload.filter).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Parser', 'findSuccess'),
+            of(new UserActions.getParsersSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.getParsersFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createParsers$ = this.actions$
+    .ofType(UserActionTypes.CREATE_PARSERS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createParsers(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Parser', 'findSuccess'),
+            of(new UserActions.createParsersSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createParsersFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public deleteParsers$ = this.actions$
+    .ofType(UserActionTypes.DELETE_PARSERS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.deleteParsers(action.payload.id).pipe(
+          map((response: any) => new UserActions.deleteParsersSuccess(action.payload, action.meta)),
+          catchError((error: any) => concat(
+            of(new UserActions.deleteParsersFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public getOrganizations$ = this.actions$
     .ofType(UserActionTypes.GET_ORGANIZATIONS).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -1384,6 +1483,23 @@ export class UserEffects extends BaseLoopbackEffects {
           )),
           catchError((error: any) => concat(
             of(new UserActions.createManyGeolocsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createManyParsers$ = this.actions$
+    .ofType(UserActionTypes.CREATE_MANY_PARSERS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createManyParsers(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Parser', 'findSuccess'),
+            of(new UserActions.createManyParsersSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createManyParsersFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

@@ -16,12 +16,15 @@
           </div>
         </div>
         <div class="card-block">
-          <ng-container *ngIf="!alerts.length">
-            No alerts yet...
+          <ng-container *ngIf="!alertsReady">
+            Loading alerts...
             <div class="sk-double-bounce">
               <div class="sk-child sk-double-bounce1"></div>
               <div class="sk-child sk-double-bounce2"></div>
             </div>
+          </ng-container>
+          <ng-container *ngIf="alertsReady && !alerts.length">
+            No alerts yet...
           </ng-container>
 
           <!-- Table -->
@@ -61,7 +64,7 @@
                   </label>
                 </td>
                 <td class="text-center">
-                  <a [routerLink]="['/device-messages', alert.Device.id]">
+                  <a [routerLink]="['/messages', alert.Device.id]">
                     <strong class="text-device">{{alert.Device.id}}</strong>
                     <span *ngIf="alert.Device.name" class="small">({{alert.Device.name}})</span>
                   </a>
@@ -152,7 +155,7 @@
       </div>
     </div>
   </div>
-  
+
 </div>
 
 <div bsModal #addOrEditAlertModal="bs-modal" class="modal fade" [config]="{ignoreBackdropClick: true}" tabindex="-1"

@@ -206,7 +206,7 @@
                   <tbody>
                   <tr *ngFor="let device of mf.data; let i = index">
                     <td class="text-center">
-                      <a [routerLink]="['/device-messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
+                      <a [routerLink]="['/messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
                     </td>
                     <td>
                       <div class="small">
@@ -285,7 +285,7 @@
                       <ng-container [ngSwitch]="col.as">
                         <td *ngSwitchCase="'ID'"
                             class="text-center">
-                          <a [routerLink]="['/device-messages',data[j].value]"><strong class="text-device">{{data[j].value}}</strong></a>
+                          <a [routerLink]="['/messages',data[j].value]"><strong class="text-device">{{data[j].value}}</strong></a>
                         </td>
                         <!--<td *ngSwitchCase="'Magasin (category)'"
                             class="text-center text-primary font-weight-bold">

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {Alert, Category, Device, FireLoopRef, Message, Organization, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
@@ -17,6 +17,10 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 export class OverviewComponent implements OnInit, OnDestroy {
 
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
+
+  // Flags
+  private devicesReady = false;
+  private messagesReady = false;
 
   private user: User = new User();
 
@@ -140,8 +144,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private deviceApi: DeviceApi,
-              private route: ActivatedRoute,
-              private router: Router) {
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -246,6 +249,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
               this.userApi.countDevices(this.user.id).subscribe(result => {
                 this.countDevices = result.count;
               });
+              this.devicesReady = true;
             }
           });
         } else {
@@ -275,6 +279,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
               this.organizationApi.countDevices(this.organization.id).subscribe(result => {
                 this.countDevices = result.count;
               });
+              this.devicesReady = true;
             }
           });
         }
@@ -394,6 +399,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.hasNoMessageChartData = this.data.every(value => {
         return value === 0;
       });
+      this.messagesReady = true;
     });
   }
 

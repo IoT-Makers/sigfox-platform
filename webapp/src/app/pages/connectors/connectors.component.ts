@@ -20,6 +20,9 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   @ViewChild('editConnectorModal') editConnectorModal: any;
   @ViewChild('confirmConnectorModal') confirmConnectorModal: any;
 
+  // Flags
+  private connectorsReady = false;
+
   private connectorSub: Subscription;
   private connectorRef: FireLoopRef<Connector>;
   private connectors: Connector[] = [];
@@ -108,6 +111,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
       }
     ).subscribe((connectors: Connector[]) => {
       this.connectors = connectors;
+      this.connectorsReady = true;
     });
   }
 

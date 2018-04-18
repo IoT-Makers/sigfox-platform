@@ -21,6 +21,9 @@ export class MessagesComponent implements OnInit, OnDestroy {
   @ViewChild('mapModal') mapModal: any;
   @ViewChild('agmMap') agmMap: AgmMap;
 
+  // Flags
+  private messagesReady = false;
+
   private mapLat = 48.856614;
   private mapLng = 2.352222;
   private mapZoom = 10;
@@ -144,6 +147,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
           this.messageFilter
         ).subscribe(messages => {
           this.messages = messages;
+          this.messagesReady = true;
         });
       } else {
         // Get organization devices
@@ -151,6 +155,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
           this.messageFilter
         ).subscribe(messages => {
           this.messages = messages;
+          this.messagesReady = true;
         });
       }
     });
