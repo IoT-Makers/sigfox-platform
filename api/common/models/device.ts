@@ -84,10 +84,16 @@ class Device {
   }
 
   deleteDeviceMessagesAlertsGeolocs(deviceId: string, req: any, next: Function): void {
+    // Models
+    const Device = this.model;
+    const Geoloc = this.model.app.models.Geoloc;
+    const Message = this.model.app.models.Message;
+    const Alert = this.model.app.models.Alert;
+
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
     // Find device
-    this.model.findOne(
+    Device.findOne(
       {
         where: {
           and: [
@@ -102,10 +108,10 @@ class Device {
         } else if (deviceInstance) {
           console.log('Deleting device ' + deviceId + ' and all its corresponding messages, alerts & geolocs.');
 
-          this.model.app.models.Device.destroyAll({id: deviceId}, (error: any, result: any) => { if (!err) next(null, 'Success'); });
-          // Remove messages and geolocs (in message.ts before delete)
-          this.model.app.models.Message.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
-          this.model.app.models.Alert.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
+          Device.destroyAll({id: deviceId}, (error: any, result: any) => { if (!err) next(null, 'Success'); });
+          Message.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
+          Geoloc.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
+          Alert.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
         }
       });
   }

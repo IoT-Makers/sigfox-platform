@@ -711,9 +711,10 @@ class Message {
     const Message = this.model;
     const Geoloc = this.model.app.models.Geoloc;
 
-    // Destroy geolocs corresponding to this device
-    Geoloc.destroyAll({messageId: ctx.where.id}, (error: any, result: any) => { console.log('Removed geoloc for messageId'); });
-
+    // Destroy geolocs corresponding to the messageId
+    if (ctx.where.id) {
+      Geoloc.destroyAll({messageId: ctx.where.id}, (error: any, result: any) => { console.log('Removed geoloc for messageId: ' + ctx.where.id); });
+    }
     // Destroy organization link
     Message.findOne({where: {id: ctx.where.id}, include: 'Organizations'}, (err: any, message: any) => {
       // console.log(category);
