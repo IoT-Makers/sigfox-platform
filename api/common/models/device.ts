@@ -103,9 +103,9 @@ class Device {
           console.log('Deleting device ' + deviceId + ' and all its corresponding messages, alerts & geolocs.');
 
           this.model.app.models.Device.destroyAll({id: deviceId}, (error: any, result: any) => { if (!err) next(null, 'Success'); });
+          // Remove messages and geolocs (in message.ts before delete)
           this.model.app.models.Message.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
           this.model.app.models.Alert.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
-          this.model.app.models.Geoloc.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
         }
       });
   }
