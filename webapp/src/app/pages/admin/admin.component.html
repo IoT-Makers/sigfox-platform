@@ -19,9 +19,9 @@
                 </div>
               </div>
               <div class="card-block">
-                <p><strong>SHA:</strong> {{version.sha}}</p>
-                <p><strong>Author:</strong> {{version.author.substr(0, version.author.indexOf('<'))}}</p>
-                <p><strong>Date:</strong> {{version.authorDate | amTimeAgo}}</p>
+                <p *ngIf="version.sha"><strong>SHA:</strong> {{version.sha}}</p>
+                <p>*ngIf="version.author"<strong>Author:</strong> {{version.author.substr(0, version.author.indexOf('<'))}}</p>
+                <p *ngIf="version.authorDate"><strong>Date:</strong> {{version.authorDate | amTimeAgo}}</p>
               </div>
             </div>
             <p *ngFor="let setting of settings">
