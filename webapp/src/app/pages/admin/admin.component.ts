@@ -28,6 +28,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   private setting: AppSetting;
   private settings: AppSetting[] = [];
 
+  private version: any;
+
   // Application statistics
   private countDashboards = 0;
   private countWidgets = 0;
@@ -148,6 +150,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   getAppSettings(): void {
     this.appSettingApi.find().subscribe((settings: AppSetting[]) => {
       this.settings = settings;
+    });
+    this.appSettingApi.getVersion().subscribe((result: any) => {
+      this.version = result;
     });
   }
 

@@ -1,4 +1,9 @@
 /* tslint:disable */
+import {
+  Device,
+  User,
+  Organization
+} from '../index';
 
 declare var Object: any;
 export interface ParserInterface {
@@ -11,9 +16,9 @@ export interface ParserInterface {
   "updatedAt"?: Date;
   "userId"?: any;
   "organizationId"?: any;
-  Devices?: any[];
-  user?: any;
-  Organization?: any;
+  Devices?: Device[];
+  user?: User;
+  Organization?: Organization;
 }
 
 export class Parser implements ParserInterface {
@@ -26,9 +31,9 @@ export class Parser implements ParserInterface {
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
   "organizationId": any = <any>null;
-  Devices: any[] = null;
-  user: any = null;
-  Organization: any = null;
+  Devices: Device[] = null;
+  user: User = null;
+  Organization: Organization = null;
   constructor(data?: ParserInterface) {
     Object.assign(this, data);
   }
@@ -102,24 +107,24 @@ export class Parser implements ParserInterface {
       relations: {
         Devices: {
           name: 'Devices',
-          type: 'any[]',
-          model: '',
+          type: 'Device[]',
+          model: 'Device',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'parserId'
         },
         user: {
           name: 'user',
-          type: 'any',
-          model: '',
+          type: 'User',
+          model: 'User',
           relationType: 'belongsTo',
                   keyFrom: 'userId',
           keyTo: 'id'
         },
         Organization: {
           name: 'Organization',
-          type: 'any',
-          model: '',
+          type: 'Organization',
+          model: 'Organization',
           relationType: 'belongsTo',
                   keyFrom: 'organizationId',
           keyTo: 'id'

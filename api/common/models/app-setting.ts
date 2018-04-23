@@ -11,9 +11,9 @@ import { Model } from '@mean-expert/model';
     beforeSave: { name: 'before save', type: 'operation' }
   },
   remotes: {
-    myRemote: {
-      returns : { arg: 'result', type: 'array' },
-      http    : { path: '/my-remote', verb: 'get' }
+    getVersion: {
+      returns : { root: true, type: 'object' },
+      http    : { path: '/version', verb: 'get' }
     }
   }
 })
@@ -28,8 +28,11 @@ class AppSetting {
     next();
   }
   // Example Remote Method
-  myRemote(next: Function): void {
-    this.model.find(next);
+  getVersion(next: Function): void {
+    const getRepoInfo = require('git-repo-info');
+    const info = getRepoInfo();
+
+    next(null, info);
   }
 }
 

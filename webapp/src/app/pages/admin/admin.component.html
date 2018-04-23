@@ -2,29 +2,43 @@
 
   <div class="row">
     <div class="col col-12">
+
       <accordion>
 
         <accordion-group>
           <div accordion-heading>
-            <h4 class="text-center">Application Settings</h4>
+            <h4 class="text-center">Application settings</h4>
           </div>
           <div class="card-block">
-            <div *ngFor="let setting of settings">
-              <label>{{setting.key}}:</label>
-              <label *ngIf="setting.type === 'boolean'" class="switch switch-sm switch-3d switch-success-outline-alt">
-                <input (change)="changeSetting(setting)" [(ngModel)]="setting.value" type="checkbox"
-                       class="switch-input">
-                <span class="switch-label"></span>
-                <span class="switch-handle"></span>
-              </label>
-              <hr>
+            <div *ngIf="version" class="card">
+              <div class="card-header">
+                <div class="row">
+                  <div class="col-12">
+                    <i class="fa fa-code fa-lg"></i> <strong>Version</strong>
+                  </div>
+                </div>
+              </div>
+              <div class="card-block">
+                <p><strong>SHA:</strong> {{version.sha}}</p>
+                <p><strong>Author:</strong> {{version.author.substr(0, version.author.indexOf('<'))}}</p>
+                <p><strong>Date:</strong> {{version.authorDate | amTimeAgo}}</p>
+              </div>
             </div>
+            <p *ngFor="let setting of settings">
+                <label>{{setting.key}}:</label>
+                <label *ngIf="setting.type === 'boolean'" class="switch switch-sm switch-3d switch-success-outline-alt">
+                  <input (change)="changeSetting(setting)" [(ngModel)]="setting.value" type="checkbox"
+                         class="switch-input">
+                  <span class="switch-label"></span>
+                  <span class="switch-handle"></span>
+                </label>
+            </p>
           </div>
         </accordion-group>
 
         <accordion-group>
           <div accordion-heading>
-            <h4 class="text-center">Application Statistics</h4>
+            <h4 class="text-center">Application statistics</h4>
           </div>
           <div class="card-block">
             <div class="row">
