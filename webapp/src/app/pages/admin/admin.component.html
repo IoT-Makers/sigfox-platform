@@ -20,7 +20,7 @@
               </div>
               <div class="card-block">
                 <p *ngIf="version.sha"><strong>SHA:</strong> {{version.sha}}</p>
-                <p>*ngIf="version.author"<strong>Author:</strong> {{version.author.substr(0, version.author.indexOf('<'))}}</p>
+                <p *ngIf="version.author"><strong>Author:</strong> {{version.author.substr(0, version.author.indexOf('<'))}}</p>
                 <p *ngIf="version.authorDate"><strong>Date:</strong> {{version.authorDate | amTimeAgo}}</p>
               </div>
             </div>
