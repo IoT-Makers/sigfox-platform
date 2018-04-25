@@ -1009,6 +1009,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
               // Table
               if (widget.type === 'table') {
+                widget.data = devices;
                 if (widget.options.tableType === 'custom') {
                   widget.data = this.buildCustomTable(widget);
                   widget.extraData = devices;
