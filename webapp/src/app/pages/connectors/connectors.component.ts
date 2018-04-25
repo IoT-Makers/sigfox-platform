@@ -107,7 +107,8 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
       {
         where: {
           userId: this.user.id
-        }
+        },
+        order: 'updatedAt DESC'
       }
     ).subscribe((connectors: Connector[]) => {
       this.connectors = connectors;
@@ -150,12 +151,12 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully removed.');
+      this.confirmConnectorModal.hide();
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
-    this.confirmConnectorModal.hide();
   }
 
   editConnector(): void {
@@ -163,6 +164,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully updated.');
+      this.editConnectorModal.hide();
     }, err => {
       if (err.error.statusCode === 401) {
         if (this.toast)
@@ -174,7 +176,6 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
         this.toast = this.toasterService.pop('error', 'Error', err.error.message);
       }
     });
-    this.editConnectorModal.hide();
   }
 
   addConnector(): void {
@@ -184,6 +185,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully updated.');
+      this.addConnectorModal.hide();
     }, err => {
       if (err.error.statusCode === 401) {
         if (this.toast)
@@ -195,7 +197,6 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
         this.toast = this.toasterService.pop('error', 'Error', err.error.message);
       }
     });
-    this.addConnectorModal.hide();
   }
 
   createDevAccessToken(): void {

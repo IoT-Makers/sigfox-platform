@@ -120,6 +120,7 @@
         "sharedMethods": {
           "*": false,
           "count": true,
+          "stats": true,
           "putSigfox_OldToRemove": true,
           "putSigfox": true,
           "putSigfoxAcknowledge": true,

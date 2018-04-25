@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DashboardApi, RealTime, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
@@ -6,20 +6,27 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {FireLoopRef, Geoloc, Message, Organization, Parser} from '../../shared/sdk/models';
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import {OrganizationApi} from '../../shared/sdk/services/custom';
+import {MessageApi, OrganizationApi} from '../../shared/sdk/services/custom';
 import {Observable} from 'rxjs/Rx';
 
 declare let d3: any;
+declare const google: any;
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './custom-dashboard.component.html'
+  templateUrl: './custom-dashboard.component.html',
+  styleUrls: ['./custom-dashboard.component.scss']
 })
 export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   @ViewChild('addOrEditWidgetModal') addOrEditWidgetModal: any;
+  @ViewChild('searchBoxInput') searchBoxInput: ElementRef;
 
   private user: User;
+
+  // Map
+  private map: any;
+  private searchBox: any;
 
   private organization: Organization;
   private organizations: Organization[] = [];
@@ -78,6 +85,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private selectedDateTimeBegin: Date = new Date();
   private selectedGeolocType = [];
   private selectedKeys = [];
+  private selectedBarMsgCounterPeriod = [];
 
   private selectCategories: Array<Object> = [];
   private selectDevices: Array<Object> = [];
@@ -96,7 +104,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     {id: 'tracking', itemName: 'Tracking'},
     {id: 'gauge', itemName: 'Gauge'},
     {id: 'line', itemName: 'Line graph'},
-    {id: 'bar', itemName: 'Bar graph'}
+    {id: 'bar', itemName: 'Bar graph'},
+    {id: 'stats', itemName: 'Message counter'}
   ];
   private selectMapType = [
     {id: 'roadmap', itemName: 'Roadmap'},
@@ -115,6 +124,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     {id: 'preferGps', itemName: 'Prefer GPS'},
     {id: 'all', itemName: 'All kinds'}
   ];
+  private selectBarMsgCounterPeriod = [
+    {id: 'hourly', itemName: 'Hourly'},
+    {id: 'daily', itemName: 'Daily'},
+    {id: 'weekly', itemName: 'Weekly'},
+    {id: 'monthly', itemName: 'Monthly'},
+    {id: 'yearly', itemName: 'Yearly'}
+  ];
+
   private selectOneSettings = {
     singleSelection: true,
     text: 'Select one',
@@ -191,6 +208,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   private isCircleVisible: boolean[] = [];
 
+  private mobile = false;
+
   // Notifications
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig =
@@ -202,6 +221,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
+              private messageApi: MessageApi,
               private dashboardApi: DashboardApi,
               private organizationApi: OrganizationApi,
               private route: ActivatedRoute,
@@ -212,6 +232,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Custom Dashboard: ngOnInit');
+
+    if (window.screen.width <= 425) { // 768px portrait
+      this.mobile = true;
+    }
+
     // Real Time
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
       this.setup();
@@ -254,7 +279,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
             this.organization = organization;
             console.log(organization);
-
 
             // Categories
             this.organizationApi.getCategories(this.organization.id).subscribe((categories: Category[]) => {
@@ -747,6 +771,18 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
+    // Bar message counter
+    else if (this.newWidget.type === 'stats') {
+      this.newWidget.filter = {
+        limit: 20,
+        order: 'updatedAt DESC',
+        fields: ['id'],
+        where: {
+          or: []
+        }
+      };
+    }
+
     // Reset filters arrays
     this.newWidget.options.keys = [];
     this.newWidget.filter.where.or = [];
@@ -866,6 +902,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.selectedGeolocType = [];
     this.selectedDateTimeBegin = new Date();
     this.selectedKeys = [];
+    this.selectedBarMsgCounterPeriod = [];
 
     if (this.newWidget.icon) {
       this.selectedWidgetIcon = [{id: this.newWidget.icon, itemName: this.newWidget.icon.substr(3)}];
@@ -899,6 +936,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         });
       });
     }
+    if (this.newWidget.options.period) {
+      this.selectedBarMsgCounterPeriod = [{
+        id: this.newWidget.options.period,
+        itemName: this.capitalizeFirstLetter(this.newWidget.options.period)
+      }];
+    }
 
     this.newWidget.filter.where.or.forEach((item: any, index: number) => {
       if (item.categoryId) {
@@ -919,11 +962,30 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  onMapReady($event) {
-    /*this.widgets.forEach(widget => {
-      if (widget.type === 'tracking')
-        widget.data[0].visibility = true;
-    });*/
+  onMapReady(event: any) {
+    this.map = event;
+    if (!this.mobile) {
+      const input = this.searchBoxInput.nativeElement;
+      this.searchBox = new google.maps.places.SearchBox(input);
+      this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
+      this.searchBox.addListener('places_changed', () => this.goToSearchedPlace());
+    }
+  }
+
+  goToSearchedPlace() {
+    const places = this.searchBox.getPlaces();
+    if (places.length === 0) {
+      return;
+    }
+    const bounds = new google.maps.LatLngBounds();
+    places.forEach((place) => {
+      if (place.geometry.viewport) {
+        bounds.union(place.geometry.viewport);
+      } else {
+        bounds.extend(place.geometry.location);
+      }
+    });
+    this.map.fitBounds(bounds);
   }
 
   getRandomColor() {
@@ -944,8 +1006,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           this.deviceRef.on('change', widget.filter).subscribe((devices: any[]) => {*/
           if (widget.type !== 'image') {
             this.getDevicesWithFilter(widget.filter).subscribe((devices: any[]) => {
-              // Default data
-              widget.data = devices;
 
               // Table
               if (widget.type === 'table') {
@@ -957,11 +1017,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
               // Map
               else if (widget.type === 'map') {
-
+                widget.data = devices;
               }
 
               // Tracking
               else if (widget.type === 'tracking') {
+                widget.data = devices;
                 // Default parameters
                 widget.data.forEach(device => {
                   device.visibility = false;
@@ -989,6 +1050,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
               // Gauge
               else if (widget.type === 'gauge') {
+                widget.data = devices;
                 const lastData_parsed: any = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
                 widget.value = lastData_parsed.value;
                 widget.unit = lastData_parsed.unit;
@@ -1004,7 +1066,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 let w = 0;
 
                 // Loop each device for this widget
-                widget.data.forEach((device: Device) => {
+                devices.forEach((device: Device) => {
                   if (device.Messages[0]) {
                     const data_parsed: any = device.Messages[0].data_parsed;
                     // Loop each keys chosen for this widget
@@ -1143,7 +1205,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 let w = 0;
 
                 // Loop each device for this widget
-                widget.data.forEach((device: Device) => {
+                devices.forEach((device: Device) => {
                   if (device.Messages[0]) {
                     const data_parsed = device.Messages[0].data_parsed;
                     // Loop each keys chosen for this widget
@@ -1250,6 +1312,66 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                         '</table>';
                     }
                   };
+                });
+
+              }
+
+              else if (widget.type === 'stats') {
+                devices.forEach((device: any) => {
+
+                  widget.options.chartLabels = [];
+
+                  // Messages
+                  this.messageApi.stats(
+                    widget.options.period,
+                    {},
+                    {
+                      and: [
+                        {userId: this.user.id},
+                        {deviceId: device.id}
+                      ]
+                    }
+                  ).subscribe((stats: any) => {
+
+                    widget.options.chartLabels = [];
+                    widget.options.chartOptions = {
+                      responsive: true,
+                      scaleShowVerticalLines: false,
+                      maintainAspectRatio: false,
+                      legend: {
+                        display: true,
+                      }
+                    };
+                    widget.options.chartColor = [{backgroundColor: '#5b9bd3'}];
+                    widget.data = [];
+                    const data = [];
+
+                    //console.log('Stats: ', stats);
+
+                    stats.forEach((stat: any) => {
+
+                      data.push(stat.count);
+                      if (widget.options.period === 'hourly')
+                        widget.options.chartLabels.push(moment(stat.universal).format('h:mm a'));
+                      if (widget.options.period === 'daily')
+                        widget.options.chartLabels.push(moment(stat.universal).format('ddd MMM YY'));
+                      if (widget.options.period === 'weekly')
+                        widget.options.chartLabels.push(moment(stat.universal).format('DD MMM YY'));
+                      if (widget.options.period === 'monthly')
+                        widget.options.chartLabels.push(moment(stat.universal).format('DD MMM YY'));
+                      if (widget.options.period === 'yearly')
+                        widget.options.chartLabels.push(moment(stat.universal).format('MMM YYYY'));
+                    });
+                    // console.log('Data:', this.data);
+                    // console.log('Labels:', widget.options.chartLabels);
+                    widget.data.push({data: data, label: 'Messages'});
+
+                    widget.options.hasNoMessageChartData = data.every(value => {
+                      return value === 0;
+                    });
+                  });
+
+
                 });
               }
 

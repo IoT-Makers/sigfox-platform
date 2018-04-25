@@ -184,9 +184,31 @@ class Alert {
                 || (alert.value.more && p.value > alert.value.more)
               ) {
                 // Trigger alert
-                let alertMessage = alert.message;
-                if (!alert.message)
+                let alertMessage = '';
+                if (alert.message) {
+                  //const regex = /\[(.*?)\]/;
+                  const regex = /\[(value)\]/;
+                  let strToMatch = '';
+                  try {
+                    strToMatch = JSON.stringify(alert.message);
+                  } catch (e) {
+                    strToMatch = alert.message;
+                  }
+                  try {
+                    const matched = regex.exec(strToMatch)[1];
+                    if (matched) {
+                      alertMessage = strToMatch.replace('[' + matched + ']', p.value.toString());
+                      alertMessage = JSON.parse(alertMessage);
+                    }
+                  } catch (e) {
+                    console.log('No need to search for a custom message formatting.');
+                  }
+                  if (alertMessage === '') {
+                    alertMessage = alert.message;
+                  }
+                } else {
                   alertMessage = p.key.charAt(0).toUpperCase() + p.key.slice(1) + ': ' + p.value + ' ' + p.unit;
+                }
                 this.triggerAlert(alert, device, alertMessage);
                 // Alert has been triggered, removing it from array
                 alerts.splice(index, 1);
@@ -224,7 +246,7 @@ class Alert {
               from: connector.login,
               subject: '[Sigfox Platform] - Alert for ' + title,
               text: alertMessage,
-              html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alert.message + '</p>'
+              html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alertMessage + '</p>'
             }, function (err: any, mail: any) {
               if (err) console.error(err);
               else console.log('Email sent!');
@@ -233,10 +255,15 @@ class Alert {
 
           else if (connector.type === 'webhook') {
             console.log('Webhook alert!');
+            try {
+              alertMessage = JSON.parse(alertMessage);
+            } catch (e) {
+              alertMessage = 'Invalid JSON in webhook alert message!';
+            }
             this.model.app.dataSources.webhook.send(connector.url, connector.method, connector.password, alertMessage).then((result: any) => {
+              console.log('Webhook request sent!');
             }).catch((err: any) => {
-              if (err) console.error('Webhook request error');
-              else console.log('Webhook request sent!');
+              if (err) console.error(err);
             });
           }
 

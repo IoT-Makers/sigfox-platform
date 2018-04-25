@@ -368,7 +368,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.messageGraphSub = this.messageRef.stats(
       {
         range: this.graphRange,
-        where: {'userId': this.user.id}
+        where: {userId: this.user.id}
       }
     ).subscribe((stats: any) => {
 

@@ -51,6 +51,10 @@ export class AdminComponent implements OnInit, OnDestroy {
   @ViewChild('updateUserModal') updateUserModal: any;
   @ViewChild('confirmModal') confirmModal: any;
 
+  // Flags
+  private usersReady = false;
+  private organizationsReady = false;
+
   // Notifications
   private toast;
   public toasterconfig: ToasterConfig =
@@ -111,6 +115,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         });
       });
       this.users = users;
+      this.usersReady = true;
     });
   }
 
@@ -160,6 +165,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     console.log('getOrga');
     this.organizationApi.find({include: 'Members'}).subscribe((organizations: Organization[]) => {
       this.organizations = organizations;
+      this.organizationsReady = true;
       console.log(organizations);
     });
   }

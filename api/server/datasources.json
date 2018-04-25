@@ -124,9 +124,7 @@
           "headers": {
             "Authorization": "Basic {credentials:string}"
           },
-          "body": {
-            "json": "{json:string}"
-          }
+          "body": "{json:string}"
         },
         "functions": {
           "send": [

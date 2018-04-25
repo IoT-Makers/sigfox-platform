@@ -39,7 +39,10 @@ import {OrganizationGuard} from './_guards/organization.guard';
     ToasterModule.forRoot(),
     LeafletModule.forRoot(),
     LeafletDrawModule.forRoot(),
-    AgmCoreModule.forRoot({apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'}),
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE',
+      libraries: ['places']
+    }),
     AngularMultiSelectModule,
     TooltipModule.forRoot()
   ],

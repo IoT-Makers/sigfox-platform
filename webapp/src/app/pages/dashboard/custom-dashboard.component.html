@@ -125,12 +125,16 @@
             <!-- Map -->
             <ng-container *ngIf="widget.type === 'map'">
               <ng-container *ngIf="widget.data">
-                <agm-map [latitude]="widget.options.lat"
+                <agm-map (mapReady)="onMapReady($event)"
+                         [latitude]="widget.options.lat"
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
                          [fullscreenControl]="true"
                          [mapTypeId]="widget.options.mapTypeId !== 'custom' && widget.options.mapTypeId ? widget.options.mapTypeId : 'roadmap'"
                          [styles]="widget.options.style ? widget.options.style : ''">
+
+                  <input #searchBoxInput *ngIf="!mobile" type="text" class="text-center" placeholder="Search for a place">
+
                   <ng-container *ngFor="let device of widget.data; let i = index">
                     <ng-container *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
                       <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
@@ -343,25 +347,34 @@
 
             <!-- Tracking -->
             <ng-container *ngIf="widget.type === 'tracking'">
-              <div class="row" *ngIf="widget.data">
-                <div class="col-md-12 mb-1">
-                  <div *ngFor="let device of widget.data; let i = index">
-                    <div class="input-group">
-                  <span class="input-group-addon">
+              <div class="col-md-12">
+
+                <div #deviceList class="floating-panel" *ngIf="!mobile && widget.data">
+                  <div class="m-1" *ngFor="let device of widget.data; let i = index">
                     <label for="{{device.id}}" class="switch switch-sm switch-3d switch-device-outline-alt">
-                    <input id="{{device.id}}"
-                           [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
-                    <span class="switch-label"></span>
-                    <span class="switch-handle"></span>
+                      <input id="{{device.id}}"
+                             [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
+                      <span class="switch-label"></span>
+                      <span class="switch-handle"></span>
                     </label>
-                  </span>
-                      <input type="text" class="form-control text-center text-device font-weight-bold" value="{{device.name ? device.id + ' (' + device.name + ')' : device.id}}" [readonly]="true">
-                      <!-- <strong>{{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong> -->
-                    </div>
+                    <strong>{{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong>
+                    <!--<input type="text" class="form-control text-center text-device font-weight-bold" value="{{device.name ? device.id + ' (' + device.name + ')' : device.id}}" [readonly]="true">-->
                   </div>
                 </div>
-              </div>
-              <div class="col-md-12">
+
+                <div #deviceList class="floating-panel" *ngIf="mobile && widget.data" style="max-width: 100%; max-height: 20%">
+                  <div class="m-1" *ngFor="let device of widget.data; let i = index">
+                    <label for="{{device.id}}" class="switch switch-sm switch-3d switch-device-outline-alt">
+                      <input id="{{device.id}}"
+                             [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
+                      <span class="switch-label"></span>
+                      <span class="switch-handle"></span>
+                    </label>
+                    <strong>{{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong>
+                    <!--<input type="text" class="form-control text-center text-device font-weight-bold" value="{{device.name ? device.id + ' (' + device.name + ')' : device.id}}" [readonly]="true">-->
+                  </div>
+                </div>
+
                 <agm-map [latitude]="widget.options.lat"
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
@@ -369,6 +382,9 @@
                          (mapReady)="onMapReady($event)"
                          [mapTypeId]="widget.options.mapTypeId !== 'custom' && widget.options.mapTypeId ? widget.options.mapTypeId : 'roadmap'"
                          [styles]="widget.options.style ? widget.options.style : '' ">
+
+                  <input #searchBoxInput *ngIf="!mobile" type="text" class="text-center" placeholder="Search for a place">
+
                   <agm-marker-cluster *ngIf="widget.options.clustering" [styles]="clusterStyles">
                     <ng-container *ngFor="let device of widget.data; let i = index">
                       <ng-container *ngIf="device.visibility">
@@ -776,6 +792,7 @@
                     </ng-container>
                   </ng-container>
                 </agm-map>
+
               </div>
             </ng-container>
             <!-- End Tracking widget -->
@@ -828,6 +845,32 @@
             </ng-container>
             <!-- End Chart -->
 
+            <ng-container *ngIf="widget.type === 'stats'">
+              <div *ngIf="mobile" class="col-md-12" style="min-height: 200px;">
+                <iframe class="chartjs-hidden-iframe" tabindex="-1"
+                        style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
+                <canvas *ngIf="widget.data"
+                        baseChart
+                        [datasets]="widget.data"
+                        [labels]="widget.options.chartLabels"
+                        [options]="widget.options.chartOptions"
+                        [colors]="widget.options.chartColor"
+                        [legend]="true"
+                        [chartType]="'bar'"></canvas>
+              </div>
+              <div *ngIf="!mobile" class="col-md-12" style="min-height: 400px;">
+                <iframe class="chartjs-hidden-iframe" tabindex="-1"
+                        style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
+                <canvas *ngIf="widget.data"
+                        baseChart
+                        [datasets]="widget.data"
+                        [labels]="widget.options.chartLabels"
+                        [options]="widget.options.chartOptions"
+                        [colors]="widget.options.chartColor"
+                        [legend]="true"
+                        [chartType]="'bar'"></canvas>
+              </div>
+            </ng-container>
             <!--<ng-container *ngIf="widget.type === 'bar'">
               <div *ngIf="widget.data">
                 <div style="display: block">
@@ -1360,8 +1403,8 @@
             </ng-container>
             <!-- End Gauge widget -->
 
-            <!-- Line widget -->
-            <ng-container *ngIf="newWidget.type === 'line'">
+            <!-- Line & Bar widget -->
+            <ng-container *ngIf="newWidget.type === 'line' || newWidget.type === 'bar'">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Categories / Devices
                 </label>
@@ -1423,9 +1466,24 @@
             </ng-container>
             <!-- End Line widget -->
 
-            <!-- Bar widget -->
-            <ng-container *ngIf="newWidget.type === 'bar'">
+            <!-- Stats widget -->
+            <ng-container *ngIf="newWidget.type === 'stats'">
               <div class="form-group row">
+                <label class="col-md-3 form-control-label">Device
+                </label>
+                <div class="col-md-9">
+                  <angular2-multiselect #selectOneDevice
+                                        name="selectDevices"
+                                        [data]="selectDevices"
+                                        [(ngModel)]="selectedDevices"
+                                        [settings]="selectOneDeviceSettings"
+                                        (onSelect)="setFilter(); loadKeys(); selectOneDevice.isActive = false;"
+                                        (onDeSelect)="setFilter();">
+                  </angular2-multiselect>
+                </div>
+              </div>
+
+              <!--<div class="form-group row">
                 <label class="col-md-3 form-control-label">Categories / Devices
                 </label>
                 <div class="col-md-4">
@@ -1451,40 +1509,23 @@
                                         (onDeSelectAll)="setFilter();">
                   </angular2-multiselect>
                 </div>
-              </div>
+              </div>-->
 
-              <div class="form-group row" *ngIf="selectedCategories.length > 0 || selectedDevices.length > 0">
-                <label class="col-md-3 form-control-label">Keys</label>
+              <div class="form-group row" *ngIf="selectedDevices.length > 0">
+                <label class="col-md-3 form-control-label">Period</label>
                 <div class="col-md-9">
-                  <angular2-multiselect name="selectKeys"
-                                        (onOpen)="loadKeys()"
-                                        [data]="selectKeys"
-                                        [(ngModel)]="selectedKeys"
-                                        [settings]="selectKeysSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();"
-                                        required>
+                  <angular2-multiselect #selectOne
+                                        name="selectBarMsgCounterPeriod"
+                                        [data]="selectBarMsgCounterPeriod"
+                                        [(ngModel)]="selectedBarMsgCounterPeriod"
+                                        (onSelect)="newWidget.options.period = $event.id; selectOne.isActive = false;"
+                                        [settings]="selectOneSettings">
                   </angular2-multiselect>
                 </div>
               </div>
 
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Beginning at
-                </label>
-                <div class="col-md-9">
-                  <angular2-date-picker name="dateTime"
-                                        [(ngModel)]="selectedDateTimeBegin"
-                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter();"
-                                        [settings]="dateTimeSettings"
-                                        required>
-                  </angular2-date-picker>
-                </div>
-              </div>
-
             </ng-container>
-            <!-- End Bar widget -->
+            <!-- End Stats widget -->
 
           </div>
           <!-- End new widget -->
