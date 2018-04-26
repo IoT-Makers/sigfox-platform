@@ -1366,7 +1366,8 @@
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
                                         (onSelect)="setFilter(); loadKeys(); selectOneDevice.isActive = false;"
-                                        (onDeSelect)="setFilter();">
+                                        (onDeSelect)="setFilter();"
+                                        required>
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1379,7 +1380,8 @@
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
                                         (onDeSelect)="setFilter();"
-                                        (onSelect)="setFilter(); selectOneKey.isActive = false;">
+                                        (onSelect)="setFilter(); selectOneKey.isActive = false;"
+                                        required>
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1478,7 +1480,8 @@
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
                                         (onSelect)="setFilter(); loadKeys(); selectOneDevice.isActive = false;"
-                                        (onDeSelect)="setFilter();">
+                                        (onDeSelect)="setFilter();"
+                                        required>
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1519,7 +1522,8 @@
                                         [data]="selectBarMsgCounterPeriod"
                                         [(ngModel)]="selectedBarMsgCounterPeriod"
                                         (onSelect)="newWidget.options.period = $event.id; selectOne.isActive = false;"
-                                        [settings]="selectOneSettings">
+                                        [settings]="selectOneSettings"
+                                        required>
                   </angular2-multiselect>
                 </div>
               </div>
