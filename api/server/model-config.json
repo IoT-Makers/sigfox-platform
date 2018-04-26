@@ -184,14 +184,7 @@
   },
   "AlertHistory": {
     "dataSource": "mongodb",
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "*": false
-        }
-      }
-    }
+    "public": true
   },
   "Reception": {
     "dataSource": null,

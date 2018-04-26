@@ -95,15 +95,18 @@
           <i class="fa fa-building fa-lg text-organization"></i> <strong>Organizations</strong>
         </div>
         <div class="card-block">
-          <ng-container *ngIf="!organizations.length">
-            No organization yet...
+          <ng-container *ngIf="!organizationsReady">
+            Loading organizations...
             <div class="sk-double-bounce">
               <div class="sk-child sk-double-bounce1"></div>
               <div class="sk-child sk-double-bounce2"></div>
             </div>
           </ng-container>
+          <ng-container *ngIf="organizationsReady && !organizations.length">
+            No organizations yet...
+          </ng-container>
 
-          <ng-container *ngIf="organizations.length">
+          <ng-container *ngIf="organizations.length > 0">
           <!--Table-->
           <div class="table-responsive">
             <table class="table table-hover table-outline" [mfData]="organizations" #mf="mfDataTable"

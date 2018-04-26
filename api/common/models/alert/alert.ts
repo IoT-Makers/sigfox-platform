@@ -174,6 +174,35 @@ class Alert {
            *  Triggering alerts from keys in "data_parsed"
            *  If the key being read is set for an alert and if it is activated
            */
+            // Build the custom message
+          let alertMessage = '';
+          let strToMatch = '';
+          const regex = /\[(.*?)\]/;
+          if (alert.message) {
+            try {
+              strToMatch = JSON.stringify(alert.message);
+            } catch (e) {
+              strToMatch = alert.message;
+            }
+          }
+          data_parsed.forEach((p: any) => {
+            if (alert.message) {
+              try {
+                const matched = regex.exec(strToMatch)[1];
+                if (matched && matched === p.key) {
+                  strToMatch = strToMatch.replace('[' + matched + ']', p.value.toString());
+                  alertMessage = JSON.parse(strToMatch);
+                }
+              } catch (e) {
+                //console.log('No need to search for a custom message formatting.');
+              }
+              if (alertMessage === '') {
+                alertMessage = alert.message;
+              }
+            }
+          });
+
+          // Process conditions
           data_parsed.forEach((p: any) => {
             if (alert.key === p.key) {
               // Verify conditions for the alert to be triggered
@@ -183,32 +212,10 @@ class Alert {
                 || (alert.value.less && p.value < alert.value.less)
                 || (alert.value.more && p.value > alert.value.more)
               ) {
-                // Trigger alert
-                let alertMessage = '';
-                if (alert.message) {
-                  //const regex = /\[(.*?)\]/;
-                  const regex = /\[(value)\]/;
-                  let strToMatch = '';
-                  try {
-                    strToMatch = JSON.stringify(alert.message);
-                  } catch (e) {
-                    strToMatch = alert.message;
-                  }
-                  try {
-                    const matched = regex.exec(strToMatch)[1];
-                    if (matched) {
-                      alertMessage = strToMatch.replace('[' + matched + ']', p.value.toString());
-                      alertMessage = JSON.parse(alertMessage);
-                    }
-                  } catch (e) {
-                    console.log('No need to search for a custom message formatting.');
-                  }
-                  if (alertMessage === '') {
-                    alertMessage = alert.message;
-                  }
-                } else {
+                if (!alert.message) {
                   alertMessage = p.key.charAt(0).toUpperCase() + p.key.slice(1) + ': ' + p.value + ' ' + p.unit;
                 }
+                // Trigger alert
                 this.triggerAlert(alert, device, alertMessage);
                 // Alert has been triggered, removing it from array
                 alerts.splice(index, 1);
@@ -301,7 +308,9 @@ class Alert {
               } else {
                 console.log('Updated alert as: ', alertInstance);
                 // Save triggered alerts in AlertHistory
-                AlertHistory.upsert(alertInstance, (err: any, alert: any) => {
+                alertInstance.message = alertMessage;
+                AlertHistory.create(alertInstance, (err: any, alert: any) => {
+                  console.log('Created alert history');
                 });
               }
             });
