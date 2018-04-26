@@ -11,7 +11,9 @@ const loopback = require('loopback');
  * Model Decorator
  **/
 @Model({
-  hooks: { },
+  hooks: {
+    beforeSave: { name: 'before save', type: 'operation' }
+  },
   remotes: {
     triggerByDevice: {
       returns : { arg: 'result', type: 'array' },
@@ -38,6 +40,12 @@ const loopback = require('loopback');
 class Alert {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {}
+
+  beforeSave(ctx: any, next: Function): void {
+    console.log('Alert: Before Save');
+    ctx.instance.createdAt = new Date();
+    next();
+  }
 
   private triggerBySigfoxGeoloc(lat: number, lng: number, deviceId: string, req: any, next: Function): void {
     // Models
