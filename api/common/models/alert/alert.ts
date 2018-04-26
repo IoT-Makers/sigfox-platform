@@ -43,7 +43,6 @@ class Alert {
 
   beforeSave(ctx: any, next: Function): void {
     console.log('Alert: Before Save');
-    ctx.instance.createdAt = new Date();
     next();
   }
 

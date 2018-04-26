@@ -414,6 +414,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   addAlert(): void {
     delete this.alertToAddOrEdit.id;
+    this.alertToAddOrEdit.createdAt = new Date();
     this.alertToAddOrEdit.userId = this.user.id;
     this.alertRef.upsert(this.alertToAddOrEdit).subscribe((alert: Alert) => {
       if (this.toast)
