@@ -104,7 +104,14 @@ export class AdminComponent implements OnInit, OnDestroy {
   getUsers(): void {
     this.myUser = this.userApi.getCachedCurrent();
     this.userRef = this.rt.FireLoop.ref<User>(User);
-    this.userSub = this.userRef.on('change', {include: 'roles', order: 'updatedAt DESC'}).subscribe((users: User[]) => {
+    this.userSub = this.userRef.on('change', {
+      include: [
+        {
+          relation: 'roles'
+        }
+      ],
+      order: 'updatedAt DESC'
+    }).subscribe((users: User[]) => {
       users.forEach((user: any) => {
         user.isAdmin = false;
         user.roles.forEach((role: Role) => {
@@ -112,6 +119,9 @@ export class AdminComponent implements OnInit, OnDestroy {
             user.isAdmin = true;
             return;
           }
+        });
+        this.userApi.countDevices(user.id).subscribe((result: any) => {
+          user.Devices = result.count;
         });
       });
       this.users = users;

@@ -223,6 +223,9 @@
                       <mfDefaultSorter by="email"><i class="fa fa-sort"></i> Email</mfDefaultSorter>
                     </th>
                     <th class="text-center">
+                      <mfDefaultSorter by="Devices"><i class="fa fa-sort"></i> Devices</mfDefaultSorter>
+                    </th>
+                    <th class="text-center">
                       <mfDefaultSorter by="loggedAt"><i class="fa fa-sort"></i> Last logged</mfDefaultSorter>
                     </th>
                     <th class="text-center">
@@ -245,6 +248,11 @@
                       <div class="">
                         {{user.email}}
                       </div>
+                    </td>
+                    <td class="text-center">
+                      <strong>
+                        {{user.Devices}}
+                      </strong>
                     </td>
                     <td class="text-center">
                       <strong class="">{{user.loggedAt | amTimeAgo}}</strong>
