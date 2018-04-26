@@ -300,7 +300,11 @@ class Alert {
             const Client = require('strong-pubsub');
             const Adapter = require('strong-pubsub-mqtt');
             const client = new Client({host: connector.host, port: connector.port}, Adapter);
-            client.publish(connector.topic, alertMessage);
+            try {
+              client.publish(connector.topic, alertMessage);
+            } catch (e) {
+              console.log(e);
+            }
           }
 
           // Check if alert is one shot only, if yes: deactivate it
