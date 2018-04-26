@@ -70,7 +70,7 @@ switch (mode) {
         temperature += byte.slice(2, 8);
         temperature = ((parseInt(temperature, 2) - 200) / 8).toFixed(2);
 
-        if (type === 'Button')
+        if (type !== 'Button')
         // Byte #4
             humidity = parseInt(payload.slice(6, 8), 16) * 0.5;
         else {
