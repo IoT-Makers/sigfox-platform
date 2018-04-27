@@ -1,4 +1,4 @@
-// Nodejs encryption with CTR
+// Nodejs Encryption
 const crypto = require('crypto');
 const algorithm = 'aes-256-cbc';
 const password = process.env.SECRET || 'sgx/Platform2018.!';
