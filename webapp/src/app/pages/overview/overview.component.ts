@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Alert, Category, Device, FireLoopRef, Message, Organization, User} from '../../shared/sdk/models';
+import {Alert, Category, Connector, Device, FireLoopRef, Message, Organization, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
-import {DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
+import {ConnectorApi, DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -144,6 +144,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private deviceApi: DeviceApi,
+              private connectorApi: ConnectorApi,
               private route: ActivatedRoute) {
   }
 
@@ -329,6 +330,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
 
   }
+
+
+  upgrade() {
+    
+  }
+
 
   getMessagesGraph(option: string): void {
     // Reset buttons
