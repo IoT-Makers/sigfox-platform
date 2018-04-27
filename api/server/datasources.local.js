@@ -1,5 +1,5 @@
 'use strict';
-const mongodbURI = process.env.MONGODB_URI;
+var mongodbURI = process.env.MONGODB_URI;
 
 if(mongodbURI) {
   console.log('Data sources: Using MongoDB config', mongodbURI);

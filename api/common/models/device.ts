@@ -1,5 +1,6 @@
 import {Model} from '@mean-expert/model';
 import * as _ from 'lodash';
+import {decrypt} from './utils';
 
 const moment = require('moment');
 const loopback = require('loopback');
@@ -246,7 +247,7 @@ class Device {
           console.log(connector);
           if (connector) {
             const sigfoxApiLogin = connector.login;
-            const sigfoxApiPassword = connector.password;
+            const sigfoxApiPassword = decrypt(connector.password);
 
 
             // let messages: any[] = [];

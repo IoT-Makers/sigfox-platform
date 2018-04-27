@@ -187,7 +187,7 @@
                                       [settings]="selectOneDeviceSettings"
                                       (onSelect)="alertToAddOrEdit.deviceId = $event.id; selectDevicesAddOrEdit.isActive = false; loadKeys($event.id)"
                                       (onDeSelect)="alertToAddOrEdit.deviceId = null; alertToAddOrEdit.key = null;"
-                                      required="">
+                                      required>
                 </angular2-multiselect>
               </div>
             </div>

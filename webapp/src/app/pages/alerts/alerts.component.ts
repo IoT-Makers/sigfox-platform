@@ -404,12 +404,12 @@ export class AlertsComponent implements OnInit, OnDestroy {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
+      this.addOrEditAlertModal.hide();
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
-    this.addOrEditAlertModal.hide();
   }
 
   addAlert(): void {
@@ -419,13 +419,13 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.alertRef.upsert(this.alertToAddOrEdit).subscribe((alert: Alert) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
+      this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully created.');
+      this.addOrEditAlertModal.hide();
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('error', 'Error', 'Please fill in the alert form.' + err.error.message);
     });
-    this.addOrEditAlertModal.hide();
   }
 
   loadKeys(deviceId: string): void {
@@ -528,4 +528,3 @@ export class AlertsComponent implements OnInit, OnDestroy {
     if (this.alertSub) this.alertSub.unsubscribe();
   }
 }
-

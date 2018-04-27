@@ -1,20 +1,6 @@
 import {Model} from '@mean-expert/model';
-const utils = require('../../node_modules/loopback/lib/utils.js');
-const SALT_WORK_FACTOR = 10;
-const crypto = require('crypto');
-const MAX_PASSWORD_LENGTH = 72;
-let bcrypt: any;
-try {
-  // Try the native module first
-  bcrypt = require('bcrypt');
-  // Browserify returns an empty object
-  if (bcrypt && typeof bcrypt.compare !== 'function') {
-    bcrypt = require('bcryptjs');
-  }
-} catch (err) {
-  // Fall back to pure JS impl
-  bcrypt = require('bcryptjs');
-}
+import {encrypt} from './utils';
+
 /**
  * @module Connector
  * @description
@@ -47,21 +33,20 @@ class Connector {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {}
 
+
+
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('Connector: Before Save');
     const type = ctx.instance.type;
     const login = ctx.instance.login;
     const password = ctx.instance.password;
+    // Encrypt the password to be stored
+    ctx.instance.password = encrypt(password);
 
     if (type === 'sigfox-api') {
       this.testConnection(type, login, password, next);
     } else {
-      // Encrypt the password to be stored
-      /*
-      const salt = bcrypt.genSaltSync(SALT_WORK_FACTOR);
-      ctx.instance.password = bcrypt.hashSync(password, salt);
-      */
       next();
     }
   }
@@ -80,30 +65,6 @@ class Connector {
       next(null, 'Not implemented yet.');
     }
   }
-
-    /**
-     * Compare the given `password` with the users hashed password.
-     *
-     * @param {String} password The plain text password
-     * @callback {Function} callback Callback function
-     * @param {Error} err Error object
-     * @param {Boolean} isMatch Returns true if the given `password` matches record
-     * @promise
-     */
-
-    hasPassword = function(plain: any, fn: any) {
-      fn = fn || utils.createPromiseCallback();
-      if (this.password && plain) {
-        bcrypt.compare(plain, this.password, function(err: any, isMatch: boolean) {
-          if (err) return fn(err);
-          fn(null, isMatch);
-        });
-      } else {
-        fn(null, false);
-      }
-      return fn.promise;
-    };
-
 }
 
 module.exports = Connector;
