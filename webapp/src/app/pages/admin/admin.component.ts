@@ -197,7 +197,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   changeSetting(setting: AppSetting): void {
-    //setting.value = !setting.value;
     this.appSettingApi.upsert(setting).subscribe((setting: any) => {
       console.log(setting);
     });

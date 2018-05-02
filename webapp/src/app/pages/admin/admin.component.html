@@ -23,7 +23,7 @@
               </div>
             </div>
             <p *ngFor="let appSetting of appSettings">
-              <label>{{appSetting.key}}:</label>
+              <label>{{appSetting.key}}: </label>
               <label *ngIf="appSetting.type === 'boolean'" class="switch switch-sm switch-3d switch-success-outline-alt">
                 <input (change)="changeSetting(appSetting)" [(ngModel)]="appSetting.value" type="checkbox"
                        class="switch-input">
