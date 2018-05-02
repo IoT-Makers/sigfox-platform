@@ -47,11 +47,11 @@ class Geoloc {
       return console.error('Missing "message"', message);
     }
 
-    let hasLocation = false;
+    let hasGpsLocation = false;
+    let hasBeaconLocation = false;
 
     // Build the Geoloc object
     const geoloc = new Geoloc;
-    geoloc.type = 'gps';
     geoloc.location = new loopback.GeoPoint({lat: 0, lng: 0});
     geoloc.createdAt = message.createdAt;
     geoloc.userId = message.userId;
@@ -61,14 +61,58 @@ class Geoloc {
     message.data_parsed.forEach((p: any) => {
       // Check if there is geoloc in parsed data
       if (p.key === 'lat' && p.value >= -90 && p.value <= 90) {
-        hasLocation = true;
+        hasGpsLocation = true;
         geoloc.location.lat = p.value;
       } else if (p.key === 'lng' && p.value >= -180 && p.value <= 180) {
         geoloc.location.lng = p.value;
+      } else if (p.key === 'beaconId') {
+        hasBeaconLocation = true;
+        /**
+         * TODO: complete below conversions...
+         */
+        if (p.value === 1) {
+          geoloc.location.lat = 48.883658;
+          geoloc.location.lng = 2.302455;
+          geoloc.precision = 50;
+        } else if (p.value === 3) {
+        }
       }
     });
 
-    if (hasLocation) {
+    if (hasGpsLocation) {
+      geoloc.type = 'gps';
+      // Find or create a new Geoloc
+      Geoloc.findOrCreate(
+        {
+          where: {
+            and: [
+              {type: geoloc.type},
+              {location: geoloc.location},
+              {createdAt: geoloc.createdAt},
+              {userId: geoloc.userId},
+              {messageId: geoloc.messageId},
+              {deviceId: geoloc.deviceId}
+            ]
+          }
+        },
+        geoloc,
+        (err: any, geolocInstance: any, created: boolean) => {
+          if (err) {
+            console.error(err);
+          } else {
+            if (created) {
+              console.log('Created geoloc as: ', geolocInstance);
+              // Update device in order to trigger a real time upsert event
+              this.updateDeviceLocatedAt(geolocInstance.deviceId);
+            } else {
+              console.log('Skipped geoloc creation.');
+            }
+          }
+        });
+    }
+
+    else if (hasBeaconLocation) {
+      geoloc.type = 'beacon';
       // Find or create a new Geoloc
       Geoloc.findOrCreate(
         {
@@ -119,6 +163,7 @@ class Geoloc {
     Message.findOne({
       where: {
         and: [
+          {userId: userId},
           {deviceId: data.deviceId},
           {time: data.time},
           {seqNumber: data.seqNumber}
@@ -174,7 +219,7 @@ class Geoloc {
           /**
            * TODO: Check below - OOB frame device acknowledge ?
            */
-          // Saving a message anyway
+            // Saving a message anyway
           const message = new Message;
 
           message.userId = userId;

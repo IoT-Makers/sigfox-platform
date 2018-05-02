@@ -331,8 +331,7 @@ class Message {
           deviceInstance = deviceInstance.toJSON();
           if (created) {
             //console.log('Created new device.');
-          }
-          else{
+          } else {
             //console.log('Found an existing device.');
           }
 

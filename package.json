@@ -17,5 +17,6 @@
     "serve": "cd api/ && node server/server.js",
     "test": "npm run install"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {}
 }

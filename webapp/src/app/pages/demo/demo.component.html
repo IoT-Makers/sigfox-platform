@@ -1,3 +1,21 @@
+<link href='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
+
 <div class="animated fadeIn">
-  <h3>Demo !</h3>
+  <div class="card">
+    <div class="card-header">
+      <i class="fa fa-map-marker fa-lg text-tracking"></i> <strong>Sigfox Proximity Detection</strong>
+    </div>
+    <div class="card-block">
+
+      <div id="map"
+           style="height: 750px"
+           leaflet
+           leafletDraw
+           (leafletMapReady)="onMapReady($event)"
+           [leafletLayersControl]="layersControl"
+           [leafletOptions]="mapOptions">
+      </div>
+
+    </div>
+  </div>
 </div>
