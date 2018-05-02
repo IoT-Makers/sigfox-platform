@@ -1,8 +1,8 @@
-import {Category, Connector, Device, FireLoopRef, Geoloc, Organization, Parser, User} from '../../shared/sdk/models';
+import {AppSetting, Category, Connector, Device, FireLoopRef, Geoloc, Organization, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {AgmInfoWindow} from '@agm/core';
-import {DeviceApi, MessageApi, OrganizationApi, ParserApi, UserApi} from '../../shared/sdk/services/custom';
+import {AppSettingApi, DeviceApi, MessageApi, OrganizationApi, ParserApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
@@ -37,6 +37,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
   private isCircleVisible: boolean[] = [];
 
   private connectors: Connector[] = [];
+
+  private appSettings: AppSetting[] = [];
 
   private categorySub: Subscription;
   private deviceSub: Subscription;
@@ -88,6 +90,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private parserApi: ParserApi,
+              private appSettingApi: AppSettingApi,
               private deviceApi: DeviceApi,
               private elRef: ElementRef,
               toasterService: ToasterService,
@@ -106,6 +109,12 @@ export class DevicesComponent implements OnInit, OnDestroy {
     // Get the user connectors
     this.userApi.getConnectors(this.user.id).subscribe((connectors: Connector[]) => {
       this.connectors = connectors;
+    });
+
+    // Get app settings
+    this.appSettingApi.find({where: {key: 'showDeviceSuccessRate'}}).subscribe((appSettings: AppSetting[]) => {
+      this.appSettings = appSettings;
+      console.log(this.appSettings);
     });
 
     // Hide all circles by default

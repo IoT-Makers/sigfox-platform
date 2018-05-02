@@ -26,7 +26,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   private users: User[] = [];
 
   private setting: AppSetting;
-  private settings: AppSetting[] = [];
+  private appSettings: AppSetting[] = [];
 
   private version: any;
 
@@ -163,8 +163,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   getAppSettings(): void {
-    this.appSettingApi.find().subscribe((settings: AppSetting[]) => {
-      this.settings = settings;
+    this.appSettingApi.find().subscribe((appSettings: AppSetting[]) => {
+      this.appSettings = appSettings;
     });
     this.appSettingApi.getVersion().subscribe((result: any) => {
       this.version = result;
