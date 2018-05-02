@@ -51,19 +51,24 @@ import { SocketConnection } from './sockets/socket.connections';
 import { RealTime } from './services/core/real.time';
 import { EmailApi } from './services/custom/Email';
 import { AccessTokenApi } from './services/custom/AccessToken';
+import { RoleApi } from './services/custom/Role';
 import { DeviceApi } from './services/custom/Device';
 import { ParserApi } from './services/custom/Parser';
 import { CategoryApi } from './services/custom/Category';
 import { MessageApi } from './services/custom/Message';
+import { GeolocApi } from './services/custom/Geoloc';
 import { AppSettingApi } from './services/custom/AppSetting';
 import { DashboardApi } from './services/custom/Dashboard';
 import { UserApi } from './services/custom/User';
 import { OrganizationApi } from './services/custom/Organization';
-import { GeolocApi } from './services/custom/Geoloc';
 import { AlertApi } from './services/custom/Alert';
+import { AlertValueApi } from './services/custom/AlertValue';
+import { AlertGeofenceApi } from './services/custom/AlertGeofence';
+import { AlertHistoryApi } from './services/custom/AlertHistory';
 import { ReceptionApi } from './services/custom/Reception';
 import { ConnectorApi } from './services/custom/Connector';
 import { WidgetApi } from './services/custom/Widget';
+import { PropertyApi } from './services/custom/Property';
 /**
 * @module SDKBrowserModule
 * @description
@@ -97,19 +102,24 @@ export class SDKBrowserModule {
         RealTime,
         EmailApi,
         AccessTokenApi,
+        RoleApi,
         DeviceApi,
         ParserApi,
         CategoryApi,
         MessageApi,
+        GeolocApi,
         AppSettingApi,
         DashboardApi,
         UserApi,
         OrganizationApi,
-        GeolocApi,
         AlertApi,
+        AlertValueApi,
+        AlertGeofenceApi,
+        AlertHistoryApi,
         ReceptionApi,
         ConnectorApi,
         WidgetApi,
+        PropertyApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }

@@ -6,25 +6,75 @@ import { LoopBackFilter, SDKToken, Device } from '../models';
 
 export const DeviceActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Device'), {
+  DOWNLOAD: type('[Device] download'),
+  DOWNLOAD_SUCCESS: type('[Device] download success'),
+  DOWNLOAD_FAIL: type('[Device] download fail'),
+
   TIME_SERIES: type('[Device] timeSeries'),
   TIME_SERIES_SUCCESS: type('[Device] timeSeries success'),
   TIME_SERIES_FAIL: type('[Device] timeSeries fail'),
 
-  DELETE_DEVICE_AND_MESSAGES: type('[Device] deleteDeviceAndMessages'),
-  DELETE_DEVICE_AND_MESSAGES_SUCCESS: type('[Device] deleteDeviceAndMessages success'),
-  DELETE_DEVICE_AND_MESSAGES_FAIL: type('[Device] deleteDeviceAndMessages fail'),
+  DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS: type('[Device] deleteDeviceMessagesAlertsGeolocs'),
+  DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS_SUCCESS: type('[Device] deleteDeviceMessagesAlertsGeolocs success'),
+  DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS_FAIL: type('[Device] deleteDeviceMessagesAlertsGeolocs fail'),
 
   GET_MESSAGES_FROM_SIGFOX_BACKEND: type('[Device] getMessagesFromSigfoxBackend'),
   GET_MESSAGES_FROM_SIGFOX_BACKEND_SUCCESS: type('[Device] getMessagesFromSigfoxBackend success'),
   GET_MESSAGES_FROM_SIGFOX_BACKEND_FAIL: type('[Device] getMessagesFromSigfoxBackend fail'),
 
-  PARSE_ALL_MESSAGES: type('[Device] parseAllMessages'),
-  PARSE_ALL_MESSAGES_SUCCESS: type('[Device] parseAllMessages success'),
-  PARSE_ALL_MESSAGES_FAIL: type('[Device] parseAllMessages fail'),
-
 });
 export const DeviceActions =
 Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
+
+  /**
+   * download Action.
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id 
+   * @param {string} type 
+   * @param {object} req 
+   * @param {object} res 
+   * @param {any} meta (optional).
+   * 
+   */
+  download: class implements Action {
+    public readonly type = DeviceActionTypes.DOWNLOAD;
+      public payload: {id: any, type: any, req: any, res: any};
+
+    constructor(id: any, type: any, req: any = {}, res: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, type, req, res};
+    }
+  },
+  /**
+   * downloadSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  downloadSuccess: class implements Action {
+    public readonly type = DeviceActionTypes.DOWNLOAD_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * downloadFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  downloadFail: class implements Action {
+    public readonly type = DeviceActionTypes.DOWNLOAD_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
 
   /**
    * timeSeries Action.
@@ -32,9 +82,9 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId the deviceId
-   * @param {string} dateBegin the starting date-time
-   * @param {string} dateEnd the ending date-time
+   * @param {string} deviceId Device Id
+   * @param {string} dateBegin The starting date-time
+   * @param {string} dateEnd The ending date-time
    * @param {object} req 
    * @param {any} meta (optional).
    * 
@@ -79,7 +129,7 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
   },
 
   /**
-   * deleteDeviceAndMessages Action.
+   * deleteDeviceMessagesAlertsGeolocs Action.
    * <em>
          * (The remote method definition does not provide any description.)
          * </em>
@@ -89,8 +139,8 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    * @param {any} meta (optional).
    * 
    */
-  deleteDeviceAndMessages: class implements Action {
-    public readonly type = DeviceActionTypes.DELETE_DEVICE_AND_MESSAGES;
+  deleteDeviceMessagesAlertsGeolocs: class implements Action {
+    public readonly type = DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS;
       public payload: {deviceId: any, req: any};
 
     constructor(deviceId: any, req: any = {}, customHeaders?: Function, public meta?: any) {
@@ -98,15 +148,15 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
     }
   },
   /**
-   * deleteDeviceAndMessagesSuccess Action.
+   * deleteDeviceMessagesAlertsGeolocsSuccess Action.
    * 
    * @param {any} id 
    * @param {object} data 
    * @param {any} meta (optional).
    * 
    */
-  deleteDeviceAndMessagesSuccess: class implements Action {
-    public readonly type = DeviceActionTypes.DELETE_DEVICE_AND_MESSAGES_SUCCESS;
+  deleteDeviceMessagesAlertsGeolocsSuccess: class implements Action {
+    public readonly type = DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS_SUCCESS;
       public payload: {id: any, data: any};
 
     constructor(id: any, data: any, public meta?: any) {
@@ -114,14 +164,14 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
     }
   },
   /**
-   * deleteDeviceAndMessagesFail Action.
+   * deleteDeviceMessagesAlertsGeolocsFail Action.
    *
    * @param {any} payload
    * @param {any} meta (optional).
    * 
    */
-  deleteDeviceAndMessagesFail: class implements Action {
-    public readonly type = DeviceActionTypes.DELETE_DEVICE_AND_MESSAGES_FAIL;
+  deleteDeviceMessagesAlertsGeolocsFail: class implements Action {
+    public readonly type = DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },
@@ -172,57 +222,6 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    */
   getMessagesFromSigfoxBackendFail: class implements Action {
     public readonly type = DeviceActionTypes.GET_MESSAGES_FROM_SIGFOX_BACKEND_FAIL;
-
-    constructor(public payload: any, public meta?: any) { }
-  },
-
-  /**
-   * parseAllMessages Action.
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {object} data Request data.
-   *
-   *  - `id` – `{string}` - Device Id
-   *
-   *  - `req` – `{object}` - 
-   * @param {any} meta (optional).
-   * 
-   */
-  parseAllMessages: class implements Action {
-    public readonly type = DeviceActionTypes.PARSE_ALL_MESSAGES;
-      public payload: {id: any, req: any};
-
-    constructor(id: any, req: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, req};
-    }
-  },
-  /**
-   * parseAllMessagesSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object[]} data 
-   * @param {any} meta (optional).
-   * 
-   */
-  parseAllMessagesSuccess: class implements Action {
-    public readonly type = DeviceActionTypes.PARSE_ALL_MESSAGES_SUCCESS;
-      public payload: {id: any, data: any};
-
-    constructor(id: any, data: any, public meta?: any) {
-      this.payload = {id, data};
-    }
-  },
-  /**
-   * parseAllMessagesFail Action.
-   *
-   * @param {any} payload
-   * @param {any} meta (optional).
-   * 
-   */
-  parseAllMessagesFail: class implements Action {
-    public readonly type = DeviceActionTypes.PARSE_ALL_MESSAGES_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

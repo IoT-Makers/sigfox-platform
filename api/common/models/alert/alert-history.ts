@@ -1,22 +1,20 @@
 import { Model } from '@mean-expert/model';
 /**
- * @module Alert
+ * @module AlertHistory
  * @description
- * Write a useful Alert Model description.
+ * Write a useful AlertHistory Model description.
  * Register hooks and remote methods within the
  * Model Decorator
  **/
 @Model({
-  hooks: {
-  },
-  remotes: {
-  }
+  hooks: { },
+  remotes: { }
 })
 
-class Alert {
+class AlertHistory {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {}
 
 }
 
-module.exports = Alert;
+module.exports = AlertHistory;

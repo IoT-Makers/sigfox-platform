@@ -5,8 +5,8 @@
   "author": "",
   "license": "MIT",
   "engines": {
-    "node": "8.4.0",
-    "npm": "5.3.0"
+    "node": "8.9.4",
+    "npm": "5.6.x"
   },
   "scripts": {
     "ng": "./node_modules/.bin/ng",
@@ -33,6 +33,8 @@
     "@angular/platform-browser-dynamic": "^5.2.2",
     "@angular/router": "^5.2.2",
     "@angular/upgrade": "^5.2.2",
+    "@asymmetrik/ngx-leaflet": "^3.0.2",
+    "@asymmetrik/ngx-leaflet-draw": "^2.7.1",
     "@ngrx/effects": "^4.1.1",
     "@ngrx/entity": "^4.1.1",
     "@ngrx/store": "^4.1.1",
@@ -46,12 +48,13 @@
     "angular2-moment": "^1.7.1",
     "angular2-multiselect-dropdown": "^2.3.0",
     "angular2-text-mask": "^8.0.4",
-    "angular2-toaster": "^4.0.1",
+    "angular2-toaster": "^5.0.0",
     "chart.js": "2.5.0",
     "codelyzer": "^3.1.1",
     "core-js": "^2.5.3",
     "dragula": "^3.7.2",
     "express": "^4.16.2",
+    "file-saver": "^1.3.3",
     "jasmine-core": "^2.6.2",
     "jasmine-spec-reporter": "^4.1.0",
     "js-marker-clusterer": "^1.0.0",
@@ -61,6 +64,9 @@
     "karma-coverage-istanbul-reporter": "^1.4.1",
     "karma-jasmine": "^1.1.1",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "leaflet": "^1.3.1",
+    "leaflet-draw": "^1.0.2",
+    "leaflet.fullscreen": "^1.4.4",
     "loopback-filters": "^0.1.3",
     "moment": "^2.20.1",
     "ng-pick-datetime": "^5.1.2",
@@ -70,7 +76,9 @@
     "ng2-codemirror": "^1.1.3",
     "ng2-datepicker": "^2.2.4",
     "ng2-dragula": "^1.5.0",
+    "ng2-nvd3": "^2.0.0",
     "ng2-select": "^1.2.0",
+    "ngc-float-button": "^1.2.1",
     "ngx-bootstrap": "^2.0.2",
     "ngx-gauge": "^1.0.0-beta.2",
     "protractor": "^5.1.2",
@@ -82,5 +90,8 @@
     "vk-custom-angular2-datetimepicker": "^1.1.11",
     "zone.js": "^0.8.20"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/leaflet": "^1.2.6",
+    "@types/leaflet-draw": "^0.4.11"
+  }
 }

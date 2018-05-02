@@ -23,7 +23,8 @@ import {AgmJsMarkerClustererModule} from '@agm/js-marker-clusterer';
     AccordionModule.forRoot(),
     AgmCoreModule,
     AgmJsMarkerClustererModule,
-    AngularDateTimePickerModule
+    AngularDateTimePickerModule,
+    MomentModule
   ],
   providers: [
     GoogleMapsAPIWrapper

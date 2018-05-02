@@ -4,7 +4,8 @@ declare var Object: any;
 export interface AppSettingInterface {
   "key": string;
   "value": string;
-  "id"?: number;
+  "type": string;
+  "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
 }
@@ -12,7 +13,8 @@ export interface AppSettingInterface {
 export class AppSetting implements AppSettingInterface {
   "key": string = '';
   "value": string = '';
-  "id": number = 0;
+  "type": string = '';
+  "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   constructor(data?: AppSettingInterface) {
@@ -56,9 +58,13 @@ export class AppSetting implements AppSettingInterface {
           name: 'value',
           type: 'string'
         },
+        "type": {
+          name: 'type',
+          type: 'string'
+        },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',

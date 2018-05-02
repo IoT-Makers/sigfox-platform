@@ -10,6 +10,7 @@ import {AgmCoreModule} from '@agm/core';
 import {MomentModule} from 'angular2-moment';
 import {TooltipModule} from 'ng2-bootstrap';
 import {NgxGaugeModule} from 'ngx-gauge';
+import {AlertModule} from 'ngx-bootstrap';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import {NgxGaugeModule} from 'ngx-gauge';
     FormsModule,
     MomentModule,
     TooltipModule.forRoot(),
-    AgmCoreModule
+    AgmCoreModule,
+    AlertModule.forRoot()
   ],
   declarations: [
     OverviewComponent,

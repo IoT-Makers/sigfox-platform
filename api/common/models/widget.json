@@ -6,6 +6,25 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "FireLoop": true,
+    "TimeStamp": {
+      "required": false,
+      "validateUpsert": true
+    },
+    "Stats": [
+      {
+        "method": "stats",
+        "endpoint": "/stats",
+        "description": "Statistical information for Widget registers.",
+        "type": "model",
+        "count": {
+          "on": "createdAt",
+          "by": "index"
+        }
+      }
+    ]
+  },
   "properties": {
     "name": {
       "type": "string",
@@ -45,25 +64,37 @@
       "foreignKey": "dashboardId"
     }
   },
-  "acls": [],
-  "methods": {},
-  "mixins": {
-    "FireLoop": false,
-    "TimeStamp": {
-      "required": false,
-      "validateUpsert": true
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "DENY"
     },
-    "Stats": [
-      {
-        "method": "stats",
-        "endpoint": "/stats",
-        "description": "Statistical information for Widget registers.",
-        "type": "model",
-        "count": {
-          "on": "createdAt",
-          "by": "index"
-        }
-      }
-    ]
-  }
+    {
+      "accessType": "CREATE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
 }

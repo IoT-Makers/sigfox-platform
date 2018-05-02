@@ -6,7 +6,7 @@ export interface AccessTokenInterface {
   "ttl"?: number;
   "scopes"?: Array<any>;
   "created"?: Date;
-  "userId"?: number;
+  "userId"?: any;
   user?: any;
 }
 
@@ -15,7 +15,7 @@ export class AccessToken implements AccessTokenInterface {
   "ttl": number = 1209600;
   "scopes": Array<any> = <any>[];
   "created": Date = new Date(0);
-  "userId": number = 0;
+  "userId": any = <any>null;
   user: any = null;
   constructor(data?: AccessTokenInterface) {
     Object.assign(this, data);
@@ -69,7 +69,7 @@ export class AccessToken implements AccessTokenInterface {
         },
         "userId": {
           name: 'userId',
-          type: 'number'
+          type: 'any'
         },
       },
       relations: {

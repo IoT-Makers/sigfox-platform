@@ -68,6 +68,23 @@ export class ParserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public getUser$ = this.actions$
+    .ofType(ParserActionTypes.GET_USER).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.parser.getUser(action.payload.id, action.payload.refresh).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'User', 'findSuccess'),
+            of(new ParserActions.getUserSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new ParserActions.getUserFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public getOrganization$ = this.actions$
     .ofType(ParserActionTypes.GET_ORGANIZATION).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -140,6 +157,34 @@ export class ParserEffects extends BaseLoopbackEffects {
           map((response: any) => new ParserActions.parsePayloadSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
             of(new ParserActions.parsePayloadFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public parseAllMessages$ = this.actions$
+    .ofType(ParserActionTypes.PARSE_ALL_MESSAGES).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.parser.parseAllMessages(action.payload.id, action.payload.req).pipe(
+          map((response: any) => new ParserActions.parseAllMessagesSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new ParserActions.parseAllMessagesFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public parseAllDevices$ = this.actions$
+    .ofType(ParserActionTypes.PARSE_ALL_DEVICES).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.parser.parseAllDevices(action.payload.id, action.payload.req).pipe(
+          map((response: any) => new ParserActions.parseAllDevicesSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new ParserActions.parseAllDevicesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

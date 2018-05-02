@@ -1,26 +1,25 @@
-/*
-import { BootScript } from '@mean-expert/boot-script';
+import {BootScript} from '@mean-expert/boot-script';
 
-interface Users {
-  id: string,
+interface User {
+  id: string;
+  email: string;
   connected: boolean;
   updateAttributes: Function;
 }
-interface Socket { token: { userId: string } }
+interface Socket { token: { userId: string }; }
 @BootScript()
 class OnDisconnect {
   constructor(public app: any) {
-    app.on('socket-disconnect', (socket: Socket) => this.handler(socket));
+    app.on('socket-disconnect', (socket: Socket) => this.handlerDisconnected(socket));
   }
-  handler(socket: Socket): void {
+  handlerDisconnected(socket: Socket): void {
     if (socket.token && socket.token.userId) {
-      let userId: string = `${ socket.token.userId }`
-      this.app.models.users.findById(userId, (err: Error, user: Users) => {
-        console.log('A user has been disconnected:', user.id);
-        user.updateAttributes({ connected: false  });
+      const userId = `${ socket.token.userId }`;
+      this.app.models.user.findById(userId, (err: Error, user: User) => {
+        console.log('A user has been disconnected:', user.email);
+        user.updateAttributes({ connected: false });
       });
     }
   }
 }
 module.exports = OnDisconnect;
-*/

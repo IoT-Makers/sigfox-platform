@@ -1,21 +1,15 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Message} from '../../shared/sdk/models';
 
 @Component({
-  selector: 'app-messages',
+  selector: 'app-demo',
   templateUrl: './demo.component.html',
   styleUrls: ['./demo.component.scss']
 })
 export class DemoComponent implements OnInit, OnDestroy {
 
-  private iFace: any;
-  private frameType: any;
-  private message: Message = new Message();
-
-  public filterQuery = '';
+  private filterQuery = '';
 
   constructor() {
-
   }
 
   ngOnInit(): void {

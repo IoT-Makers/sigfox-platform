@@ -13,6 +13,7 @@ import { Observable } from 'rxjs/Rx';
 import { Parser } from '../../models/Parser';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { Device } from '../../models/Device';
+import { User } from '../../models/User';
 import { Organization } from '../../models/Organization';
 
 
@@ -122,6 +123,36 @@ export class ParserApi extends BaseLoopBackApi {
       data: data
     };
     let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Fetches belongsTo relation user.
+   *
+   * @param {any} id Parser id
+   *
+   * @param {boolean} refresh 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Parser` object.)
+   * </em>
+   */
+  public getUser(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Parsers/:id/user";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -339,11 +370,13 @@ export class ParserApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} fn Parser function
+   * @param {object} data Request data.
    *
-   * @param {string} payload Sigfox payload (12 bytes max)
+   *  - `fn` – `{string}` - Parser function
    *
-   * @param {object} req 
+   *  - `payload` – `{string}` - Sigfox payload (12 bytes max)
+   *
+   *  - `req` – `{object}` - 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -354,14 +387,80 @@ export class ParserApi extends BaseLoopBackApi {
    *  - `result` – `{any}` - 
    */
   public parsePayload(fn: any, payload: any, req: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
+    let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Parsers/:id/payload";
+    "/Parsers/parse-payload";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof fn !== 'undefined' && fn !== null) _urlParams.fn = fn;
     if (typeof payload !== 'undefined' && payload !== null) _urlParams.payload = payload;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `id` – `{string}` - Device Id
+   *
+   *  - `req` – `{object}` - 
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Parser` object.)
+   * </em>
+   */
+  public parseAllMessages(id: any, req: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Parsers/:id/parse-messages";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `id` – `{string}` - Parser Id
+   *
+   *  - `req` – `{object}` - 
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Parser` object.)
+   * </em>
+   */
+  public parseAllDevices(id: any, req: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Parsers/:id/parse-devices";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

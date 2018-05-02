@@ -43,11 +43,17 @@
     },
     "data_parsed": {
       "type": [
-        "object"
+        "Property"
       ]
     },
-    "downlinkData": {
+    "data_downlink": {
       "type": "string"
+    },
+    "downlinkAck": {
+      "type": "boolean"
+    },
+    "deviceAck": {
+      "type": "boolean"
     },
     "ack": {
       "type": "boolean"
@@ -56,15 +62,15 @@
       "type": [
         "Reception"
       ]
-    },
-    "geoloc": {
-      "type": [
-        "Geoloc"
-      ]
     }
   },
   "validations": [],
   "relations": {
+    "Geolocs": {
+      "type": "hasMany",
+      "model": "Geoloc",
+      "foreignKey": "messageId"
+    },
     "Device": {
       "type": "belongsTo",
       "model": "Device",
@@ -75,8 +81,8 @@
       "model": "user",
       "foreignKey": "userId"
     },
-    "Organization": {
-      "type": "belongsTo",
+    "Organizations": {
+      "type": "hasAndBelongsToMany",
       "model": "Organization",
       "foreignKey": "organizationId"
     }
@@ -110,12 +116,6 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$owner",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "organizationMember",
       "permission": "ALLOW"
     }
   ],

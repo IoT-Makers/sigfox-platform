@@ -17,13 +17,13 @@ import { GeolocApi } from '../services/index';
 @Injectable()
 export class GeolocEffects extends BaseLoopbackEffects {
   @Effect()
-  public getGeolocsByDeviceId$ = this.actions$
-    .ofType(GeolocActionTypes.GET_GEOLOCS_BY_DEVICE_ID).pipe(
+  public postSigfox$ = this.actions$
+    .ofType(GeolocActionTypes.POST_SIGFOX).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.geoloc.getGeolocsByDeviceId(action.payload.deviceId, action.payload.dateBegin, action.payload.dateEnd).pipe(
-          map((response: any) => new GeolocActions.getGeolocsByDeviceIdSuccess(action.payload.id, response, action.meta)),
+        this.geoloc.postSigfox(action.payload.req, action.payload.data).pipe(
+          map((response: any) => new GeolocActions.postSigfoxSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
-            of(new GeolocActions.getGeolocsByDeviceIdFail(error, action.meta)),
+            of(new GeolocActions.postSigfoxFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

@@ -3,32 +3,37 @@ import {
   User,
   Message,
   Device,
-  Category
+  Category,
+  Dashboard
 } from '../index';
 
 declare var Object: any;
 export interface OrganizationInterface {
   "name": string;
   "ownerId": string;
-  "id"?: number;
+  "logo"?: string;
+  "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   Members?: User[];
   Messages?: Message[];
   Devices?: Device[];
   Categories?: Category[];
+  Dashboards?: Dashboard[];
 }
 
 export class Organization implements OrganizationInterface {
-  "name": string = 'New organization';
+  "name": string = 'My organization';
   "ownerId": string = '';
-  "id": number = 0;
+  "logo": string = 'https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png';
+  "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   Members: User[] = null;
   Messages: Message[] = null;
   Devices: Device[] = null;
   Categories: Category[] = null;
+  Dashboards: Dashboard[] = null;
   constructor(data?: OrganizationInterface) {
     Object.assign(this, data);
   }
@@ -65,15 +70,20 @@ export class Organization implements OrganizationInterface {
         "name": {
           name: 'name',
           type: 'string',
-          default: 'New organization'
+          default: 'My organization'
         },
         "ownerId": {
           name: 'ownerId',
           type: 'string'
         },
+        "logo": {
+          name: 'logo',
+          type: 'string',
+          default: 'https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png'
+        },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',
@@ -100,7 +110,9 @@ export class Organization implements OrganizationInterface {
           type: 'Message[]',
           model: 'Message',
           relationType: 'hasMany',
-                  keyFrom: 'id',
+          modelThrough: 'OrganizationMessage',
+          keyThrough: 'messageId',
+          keyFrom: 'id',
           keyTo: 'organizationId'
         },
         Devices: {
@@ -108,7 +120,9 @@ export class Organization implements OrganizationInterface {
           type: 'Device[]',
           model: 'Device',
           relationType: 'hasMany',
-                  keyFrom: 'id',
+          modelThrough: 'OrganizationDevice',
+          keyThrough: 'deviceId',
+          keyFrom: 'id',
           keyTo: 'organizationId'
         },
         Categories: {
@@ -116,7 +130,19 @@ export class Organization implements OrganizationInterface {
           type: 'Category[]',
           model: 'Category',
           relationType: 'hasMany',
-                  keyFrom: 'id',
+          modelThrough: 'OrganizationCategory',
+          keyThrough: 'categoryId',
+          keyFrom: 'id',
+          keyTo: 'organizationId'
+        },
+        Dashboards: {
+          name: 'Dashboards',
+          type: 'Dashboard[]',
+          model: 'Dashboard',
+          relationType: 'hasMany',
+          modelThrough: 'OrganizationDashboard',
+          keyThrough: 'dashboardId',
+          keyFrom: 'id',
           keyTo: 'organizationId'
         },
       }

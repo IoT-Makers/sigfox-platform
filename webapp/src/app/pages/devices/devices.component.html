@@ -11,65 +11,67 @@
                [mapTypeControl]="true"
                [fullscreenControl]="true">
         <ng-container *ngFor="let device of devices; let i = index">
-          <ng-container *ngFor="let geoloc of device.location">
-            <!-- Geoloc Sigfox -->
-            <ng-container *ngIf="geoloc.type === 'sigfox'">
-              <agm-marker
-                (mouseOut)="markerOut(i)"
-                (mouseOver)="markerOver(i)"
-                [zIndex]="3"
-                [latitude]="geoloc.lat"
-                [longitude]="geoloc.lng"
-                [iconUrl]="'assets/img/markers/marker-sigfox.png'">
-                <agm-info-window
-                  id="{{geoloc.type + '_' + device.id}}">
-                  <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
-                  <br>
-                  <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
-                  <br *ngIf="device.name">
-                  <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
-                  <br>
-                  <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
-                  <br>
-                  <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
-                  <br>
-                  <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
-                </agm-info-window>
-              </agm-marker>
-              <!-- Circle -->
-              <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
-                          [zIndex]="1"
-                          [strokePosition]="CENTER"
-                          [strokeWeight]="1"
-                          [strokeColor]="'#8d5dd1'"
-                          [fillOpacity]="0.1"
-                          [fillColor]="'#8d5dd1'"
-                          [latitude]="geoloc.lat"
-                          [longitude]="geoloc.lng"
-                          [radius]="geoloc.precision">
-              </agm-circle>
-              <!-- End Circle -->
-            </ng-container>
-            <!-- Geoloc GPS -->
-            <ng-container *ngIf="geoloc.type === 'GPS'">
-              <agm-marker
-                [zIndex]="3"
-                [latitude]="geoloc.lat"
-                [longitude]="geoloc.lng"
-                [iconUrl]="'assets/img/markers/marker-gps.png'">
-                <agm-info-window
-                  id="{{geoloc.type + '_' + device.id}}">
-                  <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
-                  <br>
-                  <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
-                  <br *ngIf="device.name">
-                  <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
-                  <br>
-                  <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
-                  <br>
-                  <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
-                </agm-info-window>
-              </agm-marker>
+          <ng-container *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
+            <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
+              <!-- Sigfox -->
+              <ng-container *ngIf="geoloc.type === 'sigfox'">
+                <agm-marker
+                  (mouseOut)="markerOut(i)"
+                  (mouseOver)="markerOver(i)"
+                  [zIndex]="3"
+                  [latitude]="geoloc.location.lat"
+                  [longitude]="geoloc.location.lng"
+                  [iconUrl]="'assets/img/markers/marker-sigfox.png'">
+                  <agm-info-window
+                    id="{{geoloc.id}}">
+                    <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                    <br>
+                    <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                    <br *ngIf="device.name">
+                    <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                    <br>
+                    <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                    <br>
+                    <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                    <br>
+                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                  </agm-info-window>
+                </agm-marker>
+                <!-- Circle -->
+                <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                            [zIndex]="1"
+                            [strokePosition]="CENTER"
+                            [strokeWeight]="1"
+                            [strokeColor]="'#8d5dd1'"
+                            [fillOpacity]="0.1"
+                            [fillColor]="'#8d5dd1'"
+                            [latitude]="geoloc.location.lat"
+                            [longitude]="geoloc.location.lng"
+                            [radius]="geoloc.precision">
+                </agm-circle>
+                <!-- End Circle -->
+              </ng-container>
+              <!-- Geoloc GPS -->
+              <ng-container *ngIf="geoloc.type === 'gps'">
+                <agm-marker
+                  [zIndex]="3"
+                  [latitude]="geoloc.location.lat"
+                  [longitude]="geoloc.location.lng"
+                  [iconUrl]="'assets/img/markers/marker-gps.png'">
+                  <agm-info-window
+                    id="{{geoloc.id}}">
+                    <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                    <br>
+                    <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                    <br *ngIf="device.name">
+                    <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                    <br>
+                    <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                    <br>
+                    <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                  </agm-info-window>
+                </agm-marker>
+              </ng-container>
             </ng-container>
           </ng-container>
         </ng-container>
@@ -150,11 +152,11 @@
                 <div class="form-group row">
                   <label class="col-md-3 form-control-label">Downlink payload</label>
                   <div class="col-md-9">
-                    <input #downlinkData="ngModel" type="text" class="form-control"
+                    <input #data_downlink="ngModel" type="text" class="form-control"
                            placeholder="Downlink payload in HEX"
-                           name="downlinkData" maxlength="16" pattern="([a-fA-F0-9]{16})$"
-                           [(ngModel)]="deviceToEdit.downlinkData">
-                    <div [hidden]="downlinkData.valid || downlinkData.pristine"
+                           name="data_downlink" maxlength="16" pattern="([a-fA-F0-9]{16})$"
+                           [(ngModel)]="deviceToEdit.data_downlink">
+                    <div [hidden]="data_downlink.valid || data_downlink.pristine"
                          class="text-danger">
                       Length must be 8 bytes, in hexadecimal
                     </div>
@@ -162,175 +164,57 @@
                 </div>
               </tab>
 
-
-              <tab heading="Alerts">
-                <!-- Alerts -->
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Connector</label>
-                  <div class="col-md-9 mb-0">
-                    <select name="newAlert.connectorId" class="form-control" size="1"
-                            [(ngModel)]="newAlert.connectorId">
-                      <option *ngFor="let connector of connectors" [ngValue]="connector.id">{{connector.name}}</option>
-                      <option [ngValue]=""></option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Key</label>
-                  <div class="col-md-9">
-                    <select name="newAlert.key" class="form-control" size="1" [(ngModel)]="newAlert.key">
-                      <option [ngValue]="o.key" *ngFor="let o of deviceToEdit.data_parsed">{{o.key}}</option>
-                      <option [ngValue]=""></option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="form-group row">
-                  <label class="col-md-3 offset-1 form-control-label">Exact value</label>
-                  <div class="col-md-8">
-                    <input type="text" class="form-control" placeholder="Exact value" name="newAlert.value_exact"
-                           [(ngModel)]="newAlert.value_exact" [ngModelOptions]="{standalone: true}">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-3 offset-1 form-control-label">Between</label>
-                  <div class="col-md-8">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <label class="form-control-label">Min value</label>
-                        <input type="number" class="form-control" name="newAlert.value_min"
-                               [(ngModel)]="newAlert.value_min" [ngModelOptions]="{standalone: true}">
-                      </div>
-                      <div class="col-md-6">
-                        <label class="form-control-label">Max value</label>
-                        <input type="number" class="form-control" name="newAlert.value_max"
-                               [(ngModel)]="newAlert.value_max" [ngModelOptions]="{standalone: true}">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-3 offset-1 form-control-label">Less than</label>
-                  <div class="col-md-8">
-                    <input type="number" class="form-control" name="newAlert.value_min"
-                           [(ngModel)]="newAlert.value_less" [ngModelOptions]="{standalone: true}">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-3 offset-1 form-control-label">More than</label>
-                  <div class="col-md-8">
-                    <input type="number" class="form-control" name="newAlert.value_max"
-                           [(ngModel)]="newAlert.value_more" [ngModelOptions]="{standalone: true}">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-3 offset-1 form-control-label">Custom message (optional)</label>
-                  <div class="col-md-8">
-                    <input type="text" class="form-control" placeholder="Custom message" name="newAlert.message"
-                           [(ngModel)]="newAlert.message" [ngModelOptions]="{standalone: true}">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <div class="col-md-12">
-                    <button class="btn btn-sm btn-outline-success"
-                            (click)="$event.preventDefault(); addAlert(newAlert)"><i class="fa fa-plus-circle"></i> Add
-                      alert
-                    </button>
-                  </div>
-                </div>
-
-                <hr>
-
-                <div *ngFor="let alert of deviceToEdit.alerts; let i = index">
-                  <div class="form-group row">
-                    <label class="col-md-3 form-control-label">Connector</label>
-                    <div class="col-md-9 mb-0">
-                      <select name="alert.connectorId" class="form-control" size="1" [(ngModel)]="alert.connectorId">
-                        <option *ngFor="let connector of connectors" [ngValue]="connector.id">{{connector.name}}
-                        </option>
-                        <option [ngValue]=""></option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 form-control-label">Key</label>
-                    <div class="col-md-9">
-                      <select name="alert.key" class="form-control" size="1" [(ngModel)]="alert.key">
-                        <option [ngValue]="item.key" *ngFor="let item of deviceToEdit.data_parsed">{{item.key}}</option>
-                        <option [ngValue]=""></option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 offset-1 form-control-label">Exact value</label>
-                    <div class="col-md-8">
-                      <input type="text" class="form-control" placeholder="Exact value" name="alert.value_exact"
-                             [(ngModel)]="alert.value_exact" [ngModelOptions]="{standalone: true}">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 offset-1 form-control-label">Between</label>
-                    <div class="col-md-8">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <label class="form-control-label">Min value</label>
-                          <input type="number" class="form-control" name="alert.value_min"
-                                 [(ngModel)]="alert.value_min" [ngModelOptions]="{standalone: true}">
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-control-label">Max value</label>
-                          <input type="number" class="form-control" name="alert.value_max"
-                                 [(ngModel)]="alert.value_max" [ngModelOptions]="{standalone: true}">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 offset-1 form-control-label">Less than</label>
-                    <div class="col-md-8">
-                      <input type="number" class="form-control" name="alert.value_min"
-                             [(ngModel)]="alert.value_less" [ngModelOptions]="{standalone: true}">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 offset-1 form-control-label">More than</label>
-                    <div class="col-md-8">
-                      <input type="number" class="form-control" name="alert.value_max"
-                             [(ngModel)]="alert.value_more" [ngModelOptions]="{standalone: true}">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-3 offset-1 form-control-label">Custom message (optional)</label>
-                    <div class="col-md-8">
-                      <input type="text" class="form-control" placeholder="Custom message" name="alert.message"
-                             [(ngModel)]="alert.message" [ngModelOptions]="{standalone: true}">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <div class="col-md-12">
-                      <button class="btn pull-right btn-sm btn-outline-danger" (click)="removeAlert(i)"><i
-                        class="fa fa-trash"></i> Remove
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </tab>
-
-
               <tab heading="Operations" class="text-center">
 
                 <div class="col col-md-12 mb-1">
                   <p *ngIf="loadingFromBackend" class="font-italic font-weight-bold">This operation can take time...</p>
-                  <button tooltip="Retrieve messages from Sigfox Backend" class="btn btn-round btn-info btn-ladda" data-style="slide-up" [ladda]='loadingFromBackend' (click)="$event.preventDefault(); showRetrievalModal()">
+                  <button tooltip="Retrieve messages from Sigfox Backend" class="btn btn-round btn-primary btn-ladda" data-style="slide-up" [ladda]='loadingFromBackend' (click)="$event.preventDefault(); showRetrievalModal()">
                     <i class="fa fa-database"></i> &nbsp; Retrieve
                   </button>
                 </div>
                 <div class="col col-md-12">
                   <p *ngIf="parseMessages" class="font-italic font-weight-bold">This operation can take time...</p>
-                  <button tooltip="Decode all messages for current parser" class="btn btn-round btn-info btn-ladda" data-style="slide-up" [ladda]='parseMessages' (click)="$event.preventDefault(); showParseModal()">
+                  <button tooltip="Decode all messages for current parser" class="btn btn-round btn-primary btn-ladda" data-style="slide-up" [ladda]='loadingParseMessages' (click)="$event.preventDefault(); showParseModal()">
                     <i class="fa fa-code"></i> &nbsp; Parse
                   </button>
                 </div>
+                <div class="col col-md-12">
+                  <p></p>
+                  <button tooltip="Download messages (CSV)" class="btn btn-round btn-success btn-ladda" data-style="slide-up" [ladda]='loadingDownload' (click)="$event.preventDefault(); download('csv');">
+                    <i class="fa fa-download"></i> &nbsp; Download
+                  </button>
+                </div>
+                <div class="col col-md-12">
+                  <p></p>
+                  <button tooltip="Share this device" class="btn btn-round btn-organization btn-ladda" data-style="slide-up" (click)="$event.preventDefault(); showShareDeviceWithOrganizationModal()">
+                    <i class="fa fa-share"></i> &nbsp; Share
+                  </button>
+                </div>
+                <div *ngIf="deviceToEdit.Organizations.length>0" class="col col-md-12">
+                  <p></p>
+                  <table class="table table-hover table-outline" [mfData]="deviceToEdit.Organizations" #mf="mfDataTable" [mfRowsOnPage]="20">
+                    <thead class="thead-inverse">
+                    <tr>
+                      <th class="text-center">
+                        <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                      </th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let orga of mf.data; let i = index">
+                      <td class="text-center">
+                        <a [routerLink]="['/organization/' + orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
+                      </td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-organization btn-round" tooltip="Unshare this device"
+                                (click)="unshare(orga, deviceToEdit, i)"><i class="fa fa-sign-out fa-lg"></i></button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+
               </tab>
             </tabset>
           </form>
@@ -349,43 +233,60 @@
     <div [ngClass]="(edit)?'col-md-6 col-xs-12':'col-12 col-sm-12'">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-thermometer fa-lg text-device"></i> <strong>Devices</strong>
+          <div class="row">
+            <div class="col-md-6">
+              <i class="fa fa-microchip fa-lg text-device"></i> <strong>Devices</strong>
+            </div>
+            <div class="col-md-4 offset-md-2">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="card-block">
-          <ng-container *ngIf="!devices.length">
-            No device yet...
+          <ng-container *ngIf="!devicesReady">
+            Loading devices...
             <div class="sk-double-bounce">
               <div class="sk-child sk-double-bounce1"></div>
               <div class="sk-child sk-double-bounce2"></div>
             </div>
           </ng-container>
+          <ng-container *ngIf="devicesReady && !devices.length">
+            No devices yet...
+          </ng-container>
 
-          <!--Table-->
+          <!-- Table -->
           <div *ngIf="devices.length > 0" class="table-responsive">
-            <table class="table table-hover table-outline" [mfData]="devices" #mf="mfDataTable" [mfRowsOnPage]="10">
+            <table class="table table-hover table-outline" [mfData]="devices | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="20">
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">
                   <mfDefaultSorter by="id"><i class="fa fa-sort"></i> ID</mfDefaultSorter>
                 </th>
                 <th class="text-center">
-                  <mfDefaultSorter by="downlinkData"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
+                  <mfDefaultSorter by="data_downlink"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
                 </th>
                 <th *ngIf="!edit" class="text-center">
-                  <mfDefaultSorter by="location"><i class="fa fa-sort"></i> Geoloc</mfDefaultSorter>
+                  Geoloc
                 </th>
-                <th class="text-center">Last Message</th>
+                <th class="text-center">
+                  <mfDefaultSorter by="updatedAt"><i class="fa fa-sort"></i> Last Message</mfDefaultSorter>
+                </th>
                 <th *ngIf="!edit" class="text-center">
                   <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>
                 </th>
-                <!--<th *ngIf="!edit" class="text-center">Last Update</th>-->
+                <th *ngIf="!edit" class="text-center">
+                  <mfDefaultSorter by="successRate"><i class="fa fa-sort"></i> Success Rate</mfDefaultSorter>
+                </th>
                 <th class="text-center">Action</th>
               </tr>
               </thead>
               <tbody>
               <tr *ngFor="let device of mf.data; let i = index">
                 <td class="text-center">
-                  <a [routerLink]="['/device-messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
+                  <a [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
                 </td>
                 <td>
                   <div class="small">
@@ -400,27 +301,25 @@
                     <span class="text-gray-dark">Category: </span>
                     <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
                   </div>
-                  <div *ngIf="device.downlinkData" class="small">
+                  <div *ngIf="device.data_downlink" class="small">
                     <span class="text-gray-dark">Downlink: </span>
-                    <span class="text-message">{{device.downlinkData}}</span>
+                    <span class="text-message">{{device.data_downlink}}</span>
                   </div>
                 </td>
                 <td *ngIf="!edit" class="text-center">
-                  <div *ngIf="device.location">
-                    <div *ngFor="let geoloc of device.location">
+                  <div *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
+                    <div *ngFor="let geoloc of device.Messages[0].Geolocs">
                       <div class="row">
                         <div class="col col-12">
                           <ng-container *ngIf="geoloc.type === 'sigfox'">
-                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
-                               class="small text-geoloc-sigfox">
+                            <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)" class="small text-geoloc-sigfox">
                               <i class="fa fa-map-marker fa-2x"></i>
                               <br>
-                              <strong>Sigfox Geoloc</strong>
+                              <strong>Sigfox</strong>
                             </a>
                           </ng-container>
-                          <ng-container *ngIf="geoloc.type === 'GPS'">
-                            <a href="javascript:void(0)" (click)="zoomOnDevice((geoloc.type + '_' + device.id), geoloc)"
-                               class="small text-geoloc-gps">
+                          <ng-container *ngIf="geoloc.type === 'gps'">
+                            <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)" class="small text-geoloc-gps">
                               <i class="fa fa-map-marker fa-2x"></i>
                               <br>
                               <strong>GPS</strong>
@@ -445,14 +344,21 @@
                     </div>
                   </div>
                 </td>
-                <!--<td *ngIf="!edit" class="text-center">
-                  <strong>{{device.updatedAt | amTimeAgo}}</strong>
-                </td>-->
+                <td *ngIf="!edit" class="text-center">
+                  <strong *ngIf="device.successRate" tooltip="Based on the last 100 received">{{device.successRate + ' %'}}</strong>
+                  <span *ngIf="!device.successRate">N/A</span>
+                </td>
                 <td class="text-center">
-                  <div class="btn-group-sm">
+                  <div *ngIf="!organization" class="btn-group-sm">
                     <button class="btn btn-outline-primary btn-round" tooltip="Edit device"
                             (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
                     <button class="btn btn-outline-danger btn-round" tooltip="Delete device"
+                            (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
+                  </div>
+                  <div *ngIf="organization" class="btn-group-sm">
+                    <button disabled class="btn btn-outline-primary btn-round" tooltip="Edit device"
+                            (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
+                    <button disabled class="btn btn-outline-danger btn-round" tooltip="Delete device"
                             (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
                   </div>
                 </td>
@@ -467,6 +373,8 @@
               </tfoot>
             </table>
           </div>
+          <!-- End Table -->
+
         </div>
       </div>
     </div>
@@ -541,6 +449,41 @@
       <div class="modal-footer">
         <button class="btn btn-sm btn-success" (click)="parseAllMessages(deviceToEdit.id)">Parse</button>
         <button class="btn btn-sm btn-default" (click)="confirmParseModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div bsModal #shareDeviceWithOrganizationModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="shareDeviceWithOrganizationModal"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Share this device <b>{{deviceToEdit.id}}</b> with an organization</h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="shareDeviceWithOrganization(deviceToEdit.id)" class="form-horizontal" #editForm="ngForm">
+
+
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Select organizations</label>
+            <div class="col-md-9">
+              <angular2-multiselect name="selectOrganizations"
+                                    [data]="selectOrganizations"
+                                    [(ngModel)]="selectedOrganizations"
+                                    [settings]="selectOrganizationsSettings">
+              </angular2-multiselect>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-organization" (click)="shareDeviceWithOrganization(deviceToEdit.id)">Share</button>
+        <button class="btn btn-sm btn-default" (click)="shareDeviceWithOrganizationModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

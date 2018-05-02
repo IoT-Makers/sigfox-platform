@@ -1,7 +1,8 @@
 import {Component} from '@angular/core';
-import {AccessToken, User} from '../../../shared/sdk/models';
-import {UserApi} from '../../../shared/sdk/services';
+import {AccessToken, AppSetting, User} from '../../../shared/sdk/models';
+import {UserApi, AppSettingApi} from '../../../shared/sdk/services';
 import {Router} from '@angular/router';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-register',
@@ -14,7 +15,15 @@ export class RegisterComponent {
   private verifyPassword = '';
   private errorMessage = '';
 
-  constructor(private userApi: UserApi, private router: Router) {
+  private setting: AppSetting;
+  private settings: AppSetting[] = [];
+
+  private canUserRegister: any = false;
+
+  constructor(private userApi: UserApi,
+              private appSettingApi: AppSettingApi,
+              private router: Router) {
+    this.getAppSettings();
   }
 
   onRegister(): void {
@@ -23,6 +32,8 @@ export class RegisterComponent {
       this.errorMessage = 'Passwords do not match';
       return;
     }
+
+    this.user.email = this.user.email.toLocaleLowerCase();
 
     this.user.id = null;
     this.user.createdAt = new Date();
@@ -55,7 +66,7 @@ export class RegisterComponent {
         this.userApi.patchAttributes(
           token.userId,
           {
-            'lastLogin': new Date()
+            'loggedAt': new Date()
           }
         ).subscribe();
         // Redirect to the /dashboard
@@ -70,5 +81,17 @@ export class RegisterComponent {
           this.errorMessage = err.message;
         }
       });
+  }
+
+  getAppSettings(): void {
+    this.appSettingApi.find().subscribe((settings: AppSetting[])=> {
+      this.settings = settings;
+      let temp = _.filter(settings, {key: 'canUserRegister'});
+      this.canUserRegister = temp[0].value;
+      if(this.canUserRegister == false){
+        this.router.navigate(['/login']);
+      }
+      console.log(this.canUserRegister);
+    });
   }
 }

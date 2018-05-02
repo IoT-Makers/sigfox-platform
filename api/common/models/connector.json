@@ -25,6 +25,9 @@
       }
     ]
   },
+  "hidden": [
+    "password"
+  ],
   "properties": {
     "type": {
       "type": "string",
@@ -38,12 +41,10 @@
       "type": "string"
     },
     "login": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "password": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "host": {
       "type": "string"
@@ -51,11 +52,19 @@
     "port": {
       "type": "number"
     },
+    "topic": {
+      "type": "string"
+    },
     "recipient": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "method": {
       "type": "string"
     }
   },
-  "hidden": ["password"],
   "validations": [],
   "relations": {
     "user": {
@@ -87,12 +96,6 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$owner",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "organizationMember",
       "permission": "ALLOW"
     }
   ],

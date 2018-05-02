@@ -12,6 +12,9 @@
 @import "bootstrap_src/mixins";
 @import "core/mixins";
 
+// Widget custom
+@import "battery";
+
 // Reset and dependencies
 @import "bootstrap_src/normalize";
 @import "bootstrap_src/print";

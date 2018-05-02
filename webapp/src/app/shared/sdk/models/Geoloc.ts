@@ -1,22 +1,41 @@
 /* tslint:disable */
+import {
+  GeoPoint
+} from '../index';
 
 declare var Object: any;
 export interface GeolocInterface {
   "type": string;
-  "lat": number;
-  "lng": number;
+  "location": GeoPoint;
   "precision"?: number;
   "createdAt"?: Date;
-  "id"?: number;
+  "id"?: any;
+  "deviceId"?: string;
+  "messageId"?: any;
+  "updatedAt"?: Date;
+  "userId"?: any;
+  "organizationId"?: any;
+  Device?: any;
+  Message?: any;
+  user?: any;
+  Organization?: any;
 }
 
 export class Geoloc implements GeolocInterface {
   "type": string = '';
-  "lat": number = 0;
-  "lng": number = 0;
+  "location": GeoPoint = <any>null;
   "precision": number = 0;
   "createdAt": Date = new Date(0);
-  "id": number = 0;
+  "id": any = <any>null;
+  "deviceId": string = '';
+  "messageId": any = <any>null;
+  "updatedAt": Date = new Date(0);
+  "userId": any = <any>null;
+  "organizationId": any = <any>null;
+  Device: any = null;
+  Message: any = null;
+  user: any = null;
+  Organization: any = null;
   constructor(data?: GeolocInterface) {
     Object.assign(this, data);
   }
@@ -54,13 +73,9 @@ export class Geoloc implements GeolocInterface {
           name: 'type',
           type: 'string'
         },
-        "lat": {
-          name: 'lat',
-          type: 'number'
-        },
-        "lng": {
-          name: 'lng',
-          type: 'number'
+        "location": {
+          name: 'location',
+          type: 'GeoPoint'
         },
         "precision": {
           name: 'precision',
@@ -72,10 +87,62 @@ export class Geoloc implements GeolocInterface {
         },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
+        },
+        "deviceId": {
+          name: 'deviceId',
+          type: 'string'
+        },
+        "messageId": {
+          name: 'messageId',
+          type: 'any'
+        },
+        "updatedAt": {
+          name: 'updatedAt',
+          type: 'Date'
+        },
+        "userId": {
+          name: 'userId',
+          type: 'any'
+        },
+        "organizationId": {
+          name: 'organizationId',
+          type: 'any'
         },
       },
       relations: {
+        Device: {
+          name: 'Device',
+          type: 'any',
+          model: '',
+          relationType: 'belongsTo',
+                  keyFrom: 'deviceId',
+          keyTo: 'id'
+        },
+        Message: {
+          name: 'Message',
+          type: 'any',
+          model: '',
+          relationType: 'belongsTo',
+                  keyFrom: 'messageId',
+          keyTo: 'id'
+        },
+        user: {
+          name: 'user',
+          type: 'any',
+          model: '',
+          relationType: 'belongsTo',
+                  keyFrom: 'userId',
+          keyTo: 'id'
+        },
+        Organization: {
+          name: 'Organization',
+          type: 'any',
+          model: '',
+          relationType: 'belongsTo',
+                  keyFrom: 'organizationId',
+          keyTo: 'id'
+        },
       }
     }
   }

@@ -18,6 +18,10 @@ Object.assign(BaseLoopbackActionTypesFactory('Parser'), {
   UPDATE_BY_ID_DEVICES_SUCCESS: type('[Parser] updateByIdDevices success'),
   UPDATE_BY_ID_DEVICES_FAIL: type('[Parser] updateByIdDevices fail'),
 
+  GET_USER: type('[Parser] getUser'),
+  GET_USER_SUCCESS: type('[Parser] getUser success'),
+  GET_USER_FAIL: type('[Parser] getUser fail'),
+
   GET_ORGANIZATION: type('[Parser] getOrganization'),
   GET_ORGANIZATION_SUCCESS: type('[Parser] getOrganization success'),
   GET_ORGANIZATION_FAIL: type('[Parser] getOrganization fail'),
@@ -37,6 +41,14 @@ Object.assign(BaseLoopbackActionTypesFactory('Parser'), {
   PARSE_PAYLOAD: type('[Parser] parsePayload'),
   PARSE_PAYLOAD_SUCCESS: type('[Parser] parsePayload success'),
   PARSE_PAYLOAD_FAIL: type('[Parser] parsePayload fail'),
+
+  PARSE_ALL_MESSAGES: type('[Parser] parseAllMessages'),
+  PARSE_ALL_MESSAGES_SUCCESS: type('[Parser] parseAllMessages success'),
+  PARSE_ALL_MESSAGES_FAIL: type('[Parser] parseAllMessages fail'),
+
+  PARSE_ALL_DEVICES: type('[Parser] parseAllDevices'),
+  PARSE_ALL_DEVICES_SUCCESS: type('[Parser] parseAllDevices success'),
+  PARSE_ALL_DEVICES_FAIL: type('[Parser] parseAllDevices fail'),
 
   CREATE_MANY_DEVICES: type('[Parser] createManyDevices'),
   CREATE_MANY_DEVICES_SUCCESS: type('[Parser] createManyDevices success'),
@@ -183,6 +195,52 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   updateByIdDevicesFail: class implements Action {
     public readonly type = ParserActionTypes.UPDATE_BY_ID_DEVICES_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * getUser Action.
+   * Fetches belongsTo relation user.
+   *
+   * @param {any} id Parser id
+   * @param {boolean} refresh 
+   * @param {any} meta (optional).
+   * 
+   */
+  getUser: class implements Action {
+    public readonly type = ParserActionTypes.GET_USER;
+      public payload: {id: any, refresh: any};
+
+    constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, refresh};
+    }
+  },
+  /**
+   * getUserSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  getUserSuccess: class implements Action {
+    public readonly type = ParserActionTypes.GET_USER_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * getUserFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  getUserFail: class implements Action {
+    public readonly type = ParserActionTypes.GET_USER_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },
@@ -372,9 +430,13 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} fn Parser function
-   * @param {string} payload Sigfox payload (12 bytes max)
-   * @param {object} req 
+   * @param {object} data Request data.
+   *
+   *  - `fn` – `{string}` - Parser function
+   *
+   *  - `payload` – `{string}` - Sigfox payload (12 bytes max)
+   *
+   *  - `req` – `{object}` - 
    * @param {any} meta (optional).
    * 
    */
@@ -413,6 +475,108 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   parsePayloadFail: class implements Action {
     public readonly type = ParserActionTypes.PARSE_PAYLOAD_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * parseAllMessages Action.
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `id` – `{string}` - Device Id
+   *
+   *  - `req` – `{object}` - 
+   * @param {any} meta (optional).
+   * 
+   */
+  parseAllMessages: class implements Action {
+    public readonly type = ParserActionTypes.PARSE_ALL_MESSAGES;
+      public payload: {id: any, req: any};
+
+    constructor(id: any, req: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, req};
+    }
+  },
+  /**
+   * parseAllMessagesSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  parseAllMessagesSuccess: class implements Action {
+    public readonly type = ParserActionTypes.PARSE_ALL_MESSAGES_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * parseAllMessagesFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  parseAllMessagesFail: class implements Action {
+    public readonly type = ParserActionTypes.PARSE_ALL_MESSAGES_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * parseAllDevices Action.
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `id` – `{string}` - Parser Id
+   *
+   *  - `req` – `{object}` - 
+   * @param {any} meta (optional).
+   * 
+   */
+  parseAllDevices: class implements Action {
+    public readonly type = ParserActionTypes.PARSE_ALL_DEVICES;
+      public payload: {id: any, req: any};
+
+    constructor(id: any, req: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, req};
+    }
+  },
+  /**
+   * parseAllDevicesSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  parseAllDevicesSuccess: class implements Action {
+    public readonly type = ParserActionTypes.PARSE_ALL_DEVICES_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * parseAllDevicesFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  parseAllDevicesFail: class implements Action {
+    public readonly type = ParserActionTypes.PARSE_ALL_DEVICES_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

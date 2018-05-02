@@ -102,14 +102,15 @@ export class AppSettingApi extends BaseLoopBackApi {
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * Data properties:
-   *
-   *  - `result` – `{any}` - 
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `AppSetting` object.)
+   * </em>
    */
-  public myRemote(customHeaders?: Function): Observable<any> {
+  public getVersion(customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/AppSettings/my-remote";
+    "/AppSettings/version";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};

@@ -1,7 +1,8 @@
 {
   "name": "Reception",
+  "plural": "Receptions",
   "base": "Model",
-  "idInjection": true,
+  "idInjection": false,
   "options": {
     "validateUpsert": true
   },
@@ -80,12 +81,6 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$owner",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "organizationMember",
       "permission": "ALLOW"
     }
   ],

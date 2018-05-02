@@ -31,56 +31,49 @@
       "id": true,
       "required": true
     },
-    "creation": {
-      "type": "date"
-    },
     "name": {
       "type": "string"
     },
-    "data_parsed": {
-      "type": [
-        "object"
-      ]
+    "successRate": {
+      "type": "number"
     },
-    "downlinkData": {
+    "data_downlink": {
       "type": "string"
-    },
-    "location": {
-      "type": [
-        "Geoloc"
-      ]
-    },
-    "alerts": {
-      "type": [
-        "Alert"
-      ]
     },
     "properties": {
       "type": [
         "object"
       ]
+    },
+    "locatedAt": {
+      "type": "date"
     }
   },
   "validations": [],
   "relations": {
-    "Parser": {
-      "type": "belongsTo",
-      "model": "Parser",
-      "foreignKey": "parserId"
-    },
     "user": {
       "type": "belongsTo",
       "model": "user",
       "foreignKey": "userId"
     },
-    "Organization": {
-      "type": "belongsTo",
+    "Organizations": {
+      "type": "hasAndBelongsToMany",
       "model": "Organization",
       "foreignKey": "organizationId"
+    },
+    "Category": {
+      "type": "belongsTo",
+      "model": "Category",
+      "foreignKey": "categoryId"
     },
     "Messages": {
       "type": "hasMany",
       "model": "Message",
+      "foreignKey": "deviceId"
+    },
+    "Geolocs": {
+      "type": "hasMany",
+      "model": "Geoloc",
       "foreignKey": "deviceId"
     },
     "Alerts": {
@@ -88,10 +81,10 @@
       "model": "Alert",
       "foreignKey": "deviceId"
     },
-    "Category": {
+    "Parser": {
       "type": "belongsTo",
-      "model": "Category",
-      "foreignKey": "categoryId"
+      "model": "Parser",
+      "foreignKey": "parserId"
     }
   },
   "acls": [
@@ -117,12 +110,6 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$owner",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "organizationMember",
       "permission": "ALLOW"
     }
   ],

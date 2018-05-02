@@ -6,8 +6,8 @@
   "author": "",
   "license": "MIT",
   "engines": {
-    "node": "8.4.0",
-    "npm": "5.3.0"
+    "node": "8.9.4",
+    "npm": "5.6.x"
   },
   "scripts": {
     "preinstall": "cd api/ && npm install && cd ../webapp && npm install && cd ..",

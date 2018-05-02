@@ -2,6 +2,9 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {FullLayoutComponent} from './layouts/full-layout.component';
 import {AuthGuard} from './_guards/auth.guard';
+import {AdminGuard} from './_guards/admin.guard';
+import {DashboardGuard} from './_guards/dashboard.guard';
+import {OrganizationGuard} from './_guards/organization.guard';
 
 export const routes: Routes = [
   {path: 'login', loadChildren: './pages/user/login/login.module#LoginModule'},
@@ -16,12 +19,13 @@ export const routes: Routes = [
     children: [
       {path: '', loadChildren: './pages/overview/overview.module#OverviewModule'},
 
-      {path: 'dashboard/:id', loadChildren: './pages/dashboard/custom-dashboard.module#CustomDashboardModule'},
+      {path: 'dashboard/:id', canActivate: [DashboardGuard], loadChildren: './pages/dashboard/custom-dashboard.module#CustomDashboardModule'},
 
       {path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule'},
       {path: 'devices', loadChildren: './pages/devices/devices.module#DevicesModule'},
-      {path: 'device-messages/:id', loadChildren: './pages/messages/messages.module#MessagesModule'},
+      {path: 'alerts', loadChildren: './pages/alerts/alerts.module#AlertsModule'},
       {path: 'messages', loadChildren: './pages/messages/messages.module#MessagesModule'},
+      {path: 'messages/:id', loadChildren: './pages/messages/messages.module#MessagesModule'},
 
       {path: 'profile', loadChildren: './pages/user/profile/profile.module#ProfileModule'},
 
@@ -30,8 +34,27 @@ export const routes: Routes = [
       {path: 'analytics', loadChildren: './widgets/analytics/analytics.module#AnalyticsModule'},
 
       {path: 'parsers', loadChildren: './pages/parsers/parsers.module#ParsersModule'},
-      {path: 'connectors', loadChildren: './pages/connectors/connectors.module#ConnectorsModule'}
+      {path: 'connectors', loadChildren: './pages/connectors/connectors.module#ConnectorsModule'},
 
+      {path: 'admin', canActivate: [AdminGuard], loadChildren: './pages/admin/admin.module#AdminModule'}
+    ]
+  },
+  {
+    path: 'organization/:id',
+    canActivate: [AuthGuard, OrganizationGuard],
+    component: FullLayoutComponent,
+    data: {
+      title: 'Organization'
+    },
+    children: [
+      {path: '', loadChildren: './pages/overview/overview.module#OverviewModule'},
+
+      {path: 'dashboard/:id', loadChildren: './pages/dashboard/custom-dashboard.module#CustomDashboardModule'},
+
+      {path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule'},
+      {path: 'devices', loadChildren: './pages/devices/devices.module#DevicesModule'},
+      {path: 'messages', loadChildren: './pages/messages/messages.module#MessagesModule'},
+      {path: 'messages/:id', loadChildren: './pages/messages/messages.module#MessagesModule'}
     ]
   },
   {path: 'not-found', loadChildren: './pages/not-found/not-found.module#NotFoundModule'},

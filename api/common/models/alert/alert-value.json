@@ -1,21 +1,21 @@
 {
-  "name": "Alert",
+  "name": "AlertValue",
+  "plural": "AlertValues",
   "base": "Model",
   "idInjection": false,
   "options": {
     "validateUpsert": true
   },
   "mixins": {
-    "FireLoop": false,
+    "FireLoop": true,
     "TimeStamp": {
-      "required": false,
-      "validateUpsert": true
+      "required": false
     },
     "Stats": [
       {
         "method": "stats",
         "endpoint": "/stats",
-        "description": "Statistical information for Message registers.",
+        "description": "Statistical information for AlertValue registers.",
         "type": "model",
         "count": {
           "on": "createdAt",
@@ -25,36 +25,25 @@
     ]
   },
   "properties": {
-    "connectorId": {
-      "type": "string",
-      "required": true
-    },
-    "key": {
-      "type": "string",
-      "required": true
-    },
-    "value_min": {
+    "exact": {
       "type": "any",
       "default": null
     },
-    "value_max": {
+    "min": {
       "type": "any",
       "default": null
     },
-    "value_less": {
+    "max": {
       "type": "any",
       "default": null
     },
-    "value_more": {
+    "less": {
       "type": "any",
       "default": null
     },
-    "value_exact": {
+    "more": {
       "type": "any",
       "default": null
-    },
-    "message": {
-      "type": "string"
     }
   },
   "validations": [],

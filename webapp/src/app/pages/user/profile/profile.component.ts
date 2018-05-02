@@ -1,9 +1,8 @@
-import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {UserApi} from '../../../shared/sdk/services/custom/User';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {OrganizationApi, RealTime, UserApi} from '../../../shared/sdk/services';
 import {DOCUMENT} from '@angular/common';
-import {User} from '../../../shared/sdk/models';
+import {Organization, User} from '../../../shared/sdk/models';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {FullLayoutComponent} from '../../../layouts/full-layout.component';
 import {Router} from '@angular/router';
 
 @Component({
@@ -15,6 +14,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private user: User;
 
+  private organization: Organization;
+  private organizations: Organization[] = [];
+
+  @ViewChild('avatarImg') avatarImg: ElementRef;
   @ViewChild('updatePasswordModal') updatePasswordModal: any;
   @ViewChild('updateUserModal') updateUserModal: any;
   @ViewChild('deleteUserModal') deleteUserModal: any;
@@ -23,7 +26,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private newPassword;
   private newPasswordConfirm;
 
+  // Flag
+  private organizationsReady = false;
+
   // Notifications
+  private toast;
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
@@ -33,7 +40,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
 
   constructor(@Inject(DOCUMENT) private document: any,
+              private rt: RealTime,
               private userApi: UserApi,
+              private organizationApi: OrganizationApi,
               toasterService: ToasterService,
               private router: Router) {
     this.toasterService = toasterService;
@@ -46,16 +55,30 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
+  getOrganizations(): void {
+    this.userApi.getOrganizations(this.user.id, {include: 'Members'}).subscribe((organizations: Organization[]) => {
+      this.organizations = organizations;
+      this.organizationsReady = true;
+      console.log(organizations);
+    });
+  }
+
   updatePassword(): void {
     if (this.newPassword === this.newPasswordConfirm) {
       this.userApi.changePassword(this.oldPassword, this.newPassword).subscribe((result: any) => {
-        this.toasterService.pop('success', 'Success', 'Password was successfully modified.');
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('success', 'Success', 'Password was successfully modified.');
         this.updatePasswordModal.hide();
       }, (error: any) => {
-        this.toasterService.pop('error', 'Error', error.message);
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', error.message);
       });
     } else {
-      this.toasterService.pop('error', 'Error', 'Please make sure the passwords match.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', 'Please make sure the passwords match.');
     }
   }
 
@@ -69,14 +92,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
     ).subscribe((user: User) => {
       this.user = user;
-      this.toasterService.pop('success', 'Success', 'Profile was updated successfully.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Profile was updated successfully.');
       this.updateUserModal.hide();
+      //this.rt.onReady().subscribe();
     });
   }
 
   deleteUser(): void {
     this.userApi.deleteById(this.user.id).subscribe((value: any) => {
-      this.toasterService.pop('success', 'Success', 'Account was deleted successfully.');
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Account was deleted successfully.');
       this.deleteUserModal.hide();
     });
 
@@ -88,11 +116,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
+  leaveOrganization(item): void {
+    this.organizationApi.unlinkMembers(item.id, this.user.id).subscribe(result => {
+      this.getOrganizations();
+    });
+  }
+
   ngOnInit() {
     console.log('Profile: ngOnInit');
 
     // Get the logged in User object
     this.getUser();
+    this.getOrganizations();
   }
 
   ngOnDestroy() {

@@ -2,7 +2,9 @@ import {Model} from '@mean-expert/model';
 import * as _ from 'lodash';
 
 const moment = require('moment');
-const request = require('request');
+const loopback = require('loopback');
+const json2csv = require('json2csv').parse;
+
 
 /**
  * @module Device
@@ -13,32 +15,46 @@ const request = require('request');
  **/
 @Model({
   hooks: {
-    beforeSave: {name: 'before save', type: 'operation'}/*,
+    beforeSave: {name: 'before save', type: 'operation'},
+    beforeDelete: { name: 'before delete', type: 'operation' }/*,
     access: {name: 'access', type: 'operation'}*/
   },
   remotes: {
+    download: {
+      accepts: [
+        {arg: 'id', required: true, type: 'string', http: {source: 'path'}},
+        {arg: 'type', required: true, type: 'string', http: {source: 'path'}},
+        {arg: 'req', type: 'object', http: {source: 'req'}},
+        {arg: 'res', type: 'object', http: {source: 'res'}}
+      ],
+      http: {
+        path: '/download/:id/:type',
+        verb: 'get'
+      },
+      returns: {type: 'object', root: true}
+    },
     timeSeries: {
       accepts: [
-        {arg: 'deviceId', type: 'string', required: true, description: 'the deviceId'},
+        {arg: 'deviceId', type: 'string', required: true, description: 'Device Id'},
         {
           arg: 'dateBegin',
           type: 'string',
           default: moment().subtract(1, 'hours'),
-          description: 'the starting date-time'
+          description: 'The starting date-time'
         },
-        {arg: 'dateEnd', type: 'string', default: moment(), description: 'the ending date-time'},
+        {arg: 'dateEnd', type: 'string', default: moment(), description: 'The ending date-time'},
         {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
       returns: {arg: 'result', type: 'array'},
       http: {path: '/time-series', verb: 'get'}
     },
-    deleteDeviceAndMessages: {
+    deleteDeviceMessagesAlertsGeolocs: {
       accepts: [
         {arg: 'deviceId', type: 'string', required: true},
         {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
       http: {
-        path: '/Messages',
+        path: '/delete-device-messages-alerts-geolocs',
         verb: 'delete'
       },
       returns: {root: true}
@@ -55,17 +71,6 @@ const request = require('request');
         verb: 'get'
       },
       returns: {type: [], root: true}
-    },
-    parseAllMessages: {
-      accepts: [
-        {arg: 'id', type: 'string', required: true, description: 'Device Id'},
-        {arg: 'req', type: 'object', http: {source: 'req'}}
-      ],
-      http: {
-        path: '/:id/parse-messages',
-        verb: 'put'
-      },
-      returns: {type: [], root: true}
     }
   }
 })
@@ -78,11 +83,17 @@ class Device {
   constructor(public model: any) {
   }
 
-  deleteDeviceAndMessages(deviceId: string, req: any, next: Function): void {
-    // Obtain the userId with the access_token of ctx
+  deleteDeviceMessagesAlertsGeolocs(deviceId: string, req: any, next: Function): void {
+    // Models
+    const Device = this.model;
+    const Geoloc = this.model.app.models.Geoloc;
+    const Message = this.model.app.models.Message;
+    const Alert = this.model.app.models.Alert;
+
+    // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
     // Find device
-    this.model.findOne(
+    Device.findOne(
       {
         where: {
           and: [
@@ -95,17 +106,12 @@ class Device {
           console.error('Device not found for suppression.');
           next(err, 'Device not found for suppression.');
         } else if (deviceInstance) {
-          console.log('Deleting device ' + deviceId + ' and all its corresponding messages.');
+          console.log('Deleting device ' + deviceId + ' and all its corresponding messages, alerts & geolocs.');
 
-          this.model.app.models.Message.destroyAll({deviceId: deviceId}, (err: any, result: any) => {
-            if (!err) {
-              this.model.destroyById(deviceId, (error: any, result: any) => {
-                next(null, result);
-              });
-            } else {
-              next(err, 'Error for messages suppression with device ID ' + deviceId);
-            }
-          });
+          Device.destroyAll({id: deviceId}, (error: any, result: any) => { if (!err) next(null, 'Success'); });
+          Message.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
+          Geoloc.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
+          Alert.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
         }
       });
   }
@@ -118,7 +124,7 @@ class Device {
 
 
   timeSeries(deviceId: string, dateBegin: string, dateEnd: string, req: any, next: Function): void {
-    // Obtain the userId with the access_token of ctx
+    // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
     const result: any = {
@@ -213,13 +219,19 @@ class Device {
   }
 
   getMessagesFromSigfoxBackend(deviceId: string, limit: number, before: number, req: any, next: Function): void {
+    // Models
+    const Device = this.model;
+    const Message = this.model.app.models.Message;
+    const Geoloc = this.model.app.models.Geoloc;
+    const Connector = this.model.app.models.Connector;
+
     const userId = req.accessToken.userId;
 
     if (!limit) {
       limit = 100;
     }
 
-    this.model.app.models.Connector.findOne(
+    Connector.findOne(
       {
         where: {
           userId: userId,
@@ -240,7 +252,6 @@ class Device {
             // let messages: any[] = [];
             let message: any;
             let reception: any[] = [];
-            let geoloc: any[] = [];
 
             const credentials = new Buffer(sigfoxApiLogin + ':' + sigfoxApiPassword).toString('base64');
 
@@ -252,8 +263,7 @@ class Device {
             ).then((result: any) => {
               // console.log("Length: ", result.data.length);
               // console.log("Next: ", result.paging.next);
-              result.data.forEach((messageInstance: any) => {
-
+              result.data.forEach((messageInstance: any, msgCounter: number) => {
                 reception = [];
                 messageInstance.rinfos.forEach((o: any) => {
                   const rinfo: any = {
@@ -265,15 +275,6 @@ class Device {
                   };
                   reception.push(rinfo);
                 });
-                if (messageInstance.computedLocation) {
-                  geoloc = [{
-                    type: 'sigfox',
-                    lat: messageInstance.computedLocation.lat,
-                    lng: messageInstance.computedLocation.lng,
-                    precision: messageInstance.computedLocation.radius,
-                    createdAt: new Date(messageInstance.time * 1000)
-                  }];
-                }
 
                 message = {
                   userId: userId,
@@ -282,11 +283,10 @@ class Device {
                   seqNumber: messageInstance.seqNumber,
                   data: messageInstance.data,
                   reception: reception,
-                  geoloc: geoloc,
                   createdAt: new Date(messageInstance.time * 1000),
                   updatedAt: new Date(messageInstance.time * 1000),
                 };
-                this.model.app.models.Message.findOrCreate(
+                Message.findOrCreate(
                   {
                     where: {
                       and: [
@@ -305,21 +305,60 @@ class Device {
                       if (created) {
                         console.log('Created new message.');
                       } else {
-                        console.log('Found an existing message: ');
+                        console.log('Found an existing message.');
+                      }
+
+                      if (messageInstance.computedLocation) {
+                        // Build the Geoloc object
+                        const geoloc = new Geoloc;
+                        geoloc.type = 'sigfox';
+                        geoloc.location = new loopback.GeoPoint({lat: messageInstance.computedLocation.lat, lng: messageInstance.computedLocation.lng});
+                        geoloc.precision = messageInstance.computedLocation.radius;
+                        geoloc.createdAt = messagePostProcess.createdAt;
+                        geoloc.userId = messagePostProcess.userId;
+                        geoloc.messageId = messagePostProcess.id;
+                        geoloc.deviceId = messagePostProcess.deviceId;
+                        // Find or create a new Geoloc
+                        Geoloc.findOrCreate(
+                          {
+                            where: {
+                              and: [
+                                {type: geoloc.type},
+                                {location: geoloc.location},
+                                {createdAt: geoloc.createdAt},
+                                {messageId: geoloc.messageId},
+                                {deviceId: geoloc.deviceId}
+                              ]
+                            }
+                          },
+                          geoloc,
+                          (err: any, geolocInstance: any, created: boolean) => {
+                            if (err) {
+                              console.error(err);
+                            } else {
+                              if (created) {
+                                console.log('Created geoloc as: ', geolocInstance);
+                              } else {
+                                console.log('Skipped geoloc creation.');
+                              }
+                            }
+                          });
                       }
                     }
                   });
 
-                message = {};
-
+                // Done
+                if (msgCounter === result.data.length - 1) {
+                  this.updateDeviceSuccessRate(messageInstance.device);
+                  next(null, result);
+                }
               });
-
-              next(null, result);
             }).catch((err: any) => {
-              if (err.statusCode === '403')
+              if (err.statusCode === '403') {
                 next(err, 'Your Sigfox API credentials are not allowed to do so.');
-              else
+              } else {
                 next(err, null);
+              }
             });
 
           } else {
@@ -329,101 +368,176 @@ class Device {
       });
   }
 
-  parseAllMessages(deviceId: string, req: any, next: Function): void {
-    const userId = req.accessToken.userId;
-
-    const Device = this.model.app.models.Device;
-    const Parser = this.model.app.models.Parser;
-    const Message = this.model.app.models.Message;
-    let loop = 0;
-
-    const response: any = {};
-
-    if (!userId) {
-      response.message = 'Please login or use a valid access token.';
-      next(null, response);
-    }
-
-    Device.findById(deviceId, {include: 'Messages'}, function (err: any, device: any) {
-
-      if (err) {
-        next(err, null);
-      } else {
-        device = device.toJSON();
-        // console.log(device);
-        if (!device.ParserId && !device.parserId) {
-          response.message = 'No parser associated to this device.';
-          next(null, response);
+  updateDeviceSuccessRate(deviceId: string) {
+    // Model
+    const Device = this.model;
+    Device.findOne(
+      {
+        where: {id: deviceId},
+        limit: 1,
+        include: [{
+          relation: 'Messages',
+          scope: {
+            order: 'createdAt DESC',
+            limit: 100
+          }
+        }]
+      },
+      function (err: any, device: any) {
+        if (err) {
+          console.error(err);
         } else {
-          // console.log(device.Messages);
-          Parser.findById(
-            device.parserId,
-            (err: any, parserInstance: any) => {
+          device = device.toJSON();
+          let attendedNbMessages: number;
+          attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber + 1;
+          if (device.Messages[device.Messages.length - 1].seqNumber > device.Messages[0].seqNumber) {
+            attendedNbMessages += 4095;
+          }
+          device.successRate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
+
+          Device.upsert(
+            device,
+            function (err: any, deviceUpdated: any) {
               if (err) {
-                console.log(err);
-                next(err, null);
-              } else if (parserInstance) {
-                const fn = Function('payload', parserInstance.function);
-
-                if (device.Messages) {
-                  device.Messages.forEach((message: any) => {
-                    loop++;
-                    if (message.data) {
-                      Parser.parsePayload(fn, message.data, req, function (err: any, data_parsed: any) {
-                        if (err) {
-                          next(err, null);
-                        } else {
-                          // console.log(data_parsed);
-                          const geoloc: any = {};
-                          if (data_parsed) {
-
-                            message.data_parsed = data_parsed;
-                            message.data_parsed.forEach((o: any) => {
-                              // Check if there is geoloc in parsed data
-                              if (o.key === 'geoloc')
-                                geoloc.type = o.value;
-                              else if (o.key === 'lat')
-                                geoloc.lat = o.value;
-                              else if (o.key === 'lng')
-                                geoloc.lng = o.value;
-                              else if (o.key === 'precision')
-                                geoloc.precision = o.value;
-                            });
-                            if (geoloc.type) {
-                              let addGeoloc = true;
-                              if (!message.geoloc) message.geoloc = [];
-                              else {
-                                message.geoloc.forEach((geo: any) => {
-                                  if (geo.type === geoloc.type) addGeoloc = false;
-                                });
-
-                                if (addGeoloc) message.geoloc.push(geoloc);
-                              }
-
-                            }
-                            Message.upsert(message, function (err: any, messageUpdated: any) {
-                              // console.log(messageUpdated);
-                            });
-                          }
-                        }
-                      });
-                    }
-                    // Send the result when all messages have been processed
-                    if (loop === device.Messages.length) {
-                      response.message = 'Success';
-                      next(null, response);
-                    }
-                  });
-                } else {
-                  response.message = 'This device has no messages.';
-                  next(null, response);
-                }
+                console.error(err);
               } else {
-                response.message = 'This device has no parser.';
-                next(null, response);
+                console.log('Updated device as: ' + deviceUpdated);
               }
             });
         }
+      });
+  }
+
+  download(deviceId: string, type: string, req: any, res: any, next: Function): void {
+    // Model
+    const Message = this.model.app.models.Message;
+
+    if ((type !== 'csv'
+      && type !== 'json')
+      || typeof deviceId === 'undefined') {
+      res.send('Missing "type" ("csv" or "json"), "deviceId"');
+    }
+
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
+    const today = moment().format('YYYY.MM.DD');
+    const filename = today + '_' + deviceId + '_export.csv';
+    res.set('Cache-Control', 'max-age=0, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Content-Type', 'application/force-download');
+    res.set('Content-Type', 'application/octet-stream');
+    res.set('Content-Type', 'application/download');
+    res.set('Content-Disposition', 'attachment;filename=' + filename);
+    res.set('Content-Transfer-Encoding', 'binary');
+
+    Message.find(
+      {
+        where: {
+          and: [
+            {userId: userId},
+            {deviceId: deviceId}
+          ]
+        },
+        include: ['Geolocs'],
+        order: 'createdAt DESC'
+      }, function (err: any, messages: any) {
+        if (err) {
+          console.error(err);
+          res.send(err);
+        } else if (messages) {
+          const data: any = [];
+          let csv: any = [];
+          const options: any = {
+            fields: []
+          };
+          options.fields.push('seqNumber');
+          options.fields.push('createdAt');
+          options.fields.push('year');
+          options.fields.push('month');
+          options.fields.push('day');
+          options.fields.push('hours');
+          options.fields.push('minutes');
+          options.fields.push('seconds');
+          options.fields.push('data');
+          options.fields.push('ack');
+          options.fields.push('data_downlink');
+
+          messages.forEach((message: any) => {
+            message = message.toJSON();
+            const obj: any = {};
+            const date = new Date(message.createdAt);
+
+            obj.seqNumber = message.seqNumber;
+            obj.createdAt = moment(message.createdAt).format('YYYY-MM-DD HH:mm:ss');
+            obj.year = date.getFullYear();
+            obj.month = date.getMonth() + 1;
+            obj.day = date.getDate();
+            obj.hours = date.getHours();
+            obj.minutes = date.getMinutes();
+            obj.seconds = date.getSeconds();
+            obj.data = message.data;
+            obj.ack = message.ack;
+            obj.data_downlink = message.data_downlink;
+
+            if (message.data_parsed) {
+              message.data_parsed.forEach((p: any) => {
+                if (options.fields.indexOf(p.key) === -1) {
+                  options.fields.push(p.key);
+                }
+                obj[p.key] = p.value;
+              });
+            }
+            if (message.Geolocs) {
+              message.Geolocs.forEach((geoloc: any) => {
+                if (options.fields.indexOf('lat_' + geoloc.type) === -1) {
+                  options.fields.push('lat_' + geoloc.type);
+                  options.fields.push('lng_' + geoloc.type);
+                  options.fields.push('precision_' + geoloc.type);
+                }
+                obj['lat_' + geoloc.type] = geoloc.location.lat;
+                obj['lng_' + geoloc.type] = geoloc.location.lng;
+                obj['precision_' + geoloc.type] = geoloc.precision;
+              });
+            }
+            data.push(obj);
+          });
+          if (data.length > 0) {
+            try {
+              csv = json2csv(data, options);
+              console.log('Done CSV processing.');
+            } catch (err) {
+              console.error(err);
+            }
+          }
+          //res.status(200).send({data: csv});
+          res.send(csv);
+          //next();
+        } else {
+          next(null, 'Error occured - not allowed');
+        }
+      });
+  }
+
+  // Before delete device, remove category organizaton links
+  beforeDelete(ctx: any, next: Function): void {
+    // Models
+    const Device = this.model;
+
+    Device.findOne({where: {id: ctx.where.id}, include: 'Organizations'}, (err: any, device: any) => {
+      // console.log(category);
+      if (!err) {
+        if (device && device.Organizations) {
+          device.toJSON().Organizations.forEach((orga: any) => {
+            device.Organizations.remove(orga.id, (err: any, result: any) => {
+              if (!err) {
+                console.log('Unlinked device from organization (' + orga.name + ')');
+              }
+            });
+          });
+        }
+        next(null, 'Unlinked device from organization');
+      } else {
+        next(err);
       }
     });
   }

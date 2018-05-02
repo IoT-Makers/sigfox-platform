@@ -3,6 +3,26 @@
     "name": "db",
     "connector": "memory"
   },
+  "mongodb": {
+    "name": "mongodb",
+    "connector": "mongodb"
+  },
+  "applicationEmail": {
+    "name": "applicationEmail",
+    "connector": "mail",
+    "transports": [
+      {
+        "type": "smtp",
+        "host": "smtp.mailgun.org",
+        "secure": true,
+        "port": 465,
+        "auth": {
+          "user": "postmaster@thenorthweb.com",
+          "pass": "dbe6e02c67249943f27d62fc4396fd78-833f99c3-e631ff78"
+        }
+      }
+    ]
+  },
   "freeMobile": {
     "name": "freeMobile",
     "connector": "rest",
@@ -79,15 +99,42 @@
   "email": {
     "name": "email",
     "connector": "mail",
-    "transports": [{
-      "type": "SMTP",
-      "host": "smtp.office365.com",
-      "secure": false,
-      "port": 587,
-      "auth": {
-        "user": "",
-        "pass": ""
+    "transports": [
+      {
+        "type": "SMTP",
+        "host": "smtp.office365.com",
+        "secure": false,
+        "port": 587,
+        "auth": {
+          "user": "",
+          "pass": ""
+        }
       }
-    }]
+    ]
+  },
+  "webhook": {
+    "name": "webhook",
+    "connector": "rest",
+    "debug": "true",
+    "operations": [
+      {
+        "template": {
+          "method": "{!method:string}",
+          "url": "{!url:string}",
+          "headers": {
+            "Authorization": "Basic {credentials:string}"
+          },
+          "body": "{json:string}"
+        },
+        "functions": {
+          "send": [
+            "url",
+            "method",
+            "credentials",
+            "json"
+          ]
+        }
+      }
+    ]
   }
 }

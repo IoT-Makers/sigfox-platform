@@ -6,44 +6,46 @@ import { LoopBackFilter, SDKToken, Geoloc } from '../models';
 
 export const GeolocActionTypes =
 Object.assign(BaseLoopbackActionTypesFactory('Geoloc'), {
-  GET_GEOLOCS_BY_DEVICE_ID: type('[Geoloc] getGeolocsByDeviceId'),
-  GET_GEOLOCS_BY_DEVICE_ID_SUCCESS: type('[Geoloc] getGeolocsByDeviceId success'),
-  GET_GEOLOCS_BY_DEVICE_ID_FAIL: type('[Geoloc] getGeolocsByDeviceId fail'),
+  POST_SIGFOX: type('[Geoloc] postSigfox'),
+  POST_SIGFOX_SUCCESS: type('[Geoloc] postSigfox success'),
+  POST_SIGFOX_FAIL: type('[Geoloc] postSigfox fail'),
 
 });
 export const GeolocActions =
 Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
 
   /**
-   * getGeolocsByDeviceId Action.
+   * postSigfox Action.
    * <em>
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId the device ID to track
-   * @param {string} dateBegin the starting date-time
-   * @param {string} dateEnd the ending date-time
+   * @param {object} data Request data.
+   *
+   *  - `req` – `{object}` - 
+   *
+   *  - `data` – `{object}` - 
    * @param {any} meta (optional).
    * 
    */
-  getGeolocsByDeviceId: class implements Action {
-    public readonly type = GeolocActionTypes.GET_GEOLOCS_BY_DEVICE_ID;
-      public payload: {deviceId: any, dateBegin: any, dateEnd: any};
+  postSigfox: class implements Action {
+    public readonly type = GeolocActionTypes.POST_SIGFOX;
+      public payload: {req: any, data: any};
 
-    constructor(deviceId: any, dateBegin: any = {}, dateEnd: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {deviceId, dateBegin, dateEnd};
+    constructor(req: any = {}, data: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {req, data};
     }
   },
   /**
-   * getGeolocsByDeviceIdSuccess Action.
+   * postSigfoxSuccess Action.
    * 
    * @param {any} id 
-   * @param {object[]} data 
+   * @param {object} data 
    * @param {any} meta (optional).
    * 
    */
-  getGeolocsByDeviceIdSuccess: class implements Action {
-    public readonly type = GeolocActionTypes.GET_GEOLOCS_BY_DEVICE_ID_SUCCESS;
+  postSigfoxSuccess: class implements Action {
+    public readonly type = GeolocActionTypes.POST_SIGFOX_SUCCESS;
       public payload: {id: any, data: any};
 
     constructor(id: any, data: any, public meta?: any) {
@@ -51,14 +53,14 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
     }
   },
   /**
-   * getGeolocsByDeviceIdFail Action.
+   * postSigfoxFail Action.
    *
    * @param {any} payload
    * @param {any} meta (optional).
    * 
    */
-  getGeolocsByDeviceIdFail: class implements Action {
-    public readonly type = GeolocActionTypes.GET_GEOLOCS_BY_DEVICE_ID_FAIL;
+  postSigfoxFail: class implements Action {
+    public readonly type = GeolocActionTypes.POST_SIGFOX_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

@@ -27,7 +27,7 @@
           <hr>
           <div class="embed-responsive">
             <b>
-              <i class="fa fa-id-card-o" aria-hidden="true"></i>
+              <i class="fa fa-camera" aria-hidden="true"></i>
               <span class="mr-1"></span> Avatar:
             </b> {{user.avatar}}
           </div>
@@ -50,7 +50,7 @@
             <b>
               <i class="fa fa-calendar" aria-hidden="true"></i>
               <span class="mr-1"></span> Last login:
-            </b> {{user.lastLogin | date:"yyyy/MM/dd HH:mm:ss"}}
+            </b> {{user.loggedAt | date:"yyyy/MM/dd HH:mm:ss"}}
           </div>
           <hr>
           <div>
@@ -83,6 +83,83 @@
         <div class="card-footer mt-1">
           <button class="btn btn-sm btn-primary" (click)="updateUserModal.show()">Modify</button>
           <button class="btn btn-sm btn-danger" (click)="deleteUserModal.show()">Delete account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-building fa-lg text-organization"></i> <strong>Organizations</strong>
+        </div>
+        <div class="card-block">
+          <ng-container *ngIf="!organizationsReady">
+            Loading organizations...
+            <div class="sk-double-bounce">
+              <div class="sk-child sk-double-bounce1"></div>
+              <div class="sk-child sk-double-bounce2"></div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="organizationsReady && !organizations.length">
+            No organizations yet...
+          </ng-container>
+
+          <ng-container *ngIf="organizations.length > 0">
+          <!--Table-->
+          <div class="table-responsive">
+            <table class="table table-hover table-outline" [mfData]="organizations" #mf="mfDataTable"
+                   [mfRowsOnPage]="50">
+              <thead class="thead-inverse">
+              <tr>
+                <th class="text-center">
+                  Logo
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="Members.length"><i class="fa fa-sort"></i> Users</mfDefaultSorter>
+                </th>
+
+                <th class="text-center">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of  mf.data; let i = index">
+                <td class="text-center">
+                  <div class="small text-center">
+                    <img src="{{item.logo}}" height="50px" class="img-avatar">
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="text-organization font-weight-bold">
+                    {{item.name}}
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="font-weight-bold">
+                    {{item.Members.length}}
+                  </div>
+                </td>
+
+                <td class="text-center">
+                  <div class="btn-group-sm">
+                    <button class="btn btn-outline-organization btn-round" tooltip="Leave organization"
+                            (click)="leaveOrganization(item)"><i class="fa fa-sign-out fa-lg"></i></button>
+                    <button class="btn btn-outline-danger btn-round" tooltip="Delete organization" *ngIf="item.ownerId === user.id"
+                            (click)="deleteOrganization(item)"><i class="fa fa-trash fa-lg"></i></button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          </ng-container>
+
+
+
         </div>
       </div>
     </div>
@@ -155,13 +232,13 @@
                      name="user.username" [(ngModel)]="user.username">
             </div>
           </div>
-          <div class="form-group row">
+          <!--<div class="form-group row">
             <label class="col-md-3 form-control-label">Email</label>
             <div class="col-md-9">
               <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.email}}"
                      name="user.email" [(ngModel)]="user.email">
             </div>
-          </div>
+          </div>-->
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Avatar</label>
             <div class="col-md-9">
@@ -191,7 +268,8 @@
       </div>
       <div class="modal-body">
         <p>Are you sure you wish to delete your account?</p>
-        <p class="font-weight-bold text-danger">This action is irreversible and will permanently delete all your data (categories, devices, messages, connectors, ...).</p>
+        <p class="font-weight-bold text-danger">This action is irreversible and will permanently delete all your data
+          (categories, devices, messages, connectors, ...).</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="deleteUserModal.hide()">Close</button>

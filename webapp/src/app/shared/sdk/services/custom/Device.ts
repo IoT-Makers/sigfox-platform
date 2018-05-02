@@ -36,11 +36,47 @@ export class DeviceApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId the deviceId
+   * @param {string} id 
    *
-   * @param {string} dateBegin the starting date-time
+   * @param {string} type 
    *
-   * @param {string} dateEnd the ending date-time
+   * @param {object} req 
+   *
+   * @param {object} res 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Device` object.)
+   * </em>
+   */
+  public download(id: any, type: any, req: any = {}, res: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Devices/download/:id/:type";
+    let _routeParams: any = {
+      id: id,
+      type: type
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} deviceId Device Id
+   *
+   * @param {string} dateBegin The starting date-time
+   *
+   * @param {string} dateEnd The ending date-time
    *
    * @param {object} req 
    *
@@ -84,10 +120,10 @@ export class DeviceApi extends BaseLoopBackApi {
    * This usually means the response is a `Device` object.)
    * </em>
    */
-  public deleteDeviceAndMessages(deviceId: any, req: any = {}, customHeaders?: Function): Observable<any> {
+  public deleteDeviceMessagesAlertsGeolocs(deviceId: any, req: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Devices/Messages";
+    "/Devices/delete-device-messages-alerts-geolocs";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -129,39 +165,6 @@ export class DeviceApi extends BaseLoopBackApi {
     let _urlParams: any = {};
     if (typeof limit !== 'undefined' && limit !== null) _urlParams.limit = limit;
     if (typeof before !== 'undefined' && before !== null) _urlParams.before = before;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {object} data Request data.
-   *
-   *  - `id` – `{string}` - Device Id
-   *
-   *  - `req` – `{object}` - 
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Device` object.)
-   * </em>
-   */
-  public parseAllMessages(id: any, req: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PUT";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Devices/:id/parse-messages";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

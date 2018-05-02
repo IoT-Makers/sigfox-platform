@@ -1,65 +1,76 @@
 /* tslint:disable */
 import {
   AccessToken,
-  Message,
-  Device,
-  Category,
+  Role,
   Dashboard,
+  Category,
+  Device,
+  Message,
+  Geoloc,
+  Parser,
   Organization,
-  Connector
+  Alert,
+  Connector,
+  Widget
 } from '../index';
 
 declare var Object: any;
 export interface UserInterface {
   "avatar"?: string;
-  "lastLogin"?: Date;
+  "loggedAt"?: Date;
+  "connected"?: boolean;
   "location"?: any;
-  "sigfoxBackendApiLogin"?: string;
-  "sigfoxBackendApiPassword"?: string;
   "devAccessTokens"?: Array<any>;
   "Email"?: any;
   "realm"?: string;
   "username"?: string;
   "email": string;
   "emailVerified"?: boolean;
-  "id"?: number;
+  "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "password"?: string;
   accessTokens?: AccessToken[];
-  roles?: any[];
-  Messages?: Message[];
-  Devices?: Device[];
-  Categories?: Category[];
+  roles?: Role[];
   Dashboards?: Dashboard[];
+  Categories?: Category[];
+  Devices?: Device[];
+  Messages?: Message[];
+  Geolocs?: Geoloc[];
+  Parsers?: Parser[];
   Organizations?: Organization[];
+  Alerts?: Alert[];
   Connectors?: Connector[];
+  Widgets?: Widget[];
 }
 
 export class User implements UserInterface {
   "avatar": string = 'https://www.shareicon.net/data/128x128/2016/08/04/806683_man_512x512.png';
-  "lastLogin": Date = new Date(0);
+  "loggedAt": Date = new Date(0);
+  "connected": boolean = false;
   "location": any = <any>null;
-  "sigfoxBackendApiLogin": string = '';
-  "sigfoxBackendApiPassword": string = '';
   "devAccessTokens": Array<any> = <any>[];
   "Email": any = <any>null;
   "realm": string = '';
   "username": string = '';
   "email": string = '';
   "emailVerified": boolean = false;
-  "id": number = 0;
+  "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "password": string = '';
   accessTokens: AccessToken[] = null;
-  roles: any[] = null;
-  Messages: Message[] = null;
-  Devices: Device[] = null;
-  Categories: Category[] = null;
+  roles: Role[] = null;
   Dashboards: Dashboard[] = null;
+  Categories: Category[] = null;
+  Devices: Device[] = null;
+  Messages: Message[] = null;
+  Geolocs: Geoloc[] = null;
+  Parsers: Parser[] = null;
   Organizations: Organization[] = null;
+  Alerts: Alert[] = null;
   Connectors: Connector[] = null;
+  Widgets: Widget[] = null;
   constructor(data?: UserInterface) {
     Object.assign(this, data);
   }
@@ -98,21 +109,17 @@ export class User implements UserInterface {
           type: 'string',
           default: 'https://www.shareicon.net/data/128x128/2016/08/04/806683_man_512x512.png'
         },
-        "lastLogin": {
-          name: 'lastLogin',
+        "loggedAt": {
+          name: 'loggedAt',
           type: 'Date'
+        },
+        "connected": {
+          name: 'connected',
+          type: 'boolean'
         },
         "location": {
           name: 'location',
           type: 'any'
-        },
-        "sigfoxBackendApiLogin": {
-          name: 'sigfoxBackendApiLogin',
-          type: 'string'
-        },
-        "sigfoxBackendApiPassword": {
-          name: 'sigfoxBackendApiPassword',
-          type: 'string'
         },
         "devAccessTokens": {
           name: 'devAccessTokens',
@@ -140,7 +147,7 @@ export class User implements UserInterface {
         },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',
@@ -166,26 +173,18 @@ export class User implements UserInterface {
         },
         roles: {
           name: 'roles',
-          type: 'any[]',
-          model: '',
+          type: 'Role[]',
+          model: 'Role',
           relationType: 'hasMany',
           modelThrough: 'RoleMapping',
           keyThrough: 'roleId',
           keyFrom: 'id',
           keyTo: 'principalId'
         },
-        Messages: {
-          name: 'Messages',
-          type: 'Message[]',
-          model: 'Message',
-          relationType: 'hasMany',
-                  keyFrom: 'id',
-          keyTo: 'userId'
-        },
-        Devices: {
-          name: 'Devices',
-          type: 'Device[]',
-          model: 'Device',
+        Dashboards: {
+          name: 'Dashboards',
+          type: 'Dashboard[]',
+          model: 'Dashboard',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'userId'
@@ -198,10 +197,34 @@ export class User implements UserInterface {
                   keyFrom: 'id',
           keyTo: 'userId'
         },
-        Dashboards: {
-          name: 'Dashboards',
-          type: 'Dashboard[]',
-          model: 'Dashboard',
+        Devices: {
+          name: 'Devices',
+          type: 'Device[]',
+          model: 'Device',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
+        },
+        Messages: {
+          name: 'Messages',
+          type: 'Message[]',
+          model: 'Message',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
+        },
+        Geolocs: {
+          name: 'Geolocs',
+          type: 'Geoloc[]',
+          model: 'Geoloc',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
+        },
+        Parsers: {
+          name: 'Parsers',
+          type: 'Parser[]',
+          model: 'Parser',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'userId'
@@ -216,10 +239,26 @@ export class User implements UserInterface {
           keyFrom: 'id',
           keyTo: 'userId'
         },
+        Alerts: {
+          name: 'Alerts',
+          type: 'Alert[]',
+          model: 'Alert',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
+        },
         Connectors: {
           name: 'Connectors',
           type: 'Connector[]',
           model: 'Connector',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
+        },
+        Widgets: {
+          name: 'Widgets',
+          type: 'Widget[]',
+          model: 'Widget',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'userId'

@@ -54,7 +54,7 @@ export class ReceptionApi extends BaseLoopBackApi {
   public getBaseStationsByDeviceId(deviceId: any, time: any, req: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Receptions/base-stations";
+    "/Receptions/base-stations-by-device-id";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};

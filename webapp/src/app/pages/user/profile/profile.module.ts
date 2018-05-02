@@ -16,7 +16,7 @@ import {ToasterModule} from 'angular2-toaster';
     ModalModule.forRoot(),
     AccordionModule.forRoot(),
     FormsModule,
-    ToasterModule
+    ToasterModule.forRoot()
   ],
   declarations: [
     ProfileComponent,

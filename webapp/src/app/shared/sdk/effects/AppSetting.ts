@@ -16,6 +16,20 @@ import { AppSettingApi } from '../services/index';
 
 @Injectable()
 export class AppSettingEffects extends BaseLoopbackEffects {
+  @Effect()
+  public getVersion$ = this.actions$
+    .ofType(AppSettingActionTypes.GET_VERSION).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.appsetting.getVersion().pipe(
+          map((response: any) => new AppSettingActions.getVersionSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new AppSettingActions.getVersionFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
     /**
    * @author João Ribeiro <@JonnyBGod> <github:JonnyBGod>
    * @description

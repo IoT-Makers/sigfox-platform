@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {CustomDashboardRoutingModule} from './custom-dashboard-routing.module';
 import {CustomDashboardComponent} from './custom-dashboard.component';
 import {NgxGaugeModule} from 'ngx-gauge';
-import {SelectModule} from 'ng2-select';
 import {ToasterModule} from 'angular2-toaster';
 import {AgmCoreModule, GoogleMapsAPIWrapper} from '@agm/core';
 import {FormsModule} from '@angular/forms';
@@ -15,23 +14,29 @@ import {AngularDateTimePickerModule} from 'vk-custom-angular2-datetimepicker';
 import {DirectionsDirective} from './directions.directive';
 import {AgmJsMarkerClustererModule} from '@agm/js-marker-clusterer';
 import {ModalModule} from 'ngx-bootstrap';
+import {ChartsModule} from 'ng2-charts/ng2-charts';
+import {NvD3Module} from 'ng2-nvd3';
+// d3 and nvd3 should be included somewhere
+import 'd3';
+import 'nvd3';
 
 @NgModule({
   imports: [
     CommonModule,
     CustomDashboardRoutingModule,
     NgxGaugeModule,
-    SelectModule,
     FormsModule,
-    ToasterModule,
+    ToasterModule.forRoot(),
     DataTableModule,
     MomentModule,
     TooltipModule.forRoot(),
     AgmCoreModule,
+    ChartsModule,
     AgmJsMarkerClustererModule,
     AngularMultiSelectModule,
     AngularDateTimePickerModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    NvD3Module
   ],
   providers: [
     GoogleMapsAPIWrapper

@@ -6,7 +6,9 @@ import { Message, MessageInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { MessageActionTypes } from '../actions';
 
-export interface MessagesState extends EntityState<Message | MessageInterface> {};
+
+export interface MessagesState extends EntityState<Message | MessageInterface> {
+}
 
 export const MessageAdapter: EntityAdapter<Message | MessageInterface> = createEntityAdapter<Message | MessageInterface>();
 

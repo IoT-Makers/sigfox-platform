@@ -3,46 +3,44 @@
 declare var Object: any;
 export interface DeviceInterface {
   "id": string;
-  "creation"?: Date;
   "name"?: string;
-  "data_parsed"?: Array<any>;
-  "downlinkData"?: string;
-  "location"?: Array<any>;
-  "alerts"?: Array<any>;
+  "successRate"?: number;
+  "data_downlink"?: string;
   "properties"?: Array<any>;
+  "locatedAt"?: Date;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "parserId"?: number;
-  "categoryId"?: number;
-  "userId"?: number;
-  "organizationId"?: number;
+  "parserId"?: any;
+  "categoryId"?: any;
+  "userId"?: any;
   Parser?: any;
   Category?: any;
   Messages?: any[];
+  Geolocs?: any[];
   user?: any;
-  Organization?: any;
+  Organizations?: any[];
+  Alerts?: any[];
 }
 
 export class Device implements DeviceInterface {
   "id": string = '';
-  "creation": Date = new Date(0);
   "name": string = '';
-  "data_parsed": Array<any> = <any>[];
-  "downlinkData": string = '';
-  "location": Array<any> = <any>[];
-  "alerts": Array<any> = <any>[];
+  "successRate": number = 0;
+  "data_downlink": string = '';
   "properties": Array<any> = <any>[];
+  "locatedAt": Date = new Date(0);
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "parserId": number = 0;
-  "categoryId": number = 0;
-  "userId": number = 0;
-  "organizationId": number = 0;
+  "parserId": any = <any>null;
+  "categoryId": any = <any>null;
+  "userId": any = <any>null;
   Parser: any = null;
   Category: any = null;
   Messages: any[] = null;
+  Geolocs: any[] = null;
   user: any = null;
-  Organization: any = null;
+  Organizations: any[] = null;
+  Alerts: any[] = null;
   constructor(data?: DeviceInterface) {
     Object.assign(this, data);
   }
@@ -80,33 +78,25 @@ export class Device implements DeviceInterface {
           name: 'id',
           type: 'string'
         },
-        "creation": {
-          name: 'creation',
-          type: 'Date'
-        },
         "name": {
           name: 'name',
           type: 'string'
         },
-        "data_parsed": {
-          name: 'data_parsed',
-          type: 'Array&lt;any&gt;'
+        "successRate": {
+          name: 'successRate',
+          type: 'number'
         },
-        "downlinkData": {
-          name: 'downlinkData',
+        "data_downlink": {
+          name: 'data_downlink',
           type: 'string'
-        },
-        "location": {
-          name: 'location',
-          type: 'Array&lt;any&gt;'
-        },
-        "alerts": {
-          name: 'alerts',
-          type: 'Array&lt;any&gt;'
         },
         "properties": {
           name: 'properties',
           type: 'Array&lt;any&gt;'
+        },
+        "locatedAt": {
+          name: 'locatedAt',
+          type: 'Date'
         },
         "createdAt": {
           name: 'createdAt',
@@ -118,19 +108,15 @@ export class Device implements DeviceInterface {
         },
         "parserId": {
           name: 'parserId',
-          type: 'number'
+          type: 'any'
         },
         "categoryId": {
           name: 'categoryId',
-          type: 'number'
+          type: 'any'
         },
         "userId": {
           name: 'userId',
-          type: 'number'
-        },
-        "organizationId": {
-          name: 'organizationId',
-          type: 'number'
+          type: 'any'
         },
       },
       relations: {
@@ -158,6 +144,14 @@ export class Device implements DeviceInterface {
                   keyFrom: 'id',
           keyTo: 'deviceId'
         },
+        Geolocs: {
+          name: 'Geolocs',
+          type: 'any[]',
+          model: '',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'deviceId'
+        },
         user: {
           name: 'user',
           type: 'any',
@@ -166,13 +160,23 @@ export class Device implements DeviceInterface {
                   keyFrom: 'userId',
           keyTo: 'id'
         },
-        Organization: {
-          name: 'Organization',
-          type: 'any',
+        Organizations: {
+          name: 'Organizations',
+          type: 'any[]',
           model: '',
-          relationType: 'belongsTo',
-                  keyFrom: 'organizationId',
-          keyTo: 'id'
+          relationType: 'hasMany',
+          modelThrough: 'OrganizationDevice',
+          keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'deviceId'
+        },
+        Alerts: {
+          name: 'Alerts',
+          type: 'any[]',
+          model: '',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'deviceId'
         },
       }
     }

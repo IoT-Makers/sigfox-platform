@@ -29,11 +29,15 @@
     "name": {
       "type": "string",
       "required": true,
-      "default": "New organization"
+      "default": "My organization"
     },
     "ownerId": {
       "type": "string",
       "required": true
+    },
+    "logo": {
+      "type": "string",
+      "default": "https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png"
     }
   },
   "validations": [],
@@ -41,42 +45,38 @@
     "Members": {
       "type": "hasAndBelongsToMany",
       "model": "user",
-      "foreignKey": "organizationId"
+      "foreignKey": "memberId"
     },
     "Messages": {
-      "type": "hasMany",
-      "model": "Message",
-      "foreignKey": "organizationId"
+      "type": "hasAndBelongsToMany",
+      "model": "Message"
     },
     "Devices": {
-      "type": "hasMany",
-      "model": "Device",
-      "foreignKey": "organizationId"
+      "type": "hasAndBelongsToMany",
+      "model": "Device"
     },
     "Categories": {
-      "type": "hasMany",
-      "model": "Category",
-      "foreignKey": "organizationId"
+      "type": "hasAndBelongsToMany",
+      "model": "Category"
+    },
+    "Dashboards": {
+      "type": "hasAndBelongsToMany",
+      "model": "Dashboard"
     }
   },
   "acls": [
     {
       "accessType": "*",
       "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
       "principalId": "admin",
-      "permission": "ALLOW"
+      "permission": "ALLOW",
+      "property": "*"
     },
     {
       "accessType": "*",
       "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW"
+      "principalId": "$everyone",
+      "permission": "DENY"
     },
     {
       "accessType": "CREATE",
@@ -85,10 +85,39 @@
       "permission": "ALLOW"
     },
     {
-      "accessType": "READ",
+      "accessType": "WRITE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
       "principalType": "ROLE",
       "principalId": "organizationMember",
-      "permission": "ALLOW"
+      "permission": "ALLOW",
+      "property": [
+        "findById",
+        "findOne",
+        "count",
+        "__count__Members",
+        "__find__Members",
+        "__count__Devices",
+        "__get__Devices",
+        "__find__Devices",
+        "__findOne__Devices",
+        "__count__Messages",
+        "__get__Messages",
+        "__find__Messages",
+        "__findOne__Messages",
+        "__count__Categories",
+        "__get__Categories",
+        "__find__Categories",
+        "__findOne__Categories",
+        "__count__Dashboards",
+        "__get__Dashboards",
+        "__find__Dashboards",
+        "__findOne__Dashboards"
+      ]
     }
   ],
   "methods": {}

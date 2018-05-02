@@ -17,6 +17,20 @@ import { DeviceApi } from '../services/index';
 @Injectable()
 export class DeviceEffects extends BaseLoopbackEffects {
   @Effect()
+  public download$ = this.actions$
+    .ofType(DeviceActionTypes.DOWNLOAD).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.device.download(action.payload.id, action.payload.type, action.payload.req, action.payload.res).pipe(
+          map((response: any) => new DeviceActions.downloadSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new DeviceActions.downloadFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public timeSeries$ = this.actions$
     .ofType(DeviceActionTypes.TIME_SERIES).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -31,13 +45,13 @@ export class DeviceEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public deleteDeviceAndMessages$ = this.actions$
-    .ofType(DeviceActionTypes.DELETE_DEVICE_AND_MESSAGES).pipe(
+  public deleteDeviceMessagesAlertsGeolocs$ = this.actions$
+    .ofType(DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.device.deleteDeviceAndMessages(action.payload.deviceId, action.payload.req).pipe(
-          map((response: any) => new DeviceActions.deleteDeviceAndMessagesSuccess(action.payload.id, response, action.meta)),
+        this.device.deleteDeviceMessagesAlertsGeolocs(action.payload.deviceId, action.payload.req).pipe(
+          map((response: any) => new DeviceActions.deleteDeviceMessagesAlertsGeolocsSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
-            of(new DeviceActions.deleteDeviceAndMessagesFail(error, action.meta)),
+            of(new DeviceActions.deleteDeviceMessagesAlertsGeolocsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )
@@ -52,20 +66,6 @@ export class DeviceEffects extends BaseLoopbackEffects {
           map((response: any) => new DeviceActions.getMessagesFromSigfoxBackendSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
             of(new DeviceActions.getMessagesFromSigfoxBackendFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
-  public parseAllMessages$ = this.actions$
-    .ofType(DeviceActionTypes.PARSE_ALL_MESSAGES).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.device.parseAllMessages(action.payload.id, action.payload.req).pipe(
-          map((response: any) => new DeviceActions.parseAllMessagesSuccess(action.payload.id, response, action.meta)),
-          catchError((error: any) => concat(
-            of(new DeviceActions.parseAllMessagesFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

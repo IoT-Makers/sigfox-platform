@@ -1,6 +1,7 @@
 /* tslint:disable */
 import {
   Device,
+  User,
   Organization
 } from '../index';
 
@@ -9,12 +10,14 @@ export interface ParserInterface {
   "name": string;
   "description"?: string;
   "function"?: string;
-  "available_properties"?: Array<any>;
-  "id"?: number;
+  "properties"?: Array<any>;
+  "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "organizationId"?: number;
+  "userId"?: any;
+  "organizationId"?: any;
   Devices?: Device[];
+  user?: User;
   Organization?: Organization;
 }
 
@@ -22,12 +25,14 @@ export class Parser implements ParserInterface {
   "name": string = '';
   "description": string = '';
   "function": string = '';
-  "available_properties": Array<any> = <any>[];
-  "id": number = 0;
+  "properties": Array<any> = <any>[];
+  "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "organizationId": number = 0;
+  "userId": any = <any>null;
+  "organizationId": any = <any>null;
   Devices: Device[] = null;
+  user: User = null;
   Organization: Organization = null;
   constructor(data?: ParserInterface) {
     Object.assign(this, data);
@@ -74,13 +79,13 @@ export class Parser implements ParserInterface {
           name: 'function',
           type: 'string'
         },
-        "available_properties": {
-          name: 'available_properties',
+        "properties": {
+          name: 'properties',
           type: 'Array&lt;any&gt;'
         },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',
@@ -90,9 +95,13 @@ export class Parser implements ParserInterface {
           name: 'updatedAt',
           type: 'Date'
         },
+        "userId": {
+          name: 'userId',
+          type: 'any'
+        },
         "organizationId": {
           name: 'organizationId',
-          type: 'number'
+          type: 'any'
         },
       },
       relations: {
@@ -103,6 +112,14 @@ export class Parser implements ParserInterface {
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'parserId'
+        },
+        user: {
+          name: 'user',
+          type: 'User',
+          model: 'User',
+          relationType: 'belongsTo',
+                  keyFrom: 'userId',
+          keyTo: 'id'
         },
         Organization: {
           name: 'Organization',

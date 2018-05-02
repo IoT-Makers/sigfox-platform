@@ -6,7 +6,9 @@ import { AccessToken, AccessTokenInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { AccessTokenActionTypes } from '../actions';
 
-export interface AccessTokensState extends EntityState<AccessToken | AccessTokenInterface> {};
+
+export interface AccessTokensState extends EntityState<AccessToken | AccessTokenInterface> {
+}
 
 export const AccessTokenAdapter: EntityAdapter<AccessToken | AccessTokenInterface> = createEntityAdapter<AccessToken | AccessTokenInterface>();
 

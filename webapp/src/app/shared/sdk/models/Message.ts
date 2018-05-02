@@ -7,18 +7,19 @@ export interface MessageInterface {
   "seqNumber": number;
   "data"?: string;
   "data_parsed"?: Array<any>;
-  "downlinkData"?: string;
+  "data_downlink"?: string;
+  "downlinkAck"?: boolean;
+  "deviceAck"?: boolean;
   "ack"?: boolean;
   "reception"?: Array<any>;
-  "geoloc"?: Array<any>;
-  "id"?: number;
+  "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
-  "userId"?: number;
-  "organizationId"?: number;
+  "userId"?: any;
   Device?: any;
+  Geolocs?: any[];
   user?: any;
-  Organization?: any;
+  Organizations?: any[];
 }
 
 export class Message implements MessageInterface {
@@ -27,18 +28,19 @@ export class Message implements MessageInterface {
   "seqNumber": number = 0;
   "data": string = '';
   "data_parsed": Array<any> = <any>[];
-  "downlinkData": string = '';
+  "data_downlink": string = '';
+  "downlinkAck": boolean = false;
+  "deviceAck": boolean = false;
   "ack": boolean = false;
   "reception": Array<any> = <any>[];
-  "geoloc": Array<any> = <any>[];
-  "id": number = 0;
+  "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
-  "userId": number = 0;
-  "organizationId": number = 0;
+  "userId": any = <any>null;
   Device: any = null;
+  Geolocs: any[] = null;
   user: any = null;
-  Organization: any = null;
+  Organizations: any[] = null;
   constructor(data?: MessageInterface) {
     Object.assign(this, data);
   }
@@ -92,9 +94,17 @@ export class Message implements MessageInterface {
           name: 'data_parsed',
           type: 'Array&lt;any&gt;'
         },
-        "downlinkData": {
-          name: 'downlinkData',
+        "data_downlink": {
+          name: 'data_downlink',
           type: 'string'
+        },
+        "downlinkAck": {
+          name: 'downlinkAck',
+          type: 'boolean'
+        },
+        "deviceAck": {
+          name: 'deviceAck',
+          type: 'boolean'
         },
         "ack": {
           name: 'ack',
@@ -104,13 +114,9 @@ export class Message implements MessageInterface {
           name: 'reception',
           type: 'Array&lt;any&gt;'
         },
-        "geoloc": {
-          name: 'geoloc',
-          type: 'Array&lt;any&gt;'
-        },
         "id": {
           name: 'id',
-          type: 'number'
+          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',
@@ -122,11 +128,7 @@ export class Message implements MessageInterface {
         },
         "userId": {
           name: 'userId',
-          type: 'number'
-        },
-        "organizationId": {
-          name: 'organizationId',
-          type: 'number'
+          type: 'any'
         },
       },
       relations: {
@@ -138,6 +140,14 @@ export class Message implements MessageInterface {
                   keyFrom: 'deviceId',
           keyTo: 'id'
         },
+        Geolocs: {
+          name: 'Geolocs',
+          type: 'any[]',
+          model: '',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'messageId'
+        },
         user: {
           name: 'user',
           type: 'any',
@@ -146,13 +156,15 @@ export class Message implements MessageInterface {
                   keyFrom: 'userId',
           keyTo: 'id'
         },
-        Organization: {
-          name: 'Organization',
-          type: 'any',
+        Organizations: {
+          name: 'Organizations',
+          type: 'any[]',
           model: '',
-          relationType: 'belongsTo',
-                  keyFrom: 'organizationId',
-          keyTo: 'id'
+          relationType: 'hasMany',
+          modelThrough: 'OrganizationMessage',
+          keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'messageId'
         },
       }
     }

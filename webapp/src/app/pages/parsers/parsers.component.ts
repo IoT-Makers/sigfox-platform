@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FireLoopRef, Parser, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
-import {UserApi} from '../../shared/sdk/services/custom';
+import {ParserApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 @Component({
@@ -14,8 +14,11 @@ export class ParsersComponent implements OnInit, OnDestroy {
   private user: User;
 
   @ViewChild('confirmModal') confirmModal: any;
+  @ViewChild('confirmParseModal') confirmParseModal: any;
 
-  private newParser: Parser = new Parser();
+  private parserToAdd: Parser = new Parser();
+  private parserToEdit: Parser = new Parser();
+  private parserToRemove: Parser = new Parser();
   private decodedPayload = [];
   private testPayload = [];
 
@@ -25,7 +28,6 @@ export class ParsersComponent implements OnInit, OnDestroy {
   private parserRef: FireLoopRef<Parser>;
   private parserSub: Subscription;
 
-  private parserToRemove: Parser = new Parser();
 
   // Notifications
   private toast;
@@ -39,13 +41,14 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
-              toasterService: ToasterService) {
+              toasterService: ToasterService,
+              private parserApi: ParserApi) {
     this.toasterService = toasterService;
   }
 
   ngOnInit(): void {
     console.log('Parsers: ngOnInit');
-// Real Time
+    // Real Time
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
       this.setup();
     else
@@ -60,7 +63,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
       this.rt.onReady().subscribe();
     }*/
 
-    this.newParser.function = 'var payload,\n' +
+    this.parserToAdd.function = 'var payload,\n' +
       '  temperature,\n' +
       '  parsedData = [],\n' +
       '  obj = {};\n' +
@@ -86,10 +89,12 @@ export class ParsersComponent implements OnInit, OnDestroy {
     // this.ngOnDestroy();
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-// Parsers
 
+    // Parsers
     this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-    this.parserSub = this.parserRef.on('change').subscribe(
+    this.parserSub = this.parserRef.on('change', {
+      include: ['Devices']
+    }).subscribe(
       (parsers: Parser[]) => {
         this.parsers = parsers;
         console.log(this.parsers);
@@ -120,22 +125,53 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   create(): void {
-    this.newParser.id = null;
-    this.parserRef.create(this.newParser).subscribe(value => {
-      this.newParser = new Parser();
-      this.toasterService.pop('success', 'Success', 'The parser was successfully created.');
+    this.parserToAdd.id = null;
+    this.parserToAdd.userId = this.user.id;
+    this.parserRef.create(this.parserToAdd).subscribe(value => {
+      this.parserToAdd = new Parser();
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully created.');
     }, err => {
-      this.toasterService.pop('error', 'Error', err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
   }
 
   update(parser: Parser): void {
-    this.parserRef.upsert(parser).subscribe(value => {
+    this.parserApi.upsert(parser).subscribe((updatedParser: Parser) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully updated.');
+
+      if (parser.Devices.length > 0) {
+        this.parserToEdit = parser;
+        this.confirmParseModal.show();
+      }
+
     }, err => {
-      this.toasterService.pop('error', 'Error', err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.message);
+    });
+  }
+
+  updateParsedData() {
+    // Disconnect real-time to avoid app crashing
+    this.rt.connection.disconnect();
+    this.parserApi.parseAllDevices(this.parserToEdit.id, null, null).subscribe(result => {
+      if (result.message === 'Success') {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
+        this.confirmParseModal.hide();
+      } else {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('warning', 'Warning', result.message);
+      }
+      this.rt.onReady();
     });
   }
 
@@ -145,10 +181,14 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   remove(): void {
-    this.parserRef.remove(this.parserToRemove).subscribe(value => {
-      this.toasterService.pop('success', 'Success', 'The parser was successfully deleted.');
+    this.parserApi.deleteById(this.parserToRemove.id).subscribe(value => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully deleted.');
     }, err => {
-      this.toasterService.pop('error', 'Error', err.error.message);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.message);
     });
     this.confirmModal.hide();
   }

@@ -10,6 +10,7 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this.userApi.isAuthenticated()) {
+      this.userApi.patchAttributes(this.userApi.getCurrentId(), { connected: true }).subscribe();
       return true;
     }
 

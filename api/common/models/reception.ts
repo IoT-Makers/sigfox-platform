@@ -20,7 +20,7 @@ import {Model} from '@mean-expert/model';
         {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
       http: {
-        path: '/base-stations',
+        path: '/base-stations-by-device-id',
         verb: 'get'
       },
       returns: {type: [], root: true}
@@ -37,17 +37,16 @@ class Reception {
     console.log('reception: Before Save');
     next();
   }
-  // Example Remote Method
-  myRemote(next: Function): void {
-    this.model.find(next);
-  }
 
   // Get all base stations reached by the latest message belonging to a device
   getBaseStationsByDeviceId(deviceId: string, messageTime: number, req: any, next: Function): void {
-    // Obtain the userId with the access_token of ctx
+    // Models
+    const Connector = this.model.app.models.Connector;
+
+    // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
-    this.model.app.models.Connector.findOne(
+    Connector.findOne(
       {
         where: {
           userId: userId,

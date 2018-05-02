@@ -102,7 +102,7 @@ This project uses Loopback 3, Angular 4, Fireloop and MongoDB.
 
 ### Requirements
 
-### API
+### API (To Be Updated, below is an old version)
 
 Below is the functional/sequential diagram representing the message journey.
 
@@ -124,7 +124,7 @@ Once the application is deployed, head over to the 'connectors'. You will need t
 
 ##### Adding a custom parser
 
-A short wiki can be found [here](https://github.com/luisomoreau/sigfox-platform/wiki/Adding-a-custom-parser).
+A short wiki can be found [here](https://github.com/IoT-Makers/sigfox-platform/wiki/Adding-a-custom-parser).
 
 ## Roadmap
 

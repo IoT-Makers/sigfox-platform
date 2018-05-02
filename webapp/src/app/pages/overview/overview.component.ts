@@ -1,10 +1,11 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {Category, Device, FireLoopRef, Message, Parser, User} from '../../shared/sdk/models';
+import {ActivatedRoute} from '@angular/router';
+import {Alert, Category, Device, FireLoopRef, Message, Organization, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
-import {ParserApi, UserApi} from '../../shared/sdk/services/custom';
+import {DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -15,9 +16,19 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 })
 export class OverviewComponent implements OnInit, OnDestroy {
 
-  private user: User;
-
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
+
+  // Flags
+  private devicesReady = false;
+  private messagesReady = false;
+
+  private user: User = new User();
+
+  private organization: Organization;
+  private filter: any;
+
+  private newOrganization = new Organization();
+  private organizations: Organization[] = [];
 
   private mobile = false;
 
@@ -25,12 +36,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private messageGraphSub: Subscription;
   private messageSeeSub: Subscription;
   private deviceSub: Subscription;
-  private parserSub: Subscription;
+  private organizationSub: Subscription;
+  private alertSub: Subscription;
   private categorySub: Subscription;
 
   private messages: Message[] = [];
   private devices: Device[] = [];
-  private parsers: Parser[] = [];
+  private alerts: Alert[] = [];
   private categories: Category[] = [];
 
   private isLimit_hourly = false;
@@ -41,14 +53,16 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   private countMessages = 0;
   private countDevices = 0;
-  private countParsers = 0;
+  private countAlerts = 0;
   private countCategories = 0;
+  private countOrganizationMembers = 0;
 
   private messageRef: FireLoopRef<Message>;
   private messageGraphRef: FireLoopRef<Message>;
   private messageSeeRef: FireLoopRef<Message>;
-  private deviceRef: FireLoopRef<Device>;
-  private parserRef: FireLoopRef<Parser>;
+  private deviceRef: FireLoopRef<any>;
+  private organizationRef: FireLoopRef<Organization>;
+  private alertRef: FireLoopRef<Alert>;
   private categoryRef: FireLoopRef<Category>;
 
   private isCircleVisible: boolean[] = [];
@@ -67,6 +81,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   public data = [];
   // Messages graph
   private graphRange = 'hourly';
+  private listDevicesId: Array<any> = [];
   private messageChartData: Array<any> = [];
   private messageChartLabels: Array<any> = [];
   public messageChartOptions = {
@@ -127,7 +142,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
-              private parserApi: ParserApi) {
+              private organizationApi: OrganizationApi,
+              private deviceApi: DeviceApi,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -135,87 +152,182 @@ export class OverviewComponent implements OnInit, OnDestroy {
     if (window.screen.width <= 425) { // 768px portrait
       this.mobile = true;
     }
+
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-      this.setup();
-    else
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-    /*if (
-      this.rt.connection.isConnected() &&
-      this.rt.connection.authenticated
-    ) {
-      this.rt.onReady().subscribe(() => this.setup());
-    } else {
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-      this.rt.onReady().subscribe();
-    }*/
 
+    // console.log('localStorage', localStorage.getItem('filter'));
+
+    // Check if organization view
+    this.route.params.subscribe(params => {
+
+      if (params.id) {
+        this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
+          this.organization = organization;
+          this.organizationApi.countMembers(this.organization.id).subscribe(result => {
+            this.countOrganizationMembers = result.count;
+            console.log('Members', result.count);
+          });
+
+          // Check if real time and setup
+          if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+            this.setup();
+          else
+            this.rt.onAuthenticated().subscribe(() => this.setup());
+        });
+      } else {
+
+        // Check if real time and setup
+        if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+          this.setup();
+        else
+          this.rt.onAuthenticated().subscribe(() => this.setup());
+      }
+      //console.log("Router", params);
+    });
   }
 
   setup(): void {
     // this.ngOnDestroy();
+
+    // Categories
+    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
+    this.categorySub = this.categoryRef.on('change',  {where: {userId: this.user.id}}).subscribe(
+      (results: any[]) => {
+        console.log('Category sub', results);
+        if (!this.organization) {
+          this.userApi.countCategories(this.user.id).subscribe(result => {
+            this.countCategories = result.count;
+          });
+        } else {
+          this.organizationApi.countCategories(this.organization.id).subscribe(result => {
+            this.countCategories = result.count;
+          });
+        }
+      });
+
+    /**
+     * TODO: Manage real time in a better way !
+     *
+     */
+
+    // Devices
+    // Listen to changes
+    this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+    this.deviceSub = this.deviceRef.on('change',
+      {
+        limit: 1,
+        order: 'createdAt DESC',
+        where: {userId: this.user.id}
+      }).subscribe(
+      (results: any[]) => {
+        console.log('Device sub', results);
+        if (!this.organization) {
+          // Get user devices
+          this.userApi.getDevices(this.user.id,
+            {
+              limit: 10,
+              order: 'updatedAt DESC',
+              include: ['Category', {
+                relation: 'Messages',
+                scope: {
+                  limit: 1,
+                  order: 'createdAt DESC',
+                  include: [{
+                    relation: 'Geolocs',
+                    scope: {
+                      limit: 5,
+                      order: 'createdAt DESC'
+                    }
+                  }]
+                }
+              }]
+            }).subscribe(devices => {
+            console.log('Devices: ', devices);
+            if (devices) {
+              this.devices = devices;
+              this.userApi.countDevices(this.user.id).subscribe(result => {
+                this.countDevices = result.count;
+              });
+              this.devicesReady = true;
+            }
+          });
+        } else {
+          // Get organization devices
+          this.organizationApi.getDevices(this.organization.id,
+            {
+              limit: 10,
+              order: 'updatedAt DESC',
+              include: ['Category', {
+                relation: 'Messages',
+                scope: {
+                  limit: 1,
+                  order: 'createdAt DESC',
+                  include: [{
+                    relation: 'Geolocs',
+                    scope: {
+                      limit: 5,
+                      order: 'createdAt DESC'
+                    }
+                  }]
+                }
+              }]
+            }).subscribe(devices => {
+            console.log('Devices: ', devices);
+            if (devices) {
+              this.devices = devices;
+              this.organizationApi.countDevices(this.organization.id).subscribe(result => {
+                this.countDevices = result.count;
+              });
+              this.devicesReady = true;
+            }
+          });
+        }
+      });
+
     // Messages
+    // Listen to messages
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     this.messageSub = this.messageRef.on('change', {
       limit: 1,
       order: 'createdAt DESC',
-      where: {
-        userId: this.user.id
-      }
+      where: {userId: this.user.id}
     }).subscribe(
-      (messages: Message[]) => {
-        this.messages = messages;
-        this.userApi.countMessages(this.user.id).subscribe(result => {
-          this.countMessages = result.count;
-        });
+      (results: any[]) => {
+        console.log('Messages sub', results);
+        if (!this.organization) {
+          this.userApi.countMessages(this.user.id).subscribe(result => {
+            this.countMessages = result.count;
+          });
+        } else {
+          this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+            this.countMessages = result.count;
+          });
+        }
       });
 
-    // Devices
-    this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-    this.deviceSub = this.deviceRef.on('change',
-      {
-        limit: 10,
-        order: 'updatedAt DESC',
-        include: ['Parser', 'Category', {
-          relation: 'Messages',
-          scope: {
-            skip: 0,
-            limit: 1,
-            order: 'createdAt DESC'
-          }
-        }],
+    // Alerts
+    // Listen to alerts - Not needed for organization
+    if (!this.organization) {
+      this.alertRef = this.rt.FireLoop.ref<Alert>(Alert);
+      this.alertSub = this.alertRef.on('change', {
         where: {
           userId: this.user.id
         }
-      }).subscribe(
-      (devices: Device[]) => {
-        this.devices = devices;
-        this.userApi.countDevices(this.user.id).subscribe(result => {
-          this.countDevices = result.count;
+      }).subscribe((alerts: Alert[]) => {
+        this.alerts = alerts;
+        this.userApi.countAlerts(this.user.id, {
+          active: true
+        }).subscribe(result => {
+          this.countAlerts = result.count;
         });
       });
+    }
 
-    // Categories
-    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categorySub = this.categoryRef.on('change').subscribe(
-      (categories: Category[]) => {
-        this.categories = categories;
-        this.userApi.countCategories(this.user.id).subscribe(result => {
-          this.countCategories = result.count;
-        });
-      });
+    if (!this.organization) {
+      this.getMessagesGraph(this.graphRange);
+    }
 
-    // Parsers
-    this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-    this.parserSub = this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-      this.parsers = parsers;
-      this.parserApi.count().subscribe(result => {
-        this.countParsers = result.count;
-      });
-    });
-
-    this.getMessagesGraph(this.graphRange);
   }
 
   getMessagesGraph(option: string): void {
@@ -244,14 +356,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.messageChartData = [];
     // this.data = [];
 
+    // this.devices.forEach(device => {
+    //   const item: any = {
+    //     "deviceId": device.id
+    //   };
+    //   this.listDevicesId.push(item);
+    // });
+
     // Messages
     this.messageGraphRef = this.rt.FireLoop.ref<Message>(Message);
     this.messageGraphSub = this.messageRef.stats(
       {
         range: this.graphRange,
-        where: {
-          userId: this.user.id
-        }
+        where: {userId: this.user.id}
       }
     ).subscribe((stats: any) => {
 
@@ -259,7 +376,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.messageChartData = [];
       this.data = [];
 
-      console.log('Stats: ', stats);
+      //console.log('Stats: ', stats);
 
       stats.forEach((stat: any) => {
 
@@ -282,6 +399,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.hasNoMessageChartData = this.data.every(value => {
         return value === 0;
       });
+      this.messagesReady = true;
     });
   }
 
@@ -291,24 +409,29 @@ export class OverviewComponent implements OnInit, OnDestroy {
     if (this.messageGraphRef) this.messageGraphRef.dispose();
     if (this.messageGraphSub) this.messageGraphSub.unsubscribe();
 
-    if (this.messageRef) this.messageRef.dispose();
-    if (this.messageSub) this.messageSub.unsubscribe();
+    if (this.categoryRef) this.categoryRef.dispose();
+    if (this.categorySub) this.categorySub.unsubscribe();
 
     if (this.deviceRef) this.deviceRef.dispose();
     if (this.deviceSub) this.deviceSub.unsubscribe();
 
-    if (this.parserRef) this.parserRef.dispose();
-    if (this.parserSub) this.parserSub.unsubscribe();
+    if (this.messageRef) this.messageRef.dispose();
+    if (this.messageSub) this.messageSub.unsubscribe();
 
-    if (this.categoryRef) this.categoryRef.dispose();
-    if (this.categorySub) this.categorySub.unsubscribe();
+    if (this.alertRef) this.alertRef.dispose();
+    if (this.alertSub) this.alertSub.unsubscribe();
+
+    if (this.organizationRef) this.organizationRef.dispose();
+    if (this.organizationSub) this.organizationSub.unsubscribe();
+
+
   }
 
   cancelSee(): void {
     this.see = false;
   }
 
-  seeDevice(device): void {
+  seeDevice(device: Device): void {
     this.see = true;
 
     // Dispose and unsubscribe to clean the real time connection
@@ -326,50 +449,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.pressure = undefined;
     this.speed = undefined;
     this.light = undefined;
-    this.alert = undefined;
-    this.mode = undefined;
     this.battery = undefined;
     this.message = undefined;
 
-    // Message
-    this.messageSeeRef = this.rt.FireLoop.ref<Message>(Message);
-    this.messageSeeSub = this.messageRef.on('change',
-      {
-        limit: 1,
-        order: 'createdAt DESC',
-        where: {
-          and: [
-            {userId: this.user.id},
-            {deviceId: device.id}
-          ]
-        }
-      }
-    ).subscribe((messages: Message[]) => {
-      const message = messages[0];
-      //console.log('message', message);
+    // Used for time & geoloc
+    this.message = device.Messages[0];
 
-      // Used for time & geoloc
-      this.message = message;
-
-      this.humidity = _.filter(message.data_parsed, {key: 'humidity'})[0];
-      this.temperature = _.filter(message.data_parsed, {key: 'temperature'})[0];
-      this.altitude = _.filter(message.data_parsed, {key: 'altitude'})[0];
-      this.pressure = _.filter(message.data_parsed, {key: 'pressure'})[0];
-      this.speed = _.filter(message.data_parsed, {key: 'speed'})[0];
-      this.light = _.filter(message.data_parsed, {key: 'light'})[0];
-      this.alert = _.filter(message.data_parsed, {key: 'alert'})[0];
-      this.mode = _.filter(message.data_parsed, {key: 'mode'})[0];
-      this.battery = _.filter(message.data_parsed, {key: 'battery'})[0];
-
-      // Notification
-      if (this.isFirstSubscribeMessage)
-        this.lastMessage = message;
-      if ((this.lastMessage.time !== message.time) && !this.isFirstSubscribeMessage) {
-        this.toasterService.pop('primary', 'New message', 'New message received for device ' + message.deviceId + '.');
-        this.lastMessage = message;
-      }
-      this.isFirstSubscribeMessage = false;
-    });
+    this.humidity = _.filter(this.message.data_parsed, {key: 'humidity'})[0];
+    this.temperature = _.filter(this.message.data_parsed, {key: 'temperature'})[0];
+    this.altitude = _.filter(this.message.data_parsed, {key: 'altitude'})[0];
+    this.pressure = _.filter(this.message.data_parsed, {key: 'pressure'})[0];
+    this.speed = _.filter(this.message.data_parsed, {key: 'speed'})[0];
+    this.light = _.filter(this.message.data_parsed, {key: 'light'})[0];
+    this.battery = _.filter(this.message.data_parsed, {key: 'battery'})[0];
   }
 
 
@@ -387,18 +479,18 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.isCircleVisible[i] = true;
   }
 
-  zoomOnDevice(elementId: string, geoloc: Geoloc): void {
+  zoomOnDevice(geoloc: Geoloc): void {
     this.cancelSee();
     this.agmInfoWindow.forEach((child) => {
       // console.log(child['_el'].nativeElement.id);
-      if (child['_el'].nativeElement.id === elementId)
+      if (child['_el'].nativeElement.id === geoloc.id)
         child.open();
       else
         child.close();
     });
 
-    this.mapLat = geoloc.lat;
-    this.mapLng = geoloc.lng;
+    this.mapLat = geoloc.location.lat;
+    this.mapLng = geoloc.location.lng;
     this.mapZoom = 12;
   }
 

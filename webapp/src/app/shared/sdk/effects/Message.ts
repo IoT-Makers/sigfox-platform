@@ -17,13 +17,55 @@ import { MessageApi } from '../services/index';
 @Injectable()
 export class MessageEffects extends BaseLoopbackEffects {
   @Effect()
-  public putMessage$ = this.actions$
-    .ofType(MessageActionTypes.PUT_MESSAGE).pipe(
+  public putSigfox_OldToRemove$ = this.actions$
+    .ofType(MessageActionTypes.PUT_SIGFOX__OLD_TO_REMOVE).pipe(
       mergeMap((action: LoopbackAction) =>
-        this.message.putMessage(action.payload.req, action.payload.data).pipe(
-          map((response: any) => new MessageActions.putMessageSuccess(action.payload.id, response, action.meta)),
+        this.message.putSigfox_OldToRemove(action.payload.req, action.payload.data).pipe(
+          map((response: any) => new MessageActions.putSigfox_OldToRemoveSuccess(action.payload.id, response, action.meta)),
           catchError((error: any) => concat(
-            of(new MessageActions.putMessageFail(error, action.meta)),
+            of(new MessageActions.putSigfox_OldToRemoveFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public putSigfox$ = this.actions$
+    .ofType(MessageActionTypes.PUT_SIGFOX).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.message.putSigfox(action.payload.req, action.payload.data).pipe(
+          map((response: any) => new MessageActions.putSigfoxSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new MessageActions.putSigfoxFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public putSigfoxAcknowledge$ = this.actions$
+    .ofType(MessageActionTypes.PUT_SIGFOX_ACKNOWLEDGE).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.message.putSigfoxAcknowledge(action.payload.req, action.payload.data).pipe(
+          map((response: any) => new MessageActions.putSigfoxAcknowledgeSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new MessageActions.putSigfoxAcknowledgeFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public postSigfoxStatus$ = this.actions$
+    .ofType(MessageActionTypes.POST_SIGFOX_STATUS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.message.postSigfoxStatus(action.payload.req, action.payload.data).pipe(
+          map((response: any) => new MessageActions.postSigfoxStatusSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new MessageActions.postSigfoxStatusFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

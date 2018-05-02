@@ -15,6 +15,14 @@ import {SDKBrowserModule} from './shared/sdk/index';
 import {AuthGuard} from './_guards/auth.guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AgmCoreModule} from '@agm/core';
+import {ModalModule, TooltipModule} from 'ng2-bootstrap';
+import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
+import {LeafletModule} from '@asymmetrik/ngx-leaflet';
+import {ToasterModule} from 'angular2-toaster';
+import {LeafletDrawModule} from '@asymmetrik/ngx-leaflet-draw';
+import {AdminGuard} from './_guards/admin.guard';
+import {DashboardGuard} from './_guards/dashboard.guard';
+import {OrganizationGuard} from './_guards/organization.guard';
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -25,11 +33,18 @@ import {AgmCoreModule} from '@agm/core';
     ReactiveFormsModule,
     AppRoutingModule,
     BsDropdownModule.forRoot(),
+    ModalModule.forRoot(),
     ChartsModule,
     SDKBrowserModule.forRoot(),
+    ToasterModule.forRoot(),
+    LeafletModule.forRoot(),
+    LeafletDrawModule.forRoot(),
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE'
-    })
+      apiKey: 'AIzaSyD4Zt99xt7aUd4Sg8RUwlMGwRkRIBWC7aE',
+      libraries: ['places']
+    }),
+    AngularMultiSelectModule,
+    TooltipModule.forRoot()
   ],
   declarations: [
     AppComponent,
@@ -39,11 +54,13 @@ import {AgmCoreModule} from '@agm/core';
     BreadcrumbsComponent,
     SIDEBAR_TOGGLE_DIRECTIVES,
     AsideToggleDirective
-
     //AssetsComponent
   ],
   providers: [
     AuthGuard,
+    AdminGuard,
+    DashboardGuard,
+    OrganizationGuard,
     {
       provide: LocationStrategy,
       useClass: HashLocationStrategy
