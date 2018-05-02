@@ -27,12 +27,11 @@ class AppSetting {
     console.log('AppSetting: Before Save');
     next();
   }
-  // Example Remote Method
-  getVersion(next: Function): void {
-    const getRepoInfo = require('git-repo-info');
-    const info = getRepoInfo();
 
-    next(null, info);
+  getVersion(next: Function): void {
+    /*const getRepoInfo = require('git-repo-info');
+    const info = getRepoInfo();*/
+    next(null, process.env.GIT_REV);
   }
 }
 
