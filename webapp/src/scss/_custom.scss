@@ -237,7 +237,7 @@ agm-map {
 }
 
 // Geoloc Markers
-@each $variant, $color in (sigfox: $geoloc-sigfox, gps: $geoloc-gps, wifi: $geoloc-wifi, ble: $geoloc-ble) {
+@each $variant, $color in (sigfox: $geoloc-sigfox, gps: $geoloc-gps, wifi: $geoloc-wifi, beacon: $geoloc-beacon, ble: $geoloc-ble) {
   .text-geoloc-#{$variant} {
     color: $color !important;
   }

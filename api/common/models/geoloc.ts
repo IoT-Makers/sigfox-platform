@@ -41,6 +41,7 @@ class Geoloc {
   private createFromParsedPayload(message: any, req: any): void {
     // Models
     const Geoloc = this.model;
+    const Beacon = this.model.app.models.Beacon;
 
     if (typeof message === 'undefined'
       || typeof message.data_parsed === 'undefined') {
@@ -49,53 +50,69 @@ class Geoloc {
 
     let hasGpsLocation = false;
     let hasBeaconLocation = false;
+    let hasWifiLocation = false;
 
-    // Build the Geoloc object
-    const geoloc = new Geoloc;
-    geoloc.location = new loopback.GeoPoint({lat: 0, lng: 0});
-    geoloc.createdAt = message.createdAt;
-    geoloc.userId = message.userId;
-    geoloc.messageId = message.id;
-    geoloc.deviceId = message.deviceId;
+    // Build the GPS Geoloc object
+    const geoloc_gps = new Geoloc;
+    geoloc_gps.location = new loopback.GeoPoint({lat: 0, lng: 0});
+    geoloc_gps.createdAt = message.createdAt;
+    geoloc_gps.userId = message.userId;
+    geoloc_gps.messageId = message.id;
+    geoloc_gps.deviceId = message.deviceId;
+
+    // Build the Beacon Geoloc object
+    const geoloc_beacon = new Geoloc;
+    geoloc_beacon.location = new loopback.GeoPoint({lat: 0, lng: 0});
+    geoloc_beacon.createdAt = message.createdAt;
+    geoloc_beacon.userId = message.userId;
+    geoloc_beacon.messageId = message.id;
+    geoloc_beacon.deviceId = message.deviceId;
 
     message.data_parsed.forEach((p: any) => {
-      // Check if there is geoloc in parsed data
+      // Check if there is GPS geoloc in parsed data
       if (p.key === 'lat' && p.value >= -90 && p.value <= 90) {
         hasGpsLocation = true;
-        geoloc.location.lat = p.value;
+        geoloc_gps.location.lat = p.value;
       } else if (p.key === 'lng' && p.value >= -180 && p.value <= 180) {
-        geoloc.location.lng = p.value;
-      } else if (p.key === 'beaconId') {
+        geoloc_gps.location.lng = p.value;
+      }
+      // Check if there is Beacon geoloc in parsed data
+      else if (p.key === 'beaconId') {
         hasBeaconLocation = true;
-        /**
-         * TODO: complete below conversions...
-         */
-        if (p.value === 1) {
-          geoloc.location.lat = 48.883658;
-          geoloc.location.lng = 2.302455;
-          geoloc.precision = 50;
-        } else if (p.value === 3) {
-        }
+        geoloc_beacon.id = p.value;
+      }
+      // Check if there is precision in parsed data
+      else if (p.key === 'precision') {
+        geoloc_beacon.precision = p.value;
+      }
+      // Check if there is Beacon geoloc in parsed data
+      else if (p.key === 'wifi_mac_1') {
+        hasWifiLocation = true;
+
+      }
+      // Check if there is Beacon geoloc in parsed data
+      else if (p.key === 'wifi_mac_2') {
+
       }
     });
 
     if (hasGpsLocation) {
-      geoloc.type = 'gps';
+      geoloc_gps.type = 'gps';
       // Find or create a new Geoloc
       Geoloc.findOrCreate(
         {
           where: {
             and: [
-              {type: geoloc.type},
-              {location: geoloc.location},
-              {createdAt: geoloc.createdAt},
-              {userId: geoloc.userId},
-              {messageId: geoloc.messageId},
-              {deviceId: geoloc.deviceId}
+              {type: geoloc_gps.type},
+              {location: geoloc_gps.location},
+              {createdAt: geoloc_gps.createdAt},
+              {userId: geoloc_gps.userId},
+              {messageId: geoloc_gps.messageId},
+              {deviceId: geoloc_gps.deviceId}
             ]
           }
         },
-        geoloc,
+        geoloc_gps,
         (err: any, geolocInstance: any, created: boolean) => {
           if (err) {
             console.error(err);
@@ -111,36 +128,46 @@ class Geoloc {
         });
     }
 
-    else if (hasBeaconLocation) {
-      geoloc.type = 'beacon';
-      // Find or create a new Geoloc
-      Geoloc.findOrCreate(
-        {
-          where: {
-            and: [
-              {type: geoloc.type},
-              {location: geoloc.location},
-              {createdAt: geoloc.createdAt},
-              {userId: geoloc.userId},
-              {messageId: geoloc.messageId},
-              {deviceId: geoloc.deviceId}
-            ]
-          }
-        },
-        geoloc,
-        (err: any, geolocInstance: any, created: boolean) => {
-          if (err) {
-            console.error(err);
-          } else {
-            if (created) {
-              console.log('Created geoloc as: ', geolocInstance);
-              // Update device in order to trigger a real time upsert event
-              this.updateDeviceLocatedAt(geolocInstance.deviceId);
-            } else {
-              console.log('Skipped geoloc creation.');
-            }
-          }
-        });
+    if (hasBeaconLocation) {
+      geoloc_beacon.type = 'beacon';
+      Beacon.findOne({where: {id: geoloc_beacon.id}}, (err: any, beacon: any) => {
+        if (err) {
+          console.error(err);
+        } else if (beacon) {
+          geoloc_beacon.id = null;
+          geoloc_beacon.location.lat = beacon.location.lat;
+          geoloc_beacon.location.lng = beacon.location.lng;
+          // Find or create a new Geoloc
+          Geoloc.findOrCreate(
+            {
+              where: {
+                and: [
+                  {type: geoloc_beacon.type},
+                  {location: geoloc_beacon.location},
+                  {createdAt: geoloc_beacon.createdAt},
+                  {userId: geoloc_beacon.userId},
+                  {messageId: geoloc_beacon.messageId},
+                  {deviceId: geoloc_beacon.deviceId}
+                ]
+              }
+            },
+            geoloc_beacon,
+            (err: any, geolocInstance: any, created: boolean) => {
+              if (err) {
+                console.error(err);
+              } else {
+                if (created) {
+                  console.log('Created geoloc as: ', geolocInstance);
+                  // Update device in order to trigger a real time upsert event
+                  this.updateDeviceLocatedAt(geolocInstance.deviceId);
+                } else {
+                  console.log('Skipped geoloc creation.');
+
+                }
+              }
+            });
+        }
+      });
     }
   }
 

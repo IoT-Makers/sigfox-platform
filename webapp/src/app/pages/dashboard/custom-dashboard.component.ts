@@ -121,6 +121,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private selectGeolocType = [
     {id: 'gps', itemName: 'GPS'},
     {id: 'sigfox', itemName: 'Sigfox'},
+    {id: 'beacon', itemName: 'Beacon'},
     {id: 'preferGps', itemName: 'Prefer GPS'},
     {id: 'all', itemName: 'All kinds'}
   ];
@@ -704,7 +705,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             }
           }]
         };
-      } else if (this.newWidget.options.geolocType === 'gps' || this.newWidget.options.geolocType === 'sigfox') {
+      } else if (this.newWidget.options.geolocType === 'gps' || this.newWidget.options.geolocType === 'sigfox' || this.newWidget.options.geolocType === 'beacon') {
         this.newWidget.filter = {
           where: {
             or: []

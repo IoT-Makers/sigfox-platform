@@ -72,6 +72,44 @@
                   </agm-info-window>
                 </agm-marker>
               </ng-container>
+              <!-- Sigfox -->
+              <ng-container *ngIf="geoloc.type === 'beacon'">
+                <agm-marker
+                  (mouseOut)="markerOut(i)"
+                  (mouseOver)="markerOver(i)"
+                  [zIndex]="3"
+                  [latitude]="geoloc.location.lat"
+                  [longitude]="geoloc.location.lng"
+                  [iconUrl]="'assets/img/markers/marker-beacon.png'">
+                  <agm-info-window
+                    id="{{geoloc.id}}">
+                    <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                    <br>
+                    <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                    <br *ngIf="device.name">
+                    <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                    <br>
+                    <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                    <br>
+                    <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                    <br>
+                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                  </agm-info-window>
+                </agm-marker>
+                <!-- Circle -->
+                <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                            [zIndex]="1"
+                            [strokePosition]="CENTER"
+                            [strokeWeight]="1"
+                            [strokeColor]="'#3c58ce'"
+                            [fillOpacity]="0.1"
+                            [fillColor]="'#3c58ce'"
+                            [latitude]="geoloc.location.lat"
+                            [longitude]="geoloc.location.lng"
+                            [radius]="geoloc.precision">
+                </agm-circle>
+                <!-- End Circle -->
+              </ng-container>
             </ng-container>
           </ng-container>
         </ng-container>
@@ -323,6 +361,13 @@
                               <i class="fa fa-map-marker fa-2x"></i>
                               <br>
                               <strong>GPS</strong>
+                            </a>
+                          </ng-container>
+                          <ng-container *ngIf="geoloc.type === 'beacon'">
+                            <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)" class="small text-geoloc-beacon">
+                              <i class="fa fa-map-marker fa-2x"></i>
+                              <br>
+                              <strong>Beacon</strong>
                             </a>
                           </ng-container>
                         </div>

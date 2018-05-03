@@ -217,5 +217,9 @@
   "Property": {
     "dataSource": null,
     "public": true
+  },
+  "Beacon": {
+    "dataSource": "mongodb",
+    "public": false
   }
 }
