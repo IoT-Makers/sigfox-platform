@@ -58,7 +58,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private mapOptions = {
     layers: [
-      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 22, maxNativeZoom: 19, attribution: '...' }),
+      tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 21, maxNativeZoom: 19, attribution: '...' }),
     ],
     zoom: 20,
     center: latLng(43.543623, 1.511141),
@@ -294,6 +294,9 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
       const marker = L.marker(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), {icon: icon(this.blueIconOptions)}).addTo(this.map);
       L.circle(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), radius, this.locationOptions).addTo(this.map);
       marker.bindPopup('You are within <b>' + radius + '</b> meters from this point').openPopup();
+
+      this.map.flyTo(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng));
+      this.map.setZoom(20);
 
       this.geolocs[0].Message.data_parsed.forEach((p: Property) => {
         if (p.key === 'beaconId') {
