@@ -35,6 +35,8 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
   private map: L.Map;
 
   // Feature groups
+  private marker: L.Marker;
+  private circle: L.Circle;
   private floor_1_N: L.LayerGroup = new L.LayerGroup();
   private floor_1_S: L.LayerGroup = new L.LayerGroup();
   private floor_2: L.LayerGroup = new L.LayerGroup();
@@ -273,8 +275,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
         where: {
           and: [
             {type: 'beacon'},
-            {deviceId: this.deviceId},
-            {userId: this.user.id}
+            {deviceId: this.deviceId}
           ]
         },
         include: ['Message']
@@ -282,42 +283,50 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
     ).subscribe((geolocs: Geoloc[]) => {
       console.log(this.geolocs);
 
-      this.map.removeLayer(this.floor_1_N);
-      this.map.removeLayer(this.floor_1_S);
-      this.map.removeLayer(this.floor_2);
-      this.map.removeLayer(this.floor_3);
-      this.map.removeLayer(this.floor_4);
+      if (this.geolocs.length > 0) {
 
-      this.geolocs = geolocs;
-
-      const radius = this.geolocs[0].precision;
-      const marker = L.marker(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), {icon: icon(this.blueIconOptions)}).addTo(this.map);
-      L.circle(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), radius, this.locationOptions).addTo(this.map);
-      marker.bindPopup('You are within <b>' + radius + '</b> meters from this point').openPopup();
-
-      this.map.flyTo(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng));
-      this.map.setZoom(20);
-
-      this.geolocs[0].Message.data_parsed.forEach((p: Property) => {
-        if (p.key === 'beaconId') {
-          if (p.value === '00001') {
-            this.floor_1_S.addTo(this.map);
-            this.floor_1_1.openPopup();
-          } else if (p.value === '00002') {
-            this.floor_1_N.addTo(this.map);
-            this.floor_1_2.openPopup();
-          } else if (p.value === '00003') {
-            this.floor_2.addTo(this.map);
-            this.floor_2_1.openPopup();
-          } else if (p.value === '00004') {
-            this.floor_3.addTo(this.map);
-            this.floor_3_1.openPopup();
-          } else if (p.value === '00005') {
-            this.floor_4.addTo(this.map);
-            this.floor_4_1.openPopup();
-          }
+        if (this.marker && this.circle) {
+          this.map.removeLayer(this.marker);
+          this.map.removeLayer(this.circle);
         }
-      });
+
+        this.map.removeLayer(this.floor_1_N);
+        this.map.removeLayer(this.floor_1_S);
+        this.map.removeLayer(this.floor_2);
+        this.map.removeLayer(this.floor_3);
+        this.map.removeLayer(this.floor_4);
+
+        this.geolocs = geolocs;
+
+        const radius = this.geolocs[0].precision;
+        this.marker = L.marker(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), {icon: icon(this.blueIconOptions)}).addTo(this.map);
+        this.circle = L.circle(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), radius, this.locationOptions).addTo(this.map);
+        this.marker.bindPopup('You are within <b>' + radius + '</b> meters from this point').openPopup();
+
+        this.map.flyTo(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng));
+        this.map.setZoom(20);
+
+        this.geolocs[0].Message.data_parsed.forEach((p: Property) => {
+          if (p.key === 'beaconId') {
+            if (p.value === '00001') {
+              this.floor_1_S.addTo(this.map);
+              this.floor_1_1.openPopup();
+            } else if (p.value === '00002') {
+              this.floor_1_N.addTo(this.map);
+              this.floor_1_2.openPopup();
+            } else if (p.value === '00003') {
+              this.floor_2.addTo(this.map);
+              this.floor_2_1.openPopup();
+            } else if (p.value === '00004') {
+              this.floor_3.addTo(this.map);
+              this.floor_3_1.openPopup();
+            } else if (p.value === '00005') {
+              this.floor_4.addTo(this.map);
+              this.floor_4_1.openPopup();
+            }
+          }
+        });
+      }
     });
 
     // Get and listen messages
@@ -346,7 +355,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
       'weight': 3,
       'fillColor': '#e7e35a',
       'fillOpacity': 0.5
-    }).bindPopup('Etage 1');
+    }).bindPopup('Floor 1');
     this.floor_1_N.addLayer(this.floor_1_1);
 
     this.floor_1_2 = L.geoJSON(this.floor_1_2).setStyle({
@@ -354,7 +363,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
       'weight': 3,
       'fillColor': '#58dcd6',
       'fillOpacity': 0.5
-    }).bindPopup('Etage 1 - Showroom');
+    }).bindPopup('Floor 1 - Showroom');
     this.floor_1_S.addLayer(this.floor_1_2);
 
     this.floor_2_1 = L.geoJSON(this.floor_2_1).setStyle({
@@ -362,7 +371,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
       'weight': 3,
       'fillColor': '#9f29a9',
       'fillOpacity': 0.5
-    }).bindPopup('Etage 2');
+    }).bindPopup('Floor 2');
     this.floor_2.addLayer(this.floor_2_1);
 
     this.floor_3_1 = L.geoJSON(this.floor_3_1).setStyle({
@@ -370,7 +379,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
       'weight': 3,
       'fillColor': '#4272ca',
       'fillOpacity': 0.5
-    }).bindPopup('Etage 3');
+    }).bindPopup('Floor 3');
     this.floor_3.addLayer(this.floor_3_1);
 
     this.floor_4_1 = L.geoJSON(this.floor_4_1).setStyle({
@@ -378,7 +387,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
       'weight': 3,
       'fillColor': '#31af23',
       'fillOpacity': 0.5
-    }).bindPopup('Etage 4');
+    }).bindPopup('Floor 4');
     this.floor_4.addLayer(this.floor_4_1);
   }
 
