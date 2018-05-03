@@ -246,7 +246,7 @@ export class DemoComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-// Get and listen devices
+    // Get and listen devices
     this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     this.messageSub = this.messageRef.on('change',
       {
@@ -267,13 +267,13 @@ export class DemoComponent implements OnInit, OnDestroy {
       this.messages = messages;
       this.messages[0].data_parsed.forEach((p: Property) => {
         if (p.key === 'beaconId') {
-          if (p.value === 1) {
+          if (p.value === '00001') {
             this.floor_1_S.addTo(this.map);
-          } else if (p.value === 2) {
+          } else if (p.value === '00002') {
             this.floor_2.addTo(this.map);
-          } else if (p.value === 3) {
+          } else if (p.value === '00003') {
             this.floor_3.addTo(this.map);
-          } else if (p.value === 4) {
+          } else if (p.value === '00004') {
             this.floor_4.addTo(this.map);
           }
         }

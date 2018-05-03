@@ -109,7 +109,7 @@ class Device {
         } else if (deviceInstance) {
           console.log('Deleting device ' + deviceId + ' and all its corresponding messages, alerts & geolocs.');
 
-          Device.destroyAll({id: deviceId}, (error: any, result: any) => { if (!err) next(null, 'Success'); });
+          Device.destroyAll({id: deviceId}, (error: any, result: any) => { if (!error) next(null, 'Success'); });
           Message.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
           Geoloc.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
           Alert.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });

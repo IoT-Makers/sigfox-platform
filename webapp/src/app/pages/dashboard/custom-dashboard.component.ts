@@ -269,17 +269,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.user = this.userApi.getCachedCurrent();
 
     this.route.params.subscribe(params => {
-      console.log(params);
-
       this.dashboardId = params.id;
-
       this.route.parent.parent.params.subscribe(parentParams => {
         console.log('Parent param', parentParams);
 
         if (parentParams.id) {
           this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
             this.organization = organization;
-            console.log(organization);
 
             // Categories
             this.organizationApi.getCategories(this.organization.id).subscribe((categories: Category[]) => {
@@ -683,12 +679,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           where: {
             or: []
           },
-          limit: 100,
           include: [{
             relation: 'Messages',
             order: 'createdAt DESC',
             scope: {
-              limit: 1000,
+              limit: 1,
               fields: ['id'],
               order: 'createdAt DESC',
               where: {
@@ -703,7 +698,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 }
               }]
             }
-          }]
+          }],
+          limit: 100
         };
       } else if (this.newWidget.options.geolocType === 'gps' || this.newWidget.options.geolocType === 'sigfox' || this.newWidget.options.geolocType === 'beacon') {
         this.newWidget.filter = {
@@ -721,7 +717,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   {type: this.newWidget.options.geolocType},
                 ]
               },
-              limit: 1000
+              limit: 1
             }
           }]
         };
@@ -740,7 +736,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}}
                 ]
               },
-              limit: 1000
+              limit: 1
             }
           }]
         };
@@ -815,7 +811,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       filter.include[0].scope.limit = 1;
     }
     this.getDevicesWithFilter(filter).subscribe((devices: any[]) => {
-      console.log(devices);
       devices.forEach((device: Device) => {
         if (device.Messages[0].data_parsed) {
           device.Messages[0].data_parsed.forEach(o => {
@@ -840,7 +835,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
     this.newWidget.userId = this.user.id;
     this.dashboardApi.createWidgets(this.dashboard.id, this.newWidget).subscribe(widget => {
-      console.log(widget);
       this.loadWidgets();
       this.toasterService.pop('success', 'Success', 'Successfully created widget.');
 
@@ -870,7 +864,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
     if (this.newWidget.options.style) {
       const myObject = eval(this.newWidget.options.style);
-      console.log(myObject);
       this.newWidget.options.style = myObject;
     }
 
@@ -1007,7 +1000,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           this.deviceRef.on('change', widget.filter).subscribe((devices: any[]) => {*/
           if (widget.type !== 'image') {
             this.getDevicesWithFilter(widget.filter).subscribe((devices: any[]) => {
-
               // Table
               if (widget.type === 'table') {
                 widget.data = devices;
@@ -1031,23 +1023,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   device.directionsDisplayStore = [];
                   device.color = this.getRandomColor();
                 });
-
-                if (widget.options.geolocType === 'preferGps') {
-                  widget.data.forEach((device: any) => {
-                    device.directionsDisplayStore = [];
-                    device.Geolocs = [];
-                    //console.log('preferGps - device.Messages', device.Messages);
-                    device.Messages.forEach((message: any) => {
-                      message.Geolocs.forEach((geoloc: Geoloc) => {
-                        device.Geolocs.push(geoloc);
-                        if (message.Geolocs.length > 1 && geoloc.type !== 'gps') {
-                          device.Geolocs.splice(geoloc, 1);
-                        }
-                      });
-                    });
-                    //console.log('preferGps - device.Geolocs', device.Geolocs);
-                  });
-                }
               }
 
               // Gauge
@@ -1388,6 +1363,36 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         this.dashboardReady = true;
       }
     });
+  }
+
+  onDeviceVisibility(devicePosition: number, widgetPosition: number): any {
+    const widget = this.widgets[widgetPosition];
+    const device = this.widgets[widgetPosition].data[devicePosition];
+
+    if (device.visibility) {
+      //const widgetFilter = widget.filter.getInitialState();
+      const widgetFilter = Object.assign({}, widget.filter);
+      widgetFilter.where = {id: device.id};
+      widgetFilter.include[0].scope.limit = 1000;
+
+      this.getDevicesWithFilter(widgetFilter).subscribe((devices: any[]) => {
+        device.Geolocs = devices[0].Geolocs;
+        device.Messages = devices[0].Messages;
+
+        if (widget.options.geolocType === 'preferGps') {
+          device.directionsDisplayStore = [];
+          device.Geolocs = [];
+          device.Messages.forEach((message: any) => {
+            message.Geolocs.forEach((geoloc: Geoloc) => {
+              device.Geolocs.push(geoloc);
+              if (message.Geolocs.length > 1 && geoloc.type !== 'gps') {
+                device.Geolocs.splice(geoloc, 1);
+              }
+            });
+          });
+        }
+      });
+    }
   }
 
   /*markAlertProcess(widget, i): void {

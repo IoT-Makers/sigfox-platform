@@ -49,11 +49,11 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Icon <i class="fa {{dashboard.icon}}"></i></label>
               <div class="col-md-6">
-                <angular2-multiselect #selectOne
+                <angular2-multiselect #selectOneDashboardIcon
                                       name="iconDashboardSelect"
                                       [data]="fontAwesomeList"
                                       [(ngModel)]="selectedDashboardIcon"
-                                      (onSelect)="dashboard.icon = $event.id; selectOne.isActive = false;"
+                                      (onSelect)="dashboard.icon = $event.id; selectOneDashboardIcon.isActive = false;"
                                       (onDeSelect)="dashboard.icon = ''"
                                       [settings]="selectIconSettings">
                   <c-item>
@@ -87,7 +87,7 @@
   </div>
   <div class="row" *ngIf="widgets.length > 0">
     <!-- For each widget -->
-    <div *ngFor="let widget of widgets" class="col-md-{{widget.width}}">
+    <div *ngFor="let widget of widgets; let w = index" class="col-md-{{widget.width}}">
       <div class="card">
         <!-- card header -->
         <div class="card-header">
@@ -375,6 +375,7 @@
                   <div class="m-1" *ngFor="let device of widget.data; let i = index">
                     <label for="{{device.id}}" class="switch switch-sm switch-3d switch-device-outline-alt">
                       <input id="{{device.id}}"
+                             (change)="onDeviceVisibility(i, w)"
                              [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
                       <span class="switch-label"></span>
                       <span class="switch-handle"></span>
@@ -384,10 +385,11 @@
                   </div>
                 </div>
 
-                <div #deviceList class="floating-panel" *ngIf="mobile && widget.data" style="max-width: 100%; max-height: 20%">
+                <div #deviceListMobile class="floating-panel" *ngIf="mobile && widget.data" style="max-width: 100%; max-height: 20%">
                   <div class="m-1" *ngFor="let device of widget.data; let i = index">
                     <label for="{{device.id}}" class="switch switch-sm switch-3d switch-device-outline-alt">
                       <input id="{{device.id}}"
+                             (change)="onDeviceVisibility(i, w)"
                              [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
                       <span class="switch-label"></span>
                       <span class="switch-handle"></span>
@@ -1152,11 +1154,11 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Icon <i class="fa {{newWidget.icon}}"></i></label>
               <div class="col-md-9">
-                <angular2-multiselect #selectOne
+                <angular2-multiselect #selectOneWidgetIcon
                                       name="iconWidgetSelect"
                                       [data]="fontAwesomeList"
                                       [(ngModel)]="selectedWidgetIcon"
-                                      (onSelect)="newWidget.icon = $event.id; selectOne.isActive = false;"
+                                      (onSelect)="newWidget.icon = $event.id; selectOneWidgetIcon.isActive = false;"
                                       (onDeSelect)="newWidget.icon = ''"
                                       [settings]="selectIconSettings">
                   <c-item>

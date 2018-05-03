@@ -378,6 +378,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.deviceApi.deleteDeviceMessagesAlertsGeolocs(this.deviceToRemove.id).subscribe(value => {
       const index = this.devices.indexOf(this.deviceToRemove);
       this.devices.splice(index, 1);
+      this.edit = false;
+      this.confirmModal.hide();
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The device and its messages were successfully deleted.');
@@ -386,7 +388,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
-    this.confirmModal.hide();
   }
 
   showShareDeviceWithOrganizationModal(): void{
