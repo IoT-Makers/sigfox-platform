@@ -37,8 +37,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
   // Feature groups
   private marker: L.Marker;
   private circle: L.Circle;
-  private floor_1_N: L.LayerGroup = new L.LayerGroup();
-  private floor_1_S: L.LayerGroup = new L.LayerGroup();
+  private floor_1: L.LayerGroup = new L.LayerGroup();
   private floor_2: L.LayerGroup = new L.LayerGroup();
   private floor_3: L.LayerGroup = new L.LayerGroup();
   private floor_4: L.LayerGroup = new L.LayerGroup();
@@ -69,16 +68,15 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   private layersControl = {
-    overlays: {
-      'Floor 1 North': this.floor_1_N,
-      'Floor 1 South': this.floor_1_S,
+    baseLayers: {
+      'Floor 1': this.floor_1,
       'Floor 2': this.floor_2,
       'Floor 3': this.floor_3,
       'Floor 4': this.floor_4,
     }
   };
 
-  private floor_1_1: any = {
+  private room_1_1: any = {
     'type': 'Feature',
     'geometry': {
       'type': 'Polygon',
@@ -117,7 +115,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  private floor_1_2: any = {
+  private room_1_2: any = {
     'type': 'Feature',
     'geometry': {
       'type': 'Polygon',
@@ -148,7 +146,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  private floor_2_1: any = {
+  private room_2_1: any = {
     'type': 'Feature',
     'geometry': {
       'type': 'Polygon',
@@ -179,7 +177,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  private floor_3_1: any = {
+  private room_3_1: any = {
     'type': 'Feature',
     'geometry': {
       'type': 'Polygon',
@@ -210,7 +208,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  private floor_4_1: any = {
+  private room_4_1: any = {
     'type': 'Feature',
     'geometry': {
       'type': 'Polygon',
@@ -291,8 +289,12 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
           this.map.removeLayer(this.circle);
         }
 
-        this.map.removeLayer(this.floor_1_N);
-        this.map.removeLayer(this.floor_1_S);
+        this.map.removeLayer(this.room_1_1);
+        this.map.removeLayer(this.room_1_2);
+        this.map.removeLayer(this.room_2_1);
+        this.map.removeLayer(this.room_3_1);
+        this.map.removeLayer(this.room_4_1);
+
         this.map.removeLayer(this.floor_2);
         this.map.removeLayer(this.floor_3);
         this.map.removeLayer(this.floor_4);
@@ -308,25 +310,25 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
         this.geolocs[0].Message.data_parsed.forEach((p: Property) => {
           if (p.key === 'beaconId') {
             if (p.value === '00001') {
-              this.floor_1_S.addTo(this.map);
-              this.marker.bindPopup('Floor 1').openPopup();
-              //this.floor_1_2.openPopup();
+              this.floor_1.addTo(this.map);
+              this.room_1_2.addTo(this.map);
+              this.marker.bindPopup('Floor 1 - ' + this.deviceId).openPopup();
             } else if (p.value === '00002') {
-              this.floor_1_N.addTo(this.map);
-              this.marker.bindPopup('Floor 1').openPopup();
-              //this.floor_1_1.openPopup();
+              this.floor_1.addTo(this.map);
+              this.room_1_1.addTo(this.map);
+              this.marker.bindPopup('Floor 1 - ' + this.deviceId).openPopup();
             } else if (p.value === '00003') {
               this.floor_2.addTo(this.map);
-              this.marker.bindPopup('Floor 2').openPopup();
-              //this.floor_2_1.openPopup();
+              this.room_2_1.addTo(this.map);
+              this.marker.bindPopup('Floor 2 - ' + this.deviceId).openPopup();
             } else if (p.value === '00004') {
               this.floor_3.addTo(this.map);
-              this.marker.bindPopup('Floor 3').openPopup();
-              //this.floor_3_1.openPopup();
+              this.room_3_1.addTo(this.map);
+              this.marker.bindPopup('Floor 3 - ' + this.deviceId).openPopup();
             } else if (p.value === '00005') {
               this.floor_4.addTo(this.map);
-              this.marker.bindPopup('Floor 4').openPopup();
-              //this.floor_4_1.openPopup();
+              this.room_4_1.addTo(this.map);
+              this.marker.bindPopup('Floor 4 - ' + this.deviceId).openPopup();
             }
           }
         });
@@ -351,45 +353,57 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadMapElements() {
-    this.floor_1_1 = L.geoJSON(this.floor_1_1).setStyle({
+
+    let imageUrl = '../assets/img/buildings/floor_1.png';
+    let imageBounds: L.LatLngBoundsExpression = [[43.5439288935699, 1.51069521903992], [43.5439327819489, 1.51149988174438], [43.5433728527995, 1.51151597499847], [43.5433689643845, 1.51070058345795]];
+    L.imageOverlay(imageUrl, imageBounds).setOpacity(1).addTo(this.floor_1);
+
+    imageUrl = '../assets/img/buildings/floor_2.png';
+    imageBounds = [[43.5439288935699, 1.51069521903992], [43.5439327819489, 1.51149988174438], [43.5433728527995, 1.51151597499847], [43.5433689643845, 1.51070058345795]];
+    L.imageOverlay(imageUrl, imageBounds).setOpacity(1).addTo(this.floor_2);
+
+    imageUrl = '../assets/img/buildings/floor_3.png';
+    imageBounds = [[43.5439288935699, 1.51069521903992], [43.5439327819489, 1.51149988174438], [43.5433728527995, 1.51151597499847], [43.5433689643845, 1.51070058345795]];
+    L.imageOverlay(imageUrl, imageBounds).setOpacity(1).addTo(this.floor_3);
+
+    imageUrl = '../assets/img/buildings/floor_4.png';
+    imageBounds = [[43.5439288935699, 1.51069521903992], [43.5439327819489, 1.51149988174438], [43.5433728527995, 1.51151597499847], [43.5433689643845, 1.51070058345795]];
+    L.imageOverlay(imageUrl, imageBounds).setOpacity(1).addTo(this.floor_4);
+
+    this.room_1_1 = L.geoJSON(this.room_1_1).setStyle({
       'color': '#000000',
       'weight': 3,
       'fillColor': '#e7e35a',
       'fillOpacity': 0.5
     }).bindPopup('Floor 1');
-    this.floor_1_N.addLayer(this.floor_1_1);
 
-    this.floor_1_2 = L.geoJSON(this.floor_1_2).setStyle({
+    this.room_1_2 = L.geoJSON(this.room_1_2).setStyle({
       'color': '#000000',
       'weight': 3,
       'fillColor': '#58dcd6',
       'fillOpacity': 0.5
     }).bindPopup('Floor 1 - Showroom');
-    this.floor_1_S.addLayer(this.floor_1_2);
 
-    this.floor_2_1 = L.geoJSON(this.floor_2_1).setStyle({
+    this.room_2_1 = L.geoJSON(this.room_2_1).setStyle({
       'color': '#000000',
       'weight': 3,
       'fillColor': '#9f29a9',
       'fillOpacity': 0.5
     }).bindPopup('Floor 2');
-    this.floor_2.addLayer(this.floor_2_1);
 
-    this.floor_3_1 = L.geoJSON(this.floor_3_1).setStyle({
+    this.room_3_1 = L.geoJSON(this.room_3_1).setStyle({
       'color': '#000000',
       'weight': 3,
       'fillColor': '#4272ca',
       'fillOpacity': 0.5
     }).bindPopup('Floor 3');
-    this.floor_3.addLayer(this.floor_3_1);
 
-    this.floor_4_1 = L.geoJSON(this.floor_4_1).setStyle({
+    this.room_4_1 = L.geoJSON(this.room_4_1).setStyle({
       'color': '#000000',
       'weight': 3,
       'fillColor': '#31af23',
       'fillOpacity': 0.5
     }).bindPopup('Floor 4');
-    this.floor_4.addLayer(this.floor_4_1);
   }
 
   /**
