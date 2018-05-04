@@ -7,6 +7,7 @@ import {DashboardGuard} from './_guards/dashboard.guard';
 import {OrganizationGuard} from './_guards/organization.guard';
 
 export const routes: Routes = [
+  {path: 'demo', canActivate: [AuthGuard], loadChildren: './pages/demo/demo.module#DemoModule'},
   {path: 'login', loadChildren: './pages/user/login/login.module#LoginModule'},
   {path: 'register', loadChildren: './pages/user/register/register.module#RegisterModule'},
   {
@@ -29,7 +30,6 @@ export const routes: Routes = [
 
       {path: 'profile', loadChildren: './pages/user/profile/profile.module#ProfileModule'},
 
-      {path: 'demo', loadChildren: './pages/demo/demo.module#DemoModule'},
       {path: 'tracking', loadChildren: './widgets/tracking/tracking.module#TrackingModule'},
       {path: 'analytics', loadChildren: './widgets/analytics/analytics.module#AnalyticsModule'},
 
