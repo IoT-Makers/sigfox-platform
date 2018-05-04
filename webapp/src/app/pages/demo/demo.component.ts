@@ -313,6 +313,12 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   setup(): void {
+    if (this.geolocRef) this.geolocRef.dispose();
+    if (this.geolocSub) this.geolocSub.unsubscribe();
+
+    if (this.messageRef) this.messageRef.dispose();
+    if (this.messageSub) this.messageSub.unsubscribe();
+
     // Get and listen geolocs
     this.geolocRef = this.rt.FireLoop.ref<Geoloc>(Geoloc);
     this.geolocSub = this.geolocRef.on('change',
@@ -491,6 +497,11 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     console.log('Demo: ngOnDestroy');
+    if (this.geolocRef) this.geolocRef.dispose();
+    if (this.geolocSub) this.geolocSub.unsubscribe();
+
+    if (this.messageRef) this.messageRef.dispose();
+    if (this.messageSub) this.messageSub.unsubscribe();
   }
 
 }
