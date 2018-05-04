@@ -7,7 +7,6 @@ import {DashboardGuard} from './_guards/dashboard.guard';
 import {OrganizationGuard} from './_guards/organization.guard';
 
 export const routes: Routes = [
-  {path: 'demo', loadChildren: './pages/demo/demo.module#DemoModule'},
   {path: 'login', loadChildren: './pages/user/login/login.module#LoginModule'},
   {path: 'register', loadChildren: './pages/user/register/register.module#RegisterModule'},
   {
