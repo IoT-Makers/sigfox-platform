@@ -329,9 +329,8 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     ).subscribe((geolocs: Geoloc[]) => {
       console.log(geolocs);
-      this.geolocs = geolocs;
-
-      if (this.geolocs.length > 0) {
+      if (geolocs.length > 0) {
+        this.geolocs = geolocs;
 
         this.cleanMapLayers();
 
@@ -395,8 +394,10 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
         include: ['Geolocs']
       }
     ).subscribe((messages: Message[]) => {
-      this.messages = messages;
-      this.messagesReady = true;
+      if (messages.length > 0) {
+        this.messages = messages;
+        this.messagesReady = true;
+      }
     });
   }
 
