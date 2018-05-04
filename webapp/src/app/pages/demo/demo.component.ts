@@ -37,6 +37,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
   // Feature groups
   private marker: L.Marker;
   private circle: L.Circle;
+
   private floor_1: L.LayerGroup = new L.LayerGroup();
   private floor_2: L.LayerGroup = new L.LayerGroup();
   private floor_3: L.LayerGroup = new L.LayerGroup();
@@ -259,8 +260,26 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   track() {
+    this.cleanMapLayers();
     this.setup();
     this.inputModal.hide();
+  }
+
+  cleanMapLayers() {
+    if (this.marker) {
+      this.map.removeLayer(this.marker);
+      //this.map.removeLayer(this.circle);
+    }
+
+    this.map.removeLayer(this.room_1_1);
+    this.map.removeLayer(this.room_1_2);
+    this.map.removeLayer(this.room_2_1);
+    this.map.removeLayer(this.room_3_1);
+    this.map.removeLayer(this.room_4_1);
+
+    this.map.removeLayer(this.floor_2);
+    this.map.removeLayer(this.floor_3);
+    this.map.removeLayer(this.floor_4);
   }
 
   setup(): void {
@@ -284,20 +303,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
 
       if (this.geolocs.length > 0) {
 
-        if (this.marker && this.circle) {
-          this.map.removeLayer(this.marker);
-          this.map.removeLayer(this.circle);
-        }
-
-        this.map.removeLayer(this.room_1_1);
-        this.map.removeLayer(this.room_1_2);
-        this.map.removeLayer(this.room_2_1);
-        this.map.removeLayer(this.room_3_1);
-        this.map.removeLayer(this.room_4_1);
-
-        this.map.removeLayer(this.floor_2);
-        this.map.removeLayer(this.floor_3);
-        this.map.removeLayer(this.floor_4);
+        this.cleanMapLayers();
 
         this.map.flyTo(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng));
         this.map.setZoom(20);
