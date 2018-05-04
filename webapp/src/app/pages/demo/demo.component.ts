@@ -60,7 +60,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private mapOptions = {
     layers: [
-      tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 21, maxNativeZoom: 19, attribution: '...' }),
+      tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 21, maxNativeZoom: 18, attribution: '...' }),
     ],
     zoom: 20,
     center: latLng(43.543623, 1.511141),
@@ -297,31 +297,36 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
         this.map.removeLayer(this.floor_3);
         this.map.removeLayer(this.floor_4);
 
-        const radius = this.geolocs[0].precision;
-        this.marker = L.marker(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), {icon: icon(this.blueIconOptions)}).addTo(this.map);
-        this.circle = L.circle(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), radius, this.locationOptions).addTo(this.map);
-        this.marker.bindPopup('You are within <b>' + radius + '</b> meters from this point').openPopup();
-
         this.map.flyTo(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng));
         this.map.setZoom(20);
+
+        //const radius = this.geolocs[0].precision;
+        //this.circle = L.circle(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), radius, this.locationOptions).addTo(this.map);
+
+        this.marker = L.marker(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), {icon: icon(this.blueIconOptions)}).addTo(this.map);
 
         this.geolocs[0].Message.data_parsed.forEach((p: Property) => {
           if (p.key === 'beaconId') {
             if (p.value === '00001') {
               this.floor_1_S.addTo(this.map);
-              this.floor_1_2.openPopup();
+              this.marker.bindPopup('Floor 1').openPopup();
+              //this.floor_1_2.openPopup();
             } else if (p.value === '00002') {
               this.floor_1_N.addTo(this.map);
-              this.floor_1_1.openPopup();
+              this.marker.bindPopup('Floor 1').openPopup();
+              //this.floor_1_1.openPopup();
             } else if (p.value === '00003') {
               this.floor_2.addTo(this.map);
-              this.floor_2_1.openPopup();
+              this.marker.bindPopup('Floor 2').openPopup();
+              //this.floor_2_1.openPopup();
             } else if (p.value === '00004') {
               this.floor_3.addTo(this.map);
-              this.floor_3_1.openPopup();
+              this.marker.bindPopup('Floor 3').openPopup();
+              //this.floor_3_1.openPopup();
             } else if (p.value === '00005') {
               this.floor_4.addTo(this.map);
-              this.floor_4_1.openPopup();
+              this.marker.bindPopup('Floor 4').openPopup();
+              //this.floor_4_1.openPopup();
             }
           }
         });
