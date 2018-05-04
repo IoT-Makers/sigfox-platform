@@ -43,12 +43,42 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
   private floor_3: L.LayerGroup = new L.LayerGroup();
   private floor_4: L.LayerGroup = new L.LayerGroup();
 
-  private locationOptions: L.CircleMarkerOptions = {
-    color: '#5fcfd8',
-    fillColor: ''
+  private circle_1_1: L.CircleMarkerOptions = {
+    color: '#000000',
+    weight: 1,
+    fillColor: '#e7e35a',
+    fillOpacity: 0.3
   };
 
-  private blueIconOptions: L.IconOptions = {
+  private circle_1_2: L.CircleMarkerOptions = {
+    color: '#000000',
+    weight: 1,
+    fillColor: '#58dcd6',
+    fillOpacity: 0.3
+  };
+
+  private circle_2_1: L.CircleMarkerOptions = {
+    color: '#000000',
+    weight: 1,
+    fillColor: '#9f29a9',
+    fillOpacity: 0.3
+  };
+
+  private circle_3_1: L.CircleMarkerOptions = {
+    color: '#000000',
+    weight: 1,
+    fillColor: '#4272ca',
+    fillOpacity: 0.3
+  };
+
+  private circle_4_1: L.CircleMarkerOptions = {
+    color: '#000000',
+    weight: 1,
+    fillColor: '#31af23',
+    fillOpacity: 0.3
+  };
+
+  private markerIconOptions: L.IconOptions = {
     iconUrl: 'assets/img/markers/marker-icon.png',
     shadowUrl: 'assets/img/markers/marker-shadow.png',
     iconSize:     [25, 41], // size of the icon
@@ -268,7 +298,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
   cleanMapLayers() {
     if (this.marker) {
       this.map.removeLayer(this.marker);
-      //this.map.removeLayer(this.circle);
+      this.map.removeLayer(this.circle);
     }
 
     this.map.removeLayer(this.room_1_1);
@@ -308,32 +338,44 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
         this.map.flyTo(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng));
         this.map.setZoom(20);
 
-        //const radius = this.geolocs[0].precision;
-        //this.circle = L.circle(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), radius, this.locationOptions).addTo(this.map);
-
-        this.marker = L.marker(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), {icon: icon(this.blueIconOptions)}).addTo(this.map);
+        const radius = this.geolocs[0].precision;
 
         this.geolocs[0].Message.data_parsed.forEach((p: Property) => {
           if (p.key === 'beaconId') {
             if (p.value === '00001') {
               this.floor_1.addTo(this.map);
-              this.room_1_2.addTo(this.map);
+              //this.room_1_2.addTo(this.map);
+              this.markerIconOptions.iconUrl = 'assets/img/markers/marker-icon-blue.png';
+              this.marker = L.marker(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), {icon: icon(this.markerIconOptions)}).addTo(this.map);
+              this.circle = L.circle(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), radius, this.circle_1_2).addTo(this.map);
               this.marker.bindPopup('Floor 1 - ' + this.deviceId).openPopup();
             } else if (p.value === '00002') {
               this.floor_1.addTo(this.map);
-              this.room_1_1.addTo(this.map);
+              //this.room_1_1.addTo(this.map);
+              this.markerIconOptions.iconUrl = 'assets/img/markers/marker-icon-yellow.png';
+              this.marker = L.marker(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), {icon: icon(this.markerIconOptions)}).addTo(this.map);
+              this.circle = L.circle(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), radius, this.circle_1_1).addTo(this.map);
               this.marker.bindPopup('Floor 1 - ' + this.deviceId).openPopup();
             } else if (p.value === '00003') {
               this.floor_2.addTo(this.map);
-              this.room_2_1.addTo(this.map);
+              //this.room_2_1.addTo(this.map);
+              this.markerIconOptions.iconUrl = 'assets/img/markers/marker-icon-violet.png';
+              this.marker = L.marker(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), {icon: icon(this.markerIconOptions)}).addTo(this.map);
+              this.circle = L.circle(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), radius, this.circle_2_1).addTo(this.map);
               this.marker.bindPopup('Floor 2 - ' + this.deviceId).openPopup();
             } else if (p.value === '00004') {
               this.floor_3.addTo(this.map);
-              this.room_3_1.addTo(this.map);
+              //this.room_3_1.addTo(this.map);
+              this.markerIconOptions.iconUrl = 'assets/img/markers/marker-icon-blue.png';
+              this.marker = L.marker(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), {icon: icon(this.markerIconOptions)}).addTo(this.map);
+              this.circle = L.circle(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), radius, this.circle_3_1).addTo(this.map);
               this.marker.bindPopup('Floor 3 - ' + this.deviceId).openPopup();
             } else if (p.value === '00005') {
               this.floor_4.addTo(this.map);
-              this.room_4_1.addTo(this.map);
+              //this.room_4_1.addTo(this.map);
+              this.markerIconOptions.iconUrl = 'assets/img/markers/marker-icon-green.png';
+              this.marker = L.marker(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), {icon: icon(this.markerIconOptions)}).addTo(this.map);
+              this.circle = L.circle(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), radius, this.circle_4_1).addTo(this.map);
               this.marker.bindPopup('Floor 4 - ' + this.deviceId).openPopup();
             }
           }
@@ -378,35 +420,35 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.room_1_1 = L.geoJSON(this.room_1_1).setStyle({
       'color': '#000000',
-      'weight': 3,
+      'weight': 2,
       'fillColor': '#e7e35a',
       'fillOpacity': 0.5
     }).bindPopup('Floor 1');
 
     this.room_1_2 = L.geoJSON(this.room_1_2).setStyle({
       'color': '#000000',
-      'weight': 3,
+      'weight': 2,
       'fillColor': '#58dcd6',
       'fillOpacity': 0.5
     }).bindPopup('Floor 1 - Showroom');
 
     this.room_2_1 = L.geoJSON(this.room_2_1).setStyle({
       'color': '#000000',
-      'weight': 3,
+      'weight': 2,
       'fillColor': '#9f29a9',
       'fillOpacity': 0.5
     }).bindPopup('Floor 2');
 
     this.room_3_1 = L.geoJSON(this.room_3_1).setStyle({
       'color': '#000000',
-      'weight': 3,
+      'weight': 2,
       'fillColor': '#4272ca',
       'fillOpacity': 0.5
     }).bindPopup('Floor 3');
 
     this.room_4_1 = L.geoJSON(this.room_4_1).setStyle({
       'color': '#000000',
-      'weight': 3,
+      'weight': 2,
       'fillColor': '#31af23',
       'fillOpacity': 0.5
     }).bindPopup('Floor 4');
@@ -437,8 +479,8 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onLocationFound(e): void {
     const radius = e.accuracy / 2;
-    const marker = L.marker(e.latlng, {icon: icon(this.blueIconOptions)}).addTo(this.map);
-    L.circle(e.latlng, radius, this.locationOptions).addTo(this.map);
+    const marker = L.marker(e.latlng, {icon: icon(this.markerIconOptions)}).addTo(this.map);
+    L.circle(e.latlng, radius, this.markerIconOptions).addTo(this.map);
     marker.bindPopup('You are within <b>' + radius + '</b> meters from this point').openPopup();
   }
 
