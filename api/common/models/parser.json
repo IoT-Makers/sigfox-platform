@@ -90,6 +90,15 @@
       ]
     },
     {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "user",
+      "permission": "ALLOW",
+      "property": [
+        "parseAllMessages"
+      ]
+    },
+    {
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",

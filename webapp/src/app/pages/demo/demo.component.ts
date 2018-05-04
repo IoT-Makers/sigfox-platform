@@ -70,11 +70,11 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private layersControl = {
     overlays: {
-      'Etage 1 Nord': this.floor_1_N,
-      'Etage 1 Sud': this.floor_1_S,
-      'Etage 2': this.floor_2,
-      'Etage 3': this.floor_3,
-      'Etage 4': this.floor_4,
+      'Floor 1 North': this.floor_1_N,
+      'Floor 1 South': this.floor_1_S,
+      'Floor 2': this.floor_2,
+      'Floor 3': this.floor_3,
+      'Floor 4': this.floor_4,
     }
   };
 
@@ -281,7 +281,8 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
         include: ['Message']
       }
     ).subscribe((geolocs: Geoloc[]) => {
-      console.log(this.geolocs);
+      console.log(geolocs);
+      this.geolocs = geolocs;
 
       if (this.geolocs.length > 0) {
 
@@ -296,8 +297,6 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
         this.map.removeLayer(this.floor_3);
         this.map.removeLayer(this.floor_4);
 
-        this.geolocs = geolocs;
-
         const radius = this.geolocs[0].precision;
         this.marker = L.marker(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), {icon: icon(this.blueIconOptions)}).addTo(this.map);
         this.circle = L.circle(new LatLng(this.geolocs[0].location.lat, this.geolocs[0].location.lng), radius, this.locationOptions).addTo(this.map);
@@ -310,10 +309,10 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
           if (p.key === 'beaconId') {
             if (p.value === '00001') {
               this.floor_1_S.addTo(this.map);
-              this.floor_1_1.openPopup();
+              this.floor_1_2.openPopup();
             } else if (p.value === '00002') {
               this.floor_1_N.addTo(this.map);
-              this.floor_1_2.openPopup();
+              this.floor_1_1.openPopup();
             } else if (p.value === '00003') {
               this.floor_2.addTo(this.map);
               this.floor_2_1.openPopup();
@@ -336,10 +335,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
         limit: 10,
         order: 'createdAt DESC',
         where: {
-          and: [
-            {deviceId: this.deviceId},
-            {userId: this.user.id}
-          ]
+          deviceId: this.deviceId
         },
         include: ['Geolocs']
       }
