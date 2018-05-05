@@ -1,21 +1,19 @@
 import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-
 import {DemoComponent} from './demo.component';
-
-const routes: Routes = [
-  {
-    path: '',
-    component: DemoComponent,
-    data: {
-      title: 'Messages'
-    }
-  }
-];
+import {DemoRoutingModule} from './demo-routing.module';
+import {CommonModule} from '@angular/common';
+import {DataFilterPipe} from './datafilterpipe';
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  imports: [
+    DemoRoutingModule,
+    CommonModule
+  ],
+  declarations: [
+    DemoComponent,
+    DataFilterPipe
+  ]
 })
-export class DemoRoutingModule {
+
+export class DemoModule {
 }
