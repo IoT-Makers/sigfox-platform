@@ -1,27 +1,21 @@
 import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+
 import {DemoComponent} from './demo.component';
-import {DemoRoutingModule} from './demo-routing.module';
-import {CommonModule} from '@angular/common';
-import {DataFilterPipe} from './datafilterpipe';
-import {LeafletModule} from '@asymmetrik/ngx-leaflet';
-import {DataTableModule} from 'angular2-datatable';
-import {ModalModule} from 'ng2-bootstrap';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: DemoComponent,
+    data: {
+      title: 'Messages'
+    }
+  }
+];
 
 @NgModule({
-  imports: [
-    DemoRoutingModule,
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    DataTableModule,
-    ModalModule,
-    LeafletModule
-  ],
-  declarations: [
-    DemoComponent,
-    DataFilterPipe
-  ]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class DemoModule {
+export class DemoRoutingModule {
 }
