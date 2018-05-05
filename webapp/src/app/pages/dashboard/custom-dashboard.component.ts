@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DashboardApi, RealTime, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
@@ -26,7 +26,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private user: User;
 
   // Map
-  @ViewChild(AgmMap) agmMap: AgmMap;
+  @ViewChildren('agmMap') agmMaps:QueryList<AgmMap>;
   private map: any;
   private searchBox: any;
 
@@ -1382,7 +1382,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         device.Messages = devices[0].Messages;
 
         if (device.Geolocs.length > 0) {
-          (this.agmMap as any)._mapsWrapper.setCenter(device.Geolocs[device.Geolocs.length - 1].location);
+          this.agmMaps.forEach((agmMap: any) => {
+            agmMap._mapsWrapper.setCenter(device.Geolocs[device.Geolocs.length - 1].location);
+          });
         }
 
         if (widget.options.geolocType === 'preferGps') {
