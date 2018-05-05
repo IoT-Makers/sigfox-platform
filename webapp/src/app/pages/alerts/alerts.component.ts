@@ -51,7 +51,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   };
   private mapOptions = {
     layers: [
-      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' }),
+      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap contributors' }),
       this.drawnItems
     ],
     zoom: 5,

@@ -90,7 +90,7 @@ export class DemoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private mapOptions = {
     layers: [
-      tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 21, maxNativeZoom: 18, attribution: '...' }),
+      tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 21, maxNativeZoom: 18, attribution: '© OpenStreetMap contributors' }),
     ],
     zoom: 20,
     center: latLng(43.543623, 1.511141),

@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import {MessageApi, OrganizationApi} from '../../shared/sdk/services/custom';
 import {Observable} from 'rxjs/Rx';
+import {AgmMap} from '@agm/core';
 
 declare let d3: any;
 declare const google: any;
@@ -25,6 +26,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private user: User;
 
   // Map
+  @ViewChild(AgmMap) agmMap: AgmMap;
   private map: any;
   private searchBox: any;
 
@@ -1378,6 +1380,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.getDevicesWithFilter(widgetFilter).subscribe((devices: any[]) => {
         device.Geolocs = devices[0].Geolocs;
         device.Messages = devices[0].Messages;
+
+        if (device.Geolocs.length > 0) {
+          (this.agmMap as any)._mapsWrapper.setCenter(device.Geolocs[device.Geolocs.length - 1].location);
+        }
 
         if (widget.options.geolocType === 'preferGps') {
           device.directionsDisplayStore = [];

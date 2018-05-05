@@ -125,7 +125,8 @@
             <!-- Map -->
             <ng-container *ngIf="widget.type === 'map'">
               <ng-container *ngIf="widget.data">
-                <agm-map (mapReady)="onMapReady($event)"
+                <agm-map #agmMap
+                         (mapReady)="onMapReady($event)"
                          [latitude]="widget.options.lat"
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
@@ -399,7 +400,8 @@
                   </div>
                 </div>
 
-                <agm-map [latitude]="widget.options.lat"
+                <agm-map #agmMap
+                         [latitude]="widget.options.lat"
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
                          [fullscreenControl]="true"
