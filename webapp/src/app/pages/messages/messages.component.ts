@@ -30,9 +30,12 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private receptions: any[] = [];
   private geolocs: Geoloc[] = [];
 
+  private userRef: FireLoopRef<User>;
+  private organizationRef: FireLoopRef<Organization>;
+
+  private messageRef: FireLoopRef<Message>;
   private messageSub: Subscription;
   private messages: Message[] = [];
-  private messageRef: FireLoopRef<Message>;
 
   private organization: Organization;
   private organizations: Organization[] = [];
@@ -243,30 +246,13 @@ export class MessagesComponent implements OnInit, OnDestroy {
     console.log('Messages: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-    this.messageFilter = {
-      limit: 100,
-      order: 'createdAt DESC',
-      include: ['Device', 'Geolocs']
-    };
-    this.sub = this.route.params.subscribe(params => {
-      this.filterQuery = params['id'];
-      if (this.filterQuery) {
-        this.messageFilter = {
-          limit: 100,
-          order: 'createdAt DESC',
-          include: ['Device', 'Geolocs'],
-          where: {
-            deviceId: this.filterQuery
-          }
-        };
-      }
-    });
 
     // Check if organization view
     this.route.parent.parent.params.subscribe(parentParams => {
       if (parentParams.id) {
         this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
           this.organization = organization;
+
           // Check if real time and setup
           if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
             this.setup();
@@ -285,25 +271,51 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   setup(): void {
     // Get and listen messages
-    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-    // this.messageRef = this.userRef.make(this.user).child<Message>('Messages');
-    this.messageSub = this.messageRef.on('change',
-      {limit: 1}
-    ).subscribe((messages: Message[]) => {
-      console.log(messages);
-      if (!this.organization) {
-        // Get user devices
-        this.userApi.getMessages(this.user.id,
-          this.messageFilter
-        ).subscribe(messages => {
-          this.messages = messages;
-          this.messagesReady = true;
+    this.sub = this.route.params.subscribe(params => {
+      this.filterQuery = params['id'];
+      if (this.filterQuery) {
+        this.messageFilter = {
+          limit: 100,
+          order: 'createdAt DESC',
+          include: ['Device', 'Geolocs'],
+          where: {
+            and: [
+              {deviceId: this.filterQuery}
+            ]
+          }
+        };
+      } else {
+        this.messageFilter = {
+          limit: 100,
+          order: 'createdAt DESC',
+          include: ['Device', 'Geolocs'],
+          where: {
+            and: [ ]
+          }
+        };
+      }
+
+      if (this.organization) {
+        /*this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
+        this.messageRef = this.organizationRef.child<Message>('Messages');*/
+        this.messageFilter.limit = 1;
+        this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+        this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+          this.organizationApi.getMessages(this.organization.id, {
+            limit: 100,
+            order: 'createdAt DESC',
+            include: ['Device', 'Geolocs']
+          }).subscribe((messages: Message[]) => {
+            this.messages = messages;
+            this.messagesReady = true;
+          });
         });
       } else {
-        // Get organization devices
-        this.organizationApi.getMessages(this.organization.id,
-          this.messageFilter
-        ).subscribe(messages => {
+        /*this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+        this.messageRef = this.userRef.child<Message>('Messages');*/
+        this.messageFilter.where.and.push({userId: this.user.id});
+        this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+        this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
           this.messages = messages;
           this.messagesReady = true;
         });
@@ -315,6 +327,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
     console.log('Messages: ngOnDestroy');
     // Unsubscribe from query parameters
     this.sub.unsubscribe();
+    if (this.organizationRef) this.organizationRef.dispose();
+    if (this.userRef) this.userRef.dispose();
     if (this.messageRef) this.messageRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
   }
@@ -373,6 +387,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   searchFilter(limit: number) {
+    this.messages = [];
+    this.messagesReady = false;
     // Reset buttons
     this.isLimit_100 = false;
     this.isLimit_500 = false;
@@ -385,13 +401,38 @@ export class MessagesComponent implements OnInit, OnDestroy {
     if (this.messageRef) this.messageRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
     // Messages
-    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+    /*this.messageRef = this.rt.FireLoop.ref<Message>(Message);
     this.messageSub = this.messageRef.on('change',
       this.messageFilter
     ).subscribe((messages: Message[]) => {
       this.messages = messages;
       console.log(this.messages);
-    });
+    });*/
+    if (this.organization) {
+      /*this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
+      this.messageRef = this.organizationRef.child<Message>('Messages');*/
+      this.messageFilter.limit = 1;
+      this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+      this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+        this.organizationApi.getMessages(this.organization.id, {
+          limit: limit,
+          order: 'createdAt DESC',
+          include: ['Device', 'Geolocs']
+        }).subscribe((messages: Message[]) => {
+          this.messages = messages;
+          this.messagesReady = true;
+        });
+      });
+    } else {
+      /*this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+      this.messageRef = this.userRef.child<Message>('Messages');*/
+      this.messageFilter.where.and.push({userId: this.user.id});
+      this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+      this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+        this.messages = messages;
+        this.messagesReady = true;
+      });
+    }
   }
 
   download(): void {

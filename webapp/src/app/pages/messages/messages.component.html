@@ -140,10 +140,7 @@
                 </p>
               </td>
               <td class="text-center">
-                <button *ngIf="!organization" type="button" class="btn btn-outline-danger btn-round" (click)="remove(message)">
-                  <i class="fa fa-trash"></i>
-                </button>
-                <button *ngIf="organization" disabled type="button" class="btn btn-outline-danger btn-round" (click)="remove(message)">
+                <button type="button" class="btn btn-outline-danger btn-round" (click)="remove(message)">
                   <i class="fa fa-trash"></i>
                 </button>
               </td>

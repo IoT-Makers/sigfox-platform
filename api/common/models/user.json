@@ -8,7 +8,7 @@
     "allowEternalTokens": true
   },
   "mixins": {
-    "FireLoop": false,
+    "FireLoop": true,
     "TimeStamp": {
       "required": false,
       "validateUpsert": true

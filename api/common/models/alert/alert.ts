@@ -128,8 +128,7 @@ class Alert {
     const userId = req.accessToken.userId;
     if (!userId) {
       next(null, 'Please login or use a valid access token.');
-    }
-    if (!device.Alerts) {
+    } else if (!device.Alerts) {
       next(null, 'No alerts set for this device.');
     }
 

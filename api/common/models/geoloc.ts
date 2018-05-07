@@ -43,9 +43,10 @@ class Geoloc {
     const Geoloc = this.model;
     const Beacon = this.model.app.models.Beacon;
 
-    if (typeof message === 'undefined'
-      || typeof message.data_parsed === 'undefined') {
+    if (typeof message === 'undefined') {
       return console.error('Missing "message"', message);
+    } else if (typeof message.data_parsed === 'undefined') {
+      return console.log('----------> Missing "data_parsed", not trying to decode Geoloc.');
     }
 
     let hasGpsLocation = false;

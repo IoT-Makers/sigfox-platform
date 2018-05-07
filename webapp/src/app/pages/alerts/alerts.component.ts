@@ -89,6 +89,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   private alertToAddOrEdit: Alert = new Alert();
   private alertToRemove: Alert = new Alert();
 
+  private userRef: FireLoopRef<User>;
   private alertRef: FireLoopRef<Alert>;
 
   private dateOrigin: Date = new Date(0);
@@ -267,8 +268,9 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    // Get and listen devices
-    this.alertRef = this.rt.FireLoop.ref<Alert>(Alert);
+    // Get and listen alerts
+    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+    this.alertRef = this.userRef.child<Alert>('Alerts');
     this.alertSub = this.alertRef.on('change',
       {
         limit: 1000,
@@ -524,6 +526,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Alerts: ngOnDestroy');
+    if (this.userRef) this.userRef.dispose();
     if (this.alertRef) this.alertRef.dispose();
     if (this.alertSub) this.alertSub.unsubscribe();
   }

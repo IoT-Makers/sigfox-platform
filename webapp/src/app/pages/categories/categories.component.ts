@@ -1,5 +1,5 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Category, Device, FireLoopRef, Organization, User} from '../../shared/sdk/models';
+import {Alert, Category, Device, FireLoopRef, Organization, User} from '../../shared/sdk/models';
 import {CategoryApi, DeviceApi, OrganizationApi, RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -41,6 +41,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   private selectOrganizations: Array<any> = [];
   private selectedOrganizations: Array<any> = [];
 
+  private userRef: FireLoopRef<User>;
   private categoryRef: FireLoopRef<Category>;
 
   private edit = false;
@@ -114,7 +115,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     const filter = {
       include: ['Devices', 'Organizations'],
     };
-    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
+    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+    this.categoryRef = this.userRef.child<Category>('Categories');
     this.categorySub = this.categoryRef.on('change',
       {limit: 1}
     ).subscribe((categories: Category[]) => {
@@ -300,7 +302,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Categories: ngOnDestroy');
-
+    if (this.userRef) this.userRef.dispose();
     if (this.categoryRef) this.categoryRef.dispose();
     if (this.categorySub) this.categorySub.unsubscribe();
   }
