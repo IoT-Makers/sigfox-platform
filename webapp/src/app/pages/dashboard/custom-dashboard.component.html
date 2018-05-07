@@ -707,7 +707,7 @@
                         </ng-container>
                         <!-- End Markers -->
 
-                        <agm-directions *ngIf="widget.options.directions"
+                        <agm-directions *ngIf="device.Geolocs && device.Geolocs.length > 0 && widget.options.directions"
                                         [directionsDisplayStore]="device.directionsDisplayStore"
                                         [travelMode]="'DRIVING'"
                                         [routesColor]="device.color"
@@ -1012,7 +1012,7 @@
                         </ng-container>
                         <!-- End Markers -->
 
-                        <agm-directions *ngIf="widget.options.directions"
+                        <agm-directions *ngIf="device.Geolocs && device.Geolocs.length > 0 && widget.options.directions"
                                         [directionsDisplayStore]="device.directionsDisplayStore"
                                         [travelMode]="'DRIVING'"
                                         [routesColor]="device.color"

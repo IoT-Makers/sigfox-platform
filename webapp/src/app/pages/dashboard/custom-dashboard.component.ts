@@ -681,6 +681,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           where: {
             or: []
           },
+          limit: 100,
           include: [{
             relation: 'Messages',
             order: 'createdAt DESC',
@@ -700,8 +701,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 }
               }]
             }
-          }],
-          limit: 100
+          }]
         };
       } else if (this.newWidget.options.geolocType === 'gps' || this.newWidget.options.geolocType === 'sigfox' || this.newWidget.options.geolocType === 'beacon') {
         this.newWidget.filter = {
@@ -1378,18 +1378,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       widgetFilter.include[0].scope.limit = 1000;
 
       this.getDevicesWithFilter(widgetFilter).subscribe((devices: any[]) => {
-        device.Geolocs = devices[0].Geolocs;
         device.Messages = devices[0].Messages;
-
-        if (device.Geolocs.length > 0) {
-          this.agmMaps.forEach((agmMap: any) => {
-            agmMap._mapsWrapper.setCenter(device.Geolocs[device.Geolocs.length - 1].location);
-          });
-        }
+        device.Geolocs = [];
 
         if (widget.options.geolocType === 'preferGps') {
-          device.directionsDisplayStore = [];
-          device.Geolocs = [];
           device.Messages.forEach((message: any) => {
             message.Geolocs.forEach((geoloc: Geoloc) => {
               device.Geolocs.push(geoloc);
@@ -1397,6 +1389,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 device.Geolocs.splice(geoloc, 1);
               }
             });
+          });
+        } else {
+          device.Geolocs = devices[0].Geolocs;
+        }
+        if (device.Geolocs.length > 0 && widget.options.directions === false) {
+          this.agmMaps.forEach((agmMap: any) => {
+            agmMap._mapsWrapper.setCenter(device.Geolocs[device.Geolocs.length - 1].location);
           });
         }
       });
