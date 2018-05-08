@@ -204,12 +204,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
 
       // Devices
-      this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+      this.deviceRef = this.organizationRef.child<Device>('Devices');
       this.deviceSub = this.deviceRef.on('change', {limit: 1}).subscribe((devices: Device[]) => {
         if (devices.length > 0) {
-          this.organizationApi.countDevices(this.organization.id).subscribe(result => {
+          /*this.organizationApi.countDevices(this.organization.id).subscribe(result => {
             this.countDevices = result.count;
-          });
+          });*/
           this.organizationApi.getDevices(this.organization.id,
             {
               limit: 10,
@@ -235,15 +235,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
           });
         }
       });
+      this.organizationApi.countDevices(this.organization.id).subscribe(result => {
+        this.countDevices = result.count;
+      });
 
       // Messages
-      this.messageRef = this.organizationRef.child<Message>('Messages');
+      /*this.messageRef = this.organizationRef.child<Message>('Messages');
       this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((messages: Message[]) => {
-        if (messages.length > 0) {
-          this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-            this.countMessages = result.count;
-          });
-        }
+        this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+          this.countMessages = result.count;
+        });
+      });*/
+      this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+        this.countMessages = result.count;
       });
 
     } else {

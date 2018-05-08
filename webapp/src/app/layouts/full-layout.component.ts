@@ -179,19 +179,25 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       });
 
       // Devices
-      this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+      /*this.deviceRef = this.organizationRef.child<Device>('Devices');
       this.deviceSub = this.deviceRef.on('change', {limit: 1}).subscribe((devices: Device[]) => {
         this.organizationApi.countDevices(this.organization.id).subscribe(result => {
           this.countDevices = result.count;
         });
+      });*/
+      this.organizationApi.countDevices(this.organization.id).subscribe(result => {
+        this.countDevices = result.count;
       });
 
       // Messages
-      this.messageRef = this.organizationRef.child<Message>('Messages');
+      /*this.messageRef = this.organizationRef.child<Message>('Messages');
       this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((messages: Message[]) => {
         this.organizationApi.countMessages(this.organization.id).subscribe(result => {
           this.countMessages = result.count;
         });
+      });*/
+      this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+        this.countMessages = result.count;
       });
 
     } else {
@@ -215,7 +221,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       });
 
       // Devices
-      this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+      /*this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
       this.deviceSub = this.deviceRef.on('change',
         {
           limit: 1,
@@ -226,16 +232,23 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
             this.countDevices = result.count;
           });
         }
+      });*/
+      this.userApi.countDevices(this.user.id).subscribe(result => {
+        this.countDevices = result.count;
       });
 
       // Messages
-      this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-      this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((messages: Message[]) => {
-        if (messages.length > 0) {
+      /*this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+      this.messageSub = this.messageRef.on('change', {
+          limit: 1,
+          where: {userId: this.user.id}
+        }).subscribe((messages: Message[]) => {
           this.userApi.countMessages(this.user.id).subscribe(result => {
             this.countMessages = result.count;
           });
-        }
+      });*/
+      this.userApi.countMessages(this.user.id).subscribe(result => {
+        this.countMessages = result.count;
       });
 
       // Alerts
