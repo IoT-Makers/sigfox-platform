@@ -21,6 +21,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
   // Flags
   private devicesReady = false;
   private messagesReady = false;
+  private countCategoriesReady = false;
+  private countDevicesReady = false;
+  private countMessagesReady = false;
+  private countAlertsReady = false;
+  private countOrganizationMembersReady = false;
 
   private user: User = new User();
 
@@ -147,6 +152,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Overview: ngOnInit');
+
     if (window.screen.width <= 425) { // 768px portrait
       this.mobile = true;
     }
@@ -162,6 +168,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           this.organization = organization;
           this.organizationApi.countMembers(this.organization.id).subscribe(result => {
             this.countOrganizationMembers = result.count;
+            this.countOrganizationMembersReady = true;
             console.log('Members', result.count);
           });
           // Check if real time and setup
@@ -197,6 +204,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.categorySub = this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
         this.organizationApi.countCategories(this.organization.id).subscribe(result => {
           this.countCategories = result.count;
+          this.countCategoriesReady = true;
         });
       });
 
@@ -225,6 +233,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.devicesReady = true;
         this.organizationApi.countDevices(this.organization.id).subscribe(result => {
           this.countDevices = result.count;
+          this.countDevicesReady = true;
         });
       });
 
@@ -234,6 +243,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         console.log('messages', messages);
         this.organizationApi.countMessages(this.organization.id).subscribe(result => {
           this.countMessages = result.count;
+          this.countMessagesReady = true;
         });
       });
 
@@ -249,6 +259,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.categorySub = this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
         this.userApi.countCategories(this.user.id).subscribe(result => {
           this.countCategories = result.count;
+          this.countCategoriesReady = true;
         });
       });
 
@@ -278,6 +289,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.devicesReady = true;
         this.userApi.countDevices(this.user.id).subscribe(result => {
           this.countDevices = result.count;
+          this.countDevicesReady = true;
         });
       });
 
@@ -287,6 +299,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         console.log('messages: ', messages);
         this.userApi.countMessages(this.user.id).subscribe(result => {
           this.countMessages = result.count;
+          this.countMessagesReady = true;
         });
       });
 
@@ -295,6 +308,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.alertSub = this.alertRef.on('change', {limit: 1}).subscribe((alerts: Alert[]) => {
         this.userApi.countAlerts(this.user.id, {active: true}).subscribe(result => {
           this.countAlerts = result.count;
+          this.countAlertsReady = true;
         });
       });
 
