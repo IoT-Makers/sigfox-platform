@@ -95,6 +95,17 @@ class Parser {
         next(err, null);
       } else if (parser) {
 
+<<<<<<< HEAD
+=======;
+        // If an user doesn't own a device or messages (or parser), he can parse
+        // all messages of the device related to a parser by knowing his parserId
+        // Check own of parser. Only the owner can use the parser
+        if(userId.toString() != parser.userId.toString()){
+          response.message = 'User doesn\'t have access to this parser.';
+          return next(null, response.message);
+        }
+
+>>>>>>> origin/master;
         parser = parser.toJSON();
 
         if (parser.userId) {
@@ -202,6 +213,16 @@ class Parser {
         next(err, null);
       } else if (device) {
 
+<<<<<<< HEAD
+=======;
+        // If an user doesn't own a device he can parse all messages of the device by knowing the deviceId
+        // Check own of device. Only the owner can parse the device's messages
+        if(userId.toString() != device.userId.toString()){
+          response.message = 'User doesn\'t have access to this device.';
+          return next(null, response.message);
+        }
+
+>>>>>>> origin/master;
         device = device.toJSON();
 
         // If an user doesn't own a device he can parse all messages of the device by knowing the deviceId
