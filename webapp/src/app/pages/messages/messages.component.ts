@@ -301,18 +301,9 @@ export class MessagesComponent implements OnInit, OnDestroy {
       if (this.organization) {
         this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
         this.messageRef = this.organizationRef.child<Message>('Messages');
-
-        this.messageFilter.limit = 1;
-        this.messageReadRef = this.rt.FireLoop.ref<Message>(Message);
-        this.messageSub = this.messageReadRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
-          this.organizationApi.getMessages(this.organization.id, {
-            limit: 100,
-            order: 'createdAt DESC',
-            include: ['Device', 'Geolocs']
-          }).subscribe((messages: Message[]) => {
-            this.messages = messages;
-            this.messagesReady = true;
-          });
+        this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+          this.messages = messages;
+          this.messagesReady = true;
         });
       } else {
         this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
