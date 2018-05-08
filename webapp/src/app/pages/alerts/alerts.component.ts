@@ -268,6 +268,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
+    this.ngOnDestroy();
+
     // Get and listen alerts
     this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
     this.alertRef = this.userRef.child<Alert>('Alerts');
@@ -275,10 +277,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
       {
         limit: 1000,
         order: 'triggeredAt DESC',
-        include: ['Device', 'Connector'],
-        where: {
-          userId: this.user.id
-        }
+        include: ['Device', 'Connector']
       }
     ).subscribe((alerts: Alert[]) => {
       this.alerts = alerts;

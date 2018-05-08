@@ -104,7 +104,8 @@
       "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "$authenticated",
-      "permission": "ALLOW"
+      "permission": "ALLOW",
+      "property": ["find"]
     },
     {
       "accessType": "*",

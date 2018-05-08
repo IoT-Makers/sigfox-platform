@@ -100,16 +100,14 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    // this.ngOnDestroy();
+    this.ngOnDestroy();
 
     // Get and listen connectors
     this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
     this.connectorRef = this.userRef.child<Connector>('Connectors');
     this.connectorSub = this.connectorRef.on('change',
       {
-        where: {
-          userId: this.user.id
-        },
+        limit: 1000,
         order: 'updatedAt DESC'
       }
     ).subscribe((connectors: Connector[]) => {

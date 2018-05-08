@@ -34,6 +34,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private organizationRef: FireLoopRef<Organization>;
 
   private messageRef: FireLoopRef<Message>;
+  private messageReadRef: FireLoopRef<Message>;
   private messageSub: Subscription;
   private messages: Message[] = [];
 
@@ -270,6 +271,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
+    this.ngOnDestroy();
+
     // Get and listen messages
     this.sub = this.route.params.subscribe(params => {
       this.filterQuery = params['id'];
@@ -296,11 +299,12 @@ export class MessagesComponent implements OnInit, OnDestroy {
       }
 
       if (this.organization) {
-        /*this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-        this.messageRef = this.organizationRef.child<Message>('Messages');*/
+        this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
+        this.messageRef = this.organizationRef.child<Message>('Messages');
+
         this.messageFilter.limit = 1;
-        this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-        this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+        this.messageReadRef = this.rt.FireLoop.ref<Message>(Message);
+        this.messageSub = this.messageReadRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
           this.organizationApi.getMessages(this.organization.id, {
             limit: 100,
             order: 'createdAt DESC',
@@ -311,11 +315,12 @@ export class MessagesComponent implements OnInit, OnDestroy {
           });
         });
       } else {
-        /*this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-        this.messageRef = this.userRef.child<Message>('Messages');*/
+        this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+        this.messageRef = this.userRef.child<Message>('Messages');
+
         this.messageFilter.where.and.push({userId: this.user.id});
-        this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-        this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+        this.messageReadRef = this.rt.FireLoop.ref<Message>(Message);
+        this.messageSub = this.messageReadRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
           this.messages = messages;
           this.messagesReady = true;
         });
@@ -326,10 +331,11 @@ export class MessagesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     console.log('Messages: ngOnDestroy');
     // Unsubscribe from query parameters
-    this.sub.unsubscribe();
+    if (this.sub) this.sub.unsubscribe();
     if (this.organizationRef) this.organizationRef.dispose();
     if (this.userRef) this.userRef.dispose();
     if (this.messageRef) this.messageRef.dispose();
+    if (this.messageReadRef) this.messageReadRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
   }
 

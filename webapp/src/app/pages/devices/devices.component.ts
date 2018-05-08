@@ -42,14 +42,18 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   private categorySub: Subscription;
   private deviceSub: Subscription;
+  private deviceReadSub: Subscription;
   private parserSub: Subscription;
 
   private categories: Category[] = [];
   private devices: Device[] = [];
   private parsers: Parser[] = [];
 
+  private userRef: FireLoopRef<User>;
+  private organizationRef: FireLoopRef<Organization>;
   private categoryRef: FireLoopRef<Category>;
   private deviceRef: FireLoopRef<Device>;
+  private deviceReadRef: FireLoopRef<Device>;
   private parserRef: FireLoopRef<Parser>;
 
   private deviceToEdit: Device = new Device();
@@ -175,9 +179,11 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    // Get and listen devices
+    this.ngOnDestroy();
+    console.log('Setup Devices');
+
     const filter = {
-      limit: 100,
+      limit: 1000,
       order: 'updatedAt DESC',
       include: ['Parser', 'Category', 'Organizations', {
         relation: 'Messages',
@@ -194,56 +200,47 @@ export class DevicesComponent implements OnInit, OnDestroy {
         }
       }]
     };
-    this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-    this.deviceSub = this.deviceRef.on('change',
-      {limit: 1}
-    ).subscribe((devices: Device[]) => {
-      if (!this.organization) {
-        // Get user devices
-        this.userApi.getDevices(this.user.id,
-          filter
-        ).subscribe(devices => {
-          console.log('Devices: ', devices);
-          this.devices = devices;
-          this.devicesReady = true;
-        });
-      } else {
-        // Get organization devices
-        this.organizationApi.getDevices(this.organization.id,
-          filter
-        ).subscribe(devices => {
-          console.log('Devices: ', devices);
-          this.devices = devices;
-          this.devicesReady = true;
-        });
-      }
-    });
+
+    if (this.organization) {
+      this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
+      this.deviceRef = this.organizationRef.child<Device>('Devices');
+      this.deviceSub = this.deviceRef.on('change', filter).subscribe((devices: Device[]) => {
+        this.devices = devices;
+        this.devicesReady = true;
+      });
+      this.categoryRef = this.organizationRef.child<Category>('Categories');
+      this.categorySub = this.categoryRef.on('change').subscribe((categories: Category[]) => {
+        this.categories = categories;
+      });
+    } else {
+      this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+      this.deviceRef = this.userRef.child<Device>('Devices');
+      this.deviceSub = this.deviceRef.on('change', filter).subscribe((devices: Device[]) => {
+        this.devices = devices;
+        this.devicesReady = true;
+      });
+      this.categoryRef = this.userRef.child<Category>('Categories');
+      this.categorySub = this.categoryRef.on('change').subscribe((categories: Category[]) => {
+        this.categories = categories;
+      });
+    }
 
     // Get and listen parsers
     this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
     this.parserSub = this.parserRef.on('change').subscribe((parsers: Parser[]) => {
       this.parsers = parsers;
-      console.log(this.parsers);
-    });
-
-    // Get and listen categories
-    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categorySub = this.categoryRef.on('change',
-      {
-        where: {
-          userId: this.user.id
-        }
-      }
-    ).subscribe((categories: Category[]) => {
-      this.categories = categories;
-      console.log(this.categories);
     });
   }
 
   ngOnDestroy(): void {
     console.log('Devices: ngOnDestroy');
+    if (this.organizationRef) this.organizationRef.dispose();
+    if (this.userRef) this.userRef.dispose();
+
     if (this.deviceRef) this.deviceRef.dispose();
+    if (this.deviceReadRef) this.deviceReadRef.dispose();
     if (this.deviceSub) this.deviceSub.unsubscribe();
+    if (this.deviceReadSub) this.deviceReadSub.unsubscribe();
 
     if (this.parserRef) this.parserRef.dispose();
     if (this.parserSub) this.parserSub.unsubscribe();

@@ -112,6 +112,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
+    this.ngOnDestroy();
+
     // Get and listen categories
     const filter = {
       include: ['Devices', 'Organizations'],

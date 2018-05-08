@@ -48,6 +48,10 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Parsers: ngOnInit');
+
+    // Get the logged in User object
+    this.user = this.userApi.getCachedCurrent();
+
     // Real Time
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
       this.setup();
@@ -86,10 +90,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    // this.ngOnDestroy();
-    // Get the logged in User object
-    this.user = this.userApi.getCachedCurrent();
-
+    this.ngOnDestroy();
     // Parsers
     this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
     this.parserSub = this.parserRef.on('change', {
