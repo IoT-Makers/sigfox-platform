@@ -183,6 +183,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     console.log('Setup Devices');
 
     const filter = {
+      where: {},
       limit: 1000,
       order: 'updatedAt DESC',
       include: ['Parser', 'Category', 'Organizations', {
@@ -215,7 +216,13 @@ export class DevicesComponent implements OnInit, OnDestroy {
     } else {
       this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
       this.deviceRef = this.userRef.child<Device>('Devices');
-      this.deviceSub = this.deviceRef.on('change', filter).subscribe((devices: Device[]) => {
+      /*this.deviceSub = this.deviceRef.on('change', filter).subscribe((devices: Device[]) => {
+        this.devices = devices;
+        this.devicesReady = true;
+      });*/
+      filter.where = {userId: this.user.id};
+      this.deviceReadRef = this.rt.FireLoop.ref<Device>(Device);
+      this.deviceReadSub = this.deviceReadRef.on('change', filter).subscribe((devices: Device[]) => {
         this.devices = devices;
         this.devicesReady = true;
       });
@@ -263,7 +270,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      this.toast = this.toasterService.pop('error', 'Error', err.error);
     });
   }
 
@@ -276,7 +283,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
       }, err => {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+        this.toast = this.toasterService.pop('error', 'Error', err.error);
       });
     }
 
@@ -372,9 +379,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   remove(): void {
     // Delete all messages belonging to the device
-    this.deviceApi.deleteDeviceMessagesAlertsGeolocs(this.deviceToRemove.id).subscribe(value => {
-      const index = this.devices.indexOf(this.deviceToRemove);
-      this.devices.splice(index, 1);
+    this.deviceRef.remove(this.deviceToRemove).subscribe(value => {
+      console.log(value);
       this.edit = false;
       this.confirmModal.hide();
       if (this.toast)
@@ -383,7 +389,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      this.toast = this.toasterService.pop('error', 'Error', err.error);
     });
   }
 

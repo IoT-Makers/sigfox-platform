@@ -49,17 +49,6 @@ const json2csv = require('json2csv').parse;
       returns: {arg: 'result', type: 'array'},
       http: {path: '/time-series', verb: 'get'}
     },
-    deleteDeviceMessagesAlertsGeolocs: {
-      accepts: [
-        {arg: 'deviceId', type: 'string', required: true},
-        {arg: 'req', type: 'object', http: {source: 'req'}}
-      ],
-      http: {
-        path: '/delete-device-messages-alerts-geolocs',
-        verb: 'delete'
-      },
-      returns: {root: true}
-    },
     getMessagesFromSigfoxBackend: {
       accepts: [
         {arg: 'id', type: 'string', required: true, description: 'Device Id'},
@@ -82,39 +71,6 @@ class Device {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-  }
-
-  deleteDeviceMessagesAlertsGeolocs(deviceId: string, req: any, next: Function): void {
-    // Models
-    const Device = this.model;
-    const Geoloc = this.model.app.models.Geoloc;
-    const Message = this.model.app.models.Message;
-    const Alert = this.model.app.models.Alert;
-
-    // Obtain the userId with the access token of ctx
-    const userId = req.accessToken.userId;
-    // Find device
-    Device.findOne(
-      {
-        where: {
-          and: [
-            {id: deviceId},
-            {userId: userId}
-          ]
-        }
-      }, (err: any, deviceInstance: any) => {
-        if (err || !deviceInstance) {
-          console.error('Device not found for suppression.');
-          next(err, 'Device not found for suppression.');
-        } else if (deviceInstance) {
-          console.log('Deleting device ' + deviceId + ' and all its corresponding messages, alerts & geolocs.');
-
-          Device.destroyAll({id: deviceId}, (error: any, result: any) => { if (!error) next(null, 'Success'); });
-          Message.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
-          Geoloc.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
-          Alert.destroyAll({deviceId: deviceId}, (error: any, result: any) => { });
-        }
-      });
   }
 
   // Example Operation Hook
@@ -523,10 +479,17 @@ class Device {
   beforeDelete(ctx: any, next: Function): void {
     // Models
     const Device = this.model;
+    const Geoloc = this.model.app.models.Geoloc;
+    const Message = this.model.app.models.Message;
+    const Alert = this.model.app.models.Alert;
 
-    Device.findOne({where: {id: ctx.where.id}, include: 'Organizations'}, (err: any, device: any) => {
+    const deviceId = ctx.where.id;
+
+    Device.findOne({where: {id: deviceId}, include: 'Organizations'}, (err: any, device: any) => {
       // console.log(category);
-      if (!err) {
+      if (err) {
+        next(err, null);
+      } else {
         if (device && device.Organizations) {
           device.toJSON().Organizations.forEach((orga: any) => {
             device.Organizations.remove(orga.id, (err: any, result: any) => {
@@ -536,11 +499,15 @@ class Device {
             });
           });
         }
-        next(null, 'Unlinked device from organization');
-      } else {
-        next(err);
+        console.log('Unlinked device from organization');
       }
     });
+
+    Message.destroyAll({deviceId: deviceId}, (error: any, result: any) => { if (!error) console.log('Deleted all messages for device: ' + deviceId); });
+    Geoloc.destroyAll({deviceId: deviceId}, (error: any, result: any) => { if (!error) console.log('Deleted all geolocs for device: ' + deviceId); });
+    Alert.destroyAll({deviceId: deviceId}, (error: any, result: any) => { if (!error) console.log('Deleted all alerts for device: ' + deviceId); });
+
+    next();
   }
 }
 

@@ -400,7 +400,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     console.log(orga);
     console.log(this.selectedUsers);
-    this.organizationApi.upsert(orga).subscribe((organization: Organization) => {
+    this.organizationApi.create(orga).subscribe((organization: Organization) => {
       console.log('Organization created', organization);
 
       this.selectedUsers.forEach((user: any, index, array) => {
