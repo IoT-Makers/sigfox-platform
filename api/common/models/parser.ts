@@ -55,7 +55,7 @@ class Parser {
     next();
   }
 
-  parsePayload(fn: Function, payload: string, req: any, next: Function): void {
+  parsePayload(fn: string, payload: string, req: any, next: Function): void {
     const userId = req.accessToken.userId;
     if (!userId) {
       next(null, 'Please login or use a valid access token.');
@@ -68,7 +68,13 @@ class Parser {
     // @TODO: run it in another container because it can crash the app if something goes wrong...
     let data_parsed: any = null;
     if (payload !== '') {
-      data_parsed = fn(payload);
+      try {
+        data_parsed = Function(payload, fn);
+      }
+      catch (err) {
+        console.log('Parser | Error parsing data');                        
+        next('Error parsing data', null);
+      }
     }
     next(null, data_parsed);
   }
@@ -124,7 +130,7 @@ class Parser {
                   response.message = 'No parser associated to this device.';
                   next(null, response);
                 } else {
-                  const fn = Function('payload', deviceInstance.Parser.function);
+                  const fn = deviceInstance.Parser.function;
                   if (deviceInstance.Messages) {
                     deviceInstance.Messages.forEach((message: any, msgCount: number) => {
                       if (message.data) {
@@ -216,7 +222,7 @@ class Parser {
           response.message = 'No parser associated to this device.';
           next(null, response);
         } else {
-          const fn = Function('payload', device.Parser.function);
+          const fn = device.Parser.function;
           if (device.Messages) {
             device.Messages.forEach((message: any, msgCount: number) => {
               if (message.data) {
