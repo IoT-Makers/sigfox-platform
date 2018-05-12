@@ -26,7 +26,6 @@ class Organization {
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('organization: Before Save');
-    console.log(ctx);
     next();
   }
 

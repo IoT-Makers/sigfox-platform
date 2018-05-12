@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {DemoComponent} from './demo.component';
 import {DemoRoutingModule} from './demo-routing.module';
 import {CommonModule} from '@angular/common';
-// DataTable
 import {DataFilterPipe} from './datafilterpipe';
 
 @NgModule({
@@ -15,5 +14,6 @@ import {DataFilterPipe} from './datafilterpipe';
     DataFilterPipe
   ]
 })
+
 export class DemoModule {
 }

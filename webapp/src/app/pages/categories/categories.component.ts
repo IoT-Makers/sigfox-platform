@@ -1,5 +1,5 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Category, Device, FireLoopRef, Organization, User} from '../../shared/sdk/models';
+import {Alert, Category, Device, FireLoopRef, Organization, User} from '../../shared/sdk/models';
 import {CategoryApi, DeviceApi, OrganizationApi, RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -41,6 +41,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   private selectOrganizations: Array<any> = [];
   private selectedOrganizations: Array<any> = [];
 
+  private userRef: FireLoopRef<User>;
+  private organizationRef: FireLoopRef<Organization>;
   private categoryRef: FireLoopRef<Category>;
 
   private edit = false;
@@ -110,34 +112,28 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
+    this.ngOnDestroy();
+
     // Get and listen categories
     const filter = {
       include: ['Devices', 'Organizations'],
     };
-    this.categoryRef = this.rt.FireLoop.ref<Category>(Category);
-    this.categorySub = this.categoryRef.on('change',
-      {limit: 1}
-    ).subscribe((categories: Category[]) => {
-      if (!this.organization) {
-        // Get user categories
-        this.userApi.getCategories(this.user.id,
-          filter
-        ).subscribe(categories => {
-          console.log('Categories: ', categories);
-          this.categories = categories;
-          this.categoriesReady = true;
-        });
-      } else {
-        // Get organization categories
-        this.organizationApi.getCategories(this.organization.id,
-          filter
-        ).subscribe(categories => {
-          console.log('Categories: ', categories);
-          this.categories = categories;
-          this.categoriesReady = true;
-        });
-      }
-    });
+
+    if (!this.organization) {
+      this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+      this.categoryRef = this.userRef.child<Category>('Categories');
+      this.categorySub = this.categoryRef.on('change', filter).subscribe((categories: Category[]) => {
+        this.categories = categories;
+        this.categoriesReady = true;
+      });
+    } else {
+      this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
+      this.categoryRef = this.organizationRef.child<Category>('Categories');
+      this.categorySub = this.categoryRef.on('change', filter).subscribe((categories: Category[]) => {
+        this.categories = categories;
+        this.categoriesReady = true;
+      });
+    }
   }
 
   downloadFromOrganization(organizationId: string, category: Category, type: string): void {
@@ -300,7 +296,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Categories: ngOnDestroy');
-
+    if (this.organizationRef) this.organizationRef.dispose();
+    if (this.userRef) this.userRef.dispose();
     if (this.categoryRef) this.categoryRef.dispose();
     if (this.categorySub) this.categorySub.unsubscribe();
   }

@@ -63,11 +63,17 @@ const loopback = require('loopback');
 
 class Message {
   // LoopBack model instance is injected in constructor
-  constructor(public model: any) { }
+  constructor(public model: any) {
+    /*this.model.observe('after save', (ctx: any, next: Function) => {
+      this.model.app.mx.IO.emit('message-after-save.' + ctx.instance.userId);
+      next();
+    });*/
+  }
 
   putSigfox_OldToRemove(req: any, data: any, next: Function): void {
     // Models
     const Message = this.model;
+    const Device = this.model.app.models.Device;
     const Alert = this.model.app.models.Alert;
 
     if (typeof data.deviceId  === 'undefined'
@@ -114,7 +120,7 @@ class Message {
     delete message.data_downlink;
 
     // Check if the device exists or create it
-    Message.app.models.Device.findOrCreate(
+    Device.findOrCreate(
       {where: {id: message.deviceId}, include: ['Alerts', 'Parser']}, // find
       device, // create
       (err: any, deviceInstance: any, created: boolean) => { // callback
@@ -125,8 +131,7 @@ class Message {
           deviceInstance = deviceInstance.toJSON();
           if (created) {
             //console.log('Created new device.');
-          }
-          else{
+          } else {
             //console.log('Found an existing device.');
           }
 
@@ -181,13 +186,13 @@ class Message {
                 deviceInstance.parserId = parserId;
                 // Save a parser in the device and parse the message
                 //console.log('Associating parser to device.');
-                this.model.app.models.Device.upsert(
+                Device.upsert(
                   deviceInstance, (err: any, deviceInstance: any) => {
                     if (err) {
                       console.error(err);
                       next(err, data);
                     } else {
-                      Message.app.models.Device.findOne({
+                      Device.findOne({
                         where: {id: deviceInstance.id},
                         include: ['Alerts', 'Parser']
                       }, (err: any, deviceInstance: any) => {
@@ -274,6 +279,8 @@ class Message {
   putSigfox(req: any, data: any, next: Function): void {
     // Models
     const Message = this.model;
+    const Device = this.model.app.models.Device;
+    const Parser = this.model.app.models.Parser;
     const Alert = this.model.app.models.Alert;
 
     if (typeof data.deviceId  === 'undefined'
@@ -288,9 +295,6 @@ class Message {
     // Create a new message object
     let message = new Message;
     message = data;
-
-    // Store the userId in the message
-    message.userId = userId;
 
     // Set the createdAt time
     message.createdAt = new Date(message.time * 1000);
@@ -320,7 +324,7 @@ class Message {
     delete message.data_downlink;
 
     // Check if the device exists or create it
-    Message.app.models.Device.findOrCreate(
+    Device.findOrCreate(
       {where: {id: message.deviceId}, include: ['Alerts', 'Parser']}, // find
       device, // create
       (err: any, deviceInstance: any, created: boolean) => { // callback
@@ -328,12 +332,28 @@ class Message {
           console.error('Error creating device.', err);
           next(err, data);
         } else {
+          const deviceInstanceFunction = deviceInstance;
           deviceInstance = deviceInstance.toJSON();
+          // Store the userId in the message
+          message.userId = deviceInstance.userId;
           if (created) {
             //console.log('Created new device.');
-          }
-          else{
+          } else {
             //console.log('Found an existing device.');
+            const rewriteUserId = true;
+            if ((rewriteUserId || deviceInstance.locked === false) && deviceInstance.userId.toString() !== userId.toString()) {
+              // Store the userId in the message
+              message.userId = userId;
+
+              deviceInstanceFunction.updateAttributes({userId: userId}, (err: any, deviceUpdated: any) => {
+                if (err) {
+                  console.error(err);
+                  next(err, data);
+                } else {
+                  console.log('Updated device userId as: ', deviceUpdated);
+                }
+              });
+            }
           }
 
           // If message is a duplicate
@@ -384,63 +404,65 @@ class Message {
             if ((deviceInstance.Parser || parserId) && message.data) {
               // If the device is not linked to a parser
               if (!deviceInstance.Parser && parserId) {
-                deviceInstance.parserId = parserId;
                 // Save a parser in the device and parse the message
                 //console.log('Associating parser to device.');
-                this.model.app.models.Device.upsert(
-                  deviceInstance, (err: any, deviceInstance: any) => {
-                    if (err) {
-                      console.error(err);
-                      next(err, data);
-                    } else {
-                      Message.app.models.Device.findOne({
-                        where: {id: deviceInstance.id},
-                        include: ['Alerts', 'Parser']
-                      }, (err: any, deviceInstance: any) => {
-                        if (err) {
-                          console.error(err);
-                          next(err, data);
-                        } else {
-                          deviceInstance = deviceInstance.toJSON();
-                          //console.log('Updated device as: ', deviceInstance);
+                deviceInstanceFunction.updateAttributes({parserId: parserId}, (err: any, deviceUpdated: any) => {
+                  if (err) {
+                    console.error(err);
+                    next(err, data);
+                  } else {
+                    console.log('Updated device parser as: ', deviceUpdated);
+                    Device.findOne({
+                      where: {id: deviceInstance.id},
+                      include: ['Alerts', 'Parser']
+                    }, (err: any, deviceInstance: any) => {
+                      if (err) {
+                        console.error(err);
+                        next(err, data);
+                      } else if (deviceInstance.Parser.function) {
+                        deviceInstance = deviceInstance.toJSON();
 
-                          // Decode the payload
-                          Message.app.models.Parser.parsePayload(
-                            Function('payload', deviceInstance.Parser.function),
-                            message.data,
-                            req,
-                            function (err: any, data_parsed: any) {
-                              if (err) {
-                                next(err, null);
-                              } else {
-                                message.data_parsed = data_parsed;
-                              }
-                            });
+                        // Decode the payload
+                        Parser.parsePayload(
+                          Function('payload', deviceInstance.Parser.function),
+                          message.data,
+                          req,
+                          function (err: any, data_parsed: any) {
+                            if (err) {
+                              next(err, null);
+                            } else {
+                              message.data_parsed = data_parsed;
+                            }
+                          });
 
-                          // Trigger alerts (if any)
-                          Alert.triggerByDevice(
-                            message.data_parsed,
-                            deviceInstance,
-                            req,
-                            function (err: any, res: any) {
-                              if (err) {
-                                next(err, null);
-                              } else {
-                                //console.log(res);
-                              }
-                            });
+                        // Trigger alerts (if any)
+                        Alert.triggerByDevice(
+                          message.data_parsed,
+                          deviceInstance,
+                          req,
+                          function (err: any, res: any) {
+                            if (err) {
+                              next(err, null);
+                            } else {
+                              //console.log(res);
+                            }
+                          });
 
-                          // Create message
-                          this.createMessageAndSendResponse(message, next);
-                        }
-                      });
-                    }
-                  });
+                        // Create message
+                        this.createMessageAndSendResponse(message, next);
+                      } else {
+                        // Create message with no parsed data because of wrong parser id
+                        console.error('The parserId of this device (' + deviceInstance.id + ') is linked to no existing parsers!');
+                        this.createMessageAndSendResponse(message, next);
+                      }
+                    });
+                  }
+                });
               } else {
                 //console.log('Found parser!');
 
                 // Decode the payload
-                Message.app.models.Parser.parsePayload(
+                Parser.parsePayload(
                   Function('payload', deviceInstance.Parser.function),
                   message.data,
                   req,
@@ -453,7 +475,7 @@ class Message {
                   });
 
                 // Trigger alerts (if any)
-                Message.app.models.Alert.triggerByDevice(
+                Alert.triggerByDevice(
                   message.data_parsed,
                   deviceInstance,
                   req,

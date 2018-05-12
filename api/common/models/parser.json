@@ -71,7 +71,7 @@
     {
       "accessType": "*",
       "principalType": "ROLE",
-      "principalId": "$unathenticated",
+      "principalId": "$unauthenticated",
       "permission": "DENY"
     },
     {
@@ -83,10 +83,19 @@
     {
       "accessType": "WRITE",
       "principalType": "ROLE",
-      "principalId": "user",
+      "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
         "create"
+      ]
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "user",
+      "permission": "ALLOW",
+      "property": [
+        "parseAllMessages"
       ]
     },
     {

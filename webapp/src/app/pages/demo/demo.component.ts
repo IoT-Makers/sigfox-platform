@@ -21,4 +21,3 @@ export class DemoComponent implements OnInit, OnDestroy {
   }
 
 }
-

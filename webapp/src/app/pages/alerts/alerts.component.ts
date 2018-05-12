@@ -51,7 +51,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   };
   private mapOptions = {
     layers: [
-      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' }),
+      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap contributors' }),
       this.drawnItems
     ],
     zoom: 5,
@@ -89,6 +89,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   private alertToAddOrEdit: Alert = new Alert();
   private alertToRemove: Alert = new Alert();
 
+  private userRef: FireLoopRef<User>;
   private alertRef: FireLoopRef<Alert>;
 
   private dateOrigin: Date = new Date(0);
@@ -267,16 +268,16 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    // Get and listen devices
-    this.alertRef = this.rt.FireLoop.ref<Alert>(Alert);
+    this.ngOnDestroy();
+
+    // Get and listen alerts
+    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+    this.alertRef = this.userRef.child<Alert>('Alerts');
     this.alertSub = this.alertRef.on('change',
       {
         limit: 1000,
         order: 'triggeredAt DESC',
-        include: ['Device', 'Connector'],
-        where: {
-          userId: this.user.id
-        }
+        include: ['Device', 'Connector']
       }
     ).subscribe((alerts: Alert[]) => {
       this.alerts = alerts;
@@ -404,12 +405,12 @@ export class AlertsComponent implements OnInit, OnDestroy {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
+      this.addOrEditAlertModal.hide();
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
-    this.addOrEditAlertModal.hide();
   }
 
   addAlert(): void {
@@ -419,13 +420,13 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.alertRef.upsert(this.alertToAddOrEdit).subscribe((alert: Alert) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
+      this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully created.');
+      this.addOrEditAlertModal.hide();
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('error', 'Error', 'Please fill in the alert form.' + err.error.message);
     });
-    this.addOrEditAlertModal.hide();
   }
 
   loadKeys(deviceId: string): void {
@@ -524,8 +525,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Alerts: ngOnDestroy');
+    if (this.userRef) this.userRef.dispose();
     if (this.alertRef) this.alertRef.dispose();
     if (this.alertSub) this.alertSub.unsubscribe();
   }
 }
-

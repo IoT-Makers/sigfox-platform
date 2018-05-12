@@ -19,6 +19,8 @@ export const routes: Routes = [
     children: [
       {path: '', loadChildren: './pages/overview/overview.module#OverviewModule'},
 
+      {path: 'demo', loadChildren: './pages/demo/demo.module#DemoModule'},
+
       {path: 'dashboard/:id', canActivate: [DashboardGuard], loadChildren: './pages/dashboard/custom-dashboard.module#CustomDashboardModule'},
 
       {path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule'},
@@ -29,7 +31,6 @@ export const routes: Routes = [
 
       {path: 'profile', loadChildren: './pages/user/profile/profile.module#ProfileModule'},
 
-      {path: 'demo', loadChildren: './pages/demo/demo.module#DemoModule'},
       {path: 'tracking', loadChildren: './widgets/tracking/tracking.module#TrackingModule'},
       {path: 'analytics', loadChildren: './widgets/analytics/analytics.module#AnalyticsModule'},
 

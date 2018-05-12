@@ -8,6 +8,7 @@ import {FormsModule} from '@angular/forms';
 import {ModalModule, TooltipModule} from 'ng2-bootstrap';
 import {AgmCoreModule} from '@agm/core';
 import {ClickCopyDirective} from './click-copy.directive';
+import {ToasterModule} from 'angular2-toaster';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import {ClickCopyDirective} from './click-copy.directive';
     CommonModule,
     DataTableModule,
     FormsModule,
+    ToasterModule.forRoot(),
     ModalModule.forRoot(),
     TooltipModule.forRoot(),
     AgmCoreModule

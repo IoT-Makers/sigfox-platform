@@ -49,11 +49,11 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Icon <i class="fa {{dashboard.icon}}"></i></label>
               <div class="col-md-6">
-                <angular2-multiselect #selectOne
+                <angular2-multiselect #selectOneDashboardIcon
                                       name="iconDashboardSelect"
                                       [data]="fontAwesomeList"
                                       [(ngModel)]="selectedDashboardIcon"
-                                      (onSelect)="dashboard.icon = $event.id; selectOne.isActive = false;"
+                                      (onSelect)="dashboard.icon = $event.id; selectOneDashboardIcon.isActive = false;"
                                       (onDeSelect)="dashboard.icon = ''"
                                       [settings]="selectIconSettings">
                   <c-item>
@@ -87,7 +87,7 @@
   </div>
   <div class="row" *ngIf="widgets.length > 0">
     <!-- For each widget -->
-    <div *ngFor="let widget of widgets" class="col-md-{{widget.width}}">
+    <div *ngFor="let widget of widgets; let w = index" class="col-md-{{widget.width}}">
       <div class="card">
         <!-- card header -->
         <div class="card-header">
@@ -125,7 +125,8 @@
             <!-- Map -->
             <ng-container *ngIf="widget.type === 'map'">
               <ng-container *ngIf="widget.data">
-                <agm-map (mapReady)="onMapReady($event)"
+                <agm-map #agmMap
+                         (mapReady)="onMapReady($event)"
                          [latitude]="widget.options.lat"
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
@@ -175,6 +176,28 @@
                               <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
                             </agm-info-window>
                           </agm-marker>
+                        </ng-container>
+                        <!-- Beacon -->
+                        <ng-container *ngIf="geoloc.type === 'beacon'">
+                          <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="3" [latitude]="geoloc.location.lat" [longitude]="geoloc.location.lng" [iconUrl]="'assets/img/markers/marker-beacon.png'">
+                            <agm-info-window id="{{geoloc.id}}">
+                              <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                              <br>
+                              <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                              <br *ngIf="device.name">
+                              <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                              <br>
+                              <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                              <br>
+                              <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                              <br>
+                              <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                            </agm-info-window>
+                          </agm-marker>
+                          <!-- Circle -->
+                          <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]" [zIndex]="1" [strokePosition]="CENTER" [strokeWeight]="1" [strokeColor]="'#3c58ce'" [fillOpacity]="0.1" [fillColor]="'#3c58ce'" [latitude]="geoloc.location.lat" [longitude]="geoloc.location.lng" [radius]="geoloc.precision">
+                          </agm-circle>
+                          <!-- End Circle -->
                         </ng-container>
                       </ng-container>
                     </ng-container>
@@ -353,6 +376,7 @@
                   <div class="m-1" *ngFor="let device of widget.data; let i = index">
                     <label for="{{device.id}}" class="switch switch-sm switch-3d switch-device-outline-alt">
                       <input id="{{device.id}}"
+                             (change)="onDeviceVisibility(i, w)"
                              [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
                       <span class="switch-label"></span>
                       <span class="switch-handle"></span>
@@ -362,10 +386,11 @@
                   </div>
                 </div>
 
-                <div #deviceList class="floating-panel" *ngIf="mobile && widget.data" style="max-width: 100%; max-height: 20%">
+                <div #deviceListMobile class="floating-panel" *ngIf="mobile && widget.data" style="max-width: 100%; max-height: 20%">
                   <div class="m-1" *ngFor="let device of widget.data; let i = index">
                     <label for="{{device.id}}" class="switch switch-sm switch-3d switch-device-outline-alt">
                       <input id="{{device.id}}"
+                             (change)="onDeviceVisibility(i, w)"
                              [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
                       <span class="switch-label"></span>
                       <span class="switch-handle"></span>
@@ -375,7 +400,8 @@
                   </div>
                 </div>
 
-                <agm-map [latitude]="widget.options.lat"
+                <agm-map #agmMap
+                         [latitude]="widget.options.lat"
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
                          [fullscreenControl]="true"
@@ -459,6 +485,40 @@
                                   </agm-info-window>
                                 </agm-marker>
                               </ng-container>
+                              <ng-container *ngIf="geoloc.type === 'beacon'">
+                                <agm-marker
+                                  (mouseOut)="markerOut(i)"
+                                  (mouseOver)="markerOver(i)"
+                                  [zIndex]="4"
+                                  [latitude]="geoloc.location.lat"
+                                  [longitude]="geoloc.location.lng"
+                                  [iconUrl]="'assets/img/markers/marker-start.png'">
+                                  <agm-info-window>
+                                    <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                                    <br>
+                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <br>
+                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <br>
+                                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                    <br>
+                                    <strong><b>Position:</b> n°{{i}} <span class="text-success">START</span></strong>
+                                  </agm-info-window>
+                                </agm-marker>
+                                <!-- Circle -->
+                                <agm-circle *ngIf="circlePrecision || isCircleVisible[0]" [visible]="isCircleVisible[0]"
+                                            [zIndex]="1"
+                                            [strokePosition]="CENTER"
+                                            [strokeWeight]="1"
+                                            [strokeColor]="'#3c58ce'"
+                                            [fillOpacity]="0.1"
+                                            [fillColor]="'#3c58ce'"
+                                            [latitude]="geoloc.location.lat"
+                                            [longitude]="geoloc.location.lng"
+                                            [radius]="geoloc.precision">
+                                </agm-circle>
+                                <!-- End Circle -->
+                              </ng-container>
                             </ng-container>
                             <!-- End Start Point -->
                             <!-- Finish Point -->
@@ -515,6 +575,40 @@
                                     <strong><b>Position:</b> n°{{i}} <span class="text-danger">FINISH</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
+                              </ng-container>
+                              <ng-container *ngIf="geoloc.type === 'beacon'">
+                                <agm-marker
+                                  (mouseOut)="markerOut(i)"
+                                  (mouseOver)="markerOver(i)"
+                                  [zIndex]="4"
+                                  [latitude]="geoloc.location.lat"
+                                  [longitude]="geoloc.location.lng"
+                                  [iconUrl]="'assets/img/markers/marker-finish.png'">
+                                  <agm-info-window>
+                                    <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                                    <br>
+                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <br>
+                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <br>
+                                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                    <br>
+                                    <strong><b>Position:</b> n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                  </agm-info-window>
+                                </agm-marker>
+                                <!-- Circle -->
+                                <agm-circle *ngIf="circlePrecision || isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                                            [zIndex]="1"
+                                            [strokePosition]="CENTER"
+                                            [strokeWeight]="1"
+                                            [strokeColor]="'#3c58ce'"
+                                            [fillOpacity]="0.1"
+                                            [fillColor]="'#3c58ce'"
+                                            [latitude]="geoloc.location.lat"
+                                            [longitude]="geoloc.location.lng"
+                                            [radius]="geoloc.precision">
+                                </agm-circle>
+                                <!-- End Circle -->
                               </ng-container>
                             </ng-container>
                             <!-- End Finish Point -->
@@ -573,13 +667,47 @@
                                 </agm-info-window>
                               </agm-marker>
                               <!-- End GPS -->
+                              <!-- Beacon -->
+                              <agm-marker *ngIf="geoloc.type === 'beacon'"
+                                          (mouseOut)="markerOut(i)"
+                                          (mouseOver)="markerOver(i)"
+                                          [zIndex]="3"
+                                          [latitude]="geoloc.location.lat"
+                                          [longitude]="geoloc.location.lng"
+                                          [iconUrl]="'assets/img/markers/marker-beacon.png'">
+                                <agm-info-window>
+                                  <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                                  <br>
+                                  <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                  <br>
+                                  <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                  <br>
+                                  <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                  <br>
+                                  <strong><b>Position: </b> n°{{i}}</strong>
+                                </agm-info-window>
+                              </agm-marker>
+                              <!-- Circle -->
+                              <agm-circle *ngIf="geoloc.type === 'beacon' && (circlePrecision || isCircleVisible[i])" [visible]="isCircleVisible[i]"
+                                          [zIndex]="1"
+                                          [strokePosition]="CENTER"
+                                          [strokeWeight]="1"
+                                          [strokeColor]="'#3c58ce'"
+                                          [fillOpacity]="0.1"
+                                          [fillColor]="'#3c58ce'"
+                                          [latitude]="geoloc.location.lat"
+                                          [longitude]="geoloc.location.lng"
+                                          [radius]="geoloc.precision">
+                              </agm-circle>
+                              <!-- End Circle -->
+                              <!-- End Beacon -->
                             </ng-container>
                             <!-- End Default -->
                           </ng-container>
                         </ng-container>
                         <!-- End Markers -->
 
-                        <agm-directions *ngIf="widget.options.directions"
+                        <agm-directions *ngIf="device.Geolocs && device.Geolocs.length > 0 && widget.options.directions"
                                         [directionsDisplayStore]="device.directionsDisplayStore"
                                         [travelMode]="'DRIVING'"
                                         [routesColor]="device.color"
@@ -662,6 +790,40 @@
                                   </agm-info-window>
                                 </agm-marker>
                               </ng-container>
+                              <ng-container *ngIf="geoloc.type === 'beacon'">
+                                <agm-marker
+                                  (mouseOut)="markerOut(i)"
+                                  (mouseOver)="markerOver(i)"
+                                  [zIndex]="4"
+                                  [latitude]="geoloc.location.lat"
+                                  [longitude]="geoloc.location.lng"
+                                  [iconUrl]="'assets/img/markers/marker-start.png'">
+                                  <agm-info-window>
+                                    <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                                    <br>
+                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <br>
+                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <br>
+                                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                    <br>
+                                    <strong><b>Position:</b> n°{{i}} <span class="text-success">START</span></strong>
+                                  </agm-info-window>
+                                </agm-marker>
+                                <!-- Circle -->
+                                <agm-circle *ngIf="circlePrecision || isCircleVisible[0]" [visible]="isCircleVisible[0]"
+                                            [zIndex]="1"
+                                            [strokePosition]="CENTER"
+                                            [strokeWeight]="1"
+                                            [strokeColor]="'#3c58ce'"
+                                            [fillOpacity]="0.1"
+                                            [fillColor]="'#3c58ce'"
+                                            [latitude]="geoloc.location.lat"
+                                            [longitude]="geoloc.location.lng"
+                                            [radius]="geoloc.precision">
+                                </agm-circle>
+                                <!-- End Circle -->
+                              </ng-container>
                             </ng-container>
                             <!-- End Start Point -->
                             <!-- Finish Point -->
@@ -718,6 +880,40 @@
                                     <strong><b>Position:</b> n°{{i}} <span class="text-danger">FINISH</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
+                              </ng-container>
+                              <ng-container *ngIf="geoloc.type === 'beacon'">
+                                <agm-marker
+                                  (mouseOut)="markerOut(i)"
+                                  (mouseOver)="markerOver(i)"
+                                  [zIndex]="4"
+                                  [latitude]="geoloc.location.lat"
+                                  [longitude]="geoloc.location.lng"
+                                  [iconUrl]="'assets/img/markers/marker-finish.png'">
+                                  <agm-info-window>
+                                    <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                                    <br>
+                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <br>
+                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <br>
+                                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                    <br>
+                                    <strong><b>Position:</b> n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                  </agm-info-window>
+                                </agm-marker>
+                                <!-- Circle -->
+                                <agm-circle *ngIf="circlePrecision || isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                                            [zIndex]="1"
+                                            [strokePosition]="CENTER"
+                                            [strokeWeight]="1"
+                                            [strokeColor]="'#3c58ce'"
+                                            [fillOpacity]="0.1"
+                                            [fillColor]="'#3c58ce'"
+                                            [latitude]="geoloc.location.lat"
+                                            [longitude]="geoloc.location.lng"
+                                            [radius]="geoloc.precision">
+                                </agm-circle>
+                                <!-- End Circle -->
                               </ng-container>
                             </ng-container>
                             <!-- End Finish Point -->
@@ -776,13 +972,47 @@
                                 </agm-info-window>
                               </agm-marker>
                               <!-- End GPS -->
+                              <!-- Beacon -->
+                              <agm-marker *ngIf="geoloc.type === 'beacon'"
+                                          (mouseOut)="markerOut(i)"
+                                          (mouseOver)="markerOver(i)"
+                                          [zIndex]="3"
+                                          [latitude]="geoloc.location.lat"
+                                          [longitude]="geoloc.location.lng"
+                                          [iconUrl]="'assets/img/markers/marker-beacon.png'">
+                                <agm-info-window>
+                                  <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                                  <br>
+                                  <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                  <br>
+                                  <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                  <br>
+                                  <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                  <br>
+                                  <strong><b>Position: </b> n°{{i}}</strong>
+                                </agm-info-window>
+                              </agm-marker>
+                              <!-- Circle -->
+                              <agm-circle *ngIf="geoloc.type === 'beacon' && (circlePrecision || isCircleVisible[i])" [visible]="isCircleVisible[i]"
+                                          [zIndex]="1"
+                                          [strokePosition]="CENTER"
+                                          [strokeWeight]="1"
+                                          [strokeColor]="'#3c58ce'"
+                                          [fillOpacity]="0.1"
+                                          [fillColor]="'#3c58ce'"
+                                          [latitude]="geoloc.location.lat"
+                                          [longitude]="geoloc.location.lng"
+                                          [radius]="geoloc.precision">
+                              </agm-circle>
+                              <!-- End Circle -->
+                              <!-- End Beacon -->
                             </ng-container>
                             <!-- End Default -->
                           </ng-container>
                         </ng-container>
                         <!-- End Markers -->
 
-                        <agm-directions *ngIf="widget.options.directions"
+                        <agm-directions *ngIf="device.Geolocs && device.Geolocs.length > 0 && widget.options.directions"
                                         [directionsDisplayStore]="device.directionsDisplayStore"
                                         [travelMode]="'DRIVING'"
                                         [routesColor]="device.color"
@@ -926,11 +1156,11 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Icon <i class="fa {{newWidget.icon}}"></i></label>
               <div class="col-md-9">
-                <angular2-multiselect #selectOne
+                <angular2-multiselect #selectOneWidgetIcon
                                       name="iconWidgetSelect"
                                       [data]="fontAwesomeList"
                                       [(ngModel)]="selectedWidgetIcon"
-                                      (onSelect)="newWidget.icon = $event.id; selectOne.isActive = false;"
+                                      (onSelect)="newWidget.icon = $event.id; selectOneWidgetIcon.isActive = false;"
                                       (onDeSelect)="newWidget.icon = ''"
                                       [settings]="selectIconSettings">
                   <c-item>

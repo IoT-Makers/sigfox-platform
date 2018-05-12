@@ -19,15 +19,13 @@
                 </div>
               </div>
               <div class="card-block">
-                <p *ngIf="version.sha"><strong>SHA:</strong> {{version.sha}}</p>
-                <p *ngIf="version.author"><strong>Author:</strong> {{version.author.substr(0, version.author.indexOf('<'))}}</p>
-                <p *ngIf="version.authorDate"><strong>Date:</strong> {{version.authorDate | amTimeAgo}}</p>
+                <p *ngIf="version"><strong>SHA:</strong> {{version}}</p>
               </div>
             </div>
-            <p *ngFor="let setting of settings">
-              <label>{{setting.key}}:</label>
-              <label *ngIf="setting.type === 'boolean'" class="switch switch-sm switch-3d switch-success-outline-alt">
-                <input (change)="changeSetting(setting)" [(ngModel)]="setting.value" type="checkbox"
+            <p *ngFor="let appSetting of appSettings">
+              <label>{{appSetting.key}}: </label>
+              <label *ngIf="appSetting.type === 'boolean'" class="switch switch-sm switch-3d switch-success-outline-alt">
+                <input (change)="changeSetting(appSetting)" [(ngModel)]="appSetting.value" type="checkbox"
                        class="switch-input">
                 <span class="switch-label"></span>
                 <span class="switch-handle"></span>

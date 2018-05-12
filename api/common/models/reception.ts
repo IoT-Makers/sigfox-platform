@@ -1,4 +1,5 @@
 import {Model} from '@mean-expert/model';
+import {decrypt} from './utils';
 
 /**
  * @module reception
@@ -61,7 +62,7 @@ class Reception {
           console.log(connector);
           if (connector) {
             const sigfoxApiLogin = connector.login;
-            const sigfoxApiPassword = connector.password;
+            const sigfoxApiPassword = decrypt(connector.password);
 
             const credentials = new Buffer(sigfoxApiLogin + ':' + sigfoxApiPassword).toString('base64');
 

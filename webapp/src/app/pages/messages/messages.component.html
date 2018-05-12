@@ -105,6 +105,13 @@
                             <strong>GPS</strong>
                           </a>
                         </ng-container>
+                        <ng-container *ngIf="geoloc.type == 'beacon'">
+                          <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-beacon">
+                            <i class="fa fa-map-marker fa-2x"></i>
+                            <br>
+                            <strong>Beacon</strong>
+                          </a>
+                        </ng-container>
                       </div>
                       <div class="col col-5 text-left">
                           <span class="small text-muted">
@@ -133,10 +140,7 @@
                 </p>
               </td>
               <td class="text-center">
-                <button *ngIf="!organization" type="button" class="btn btn-outline-danger btn-round" (click)="remove(message)">
-                  <i class="fa fa-trash"></i>
-                </button>
-                <button *ngIf="organization" disabled type="button" class="btn btn-outline-danger btn-round" (click)="remove(message)">
+                <button type="button" class="btn btn-outline-danger btn-round" (click)="remove(message)">
                   <i class="fa fa-trash"></i>
                 </button>
               </td>
@@ -172,7 +176,7 @@
                  [latitude]="mapLat"
                  [longitude]="mapLng"
                  [zoom]="mapZoom"
-                 [styles]="mapStyle"
+                 [styles]=""
                  [fullscreenControl]="true"
                  [mapTypeId]="'roadmap'">
           <!-- Receptions -->
@@ -235,6 +239,36 @@
                 </agm-info-window>
               </agm-marker>
             </ng-container>
+            <!-- Beacon -->
+            <ng-container *ngIf="geoloc.type === 'beacon'">
+              <agm-marker
+                [zIndex]="3"
+                [latitude]="geoloc.location.lat"
+                [longitude]="geoloc.location.lng"
+                [iconUrl]="'assets/img/markers/marker-beacon.png'">
+                <agm-info-window>
+                  <strong><b>Type:</b> <span class="text-geoloc-beacon">Sigfox</span></strong>
+                  <br>
+                  <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                  <br>
+                  <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                  <br>
+                  <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                </agm-info-window>
+              </agm-marker>
+              <!-- Circle -->
+              <agm-circle [zIndex]="1"
+                          [strokePosition]="CENTER"
+                          [strokeWeight]="1"
+                          [strokeColor]="'#3c58ce'"
+                          [fillOpacity]="0.1"
+                          [fillColor]="'#3c58ce'"
+                          [latitude]="geoloc.location.lat"
+                          [longitude]="geoloc.location.lng"
+                          [radius]="geoloc.precision">
+              </agm-circle>
+              <!-- End Circle -->
+            </ng-container>
           </ng-container>
         </agm-map>
       </div>
@@ -245,3 +279,4 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

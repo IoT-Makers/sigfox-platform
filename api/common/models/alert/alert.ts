@@ -1,5 +1,6 @@
 import {Model} from '@mean-expert/model';
 import * as _ from 'lodash';
+import {decrypt} from '../utils';
 
 const loopback = require('loopback');
 
@@ -127,8 +128,7 @@ class Alert {
     const userId = req.accessToken.userId;
     if (!userId) {
       next(null, 'Please login or use a valid access token.');
-    }
-    if (!device.Alerts) {
+    } else if (!device.Alerts) {
       next(null, 'No alerts set for this device.');
     }
 
@@ -252,7 +252,7 @@ class Alert {
             // Set the connector user and pass
             this.model.app.models.Email.dataSource.connector.transports[0].transporter.options.auth = {
               user: connector.login,
-              pass: connector.password
+              pass: decrypt(connector.password)
             };
             const title = device.name ? device.name : device.id;
             Email.send({
@@ -274,7 +274,7 @@ class Alert {
             } catch (e) {
               alertMessage = 'Invalid JSON in webhook alert message!';
             }
-            this.model.app.dataSources.webhook.send(connector.url, connector.method, connector.password, alertMessage).then((result: any) => {
+            this.model.app.dataSources.webhook.send(connector.url, connector.method, decrypt(connector.password), alertMessage).then((result: any) => {
               console.log('Webhook request sent!');
             }).catch((err: any) => {
               if (err) console.error(err);
@@ -283,7 +283,7 @@ class Alert {
 
           else if (connector.type === 'free-mobile') {
             console.log('Free Mobile SMS alert!');
-            this.model.app.dataSources.freeMobile.sendSMS(connector.login, connector.password, alertMessage).then((result: any) => {
+            this.model.app.dataSources.freeMobile.sendSMS(connector.login, decrypt(connector.password), alertMessage).then((result: any) => {
             }).catch((err: any) => {
               if (err) console.error('Free Mobile error');
               else console.log('Free Mobile sent!');
@@ -300,7 +300,11 @@ class Alert {
             const Client = require('strong-pubsub');
             const Adapter = require('strong-pubsub-mqtt');
             const client = new Client({host: connector.host, port: connector.port}, Adapter);
-            client.publish(connector.topic, alertMessage);
+            try {
+              client.publish(connector.topic, alertMessage);
+            } catch (e) {
+              console.log(e);
+            }
           }
 
           // Check if alert is one shot only, if yes: deactivate it

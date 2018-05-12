@@ -1,7 +1,7 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {AccessToken, Connector, FireLoopRef, User} from '../../shared/sdk/models';
+import {AccessToken, Alert, Connector, FireLoopRef, User} from '../../shared/sdk/models';
 import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
 import {Subscription} from 'rxjs/Subscription';
 import {RealTime} from '../../shared/sdk/services/core';
@@ -25,6 +25,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   private connectorSub: Subscription;
   private connectorRef: FireLoopRef<Connector>;
+  private userRef: FireLoopRef<User>;
   private connectors: Connector[] = [];
   private connectorToAdd: Connector = new Connector();
   private connectorToRemove: Connector = new Connector();
@@ -99,15 +100,14 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    // this.ngOnDestroy();
+    this.ngOnDestroy();
 
     // Get and listen connectors
-    this.connectorRef = this.rt.FireLoop.ref<Connector>(Connector);
+    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+    this.connectorRef = this.userRef.child<Connector>('Connectors');
     this.connectorSub = this.connectorRef.on('change',
       {
-        where: {
-          userId: this.user.id
-        },
+        limit: 1000,
         order: 'updatedAt DESC'
       }
     ).subscribe((connectors: Connector[]) => {
@@ -236,6 +236,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Connector: ngOnDestroy');
+    if (this.userRef) this.userRef.dispose();
     if (this.connectorRef) this.connectorRef.dispose();
     if (this.connectorSub) this.connectorSub.unsubscribe();
   }

@@ -79,6 +79,8 @@ If you are not familiar with Heroku, just create an account an follow the proced
 
 ![heroku-add-MONGODB_URI](doc/img/heroku-add-MONGODB_URI.png)
 
+**You may also add the variable SECRET with a password of your choice. This SECRET will be used to cypher all the connector passwords you add in the application.**
+
 * Restart all dynos:
 
 ![heroku-restart-dynos](doc/img/heroku-restart-dynos.png)
