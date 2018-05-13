@@ -69,7 +69,8 @@ class Parser {
     let data_parsed: any = null;
     if (payload !== '') {
       try {
-        data_parsed = Function(payload, fn);
+        const func = Function('payload', fn);
+        data_parsed = func(payload);
       }
       catch (err) {
         console.log('Parser | Error parsing data');                        
