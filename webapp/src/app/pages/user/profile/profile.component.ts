@@ -116,9 +116,30 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  leaveOrganization(item): void {
-    this.organizationApi.unlinkMembers(item.id, this.user.id).subscribe(result => {
+  leaveOrganization(organization: Organization): void {
+    this.organizationApi.unlinkMembers(organization.id, this.user.id).subscribe(result => {
       this.getOrganizations();
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Unlinked from organization successfully.');
+    }, (error: any) => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', error.message);
+    });
+  }
+
+  deleteOrganization(organization: Organization): void {
+    this.organizationApi.deleteById(organization.id).subscribe(result => {
+      console.log(result);
+      this.getOrganizations();
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Organization was deleted successfully.');
+    }, (error: any) => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', error.message);
     });
   }
 

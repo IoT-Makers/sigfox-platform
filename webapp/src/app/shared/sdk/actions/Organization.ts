@@ -26,6 +26,10 @@ Object.assign(BaseLoopbackActionTypesFactory('Organization'), {
   UNLINK_MEMBERS_SUCCESS: type('[Organization] unlinkMembers success'),
   UNLINK_MEMBERS_FAIL: type('[Organization] unlinkMembers fail'),
 
+  GET_USER: type('[Organization] getUser'),
+  GET_USER_SUCCESS: type('[Organization] getUser success'),
+  GET_USER_FAIL: type('[Organization] getUser fail'),
+
   FIND_BY_ID_MESSAGES: type('[Organization] findByIdMessages'),
   FIND_BY_ID_MESSAGES_SUCCESS: type('[Organization] findByIdMessages success'),
   FIND_BY_ID_MESSAGES_FAIL: type('[Organization] findByIdMessages fail'),
@@ -422,6 +426,52 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    */
   unlinkMembersFail: class implements Action {
     public readonly type = OrganizationActionTypes.UNLINK_MEMBERS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * getUser Action.
+   * Fetches belongsTo relation user.
+   *
+   * @param {any} id Organization id
+   * @param {boolean} refresh 
+   * @param {any} meta (optional).
+   * 
+   */
+  getUser: class implements Action {
+    public readonly type = OrganizationActionTypes.GET_USER;
+      public payload: {id: any, refresh: any};
+
+    constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, refresh};
+    }
+  },
+  /**
+   * getUserSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  getUserSuccess: class implements Action {
+    public readonly type = OrganizationActionTypes.GET_USER_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * getUserFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  getUserFail: class implements Action {
+    public readonly type = OrganizationActionTypes.GET_USER_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

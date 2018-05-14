@@ -31,10 +31,6 @@
       "required": true,
       "default": "My organization"
     },
-    "ownerId": {
-      "type": "string",
-      "required": true
-    },
     "logo": {
       "type": "string",
       "default": "https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png"
@@ -46,6 +42,11 @@
       "type": "hasAndBelongsToMany",
       "model": "user",
       "foreignKey": "memberId"
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
     },
     "Messages": {
       "type": "hasAndBelongsToMany",
@@ -114,6 +115,13 @@
       "property": [
         "create"
       ]
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "*"
     },
     {
       "accessType": "*",

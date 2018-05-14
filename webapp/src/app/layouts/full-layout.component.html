@@ -30,7 +30,7 @@
         <button href="#" class="dropdown-item" *ngFor="let orga of organizations" (click)="redirectToOgranizationView(orga.id)">
           <img src="{{orga.logo}}" height="30px" class="img-avatar"> {{orga.name}}
         </button>
-        <button href="#" class="dropdown-item text-center" (click)="newOrganisation()">
+        <button href="#" class="dropdown-item text-center" (click)="addOrEditOrganization(null)">
           <i class="fa fa-plus text-organization"></i> New organization
         </button>
 
@@ -69,8 +69,8 @@
     </li>
 
     <!-- Edit orga -->
-    <li *ngIf="organization.ownerId === user.id || admin === true" class="nav-item" style="cursor: pointer;" tooltip="Edit organization" placement="left">
-      <a class="nav-link" (click)="newOrganisation(organization)">
+    <li *ngIf="organization.userId === user.id || admin === true" class="nav-item" style="cursor: pointer;" tooltip="Edit organization" placement="left">
+      <a class="nav-link" (click)="addOrEditOrganization(organization)">
         <i class="fa fa-pencil text-organization"></i>
       </a>
     </li>
@@ -88,7 +88,7 @@
         <button href="#" class="dropdown-item" *ngFor="let orga of organizations" [routerLink]="['/organization/', orga.id]">
           <img src="{{orga.logo}}" height="30px" class="img-avatar"> {{orga.name}}
         </button>
-        <button href="#" class="dropdown-item" (click)="newOrganisation()">
+        <button href="#" class="dropdown-item" (click)="addOrEditOrganization(null)">
           <i class="fa fa-plus text-organization"></i> New organization
         </button>
 
@@ -283,24 +283,24 @@
 
 </div>
 
-<div bsModal #createOrganizationModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-     aria-labelledby="createOrganizationModal" aria-hidden="true">
+<div bsModal #addOrEditOrganizationtModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="addOrEditOrganizationModal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Create / Update an organization</h4>
-        <button type="button" class="close" (click)="createOrganizationModal.hide()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="createOrganization(newOrganization)" class="form-horizontal" #editForm="ngForm">
+      <form *ngIf="addOrganizationFlag" (ngSubmit)="addOrganization()" class="form-horizontal" #addOrEditForm="ngForm">
+        <div class="modal-header">
+          <h4 class="modal-title">Create an organization</h4>
+          <button type="button" class="close" (click)="addOrEditOrganizationModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Name</label>
             <div class="col-md-9">
               <input type="text" class="form-control"
                      placeholder="Organization name"
-                     name="newOrganization.name" [(ngModel)]="newOrganization.name">
+                     name="organizationToAddOrEdit.name" [(ngModel)]="organizationToAddOrEdit.name">
             </div>
           </div>
           <div class="row">
@@ -311,28 +311,73 @@
             <label class="col-md-3 form-control-label">Logo URL</label>
             <div class="col-md-9">
               <input type="text" class="form-control" placeholder="Logo"
-                     name="newOrganization.logo" [(ngModel)]="newOrganization.logo">
+                     name="organizationToAddOrEdit.logo" [(ngModel)]="organizationToAddOrEdit.logo">
             </div>
           </div>
 
-          <div class="form-group row" *ngIf="organization && (organization.ownerId === user.id || admin === true)">
+          <div class="form-group row" *ngIf="organization && (organization.userId === user.id || admin === true)">
             <label class="col-md-3 form-control-label">Select users</label>
             <div class="col-md-9">
               <angular2-multiselect name="selectUsers"
                                     [data]="selectUsers"
                                     [(ngModel)]="selectedUsers"
-                                    (onDeSelect)="unlinkMember(newOrganization, $event)"
+                                    (onDeSelect)="unlinkMember(organizationToAddOrEdit, $event)"
                                     [settings]="selectUsersSettings">
               </angular2-multiselect>
             </div>
           </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="addOrEditOrganizationtModal.hide()">Close</button>
+          <button [disabled]="!addOrEditForm.form.valid" type="button" class="btn btn-organization" (click)="addOrganization()">Create</button>
+        </div>
+      </form>
 
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="createOrganizationModal.hide()">Close</button>
-        <button type="button" class="btn btn-organization" (click)="createOrganization(newOrganization)">Create / Update</button>
-      </div>
+      <form *ngIf="!addOrganizationFlag" (ngSubmit)="editOrganization()" class="form-horizontal" #addOrEditForm="ngForm">
+        <div class="modal-header">
+          <h4 class="modal-title">Update an organization</h4>
+          <button type="button" class="close" (click)="addOrEditOrganizationModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Name</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control"
+                     placeholder="Organization name"
+                     name="organizationToAddOrEdit.name" [(ngModel)]="organizationToAddOrEdit.name">
+            </div>
+          </div>
+          <div class="row">
+
+          </div>
+
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Logo URL</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" placeholder="Logo"
+                     name="organizationToAddOrEdit.logo" [(ngModel)]="organizationToAddOrEdit.logo">
+            </div>
+          </div>
+
+          <div class="form-group row" *ngIf="organization && (organization.userId === user.id || admin === true)">
+            <label class="col-md-3 form-control-label">Select users</label>
+            <div class="col-md-9">
+              <angular2-multiselect name="selectUsers"
+                                    [data]="selectUsers"
+                                    [(ngModel)]="selectedUsers"
+                                    (onDeSelect)="unlinkMember(organizationToAddOrEdit, $event)"
+                                    [settings]="selectUsersSettings">
+              </angular2-multiselect>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="addOrEditOrganizationtModal.hide()">Close</button>
+          <button [disabled]="!addOrEditForm.form.valid" type="button" class="btn btn-organization" (click)="editOrganization()">Update</button>
+        </div>
+      </form>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

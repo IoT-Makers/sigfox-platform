@@ -10,7 +10,7 @@ import {RealTime} from '../shared/sdk/services/core';
 })
 export class FullLayoutComponent implements OnInit, OnDestroy {
 
-  @ViewChild('createOrganizationModal') createOrganizationModal: any;
+  @ViewChild('addOrEditOrganizationtModal') addOrEditOrganizationtModal: any;
 
   private user: User;
   private selectedUsers: Array<Object> = [];
@@ -19,7 +19,9 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private filter: any;
   private params: any = {};
 
-  private newOrganization = new Organization();
+
+  private addOrganizationFlag = true;
+  private organizationToAddOrEdit: Organization = new Organization();
   private organizations: Organization[] = [];
 
   private dashboardSub: Subscription;
@@ -328,37 +330,29 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   newDashboard(): void {
-
-    const dashboard = {
-      name: 'New dashboard'
-    };
+    const dashboard: Dashboard = new Dashboard();
+    dashboard.name = 'New dashboard';
 
     if (this.organization) {
       dashboard.name = 'Shared dashboard';
     }
 
-    if (!this.organization) {
-      this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard => {
-        console.log(dashboard);
-        this.setup();
+    this.dashboardRef.create(dashboard).subscribe(dashboard => {
+      if (!this.organization) {
         this.router.navigate(['/dashboard/' + dashboard.id]);
-      });
-    } else {
-      this.organizationApi.createDashboards(this.organization.id, dashboard).subscribe(dashboard => {
-        console.log(dashboard);
-        this.setup();
+      } else {
         this.router.navigate(['/organization/' + this.organization.id + '/dashboard/' + dashboard.id]);
-      });
-    }
+      }
+    });
   }
 
-  newOrganisation(orga): void {
+  addOrEditOrganization(orga): void {
     this.selectedUsers = [];
     this.selectUsers = [];
 
     if (orga) {
-      console.log(orga);
-      this.newOrganization = orga;
+      this.addOrganizationFlag = false;
+      this.organizationToAddOrEdit = orga;
       this.organizationApi.getMembers(orga.id).subscribe(members => {
         members.forEach(member => {
           const user = {
@@ -369,7 +363,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         });
       });
     } else {
-      this.newOrganization = new Organization();
+      this.addOrganizationFlag = true;
+      this.organizationToAddOrEdit = new Organization();
       const myself = {
         id: this.user.id,
         itemName: this.user.email
@@ -390,17 +385,33 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
       });
     }
-
-    this.createOrganizationModal.show();
+    this.addOrEditOrganizationtModal.show();
   }
 
-  createOrganization(orga: any): void {
+  addOrganization(): void {
 
-    orga.ownerId = this.user.id;
+    this.organizationToAddOrEdit.userId = this.user.id;
 
-    console.log(orga);
-    console.log(this.selectedUsers);
-    this.organizationApi.create(orga).subscribe((organization: Organization) => {
+    this.organizationApi.create(this.organizationToAddOrEdit).subscribe((organization: Organization) => {
+      console.log('Organization created', organization);
+
+      this.selectedUsers.forEach((user: any, index: number) => {
+        this.organizationApi.linkMembers(organization.id, user.id).subscribe((result) => {
+          console.log('result after linking member: ', result);
+          if (index === this.selectedUsers.length - 1) {
+            this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
+              console.log(organizations);
+              this.organizations = organizations;
+              this.addOrEditOrganizationtModal.hide();
+            });
+          }
+        });
+      });
+    });
+  }
+
+  editOrganization(): void {
+    this.organizationApi.upsert(this.organizationToAddOrEdit).subscribe((organization: Organization) => {
       console.log('Organization created', organization);
 
       this.selectedUsers.forEach((user: any, index, array) => {
@@ -410,7 +421,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
             this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
               console.log(organizations);
               this.organizations = organizations;
-              this.createOrganizationModal.hide();
+              this.addOrEditOrganizationtModal.hide();
             });
           }
         });

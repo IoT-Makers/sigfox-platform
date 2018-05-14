@@ -45,20 +45,6 @@ export class DeviceEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public deleteDeviceMessagesAlertsGeolocs$ = this.actions$
-    .ofType(DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.device.deleteDeviceMessagesAlertsGeolocs(action.payload.deviceId, action.payload.req).pipe(
-          map((response: any) => new DeviceActions.deleteDeviceMessagesAlertsGeolocsSuccess(action.payload.id, response, action.meta)),
-          catchError((error: any) => concat(
-            of(new DeviceActions.deleteDeviceMessagesAlertsGeolocsFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
   public getMessagesFromSigfoxBackend$ = this.actions$
     .ofType(DeviceActionTypes.GET_MESSAGES_FROM_SIGFOX_BACKEND).pipe(
       mergeMap((action: LoopbackAction) =>

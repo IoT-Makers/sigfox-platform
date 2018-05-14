@@ -107,36 +107,6 @@ export class DeviceApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId 
-   *
-   * @param {object} req 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Device` object.)
-   * </em>
-   */
-  public deleteDeviceMessagesAlertsGeolocs(deviceId: any, req: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "DELETE";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Devices/delete-device-messages-alerts-geolocs";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof deviceId !== 'undefined' && deviceId !== null) _urlParams.deviceId = deviceId;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
    * @param {string} id Device Id
    *
    * @param {number} limit Limit retrieved messages (max 100)

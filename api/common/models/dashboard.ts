@@ -10,7 +10,7 @@ import {Model} from '@mean-expert/model';
 @Model({
   hooks: {
     beforeSave: { name: 'before save', type: 'operation' },
-    afterDelete: {name: 'after delete', type: 'operation'}
+    beforeDelete: {name: 'before delete', type: 'operation'}
   },
   remotes: {
   }
@@ -27,14 +27,14 @@ class Dashboard {
   }
 
   // Delete dashboard method
-  afterDelete(ctx: any, next: Function): void {
+  beforeDelete(ctx: any, next: Function): void {
     // Get the dashboardId from instance
-    console.log(ctx.instance);
-    // const dashboardId = ctx.instance.id;
-    //
-    // this.model.app.models.Widget.destroyAll({dashboardId: dashboardId}, (error: any, result: any) => { });
+    const dashboardId = ctx.where.id;
 
-    next(null, 'Success');
+    if (dashboardId) {
+      this.model.app.models.Widget.destroyAll({dashboardId: dashboardId}, (err: any, result: any) => {  if (err) console.error(err); });
+    }
+    next();
   }
 }
 
