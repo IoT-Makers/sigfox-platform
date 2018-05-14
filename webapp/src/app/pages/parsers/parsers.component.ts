@@ -48,10 +48,6 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Parsers: ngOnInit');
-
-    // Get the logged in User object
-    this.user = this.userApi.getCachedCurrent();
-
     // Real Time
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
       this.setup();
@@ -90,7 +86,10 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    // this.ngOnDestroy();
+    // Get the logged in User object
+    this.user = this.userApi.getCachedCurrent();
+
     // Parsers
     this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
     this.parserSub = this.parserRef.on('change', {
@@ -171,6 +170,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('warning', 'Warning', result.message);
+        this.confirmParseModal.hide();
       }
       this.rt.onReady();
     });
@@ -194,4 +194,3 @@ export class ParsersComponent implements OnInit, OnDestroy {
     this.confirmModal.hide();
   }
 }
-

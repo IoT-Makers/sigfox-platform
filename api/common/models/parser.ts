@@ -90,25 +90,23 @@ class Parser {
       next(null, response);
     }
 
-    Parser.findById(parserId, {include: ['Devices']}, function (err: any, parser: any) {
+    Parser.findById(parserId, {
+      include: [{
+        relation: 'Devices',
+        scope: {
+          where: {userId: userId},
+          limit: 100,
+          order: 'updatedAt DESC'
+        }
+      }]
+    }, function (err: any, parser: any) {
       if (err) {
         next(err, null);
       } else if (parser) {
 
         parser = parser.toJSON();
 
-        if (parser.userId) {
-          // If an user doesn't own a device or messages (or parser), he can parse
-          // all messages of the device related to a parser by knowing his parserId
-          // Check own of parser. Only the owner can use the parser
-          if (userId.toString() !== parser.userId.toString()) {
-            response.message = 'Unauthorized access to this parser.';
-            return next(null, response.message);
-          }
-        }
-
-        // console.log(parser);
-        if (!parser.Devices) {
+        if (parser.Devices.length === 0) {
           response.message = 'No devices associated to this parser.';
           next(null, response);
         } else {
@@ -212,7 +210,7 @@ class Parser {
         }
 
         // console.log(device);
-        if (!device.Parser) {
+        if (device.Parser.length === 0) {
           response.message = 'No parser associated to this device.';
           next(null, response);
         } else {
