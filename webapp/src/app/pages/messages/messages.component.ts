@@ -7,6 +7,7 @@ import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
 import {AgmMap} from '@agm/core';
 import {ActivatedRoute} from '@angular/router';
 import {OrganizationApi} from '../../shared/sdk/services/custom';
+import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 @Component({
   selector: 'app-messages',
@@ -46,6 +47,16 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private isLimit_500 = false;
   private isLimit_1000 = false;
   private isLimit_0 = false;
+
+  // Notifications
+  private toast;
+  private toasterService: ToasterService;
+  public toasterconfig: ToasterConfig =
+    new ToasterConfig({
+      tapToDismiss: true,
+      timeout: 5000,
+      animation: 'fade'
+    });
 
   private mapStyle = [
     {
@@ -240,7 +251,9 @@ export class MessagesComponent implements OnInit, OnDestroy {
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private receptionApi: ReceptionApi,
+              toasterService: ToasterService,
               private route: ActivatedRoute) {
+    this.toasterService = toasterService;
   }
 
   ngOnInit(): void {
@@ -347,7 +360,15 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   remove(message: Message): void {
-    this.messageRef.remove(message).subscribe();
+    this.messageRef.remove(message).subscribe(value => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The message has been deleted.');
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error);
+    });
   }
 
   showMarkers(message: Message): void {

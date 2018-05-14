@@ -87,7 +87,6 @@
           "*": false,
           "count": true,
           "timeSeries": true,
-          "deleteDeviceMessagesAlertsGeolocs": true,
           "getMessagesFromSigfoxBackend": true,
           "download": true
         }

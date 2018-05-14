@@ -394,18 +394,18 @@
                   <span *ngIf="!device.successRate">N/A</span>
                 </td>
                 <td class="text-center">
-                  <div *ngIf="!organization" class="btn-group-sm">
+                  <div class="btn-group-sm">
                     <button class="btn btn-outline-primary btn-round" tooltip="Edit device"
                             (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
                     <button class="btn btn-outline-danger btn-round" tooltip="Delete device"
                             (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
                   </div>
-                  <div *ngIf="organization" class="btn-group-sm">
+                  <!--<div *ngIf="organization" class="btn-group-sm">
                     <button disabled class="btn btn-outline-primary btn-round" tooltip="Edit device"
                             (click)="editDevice(device)"><i class="fa fa-pencil fa-lg"></i></button>
                     <button disabled class="btn btn-outline-danger btn-round" tooltip="Delete device"
                             (click)="showRemoveModal(device)"><i class="fa fa-trash fa-lg"></i></button>
-                  </div>
+                  </div>-->
                 </td>
               </tr>
               </tbody>
