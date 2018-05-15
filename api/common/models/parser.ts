@@ -69,14 +69,22 @@ class Parser {
     let data_parsed: any = null;
     if (payload !== '') {
       try {
-        const func = Function('payload', fn);
-        data_parsed = func(payload);
+        let tryFn: string = "try { " + fn + "} catch(err){console.log('Parser Function | Inside error); return err}";
+        const func = Function('payload', tryFn);
+        data_parsed = func(payload, next);        
+        if (data_parsed instanceof Error)
+          throw data_parsed;
+        
       }
       catch (err) {
-        console.log('Parser | Error parsing data');                        
-        next('Error parsing data', null);
+        data_parsed = [];
+        console.log('Parser | Error parsing data');      
+        console.error(err);  
+        // If you would to give details to requester about parser function                
+        //next(err, null);
+        // If you wouldn't give to requester any details but only a generic error
+        next('Parser | Error parsing data',null);
       }
-    }
     next(null, data_parsed);
   }
 
