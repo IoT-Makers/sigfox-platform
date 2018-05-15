@@ -1,7 +1,5 @@
 import {Model} from '@mean-expert/model';
 
-const app = require('../../server/server.js');
-
 /**
  * @module Organization
  * @description
@@ -31,7 +29,7 @@ class Organization {
 
   afterRemoteLinkDevice(ctx: any, data: any, next: Function): void {
     const Message = this.model.app.models.Message;
-    const Organization = app.models.Organization;
+    const Organization = this.model.app.models.Organization;
 
     //console.log(Organization.prototype.__link__Messages);
     //console.log(ctx);
@@ -53,7 +51,7 @@ class Organization {
 
   afterRemoteUnlinkDevice(ctx: any, data: any, next: Function): void {
     const Message = this.model.app.models.Message;
-    const Organization = app.models.Organization;
+    const Organization = this.model.app.models.Organization;
 
     //console.log(Organization.prototype.__link__Messages);
     //console.log(ctx);
@@ -103,10 +101,7 @@ class Organization {
             console.log('Unlinked categories from organization');
           });
         });
-        /****
-         * @TODO: TEST BELOW !!
-         */
-        /*organization.toJSON().Devices.forEach((device: any) => {
+        organization.toJSON().Devices.forEach((device: any) => {
           organization.Devices.remove(device.id, (err: any) => {
             console.log('Unlinked devices from organization');
           });
@@ -115,7 +110,7 @@ class Organization {
           organization.Messages.remove(message.id, (err: any) => {
             console.log('Unlinked messages from organization');
           });
-        });*/
+        });
       } else {
         console.error(err);
       }

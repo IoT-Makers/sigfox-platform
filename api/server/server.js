@@ -3,12 +3,15 @@ require('ts-node/register');
 var loopback     = require('loopback');
 var boot         = require('loopback-boot');
 var cookieParser = require('cookie-parser');
+var app          = module.exports = loopback();
 
-var app = module.exports = loopback();
+// TODO: check clustering Node 10 features
+var cluster    = require('cluster');
+var numCPUs      = require('os').cpus().length;
 
 app.use(cookieParser());
 app.start = function() {
-  // start the web server
+  // Start the web server
   var server = app.listen(function() {
     app.emit('started', server);
     var baseUrl = app.get('url').replace(/\/$/, '');

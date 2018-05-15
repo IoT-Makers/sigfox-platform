@@ -23,7 +23,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   @ViewChild('map') mapContainer;
 
   // Flags
-  private alertsReady = false;
+  public alertsReady = false;
 
   // Map
   private map: L.Map;
@@ -84,8 +84,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   private alertSub: Subscription;
 
-  private alerts: Alert[] = [];
-  private addAlertFlag = false;
+  public alerts: Alert[] = [];
+  public addAlertFlag = false;
   private alertToAddOrEdit: Alert = new Alert();
   private alertToRemove: Alert = new Alert();
 
@@ -268,7 +268,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    this.cleanSetup();
 
     // Get and listen alerts
     this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
@@ -525,6 +525,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Alerts: ngOnDestroy');
+    this.cleanSetup();
+  }
+
+  private cleanSetup() {
     if (this.userRef) this.userRef.dispose();
     if (this.alertRef) this.alertRef.dispose();
     if (this.alertSub) this.alertSub.unsubscribe();

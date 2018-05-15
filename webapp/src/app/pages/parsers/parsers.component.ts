@@ -11,20 +11,20 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 })
 export class ParsersComponent implements OnInit, OnDestroy {
 
-  private user: User;
+  public user: User;
 
   @ViewChild('confirmModal') confirmModal: any;
   @ViewChild('confirmParseModal') confirmParseModal: any;
 
-  private parserToAdd: Parser = new Parser();
-  private parserToEdit: Parser = new Parser();
-  private parserToRemove: Parser = new Parser();
+  public parserToAdd: Parser = new Parser();
+  public parserToEdit: Parser = new Parser();
+  public parserToRemove: Parser = new Parser();
   private decodedPayload = [];
   private testPayload = [];
 
   private payload: any;
 
-  private parsers: Parser[] = [];
+  public parsers: Parser[] = [];
   private parserRef: FireLoopRef<Parser>;
   private parserSub: Subscription;
 
@@ -86,7 +86,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    // this.ngOnDestroy();
+    this.cleanSetup();
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
 
@@ -103,6 +103,10 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Parsers: ngOnDestroy');
+    this.cleanSetup();
+  }
+
+  private cleanSetup() {
     if (this.parserRef) this.parserRef.dispose();
     if (this.parserSub) this.parserSub.unsubscribe();
   }

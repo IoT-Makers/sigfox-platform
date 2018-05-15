@@ -12,22 +12,22 @@ import {Router} from '@angular/router';
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
-  private user: User;
+  public user: User;
 
   private organization: Organization;
-  private organizations: Organization[] = [];
+  public organizations: Organization[] = [];
 
   @ViewChild('avatarImg') avatarImg: ElementRef;
   @ViewChild('updatePasswordModal') updatePasswordModal: any;
   @ViewChild('updateUserModal') updateUserModal: any;
   @ViewChild('deleteUserModal') deleteUserModal: any;
 
-  private oldPassword;
-  private newPassword;
-  private newPasswordConfirm;
+  public oldPassword;
+  public newPassword;
+  public newPasswordConfirm;
 
   // Flag
-  private organizationsReady = false;
+  public organizationsReady = false;
 
   // Notifications
   private toast;

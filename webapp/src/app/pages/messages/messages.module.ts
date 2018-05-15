@@ -5,7 +5,7 @@ import {CommonModule} from '@angular/common';
 import {DataTableModule} from 'angular2-datatable';
 import {DataFilterPipe} from './datafilterpipe';
 import {FormsModule} from '@angular/forms';
-import {ModalModule, TooltipModule} from 'ng2-bootstrap';
+import {ModalModule, TooltipModule} from 'ngx-bootstrap';
 import {AgmCoreModule} from '@agm/core';
 import {ClickCopyDirective} from './click-copy.directive';
 import {ToasterModule} from 'angular2-toaster';

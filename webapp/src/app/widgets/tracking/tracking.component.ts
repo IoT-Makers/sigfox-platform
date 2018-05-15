@@ -22,7 +22,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
 
   @ViewChild('devicesSelect') devicesSelect: SelectComponent;
 
-  private mobile = false;
+  public mobile = false;
 
   public devicesList: Array<any> = [];
   public devices: Array<Device> = [];
@@ -64,10 +64,10 @@ export class TrackingComponent implements OnInit, OnDestroy {
   public gpsPrefer = true;
   public polylines = false;
 
-  private markerInterval = 0;
-  private mapPosition: GeoPoint = {lat: 48.86795, lng: 2.334070};
-  private mapZoom = 3;
-  private mapStyle = [{
+  public markerInterval = 0;
+  public mapPosition: GeoPoint = {lat: 48.86795, lng: 2.334070};
+  public mapZoom = 3;
+  public mapStyle = [{
     "featureType": "landscape",
     "stylers": [{"hue": "#FFBB00"}, {"saturation": 43.400000000000006}, {"lightness": 37.599999999999994}, {"gamma": 1}]
   }, {
@@ -88,7 +88,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }];
 
   // Date
-  private dateBeginSettings = {
+  public dateBeginSettings = {
     bigBanner: true,
     timePicker: true,
     format: 'dd-MMM-yyyy hh:mm a',
@@ -96,7 +96,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     defaultOpen: false,
     placeholder: 'Select begin date'
   };
-  private dateEndSettings = {
+  public dateEndSettings = {
     bigBanner: true,
     timePicker: true,
     format: 'dd-MMM-yyyy hh:mm a',
@@ -104,9 +104,9 @@ export class TrackingComponent implements OnInit, OnDestroy {
     defaultOpen: false,
     placeholder: 'Select end date'
   };
-  private dateBegin: Date = new Date();
-  private dateEnd: Date = new Date();
-  private searchResult = '';
+  public dateBegin: Date = new Date();
+  public dateEnd: Date = new Date();
+  public searchResult = '';
   public directionsDisplayStore = [];
 
   private selectedDevice: Device = new Device();

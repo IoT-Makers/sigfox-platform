@@ -3,7 +3,7 @@ import {AdminComponent} from './admin.component';
 import {AdminRoutingModule} from './admin-routing.module';
 import {CommonModule} from '@angular/common';
 import {ToasterModule} from 'angular2-toaster';
-import {AccordionModule, ModalModule, TooltipModule} from 'ng2-bootstrap';
+import {AccordionModule, ModalModule, TooltipModule} from 'ngx-bootstrap';
 
 import {MomentModule} from 'angular2-moment';
 import {FormsModule} from '@angular/forms';

@@ -5,7 +5,7 @@ import {FormsModule} from '@angular/forms';
 import {CategoriesComponent} from './categories.component';
 import {CategoriesRoutingModule} from './categories-routing.module';
 import {ToasterModule} from 'angular2-toaster';
-import {ModalModule, TooltipModule} from 'ng2-bootstrap';
+import {ModalModule, TooltipModule} from 'ngx-bootstrap';
 import {ClickCopyDirective} from './click-copy.directive';
 import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 import {LaddaModule} from 'angular2-ladda';

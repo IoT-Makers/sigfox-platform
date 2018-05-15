@@ -6,7 +6,7 @@ import {AnalyticsComponent} from './analytics.component';
 import {MomentModule} from 'angular2-moment';
 import {FormsModule} from '@angular/forms';
 import {SelectModule} from 'ng2-select';
-import {TooltipModule} from 'ng2-bootstrap';
+import {TooltipModule} from 'ngx-bootstrap';
 import {AngularDateTimePickerModule} from 'vk-custom-angular2-datetimepicker';
 
 @NgModule({

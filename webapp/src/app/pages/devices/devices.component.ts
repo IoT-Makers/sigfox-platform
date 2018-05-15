@@ -20,7 +20,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   private user: User;
 
-  private filterQuery = '';
+  public filterQuery = '';
 
   private organization: Organization;
   private organizations: Organization[] = [];
@@ -32,7 +32,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   @ViewChild('shareDeviceWithOrganizationModal') shareDeviceWithOrganizationModal: any;
 
   // Flags
-  private devicesReady = false;
+  public devicesReady = false;
 
   private isCircleVisible: boolean[] = [];
 
@@ -40,13 +40,14 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   private appSettings: AppSetting[] = [];
 
+  private organizationRouteSub: Subscription;
   private categorySub: Subscription;
   private deviceSub: Subscription;
   private deviceReadSub: Subscription;
   private parserSub: Subscription;
 
   private categories: Category[] = [];
-  private devices: Device[] = [];
+  public devices: Device[] = [];
   private parsers: Parser[] = [];
 
   private userRef: FireLoopRef<User>;
@@ -56,13 +57,13 @@ export class DevicesComponent implements OnInit, OnDestroy {
   private deviceReadRef: FireLoopRef<Device>;
   private parserRef: FireLoopRef<Parser>;
 
-  private deviceToEdit: Device = new Device();
-  private deviceToRemove: Device = new Device();
+  public deviceToEdit: Device = new Device();
+  public deviceToRemove: Device = new Device();
 
-  private selectOrganizations: Array<any> = [];
-  private selectedOrganizations: Array<any> = [];
+  public selectOrganizations: Array<any> = [];
+  public selectedOrganizations: Array<any> = [];
 
-  private edit = false;
+  public edit = false;
   private loadingFromBackend = false;
   private loadingParseMessages = false;
   private loadingDownload = false;
@@ -81,7 +82,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
       animation: 'fade'
     });
 
-  private selectOrganizationsSettings = {
+  public selectOrganizationsSettings = {
     singleSelection: false,
     text: 'Select organizations',
     selectAllText: 'Select all',
@@ -125,7 +126,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.setCircles();
 
     // Check if organization view
-    this.route.parent.parent.params.subscribe(parentParams => {
+    this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
       if (parentParams.id) {
         this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
           this.organization = organization;
@@ -179,7 +180,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    this.cleanSetup();
     console.log('Setup Devices');
 
     const filter = {
@@ -241,6 +242,12 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Devices: ngOnDestroy');
+    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
+
+    this.cleanSetup();
+  }
+
+  private cleanSetup() {
     if (this.organizationRef) this.organizationRef.dispose();
     if (this.userRef) this.userRef.dispose();
 

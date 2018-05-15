@@ -26,7 +26,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   public data = [];
 
   // Date
-  private dateBeginSettings = {
+  public dateBeginSettings = {
     bigBanner: true,
     timePicker: true,
     format: 'dd-MMM-yyyy hh:mm a',
@@ -34,7 +34,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     defaultOpen: false,
     placeholder: 'Select begin date'
   };
-  private dateEndSettings = {
+  public dateEndSettings = {
     bigBanner: true,
     timePicker: true,
     format: 'dd-MMM-yyyy hh:mm a',
@@ -52,7 +52,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   private isLimit_monthly = false;
   private isLimit_yearly = false;
 
-  private messageChartData: Array<any> = [];
+  public messageChartData: Array<any> = [];
   private messageChartLabels: Array<any> = [];
 
   public messageChartOptions = {
@@ -66,12 +66,12 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   private messageChartColors: Array<any> = [{backgroundColor: '#5b9bd3'}];
 
   // Devices Graph
-  private selectedDevice: Device = new Device();
+  public selectedDevice: Device = new Device();
 
-  private dateEnd: Date = new Date();
-  private dateBegin: Date = new Date();
+  public dateEnd: Date = new Date();
+  public dateBegin: Date = new Date();
 
-  private deviceChartData: Array<any> = [];
+  public deviceChartData: Array<any> = [];
   private deviceChartLabels: Array<any> = [];
 
   public deviceChartOptions: any = {
@@ -144,7 +144,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    // this.ngOnDestroy();
+    // this.cleanSetup();
   }
 
   getMessagesGraph(option: string): void {

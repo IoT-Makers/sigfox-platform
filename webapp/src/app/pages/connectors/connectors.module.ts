@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ConnectorsComponent} from './connectors.component';
 import {ConnectorsRoutingModule} from './connectors-routing.module';
-import {AccordionModule, ModalModule, TooltipModule} from 'ng2-bootstrap';
+import {AccordionModule, ModalModule, TooltipModule} from 'ngx-bootstrap';
 import {FormsModule} from '@angular/forms';
 import {DataTableModule} from 'angular2-datatable';
 import {DataFilterPipe} from './datafilterpipe';

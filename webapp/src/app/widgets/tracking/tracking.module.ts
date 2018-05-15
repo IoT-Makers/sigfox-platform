@@ -7,7 +7,7 @@ import {TrackingComponent} from './tracking.component';
 import {TrackingRoutingModule} from './tracking-routing.module';
 import {HttpClientModule} from '@angular/common/http';
 import {SelectModule} from 'ng2-select';
-import {AccordionModule} from 'ng2-bootstrap';
+import {AccordionModule} from 'ngx-bootstrap';
 import {DirectionsDirective} from './directions.directive';
 import {AngularDateTimePickerModule} from 'vk-custom-angular2-datetimepicker';
 import {AgmJsMarkerClustererModule} from '@agm/js-marker-clusterer';

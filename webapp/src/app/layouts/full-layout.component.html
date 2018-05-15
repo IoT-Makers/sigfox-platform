@@ -27,10 +27,13 @@
 
         <div class="dropdown-header text-center"><strong>Organizations</strong></div>
 
-        <button href="#" class="dropdown-item" *ngFor="let orga of organizations" (click)="redirectToOgranizationView(orga.id)">
-          <img src="{{orga.logo}}" height="30px" class="img-avatar"> {{orga.name}}
-        </button>
-        <button href="#" class="dropdown-item text-center" (click)="addOrEditOrganization(null)">
+        <ng-container *ngIf="organizations.length > 0">
+          <button href="#" class="dropdown-item" *ngFor="let orga of organizations" (click)="redirectToOgranizationView(orga.id)">
+            <img src="{{orga.logo}}" height="30px" class="img-avatar"> {{orga.name}}
+          </button>
+        </ng-container>
+
+        <button href="#" class="dropdown-item text-center" (click)="openAddOrganizationModal()">
           <i class="fa fa-plus text-organization"></i> New organization
         </button>
 
@@ -70,7 +73,7 @@
 
     <!-- Edit orga -->
     <li *ngIf="organization.userId === user.id || admin === true" class="nav-item" style="cursor: pointer;" tooltip="Edit organization" placement="left">
-      <a class="nav-link" (click)="addOrEditOrganization(organization)">
+      <a class="nav-link" (click)="openEditOrganizationModal()">
         <i class="fa fa-pencil text-organization"></i>
       </a>
     </li>
@@ -85,10 +88,10 @@
 
         <div class="dropdown-header text-center"><strong>Organizations</strong></div>
 
-        <button href="#" class="dropdown-item" *ngFor="let orga of organizations" [routerLink]="['/organization/', orga.id]">
+        <button href="#" class="dropdown-item" *ngFor="let orga of organizations" (click)="redirectToOgranizationView(orga.id)">
           <img src="{{orga.logo}}" height="30px" class="img-avatar"> {{orga.name}}
         </button>
-        <button href="#" class="dropdown-item" (click)="addOrEditOrganization(null)">
+        <button href="#" class="dropdown-item" (click)="openAddOrganizationModal()">
           <i class="fa fa-plus text-organization"></i> New organization
         </button>
 
@@ -283,7 +286,7 @@
 
 </div>
 
-<div bsModal #addOrEditOrganizationtModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+<div bsModal #addOrEditOrganizationModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="addOrEditOrganizationModal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -328,7 +331,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="addOrEditOrganizationtModal.hide()">Close</button>
+          <button type="button" class="btn btn-secondary" (click)="addOrEditOrganizationModal.hide()">Close</button>
           <button [disabled]="!addOrEditForm.form.valid" type="button" class="btn btn-organization" (click)="addOrganization()">Create</button>
         </div>
       </form>
@@ -374,7 +377,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="addOrEditOrganizationtModal.hide()">Close</button>
+          <button type="button" class="btn btn-secondary" (click)="addOrEditOrganizationModal.hide()">Close</button>
           <button [disabled]="!addOrEditForm.form.valid" type="button" class="btn btn-organization" (click)="editOrganization()">Update</button>
         </div>
       </form>
