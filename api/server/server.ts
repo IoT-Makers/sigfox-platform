@@ -40,7 +40,7 @@ if (cluster.isMaster) {
   boot(app, __dirname, (err) => {
     if (err) throw err;
 
-    // start the server if `$ node server.js`
+    // start the server if `$ node server.ts`
     if (require.main === module)
       app.start();
   });

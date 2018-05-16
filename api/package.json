@@ -1,7 +1,7 @@
 {
   "name": "api-server",
   "version": "1.0.0",
-  "main": "server/server.js",
+  "main": "server/server.ts",
   "engines": {
     "node": ">=10.1.0",
     "npm": ">=6.0.1"
