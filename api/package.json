@@ -8,7 +8,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "start": "node server/server.js",
+    "start": "node server/server.ts",
     "posttest": "npm run lint && nsp check",
     "test": "NODE_ENV=testing npm run start"
   },

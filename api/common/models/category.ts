@@ -1,6 +1,6 @@
 import {Model} from '@mean-expert/model';
 
-const app = require('../../server/server.js');
+const app = require('../../server/server.ts');
 
 const moment = require('moment');
 const json2csv = require('json2csv').parse;
