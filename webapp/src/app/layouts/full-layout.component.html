@@ -22,7 +22,6 @@
     <li class="nav-item dropdown" dropdown placement="bottom right">
       <a class="nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle>
         <i class="fa fa-building text-organization"></i>
-        <span *ngIf="!countOrganizationsReady" class="badge badge-pill badge-danger">-</span>
         <span *ngIf="countOrganizationsReady" class="badge badge-pill badge-danger">{{organizations.length}}</span>
       </a>
       <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg" *dropdownMenu aria-labelledby="simple-dropdown">
@@ -85,7 +84,6 @@
     <li class="nav-item dropdown" dropdown placement="bottom right">
       <a class="nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle>
         <i class="fa fa-building text-organization"></i>
-        <span *ngIf="!countOrganizationsReady" class="badge badge-pill badge-danger">-</span>
         <span *ngIf="countOrganizationsReady" class="badge badge-pill badge-danger">{{organizations.length}}</span>
       </a>
       <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg" *dropdownMenu aria-labelledby="simple-dropdown">
@@ -150,28 +148,24 @@
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/categories']">
             <i class="fa fa-tag text-category"></i> Categories
-            <span *ngIf="!countCategoriesReady" class="badge badge-category">-</span>
             <span *ngIf="countCategoriesReady" class="badge badge-category">{{countCategories}}</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/devices']">
             <i class="fa fa-microchip text-device"></i> Devices
-            <span *ngIf="!countDevicesReady" class="badge badge-device">-</span>
             <span *ngIf="countDevicesReady" class="badge badge-device">{{countDevices}}</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/messages']">
             <i class="fa fa-envelope text-message"></i> Messages
-            <span *ngIf="!countMessagesReady" class="badge badge-message">-</span>
             <span *ngIf="countMessagesReady" class="badge badge-message">{{countMessages}}</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/alerts']">
             <i class="fa fa-bell text-alert"></i> Alerts
-            <span *ngIf="!countAlertsReady" class="badge badge-alert">-</span>
             <span *ngIf="countAlertsReady" class="badge badge-alert">{{countAlerts}}</span>
           </a>
         </li>
@@ -200,14 +194,12 @@
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/parsers']">
             <i class="fa fa-code text-parser"></i> Parsers
-            <span *ngIf="!countParsersReady" class="badge badge-parser">-</span>
             <span *ngIf="countParsersReady" class="badge badge-parser">{{countParsers}}</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/connectors']">
             <i class="fa fa-plug text-connector"></i>Connectors
-            <span *ngIf="!countConnectorsReady" class="badge badge-connector">-</span>
             <span *ngIf="countConnectorsReady" class="badge badge-connector">{{countConnectors}}</span>
           </a>
         </li>
@@ -251,21 +243,18 @@
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/organization/', organization.id, 'categories']">
             <i class="fa fa-tag text-category"></i> Shared categories
-            <span *ngIf="!countCategoriesReady" class="badge badge-category">-</span>
             <span *ngIf="countCategoriesReady" class="badge badge-category">{{countCategories}}</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/organization/', organization.id, 'devices']">
             <i class="fa fa-microchip text-device"></i> Shared devices
-            <span *ngIf="!countDevicesReady" class="badge badge-device">-</span>
             <span *ngIf="countDevicesReady" class="badge badge-device">{{countDevices}}</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/organization/', organization.id, 'messages']">
             <i class="fa fa-envelope text-message"></i> Shared messages
-            <span *ngIf="!countMessagesReady" class="badge badge-message">-</span>
             <span *ngIf="countMessagesReady" class="badge badge-message">{{countMessages}}</span>
           </a>
         </li>

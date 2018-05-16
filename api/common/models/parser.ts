@@ -226,7 +226,7 @@ class Parser {
         }
 
         // console.log(device);
-        if (device.Parser.length === 0) {
+        if (!device.Parser.length) {
           response.message = 'No parser associated to this device.';
           next(null, response);
         } else {
