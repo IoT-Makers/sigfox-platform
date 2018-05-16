@@ -69,25 +69,25 @@ class Parser {
     let data_parsed: any = null;
     if (payload !== '') {
       try {
-        let tryFn: string = "try { " + fn + " } catch(err){ console.log('Parser Function | Inside error'); return err; }";
+        const tryFn: string = "try { " + fn + " } catch(err){ console.log('Parser Function | Inside error'); return err; }";
         const func = Function('payload', tryFn);
-        data_parsed = func(payload);  
-              
-        if (data_parsed instanceof Error){
+        data_parsed = func(payload);
+
+        if (data_parsed instanceof Error) {
           throw data_parsed;
-        } else {       
-          console.log('Parser | Success data parsed');          
+        } else {
+          console.log('Parser | Success data parsed');
           next(null, data_parsed);
         }
-      }
-      catch (err) {
-        console.log('Parser | Error parsing data');      
-        // If you give to requester details about parser function                
+      } catch (err) {
+        console.log('Parser | Error parsing data');
+        // If you give to requester details about parser function
         //next(err, null);
         // If you give to requester only a generic error
-        next('Parser | Error parsing data', null);  
+        next('Parser | Error parsing data', null);
       }
     }
+  }
 
   parseAllDevices(parserId: string, req: any, next: Function): void {
     // Models
