@@ -6,7 +6,7 @@ var app          = module.exports = require('loopback')();
 var cluster      = require('cluster');
 var numCPUs      = require('os').cpus().length;
 
-if (cluster.isMaster) {
+if (cluster.isMaster && process.env.CLUSTER === "true") {
   console.log(`Master ${process.pid} is running`);
 
   // Fork workers.
@@ -16,6 +16,7 @@ if (cluster.isMaster) {
 
   cluster.on('exit', function(worker, code, signal) {
     console.log(`worker ${worker.process.pid} died`);
+    cluster.fork();
   });
 
 } else {
@@ -35,8 +36,8 @@ if (cluster.isMaster) {
     return server;
   };
 
-// Bootstrap the application, configure models, datasources and middleware.
-// Sub-apps like REST API are mounted via boot scripts.
+  // Bootstrap the application, configure models, datasources and middleware.
+  // Sub-apps like REST API are mounted via boot scripts.
   boot(app, __dirname, function(err) {
     if (err) throw err;
 
