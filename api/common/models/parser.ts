@@ -55,7 +55,7 @@ class Parser {
     next();
   }
 
-  parsePayload(fn: Function, payload: string, req: any, next: Function): void {
+  parsePayload(fn: string, payload: string, req: any, next: Function): void {
     const userId = req.accessToken.userId;
     if (!userId) {
       next(null, 'Please login or use a valid access token.');
@@ -68,9 +68,25 @@ class Parser {
     // @TODO: run it in another container because it can crash the app if something goes wrong...
     let data_parsed: any = null;
     if (payload !== '') {
-      data_parsed = fn(payload);
+      try {
+        const tryFn: string = "try { " + fn + " } catch(err){ console.log('Parser Function | Inside error'); return err; }";
+        const func = Function('payload', tryFn);
+        data_parsed = func(payload);
+
+        if (data_parsed instanceof Error) {
+          throw data_parsed;
+        } else {
+          console.log('Parser | Success data parsed');
+          next(null, data_parsed);
+        }
+      } catch (err) {
+        console.log('Parser | Error parsing data');
+        // If you give to requester details about parser function
+        //next(err, null);
+        // If you give to requester only a generic error
+        next('Parser | Error parsing data', null);
+      }
     }
-    next(null, data_parsed);
   }
 
   parseAllDevices(parserId: string, req: any, next: Function): void {
@@ -122,7 +138,7 @@ class Parser {
                   response.message = 'No parser associated to this device.';
                   next(null, response);
                 } else {
-                  const fn = Function('payload', deviceInstance.Parser.function);
+                  const fn = deviceInstance.Parser.function;
                   if (deviceInstance.Messages) {
                     deviceInstance.Messages.forEach((message: any, msgCount: number) => {
                       if (message.data) {
@@ -214,7 +230,7 @@ class Parser {
           response.message = 'No parser associated to this device.';
           next(null, response);
         } else {
-          const fn = Function('payload', device.Parser.function);
+          const fn = device.Parser.function;
           if (device.Messages) {
             device.Messages.forEach((message: any, msgCount: number) => {
               if (message.data) {
