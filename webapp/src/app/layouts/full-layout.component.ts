@@ -12,7 +12,17 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   @ViewChild('addOrEditOrganizationModal') addOrEditOrganizationModal: any;
 
+  // Flags
   private isInitialized = false;
+  public devicesReady = false;
+  public messagesReady = false;
+  public countCategoriesReady = false;
+  public countDevicesReady = false;
+  public countMessagesReady = false;
+  public countAlertsReady = false;
+  public countParsersReady = false;
+  public countConnectorsReady = false;
+  public countOrganizationsReady = false;
 
   private user: User;
   private selectedUsers: Array<Object> = [];
@@ -173,6 +183,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       this.userOrganizationRef = this.userRef.child<Organization>('Organizations');
       this.subscriptions.push(this.userOrganizationRef.on('change', {include: 'Members'}).subscribe((organizations: Organization[]) => {
         this.organizations = organizations;
+        this.countOrganizationsReady = true;
         console.log(organizations);
       }));
 
@@ -194,6 +205,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.subscriptions.push(this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
           this.organizationApi.countCategories(this.organization.id).subscribe(result => {
             this.countCategories = result.count;
+            this.countCategoriesReady = true;
           });
         }));
 
@@ -206,6 +218,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         });*/
         this.organizationApi.countDevices(this.organization.id).subscribe(result => {
           this.countDevices = result.count;
+          this.countDevicesReady = true;
         });
 
         // Messages
@@ -217,6 +230,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         });*/
         this.organizationApi.countMessages(this.organization.id).subscribe(result => {
           this.countMessages = result.count;
+          this.countMessagesReady = true;
         });
 
       } else {
@@ -234,6 +248,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.subscriptions.push(this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
           this.userApi.countCategories(this.user.id).subscribe(result => {
             this.countCategories = result.count;
+            this.countCategoriesReady = true;
           });
         }));
 
@@ -252,6 +267,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         });*/
         this.userApi.countDevices(this.user.id).subscribe(result => {
           this.countDevices = result.count;
+          this.countDevicesReady = true;
         });
 
         // Messages
@@ -266,6 +282,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         });*/
         this.userApi.countMessages(this.user.id).subscribe(result => {
           this.countMessages = result.count;
+          this.countMessagesReady = true;
         });
 
         // Alerts
@@ -273,6 +290,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.subscriptions.push(this.alertRef.on('change', {limit: 1}).subscribe((alerts: Alert[]) => {
           this.userApi.countAlerts(this.user.id).subscribe(result => {
             this.countAlerts = result.count;
+            this.countAlertsReady = true;
           });
         }));
 
@@ -281,6 +299,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.subscriptions.push(this.parserRef.on('change', {limit: 1}).subscribe((parsers: Parser[]) => {
           this.parserApi.count().subscribe(result => {
             this.countParsers = result.count;
+            this.countParsersReady = true;
           });
         }));
 
@@ -289,6 +308,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.subscriptions.push(this.connectorRef.on('change', {limit: 1}).subscribe((connectors: Connector[]) => {
           this.userApi.countConnectors(this.user.id).subscribe(result => {
             this.countConnectors = result.count;
+            this.countConnectorsReady = true;
           });
         }));
       }

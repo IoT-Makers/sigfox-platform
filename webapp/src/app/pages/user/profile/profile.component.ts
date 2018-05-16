@@ -117,7 +117,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   leaveOrganization(organization: Organization): void {
-    this.organizationApi.unlinkMembers(organization.id, this.user.id).subscribe(result => {
+    this.userApi.unlinkOrganizations(this.user.id, organization.id).subscribe(result => {
       this.getOrganizations();
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);

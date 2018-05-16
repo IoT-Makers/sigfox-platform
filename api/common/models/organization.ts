@@ -90,7 +90,7 @@ class Organization {
       include: ['Members', 'Categories', 'Devices', 'Messages', 'Dashboards']
     }, (err: any, organization: any) => {
       // console.log(category);
-      if (!err) {
+      if (!err && organization) {
         organization.toJSON().Members.forEach((member: any) => {
           organization.Members.remove(member.id, (err: any) => {
             console.log('Unlinked members from organization');
