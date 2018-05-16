@@ -33,6 +33,7 @@
     "@angular/platform-browser-dynamic": "^6.0.1",
     "@angular/router": "^6.0.1",
     "@angular/upgrade": "^6.0.1",
+    "@angular-devkit/build-angular": "^0.6.1",
     "@asymmetrik/ngx-leaflet": "^3.0.2",
     "@asymmetrik/ngx-leaflet-draw": "^2.7.1",
     "@ngrx/effects": "^5.2.0",
@@ -91,7 +92,6 @@
     "zone.js": "^0.8.20"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.6.1",
     "@types/leaflet": "^1.2.6",
     "@types/leaflet-draw": "^0.4.11"
   }
