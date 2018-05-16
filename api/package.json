@@ -1,14 +1,14 @@
 {
   "name": "api-server",
   "version": "1.0.0",
-  "main": "server/server.ts",
+  "main": "server/server.js",
   "engines": {
     "node": ">=10.1.0",
     "npm": ">=6.0.1"
   },
   "scripts": {
     "lint": "eslint .",
-    "start": "node server/server.ts",
+    "start": "node server/server.js",
     "posttest": "npm run lint && nsp check",
     "test": "NODE_ENV=testing npm run start"
   },
