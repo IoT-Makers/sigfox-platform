@@ -5,7 +5,7 @@ import {CommonModule} from '@angular/common';
 import {DataFilterPipe} from './datafilterpipe';
 import {ToasterModule} from 'angular2-toaster';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TooltipModule} from 'ng2-bootstrap';
+import {TooltipModule} from 'ngx-bootstrap';
 import {DataTableModule} from 'angular2-datatable';
 import {MomentModule} from 'angular2-moment';
 import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';

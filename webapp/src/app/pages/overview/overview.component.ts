@@ -19,17 +19,17 @@ export class OverviewComponent implements OnInit, OnDestroy {
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
 
   // Flags
-  private devicesReady = false;
-  private messagesReady = false;
-  private countCategoriesReady = false;
-  private countDevicesReady = false;
-  private countMessagesReady = false;
-  private countAlertsReady = false;
-  private countOrganizationMembersReady = false;
+  public devicesReady = false;
+  public messagesReady = false;
+  public countCategoriesReady = false;
+  public countDevicesReady = false;
+  public countMessagesReady = false;
+  public countAlertsReady = false;
+  public countOrganizationMembersReady = false;
 
-  private user: User = new User();
+  public user: User = new User();
 
-  private organization: Organization;
+  public organization: Organization;
   private filter: any;
 
   private newOrganization = new Organization();
@@ -37,6 +37,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   private mobile = false;
 
+  private organizationRouteSub: Subscription;
   private messageSub: Subscription;
   private messageGraphSub: Subscription;
   private deviceSub: Subscription;
@@ -45,7 +46,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private categorySub: Subscription;
 
   private messages: Message[] = [];
-  private devices: Device[] = [];
+  public devices: Device[] = [];
   private alerts: Alert[] = [];
   private categories: Category[] = [];
 
@@ -78,7 +79,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   public filterQuery = '';
 
-  private see = false;
+  public see = false;
   private deviceToSee: Device = new Device();
 
   // Graphs
@@ -161,7 +162,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.user = this.userApi.getCachedCurrent();
 
     // Check if organization view
-    this.route.params.subscribe(params => {
+    this.organizationRouteSub = this.route.params.subscribe(params => {
 
       if (params.id) {
         this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
@@ -189,7 +190,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    this.cleanSetup();
     console.log('Setup Overview');
 
     if (this.organization) {
@@ -399,6 +400,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     console.log('Overview: ngOnDestroy');
     // Dispose and unsubscribe to clean the real time connection
+    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
+
+    this.cleanSetup();
+  }
+
+  private cleanSetup() {
     if (this.organizationRef) this.organizationRef.dispose();
     if (this.userRef) this.userRef.dispose();
 

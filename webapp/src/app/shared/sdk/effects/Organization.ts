@@ -102,6 +102,23 @@ export class OrganizationEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public getUser$ = this.actions$
+    .ofType(OrganizationActionTypes.GET_USER).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.organization.getUser(action.payload.id, action.payload.refresh).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'User', 'findSuccess'),
+            of(new OrganizationActions.getUserSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new OrganizationActions.getUserFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public findByIdMessages$ = this.actions$
     .ofType(OrganizationActionTypes.FIND_BY_ID_MESSAGES).pipe(
       mergeMap((action: LoopbackAction) =>

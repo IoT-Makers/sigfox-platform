@@ -4,9 +4,9 @@ import {ParsersRoutingModule} from './parsers-routing.module';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {ToasterModule} from 'angular2-toaster';
-import {ModalModule} from 'ng2-bootstrap/modal';
+import {ModalModule} from 'ngx-bootstrap/modal';
 import {AceEditorModule} from 'ng2-ace-editor';
-import {TooltipModule} from 'ng2-bootstrap';
+import {TooltipModule} from 'ngx-bootstrap';
 import {ClickCopyDirective} from './click-copy.directive';
 
 

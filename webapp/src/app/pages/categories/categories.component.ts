@@ -1,5 +1,5 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Alert, Category, Device, FireLoopRef, Organization, User} from '../../shared/sdk/models';
+import {Category, Device, FireLoopRef, Organization, User} from '../../shared/sdk/models';
 import {CategoryApi, DeviceApi, OrganizationApi, RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -22,34 +22,35 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   @ViewChild('shareCategoryWithOrganizationModal') shareCategoryWithOrganizationModal: any;
 
   // Flags
-  private categoriesReady = false;
+  public categoriesReady = false;
 
   private loadingDownload = false;
 
   private device: Device = new Device();
 
   private category: Category = new Category();
-  private categoryToRemove: Category = new Category();
+  public categoryToRemove: Category = new Category();
   private categorySub: Subscription;
 
   private devices: Device[] = [];
-  private categories: Category[] = [];
+  public categories: Category[] = [];
 
-  private organization: Organization;
+  private organizationRouteSub: Subscription;
+  public organization: Organization;
   private organizations: Organization[] = [];
 
-  private selectOrganizations: Array<any> = [];
-  private selectedOrganizations: Array<any> = [];
+  public selectOrganizations: Array<any> = [];
+  public selectedOrganizations: Array<any> = [];
 
   private userRef: FireLoopRef<User>;
   private organizationRef: FireLoopRef<Organization>;
   private categoryRef: FireLoopRef<Category>;
 
-  private edit = false;
-  private categoryToEdit: Category = new Category();
+  public edit = false;
+  public categoryToEdit: Category = new Category();
   private newCategory = false;
 
-  private shareAssociatedDevices = false;
+  public shareAssociatedDevices = false;
 
   public propertyType = ['string', 'number', 'geoloc', 'date', 'boolean'];
 
@@ -63,7 +64,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       animation: 'fade'
     });
 
-  private selectOrganizationsSettings = {
+  public selectOrganizationsSettings = {
     singleSelection: false,
     text: 'Select organizations',
     selectAllText: 'Select all',
@@ -91,7 +92,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.edit = false;
 
     // Check if organization view
-    this.route.parent.parent.params.subscribe(parentParams => {
+    this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
       if (parentParams.id) {
         this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
           this.organization = organization;
@@ -112,7 +113,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    this.cleanSetup();
 
     // Get and listen categories
     const filter = {
@@ -296,6 +297,11 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Categories: ngOnDestroy');
+    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
+    this.cleanSetup();
+  }
+
+  private cleanSetup() {
     if (this.organizationRef) this.organizationRef.dispose();
     if (this.userRef) this.userRef.dispose();
     if (this.categoryRef) this.categoryRef.dispose();

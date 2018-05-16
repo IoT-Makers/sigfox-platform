@@ -16,8 +16,10 @@ class OnDisconnect {
     if (socket.token && socket.token.userId) {
       const userId = `${ socket.token.userId }`;
       this.app.models.user.findById(userId, (err: Error, user: User) => {
-        console.log('A user has been disconnected:', user.email);
-        user.updateAttributes({ connected: false });
+        if (user) {
+          console.log('A user has been disconnected:', user.email);
+          user.updateAttributes({ connected: false });
+        }
       });
     }
   }

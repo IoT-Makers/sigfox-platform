@@ -1,7 +1,7 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {AccessToken, Alert, Connector, FireLoopRef, User} from '../../shared/sdk/models';
+import {AccessToken, Connector, FireLoopRef, User} from '../../shared/sdk/models';
 import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
 import {Subscription} from 'rxjs/Subscription';
 import {RealTime} from '../../shared/sdk/services/core';
@@ -13,7 +13,7 @@ import {RealTime} from '../../shared/sdk/services/core';
 })
 export class ConnectorsComponent implements OnInit, OnDestroy {
 
-  private user: User;
+  public user: User;
 
   @ViewChild('confirmTokenModal') confirmTokenModal: any;
   @ViewChild('addConnectorModal') addConnectorModal: any;
@@ -21,29 +21,29 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   @ViewChild('confirmConnectorModal') confirmConnectorModal: any;
 
   // Flags
-  private connectorsReady = false;
+  public connectorsReady = false;
 
   private connectorSub: Subscription;
   private connectorRef: FireLoopRef<Connector>;
   private userRef: FireLoopRef<User>;
-  private connectors: Connector[] = [];
-  private connectorToAdd: Connector = new Connector();
-  private connectorToRemove: Connector = new Connector();
-  private connectorToEdit: Connector = new Connector();
+  public connectors: Connector[] = [];
+  public connectorToAdd: Connector = new Connector();
+  public connectorToRemove: Connector = new Connector();
+  public connectorToEdit: Connector = new Connector();
 
-  private devAccessTokenToRemove: AccessToken = new AccessToken();
-  private callbackURL;
+  public devAccessTokenToRemove: AccessToken = new AccessToken();
+  public callbackURL;
 
   // Select
-  private selectTypes: Array<Object> = [
+  public selectTypes: Array<Object> = [
     {id: 'sigfox-api', itemName: 'Sigfox API'},
     {id: 'webhook', itemName: 'Webhook'},
     {id: 'free-mobile', itemName: 'Free Mobile'},
     {id: 'office-365', itemName: 'Outlook (Office 365)'},
     {id: 'mqtt', itemName: 'MQTT'}
   ];
-  private selectedTypes = [];
-  private selectOneSettings = {
+  public selectedTypes = [];
+  public selectOneSettings = {
     singleSelection: true,
     text: 'Select one type',
     enableSearchFilter: false,
@@ -100,7 +100,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    this.cleanSetup();
 
     // Get and listen connectors
     this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
@@ -236,6 +236,10 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Connector: ngOnDestroy');
+    this.cleanSetup();
+  }
+
+  private cleanSetup() {
     if (this.userRef) this.userRef.dispose();
     if (this.connectorRef) this.connectorRef.dispose();
     if (this.connectorSub) this.connectorSub.unsubscribe();

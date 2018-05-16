@@ -8,7 +8,7 @@ import {AgmCoreModule, GoogleMapsAPIWrapper} from '@agm/core';
 import {FormsModule} from '@angular/forms';
 import {MomentModule} from 'angular2-moment';
 import {DataTableModule} from 'angular2-datatable';
-import {TooltipModule} from 'ng2-bootstrap';
+import {TooltipModule} from 'ngx-bootstrap';
 import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 import {AngularDateTimePickerModule} from 'vk-custom-angular2-datetimepicker';
 import {DirectionsDirective} from './directions.directive';

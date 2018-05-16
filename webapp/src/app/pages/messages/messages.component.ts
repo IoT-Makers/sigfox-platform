@@ -16,28 +16,29 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 })
 export class MessagesComponent implements OnInit, OnDestroy {
 
-  private sub: any;
-  private user: User;
+  private deviceSub: any;
+  public user: User;
 
   @ViewChild('mapModal') mapModal: any;
   @ViewChild('agmMap') agmMap: AgmMap;
 
   // Flags
-  private messagesReady = false;
+  public messagesReady = false;
 
-  private mapLat = 48.856614;
-  private mapLng = 2.352222;
-  private mapZoom = 10;
-  private receptions: any[] = [];
-  private geolocs: Geoloc[] = [];
+  public mapLat = 48.856614;
+  public mapLng = 2.352222;
+  public mapZoom = 10;
+  public receptions: any[] = [];
+  public geolocs: Geoloc[] = [];
 
   private userRef: FireLoopRef<User>;
   private organizationRef: FireLoopRef<Organization>;
 
+  private organizationRouteSub: Subscription;
   private messageRef: FireLoopRef<Message>;
   private messageReadRef: FireLoopRef<Message>;
   private messageSub: Subscription;
-  private messages: Message[] = [];
+  public messages: Message[] = [];
 
   private organization: Organization;
   private organizations: Organization[] = [];
@@ -262,7 +263,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.user = this.userApi.getCachedCurrent();
 
     // Check if organization view
-    this.route.parent.parent.params.subscribe(parentParams => {
+    this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
       if (parentParams.id) {
         this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
           this.organization = organization;
@@ -284,10 +285,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.ngOnDestroy();
+    this.cleanSetup();
 
     // Get and listen messages
-    this.sub = this.route.params.subscribe(params => {
+    this.deviceSub = this.route.params.subscribe(params => {
       this.filterQuery = params['id'];
       if (this.filterQuery) {
         this.messageFilter = {
@@ -351,7 +352,13 @@ export class MessagesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     console.log('Messages: ngOnDestroy');
     // Unsubscribe from query parameters
-    if (this.sub) this.sub.unsubscribe();
+    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
+
+    this.cleanSetup();
+  }
+
+  private cleanSetup() {
+    if (this.deviceSub) this.deviceSub.unsubscribe();
     if (this.organizationRef) this.organizationRef.dispose();
     if (this.userRef) this.userRef.dispose();
     if (this.messageRef) this.messageRef.dispose();

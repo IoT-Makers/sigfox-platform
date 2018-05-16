@@ -12,22 +12,22 @@ import {Router} from '@angular/router';
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
-  private user: User;
+  public user: User;
 
   private organization: Organization;
-  private organizations: Organization[] = [];
+  public organizations: Organization[] = [];
 
   @ViewChild('avatarImg') avatarImg: ElementRef;
   @ViewChild('updatePasswordModal') updatePasswordModal: any;
   @ViewChild('updateUserModal') updateUserModal: any;
   @ViewChild('deleteUserModal') deleteUserModal: any;
 
-  private oldPassword;
-  private newPassword;
-  private newPasswordConfirm;
+  public oldPassword;
+  public newPassword;
+  public newPasswordConfirm;
 
   // Flag
-  private organizationsReady = false;
+  public organizationsReady = false;
 
   // Notifications
   private toast;
@@ -116,9 +116,30 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  leaveOrganization(item): void {
-    this.organizationApi.unlinkMembers(item.id, this.user.id).subscribe(result => {
+  leaveOrganization(organization: Organization): void {
+    this.userApi.unlinkOrganizations(this.user.id, organization.id).subscribe(result => {
       this.getOrganizations();
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Unlinked from organization successfully.');
+    }, (error: any) => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', error.message);
+    });
+  }
+
+  deleteOrganization(organization: Organization): void {
+    this.organizationApi.deleteById(organization.id).subscribe(result => {
+      console.log(result);
+      this.getOrganizations();
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Organization was deleted successfully.');
+    }, (error: any) => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', error.message);
     });
   }
 

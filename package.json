@@ -6,13 +6,13 @@
   "author": "",
   "license": "MIT",
   "engines": {
-    "node": "8.9.4",
-    "npm": "5.6.x"
+    "node": ">=10.1.0",
+    "npm": ">=5.10.0"
   },
   "scripts": {
     "preinstall": "cd api/ && npm install && cd ../webapp && npm install && cd ..",
     "postinstall": "npm run build",
-    "build": "cd webapp/ && npm run build && cd ..",
+    "build": "cd webapp/ && npm cache verify && npm run build && cd ..",
     "start": "npm run serve",
     "serve": "cd api/ && node server/server.js",
     "test": "npm run install"

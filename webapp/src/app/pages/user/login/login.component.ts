@@ -13,15 +13,15 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 export class LoginComponent implements OnInit, OnDestroy {
 
-  private user: User = new User();
-  private errorMessage = '';
+  public user: User = new User();
+  public errorMessage = '';
 
   private returnUrl: string;
 
   private setting: AppSetting;
   private settings: AppSetting[] = [];
 
-  private canUserRegister: any = false;
+  public canUserRegister: any = false;
 
   // Notifications
   private toast;

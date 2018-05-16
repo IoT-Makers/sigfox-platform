@@ -1,7 +1,5 @@
 import {Model} from '@mean-expert/model';
 
-const app = require('../../server/server.js');
-
 /**
  * @module Organization
  * @description
@@ -31,7 +29,7 @@ class Organization {
 
   afterRemoteLinkDevice(ctx: any, data: any, next: Function): void {
     const Message = this.model.app.models.Message;
-    const Organization = app.models.Organization;
+    const Organization = this.model.app.models.Organization;
 
     //console.log(Organization.prototype.__link__Messages);
     //console.log(ctx);
@@ -53,7 +51,7 @@ class Organization {
 
   afterRemoteUnlinkDevice(ctx: any, data: any, next: Function): void {
     const Message = this.model.app.models.Message;
-    const Organization = app.models.Organization;
+    const Organization = this.model.app.models.Organization;
 
     //console.log(Organization.prototype.__link__Messages);
     //console.log(ctx);
@@ -76,7 +74,7 @@ class Organization {
     //console.log(ctx);
   }
 
-  // Before delete category, remove category organizaton links
+  // Before delete, remove all organizaton models links
   beforeDelete(ctx: any, next: Function): void {
     // Models
     const User = this.model.app.models.User;
@@ -87,19 +85,36 @@ class Organization {
 
     const organizationId = ctx.where.id;
 
-    /*Organization.findOne({
+    Organization.findOne({
       where: {id: organizationId},
       include: ['Members', 'Categories', 'Devices', 'Messages', 'Dashboards']
     }, (err: any, organization: any) => {
       // console.log(category);
-      if (!err) {
+      if (!err && organization) {
         organization.toJSON().Members.forEach((member: any) => {
           organization.Members.remove(member.id, (err: any) => {
             console.log('Unlinked members from organization');
           });
         });
+        organization.toJSON().Categories.forEach((category: any) => {
+          organization.Categories.remove(category.id, (err: any) => {
+            console.log('Unlinked categories from organization');
+          });
+        });
+        organization.toJSON().Devices.forEach((device: any) => {
+          organization.Devices.remove(device.id, (err: any) => {
+            console.log('Unlinked devices from organization');
+          });
+        });
+        organization.toJSON().Messages.forEach((message: any) => {
+          organization.Messages.remove(message.id, (err: any) => {
+            console.log('Unlinked messages from organization');
+          });
+        });
+      } else {
+        console.error(err);
       }
-    });*/
+    });
     next();
   }
 }

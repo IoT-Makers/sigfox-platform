@@ -14,10 +14,6 @@ Object.assign(BaseLoopbackActionTypesFactory('Device'), {
   TIME_SERIES_SUCCESS: type('[Device] timeSeries success'),
   TIME_SERIES_FAIL: type('[Device] timeSeries fail'),
 
-  DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS: type('[Device] deleteDeviceMessagesAlertsGeolocs'),
-  DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS_SUCCESS: type('[Device] deleteDeviceMessagesAlertsGeolocs success'),
-  DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS_FAIL: type('[Device] deleteDeviceMessagesAlertsGeolocs fail'),
-
   GET_MESSAGES_FROM_SIGFOX_BACKEND: type('[Device] getMessagesFromSigfoxBackend'),
   GET_MESSAGES_FROM_SIGFOX_BACKEND_SUCCESS: type('[Device] getMessagesFromSigfoxBackend success'),
   GET_MESSAGES_FROM_SIGFOX_BACKEND_FAIL: type('[Device] getMessagesFromSigfoxBackend fail'),
@@ -124,54 +120,6 @@ Object.assign(BaseLoopbackActionsFactory<Device>(DeviceActionTypes), {
    */
   timeSeriesFail: class implements Action {
     public readonly type = DeviceActionTypes.TIME_SERIES_FAIL;
-
-    constructor(public payload: any, public meta?: any) { }
-  },
-
-  /**
-   * deleteDeviceMessagesAlertsGeolocs Action.
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {string} deviceId 
-   * @param {object} req 
-   * @param {any} meta (optional).
-   * 
-   */
-  deleteDeviceMessagesAlertsGeolocs: class implements Action {
-    public readonly type = DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS;
-      public payload: {deviceId: any, req: any};
-
-    constructor(deviceId: any, req: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {deviceId, req};
-    }
-  },
-  /**
-   * deleteDeviceMessagesAlertsGeolocsSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
-   * @param {any} meta (optional).
-   * 
-   */
-  deleteDeviceMessagesAlertsGeolocsSuccess: class implements Action {
-    public readonly type = DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS_SUCCESS;
-      public payload: {id: any, data: any};
-
-    constructor(id: any, data: any, public meta?: any) {
-      this.payload = {id, data};
-    }
-  },
-  /**
-   * deleteDeviceMessagesAlertsGeolocsFail Action.
-   *
-   * @param {any} payload
-   * @param {any} meta (optional).
-   * 
-   */
-  deleteDeviceMessagesAlertsGeolocsFail: class implements Action {
-    public readonly type = DeviceActionTypes.DELETE_DEVICE_MESSAGES_ALERTS_GEOLOCS_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

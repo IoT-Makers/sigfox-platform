@@ -23,27 +23,27 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private myUser: User;
   private userToRemove: User;
-  private users: User[] = [];
+  public users: User[] = [];
 
   private setting: AppSetting;
-  private appSettings: AppSetting[] = [];
+  public appSettings: AppSetting[] = [];
 
-  private version: any;
+  public version: any;
 
   // Application statistics
-  private countDashboards = 0;
-  private countWidgets = 0;
-  private countCategories = 0;
-  private countDevices = 0;
-  private countMessages = 0;
-  private countGeolocs = 0;
-  private countAlerts = 0;
-  private countParsers = 0;
-  private countConnectors = 0;
-  private countUsers = 0;
+  public countDashboards = 0;
+  public countWidgets = 0;
+  public countCategories = 0;
+  public countDevices = 0;
+  public countMessages = 0;
+  public countGeolocs = 0;
+  public countAlerts = 0;
+  public countParsers = 0;
+  public countConnectors = 0;
+  public countUsers = 0;
 
   private organization: Organization;
-  private organizations: Organization[] = [];
+  public organizations: Organization[] = [];
 
   private userRef: FireLoopRef<User>;
   private userSub: Subscription;
@@ -52,8 +52,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   @ViewChild('confirmModal') confirmModal: any;
 
   // Flags
-  private usersReady = false;
-  private organizationsReady = false;
+  public usersReady = false;
+  public organizationsReady = false;
 
   // Notifications
   private toast;
@@ -228,6 +228,10 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
   }
 
+  editUser() {
+
+  }
+
   deleteOrganization(orga: Organization): void {
     this.organizationApi.deleteById(orga.id).subscribe((value: any) => {
       if (this.toast)
@@ -239,6 +243,10 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Admin: ngOnDestroy');
+    this.cleanSetup();
+  }
+
+  private cleanSetup() {
     if (this.userRef) this.userRef.dispose();
     if (this.userSub) this.userSub.unsubscribe();
   }

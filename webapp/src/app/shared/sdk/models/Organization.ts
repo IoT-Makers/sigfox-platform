@@ -10,12 +10,13 @@ import {
 declare var Object: any;
 export interface OrganizationInterface {
   "name": string;
-  "ownerId": string;
   "logo"?: string;
   "id"?: any;
+  "userId"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   Members?: User[];
+  user?: User;
   Messages?: Message[];
   Devices?: Device[];
   Categories?: Category[];
@@ -24,12 +25,13 @@ export interface OrganizationInterface {
 
 export class Organization implements OrganizationInterface {
   "name": string = 'My organization';
-  "ownerId": string = '';
   "logo": string = 'https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png';
   "id": any = <any>null;
+  "userId": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   Members: User[] = null;
+  user: User = null;
   Messages: Message[] = null;
   Devices: Device[] = null;
   Categories: Category[] = null;
@@ -72,10 +74,6 @@ export class Organization implements OrganizationInterface {
           type: 'string',
           default: 'My organization'
         },
-        "ownerId": {
-          name: 'ownerId',
-          type: 'string'
-        },
         "logo": {
           name: 'logo',
           type: 'string',
@@ -83,6 +81,10 @@ export class Organization implements OrganizationInterface {
         },
         "id": {
           name: 'id',
+          type: 'any'
+        },
+        "userId": {
+          name: 'userId',
           type: 'any'
         },
         "createdAt": {
@@ -104,6 +106,14 @@ export class Organization implements OrganizationInterface {
           keyThrough: 'userId',
           keyFrom: 'id',
           keyTo: 'organizationId'
+        },
+        user: {
+          name: 'user',
+          type: 'User',
+          model: 'User',
+          relationType: 'belongsTo',
+                  keyFrom: 'userId',
+          keyTo: 'id'
         },
         Messages: {
           name: 'Messages',

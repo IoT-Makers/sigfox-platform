@@ -56,7 +56,7 @@
     "Organizations": {
       "type": "hasAndBelongsToMany",
       "model": "Organization",
-      "foreignKey": "organizationId"
+      "foreignKey": "userId"
     },
     "roles": {
       "type": "hasMany",

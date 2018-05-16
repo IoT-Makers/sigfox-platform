@@ -11,9 +11,9 @@ import * as _ from 'lodash';
 
 export class RegisterComponent {
 
-  private user: User = new User();
-  private verifyPassword = '';
-  private errorMessage = '';
+  public user: User = new User();
+  public verifyPassword = '';
+  public errorMessage = '';
 
   private setting: AppSetting;
   private settings: AppSetting[] = [];
