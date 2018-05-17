@@ -352,7 +352,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
         this.loadingParseMessages = false;
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('warning', 'Warning', result);
+        this.toast = this.toasterService.pop('warning', 'Warning', result.message);
       }
       this.rt.onReady();
       //console.log(result);

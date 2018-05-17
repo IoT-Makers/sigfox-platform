@@ -211,7 +211,7 @@ class Parser {
       next(null, response);
     }
 
-    Device.findById(deviceId, {include: ['Messages', 'Parser']}, function (err: any, device: any) {
+    Device.findById(deviceId, {include: ['Messages', 'Parser']}, (err: any, device: any) => {
       if (err) {
         next(err, null);
       } else if (device) {
@@ -226,7 +226,7 @@ class Parser {
         }
 
         // console.log(device);
-        if (!device.Parser.length) {
+        if (!device.Parser) {
           response.message = 'No parser associated to this device.';
           next(null, response);
         } else {
