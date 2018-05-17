@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Alert, Category, Connector, Dashboard, Device, FireLoopRef, Message, Organization, Parser, Role, User} from '../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import {OrganizationApi, ParserApi, UserApi} from '../shared/sdk/services/custom';
@@ -201,36 +201,39 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
          * Count real time methods below
          */
         // Categories
+        this.organizationApi.countCategories(this.organization.id).subscribe(result => {
+          this.countCategories = result.count;
+          this.countCategoriesReady = true;
+        });
         this.categoryRef = this.organizationRef.child<Category>('Categories');
-        this.subscriptions.push(this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
+        this.subscriptions.push(this.categoryRef.on('child_added', {limit: 1}).subscribe((categories: Category[]) => {
           this.organizationApi.countCategories(this.organization.id).subscribe(result => {
             this.countCategories = result.count;
-            this.countCategoriesReady = true;
           });
         }));
 
         // Devices
-        /*this.deviceRef = this.organizationRef.child<Device>('Devices');
-        this.deviceSub = this.deviceRef.on('change', {limit: 1}).subscribe((devices: Device[]) => {
-          this.organizationApi.countDevices(this.organization.id).subscribe(result => {
-            this.countDevices = result.count;
-          });
-        });*/
         this.organizationApi.countDevices(this.organization.id).subscribe(result => {
           this.countDevices = result.count;
           this.countDevicesReady = true;
         });
+        this.deviceRef = this.organizationRef.child<Device>('Devices');
+        this.deviceSub = this.deviceRef.on('child_added', {limit: 1}).subscribe((devices: Device[]) => {
+          this.organizationApi.countDevices(this.organization.id).subscribe(result => {
+            this.countDevices = result.count;
+          });
+        });
 
         // Messages
-        /*this.messageRef = this.organizationRef.child<Message>('Messages');
-        this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((messages: Message[]) => {
-          this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-            this.countMessages = result.count;
-          });
-        });*/
         this.organizationApi.countMessages(this.organization.id).subscribe(result => {
           this.countMessages = result.count;
           this.countMessagesReady = true;
+        });
+        this.messageRef = this.organizationRef.child<Message>('Messages');
+        this.messageSub = this.messageRef.on('child_added', {limit: 1}).subscribe((messages: Message[]) => {
+          this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+            this.countMessages = result.count;
+          });
         });
 
       } else {
@@ -244,17 +247,24 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
          * Count real time methods below
          */
         // Categories
+        this.userApi.countCategories(this.user.id).subscribe(result => {
+          this.countCategories = result.count;
+          this.countCategoriesReady = true;
+        });
         this.categoryRef = this.userRef.child<Category>('Categories');
-        this.subscriptions.push(this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
+        this.subscriptions.push(this.categoryRef.on('child_added', {limit: 1}).subscribe((categories: Category[]) => {
           this.userApi.countCategories(this.user.id).subscribe(result => {
             this.countCategories = result.count;
-            this.countCategoriesReady = true;
           });
         }));
 
         // Devices
-        /*this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-        this.deviceSub = this.deviceRef.on('change',
+        this.userApi.countDevices(this.user.id).subscribe(result => {
+          this.countDevices = result.count;
+          this.countDevicesReady = true;
+        });
+        this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
+        this.deviceSub = this.deviceRef.on('child_added',
           {
             limit: 1,
             where: {userId: this.user.id}
@@ -264,48 +274,53 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
               this.countDevices = result.count;
             });
           }
-        });*/
-        this.userApi.countDevices(this.user.id).subscribe(result => {
-          this.countDevices = result.count;
-          this.countDevicesReady = true;
         });
 
         // Messages
-        /*this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-        this.messageSub = this.messageRef.on('change', {
-            limit: 1,
-            where: {userId: this.user.id}
-          }).subscribe((messages: Message[]) => {
-            this.userApi.countMessages(this.user.id).subscribe(result => {
-              this.countMessages = result.count;
-            });
-        });*/
         this.userApi.countMessages(this.user.id).subscribe(result => {
           this.countMessages = result.count;
           this.countMessagesReady = true;
         });
+        this.messageRef = this.rt.FireLoop.ref<Message>(Message);
+        this.messageSub = this.messageRef.on('child_added', {
+          limit: 1,
+          where: {userId: this.user.id}
+        }).subscribe((messages: Message[]) => {
+          this.userApi.countMessages(this.user.id).subscribe(result => {
+            this.countMessages = result.count;
+          });
+        });
 
         // Alerts
+        this.userApi.countAlerts(this.user.id).subscribe(result => {
+          this.countAlerts = result.count;
+          this.countAlertsReady = true;
+        });
         this.alertRef = this.userRef.child<Alert>('Alerts');
-        this.subscriptions.push(this.alertRef.on('change', {limit: 1}).subscribe((alerts: Alert[]) => {
+        this.subscriptions.push(this.alertRef.on('child_added', {limit: 1}).subscribe((alerts: Alert[]) => {
           this.userApi.countAlerts(this.user.id).subscribe(result => {
             this.countAlerts = result.count;
-            this.countAlertsReady = true;
           });
         }));
 
         // Parsers
+        this.parserApi.count().subscribe(result => {
+          this.countParsers = result.count;
+          this.countParsersReady = true;
+        });
         this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-        this.subscriptions.push(this.parserRef.on('change', {limit: 1}).subscribe((parsers: Parser[]) => {
+        this.subscriptions.push(this.parserRef.on('child_added', {limit: 1}).subscribe((parsers: Parser[]) => {
           this.parserApi.count().subscribe(result => {
             this.countParsers = result.count;
-            this.countParsersReady = true;
           });
         }));
 
         // Connectors
+        this.userApi.countConnectors(this.user.id).subscribe(result => {
+          this.countConnectors = result.count;
+        });
         this.connectorRef = this.userRef.child<Connector>('Connectors');
-        this.subscriptions.push(this.connectorRef.on('change', {limit: 1}).subscribe((connectors: Connector[]) => {
+        this.subscriptions.push(this.connectorRef.on('child_added', {limit: 1}).subscribe((connectors: Connector[]) => {
           this.userApi.countConnectors(this.user.id).subscribe(result => {
             this.countConnectors = result.count;
             this.countConnectorsReady = true;

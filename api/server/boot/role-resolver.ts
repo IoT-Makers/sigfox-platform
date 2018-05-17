@@ -72,7 +72,7 @@ module.exports = (app: any) => {
         });
 
       } else {
-        context.model.findById(context.modelId, {include: 'Members'}, function (err: any, object: any) {
+        context.model.findById(context.modelId, {include: 'Members'}, (err: any, object: any) => {
           if (err || !object) {
             return reject();
           } else if (!object.Members) {
@@ -84,7 +84,7 @@ module.exports = (app: any) => {
             //console.log(object);
             const members = object.toJSON().Members;
             let authorized = false;
-            members.forEach(function (member: any, index: any, array: any) {
+            members.forEach((member: any, index: any, array: any) => {
 
               if (member.id.toString() === userId.toString()) {
                 //console.log('callback 3: Authorize');

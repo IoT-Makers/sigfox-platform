@@ -48,6 +48,7 @@
     }
   },
   "final": {
+    "./middleware/log-error": {},
     "loopback#urlNotFound": {}
   },
   "final:after": {

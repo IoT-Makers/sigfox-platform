@@ -201,11 +201,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
        * Count real time methods below
        */
       // Categories
+      this.organizationApi.countCategories(this.organization.id).subscribe(result => {
+        this.countCategories = result.count;
+        this.countCategoriesReady = true;
+      });
       this.categoryRef = this.organizationRef.child<Category>('Categories');
-      this.categorySub = this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
+      this.categorySub = this.categoryRef.on('child_added', {limit: 1}).subscribe((categories: Category[]) => {
         this.organizationApi.countCategories(this.organization.id).subscribe(result => {
           this.countCategories = result.count;
-          this.countCategoriesReady = true;
         });
       });
 
@@ -239,12 +242,15 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
 
       // Messages
+      this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+        this.countMessages = result.count;
+        this.countMessagesReady = true;
+      });
       this.messageRef = this.organizationRef.child<Message>('Messages');
-      this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((messages: Message[]) => {
+      this.messageSub = this.messageRef.on('child_added', {limit: 1}).subscribe((messages: Message[]) => {
         console.log('messages', messages);
         this.organizationApi.countMessages(this.organization.id).subscribe(result => {
           this.countMessages = result.count;
-          this.countMessagesReady = true;
         });
       });
 
@@ -256,11 +262,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
        * Count real time methods below
        */
       // Categories
+      this.userApi.countCategories(this.user.id).subscribe(result => {
+        this.countCategories = result.count;
+        this.countCategoriesReady = true;
+      });
       this.categoryRef = this.userRef.child<Category>('Categories');
-      this.categorySub = this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
+      this.categorySub = this.categoryRef.on('child_added', {limit: 1}).subscribe((categories: Category[]) => {
         this.userApi.countCategories(this.user.id).subscribe(result => {
           this.countCategories = result.count;
-          this.countCategoriesReady = true;
         });
       });
 
@@ -295,8 +304,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
 
       // Messages
+      this.userApi.countMessages(this.user.id).subscribe(result => {
+        this.countMessages = result.count;
+        this.countMessagesReady = true;
+      });
       this.messageRef = this.userRef.child<Message>('Messages');
-      this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((messages: Message[]) => {
+      this.messageSub = this.messageRef.on('child_added', {limit: 1}).subscribe((messages: Message[]) => {
         console.log('messages: ', messages);
         this.userApi.countMessages(this.user.id).subscribe(result => {
           this.countMessages = result.count;
@@ -305,11 +318,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
 
       // Alerts
+      this.userApi.countAlerts(this.user.id, {active: true}).subscribe(result => {
+        this.countAlerts = result.count;
+        this.countAlertsReady = true;
+      });
       this.alertRef = this.userRef.child<Alert>('Alerts');
-      this.alertSub = this.alertRef.on('change', {limit: 1}).subscribe((alerts: Alert[]) => {
+      this.alertSub = this.alertRef.on('child_added', {limit: 1}).subscribe((alerts: Alert[]) => {
         this.userApi.countAlerts(this.user.id, {active: true}).subscribe(result => {
           this.countAlerts = result.count;
-          this.countAlertsReady = true;
         });
       });
 
