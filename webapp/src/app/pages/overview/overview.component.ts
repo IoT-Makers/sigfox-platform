@@ -206,7 +206,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.countCategoriesReady = true;
       });
       this.categoryRef = this.organizationRef.child<Category>('Categories');
-      this.categorySub = this.categoryRef.on('change').subscribe((categorie: Category) => {
+      this.categorySub = this.categoryRef.on('change', {limit: 1}).subscribe((categorie: Category) => {
         this.organizationApi.countCategories(this.organization.id).subscribe(result => {
           this.countCategories = result.count;
         });
@@ -247,7 +247,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.countMessagesReady = true;
       });
       this.messageRef = this.organizationRef.child<Message>('Messages');
-      this.messageSub = this.messageRef.on('change').subscribe((message: Message) => {
+      this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((message: Message) => {
         this.organizationApi.countMessages(this.organization.id).subscribe(result => {
           this.countMessages = result.count;
         });
@@ -266,7 +266,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.countCategoriesReady = true;
       });
       this.categoryRef = this.userRef.child<Category>('Categories');
-      this.categorySub = this.categoryRef.on('change').subscribe((categorie: Category) => {
+      this.categorySub = this.categoryRef.on('change', {limit: 1}).subscribe((categorie: Category) => {
         this.userApi.countCategories(this.user.id).subscribe(result => {
           this.countCategories = result.count;
         });
@@ -308,7 +308,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.countMessagesReady = true;
       });
       this.messageRef = this.userRef.child<Message>('Messages');
-      this.messageSub = this.messageRef.on('change').subscribe((message: Message) => {
+      this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((message: Message) => {
         this.userApi.countMessages(this.user.id).subscribe(result => {
           this.countMessages = result.count;
           this.countMessagesReady = true;
@@ -321,7 +321,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.countAlertsReady = true;
       });
       this.alertRef = this.userRef.child<Alert>('Alerts');
-      this.alertSub = this.alertRef.on('change', {limit: 1}).subscribe((alert: Alert) => {
+      this.alertSub = this.alertRef.on('change', {limit: 1}, {limit: 1}).subscribe((alert: Alert) => {
         this.userApi.countAlerts(this.user.id, {active: true}).subscribe(result => {
           this.countAlerts = result.count;
         });
