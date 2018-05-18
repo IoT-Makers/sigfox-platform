@@ -383,9 +383,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       type: '',
       width: '6',
       options: {
-        zoom: 6,
-        lat: 48.864716,
-        lng: 2.349014
       },
       filter: {
         where: {
@@ -448,9 +445,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         }
       },
       options: {
-        zoom: 6,
-        lat: 48.864716,
-        lng: 2.349014
       },
       dashboardId: this.dashboard.id
     };
@@ -611,6 +605,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
     // Map
     else if (this.newWidget.type === 'map') {
+      this.newWidget.options.zoom = 6;
+      this.newWidget.options.lat = 48.864716;
+      this.newWidget.options.lng = 2.349014;
+
       this.newWidget.filter = {
         limit: 100,
         order: 'updatedAt DESC',
@@ -678,6 +676,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
     // Tracking
     else if (this.newWidget.type === 'tracking') {
+      this.newWidget.options.zoom = 6;
+      this.newWidget.options.lat = 48.864716;
+      this.newWidget.options.lng = 2.349014;
       /*****
        *
        * TODO: periode glissante
@@ -723,13 +724,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           include: [{
             relation: 'Geolocs',
             scope: {
+              limit: 1,
               where: {
                 and: [
                   {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}},
                   {type: this.newWidget.options.geolocType},
                 ]
-              },
-              limit: 1
+              }
             }
           }]
         };
@@ -743,12 +744,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           include: [{
             relation: 'Geolocs',
             scope: {
+              limit: 1,
               where: {
                 and: [
                   {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}}
                 ]
-              },
-              limit: 1
+              }
             }
           }]
         };
@@ -1403,7 +1404,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         } else {
           device.Geolocs = devices[0].Geolocs;
         }
-        if (device.Geolocs.length > 0 && widget.options.directions === false) {
+        if (device.Geolocs.length > 0) {
           this.agmMaps.forEach((agmMap: any) => {
             agmMap._mapsWrapper.setCenter(device.Geolocs[device.Geolocs.length - 1].location);
           });
