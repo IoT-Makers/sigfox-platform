@@ -35,15 +35,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  private organizationRouteSub: Subscription;
-  private userOrganizationSub: Subscription;
-  private dashboardSub: Subscription;
-  private categorySub: Subscription;
   private deviceSub: Subscription;
   private messageSub: Subscription;
-  private alertSub: Subscription;
-  private parserSub: Subscription;
-  private connectorSub: Subscription;
 
   private dashboards: Dashboard[] = [];
 

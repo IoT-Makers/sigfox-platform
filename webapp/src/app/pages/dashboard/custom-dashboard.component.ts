@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DashboardApi, RealTime, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {FireLoopRef, Geoloc, Message, Organization, Parser} from '../../shared/sdk/models';
+import {FireLoopRef, Geoloc, Message, Organization} from '../../shared/sdk/models';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import {MessageApi, OrganizationApi} from '../../shared/sdk/services/custom';
@@ -175,12 +175,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private widget: any;
   public widgets: Array<any> = [];
 
-  private messageRef: FireLoopRef<Message>;
-  private deviceRef: FireLoopRef<Device>;
-  private parserRef: FireLoopRef<Parser>;
-  private categoryRef: FireLoopRef<Category>;
+  private subscriptions: Subscription[] = [];
 
-  private organizationRouteSub: Subscription;
+  private organizationRef: FireLoopRef<Organization>;
+  private userRef: FireLoopRef<User>;
+  private dashboardRef: FireLoopRef<Dashboard>;
 
   private dashboard: Dashboard;
   public dashboardReady = false;
@@ -217,6 +216,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private mobile = false;
 
   // Notifications
+  private toast;
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig =
     new ToasterConfig({
@@ -238,25 +238,32 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Custom Dashboard: ngOnInit');
-
+    // Get the logged in User object
+    this.user = this.userApi.getCachedCurrent();
     if (window.screen.width <= 425) { // 768px portrait
       this.mobile = true;
     }
 
-    // Real Time
-    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-      this.setup();
-    else
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-    /*if (
-      this.rt.connection.isConnected() &&
-      this.rt.connection.authenticated
-    ) {
-      this.rt.onReady().subscribe(() => this.setup());
-    } else {
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-      this.rt.onReady().subscribe();
-    }*/
+    this.subscriptions.push(this.route.parent.parent.params.subscribe(parentParams => {
+      if (parentParams.id) {
+        this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
+          this.organization = organization;
+
+          // Check if real time and setup
+          if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+            this.setup();
+          else
+            this.rt.onAuthenticated().subscribe(() => this.setup());
+        });
+      } else {
+        // Check if real time and setup
+        if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+          this.setup();
+        else
+          this.rt.onAuthenticated().subscribe(() => this.setup());
+      }
+    }));
+
     // Prepare icon list
     if (typeof this.fontAwesomeList[0] === 'string') {
       this.fontAwesomeList.forEach((icon, i) => {
@@ -270,104 +277,92 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.cleanSetup();
-    // Get the logged in User object
-    this.user = this.userApi.getCachedCurrent();
 
-    this.organizationRouteSub = this.route.params.subscribe(params => {
-      this.dashboardId = params.id;
-      this.route.parent.parent.params.subscribe(parentParams => {
-        console.log('Parent param', parentParams);
+    this.subscriptions.push(this.route.params.subscribe(params => {
 
-        if (parentParams.id) {
-          this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
-            this.organization = organization;
-
-            // Categories
-            this.organizationApi.getCategories(this.organization.id).subscribe((categories: Category[]) => {
-              this.selectCategories = [];
-              this.categories = categories;
-              this.categories.forEach((category: Category) => {
-                const item = {
-                  id: category.id,
-                  itemName: category.name
-                };
-                this.selectCategories.push(item);
-              });
-            });
-            // Devices
-            this.organizationApi.getDevices(this.organization.id).subscribe((devices: Device[]) => {
-              this.selectDevices = [];
-              this.devices = devices;
-              this.devices.forEach((device: Device) => {
-                const item = {
-                  id: device.id,
-                  itemName: device.name ? device.name + ' (' + device.id + ')' : device.id
-                };
-                this.selectDevices.push(item);
-              });
-            });
-          });
-
-
-        } else {
-
-          // Categories
-          this.userApi.getCategories(this.user.id).subscribe((categories: Category[]) => {
-            this.selectCategories = [];
-            this.categories = categories;
-            this.categories.forEach((category: Category) => {
-              const item = {
-                id: category.id,
-                itemName: category.name
-              };
-              this.selectCategories.push(item);
-            });
-          });
-          // Devices
-          this.userApi.getDevices(this.user.id).subscribe((devices: Device[]) => {
-            this.selectDevices = [];
-            this.devices = devices;
-            this.devices.forEach((device: Device) => {
-              const item = {
-                id: device.id,
-                itemName: device.name ? device.name + ' (' + device.id + ')' : device.id
-              };
-              this.selectDevices.push(item);
-            });
-          });
-
-
-
-        }
-      });
       this.dashboardApi.findById(params.id).subscribe((result: Dashboard) => {
         console.log(result);
         this.dashboard = result;
         this.loadWidgets();
       });
-    });
+
+      if (this.organization) {
+        this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
+
+        // Dashboards
+        this.dashboardRef = this.organizationRef.child<Dashboard>('Dashboards');
+
+        // Categories
+        this.organizationApi.getCategories(this.organization.id).subscribe((categories: Category[]) => {
+          this.selectCategories = [];
+          this.categories = categories;
+          this.categories.forEach((category: Category) => {
+            const item = {
+              id: category.id,
+              itemName: category.name
+            };
+            this.selectCategories.push(item);
+          });
+        });
+        // Devices
+        this.organizationApi.getDevices(this.organization.id).subscribe((devices: Device[]) => {
+          this.selectDevices = [];
+          this.devices = devices;
+          this.devices.forEach((device: Device) => {
+            const item = {
+              id: device.id,
+              itemName: device.name ? device.name + ' (' + device.id + ')' : device.id
+            };
+            this.selectDevices.push(item);
+          });
+        });
+
+      } else {
+        this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+
+        // Dashboards
+        this.dashboardRef = this.userRef.child<Dashboard>('Dashboards');
+
+        // Categories
+        this.userApi.getCategories(this.user.id).subscribe((categories: Category[]) => {
+          this.selectCategories = [];
+          this.categories = categories;
+          this.categories.forEach((category: Category) => {
+            const item = {
+              id: category.id,
+              itemName: category.name
+            };
+            this.selectCategories.push(item);
+          });
+        });
+        // Devices
+        this.userApi.getDevices(this.user.id).subscribe((devices: Device[]) => {
+          this.selectDevices = [];
+          this.devices = devices;
+          this.devices.forEach((device: Device) => {
+            const item = {
+              id: device.id,
+              itemName: device.name ? device.name + ' (' + device.id + ')' : device.id
+            };
+            this.selectDevices.push(item);
+          });
+        });
+      }
+    }));
   }
 
   ngOnDestroy(): void {
     console.log('Custom Dashboard: ngOnDestroy');
-    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
-
     this.cleanSetup();
   }
 
   private cleanSetup() {
-    if (this.messageRef) this.messageRef.dispose();
-    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
-    //if (this.messageSub) this.messageSub.unsubscribe();
-
-    if (this.deviceRef) this.deviceRef.dispose();
-    //if (this.deviceSub) this.deviceSub.unsubscribe();
-
-    if (this.parserRef) this.parserRef.dispose();
-    //if (this.parserSub) this.parserSub.unsubscribe();
-
-    if (this.categoryRef) this.categoryRef.dispose();
-    //if (this.categorySub) this.categorySub.unsubscribe();
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
+    if (this.organizationRef) this.organizationRef.dispose();
+    if (this.userRef) this.userRef.dispose();
+    if (this.dashboardRef) this.dashboardRef.dispose();
   }
 
   cancel(): void {
@@ -375,7 +370,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.newWidgetFlag = false;
     this.editWidgetFlag = false;
 
-    // Reset widget
+// Reset widget
     this.newWidget = {
       name: '',
       icon: '',
@@ -395,27 +390,34 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   editDashboard(): void {
     this.editFlag = true;
-    // Retrieve selected icon
+// Retrieve selected icon
     this.selectedDashboardIcon[0] = {id: this.dashboard.icon, itemName: this.dashboard.icon.substr(3)};
   }
 
   saveDashboard(): void {
     if (!this.organization) {
-      this.userApi.updateByIdDashboards(this.user.id, this.dashboard.id, this.dashboard).subscribe(result => {
-        console.log(result);
+      this.dashboardRef.upsert(this.dashboard).subscribe(result => {
         this.editFlag = false;
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toasterService.pop('success', 'Success', 'Successfully saved dashboard.');
-        this.rt.onReady().subscribe();
+      }, err => {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', err.error);
       });
+
     } else {
-      this.organizationApi.updateByIdDashboards(this.organization.id, this.dashboard.id, this.dashboard).subscribe(result => {
-        console.log(result);
+
+      this.dashboardRef.upsert(this.dashboard).subscribe(result => {
         this.editFlag = false;
         this.toasterService.pop('success', 'Success', 'Successfully saved dashboard.');
-        this.rt.onReady().subscribe();
+      }, err => {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', err.error);
       });
     }
-
   }
 
   deleteDashboard(): void {
@@ -599,11 +601,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   setFilter(): void {
     console.log('setFilter: START', this.newWidget);
-    // Image
+// Image
     if (this.newWidget.type === 'image') {
       this.newWidget.filter = {};
     }
-    // Map
+// Map
     else if (this.newWidget.type === 'map') {
       this.newWidget.options.zoom = 6;
       this.newWidget.options.lat = 48.864716;
@@ -632,7 +634,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-    // Table
+// Table
     else if (this.newWidget.type === 'table') {
       this.newWidget.filter = {
         limit: 100,
@@ -650,7 +652,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-    // Alert & Gauge
+// Alert & Gauge
     else if (this.newWidget.type === 'gauge') {
       this.newWidget.filter = {
         limit: 1,
@@ -674,7 +676,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-    // Tracking
+// Tracking
     else if (this.newWidget.type === 'tracking') {
       this.newWidget.options.zoom = 6;
       this.newWidget.options.lat = 48.864716;
@@ -756,7 +758,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       }
     }
 
-    // Line & Bar
+// Line & Bar
     else if (this.newWidget.type === 'line' || this.newWidget.type === 'bar') {
       this.newWidget.filter = {
         limit: 20,
@@ -781,7 +783,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-    // Bar message counter
+// Bar message counter
     else if (this.newWidget.type === 'stats') {
       this.newWidget.filter = {
         limit: 20,
@@ -793,10 +795,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-    // Reset filters arrays
+// Reset filters arrays
     this.newWidget.options.keys = [];
     this.newWidget.filter.where.or = [];
-    // Set filter arrays by looping on selected data
+// Set filter arrays by looping on selected data
     this.selectedKeys.forEach((item: any) => {
       this.newWidget.options.keys.push(item.id);
     });
@@ -813,11 +815,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   loadKeys(): void {
     // Reset the selected keys
     this.selectedKeys = [];
-    // Reset the selectable keys
+// Reset the selectable keys
     this.selectKeys = [];
-    // Prepare widget keys object
+// Prepare widget keys object
     this.newWidget.options.keys = [];
-    // Fetch all the keys belonging to selected devices
+// Fetch all the keys belonging to selected devices
     const filter = this.newWidget.filter;
     if (this.newWidget.filter.include[0].scope.where.and[0].createdAt && this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte) {
       filter.include[0].scope.where.and[0] = {};
@@ -870,7 +872,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Sanitize
+// Sanitize
     delete this.newWidget.ready;
     delete this.newWidget.data;
     delete this.newWidget.gaugeThresholdConfig;
