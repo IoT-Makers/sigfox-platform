@@ -19,9 +19,35 @@ import {Model} from '@mean-expert/model';
 
 class Organization {
   // LoopBack model instance is injected in constructor
-  constructor(public model: any) {}
+  constructor(public model: any) {
 
-  // Example Operation Hook
+    //TODO: loopback organization.Messages(filter is broken for large data tables, can't efficiently fetch with a limit...
+    /*this.model.once('attached', () => {
+      this.model.findOne({where: {id: ''}}, (err: any, organization: any) => {
+        // console.log(category);
+        if (!err && organization) {
+          organization.Messages(
+            {limit: 1}, (err: any, messages: any) => {
+              console.log(messages);
+            });
+          //console.log(organization.toJSON().Messages.length);
+          /!*organization.toJSON().Messages.forEach((message: any) => {
+            organization.Messages.remove(message.id, (err: any) => {
+              console.log('Unlinked messages from organization');
+            });
+          });*!/
+        } else {
+          console.error(err);
+        }
+      });
+    });*/
+  }
+
+  beforeExecute(ctx: any, next: Function): void {
+    ctx.where.filter.limit = 1;
+    next();
+  }
+
   beforeSave(ctx: any, next: Function): void {
     console.log('organization: Before Save');
     next();
@@ -33,12 +59,12 @@ class Organization {
 
     //console.log(Organization.prototype.__link__Messages);
     //console.log(ctx);
-    Message.find({where: {deviceId: data.deviceId}, fields: {'id': true}}, function (err: any, messages: any) {
+    Message.find({where: {deviceId: data.deviceId}, fields: {'id': true}}, (err: any, messages: any) => {
       //console.log(messages);
-      Organization.findById(data.organizationId, function(err: any, orga: any) {
+      Organization.findById(data.organizationId, (err: any, orga: any) => {
         console.log(orga);
         messages.forEach((message: any) => {
-          orga.Messages.add(message.id, function (err: any, result: any) {
+          orga.Messages.add(message.id, (err: any, result: any) => {
             console.log(result);
           });
         });
@@ -55,15 +81,15 @@ class Organization {
 
     //console.log(Organization.prototype.__link__Messages);
     //console.log(ctx);
-    Message.find({where: {deviceId: data.deviceId}, fields: {id: true}}, function (err: any, messages: any) {
+    Message.find({where: {deviceId: data.deviceId}, fields: {id: true}}, (err: any, messages: any) => {
       //console.log(messages);
-      Organization.findById(data.organizationId, function(err: any, orga: any) {
+      Organization.findById(data.organizationId, (err: any, orga: any) => {
         //console.log(orga);
         messages.forEach((message: any) => {
           /**
            * TODO: check if its not better to use: orga.Messages.remove(message, function...)
            */
-          orga.Messages.remove(message.id, function (err: any, result: any) {
+          orga.Messages.remove(message.id, (err: any, result: any) => {
             //console.log(result);
           });
         });

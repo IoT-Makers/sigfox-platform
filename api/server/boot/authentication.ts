@@ -1,10 +1,10 @@
-import { BootScript } from '@mean-expert/boot-script';
+import {BootScript} from '@mean-expert/boot-script';
 
 @BootScript()
 class Authentication {
-    constructor(app: any) {
-        app.enableAuth();
-    }
+  constructor(app: any) {
+    app.enableAuth();
+  }
 }
 
 module.exports = Authentication;
