@@ -758,7 +758,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       }
     }
 
-// Line & Bar
+    // Line & Bar
     else if (this.newWidget.type === 'line' || this.newWidget.type === 'bar') {
       this.newWidget.filter = {
         limit: 20,
@@ -767,7 +767,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           relation: 'Messages',
           scope: {
             fields: ['data_parsed', 'createdAt'],
-            limit: 3000,
+            limit: 1000,
             order: 'createdAt DESC',
             where: {
               and: [
@@ -783,7 +783,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-// Bar message counter
+    // Bar message counter
     else if (this.newWidget.type === 'stats') {
       this.newWidget.filter = {
         limit: 20,
@@ -815,11 +815,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   loadKeys(): void {
     // Reset the selected keys
     this.selectedKeys = [];
-// Reset the selectable keys
+    // Reset the selectable keys
     this.selectKeys = [];
-// Prepare widget keys object
+    // Prepare widget keys object
     this.newWidget.options.keys = [];
-// Fetch all the keys belonging to selected devices
+    // Fetch all the keys belonging to selected devices
     const filter = this.newWidget.filter;
     if (this.newWidget.filter.include[0].scope.where.and[0].createdAt && this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte) {
       filter.include[0].scope.where.and[0] = {};
@@ -872,7 +872,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-// Sanitize
+    // Sanitize
     delete this.newWidget.ready;
     delete this.newWidget.data;
     delete this.newWidget.gaugeThresholdConfig;
@@ -1064,7 +1064,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                     // Loop each keys chosen for this widget
                     widget.options.keys.forEach((key: any) => {
                       const o: any = _.filter(device.Messages[0].data_parsed, {key: key})[0];
-                      console.log(device.id, o);
+                      //console.log(device.id, o);
                       if (o) {
                         keys_units.push(o);
                         // Check if the device has this key and set the format to display
