@@ -274,7 +274,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
       // Devices
       this.deviceRef = this.userRef.child<Device>('Devices');
-      this.deviceSub = this.deviceRef.on('child_changed',
+      this.deviceSub = this.deviceRef.on('change',
         {
           limit: 10,
           order: 'updatedAt DESC',
