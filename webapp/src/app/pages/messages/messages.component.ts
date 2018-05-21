@@ -316,24 +316,21 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
       if (this.organization) {
         if (this.messageFilter.where.and.length === 0) {
-          this.messageFilter.where = {};
+          delete this.messageFilter.where;
         }
 
-        /*this.organizationApi.getMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
+        this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
           this.messages = messages;
           this.messagesReady = true;
-        });*/
+        });
 
         this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-          if (result.count < 10000) {
-            this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-            this.messageRef = this.organizationRef.child<Message>('Messages');
+          this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
+          this.messageRef = this.organizationRef.child<Message>('Messages');
+          if (result.count < 1000) {
             this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
               this.messages = messages;
-              this.messagesReady = true;
             });
-          } else {
-            this.messagesReady = true;
           }
         });
 
@@ -346,15 +343,13 @@ export class MessagesComponent implements OnInit, OnDestroy {
           this.messagesReady = true;
         });
 
-        this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-          if (result.count < 10000) {
-            this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-            this.messageRef = this.userRef.child<Message>('Messages');
+        this.userApi.countMessages(this.user.id).subscribe(result => {
+          this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+          this.messageRef = this.userRef.child<Message>('Messages');
+          if (result.count < 1000) {
             this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
               this.messages = messages;
             });
-          } else {
-            this.messagesReady = true;
           }
         });
 
@@ -464,37 +459,17 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.messageFilter.limit = limit;
 
     console.log(this.messageFilter);
-    if (this.messageRef) this.messageRef.dispose();
     if (this.messageSub) this.messageSub.unsubscribe();
-    // Messages
-    this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-    this.messageSub = this.messageRef.on('change',
-      this.messageFilter
-    ).subscribe((messages: Message[]) => {
-      this.messages = messages;
-      this.messagesReady = true;
-      console.log(this.messages);
-    });
+
     if (this.organization) {
-      this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-      this.messageRef = this.organizationRef.child<Message>('Messages');
-      this.messageFilter.limit = 1;
-      this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
-        this.organizationApi.getMessages(this.organization.id, {
-          limit: limit,
-          order: 'createdAt DESC',
-          include: ['Device', 'Geolocs']
-        }).subscribe((messages: Message[]) => {
-          this.messages = messages;
-        });
+      this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
+        this.messages = messages;
+        this.messagesReady = true;
       });
     } else {
-      this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-      this.messageRef = this.userRef.child<Message>('Messages');
-      this.messageFilter.where.and.push({userId: this.user.id});
-      this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-      this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+      this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
         this.messages = messages;
+        this.messagesReady = true;
       });
     }
   }

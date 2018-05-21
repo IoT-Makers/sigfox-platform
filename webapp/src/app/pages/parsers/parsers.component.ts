@@ -97,7 +97,6 @@ export class ParsersComponent implements OnInit, OnDestroy {
     }).subscribe(
       (parsers: Parser[]) => {
         this.parsers = parsers;
-        console.log(this.parsers);
       });
   }
 

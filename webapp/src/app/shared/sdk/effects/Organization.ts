@@ -699,6 +699,20 @@ export class OrganizationEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public getFilteredMessages$ = this.actions$
+    .ofType(OrganizationActionTypes.GET_FILTERED_MESSAGES).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.organization.getFilteredMessages(action.payload.id, action.payload.filter, action.payload.req).pipe(
+          map((response: any) => new OrganizationActions.getFilteredMessagesSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new OrganizationActions.getFilteredMessagesFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public createManyMembers$ = this.actions$
     .ofType(OrganizationActionTypes.CREATE_MANY_MEMBERS).pipe(
       mergeMap((action: LoopbackAction) =>

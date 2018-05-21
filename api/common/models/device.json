@@ -1,5 +1,6 @@
 {
   "name": "Device",
+  "replaceOnPUT": false,
   "plural": "Devices",
   "base": "PersistedModel",
   "idInjection": false,

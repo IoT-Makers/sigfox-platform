@@ -88,6 +88,7 @@
       "principalId": "organizationMember",
       "permission": "ALLOW",
       "property": [
+        "getFilteredMessages",
         "findById",
         "findOne",
         "count",

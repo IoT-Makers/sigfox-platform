@@ -11,10 +11,24 @@ import {Model} from '@mean-expert/model';
   hooks: {
     beforeSave: { name: 'before save', type: 'operation' },
     beforeDelete: { name: 'before delete', type: 'operation' },
+    beforeRemoteGetMessages: {name: 'prototype.__get__Messages', type: 'beforeRemote'},
     afterRemoteLinkDevice: {name: 'prototype.__link__Devices', type: 'afterRemote'},
     afterRemoteUnlinkDevice: {name: 'prototype.__unlink__Devices', type: 'afterRemote'}
   },
-  remotes: { }
+  remotes: {
+    getFilteredMessages: {
+      accepts: [
+        {arg: 'id', type: 'string', required: true, description: 'Organization id'},
+        {arg: 'filter', type: 'object', required: true, description: 'Message filter'},
+        {arg: 'req', type: 'object', http: {source: 'req'}}
+      ],
+      http: {
+        path: '/:id/FilteredMessages',
+        verb: 'get'
+      },
+      returns: {type: ['Message'], root: true}
+    }
+  }
 })
 
 class Organization {
@@ -43,8 +57,55 @@ class Organization {
     });*/
   }
 
-  beforeExecute(ctx: any, next: Function): void {
-    ctx.where.filter.limit = 1;
+  getFilteredMessages(organizationId: string, filter: string, req: any, next: Function): void {
+    // Models
+    const Organization = this.model;
+    const Message = this.model.app.models.Message;
+
+    const userId = req.accessToken.userId;
+    if (!userId) {
+      next(null, 'Please login or use a valid access token.');
+    }
+
+    Organization.findOne(
+      {
+        where: {
+          id: organizationId
+        }
+      }, (err: any, organization: any) => {
+        if (!err && organization) {
+          organization.Messages.find(filter, (err: any, messages: any) => {
+            if (!err) {
+              next(null, messages);
+            } else {
+              next(err);
+            }
+          });
+        } else {
+          next(err);
+        }
+      });
+  }
+
+
+  beforeRemoteGetMessages(ctx: any, data: any, next: Function): void {
+    /*//console.log(ctx);
+    // Do not remove, avoids the application to crash
+    console.log('orga', ctx);
+    /!*console.log('orga', ctx.args.filter);
+    console.log('orga', ctx.ctorArgs);
+    console.log('orga', ctx.filter);
+    console.log('orga', ctx.limit);
+    console.log('orga', ctx.query);*!/
+
+    if (!ctx.query) {
+      ctx.query = {limit: 1};
+    } else {
+      ctx.query.limit = 1;
+    }
+    ctx.limit = 1;
+    ctx.options.filter = {limit: 1};
+    ctx.options.limit = 1;*/
     next();
   }
 
@@ -55,7 +116,7 @@ class Organization {
 
   afterRemoteLinkDevice(ctx: any, data: any, next: Function): void {
     const Message = this.model.app.models.Message;
-    const Organization = this.model.app.models.Organization;
+    const Organization = this.model;
 
     //console.log(Organization.prototype.__link__Messages);
     //console.log(ctx);
