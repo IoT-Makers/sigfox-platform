@@ -80,9 +80,9 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private router: Router) {
 
-    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+    /*this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
-    };
+    };*/
   }
 
   redirectToUserView(): void {
@@ -127,7 +127,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     });
 
     // Check if organization view
-    this.subscriptions.push(this.route.params.subscribe(params => {
+    this.route.params.subscribe(params => {
 
       this.isInitialized = false;
 
@@ -162,7 +162,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         }
       }
       //console.log('Router', params);
-    }));
+    });
   }
 
   setup(): void {
@@ -199,7 +199,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.countCategoriesReady = true;
         });
         this.categoryRef = this.organizationRef.child<Category>('Categories');
-        this.subscriptions.push(this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
+        this.subscriptions.push(this.categoryRef.on('child_changed', {limit: 1}).subscribe((categories: Category[]) => {
           this.organizationApi.countCategories(this.organization.id).subscribe(result => {
             this.countCategories = result.count;
           });
@@ -211,7 +211,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.countDevicesReady = true;
         });
         this.deviceRef = this.organizationRef.child<Device>('Devices');
-        this.deviceSub = this.deviceRef.on('change', {limit: 1}).subscribe((devices: Device[]) => {
+          this.deviceSub = this.deviceRef.on('child_changed', {limit: 1}).subscribe((devices: Device[]) => {
           this.organizationApi.countDevices(this.organization.id).subscribe(result => {
             this.countDevices = result.count;
           });
@@ -223,7 +223,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.countMessagesReady = true;
         });
         this.messageRef = this.organizationRef.child<Message>('Messages');
-        this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((messages: Message[]) => {
+        this.messageSub = this.messageRef.on('child_changed', {limit: 1}).subscribe((messages: Message[]) => {
           this.organizationApi.countMessages(this.organization.id).subscribe(result => {
             this.countMessages = result.count;
           });
@@ -245,7 +245,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.countCategoriesReady = true;
         });
         this.categoryRef = this.userRef.child<Category>('Categories');
-        this.subscriptions.push(this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
+        this.subscriptions.push(this.categoryRef.on('child_changed', {limit: 1}).subscribe((categories: Category[]) => {
           this.userApi.countCategories(this.user.id).subscribe(result => {
             this.countCategories = result.count;
           });
@@ -257,7 +257,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.countDevicesReady = true;
         });
         this.deviceRef = this.userRef.child<Device>('Devices');
-        this.deviceSub = this.deviceRef.on('change', {limit: 1}).subscribe((devices: Device[]) => {
+        this.deviceSub = this.deviceRef.on('child_changed', {limit: 1}).subscribe((devices: Device[]) => {
             this.userApi.countDevices(this.user.id).subscribe(result => {
               this.countDevices = result.count;
             });
@@ -269,7 +269,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.countMessagesReady = true;
         });
         this.messageRef = this.userRef.child<Message>('Messages');
-        this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((messages: Message[]) => {
+        this.messageSub = this.messageRef.on('child_changed', {limit: 1}).subscribe((messages: Message[]) => {
           this.userApi.countMessages(this.user.id).subscribe(result => {
             this.countMessages = result.count;
           });
@@ -281,7 +281,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.countAlertsReady = true;
         });
         this.alertRef = this.userRef.child<Alert>('Alerts');
-        this.subscriptions.push(this.alertRef.on('change', {limit: 1}).subscribe((alerts: Alert[]) => {
+        this.subscriptions.push(this.alertRef.on('child_changed', {limit: 1}).subscribe((alerts: Alert[]) => {
           this.userApi.countAlerts(this.user.id).subscribe(result => {
             this.countAlerts = result.count;
           });
@@ -293,7 +293,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.countParsersReady = true;
         });
         this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-        this.subscriptions.push(this.parserRef.on('change', {limit: 1}).subscribe((parsers: Parser[]) => {
+        this.subscriptions.push(this.parserRef.on('child_changed', {limit: 1}).subscribe((parsers: Parser[]) => {
           this.parserApi.count().subscribe(result => {
             this.countParsers = result.count;
           });
@@ -304,7 +304,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.countConnectors = result.count;
         });
         this.connectorRef = this.userRef.child<Connector>('Connectors');
-        this.subscriptions.push(this.connectorRef.on('change', {limit: 1}).subscribe((connectors: Connector[]) => {
+        this.subscriptions.push(this.connectorRef.on('child_changed', {limit: 1}).subscribe((connectors: Connector[]) => {
           this.userApi.countConnectors(this.user.id).subscribe(result => {
             this.countConnectors = result.count;
             this.countConnectorsReady = true;
