@@ -13,7 +13,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   @ViewChild('addOrEditOrganizationModal') addOrEditOrganizationModal: any;
 
   // Flags
-  private isInitialized = false;
+  public isInitialized = false;
   public devicesReady = false;
   public messagesReady = false;
   public countCategoriesReady = false;
