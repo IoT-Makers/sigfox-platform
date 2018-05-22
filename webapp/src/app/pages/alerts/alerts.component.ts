@@ -281,7 +281,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
       }
     ).subscribe((alerts: Alert[]) => {
       this.alerts = alerts;
-      console.log(this.alerts);
       this.alertsReady = true;
     });
 

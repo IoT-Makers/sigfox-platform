@@ -72,7 +72,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     console.log('Connector: ngOnInit');
 
     // Get the logged in User object (avatar, email, ...)
-    this.getUser();
+    this.user = this.userApi.getCachedCurrent();
     this.callbackURL = this.document.location.origin + '/api';
 
     // Real Time
@@ -89,14 +89,6 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
       this.rt.onAuthenticated().subscribe(() => this.setup());
       this.rt.onReady().subscribe();
     }*/
-  }
-
-  getUser(): void {
-    // Get the logged in User object
-    this.user = this.userApi.getCachedCurrent();
-    this.userApi.findById(this.user.id, {}).subscribe((user: User) => {
-      this.user = user;
-    });
   }
 
   setup(): void {
@@ -155,7 +147,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      this.toast = this.toasterService.pop('error', 'Error', err.message);
     });
   }
 
@@ -173,7 +165,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
       } else {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+        this.toast = this.toasterService.pop('error', 'Error', err.message);
       }
     });
   }
@@ -192,7 +184,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
       } else {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+        this.toast = this.toasterService.pop('error', 'Error', err.message);
       }
     });
   }
