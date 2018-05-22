@@ -218,7 +218,7 @@ class Geoloc {
             geoloc.location.lng,
             geoloc.deviceId,
             req,
-            function (err: any, res: any) {
+            (err: any, res: any) => {
               if (err) {
                 next(err, null);
               } else {

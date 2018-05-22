@@ -162,17 +162,20 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   updateParsedData() {
     // Disconnect real-time to avoid app crashing
+    this.rt.connection.disconnect();
     this.parserApi.parseAllDevices(this.parserToEdit.id, null, null).subscribe(result => {
       if (result.message === 'Success') {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
         this.confirmParseModal.hide();
+        this.rt.onReady();
       } else {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('warning', 'Warning', result.message);
         this.confirmParseModal.hide();
+        this.rt.onReady();
       }
     });
   }

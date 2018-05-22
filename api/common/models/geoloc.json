@@ -80,6 +80,13 @@
       "permission": "DENY"
     },
     {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": ["postSigfox"]
+    },
+    {
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",
