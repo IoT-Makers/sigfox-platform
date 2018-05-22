@@ -21,7 +21,7 @@ const loopback = require('loopback');
       http    : { path: '/trigger-by-device', verb: 'post' },
       accepts: [
         {arg: 'data_parsed', type: 'array', required: true, description: 'The parsed data'},
-        {arg: 'device', type: 'Device', required: true, description: 'The device object'},
+        {arg: 'device', type: 'object', required: true, description: 'The device object'},
         {arg: 'req', type: 'object', http: {source: 'req'}}
       ],
     },
@@ -44,6 +44,7 @@ class Alert {
 
   beforeSave(ctx: any, next: Function): void {
     console.log('Alert: Before Save');
+    ctx.instance.createdAt = new Date();
     next();
   }
 

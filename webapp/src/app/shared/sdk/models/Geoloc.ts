@@ -1,5 +1,9 @@
 /* tslint:disable */
 import {
+  Device,
+  Message,
+  User,
+  Organization,
   GeoPoint
 } from '../index';
 
@@ -15,10 +19,10 @@ export interface GeolocInterface {
   "updatedAt"?: Date;
   "userId"?: any;
   "organizationId"?: any;
-  Device?: any;
-  Message?: any;
-  user?: any;
-  Organization?: any;
+  Device?: Device;
+  Message?: Message;
+  user?: User;
+  Organization?: Organization;
 }
 
 export class Geoloc implements GeolocInterface {
@@ -32,10 +36,10 @@ export class Geoloc implements GeolocInterface {
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
   "organizationId": any = <any>null;
-  Device: any = null;
-  Message: any = null;
-  user: any = null;
-  Organization: any = null;
+  Device: Device = null;
+  Message: Message = null;
+  user: User = null;
+  Organization: Organization = null;
   constructor(data?: GeolocInterface) {
     Object.assign(this, data);
   }
@@ -113,32 +117,32 @@ export class Geoloc implements GeolocInterface {
       relations: {
         Device: {
           name: 'Device',
-          type: 'any',
-          model: '',
+          type: 'Device',
+          model: 'Device',
           relationType: 'belongsTo',
                   keyFrom: 'deviceId',
           keyTo: 'id'
         },
         Message: {
           name: 'Message',
-          type: 'any',
-          model: '',
+          type: 'Message',
+          model: 'Message',
           relationType: 'belongsTo',
                   keyFrom: 'messageId',
           keyTo: 'id'
         },
         user: {
           name: 'user',
-          type: 'any',
-          model: '',
+          type: 'User',
+          model: 'User',
           relationType: 'belongsTo',
                   keyFrom: 'userId',
           keyTo: 'id'
         },
         Organization: {
           name: 'Organization',
-          type: 'any',
-          model: '',
+          type: 'Organization',
+          model: 'Organization',
           relationType: 'belongsTo',
                   keyFrom: 'organizationId',
           keyTo: 'id'

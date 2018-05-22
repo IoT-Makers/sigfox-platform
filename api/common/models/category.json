@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "Category",
   "plural": "Categories",
   "base": "PersistedModel",

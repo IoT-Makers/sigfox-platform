@@ -16,6 +16,23 @@ import { ConnectorApi } from '../services/index';
 
 @Injectable()
 export class ConnectorEffects extends BaseLoopbackEffects {
+  @Effect()
+  public getUser$ = this.actions$
+    .ofType(ConnectorActionTypes.GET_USER).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.connector.getUser(action.payload.id, action.payload.refresh).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'User', 'findSuccess'),
+            of(new ConnectorActions.getUserSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new ConnectorActions.getUserFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
     /**
    * @author João Ribeiro <@JonnyBGod> <github:JonnyBGod>
    * @description

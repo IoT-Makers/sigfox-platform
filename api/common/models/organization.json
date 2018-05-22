@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "Organization",
   "plural": "Organizations",
   "base": "PersistedModel",

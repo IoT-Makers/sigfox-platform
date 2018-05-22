@@ -1,10 +1,10 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {AccessToken, Connector, FireLoopRef, User} from '../../shared/sdk/models';
 import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
 import {Subscription} from 'rxjs/Subscription';
 import {RealTime} from '../../shared/sdk/services/core';
+import {AccessToken, Connector, FireLoopRef, User} from '../../shared/sdk/models';
 
 @Component({
   selector: 'app-profile',
@@ -179,9 +179,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   addConnector(): void {
-    delete this.connectorToAdd.id;
-    this.connectorToAdd.userId = this.user.id;
-    this.connectorRef.upsert(this.connectorToAdd).subscribe((connector: Connector) => {
+    this.connectorRef.create(this.connectorToAdd).subscribe((connector: Connector) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully updated.');

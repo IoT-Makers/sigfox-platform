@@ -186,10 +186,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       this.categoryToEdit = category;
     } else {
       this.categoryToEdit = new Category();
-      delete this.categoryToEdit.id;
-      this.categoryToEdit.userId = this.user.id;
     }
-    console.log(this.categoryToEdit);
   }
 
   cancel(): void {

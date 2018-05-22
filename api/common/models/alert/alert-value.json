@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "AlertValue",
   "plural": "AlertValues",
   "base": "Model",

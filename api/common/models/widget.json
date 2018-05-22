@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "Widget",
   "plural": "Widgets",
   "base": "PersistedModel",

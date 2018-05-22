@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "AlertHistory",
   "plural": "AlertHistories",
   "base": "PersistedModel",

@@ -1,4 +1,10 @@
 /* tslint:disable */
+import {
+  Device,
+  User,
+  Organization,
+  Connector
+} from '../index';
 
 declare var Object: any;
 export interface AlertInterface {
@@ -16,10 +22,10 @@ export interface AlertInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "connectorId"?: any;
-  Device?: any;
-  user?: any;
-  Organization?: any;
-  Connector?: any;
+  Device?: Device;
+  user?: User;
+  Organization?: Organization;
+  Connector?: Connector;
 }
 
 export class Alert implements AlertInterface {
@@ -37,10 +43,10 @@ export class Alert implements AlertInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "connectorId": any = <any>null;
-  Device: any = null;
-  user: any = null;
-  Organization: any = null;
-  Connector: any = null;
+  Device: Device = null;
+  user: User = null;
+  Organization: Organization = null;
+  Connector: Connector = null;
   constructor(data?: AlertInterface) {
     Object.assign(this, data);
   }
@@ -136,32 +142,32 @@ export class Alert implements AlertInterface {
       relations: {
         Device: {
           name: 'Device',
-          type: 'any',
-          model: '',
+          type: 'Device',
+          model: 'Device',
           relationType: 'belongsTo',
                   keyFrom: 'deviceId',
           keyTo: 'id'
         },
         user: {
           name: 'user',
-          type: 'any',
-          model: '',
+          type: 'User',
+          model: 'User',
           relationType: 'belongsTo',
                   keyFrom: 'userId',
           keyTo: 'id'
         },
         Organization: {
           name: 'Organization',
-          type: 'any',
-          model: '',
+          type: 'Organization',
+          model: 'Organization',
           relationType: 'belongsTo',
                   keyFrom: 'organizationId',
           keyTo: 'id'
         },
         Connector: {
           name: 'Connector',
-          type: 'any',
-          model: '',
+          type: 'Connector',
+          model: 'Connector',
           relationType: 'belongsTo',
                   keyFrom: 'connectorId',
           keyTo: 'id'

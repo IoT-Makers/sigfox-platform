@@ -1,6 +1,6 @@
 {
-  "name": "Message",
   "replaceOnPUT": false,
+  "name": "Message",
   "plural": "Messages",
   "base": "PersistedModel",
   "idInjection": true,

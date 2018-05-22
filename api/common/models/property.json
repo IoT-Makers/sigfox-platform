@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "Property",
   "plural": "Properties",
   "base": "Model",

@@ -23,6 +23,7 @@ class Dashboard {
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('Dashboard: Before Save');
+    ctx.instance.createdAt = new Date();
     next();
   }
 

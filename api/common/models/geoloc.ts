@@ -177,6 +177,7 @@ class Geoloc {
     const Alert = this.model.app.models.Alert;
 
     if (typeof data.geoloc === 'undefined'
+      || typeof data.geoloc.location === 'undefined'
       || typeof data.deviceId === 'undefined'
       || typeof data.time === 'undefined'
       || typeof data.seqNumber === 'undefined') {

@@ -1,6 +1,6 @@
 {
-  "name": "Geoloc",
   "replaceOnPUT": false,
+  "name": "Geoloc",
   "plural": "Geolocs",
   "base": "PersistedModel",
   "idInjection": true,

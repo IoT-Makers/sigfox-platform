@@ -54,6 +54,7 @@ class Category {
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('Category: Before Save');
+    ctx.instance.createdAt = new Date();
     next();
   }
 

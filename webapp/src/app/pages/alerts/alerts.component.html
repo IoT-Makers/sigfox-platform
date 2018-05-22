@@ -292,7 +292,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="addOrEditAlertModal.hide()">Close</button>
-          <button *ngIf="addAlertFlag" class="btn btn-success" [disabled]="!addOrEditForm.form.valid" (click)="addAlert()"><i class="fa fa-plus-circle"></i> Add alert</button>
+          <button type="submit" *ngIf="addAlertFlag" class="btn btn-success" [disabled]="!addOrEditForm.form.valid"><i class="fa fa-plus-circle"></i> Add alert</button>
         </div>
       </form>
       <form *ngIf="!addAlertFlag" (ngSubmit)="editAlert()" class="form-horizontal" #addOrEditForm="ngForm">

@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "Connector",
   "plural": "Connectors",
   "base": "PersistedModel",

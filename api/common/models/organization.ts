@@ -111,6 +111,7 @@ class Organization {
 
   beforeSave(ctx: any, next: Function): void {
     console.log('organization: Before Save');
+    ctx.instance.createdAt = new Date();
     next();
   }
 

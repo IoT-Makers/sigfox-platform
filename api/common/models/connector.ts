@@ -36,21 +36,18 @@ class Connector {
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('Connector: Before Save');
+    ctx.instance.createdAt = new Date();
+    const type = ctx.instance.type;
+    const login = ctx.instance.login;
+    const password = ctx.instance.password;
+    // Encrypt the password to be stored
+    if (password) {
+      const encryptedPassword = encrypt(password);
+      ctx.instance.password = encryptedPassword;
+    }
 
-    if (ctx.instance) {
-      const type = ctx.instance.type;
-      const login = ctx.instance.login;
-      const password = ctx.instance.password;
-      // Encrypt the password to be stored
-      if (password) {
-        ctx.instance.password = encrypt(password);
-      }
-
-      if (type === 'sigfox-api') {
-        this.testConnection(type, login, password, next);
-      } else {
-        next();
-      }
+    if (type === 'sigfox-api') {
+      this.testConnection(type, login, password, next);
     } else {
       next();
     }

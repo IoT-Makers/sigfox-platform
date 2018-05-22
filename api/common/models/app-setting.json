@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "AppSetting",
   "plural": "AppSettings",
   "base": "PersistedModel",
