@@ -147,7 +147,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.message);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
   }
 
@@ -165,7 +165,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
       } else {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.message);
+        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
       }
     });
   }
@@ -184,7 +184,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
       } else {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.message);
+        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
       }
     });
   }
