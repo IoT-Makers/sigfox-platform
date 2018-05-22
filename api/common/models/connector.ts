@@ -42,7 +42,9 @@ class Connector {
       const login = ctx.instance.login;
       const password = ctx.instance.password;
       // Encrypt the password to be stored
-      ctx.instance.password = encrypt(password);
+      if (password) {
+        ctx.instance.password = encrypt(password);
+      }
 
       if (type === 'sigfox-api') {
         this.testConnection(type, login, password, next);
