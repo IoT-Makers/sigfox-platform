@@ -75,8 +75,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
-              private parserApi: ParserApi,
               private organizationApi: OrganizationApi,
+              private parserApi: ParserApi,
               private route: ActivatedRoute,
               private router: Router) {
 
@@ -135,7 +135,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       if (params.id) {
         this.organizationApi.findById(params.id, {include: 'Members'}).subscribe((organization: Organization) => {
           this.organization = organization;
-          // console.log('Organization:', organization);
           // Real Time
           if (
             this.rt.connection.isConnected() &&
@@ -143,7 +142,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           ) {
             this.rt.onReady().subscribe(() => this.setup());
           } else {
-            this.rt.onAuthenticated().subscribe(() => this.setup());
+            //this.rt.onAuthenticated().subscribe(() => this.setup());
             this.rt.onReady().subscribe(() => this.setup());
           }
         });
@@ -157,7 +156,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         ) {
           this.rt.onReady().subscribe(() => this.setup());
         } else {
-          this.rt.onAuthenticated().subscribe(() => this.setup());
+          //this.rt.onAuthenticated().subscribe(() => this.setup());
           this.rt.onReady().subscribe( () => this.setup());
         }
       }

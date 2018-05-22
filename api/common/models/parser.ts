@@ -128,7 +128,7 @@ class Parser {
         } else {
 
           parser.Devices.forEach((device: any, deviceCount: number) => {
-            Device.findById(device.id, {include: ['Messages', 'Parser']}, function (err: any, deviceInstance: any) {
+            Device.findById(device.id, {include: ['Messages', 'Parser']}, (err: any, deviceInstance: any) => {
               if (err) {
                 next(err, null);
               } else if (deviceInstance) {
@@ -142,18 +142,18 @@ class Parser {
                   if (deviceInstance.Messages) {
                     deviceInstance.Messages.forEach((message: any, msgCount: number) => {
                       if (message.data) {
-                        Parser.parsePayload(fn, message.data, req, function (err: any, data_parsed: any) {
+                        Parser.parsePayload(fn, message.data, req, (err: any, data_parsed: any) => {
                           if (err) {
                             next(err, null);
                           } else {
                             if (data_parsed) {
                               message.data_parsed = data_parsed;
-                              Message.upsert(message, function (err: any, messageUpdated: any) {
+                              Message.upsert(message, (err: any, messageUpdated: any) => {
                                 if (!err) {
                                   // Check if there is Geoloc in payload and create Geoloc object
                                   Geoloc.createFromParsedPayload(
                                     messageUpdated,
-                                    function (err: any, res: any) {
+                                    (err: any, res: any) => {
                                       if (err) {
                                         next(err, null);
                                       } else {
@@ -234,18 +234,18 @@ class Parser {
           if (device.Messages) {
             device.Messages.forEach((message: any, msgCount: number) => {
               if (message.data) {
-                Parser.parsePayload(fn, message.data, req, function (err: any, data_parsed: any) {
+                Parser.parsePayload(fn, message.data, req, (err: any, data_parsed: any) => {
                   if (err) {
                     next(err, null);
                   } else {
                     if (data_parsed) {
                       message.data_parsed = data_parsed;
-                      Message.upsert(message, function (err: any, messageUpdated: any) {
+                      Message.upsert(message, (err: any, messageUpdated: any) => {
                         if (!err) {
                           // Check if there is Geoloc in payload and create Geoloc object
                           Geoloc.createFromParsedPayload(
                             messageUpdated,
-                            function (err: any, res: any) {
+                            (err: any, res: any) => {
                               if (err) {
                                 next(err, null);
                               } else {
