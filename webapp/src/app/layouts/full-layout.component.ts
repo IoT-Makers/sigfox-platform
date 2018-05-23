@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Alert, Category, Connector, Dashboard, Device, FireLoopRef, Message, Organization, Parser, Role, User} from '../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import {OrganizationApi, ParserApi, UserApi} from '../shared/sdk/services/custom';
@@ -13,7 +13,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   @ViewChild('addOrEditOrganizationModal') addOrEditOrganizationModal: any;
 
   // Flags
-  private isInitialized = false;
+  public isInitialized = false;
   public devicesReady = false;
   public messagesReady = false;
   public countCategoriesReady = false;
@@ -35,15 +35,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  private organizationRouteSub: Subscription;
-  private userOrganizationSub: Subscription;
-  private dashboardSub: Subscription;
-  private categorySub: Subscription;
   private deviceSub: Subscription;
   private messageSub: Subscription;
-  private alertSub: Subscription;
-  private parserSub: Subscription;
-  private connectorSub: Subscription;
 
   private dashboards: Dashboard[] = [];
 
@@ -82,14 +75,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
   constructor(private rt: RealTime,
               private userApi: UserApi,
-              private parserApi: ParserApi,
               private organizationApi: OrganizationApi,
+              private parserApi: ParserApi,
               private route: ActivatedRoute,
               private router: Router) {
 
-    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+    /*this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
-    };
+    };*/
   }
 
   redirectToUserView(): void {
@@ -134,7 +127,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     });
 
     // Check if organization view
-    this.subscriptions.push(this.route.params.subscribe(params => {
+    this.route.params.subscribe(params => {
 
       this.isInitialized = false;
 
@@ -142,7 +135,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       if (params.id) {
         this.organizationApi.findById(params.id, {include: 'Members'}).subscribe((organization: Organization) => {
           this.organization = organization;
-          // console.log('Organization:', organization);
           // Real Time
           if (
             this.rt.connection.isConnected() &&
@@ -150,7 +142,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           ) {
             this.rt.onReady().subscribe(() => this.setup());
           } else {
-            this.rt.onAuthenticated().subscribe(() => this.setup());
+            //this.rt.onAuthenticated().subscribe(() => this.setup());
             this.rt.onReady().subscribe(() => this.setup());
           }
         });
@@ -164,12 +156,12 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         ) {
           this.rt.onReady().subscribe(() => this.setup());
         } else {
-          this.rt.onAuthenticated().subscribe(() => this.setup());
+          //this.rt.onAuthenticated().subscribe(() => this.setup());
           this.rt.onReady().subscribe( () => this.setup());
         }
       }
       //console.log('Router', params);
-    }));
+    });
   }
 
   setup(): void {
@@ -202,36 +194,34 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
          */
         // Categories
         this.categoryRef = this.organizationRef.child<Category>('Categories');
-        this.subscriptions.push(this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
-          this.organizationApi.countCategories(this.organization.id).subscribe(result => {
-            this.countCategories = result.count;
-            this.countCategoriesReady = true;
-          });
+        this.subscriptions.push(this.categoryRef.on('change').subscribe((categories: Category[]) => {
+          this.countCategories = categories.length;
+          this.countCategoriesReady = true;
         }));
 
         // Devices
-        /*this.deviceRef = this.organizationRef.child<Device>('Devices');
-        this.deviceSub = this.deviceRef.on('change', {limit: 1}).subscribe((devices: Device[]) => {
-          this.organizationApi.countDevices(this.organization.id).subscribe(result => {
-            this.countDevices = result.count;
-          });
-        });*/
         this.organizationApi.countDevices(this.organization.id).subscribe(result => {
           this.countDevices = result.count;
           this.countDevicesReady = true;
         });
-
-        // Messages
-        /*this.messageRef = this.organizationRef.child<Message>('Messages');
-        this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((messages: Message[]) => {
-          this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-            this.countMessages = result.count;
+        /*this.deviceRef = this.organizationRef.child<Device>('Devices');
+          this.deviceSub = this.deviceRef.on('child_changed', {limit: 1}).subscribe((devices: Device[]) => {
+          this.organizationApi.countDevices(this.organization.id).subscribe(result => {
+            this.countDevices = result.count;
           });
         });*/
+
+        // Messages
         this.organizationApi.countMessages(this.organization.id).subscribe(result => {
           this.countMessages = result.count;
           this.countMessagesReady = true;
         });
+        /*this.messageRef = this.organizationRef.child<Message>('Messages');
+        this.messageSub = this.messageRef.on('child_changed', {limit: 1}).subscribe((messages: Message[]) => {
+          this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+            this.countMessages = result.count;
+          });
+        });*/
 
       } else {
 
@@ -245,71 +235,54 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
          */
         // Categories
         this.categoryRef = this.userRef.child<Category>('Categories');
-        this.subscriptions.push(this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
-          this.userApi.countCategories(this.user.id).subscribe(result => {
-            this.countCategories = result.count;
-            this.countCategoriesReady = true;
-          });
+        this.subscriptions.push(this.categoryRef.on('change').subscribe((categories: Category[]) => {
+          this.countCategories = categories.length;
+          this.countCategoriesReady = true;
         }));
 
         // Devices
-        /*this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-        this.deviceSub = this.deviceRef.on('change',
-          {
-            limit: 1,
-            where: {userId: this.user.id}
-          }).subscribe((devices: Device[]) => {
-          if (devices.length > 0) {
-            this.userApi.countDevices(this.user.id).subscribe(result => {
-              this.countDevices = result.count;
-            });
-          }
-        });*/
         this.userApi.countDevices(this.user.id).subscribe(result => {
           this.countDevices = result.count;
           this.countDevicesReady = true;
         });
-
-        // Messages
-        /*this.messageRef = this.rt.FireLoop.ref<Message>(Message);
-        this.messageSub = this.messageRef.on('change', {
-            limit: 1,
-            where: {userId: this.user.id}
-          }).subscribe((messages: Message[]) => {
-            this.userApi.countMessages(this.user.id).subscribe(result => {
-              this.countMessages = result.count;
+        /*this.deviceRef = this.userRef.child<Device>('Devices');
+        this.deviceSub = this.deviceRef.on('child_changed', {limit: 1}).subscribe((devices: Device[]) => {
+            this.userApi.countDevices(this.user.id).subscribe(result => {
+              this.countDevices = result.count;
             });
         });*/
+
+        // Messages
         this.userApi.countMessages(this.user.id).subscribe(result => {
           this.countMessages = result.count;
           this.countMessagesReady = true;
         });
+        /*this.messageRef = this.userRef.child<Message>('Messages');
+        this.messageSub = this.messageRef.on('child_changed', {limit: 1}).subscribe((messages: Message[]) => {
+          this.userApi.countMessages(this.user.id).subscribe(result => {
+            this.countMessages = result.count;
+          });
+        });*/
 
         // Alerts
         this.alertRef = this.userRef.child<Alert>('Alerts');
-        this.subscriptions.push(this.alertRef.on('change', {limit: 1}).subscribe((alerts: Alert[]) => {
-          this.userApi.countAlerts(this.user.id).subscribe(result => {
-            this.countAlerts = result.count;
-            this.countAlertsReady = true;
-          });
+        this.subscriptions.push(this.alertRef.on('change').subscribe((alerts: Alert[]) => {
+          this.countAlerts = alerts.length;
+          this.countAlertsReady = true;
         }));
 
         // Parsers
         this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-        this.subscriptions.push(this.parserRef.on('change', {limit: 1}).subscribe((parsers: Parser[]) => {
-          this.parserApi.count().subscribe(result => {
-            this.countParsers = result.count;
-            this.countParsersReady = true;
-          });
+        this.subscriptions.push(this.parserRef.on('change').subscribe((parsers: Parser[]) => {
+          this.countParsers = parsers.length;
+          this.countParsersReady = true;
         }));
 
         // Connectors
         this.connectorRef = this.userRef.child<Connector>('Connectors');
-        this.subscriptions.push(this.connectorRef.on('change', {limit: 1}).subscribe((connectors: Connector[]) => {
-          this.userApi.countConnectors(this.user.id).subscribe(result => {
-            this.countConnectors = result.count;
-            this.countConnectorsReady = true;
-          });
+        this.subscriptions.push(this.connectorRef.on('change').subscribe((connectors: Connector[]) => {
+          this.countConnectors = connectors.length;
+          this.countConnectorsReady = true;
         }));
       }
     }

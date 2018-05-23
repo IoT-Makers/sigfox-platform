@@ -186,10 +186,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       this.categoryToEdit = category;
     } else {
       this.categoryToEdit = new Category();
-      delete this.categoryToEdit.id;
-      this.categoryToEdit.userId = this.user.id;
     }
-    console.log(this.categoryToEdit);
   }
 
   cancel(): void {
@@ -226,19 +223,13 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   remove(): void {
     this.categoryRef.remove(this.categoryToRemove).subscribe(value => {
-      /*// Unlink categories
-      this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
-        organizations.forEach((orga: Organization) => {
-          this.organizationApi.unlinkCategories(orga.id, this.categoryToRemove.id).subscribe(value => {});
-        });
-      });*/
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Category was successfully removed.');
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      this.toast = this.toasterService.pop('error', 'Error', err.message);
     });
     this.confirmModal.hide();
   }

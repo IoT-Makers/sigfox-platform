@@ -1,4 +1,13 @@
 /* tslint:disable */
+import {
+  Parser,
+  Category,
+  Message,
+  Geoloc,
+  User,
+  Organization,
+  Alert
+} from '../index';
 
 declare var Object: any;
 export interface DeviceInterface {
@@ -13,13 +22,13 @@ export interface DeviceInterface {
   "parserId"?: any;
   "categoryId"?: any;
   "userId"?: any;
-  Parser?: any;
-  Category?: any;
-  Messages?: any[];
-  Geolocs?: any[];
-  user?: any;
-  Organizations?: any[];
-  Alerts?: any[];
+  Parser?: Parser;
+  Category?: Category;
+  Messages?: Message[];
+  Geolocs?: Geoloc[];
+  user?: User;
+  Organizations?: Organization[];
+  Alerts?: Alert[];
 }
 
 export class Device implements DeviceInterface {
@@ -34,13 +43,13 @@ export class Device implements DeviceInterface {
   "parserId": any = <any>null;
   "categoryId": any = <any>null;
   "userId": any = <any>null;
-  Parser: any = null;
-  Category: any = null;
-  Messages: any[] = null;
-  Geolocs: any[] = null;
-  user: any = null;
-  Organizations: any[] = null;
-  Alerts: any[] = null;
+  Parser: Parser = null;
+  Category: Category = null;
+  Messages: Message[] = null;
+  Geolocs: Geoloc[] = null;
+  user: User = null;
+  Organizations: Organization[] = null;
+  Alerts: Alert[] = null;
   constructor(data?: DeviceInterface) {
     Object.assign(this, data);
   }
@@ -122,48 +131,48 @@ export class Device implements DeviceInterface {
       relations: {
         Parser: {
           name: 'Parser',
-          type: 'any',
-          model: '',
+          type: 'Parser',
+          model: 'Parser',
           relationType: 'belongsTo',
                   keyFrom: 'parserId',
           keyTo: 'id'
         },
         Category: {
           name: 'Category',
-          type: 'any',
-          model: '',
+          type: 'Category',
+          model: 'Category',
           relationType: 'belongsTo',
                   keyFrom: 'categoryId',
           keyTo: 'id'
         },
         Messages: {
           name: 'Messages',
-          type: 'any[]',
-          model: '',
+          type: 'Message[]',
+          model: 'Message',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'deviceId'
         },
         Geolocs: {
           name: 'Geolocs',
-          type: 'any[]',
-          model: '',
+          type: 'Geoloc[]',
+          model: 'Geoloc',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'deviceId'
         },
         user: {
           name: 'user',
-          type: 'any',
-          model: '',
+          type: 'User',
+          model: 'User',
           relationType: 'belongsTo',
                   keyFrom: 'userId',
           keyTo: 'id'
         },
         Organizations: {
           name: 'Organizations',
-          type: 'any[]',
-          model: '',
+          type: 'Organization[]',
+          model: 'Organization',
           relationType: 'hasMany',
           modelThrough: 'OrganizationDevice',
           keyThrough: 'organizationId',
@@ -172,8 +181,8 @@ export class Device implements DeviceInterface {
         },
         Alerts: {
           name: 'Alerts',
-          type: 'any[]',
-          model: '',
+          type: 'Alert[]',
+          model: 'Alert',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'deviceId'

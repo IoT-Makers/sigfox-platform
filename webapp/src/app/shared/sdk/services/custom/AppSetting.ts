@@ -48,7 +48,7 @@ export class AppSettingApi extends BaseLoopBackApi {
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PATCH";
+    let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/AppSettings";
     let _routeParams: any = {};
@@ -79,7 +79,7 @@ export class AppSettingApi extends BaseLoopBackApi {
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PATCH";
+    let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/AppSettings/:id";
     let _routeParams: any = {

@@ -105,7 +105,6 @@ class Geoloc {
           where: {
             and: [
               {type: geoloc_gps.type},
-              {location: geoloc_gps.location},
               {createdAt: geoloc_gps.createdAt},
               {userId: geoloc_gps.userId},
               {messageId: geoloc_gps.messageId},
@@ -144,7 +143,6 @@ class Geoloc {
               where: {
                 and: [
                   {type: geoloc_beacon.type},
-                  {location: geoloc_beacon.location},
                   {createdAt: geoloc_beacon.createdAt},
                   {userId: geoloc_beacon.userId},
                   {messageId: geoloc_beacon.messageId},
@@ -179,6 +177,7 @@ class Geoloc {
     const Alert = this.model.app.models.Alert;
 
     if (typeof data.geoloc === 'undefined'
+      || typeof data.geoloc.location === 'undefined'
       || typeof data.deviceId === 'undefined'
       || typeof data.time === 'undefined'
       || typeof data.seqNumber === 'undefined') {
@@ -220,7 +219,7 @@ class Geoloc {
             geoloc.location.lng,
             geoloc.deviceId,
             req,
-            function (err: any, res: any) {
+            (err: any, res: any) => {
               if (err) {
                 next(err, null);
               } else {

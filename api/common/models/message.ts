@@ -240,7 +240,7 @@ class Message {
 
                 // Decode the payload
                 Message.app.models.Parser.parsePayload(
-                 deviceInstance.Parser.function,
+                  deviceInstance.Parser.function,
                   message.data,
                   req,
                   function (err: any, data_parsed: any) {

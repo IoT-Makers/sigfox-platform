@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "user",
   "plural": "users",
   "base": "User",

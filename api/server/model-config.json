@@ -80,18 +80,7 @@
   },
   "Device": {
     "dataSource": "mongodb",
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "*": false,
-          "count": true,
-          "timeSeries": true,
-          "getMessagesFromSigfoxBackend": true,
-          "download": true
-        }
-      }
-    }
+    "public": true
   },
   "Parser": {
     "dataSource": "mongodb",
@@ -99,47 +88,15 @@
   },
   "Category": {
     "dataSource": "mongodb",
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "*": false,
-          "count": true,
-          "download": true,
-          "downloadFromOrganization": true
-        }
-      }
-    }
+    "public": true
   },
   "Message": {
     "dataSource": "mongodb",
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "*": false,
-          "count": true,
-          "stats": true,
-          "putSigfox_OldToRemove": true,
-          "putSigfox": true,
-          "putSigfoxAcknowledge": true,
-          "postSigfoxStatus": true
-        }
-      }
-    }
+    "public": true
   },
   "Geoloc": {
     "dataSource": "mongodb",
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "*": false,
-          "count": true,
-          "postSigfox": true
-        }
-      }
-    }
+    "public": true
   },
   "AppSetting": {
     "dataSource": "mongodb",
@@ -163,15 +120,7 @@
   },
   "Alert": {
     "dataSource": "mongodb",
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "*": false,
-          "count": true
-        }
-      }
-    }
+    "public": true
   },
   "AlertValue": {
     "dataSource": null,
@@ -187,27 +136,11 @@
   },
   "Reception": {
     "dataSource": null,
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "*": false,
-          "getBaseStationsByDeviceId": true
-        }
-      }
-    }
+    "public": true
   },
   "Connector": {
     "dataSource": "mongodb",
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "*": false,
-          "count": true
-        }
-      }
-    }
+    "public": true
   },
   "Widget": {
     "dataSource": "mongodb",

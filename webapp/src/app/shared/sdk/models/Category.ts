@@ -1,4 +1,9 @@
 /* tslint:disable */
+import {
+  Device,
+  User,
+  Organization
+} from '../index';
 
 declare var Object: any;
 export interface CategoryInterface {
@@ -9,9 +14,9 @@ export interface CategoryInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: any;
-  Devices?: any[];
-  user?: any;
-  Organizations?: any[];
+  Devices?: Device[];
+  user?: User;
+  Organizations?: Organization[];
 }
 
 export class Category implements CategoryInterface {
@@ -22,9 +27,9 @@ export class Category implements CategoryInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
-  Devices: any[] = null;
-  user: any = null;
-  Organizations: any[] = null;
+  Devices: Device[] = null;
+  user: User = null;
+  Organizations: Organization[] = null;
   constructor(data?: CategoryInterface) {
     Object.assign(this, data);
   }
@@ -90,24 +95,24 @@ export class Category implements CategoryInterface {
       relations: {
         Devices: {
           name: 'Devices',
-          type: 'any[]',
-          model: '',
+          type: 'Device[]',
+          model: 'Device',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'categoryId'
         },
         user: {
           name: 'user',
-          type: 'any',
-          model: '',
+          type: 'User',
+          model: 'User',
           relationType: 'belongsTo',
                   keyFrom: 'userId',
           keyTo: 'id'
         },
         Organizations: {
           name: 'Organizations',
-          type: 'any[]',
-          model: '',
+          type: 'Organization[]',
+          model: 'Organization',
           relationType: 'hasMany',
           modelThrough: 'OrganizationCategory',
           keyThrough: 'organizationId',

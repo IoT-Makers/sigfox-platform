@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "Beacon",
   "plural": "Beacons",
   "base": "PersistedModel",

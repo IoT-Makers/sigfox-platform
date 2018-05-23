@@ -281,7 +281,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
       }
     ).subscribe((alerts: Alert[]) => {
       this.alerts = alerts;
-      console.log(this.alerts);
       this.alertsReady = true;
     });
 
@@ -414,10 +413,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   addAlert(): void {
-    delete this.alertToAddOrEdit.id;
-    this.alertToAddOrEdit.createdAt = new Date();
-    this.alertToAddOrEdit.userId = this.user.id;
-    this.alertRef.upsert(this.alertToAddOrEdit).subscribe((alert: Alert) => {
+    this.alertRef.create(this.alertToAddOrEdit).subscribe((alert: Alert) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully created.');

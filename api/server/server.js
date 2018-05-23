@@ -22,6 +22,7 @@ if (cluster.isMaster && process.env.CLUSTER === "true") {
 } else {
 
   app.use(cookieParser());
+
   app.start = function() {
     // Start the web server
     var server = app.listen(function() {
@@ -41,7 +42,7 @@ if (cluster.isMaster && process.env.CLUSTER === "true") {
   boot(app, __dirname, function(err) {
     if (err) throw err;
 
-    // start the server if `$ node server.js`
+    // Start the server if `$ node server.js`
     if (require.main === module)
       app.start();
   });

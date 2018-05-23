@@ -170,6 +170,10 @@ Object.assign(BaseLoopbackActionTypesFactory('Organization'), {
   DELETE_DASHBOARDS_SUCCESS: type('[Organization] deleteDashboards success'),
   DELETE_DASHBOARDS_FAIL: type('[Organization] deleteDashboards fail'),
 
+  GET_FILTERED_MESSAGES: type('[Organization] getFilteredMessages'),
+  GET_FILTERED_MESSAGES_SUCCESS: type('[Organization] getFilteredMessages success'),
+  GET_FILTERED_MESSAGES_FAIL: type('[Organization] getFilteredMessages fail'),
+
   CREATE_MANY_MEMBERS: type('[Organization] createManyMembers'),
   CREATE_MANY_MEMBERS_SUCCESS: type('[Organization] createManyMembers success'),
   CREATE_MANY_MEMBERS_FAIL: type('[Organization] createManyMembers fail'),
@@ -2081,6 +2085,55 @@ Object.assign(BaseLoopbackActionsFactory<Organization>(OrganizationActionTypes),
    */
   deleteDashboardsFail: class implements Action {
     public readonly type = OrganizationActionTypes.DELETE_DASHBOARDS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * getFilteredMessages Action.
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id Organization id
+   * @param {object} filter Message filter
+   * @param {object} req 
+   * @param {any} meta (optional).
+   * 
+   */
+  getFilteredMessages: class implements Action {
+    public readonly type = OrganizationActionTypes.GET_FILTERED_MESSAGES;
+      public payload: {id: any, filter: LoopBackFilter, req: any};
+
+    constructor(id: any, filter: LoopBackFilter, req: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, filter, req};
+    }
+  },
+  /**
+   * getFilteredMessagesSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  getFilteredMessagesSuccess: class implements Action {
+    public readonly type = OrganizationActionTypes.GET_FILTERED_MESSAGES_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * getFilteredMessagesFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  getFilteredMessagesFail: class implements Action {
+    public readonly type = OrganizationActionTypes.GET_FILTERED_MESSAGES_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

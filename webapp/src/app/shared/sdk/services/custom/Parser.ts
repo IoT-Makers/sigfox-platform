@@ -320,7 +320,7 @@ export class ParserApi extends BaseLoopBackApi {
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PATCH";
+    let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Parsers";
     let _routeParams: any = {};
@@ -351,7 +351,7 @@ export class ParserApi extends BaseLoopBackApi {
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PATCH";
+    let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Parsers/:id";
     let _routeParams: any = {

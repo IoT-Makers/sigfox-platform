@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "Message",
   "plural": "Messages",
   "base": "PersistedModel",

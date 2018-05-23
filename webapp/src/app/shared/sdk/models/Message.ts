@@ -1,4 +1,10 @@
 /* tslint:disable */
+import {
+  Device,
+  Geoloc,
+  User,
+  Organization
+} from '../index';
 
 declare var Object: any;
 export interface MessageInterface {
@@ -16,10 +22,10 @@ export interface MessageInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: any;
-  Device?: any;
-  Geolocs?: any[];
-  user?: any;
-  Organizations?: any[];
+  Device?: Device;
+  Geolocs?: Geoloc[];
+  user?: User;
+  Organizations?: Organization[];
 }
 
 export class Message implements MessageInterface {
@@ -37,10 +43,10 @@ export class Message implements MessageInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
-  Device: any = null;
-  Geolocs: any[] = null;
-  user: any = null;
-  Organizations: any[] = null;
+  Device: Device = null;
+  Geolocs: Geoloc[] = null;
+  user: User = null;
+  Organizations: Organization[] = null;
   constructor(data?: MessageInterface) {
     Object.assign(this, data);
   }
@@ -134,32 +140,32 @@ export class Message implements MessageInterface {
       relations: {
         Device: {
           name: 'Device',
-          type: 'any',
-          model: '',
+          type: 'Device',
+          model: 'Device',
           relationType: 'belongsTo',
                   keyFrom: 'deviceId',
           keyTo: 'id'
         },
         Geolocs: {
           name: 'Geolocs',
-          type: 'any[]',
-          model: '',
+          type: 'Geoloc[]',
+          model: 'Geoloc',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'messageId'
         },
         user: {
           name: 'user',
-          type: 'any',
-          model: '',
+          type: 'User',
+          model: 'User',
           relationType: 'belongsTo',
                   keyFrom: 'userId',
           keyTo: 'id'
         },
         Organizations: {
           name: 'Organizations',
-          type: 'any[]',
-          model: '',
+          type: 'Organization[]',
+          model: 'Organization',
           relationType: 'hasMany',
           modelThrough: 'OrganizationMessage',
           keyThrough: 'organizationId',

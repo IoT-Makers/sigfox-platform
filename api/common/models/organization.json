@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "Organization",
   "plural": "Organizations",
   "base": "PersistedModel",
@@ -50,19 +51,23 @@
     },
     "Messages": {
       "type": "hasAndBelongsToMany",
-      "model": "Message"
+      "model": "Message",
+      "foreignKey": "messageId"
     },
     "Devices": {
       "type": "hasAndBelongsToMany",
-      "model": "Device"
+      "model": "Device",
+      "foreignKey": "deviceId"
     },
     "Categories": {
       "type": "hasAndBelongsToMany",
-      "model": "Category"
+      "model": "Category",
+      "foreignKey": "categoryId"
     },
     "Dashboards": {
       "type": "hasAndBelongsToMany",
-      "model": "Dashboard"
+      "model": "Dashboard",
+      "foreignKey": "dashboardId"
     }
   },
   "acls": [
@@ -84,6 +89,7 @@
       "principalId": "organizationMember",
       "permission": "ALLOW",
       "property": [
+        "getFilteredMessages",
         "findById",
         "findOne",
         "count",

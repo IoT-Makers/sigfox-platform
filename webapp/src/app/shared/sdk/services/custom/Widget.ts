@@ -110,7 +110,7 @@ export class WidgetApi extends BaseLoopBackApi {
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PATCH";
+    let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Widgets";
     let _routeParams: any = {};
@@ -141,7 +141,7 @@ export class WidgetApi extends BaseLoopBackApi {
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PATCH";
+    let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Widgets/:id";
     let _routeParams: any = {

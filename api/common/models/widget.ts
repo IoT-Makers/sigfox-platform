@@ -25,6 +25,7 @@ class Widget {
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('Widget: Before Save');
+    ctx.instance.createdAt = new Date();
     next();
   }
   // Example Remote Method

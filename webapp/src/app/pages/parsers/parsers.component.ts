@@ -97,7 +97,6 @@ export class ParsersComponent implements OnInit, OnDestroy {
     }).subscribe(
       (parsers: Parser[]) => {
         this.parsers = parsers;
-        console.log(this.parsers);
       });
   }
 
@@ -144,7 +143,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   update(parser: Parser): void {
-    this.parserApi.upsert(parser).subscribe((updatedParser: Parser) => {
+    this.parserRef.upsert(parser).subscribe((updatedParser: Parser) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully updated.');
@@ -170,13 +169,14 @@ export class ParsersComponent implements OnInit, OnDestroy {
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
         this.confirmParseModal.hide();
+        this.rt.onReady();
       } else {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('warning', 'Warning', result.message);
         this.confirmParseModal.hide();
+        this.rt.onReady();
       }
-      this.rt.onReady();
     });
   }
 
@@ -186,7 +186,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   remove(): void {
-    this.parserApi.deleteById(this.parserToRemove.id).subscribe(value => {
+    this.parserRef.remove(this.parserToRemove).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully deleted.');

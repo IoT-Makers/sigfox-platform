@@ -202,11 +202,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
        */
       // Categories
       this.categoryRef = this.organizationRef.child<Category>('Categories');
-      this.categorySub = this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
-        this.organizationApi.countCategories(this.organization.id).subscribe(result => {
-          this.countCategories = result.count;
-          this.countCategoriesReady = true;
-        });
+      this.categorySub = this.categoryRef.on('change').subscribe((categories: Category[]) => {
+        this.countCategories = categories.length;
+        this.countCategoriesReady = true;
       });
 
       // Devices
@@ -239,14 +237,16 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
 
       // Messages
-      this.messageRef = this.organizationRef.child<Message>('Messages');
-      this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((messages: Message[]) => {
-        console.log('messages', messages);
+      this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+        this.countMessages = result.count;
+        this.countMessagesReady = true;
+      });
+      /*this.messageRef = this.organizationRef.child<Message>('Messages');
+      this.messageSub = this.messageRef.on('child_changed', {limit: 1}).subscribe((messages: Message[]) => {
         this.organizationApi.countMessages(this.organization.id).subscribe(result => {
           this.countMessages = result.count;
-          this.countMessagesReady = true;
         });
-      });
+      });*/
 
     } else {
 
@@ -257,11 +257,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
        */
       // Categories
       this.categoryRef = this.userRef.child<Category>('Categories');
-      this.categorySub = this.categoryRef.on('change', {limit: 1}).subscribe((categories: Category[]) => {
-        this.userApi.countCategories(this.user.id).subscribe(result => {
-          this.countCategories = result.count;
-          this.countCategoriesReady = true;
-        });
+      this.categorySub = this.categoryRef.on('change').subscribe((categories: Category[]) => {
+        this.countCategories = categories.length;
+        this.countCategoriesReady = true;
       });
 
       // Devices
@@ -295,9 +293,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
 
       // Messages
+      this.userApi.countMessages(this.user.id).subscribe(result => {
+        this.countMessages = result.count;
+        this.countMessagesReady = true;
+      });
       this.messageRef = this.userRef.child<Message>('Messages');
-      this.messageSub = this.messageRef.on('change', {limit: 1}).subscribe((messages: Message[]) => {
-        console.log('messages: ', messages);
+      this.messageSub = this.messageRef.on('child_changed', {limit: 1}).subscribe((messages: Message[]) => {
         this.userApi.countMessages(this.user.id).subscribe(result => {
           this.countMessages = result.count;
           this.countMessagesReady = true;
@@ -306,11 +307,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
       // Alerts
       this.alertRef = this.userRef.child<Alert>('Alerts');
-      this.alertSub = this.alertRef.on('change', {limit: 1}).subscribe((alerts: Alert[]) => {
-        this.userApi.countAlerts(this.user.id, {active: true}).subscribe(result => {
-          this.countAlerts = result.count;
-          this.countAlertsReady = true;
-        });
+      this.alertSub = this.alertRef.on('change', {where: {active: true}}).subscribe((alerts: Alert[]) => {
+        this.countAlerts = alerts.length;
+        this.countAlertsReady = true;
       });
 
       this.getMessagesGraph(this.graphRange);

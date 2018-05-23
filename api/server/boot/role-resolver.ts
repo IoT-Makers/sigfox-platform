@@ -24,7 +24,7 @@ module.exports = (app: any) => {
   // Role.hasMany(User, {through: RoleMapping, foreignKey: 'roleId'});
 
 
-  Role.registerResolver('organizationMember', function (role: any, context: any, cb: Function) {
+  Role.registerResolver('organizationMember', (role: any, context: any, cb: Function) => {
 
     //cb(null, true);
 
@@ -33,7 +33,7 @@ module.exports = (app: any) => {
 
     function reject() {
       //console.log('Reject');
-      process.nextTick(function () {
+      process.nextTick(() => {
         cb('RoleResolver Error', false);
       });
 
@@ -41,7 +41,7 @@ module.exports = (app: any) => {
 
     function authorize() {
       //console.log('Authorize');
-      process.nextTick(function () {
+      process.nextTick(() => {
         cb(null, true);
       });
 
@@ -53,8 +53,9 @@ module.exports = (app: any) => {
       //console.log('callback 1: !userId');
       return reject();
     }
-    // If the target model is not project
+    // If the target model is not Organization
     else if (context.modelName === 'Organization') {
+
       if (!context.modelId) {
         //Is admin?
         User.findById(userId, {include : 'roles'}, (err: any, object: any) => {
@@ -68,11 +69,11 @@ module.exports = (app: any) => {
               if (!cb) return reject();
             }
           });
-
         });
 
       } else {
-        context.model.findById(context.modelId, {include: 'Members'}, function (err: any, object: any) {
+
+        context.model.findById(context.modelId, {include: 'Members'}, (err: any, object: any) => {
           if (err || !object) {
             return reject();
           } else if (!object.Members) {
@@ -84,7 +85,7 @@ module.exports = (app: any) => {
             //console.log(object);
             const members = object.toJSON().Members;
             let authorized = false;
-            members.forEach(function (member: any, index: any, array: any) {
+            members.forEach((member: any, index: any, array: any) => {
 
               if (member.id.toString() === userId.toString()) {
                 //console.log('callback 3: Authorize');

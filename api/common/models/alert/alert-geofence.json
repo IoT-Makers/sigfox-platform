@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "AlertGeofence",
   "plural": "AlertGeofences",
   "base": "Model",

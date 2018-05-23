@@ -1,4 +1,5 @@
 {
+  "replaceOnPUT": false,
   "name": "Parser",
   "plural": "Parsers",
   "base": "PersistedModel",

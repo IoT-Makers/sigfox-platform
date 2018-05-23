@@ -592,7 +592,7 @@ export class DashboardApi extends BaseLoopBackApi {
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PATCH";
+    let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Dashboards";
     let _routeParams: any = {};
@@ -623,7 +623,7 @@ export class DashboardApi extends BaseLoopBackApi {
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PATCH";
+    let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Dashboards/:id";
     let _routeParams: any = {

@@ -5,6 +5,7 @@
     }
   },
   "initial": {
+    "loopback-context#per-request": {},
     "compression": {},
     "cors": {
       "params": {
@@ -48,9 +49,15 @@
     }
   },
   "final": {
+    "./middleware/log-error": {},
     "loopback#urlNotFound": {}
   },
   "final:after": {
-    "strong-error-handler": {}
+    "strong-error-handler": {
+      "params": {
+        "debug": false,
+        "log": true
+      }
+    }
   }
 }

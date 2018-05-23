@@ -6,7 +6,7 @@
         <div class="card-header">
           <div class="row">
             <div class="col-10">
-              <i class="fa fa-bell fa-lg text-alert"></i> <strong>Alerts</strong>
+              <i class="fa fa-bell fa-lg text-alert"></i><strong> Alerts</strong>
             </div>
             <div class="col-2">
               <button class="pull-right btn btn-sm btn-round btn-success" (click)="openAddAlertModal()">
@@ -292,7 +292,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="addOrEditAlertModal.hide()">Close</button>
-          <button *ngIf="addAlertFlag" class="btn btn-success" [disabled]="!addOrEditForm.form.valid" (click)="addAlert()"><i class="fa fa-plus-circle"></i> Add alert</button>
+          <button type="submit" *ngIf="addAlertFlag" class="btn btn-success" [disabled]="!addOrEditForm.form.valid"><i class="fa fa-plus-circle"></i> Add alert</button>
         </div>
       </form>
       <form *ngIf="!addAlertFlag" (ngSubmit)="editAlert()" class="form-horizontal" #addOrEditForm="ngForm">

@@ -253,7 +253,7 @@
         <div class="card-header">
           <div class="row">
             <div class="col-10">
-              <i class="fa fa-plug fa-lg text-connector"></i> <strong>List</strong>
+              <i class="fa fa-plug fa-lg text-connector"></i><strong> List</strong>
             </div>
             <div class="col-2">
               <button class="pull-right btn btn-sm btn-round btn-success" (click)="openAddConnectorModal()">
@@ -330,13 +330,38 @@
 
 </div>
 
+<div bsModal #confirmTokenModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmTokenModal"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm removal of access token</h4>
+        <button type="button" class="close" (click)="confirmTokenModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are your sure you wish to delete this access token (id:
+          <small><b>{{devAccessTokenToRemove.id}}</b></small>
+          )?
+        </p>
+        <p>Be aware the Sigfox Backend callbacks you configured with this token will then be <u>unauthorized</u>!</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-danger" (click)="removeDevAccessToken()">Delete</button>
+        <button class="btn btn-sm btn-default" (click)="confirmTokenModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <div bsModal #addConnectorModal="bs-modal" class="modal fade" [config]="{ignoreBackdropClick: true}" tabindex="-1"
      role="dialog"
      aria-labelledby="addConnectorModal" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <!-- Form Begin -->
     <div class="modal-content">
-      <form class="form-horizontal" #addConnectorForm="ngForm">
+      <form class="form-horizontal" (ngSubmit)="addConnector()" #addConnectorForm="ngForm">
         <div class="modal-header">
           <h4 class="modal-title">Add new connector</h4>
           <button type="button" class="close" (click)="addConnectorModal.hide()" aria-label="Close">
@@ -597,7 +622,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="addConnectorModal.hide()">Close</button>
-          <button class="btn btn-success" [disabled]="!addConnectorForm.form.valid" (click)="addConnector()"><i
+          <button type="submit" class="btn btn-success" [disabled]="!addConnectorForm.form.valid"><i
             class="fa fa-plus-circle"></i> Add connector
           </button>
         </div>
