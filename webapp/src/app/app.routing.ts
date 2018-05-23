@@ -31,9 +31,6 @@ export const routes: Routes = [
 
       {path: 'profile', loadChildren: './pages/user/profile/profile.module#ProfileModule'},
 
-      {path: 'tracking', loadChildren: './widgets/tracking/tracking.module#TrackingModule'},
-      {path: 'analytics', loadChildren: './widgets/analytics/analytics.module#AnalyticsModule'},
-
       {path: 'parsers', loadChildren: './pages/parsers/parsers.module#ParsersModule'},
       {path: 'connectors', loadChildren: './pages/connectors/connectors.module#ConnectorsModule'},
 
@@ -78,8 +75,8 @@ export const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes
-    /*, { enableTracing: true }*/
-  )],
+      /*, { enableTracing: true }*/
+    )],
   exports: [RouterModule]
 })
 export class AppRoutingModule {

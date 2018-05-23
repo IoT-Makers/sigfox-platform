@@ -22,19 +22,18 @@
                   [latitude]="geoloc.location.lat"
                   [longitude]="geoloc.location.lng"
                   [iconUrl]="'assets/img/markers/marker-sigfox.png'">
-                  <agm-info-window
-                    id="{{geoloc.id}}">
-                    <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                  <agm-info-window id="{{geoloc.id}}">
+                    <strong><b>ID: </b><span class="text-device">{{device.id}}</span></strong>
                     <br>
-                    <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                    <strong *ngIf="device.name"><b>Name: </b>{{device.name}}</strong>
                     <br *ngIf="device.name">
-                    <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                    <strong><b>Type: </b><span class="text-geoloc-sigfox">Sigfox</span></strong>
                     <br>
-                    <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                    <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
                     <br>
-                    <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                    <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
                     <br>
-                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                    <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                   </agm-info-window>
                 </agm-marker>
                 <!-- Circle -->
@@ -58,17 +57,16 @@
                   [latitude]="geoloc.location.lat"
                   [longitude]="geoloc.location.lng"
                   [iconUrl]="'assets/img/markers/marker-gps.png'">
-                  <agm-info-window
-                    id="{{geoloc.id}}">
-                    <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                  <agm-info-window id="{{geoloc.id}}">
+                    <strong><b>ID: </b><span class="text-device">{{device.id}}</span></strong>
                     <br>
-                    <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                    <strong *ngIf="device.name"><b>Name: </b>{{device.name}}</strong>
                     <br *ngIf="device.name">
-                    <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                    <strong><b>Type: </b><span class="text-geoloc-gps">GPS</span></strong>
                     <br>
-                    <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                    <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
                     <br>
-                    <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                    <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
                   </agm-info-window>
                 </agm-marker>
               </ng-container>
@@ -81,19 +79,18 @@
                   [latitude]="geoloc.location.lat"
                   [longitude]="geoloc.location.lng"
                   [iconUrl]="'assets/img/markers/marker-beacon.png'">
-                  <agm-info-window
-                    id="{{geoloc.id}}">
-                    <strong><b>ID:</b> <span class="text-device">{{device.id}}</span></strong>
+                  <agm-info-window id="{{geoloc.id}}">
+                    <strong><b>ID: </b><span class="text-device">{{device.id}}</span></strong>
                     <br>
-                    <strong *ngIf="device.name"><b>Name:</b> {{device.name}}</strong>
+                    <strong *ngIf="device.name"><b>Name: </b>{{device.name}}</strong>
                     <br *ngIf="device.name">
-                    <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                    <strong><b>Type: </b><span class="text-geoloc-beacon">Beacon</span></strong>
                     <br>
-                    <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                    <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
                     <br>
-                    <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                    <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
                     <br>
-                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                    <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                   </agm-info-window>
                 </agm-marker>
                 <!-- Circle -->
