@@ -10,12 +10,7 @@ import { Model } from '@mean-expert/model';
   hooks: {
     beforeSave: { name: 'before save', type: 'operation' }
   },
-  remotes: {
-    myRemote: {
-      returns : { arg: 'result', type: 'array' },
-      http    : { path: '/my-remote', verb: 'get' }
-    }
-  }
+  remotes: { }
 })
 
 class Widget {
@@ -25,12 +20,10 @@ class Widget {
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('Widget: Before Save');
-    ctx.instance.createdAt = new Date();
+    if (ctx.instance) {
+      ctx.instance.createdAt = new Date();
+    }
     next();
-  }
-  // Example Remote Method
-  myRemote(next: Function): void {
-    this.model.find(next);
   }
 }
 
