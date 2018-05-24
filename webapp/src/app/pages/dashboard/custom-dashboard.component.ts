@@ -421,17 +421,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   deleteDashboard(): void {
-    if (!this.organization) {
-      this.userApi.destroyByIdDashboards(this.user.id, this.dashboard.id).subscribe(result => {
-        this.router.navigate(['/']);
-        this.rt.onReady().subscribe();
-      });
-    } else {
-      this.organizationApi.destroyByIdDashboards(this.organization.id, this.dashboard.id).subscribe(result => {
-        this.router.navigate(['/organization/' + this.organization.id]);
-        this.rt.onReady().subscribe();
-      });
-    }
+    this.dashboardRef.remove(this.dashboard).subscribe(result => {
+      this.router.navigate(['/']);
+      //this.rt.onReady().subscribe();
+    });
   }
 
   addNewWidget(): void {
