@@ -208,11 +208,19 @@ class Message {
                             deviceInstance.Parser.function,
                             message.data,
                             req,
-                            function (err: any, data_parsed: any) {
+                            (err: any, data_parsed: any) => {
                               if (err) {
                                 next(err, null);
                               } else {
                                 message.data_parsed = data_parsed;
+                                message.data_parsed.forEach((p: any) => {
+                                  if (p.key === 'time' && p.type === 'date') {
+                                    if (p.value instanceof Date) {
+                                      message.createdAt = p.value;
+                                    }
+                                    return;
+                                  }
+                                });
                               }
                             });
 
@@ -221,7 +229,7 @@ class Message {
                             message.data_parsed,
                             deviceInstance,
                             req,
-                            function (err: any, res: any) {
+                            (err: any, res: any) => {
                               if (err) {
                                 next(err, null);
                               } else {
@@ -243,11 +251,19 @@ class Message {
                   deviceInstance.Parser.function,
                   message.data,
                   req,
-                  function (err: any, data_parsed: any) {
+                  (err: any, data_parsed: any) => {
                     if (err) {
                       next(err, null);
                     } else {
                       message.data_parsed = data_parsed;
+                      message.data_parsed.forEach((p: any) => {
+                        if (p.key === 'time' && p.type === 'date') {
+                          if (p.value instanceof Date) {
+                            message.createdAt = p.value;
+                          }
+                          return;
+                        }
+                      });
                     }
                   });
 
@@ -427,11 +443,19 @@ class Message {
                           deviceInstance.Parser.function,
                           message.data,
                           req,
-                          function (err: any, data_parsed: any) {
+                          (err: any, data_parsed: any) => {
                             if (err) {
                               next(err, null);
                             } else {
                               message.data_parsed = data_parsed;
+                              message.data_parsed.forEach((p: any) => {
+                                if (p.key === 'time' && p.type === 'date') {
+                                  if (p.value instanceof Date) {
+                                    message.createdAt = p.value;
+                                  }
+                                  return;
+                                }
+                              });
                             }
                           });
 
@@ -440,7 +464,7 @@ class Message {
                           message.data_parsed,
                           deviceInstance,
                           req,
-                          function (err: any, res: any) {
+                          (err: any, res: any) => {
                             if (err) {
                               next(err, null);
                             } else {
@@ -466,11 +490,19 @@ class Message {
                   deviceInstance.Parser.function,
                   message.data,
                   req,
-                  function (err: any, data_parsed: any) {
+                  (err: any, data_parsed: any) => {
                     if (err) {
                       next(err, null);
                     } else {
                       message.data_parsed = data_parsed;
+                      message.data_parsed.forEach((p: any) => {
+                        if (p.key === 'time' && p.type === 'date') {
+                          if (p.value instanceof Date) {
+                            message.createdAt = p.value;
+                          }
+                          return;
+                        }
+                      });
                     }
                   });
 
@@ -479,7 +511,7 @@ class Message {
                   message.data_parsed,
                   deviceInstance,
                   req,
-                  function (err: any, res: any) {
+                  (err: any, res: any) => {
                     if (err) {
                       next(err, null);
                     } else {
@@ -509,7 +541,7 @@ class Message {
     // Ack from BIDIR callback
     if (message.ack) {
       let result;
-      Device.findOne({where: {id: message.deviceId}}, function (err: any, device: any) {
+      Device.findOne({where: {id: message.deviceId}}, (err: any, device: any) => {
         if (device.data_downlink) {
           message.data_downlink = device.data_downlink;
           result = {
@@ -536,7 +568,7 @@ class Message {
               // Check if there is Geoloc in payload and create Geoloc object
               Geoloc.createFromParsedPayload(
                 messageInstance,
-                function (err: any, res: any) {
+                (err: any, res: any) => {
                   if (err) {
                     next(err, null);
                   } else {
@@ -566,7 +598,7 @@ class Message {
             // Check if there is Geoloc in payload and create Geoloc object
             Geoloc.createFromParsedPayload(
               messageInstance,
-              function (err: any, res: any) {
+              (err: any, res: any) => {
                 if (err) {
                   next(err, null);
                 } else {
@@ -599,7 +631,7 @@ class Message {
           }
         }]
       },
-      function (err: any, device: any) {
+      (err: any, device: any) => {
         if (err) {
           console.error(err);
         } else {
@@ -613,7 +645,7 @@ class Message {
 
           Device.upsert(
             device,
-            function (err: any, deviceUpdated: any) {
+            (err: any, deviceUpdated: any) => {
               if (err) {
                 console.error(err);
               } else {
