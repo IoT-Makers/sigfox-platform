@@ -240,20 +240,28 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       this.organizations = organizations;
       this.selectOrganizations = [];
       console.log(organizations);
-      this.organizations.forEach(result => {
+      this.organizations.forEach(organization => {
         const item = {
-          id: result.id,
-          itemName: result.name
+          id: organization.id,
+          itemName: organization.name
         };
-        this.selectOrganizations.push(item);
+
+        let addOrganization = true;
+        category.Organizations.forEach(categoryOrganization => {
+          if (categoryOrganization.id === organization.id) {
+            addOrganization = false;
+            return;
+          }
+        });
+        if (addOrganization) {
+          this.selectOrganizations.push(item);
+        }
       });
       this.shareCategoryWithOrganizationModal.show();
     });
   }
 
   shareCategoryWithOrganization(category, shareAssociatedDevices): void{
-    console.log(this.selectedOrganizations);
-    console.log(category);
     this.selectedOrganizations.forEach(orga => {
       this.organizationApi.linkCategories(orga.id, category.id).subscribe(results => {
         console.log(results);

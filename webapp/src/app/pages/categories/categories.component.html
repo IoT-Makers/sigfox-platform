@@ -85,7 +85,7 @@
                     </div>
                   </td>
                   <td *ngIf="!edit" class="text-center">
-                    <div *ngIf="!organization" class="btn-group-sm">
+                    <div class="btn-group-sm">
                       <button class="btn btn-outline-primary btn-round" tooltip="Edit category"
                               (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
                       <button class="btn btn-outline-danger btn-round" tooltip="Delete category"
@@ -96,20 +96,6 @@
                       </button>
                       <button class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
                               (click)="$event.preventDefault(); download(category, 'csv');">
-                        <i class="fa fa-download"></i>
-                      </button>
-                    </div>
-                    <div *ngIf="organization" class="btn-group-sm">
-                      <button disabled class="btn btn-outline-primary btn-round" tooltip="Edit category"
-                              (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
-                      <button disabled class="btn btn-outline-danger btn-round" tooltip="Delete category"
-                              (click)="openConfirmModal(category)"><i class="fa fa-trash fa-lg"></i></button>
-                      <button disabled class="btn btn-outline-organization btn-round" tooltip="Share category"
-                              (click)="$event.preventDefault(); showShareCategoryWithOrganizationModal(category)">
-                        <i class="fa fa-share"></i>
-                      </button>
-                      <button class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
-                              (click)="$event.preventDefault(); downloadFromOrganization(organization.id, category, 'csv');">
                         <i class="fa fa-download"></i>
                       </button>
                     </div>
@@ -130,6 +116,41 @@
         </div>
         <div class="card-block">
           <form class="form-horizontal" #editForm="ngForm">
+
+            <div *ngIf="categoryToEdit.Organizations.length>0" class="col col-md-12">
+              <table class="table table-hover table-outline" [mfData]="categoryToEdit.Organizations" #mf="mfDataTable" [mfRowsOnPage]="20">
+                <thead class="thead-inverse">
+                <tr>
+                  <th class="text-center">
+                    <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                  </th>
+                  <th class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let orga of mf.data; let i = index">
+                  <td class="text-center">
+                    <a [routerLink]="['/organization/' + orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
+                  </td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-organization btn-round" tooltip="Unshare this device"
+                            (click)="unshare(orga, categoryToEdit, i)"><i class="fa fa-sign-out fa-lg"></i></button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!--<ng-container *ngIf="categoryToEdit.Organizations">
+              <ng-container *ngFor="let organizations of categoryToEdit.Organizations">
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label"></label>
+                  <button class="btn btn-sm btn-organization" (click)="unshare(i)"> Unshare
+                  </button>
+                </div>
+              </ng-container>
+            </ng-container>-->
+
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Name</label>
               <div class="col-md-9">

@@ -401,23 +401,30 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   showShareDeviceWithOrganizationModal(): void{
+    this.selectOrganizations = [];
     this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
       this.organizations = organizations;
-      console.log(organizations);
-      this.organizations.forEach(result => {
+      this.organizations.forEach(organization => {
         const item = {
-          id: result.id,
-          itemName: result.name
+          id: organization.id,
+          itemName: organization.name
         };
-        this.selectOrganizations.push(item);
+        let addOrganization = true;
+        this.deviceToEdit.Organizations.forEach(deviceOrganization => {
+          if (deviceOrganization.id === organization.id) {
+            addOrganization = false;
+            return;
+          }
+        });
+        if (addOrganization) {
+          this.selectOrganizations.push(item);
+        }
       });
       this.shareDeviceWithOrganizationModal.show();
     });
   }
 
   shareDeviceWithOrganization(deviceId): void{
-    console.log(this.selectedOrganizations);
-    console.log(deviceId);
     this.selectedOrganizations.forEach(orga => {
       this.organizationApi.linkDevices(orga.id, deviceId).subscribe(results => {
         console.log(results);
