@@ -272,10 +272,12 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         }));
 
         // Parsers
-        this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
+        this.parserRef = this.userRef.child<Parser>('Parsers');
         this.subscriptions.push(this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-          this.countParsers = parsers.length;
-          this.countParsersReady = true;
+          this.parserApi.count().subscribe((result: any) => {
+            this.countParsers = result.count;
+            this.countParsersReady = true;
+          });
         }));
 
         // Connectors

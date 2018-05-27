@@ -25,6 +25,8 @@ export class ParsersComponent implements OnInit, OnDestroy {
   private payload: any;
 
   public parsers: Parser[] = [];
+
+  private userRef: FireLoopRef<User>;
   private parserRef: FireLoopRef<Parser>;
   private parserSub: Subscription;
 
@@ -89,14 +91,19 @@ export class ParsersComponent implements OnInit, OnDestroy {
     this.cleanSetup();
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
+    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+
+
 
     // Parsers
-    this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-    this.parserSub = this.parserRef.on('change', {
-      include: ['Devices']
-    }).subscribe(
+    this.parserRef = this.userRef.child<Parser>('Parsers');
+    this.parserSub = this.parserRef.on('change').subscribe(
       (parsers: Parser[]) => {
-        this.parsers = parsers;
+        this.parserApi.find({
+          include: ['Devices']
+        }).subscribe((parsers: Parser[]) => {
+          this.parsers = parsers;
+        });
       });
   }
 
@@ -107,6 +114,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   private cleanSetup() {
     if (this.parserRef) this.parserRef.dispose();
+    if (this.userRef) this.userRef.dispose();
     if (this.parserSub) this.parserSub.unsubscribe();
   }
 
@@ -128,8 +136,6 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   create(): void {
-    this.parserToAdd.id = null;
-    this.parserToAdd.userId = this.user.id;
     this.parserRef.create(this.parserToAdd).subscribe(value => {
       this.parserToAdd = new Parser();
       if (this.toast)
@@ -143,7 +149,8 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   update(parser: Parser): void {
-    this.parserRef.upsert(parser).subscribe((updatedParser: Parser) => {
+    //this.parserRef.upsert(parser)
+    this.parserApi.updateAttributes(parser.id, parser).subscribe((updatedParser: Parser) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully updated.');
@@ -156,7 +163,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.message);
+      this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
     });
   }
 
@@ -193,7 +200,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.message);
+      this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
     });
     this.confirmModal.hide();
   }
