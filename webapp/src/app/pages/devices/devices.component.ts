@@ -54,6 +54,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   private organizationRef: FireLoopRef<Organization>;
   private categoryRef: FireLoopRef<Category>;
   private deviceRef: FireLoopRef<Device>;
+  private deviceOrgaRef: FireLoopRef<Device>;
   private deviceReadRef: FireLoopRef<Device>;
   private parserRef: FireLoopRef<Parser>;
 
@@ -203,20 +204,28 @@ export class DevicesComponent implements OnInit, OnDestroy {
       }]
     };
 
+    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+    this.deviceRef = this.userRef.child<Device>('Devices');
+
+    // Get and listen parsers
+    this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
+    this.parserSub = this.parserRef.on('change').subscribe((parsers: Parser[]) => {
+      this.parsers = parsers;
+    });
+    // Get and listen user categories
+    this.categoryRef = this.userRef.child<Category>('Categories');
+    this.categorySub = this.categoryRef.on('change').subscribe((categories: Category[]) => {
+      this.categories = categories;
+    });
+
     if (this.organization) {
       this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-      this.deviceRef = this.organizationRef.child<Device>('Devices');
-      this.deviceSub = this.deviceRef.on('change', filter).subscribe((devices: Device[]) => {
+      this.deviceOrgaRef = this.organizationRef.child<Device>('Devices');
+      this.deviceSub = this.deviceOrgaRef.on('change', filter).subscribe((devices: Device[]) => {
         this.devices = devices;
         this.devicesReady = true;
       });
-      this.categoryRef = this.organizationRef.child<Category>('Categories');
-      this.categorySub = this.categoryRef.on('change').subscribe((categories: Category[]) => {
-        this.categories = categories;
-      });
     } else {
-      this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-      this.deviceRef = this.userRef.child<Device>('Devices');
       /*this.deviceSub = this.deviceRef.on('change', filter).subscribe((devices: Device[]) => {
         this.devices = devices;
         this.devicesReady = true;
@@ -227,17 +236,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
         this.devices = devices;
         this.devicesReady = true;
       });
-      this.categoryRef = this.userRef.child<Category>('Categories');
-      this.categorySub = this.categoryRef.on('change').subscribe((categories: Category[]) => {
-        this.categories = categories;
-      });
     }
-
-    // Get and listen parsers
-    this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-    this.parserSub = this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-      this.parsers = parsers;
-    });
   }
 
   ngOnDestroy(): void {
@@ -252,6 +251,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     if (this.userRef) this.userRef.dispose();
 
     if (this.deviceRef) this.deviceRef.dispose();
+    if (this.deviceOrgaRef) this.deviceOrgaRef.dispose();
     if (this.deviceReadRef) this.deviceReadRef.dispose();
     if (this.deviceSub) this.deviceSub.unsubscribe();
     if (this.deviceReadSub) this.deviceReadSub.unsubscribe();
@@ -277,7 +277,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error);
+      this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
     });
   }
 
@@ -290,7 +290,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
       }, err => {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.error);
+        this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
       });
     }
 
@@ -396,7 +396,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error);
+      this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
     });
   }
 
@@ -424,9 +424,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
     });
   }
 
-  shareDeviceWithOrganization(deviceId): void{
+  shareDeviceWithOrganization(deviceId): void {
     this.selectedOrganizations.forEach(orga => {
-      this.organizationApi.linkDevices(orga.id, deviceId).subscribe(results => {
+      this.deviceApi.linkOrganizations(deviceId, orga.id).subscribe(results => {
         console.log(results);
         this.shareDeviceWithOrganizationModal.hide();
         this.organizationApi.findById(orga.id).subscribe((org: Organization) => {
@@ -436,17 +436,25 @@ export class DevicesComponent implements OnInit, OnDestroy {
         //
         // }
 
+      }, err => {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', err.error);
       });
     });
   }
 
   unshare(orga, device, index): void {
-    this.organizationApi.unlinkDevices(orga.id, device.id).subscribe(results => {
+    this.deviceApi.unlinkOrganizations(device.id, orga.id).subscribe(results => {
       console.log(results);
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The device has been removed from ' + orga.name + '.');
-      this.deviceToEdit.Organizations.slice(index);
+      this.deviceToEdit.Organizations.splice(index, 1);
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.message);
     });
   }
 

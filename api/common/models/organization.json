@@ -87,6 +87,12 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "organizationMember",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "organizationMember",
       "permission": "ALLOW",
       "property": [
         "getFilteredMessages",
@@ -111,15 +117,6 @@
         "__get__Dashboards",
         "__find__Dashboards",
         "__findOne__Dashboards"
-      ]
-    },
-    {
-      "accessType": "WRITE",
-      "principalType": "ROLE",
-      "principalId": "$authenticated",
-      "permission": "ALLOW",
-      "property": [
-        "create"
       ]
     },
     {

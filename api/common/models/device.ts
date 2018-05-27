@@ -17,8 +17,9 @@ const json2csv = require('json2csv').parse;
 @Model({
   hooks: {
     beforeSave: {name: 'before save', type: 'operation'},
-    beforeDelete: { name: 'before delete', type: 'operation' }/*,
-    access: {name: 'access', type: 'operation'}*/
+    beforeDelete: { name: 'before delete', type: 'operation' },
+    afterRemoteLinkOrganizations: {name: 'prototype.__link__Organizations', type: 'afterRemote'},
+    afterRemoteUnlinkOrganizations: {name: 'prototype.__unlink__Organizations', type: 'afterRemote'}
   },
   remotes: {
     download: {
@@ -79,6 +80,67 @@ class Device {
     next();
   }
 
+
+  afterRemoteLinkOrganizations(ctx: any, data: any, next: Function): void {
+    const Message = this.model.app.models.Message;
+    const Organization = this.model.app.models.Organization;
+
+    //console.log(Organization.prototype.__link__Messages);
+    //console.log(ctx);
+    Message.find({where: {deviceId: data.deviceId}, fields: {'id': true}}, (err: any, messages: any) => {
+      if (!err) {
+        //console.log(messages);
+        Organization.findById(data.organizationId, (err: any, orga: any) => {
+          if (!err) {
+            console.log(orga);
+            messages.forEach((message: any) => {
+              orga.Messages.add(message.id, (err: any, result: any) => {
+                console.log(result);
+              });
+            });
+          } else {
+            next(err);
+          }
+        });
+      } else {
+        next(err);
+      }
+
+    });
+    next();
+    //console.log(ctx);
+  }
+
+  afterRemoteUnlinkOrganizations(ctx: any, data: any, next: Function): void {
+    const Message = this.model.app.models.Message;
+    const Organization = this.model.app.models.Organization;
+
+    //console.log(Organization.prototype.__link__Messages);
+    Message.find({where: {deviceId: ctx.instance.id}, fields: {id: true}}, (err: any, messages: any) => {
+      if (!err) {
+        //console.log(messages);
+        Organization.findById(ctx.args.fk, (err: any, orga: any) => {
+          //console.log(orga);
+          if (!err) {
+            messages.forEach((message: any) => {
+              /**
+               * TODO: check if its not better to use: orga.Messages.remove(message, function...)
+               */
+              orga.Messages.remove(message.id, (err: any, result: any) => {
+                //console.log(result);
+              });
+            });
+          } else {
+            next(err);
+          }
+        });
+      } else {
+        next(err);
+      }
+    });
+    next();
+    //console.log(ctx);
+  }
 
   timeSeries(deviceId: string, dateBegin: string, dateEnd: string, req: any, next: Function): void {
     // Obtain the userId with the access token of ctx

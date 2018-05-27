@@ -11,9 +11,7 @@ import {Model} from '@mean-expert/model';
   hooks: {
     beforeSave: { name: 'before save', type: 'operation' },
     beforeDelete: { name: 'before delete', type: 'operation' },
-    beforeRemoteGetMessages: {name: 'prototype.__get__Messages', type: 'beforeRemote'},
-    afterRemoteLinkDevice: {name: 'prototype.__link__Devices', type: 'afterRemote'},
-    afterRemoteUnlinkDevice: {name: 'prototype.__unlink__Devices', type: 'afterRemote'}
+    beforeRemoteGetMessages: {name: 'prototype.__get__Messages', type: 'beforeRemote'}
   },
   remotes: {
     getFilteredMessages: {
@@ -184,53 +182,6 @@ class Organization {
       ctx.instance.createdAt = new Date();
     }
     next();
-  }
-
-  afterRemoteLinkDevice(ctx: any, data: any, next: Function): void {
-    const Message = this.model.app.models.Message;
-    const Organization = this.model;
-
-    //console.log(Organization.prototype.__link__Messages);
-    //console.log(ctx);
-    Message.find({where: {deviceId: data.deviceId}, fields: {'id': true}}, (err: any, messages: any) => {
-      //console.log(messages);
-      Organization.findById(data.organizationId, (err: any, orga: any) => {
-        console.log(orga);
-        messages.forEach((message: any) => {
-          orga.Messages.add(message.id, (err: any, result: any) => {
-            console.log(result);
-          });
-        });
-      });
-
-    });
-    next();
-    //console.log(ctx);
-  }
-
-  afterRemoteUnlinkDevice(ctx: any, data: any, next: Function): void {
-    const Message = this.model.app.models.Message;
-    const Organization = this.model.app.models.Organization;
-
-    //console.log(Organization.prototype.__link__Messages);
-    //console.log(ctx);
-    Message.find({where: {deviceId: data.deviceId}, fields: {id: true}}, (err: any, messages: any) => {
-      //console.log(messages);
-      Organization.findById(data.organizationId, (err: any, orga: any) => {
-        //console.log(orga);
-        messages.forEach((message: any) => {
-          /**
-           * TODO: check if its not better to use: orga.Messages.remove(message, function...)
-           */
-          orga.Messages.remove(message.id, (err: any, result: any) => {
-            //console.log(result);
-          });
-        });
-      });
-
-    });
-    next();
-    //console.log(ctx);
   }
 
   // Before delete, remove all organizaton models links

@@ -117,7 +117,9 @@
         <div class="card-block">
           <form class="form-horizontal" #editForm="ngForm">
             <div class="form-group row">
-              <label class="col-md-3 form-control-label">Name</label>
+              <label class="col-md-3 form-control-label">Name
+                <small class="text-danger">(required)</small>
+              </label>
               <div class="col-md-9">
                 <input type="text" class="form-control" placeholder="Device name" name="categoryToEdit.name"
                        [(ngModel)]="categoryToEdit.name">
@@ -138,7 +140,9 @@
               <div *ngFor="let property of categoryToEdit.properties; let i = index">
 
                 <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Name</label>
+                  <label class="col-md-3 form-control-label">Name
+                    <small class="text-danger">(required)</small>
+                  </label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" placeholder="Property name"
                            [ngModelOptions]="{standalone: true}"
@@ -147,7 +151,9 @@
                 </div>
 
                 <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Type</label>
+                  <label class="col-md-3 form-control-label">Type
+                    <small class="text-danger">(required)</small>
+                  </label>
                   <div class="col-md-9">
                     <select [ngModelOptions]="{standalone: true}" class="form-control" size="1"
                             [(ngModel)]="property.type">
@@ -178,7 +184,7 @@
               class="fa fa-plus-circle"></i> Add property
             </button>
 
-            <div *ngIf="categoryToEdit.Organizations.length>0" class="col col-md-12">
+            <div *ngIf="categoryToEdit.Organizations && categoryToEdit.Organizations.length>0" class="col col-md-12">
               <table class="table table-hover table-outline" [mfData]="categoryToEdit.Organizations" #mf="mfDataTable" [mfRowsOnPage]="20">
                 <thead class="thead-inverse">
                 <tr>
@@ -194,7 +200,7 @@
                     <a [routerLink]="['/organization/' + orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
                   </td>
                   <td class="text-center">
-                    <button class="btn btn-outline-organization btn-round" tooltip="Unshare this device"
+                    <button class="btn btn-outline-organization btn-round" tooltip="Unshare this category"
                             (click)="unshare(orga, categoryToEdit, i)"><i class="fa fa-sign-out fa-lg"></i></button>
                   </td>
                 </tr>
