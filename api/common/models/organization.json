@@ -84,12 +84,6 @@
       "permission": "DENY"
     },
     {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "organizationMember",
-      "permission": "DENY"
-    },
-    {
       "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "organizationMember",
