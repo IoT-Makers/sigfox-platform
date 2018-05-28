@@ -118,6 +118,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
     // Get and listen categories
     const filter = {
+      order: 'updatedAt DESC',
       include: ['Devices', 'Organizations'],
     };
 

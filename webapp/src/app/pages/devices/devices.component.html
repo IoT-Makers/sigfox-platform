@@ -118,153 +118,6 @@
 
   <div class="row">
 
-    <div *ngIf="edit" class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <i class="fa fa-wrench fa-lg"></i> <strong>Edit device</strong> - <span class="text-device">{{deviceToEdit.name ? deviceToEdit.name : deviceToEdit.id}}</span>
-          <button class="mt-0 btn btn-outline-secondary pull-right" (click)="cancel()"><i
-            class="fa fa-close text-danger"></i></button>
-        </div>
-        <div class="card-block">
-
-          <div class="mb-1">
-            <i class="fa fa-clock-o fa-lg"></i> Last update:
-            <strong>{{deviceToEdit.updatedAt | amTimeAgo}}</strong>
-          </div>
-
-          <form (ngSubmit)="updateDevice()" class="form-horizontal" #editForm="ngForm">
-            <tabset class="table-responsive">
-              <tab heading="Information" id="tab1">
-                <!-- ID -->
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label">ID</label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" placeholder="Device ID" name="deviceToEdit.id" disabled
-                           [(ngModel)]="deviceToEdit.id">
-                  </div>
-                </div>
-                <!-- Name -->
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Name</label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" placeholder="Device name" name="deviceToEdit.name"
-                           [(ngModel)]="deviceToEdit.name">
-                  </div>
-                </div>
-                <!-- Parser -->
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Parser</label>
-                  <div class="col-md-9">
-                    <select name="device.parserId" class="form-control" size="1" [(ngModel)]="deviceToEdit.parserId">
-                      <option [ngValue]="parser.id" *ngFor="let parser of parsers">{{parser.name}}</option>
-                      <option [ngValue]=""></option>
-                    </select>
-                  </div>
-                </div>
-                <!-- Category -->
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Category</label>
-                  <div class="col-md-9">
-                    <select name="deviceToEdit.categoryId" class="form-control" size="1"
-                            [(ngModel)]="deviceToEdit.categoryId" (ngModelChange)="updateDeviceCategory()">
-                      <option [ngValue]="category.id" *ngFor="let category of categories">{{category.name}}</option>
-                      <option [ngValue]=""></option>
-                    </select>
-                  </div>
-                </div>
-                <div *ngIf="deviceToEdit.categoryId">
-                  <div class="form-group row" *ngFor="let property of deviceToEdit.properties; let i = index">
-                    <label class="col-md-3 offset-1 form-control-label">{{property.key}}</label>
-                    <div class="col-md-8">
-                      <input type="{{property.type}}" class="form-control" placeholder="{{property.key}}"
-                             name="deviceToEdit.property.value"
-                             [(ngModel)]="property.value" [ngModelOptions]="{standalone: true}">
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Downlink data -->
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Downlink payload</label>
-                  <div class="col-md-9">
-                    <input #data_downlink="ngModel" type="text" class="form-control"
-                           placeholder="Downlink payload in HEX"
-                           name="data_downlink" maxlength="16" pattern="([a-fA-F0-9]{16})$"
-                           [(ngModel)]="deviceToEdit.data_downlink">
-                    <div [hidden]="data_downlink.valid || data_downlink.pristine"
-                         class="text-danger">
-                      Length must be 8 bytes, in hexadecimal
-                    </div>
-                  </div>
-                </div>
-              </tab>
-
-              <tab heading="Operations" class="text-center">
-
-                <div class="col col-md-12 mb-1">
-                  <p *ngIf="loadingFromBackend" class="font-italic font-weight-bold">This operation can take time...</p>
-                  <button tooltip="Retrieve messages from Sigfox Backend" class="btn btn-round btn-primary btn-ladda" data-style="slide-up" [ladda]='loadingFromBackend' (click)="$event.preventDefault(); showRetrievalModal()">
-                    <i class="fa fa-database"></i> &nbsp; Retrieve
-                  </button>
-                </div>
-                <div class="col col-md-12">
-                  <p *ngIf="parseMessages" class="font-italic font-weight-bold">This operation can take time...</p>
-                  <button tooltip="Decode all messages for current parser" class="btn btn-round btn-primary btn-ladda" data-style="slide-up" [ladda]='loadingParseMessages' (click)="$event.preventDefault(); showParseModal()">
-                    <i class="fa fa-code"></i> &nbsp; Parse
-                  </button>
-                </div>
-                <div class="col col-md-12">
-                  <p></p>
-                  <button tooltip="Download messages (CSV)" class="btn btn-round btn-success btn-ladda" data-style="slide-up" [ladda]='loadingDownload' (click)="$event.preventDefault(); download('csv');">
-                    <i class="fa fa-download"></i> &nbsp; Download
-                  </button>
-                </div>
-                <div class="col col-md-12">
-                  <p></p>
-                  <button tooltip="Share this device" class="btn btn-round btn-organization btn-ladda" data-style="slide-up" (click)="$event.preventDefault(); showShareDeviceWithOrganizationModal()">
-                    <i class="fa fa-share"></i> &nbsp; Share
-                  </button>
-                </div>
-                <div *ngIf="deviceToEdit.Organizations.length>0" class="col col-md-12">
-                  <p></p>
-                  <table class="table table-hover table-outline" [mfData]="deviceToEdit.Organizations" #mf="mfDataTable" [mfRowsOnPage]="20">
-                    <thead class="thead-inverse">
-                    <tr>
-                      <th class="text-center">
-                        <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
-                      </th>
-                      <th class="text-center">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let orga of mf.data; let i = index">
-                      <td class="text-center">
-                        <a [routerLink]="['/organization/' + orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
-                      </td>
-                      <td class="text-center">
-                        <button class="btn btn-outline-organization btn-round" tooltip="Unshare this device"
-                                (click)="unshare(orga, deviceToEdit, i)"><i class="fa fa-sign-out fa-lg"></i></button>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-              </tab>
-            </tabset>
-          </form>
-
-        </div>
-        <div class="card-footer">
-          <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="updateDevice()"><i
-            class="fa fa-check"></i> Update
-          </button>
-          <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
-        </div>
-
-      </div>
-    </div>
-
     <div [ngClass]="(edit)?'col-md-6 col-xs-12':'col-12 col-sm-12'">
       <div class="card">
         <div class="card-header">
@@ -415,6 +268,152 @@
       </div>
     </div>
 
+    <div *ngIf="edit" class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-wrench fa-lg"></i> <strong>Edit device</strong> - <span class="text-device">{{deviceToEdit.name ? deviceToEdit.name : deviceToEdit.id}}</span>
+          <button class="mt-0 btn btn-outline-secondary pull-right" (click)="cancel()"><i
+            class="fa fa-close text-danger"></i></button>
+        </div>
+        <div class="card-block">
+
+          <div class="mb-1">
+            <i class="fa fa-clock-o fa-lg"></i> Last update:
+            <strong>{{deviceToEdit.updatedAt | amTimeAgo}}</strong>
+          </div>
+
+          <form (ngSubmit)="updateDevice()" class="form-horizontal" #editForm="ngForm">
+            <tabset class="table-responsive">
+              <tab heading="Information" id="tab1">
+                <!-- ID -->
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label">ID</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Device ID" name="deviceToEdit.id" disabled
+                           [(ngModel)]="deviceToEdit.id">
+                  </div>
+                </div>
+                <!-- Name -->
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label">Name</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Device name" name="deviceToEdit.name"
+                           [(ngModel)]="deviceToEdit.name">
+                  </div>
+                </div>
+                <!-- Parser -->
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label">Parser</label>
+                  <div class="col-md-9">
+                    <select name="device.parserId" class="form-control" size="1" [(ngModel)]="deviceToEdit.parserId">
+                      <option [ngValue]="parser.id" *ngFor="let parser of parsers">{{parser.name}}</option>
+                      <option [ngValue]=""></option>
+                    </select>
+                  </div>
+                </div>
+                <!-- Category -->
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label">Category</label>
+                  <div class="col-md-9">
+                    <select name="deviceToEdit.categoryId" class="form-control" size="1"
+                            [(ngModel)]="deviceToEdit.categoryId" (ngModelChange)="updateDeviceCategory()">
+                      <option [ngValue]="category.id" *ngFor="let category of categories">{{category.name}}</option>
+                      <option [ngValue]=""></option>
+                    </select>
+                  </div>
+                </div>
+                <div *ngIf="deviceToEdit.categoryId">
+                  <div class="form-group row" *ngFor="let property of deviceToEdit.properties; let i = index">
+                    <label class="col-md-3 offset-1 form-control-label">{{property.key}}</label>
+                    <div class="col-md-8">
+                      <input type="{{property.type}}" class="form-control" placeholder="{{property.key}}"
+                             name="deviceToEdit.property.value"
+                             [(ngModel)]="property.value" [ngModelOptions]="{standalone: true}">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Downlink data -->
+                <div class="form-group row">
+                  <label class="col-md-3 form-control-label">Downlink payload</label>
+                  <div class="col-md-9">
+                    <input #data_downlink="ngModel" type="text" class="form-control"
+                           placeholder="Downlink payload in HEX"
+                           name="data_downlink" maxlength="16" pattern="([a-fA-F0-9]{16})$"
+                           [(ngModel)]="deviceToEdit.data_downlink">
+                    <div [hidden]="data_downlink.valid || data_downlink.pristine"
+                         class="text-danger">
+                      Length must be 8 bytes, in hexadecimal
+                    </div>
+                  </div>
+                </div>
+              </tab>
+
+              <tab heading="Operations" class="text-center">
+
+                <div class="col col-md-12 mb-1">
+                  <p *ngIf="loadingFromBackend" class="font-italic font-weight-bold">This operation can take time...</p>
+                  <button tooltip="Retrieve messages from Sigfox Backend" class="btn btn-round btn-primary btn-ladda" data-style="slide-up" [ladda]='loadingFromBackend' (click)="$event.preventDefault(); showRetrievalModal()">
+                    <i class="fa fa-database"></i> &nbsp; Retrieve
+                  </button>
+                </div>
+                <div class="col col-md-12">
+                  <p *ngIf="parseMessages" class="font-italic font-weight-bold">This operation can take time...</p>
+                  <button tooltip="Decode all messages for current parser" class="btn btn-round btn-primary btn-ladda" data-style="slide-up" [ladda]='loadingParseMessages' (click)="$event.preventDefault(); showParseModal()">
+                    <i class="fa fa-code"></i> &nbsp; Parse
+                  </button>
+                </div>
+                <div class="col col-md-12">
+                  <p></p>
+                  <button tooltip="Download messages (CSV)" class="btn btn-round btn-success btn-ladda" data-style="slide-up" [ladda]='loadingDownload' (click)="$event.preventDefault(); download('csv');">
+                    <i class="fa fa-download"></i> &nbsp; Download
+                  </button>
+                </div>
+                <div class="col col-md-12">
+                  <p></p>
+                  <button tooltip="Share this device" class="btn btn-round btn-organization btn-ladda" data-style="slide-up" (click)="$event.preventDefault(); showShareDeviceWithOrganizationModal()">
+                    <i class="fa fa-share"></i> &nbsp; Share
+                  </button>
+                </div>
+                <div *ngIf="deviceToEdit.Organizations.length>0" class="col col-md-12">
+                  <p></p>
+                  <table class="table table-hover table-outline" [mfData]="deviceToEdit.Organizations" #mf="mfDataTable" [mfRowsOnPage]="20">
+                    <thead class="thead-inverse">
+                    <tr>
+                      <th class="text-center">
+                        <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                      </th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let orga of mf.data; let i = index">
+                      <td class="text-center">
+                        <a [routerLink]="['/organization/' + orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
+                      </td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-organization btn-round" tooltip="Unshare this device"
+                                (click)="unshare(orga, deviceToEdit, i)"><i class="fa fa-sign-out fa-lg"></i></button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </tab>
+            </tabset>
+          </form>
+
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="updateDevice()"><i
+            class="fa fa-check"></i> Update
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
+        </div>
+
+      </div>
+    </div>
 
   </div>
 
