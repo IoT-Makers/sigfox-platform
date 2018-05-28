@@ -184,32 +184,39 @@
 
               </div>
             </div>
-            <button class="pull-right btn btn-sm btn-outline-success mb-1" (click)="addProperty()"><i
-              class="fa fa-plus-circle"></i> Add property
-            </button>
 
-            <div *ngIf="categoryToEdit.Organizations && categoryToEdit.Organizations.length>0" class="col col-md-12">
-              <table class="table table-hover table-outline" [mfData]="categoryToEdit.Organizations" #mf="mfDataTable" [mfRowsOnPage]="20">
-                <thead class="thead-inverse">
-                <tr>
-                  <th class="text-center">
-                    <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
-                  </th>
-                  <th class="text-center">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let orga of mf.data; let i = index">
-                  <td class="text-center">
-                    <a [routerLink]="['/organization/' + orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
-                  </td>
-                  <td class="text-center">
-                    <button class="btn btn-outline-organization btn-round" tooltip="Unshare this category"
-                            (click)="unshare(orga, categoryToEdit, i)"><i class="fa fa-sign-out fa-lg"></i></button>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
+            <div class="row">
+              <div class="col-md-12">
+                <button class="pull-right btn btn-sm btn-outline-success mb-1" (click)="addProperty()"><i
+                  class="fa fa-plus-circle"></i> Add property
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="categoryToEdit.Organizations && categoryToEdit.Organizations.length>0" class="row">
+              <div class="col-md-12">
+                <table class="table table-hover table-outline" [mfData]="categoryToEdit.Organizations" #mf="mfDataTable" [mfRowsOnPage]="20">
+                  <thead class="thead-inverse">
+                  <tr>
+                    <th class="text-center">
+                      <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                    </th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let orga of mf.data; let i = index">
+                    <td class="text-center">
+                      <a [routerLink]="['/organization/' + orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
+                    </td>
+                    <td class="text-center">
+                      <button class="btn btn-outline-organization btn-round" tooltip="Unshare this category"
+                              (click)="unshare(orga, categoryToEdit, i)"><i class="fa fa-sign-out fa-lg"></i></button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
           </form>
