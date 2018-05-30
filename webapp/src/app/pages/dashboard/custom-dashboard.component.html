@@ -380,7 +380,7 @@
                       <span class="switch-label"></span>
                       <span class="switch-handle"></span>
                     </label>
-                    <strong>{{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong>
+                    <strong> {{device.id}} <small *ngIf="device.name">({{device.name}})</small></strong>
                     <!--<input type="text" class="form-control text-center text-device font-weight-bold" value="{{device.name ? device.id + ' (' + device.name + ')' : device.id}}" [readonly]="true">-->
                   </div>
                 </div>
@@ -440,15 +440,15 @@
                                   [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-start.png'">
                                   <agm-info-window>
-                                    <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                                    <strong><b>Type: </b><span class="text-geoloc-sigfox">Sigfox</span></strong>
                                     <br>
-                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                     <br>
-                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                     <br>
-                                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                    <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                                     <br>
-                                    <strong><b>Position:</b> n°{{i}} <span class="text-success">START</span></strong>
+                                    <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
                                 <!-- Circle -->
@@ -474,13 +474,13 @@
                                   [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-start.png'">
                                   <agm-info-window>
-                                    <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                                    <strong><b>Type: </b><span class="text-geoloc-gps">GPS</span></strong>
                                     <br>
-                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                     <br>
-                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                     <br>
-                                    <strong><b>Position:</b> n°{{i}} <span class="text-success">START</span></strong>
+                                    <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
                               </ng-container>
@@ -493,15 +493,15 @@
                                   [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-start.png'">
                                   <agm-info-window>
-                                    <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                                    <strong><b>Type: </b><span class="text-geoloc-beacon">Beacon</span></strong>
                                     <br>
-                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                     <br>
-                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                     <br>
-                                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                    <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                                     <br>
-                                    <strong><b>Position:</b> n°{{i}} <span class="text-success">START</span></strong>
+                                    <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
                                 <!-- Circle -->
@@ -531,15 +531,15 @@
                                   [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-finish.png'">
                                   <agm-info-window>
-                                    <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                                    <strong><b>Type: </b><span class="text-geoloc-sigfox">Sigfox</span></strong>
                                     <br>
-                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                     <br>
-                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                     <br>
-                                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                    <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                                     <br>
-                                    <strong><b>Position:</b> n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                    <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
                                 <!-- Circle -->
@@ -565,13 +565,13 @@
                                   [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-finish.png'">
                                   <agm-info-window>
-                                    <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                                    <strong><b>Type: </b><span class="text-geoloc-gps">GPS</span></strong>
                                     <br>
-                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                     <br>
-                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                     <br>
-                                    <strong><b>Position:</b> n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                    <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
                               </ng-container>
@@ -584,15 +584,15 @@
                                   [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-finish.png'">
                                   <agm-info-window>
-                                    <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                                    <strong><b>Type: </b><span class="text-geoloc-beacon">Beacon</span></strong>
                                     <br>
-                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                     <br>
-                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                     <br>
-                                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                    <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                                     <br>
-                                    <strong><b>Position:</b> n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                    <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
                                 <!-- Circle -->
@@ -622,15 +622,15 @@
                                           [longitude]="geoloc.location.lng"
                                           [iconUrl]="'assets/img/markers/marker-sigfox.png'">
                                 <agm-info-window>
-                                  <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                                  <strong><b>Type: </b><span class="text-geoloc-sigfox">Sigfox</span></strong>
                                   <br>
-                                  <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                  <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                   <br>
-                                  <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                  <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                   <br>
-                                  <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                  <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                                   <br>
-                                  <strong><b>Position: </b> n°{{i}}</strong>
+                                  <strong><b>Position: </b>n°{{i}}</strong>
                                 </agm-info-window>
                               </agm-marker>
                               <!-- Circle -->
@@ -656,13 +656,13 @@
                                           [longitude]="geoloc.location.lng"
                                           [iconUrl]="'assets/img/markers/marker-gps.png'">
                                 <agm-info-window>
-                                  <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                                  <strong><b>Type: </b><span class="text-geoloc-gps">GPS</span></strong>
                                   <br>
-                                  <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                  <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                   <br>
-                                  <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                  <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                   <br>
-                                  <strong><b>Position: </b> n°{{i}}</strong>
+                                  <strong><b>Position: </b>n°{{i}}</strong>
                                 </agm-info-window>
                               </agm-marker>
                               <!-- End GPS -->
@@ -675,15 +675,15 @@
                                           [longitude]="geoloc.location.lng"
                                           [iconUrl]="'assets/img/markers/marker-beacon.png'">
                                 <agm-info-window>
-                                  <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                                  <strong><b>Type: </b><span class="text-geoloc-beacon">Beacon</span></strong>
                                   <br>
-                                  <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                  <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                   <br>
-                                  <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                  <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                   <br>
-                                  <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                  <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                                   <br>
-                                  <strong><b>Position: </b> n°{{i}}</strong>
+                                  <strong><b>Position: </b>n°{{i}}</strong>
                                 </agm-info-window>
                               </agm-marker>
                               <!-- Circle -->
@@ -779,13 +779,13 @@
                                   [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-start.png'">
                                   <agm-info-window>
-                                    <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                                    <strong><b>Type: </b><span class="text-geoloc-gps">GPS</span></strong>
                                     <br>
-                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                     <br>
-                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                     <br>
-                                    <strong><b>Position:</b> n°{{i}} <span class="text-success">START</span></strong>
+                                    <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
                               </ng-container>
@@ -798,15 +798,15 @@
                                   [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-start.png'">
                                   <agm-info-window>
-                                    <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                                    <strong><b>Type: </b><span class="text-geoloc-beacon">Beacon</span></strong>
                                     <br>
-                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                     <br>
-                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                     <br>
-                                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                    <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                                     <br>
-                                    <strong><b>Position:</b> n°{{i}} <span class="text-success">START</span></strong>
+                                    <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
                                 <!-- Circle -->
@@ -836,15 +836,15 @@
                                   [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-finish.png'">
                                   <agm-info-window>
-                                    <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                                    <strong><b>Type: </b><span class="text-geoloc-sigfox">Sigfox</span></strong>
                                     <br>
-                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                     <br>
-                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                     <br>
-                                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                    <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                                     <br>
-                                    <strong><b>Position:</b> n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                    <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
                                 <!-- Circle -->
@@ -870,13 +870,13 @@
                                   [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-finish.png'">
                                   <agm-info-window>
-                                    <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                                    <strong><b>Type: </b><span class="text-geoloc-gps">GPS</span></strong>
                                     <br>
-                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                     <br>
-                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                     <br>
-                                    <strong><b>Position:</b> n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                    <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
                               </ng-container>
@@ -889,15 +889,15 @@
                                   [longitude]="geoloc.location.lng"
                                   [iconUrl]="'assets/img/markers/marker-finish.png'">
                                   <agm-info-window>
-                                    <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                                    <strong><b>Type: </b><span class="text-geoloc-beacon">Beacon</span></strong>
                                     <br>
-                                    <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                    <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                     <br>
-                                    <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                    <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                     <br>
-                                    <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                    <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                                     <br>
-                                    <strong><b>Position:</b> n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                    <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
                                   </agm-info-window>
                                 </agm-marker>
                                 <!-- Circle -->
@@ -927,15 +927,15 @@
                                           [longitude]="geoloc.location.lng"
                                           [iconUrl]="'assets/img/markers/marker-sigfox.png'">
                                 <agm-info-window>
-                                  <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                                  <strong><b>Type: </b><span class="text-geoloc-sigfox">Sigfox</span></strong>
                                   <br>
-                                  <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                  <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                   <br>
-                                  <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                  <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                   <br>
-                                  <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                  <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                                   <br>
-                                  <strong><b>Position: </b> n°{{i}}</strong>
+                                  <strong><b>Position: </b>n°{{i}}</strong>
                                 </agm-info-window>
                               </agm-marker>
                               <!-- Circle -->
@@ -961,13 +961,13 @@
                                           [longitude]="geoloc.location.lng"
                                           [iconUrl]="'assets/img/markers/marker-gps.png'">
                                 <agm-info-window>
-                                  <strong><b>Type:</b> <span class="text-geoloc-gps">GPS</span></strong>
+                                  <strong><b>Type: </b><span class="text-geoloc-gps">GPS</span></strong>
                                   <br>
-                                  <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                  <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                   <br>
-                                  <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                  <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                   <br>
-                                  <strong><b>Position: </b> n°{{i}}</strong>
+                                  <strong><b>Position: </b>n°{{i}}</strong>
                                 </agm-info-window>
                               </agm-marker>
                               <!-- End GPS -->
@@ -980,15 +980,15 @@
                                           [longitude]="geoloc.location.lng"
                                           [iconUrl]="'assets/img/markers/marker-beacon.png'">
                                 <agm-info-window>
-                                  <strong><b>Type:</b> <span class="text-geoloc-beacon">Beacon</span></strong>
+                                  <strong><b>Type: </b><span class="text-geoloc-beacon">Beacon</span></strong>
                                   <br>
-                                  <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                  <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                   <br>
-                                  <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                  <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                   <br>
-                                  <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                                  <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
                                   <br>
-                                  <strong><b>Position: </b> n°{{i}}</strong>
+                                  <strong><b>Position: </b>n°{{i}}</strong>
                                 </agm-info-window>
                               </agm-marker>
                               <!-- Circle -->

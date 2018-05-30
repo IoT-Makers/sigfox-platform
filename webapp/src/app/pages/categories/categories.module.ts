@@ -10,6 +10,7 @@ import {ClickCopyDirective} from './click-copy.directive';
 import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 import {LaddaModule} from 'angular2-ladda';
 import {HttpClientModule} from '@angular/common/http';
+import {DataTableModule} from 'angular2-datatable';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import {HttpClientModule} from '@angular/common/http';
     CommonModule,
     MomentModule,
     FormsModule,
+    DataTableModule,
     ToasterModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),

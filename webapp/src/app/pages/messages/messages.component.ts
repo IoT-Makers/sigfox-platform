@@ -293,31 +293,22 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.filterQuery = params['id'];
       if (this.filterQuery) {
         this.messageFilter = {
-          limit: 100,
           order: 'createdAt DESC',
+          limit: 100,
           include: ['Device', 'Geolocs'],
           where: {
-            and: [
-              {deviceId: this.filterQuery}
-            ]
+            deviceId: this.filterQuery
           }
         };
       } else {
         this.messageFilter = {
-          limit: 100,
           order: 'createdAt DESC',
-          include: ['Device', 'Geolocs'],
-          where: {
-            and: [
-            ]
-          }
+          limit: 100,
+          include: ['Device', 'Geolocs']
         };
       }
 
       if (this.organization) {
-        if (this.messageFilter.where.and.length === 0) {
-          delete this.messageFilter.where;
-        }
 
         this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
           this.messages = messages;
@@ -336,7 +327,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
 
       } else {
-        this.messageFilter.where.and.push({userId: this.user.id});
 
         this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
           this.messages = messages;
@@ -353,8 +343,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
           }
         });
 
-        /*this.messageReadRef = this.rt.FireLoop.ref<Message>(Message);
-        this.messageReadSub = this.messageReadRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+        /*
+          this.messageFilter.where.and.push({userId: this.user.id});
+          this.messageReadRef = this.rt.FireLoop.ref<Message>(Message);
+          this.messageReadSub = this.messageReadRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
           console.error(message);
           const tempMessages = this.messages;
           this.messages = [];
@@ -362,15 +354,16 @@ export class MessagesComponent implements OnInit, OnDestroy {
           this.messages = messages;
           this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
             this.messages = messages;
+            });
           });
-        });*/
+        */
       }
     });
   }
 
   ngOnDestroy(): void {
     console.log('Messages: ngOnDestroy');
-    // Unsubscribe from query parameters
+// Unsubscribe from query parameters
     if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
 
     this.cleanSetup();
@@ -403,7 +396,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.receptions = [];
     this.mapZoom = 10;
 
-    // Message geoloc
+// Message geoloc
     if (message.Geolocs && message.Geolocs.length > 0) {
       this.geolocs = message.Geolocs;
       this.mapLat = message.Geolocs[0].location.lat;
@@ -415,7 +408,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       });
     }
 
-    // Coverage
+// Coverage
     this.userApi.getConnectors(this.user.id, {where: {type: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
       if (connectors.length > 0) {
         // Show map

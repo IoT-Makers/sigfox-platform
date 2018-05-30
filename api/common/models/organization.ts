@@ -11,9 +11,7 @@ import {Model} from '@mean-expert/model';
   hooks: {
     beforeSave: { name: 'before save', type: 'operation' },
     beforeDelete: { name: 'before delete', type: 'operation' },
-    beforeRemoteGetMessages: {name: 'prototype.__get__Messages', type: 'beforeRemote'},
-    afterRemoteLinkDevice: {name: 'prototype.__link__Devices', type: 'afterRemote'},
-    afterRemoteUnlinkDevice: {name: 'prototype.__unlink__Devices', type: 'afterRemote'}
+    beforeRemoteGetMessages: {name: 'prototype.__get__Messages', type: 'beforeRemote'}
   },
   remotes: {
     getFilteredMessages: {
@@ -35,7 +33,7 @@ class Organization {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
 
-    //TODO: loopback organization.Messages(filter is broken for large data tables, can't efficiently fetch with a limit...
+    //TODO: loopback organization.Messages(filter is broken for large data tables, can't efficiently fetch with a limit because it retrieves all messages before ordering them...
     /*this.model.once('attached', () => {
       this.model.findOne({where: {id: ''}}, (err: any, organization: any) => {
         // console.log(category);
@@ -57,7 +55,9 @@ class Organization {
     });*/
   }
 
-  getFilteredMessages(organizationId: string, filter: string, req: any, next: Function): void {
+
+  // TODO: optimize OrganizationMessage
+  getFilteredMessages(organizationId: string, filter: any, req: any, next: Function): void {
     // Models
     const Organization = this.model;
     const Message = this.model.app.models.Message;
@@ -71,16 +71,83 @@ class Organization {
       {
         where: {
           id: organizationId
-        }
+        },
+        include: ['Devices']
       }, (err: any, organization: any) => {
         if (!err && organization) {
-          organization.Messages.find(filter, (err: any, messages: any) => {
-            if (!err) {
-              next(null, messages);
-            } else {
-              next(err);
-            }
-          });
+
+          if (filter.where && filter.where.deviceId) {
+
+            organization.toJSON().Devices.forEach((device: any) => {
+              if (device.id === filter.where.deviceId) {
+                Message.find(filter, (err: any, messages: any) => {
+                  if (!err) {
+                    //console.log(messages);
+                    next(null, messages);
+                  } else {
+                    next(err);
+                  }
+                });
+                return;
+              }
+            });
+            /*organization.Devices.findOne({where: filter.where}, (err: any, organizationDevice: any) => {
+              console.error(organizationDevice);
+              if (!err && organizationDevice) {
+                Message.find(filter, (err: any, messages: any) => {
+                  if (!err) {
+                    //console.log(messages);
+                    next(null, messages);
+                  } else {
+                    next(err);
+                  }
+                });
+              } else {
+                next(err);
+              }
+            });*/
+
+          } else {
+
+            const devicesIds: any[] = [];
+            organization.toJSON().Devices.forEach((device: any) => {
+              devicesIds.push(device.id);
+            });
+
+            filter.where = {deviceId: {inq: devicesIds}};
+            Message.find(filter, (err: any, messages: any) => {
+              if (!err) {
+                //console.log(messages);
+                next(null, messages);
+              } else {
+                next(err);
+              }
+            });
+
+
+            /*organization.Messages.find(filter, (err: any, organizationMessages: any) => {
+              if (!err) {
+                console.log(organizationMessages);
+                next(null, organizationMessages);
+                /!* const messagesIds: any[] = [];
+                 organizationMessages.forEach((orgMsg: any) => {
+                   messagesIds.push(orgMsg.id);
+                 });
+                 console.log(messagesIds);
+                 Message.find({where: {id: {inq: messagesIds}}, order: 'createdAt DESC', include: ['Device', 'Geolocs']}, (err: any, messages: any) => {
+                   if (!err) {
+                     console.log(messages);
+                     next(null, messages);
+                   } else {
+                     console.error(err);
+                     next(err);
+                   }
+                 });*!/
+              } else {
+                next(err);
+              }
+            });*/
+          }
         } else {
           next(err);
         }
@@ -115,53 +182,6 @@ class Organization {
       ctx.instance.createdAt = new Date();
     }
     next();
-  }
-
-  afterRemoteLinkDevice(ctx: any, data: any, next: Function): void {
-    const Message = this.model.app.models.Message;
-    const Organization = this.model;
-
-    //console.log(Organization.prototype.__link__Messages);
-    //console.log(ctx);
-    Message.find({where: {deviceId: data.deviceId}, fields: {'id': true}}, (err: any, messages: any) => {
-      //console.log(messages);
-      Organization.findById(data.organizationId, (err: any, orga: any) => {
-        console.log(orga);
-        messages.forEach((message: any) => {
-          orga.Messages.add(message.id, (err: any, result: any) => {
-            console.log(result);
-          });
-        });
-      });
-
-    });
-    next();
-    //console.log(ctx);
-  }
-
-  afterRemoteUnlinkDevice(ctx: any, data: any, next: Function): void {
-    const Message = this.model.app.models.Message;
-    const Organization = this.model.app.models.Organization;
-
-    //console.log(Organization.prototype.__link__Messages);
-    //console.log(ctx);
-    Message.find({where: {deviceId: data.deviceId}, fields: {id: true}}, (err: any, messages: any) => {
-      //console.log(messages);
-      Organization.findById(data.organizationId, (err: any, orga: any) => {
-        //console.log(orga);
-        messages.forEach((message: any) => {
-          /**
-           * TODO: check if its not better to use: orga.Messages.remove(message, function...)
-           */
-          orga.Messages.remove(message.id, (err: any, result: any) => {
-            //console.log(result);
-          });
-        });
-      });
-
-    });
-    next();
-    //console.log(ctx);
   }
 
   // Before delete, remove all organizaton models links

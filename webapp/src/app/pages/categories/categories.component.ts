@@ -45,6 +45,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   private userRef: FireLoopRef<User>;
   private organizationRef: FireLoopRef<Organization>;
   private categoryRef: FireLoopRef<Category>;
+  private categoryOrgaRef: FireLoopRef<Category>;
 
   public edit = false;
   public categoryToEdit: Category = new Category();
@@ -117,20 +118,22 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
     // Get and listen categories
     const filter = {
+      order: 'updatedAt DESC',
       include: ['Devices', 'Organizations'],
     };
 
+    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+    this.categoryRef = this.userRef.child<Category>('Categories');
+
     if (!this.organization) {
-      this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-      this.categoryRef = this.userRef.child<Category>('Categories');
       this.categorySub = this.categoryRef.on('change', filter).subscribe((categories: Category[]) => {
         this.categories = categories;
         this.categoriesReady = true;
       });
     } else {
       this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-      this.categoryRef = this.organizationRef.child<Category>('Categories');
-      this.categorySub = this.categoryRef.on('change', filter).subscribe((categories: Category[]) => {
+      this.categoryOrgaRef = this.organizationRef.child<Category>('Categories');
+      this.categorySub = this.categoryOrgaRef.on('change', filter).subscribe((categories: Category[]) => {
         this.categories = categories;
         this.categoriesReady = true;
       });
@@ -200,10 +203,10 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Category was successfully updated.');
-    }, error => {
+    }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', 'Please fill in the category name.');
+      this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
     });
   }
 
@@ -229,7 +232,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.message);
+      this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
     });
     this.confirmModal.hide();
   }
@@ -240,27 +243,35 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       this.organizations = organizations;
       this.selectOrganizations = [];
       console.log(organizations);
-      this.organizations.forEach(result => {
+      this.organizations.forEach(organization => {
         const item = {
-          id: result.id,
-          itemName: result.name
+          id: organization.id,
+          itemName: organization.name
         };
-        this.selectOrganizations.push(item);
+
+        let addOrganization = true;
+        category.Organizations.forEach(categoryOrganization => {
+          if (categoryOrganization.id === organization.id) {
+            addOrganization = false;
+            return;
+          }
+        });
+        if (addOrganization) {
+          this.selectOrganizations.push(item);
+        }
       });
       this.shareCategoryWithOrganizationModal.show();
     });
   }
 
-  shareCategoryWithOrganization(category, shareAssociatedDevices): void{
-    console.log(this.selectedOrganizations);
-    console.log(category);
+  shareCategoryWithOrganization(category, shareAssociatedDevices): void {
     this.selectedOrganizations.forEach(orga => {
-      this.organizationApi.linkCategories(orga.id, category.id).subscribe(results => {
+      this.categoryApi.linkOrganizations(category.id, orga.id).subscribe(results => {
         console.log(results);
         if (shareAssociatedDevices && category.Devices.length > 0) {
           category.Devices.forEach(device => {
             this.selectedOrganizations.forEach(orga => {
-              this.organizationApi.linkDevices(orga.id, device.id).subscribe(results => {
+              this.deviceApi.linkOrganizations(device.id, orga.id).subscribe(results => {
                 console.log(results);
               });
             });
@@ -271,17 +282,24 @@ export class CategoriesComponent implements OnInit, OnDestroy {
           this.categoryToEdit.Organizations.push(org);
         });
 
+      }, err => {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', err.message);
       });
     });
   }
 
   unshare(orga, category, index): void {
-    this.organizationApi.unlinkCategories(orga.id, category.id).subscribe(results => {
-      console.log(results);
+    this.categoryApi.unlinkOrganizations(category.id, orga.id).subscribe(results => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The category has been removed from ' + orga.name + '.');
-      this.categoryToEdit.Organizations.slice(index);
+      this.categoryToEdit.Organizations.splice(index, 1);
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.message);
     });
   }
 
@@ -296,6 +314,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     if (this.organizationRef) this.organizationRef.dispose();
     if (this.userRef) this.userRef.dispose();
     if (this.categoryRef) this.categoryRef.dispose();
+    if (this.categoryOrgaRef) this.categoryOrgaRef.dispose();
     if (this.categorySub) this.categorySub.unsubscribe();
   }
 

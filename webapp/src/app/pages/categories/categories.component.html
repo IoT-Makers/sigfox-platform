@@ -57,35 +57,39 @@
                     </div>
                   </td>
                   <td class="text-center" *ngIf="!edit">
-                    <p>{{category.description}}</p>
+                    <div *ngIf="!category.description" class="small text-muted">No description</div>
+                    <div *ngIf="category.description">{{category.description}}</div>
                   </td>
-                  <td>
-                    <div *ngIf="!category.properties" class="small text-muted">No properties yet</div>
-                    <div *ngIf="category.properties">
+                  <td class="text-center">
+                    <div *ngIf="category.properties.length === 0" class="small text-muted">No properties</div>
+                    <div *ngIf="category.properties.length > 0">
                       <div class="small text-gray-dark" *ngFor="let property of category.properties; let i = index">
                         <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>
                         <span class="text-primary">{{property.type ? property.type : ""}}</span>
                       </div>
                     </div>
                   </td>
-                  <td>
-                    <div *ngIf="!category.Devices" class="small text-muted">No devices yet</div>
-                    <div *ngIf="category.Devices">
-                      <div class="small text-center text-device" *ngFor="let device of category.Devices; let i = index">
-                        <strong [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]">{{device.id}}</strong>
+                  <td class="small text-center">
+                    <div *ngIf="category.Devices.length === 0" class="text-muted">No devices yet</div>
+                    <ng-container *ngIf="category.Devices.length > 0">
+                      <div *ngFor="let device of category.Devices; let i = index">
+                        <a [routerLink]="['/messages', device.id]">
+                          <strong class="text-device">{{device.id}} </strong>
+                          <span *ngIf="device.name" class="small">({{device.name}})</span>
+                        </a>
                       </div>
-                    </div>
+                    </ng-container>
                   </td>
-                  <td>
-                    <div *ngIf="!category.Organizations" class="small text-muted">Not shared</div>
-                    <div *ngIf="category.Organizations">
-                      <div class="text-center text-organization" *ngFor="let orga of category.Organizations; let i = index">
+                  <td class="text-center">
+                    <div *ngIf="category.Organizations.length === 0" class="small text-muted">Unshared</div>
+                    <ng-container *ngIf="category.Organizations.length > 0">
+                      <div class="text-organization" *ngFor="let orga of category.Organizations; let i = index">
                         <strong [routerLink]="['/organization/', orga.id]">{{orga.name}}</strong>
                       </div>
-                    </div>
+                    </ng-container>
                   </td>
                   <td *ngIf="!edit" class="text-center">
-                    <div *ngIf="!organization" class="btn-group-sm">
+                    <div class="btn-group-sm">
                       <button class="btn btn-outline-primary btn-round" tooltip="Edit category"
                               (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
                       <button class="btn btn-outline-danger btn-round" tooltip="Delete category"
@@ -96,20 +100,6 @@
                       </button>
                       <button class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
                               (click)="$event.preventDefault(); download(category, 'csv');">
-                        <i class="fa fa-download"></i>
-                      </button>
-                    </div>
-                    <div *ngIf="organization" class="btn-group-sm">
-                      <button disabled class="btn btn-outline-primary btn-round" tooltip="Edit category"
-                              (click)="editCategory(category)"><i class="fa fa-pencil fa-lg"></i></button>
-                      <button disabled class="btn btn-outline-danger btn-round" tooltip="Delete category"
-                              (click)="openConfirmModal(category)"><i class="fa fa-trash fa-lg"></i></button>
-                      <button disabled class="btn btn-outline-organization btn-round" tooltip="Share category"
-                              (click)="$event.preventDefault(); showShareCategoryWithOrganizationModal(category)">
-                        <i class="fa fa-share"></i>
-                      </button>
-                      <button class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
-                              (click)="$event.preventDefault(); downloadFromOrganization(organization.id, category, 'csv');">
                         <i class="fa fa-download"></i>
                       </button>
                     </div>
@@ -131,7 +121,9 @@
         <div class="card-block">
           <form class="form-horizontal" #editForm="ngForm">
             <div class="form-group row">
-              <label class="col-md-3 form-control-label">Name</label>
+              <label class="col-md-3 form-control-label">Name
+                <small class="text-danger">(required)</small>
+              </label>
               <div class="col-md-9">
                 <input type="text" class="form-control" placeholder="Device name" name="categoryToEdit.name"
                        [(ngModel)]="categoryToEdit.name">
@@ -152,7 +144,9 @@
               <div *ngFor="let property of categoryToEdit.properties; let i = index">
 
                 <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Name</label>
+                  <label class="col-md-3 form-control-label">Name
+                    <small class="text-danger">(required)</small>
+                  </label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" placeholder="Property name"
                            [ngModelOptions]="{standalone: true}"
@@ -161,7 +155,9 @@
                 </div>
 
                 <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Type</label>
+                  <label class="col-md-3 form-control-label">Type
+                    <small class="text-danger">(required)</small>
+                  </label>
                   <div class="col-md-9">
                     <select [ngModelOptions]="{standalone: true}" class="form-control" size="1"
                             [(ngModel)]="property.type">
@@ -188,12 +184,44 @@
 
               </div>
             </div>
-            <button class="pull-right btn btn-sm btn-outline-success" (click)="addProperty()"><i
-              class="fa fa-plus-circle"></i> Add property
-            </button>
+
+            <div class="row">
+              <div class="col-md-12">
+                <button class="pull-right btn btn-sm btn-outline-success mb-1" (click)="addProperty()"><i
+                  class="fa fa-plus-circle"></i> Add property
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="categoryToEdit.Organizations && categoryToEdit.Organizations.length>0" class="row">
+              <div class="col-md-12">
+                <table class="table table-hover table-outline" [mfData]="categoryToEdit.Organizations" #mf="mfDataTable" [mfRowsOnPage]="20">
+                  <thead class="thead-inverse">
+                  <tr>
+                    <th class="text-center">
+                      <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                    </th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let orga of mf.data; let i = index">
+                    <td class="text-center">
+                      <a [routerLink]="['/organization/' + orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
+                    </td>
+                    <td class="text-center">
+                      <button class="btn btn-outline-organization btn-round" tooltip="Unshare this category"
+                              (click)="unshare(orga, categoryToEdit, i)"><i class="fa fa-sign-out fa-lg"></i></button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
           </form>
         </div>
+
         <div class="card-footer">
           <button class="btn btn-sm btn-primary" [disabled]="!editForm.form.valid" (click)="update()"><i
             class="fa fa-check"></i> Update

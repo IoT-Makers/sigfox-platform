@@ -84,7 +84,7 @@
       "permission": "DENY"
     },
     {
-      "accessType": "*",
+      "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "organizationMember",
       "permission": "ALLOW",
@@ -111,15 +111,6 @@
         "__get__Dashboards",
         "__find__Dashboards",
         "__findOne__Dashboards"
-      ]
-    },
-    {
-      "accessType": "WRITE",
-      "principalType": "ROLE",
-      "principalId": "$authenticated",
-      "permission": "ALLOW",
-      "property": [
-        "create"
       ]
     },
     {

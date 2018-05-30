@@ -14,7 +14,7 @@
               <div class="card-header">
                 <div class="row">
                   <div class="col-12">
-                    <i class="fa fa-code fa-lg"></i> <strong>Version</strong>
+                    <i class="fa fa-code fa-lg"></i><strong> Version</strong>
                   </div>
                 </div>
               </div>
@@ -23,7 +23,7 @@
               </div>
             </div>
             <p *ngFor="let appSetting of appSettings">
-              <label>{{appSetting.key}}: </label>
+              <label>{{appSetting.key}}:&nbsp;</label>
               <label *ngIf="appSetting.type === 'boolean'" class="switch switch-sm switch-3d switch-success-outline-alt">
                 <input (change)="changeSetting(appSetting)" [(ngModel)]="appSetting.value" type="checkbox"
                        class="switch-input">
@@ -343,10 +343,7 @@
 
                     <td class="text-center">
                       <div class="btn-group-sm">
-                        <!--<button class="btn btn-outline-primary btn-round" tooltip="Leave organization" disabled-->
-                        <!--(click)="leaveOrganization(item)"><i class="fa fa-sign-out fa-lg"></i></button>-->
-                        <button class="btn btn-outline-danger btn-round" tooltip="Delete organization" disabled
-                                (click)="deleteOrganization(orga)"><i class="fa fa-trash fa-lg"></i></button>
+                        <button class="btn btn-outline-danger btn-round" tooltip="Delete organization" (click)="deleteOrganization(orga)"><i class="fa fa-trash fa-lg"></i></button>
                       </div>
                     </td>
                   </tr>

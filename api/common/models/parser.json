@@ -1,9 +1,9 @@
 {
   "replaceOnPUT": false,
+  "strict": false,
   "name": "Parser",
   "plural": "Parsers",
   "base": "PersistedModel",
-  "strict": false,
   "idInjection": true,
   "options": {
     "validateUpsert": true
@@ -80,15 +80,6 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW"
-    },
-    {
-      "accessType": "WRITE",
-      "principalType": "ROLE",
-      "principalId": "$authenticated",
-      "permission": "ALLOW",
-      "property": [
-        "create"
-      ]
     },
     {
       "accessType": "EXECUTE",

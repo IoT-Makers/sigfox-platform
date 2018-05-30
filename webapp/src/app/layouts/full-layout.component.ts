@@ -272,10 +272,12 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         }));
 
         // Parsers
-        this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
+        this.parserRef = this.userRef.child<Parser>('Parsers');
         this.subscriptions.push(this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-          this.countParsers = parsers.length;
-          this.countParsersReady = true;
+          this.parserApi.count().subscribe((result: any) => {
+            this.countParsers = result.count;
+            this.countParsersReady = true;
+          });
         }));
 
         // Connectors
@@ -350,25 +352,22 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   openAddOrganizationModal(): void {
+    this.organizationToAddOrEdit = new Organization();
     this.selectedUsers = [];
     this.selectUsers = [];
     this.addOrganizationFlag = true;
-    this.organizationToAddOrEdit = new Organization();
-    const myself = {
-      id: this.user.id,
-      itemName: this.user.email
-    };
-    this.selectedUsers.push(myself);
 
     if (this.admin) {
-      this.userApi.find({fields: {email: true, id: true}}).subscribe((results: User[]) => {
+      this.userApi.find({fields: {email: true, id: true}}).subscribe((users: User[]) => {
         //console.log(results);
-        results.forEach((result: any) => {
+        users.forEach((user: any) => {
           const item = {
-            id: result.id,
-            itemName: result.email
+            id: user.id,
+            itemName: user.email
           };
-          this.selectUsers.push(item);
+          if (user.id !== this.user.id) {
+            this.selectUsers.push(item);
+          }
         });
 
       });
@@ -381,23 +380,27 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.selectUsers = [];
     this.addOrganizationFlag = false;
     this.organizationToAddOrEdit = this.organization;
-    this.organizationToAddOrEdit.Members.forEach(member => {
+    this.organization.Members.forEach(member => {
       const user = {
         id: member.id,
         itemName: member.email
       };
-      this.selectedUsers.push(user);
+      if (user.id !== this.user.id) {
+        this.selectedUsers.push(user);
+      }
     });
 
     if (this.admin) {
-      this.userApi.find({fields: {email: true, id: true}}).subscribe((results: User[]) => {
+      this.userApi.find({fields: {email: true, id: true}}).subscribe((users: User[]) => {
         //console.log(results);
-        results.forEach((result: any) => {
+        users.forEach((user: any) => {
           const item = {
-            id: result.id,
-            itemName: result.email
+            id: user.id,
+            itemName: user.email
           };
-          this.selectUsers.push(item);
+          if (user.id !== this.user.id) {
+            this.selectUsers.push(item);
+          }
         });
 
       });
@@ -406,49 +409,40 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   addOrganization(): void {
-
     this.organizationToAddOrEdit.userId = this.user.id;
 
     this.userOrganizationRef.create(this.organizationToAddOrEdit).subscribe((organization: Organization) => {
       console.log('Organization created', organization);
-
-      this.selectedUsers.forEach((user: any, index: number) => {
-        this.organizationApi.linkMembers(organization.id, user.id).subscribe((result) => {
-          console.log('result after linking member: ', result);
-          /*if (index === this.selectedUsers.length - 1) {
-            this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
-              console.log(organizations);
-              this.organizations = organizations;
-              this.addOrEditOrganizationtModal.hide();
-            });
-          }*/
-          this.addOrEditOrganizationModal.hide();
-        });
+      this.organizationApi.findById(organization.id, {include: 'Members'}).subscribe((organization: Organization) => {
+        this.organization = organization;
+        this.addOrEditOrganizationModal.hide();
       });
     });
   }
 
   editOrganization(): void {
     this.userOrganizationRef.upsert(this.organizationToAddOrEdit).subscribe((organization: Organization) => {
-      console.log('Organization created', organization);
-
-      this.selectedUsers.forEach((user: any, index, array) => {
-        this.organizationApi.linkMembers(organization.id, user.id).subscribe((result) => {
-          console.log('result after linking member: ', result);
-          if (index === array.length - 1) {
-            this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
-              console.log(organizations);
-              this.organizations = organizations;
-              this.addOrEditOrganizationModal.hide();
-            });
-          }
-        });
+      console.log('Organization edited', organization);
+      this.organizationApi.findById(organization.id, {include: 'Members'}).subscribe((organization: Organization) => {
+        this.organization = organization;
+        this.addOrEditOrganizationModal.hide();
       });
+      /*this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
+        console.log(organizations);
+        this.organizations = organizations;
+        this.addOrEditOrganizationModal.hide();
+      });*/
     });
   }
 
-  unlinkMember(organization: any, user: any): void {
-    this.organizationApi.unlinkMembers(organization.id, user.id).subscribe((result) => {
+  linkMember(user: any): void {
+    this.organizationApi.linkMembers(this.organizationToAddOrEdit.id, user.id).subscribe((result) => {
+      console.log('Result after linking member: ', result);
+    });
+  }
+
+  unlinkMember(user: any): void {
+    this.organizationApi.unlinkMembers(this.organizationToAddOrEdit.id, user.id).subscribe((result) => {
       console.log('Result after unlinking member: ', result);
     });
   }

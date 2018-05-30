@@ -321,18 +321,6 @@
                      name="organizationToAddOrEdit.logo" [(ngModel)]="organizationToAddOrEdit.logo">
             </div>
           </div>
-
-          <div class="form-group row" *ngIf="organization && (organization.userId === user.id || admin === true)">
-            <label class="col-md-3 form-control-label">Select users</label>
-            <div class="col-md-9">
-              <angular2-multiselect name="selectUsers"
-                                    [data]="selectUsers"
-                                    [(ngModel)]="selectedUsers"
-                                    (onDeSelect)="unlinkMember(organizationToAddOrEdit, $event)"
-                                    [settings]="selectUsersSettings">
-              </angular2-multiselect>
-            </div>
-          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="addOrEditOrganizationModal.hide()">Close</button>
@@ -374,7 +362,8 @@
               <angular2-multiselect name="selectUsers"
                                     [data]="selectUsers"
                                     [(ngModel)]="selectedUsers"
-                                    (onDeSelect)="unlinkMember(organizationToAddOrEdit, $event)"
+                                    (onDeSelect)="unlinkMember($event)"
+                                    (onSelect)="linkMember($event)"
                                     [settings]="selectUsersSettings">
               </angular2-multiselect>
             </div>

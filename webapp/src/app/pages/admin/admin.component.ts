@@ -232,11 +232,17 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   }
 
-  deleteOrganization(orga: Organization): void {
-    this.organizationApi.deleteById(orga.id).subscribe((value: any) => {
+  deleteOrganization(organization: Organization): void {
+    this.organizationApi.deleteById(organization.id).subscribe(result => {
+      console.log(result);
+      this.getOrganizations();
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Organization was deleted successfully.');
+    }, (error: any) => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', error.message);
     });
   }
 
