@@ -86,7 +86,7 @@
     {
       "accessType": "READ",
       "principalType": "ROLE",
-      "principalId": "organizationMember",
+        "principalId": "organizationMember",
       "permission": "ALLOW",
       "property": [
         "getFilteredMessages",
@@ -110,7 +110,9 @@
         "__count__Dashboards",
         "__get__Dashboards",
         "__find__Dashboards",
-        "__findOne__Dashboards"
+        "__findOne__Dashboards",
+        "__findOne__Dashboards",
+        "__findById__Dashboards"
       ]
     },
     {

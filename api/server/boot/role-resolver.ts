@@ -53,7 +53,8 @@ module.exports = (app: any) => {
       //console.log('callback 1: !userId');
       return reject();
     }
-    // If the target model is not Organization
+
+    // If the target model is Organization
     else if (context.modelName === 'Organization') {
 
       if (!context.modelId) {
@@ -99,7 +100,9 @@ module.exports = (app: any) => {
           }
         });
       }
-    } else {
+    }
+
+    else {
       //console.log('callback 5: else');
       return reject();
     }
