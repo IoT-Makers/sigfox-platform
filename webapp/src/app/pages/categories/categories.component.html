@@ -72,12 +72,22 @@
                   <td class="small text-center">
                     <div *ngIf="category.Devices.length === 0" class="text-muted">No devices yet</div>
                     <ng-container *ngIf="category.Devices.length > 0">
-                      <div *ngFor="let device of category.Devices; let i = index">
-                        <a [routerLink]="['/messages', device.id]">
-                          <strong class="text-device">{{device.id}} </strong>
-                          <span *ngIf="device.name" class="small">({{device.name}})</span>
-                        </a>
-                      </div>
+                      <ng-container *ngIf="!organization">
+                        <div *ngFor="let device of category.Devices; let i = index">
+                          <a [routerLink]="['/messages', device.id]">
+                            <strong class="text-device">{{device.id}} </strong>
+                            <span *ngIf="device.name" class="small">({{device.name}})</span>
+                          </a>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngIf="organization">
+                        <div *ngFor="let device of category.Devices; let i = index">
+                          <a [routerLink]="['/organization/' + organization.id + '/messages', device.id]">
+                            <strong class="text-device">{{device.id}} </strong>
+                            <span *ngIf="device.name" class="small">({{device.name}})</span>
+                          </a>
+                        </div>
+                      </ng-container>
                     </ng-container>
                   </td>
                   <td class="text-center">
