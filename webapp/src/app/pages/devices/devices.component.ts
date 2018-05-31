@@ -54,7 +54,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
   private organizationRef: FireLoopRef<Organization>;
   private categoryRef: FireLoopRef<Category>;
   private deviceRef: FireLoopRef<Device>;
-  private deviceOrgaRef: FireLoopRef<Device>;
   private deviceReadRef: FireLoopRef<Device>;
   private parserRef: FireLoopRef<Parser>;
 
@@ -220,21 +219,26 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
     if (this.organization) {
       this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-      this.deviceOrgaRef = this.organizationRef.child<Device>('Devices');
-      this.deviceSub = this.deviceOrgaRef.on('change', filter).subscribe((devices: Device[]) => {
+      this.deviceRef = this.organizationRef.child<Device>('Devices');
+      this.deviceSub = this.deviceRef.on('change', filter).subscribe((devices: Device[]) => {
         this.devices = devices;
         this.devicesReady = true;
       });
     } else {
-      /*this.deviceSub = this.deviceRef.on('change', filter).subscribe((devices: Device[]) => {
-        this.devices = devices;
-        this.devicesReady = true;
-      });*/
-      filter.where = {userId: this.user.id};
-      this.deviceReadRef = this.rt.FireLoop.ref<Device>(Device);
-      this.deviceReadSub = this.deviceReadRef.on('change', filter).subscribe((devices: Device[]) => {
-        this.devices = devices;
-        this.devicesReady = true;
+      this.userApi.countDevices(this.user.id).subscribe((result: any) => {
+        if (result.count < 10) {
+          filter.where = {userId: this.user.id};
+          this.deviceReadRef = this.rt.FireLoop.ref<Device>(Device);
+          this.deviceReadSub = this.deviceReadRef.on('change', filter).subscribe((devices: Device[]) => {
+            this.devices = devices;
+            this.devicesReady = true;
+          });
+        } else {
+          this.deviceSub = this.deviceRef.on('change', filter).subscribe((devices: Device[]) => {
+            this.devices = devices;
+            this.devicesReady = true;
+          });
+        }
       });
     }
   }
@@ -251,9 +255,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
     if (this.userRef) this.userRef.dispose();
 
     if (this.deviceRef) this.deviceRef.dispose();
-    if (this.deviceOrgaRef) this.deviceOrgaRef.dispose();
-    if (this.deviceReadRef) this.deviceReadRef.dispose();
     if (this.deviceSub) this.deviceSub.unsubscribe();
+    if (this.deviceReadRef) this.deviceReadRef.dispose();
     if (this.deviceReadSub) this.deviceReadSub.unsubscribe();
 
     if (this.parserRef) this.parserRef.dispose();

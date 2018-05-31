@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Connector, FireLoopRef, Geoloc, Message, Organization, User} from '../../shared/sdk/models';
+import {Connector, Device, FireLoopRef, Geoloc, Message, Organization, User} from '../../shared/sdk/models';
 import {RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
@@ -308,6 +308,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
         };
       }
 
+      this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+
       if (this.organization) {
 
         this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
@@ -325,10 +327,32 @@ export class MessagesComponent implements OnInit, OnDestroy {
           }
         });
 
-
       } else {
 
-        this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
+        this.userApi.countMessages(this.user.id).subscribe((result: any) => {
+          if (result.count < 1000) {
+            if (!this.messageFilter.where) {
+              this.messageFilter.where = {userId: this.user.id};
+            } else {
+              this.messageFilter.where.push({userId: this.user.id});
+            }
+            this.messageReadRef = this.rt.FireLoop.ref<Message>(Message);
+            this.messageReadSub = this.messageReadRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+              this.messages = messages;
+              this.messagesReady = true;
+            });
+            console.log('Real-time global activated!');
+          } else {
+            this.messageRef = this.userRef.child<Message>('Messages');
+            this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+              this.messages = messages;
+              this.messagesReady = true;
+            });
+            console.log('Real-time global deactivated!');
+          }
+        });
+
+        /*this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
           this.messages = messages;
           this.messagesReady = true;
         });
@@ -341,7 +365,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
               this.messages = messages;
             });
           }
-        });
+        });*/
 
         /*
           this.messageFilter.where.and.push({userId: this.user.id});
