@@ -280,13 +280,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(this.route.params.subscribe(params => {
 
-      this.dashboardApi.findById(params.id).subscribe((result: Dashboard) => {
-        console.log(result);
-        this.dashboard = result;
-        this.loadWidgets();
-      });
-
       if (this.organization) {
+        // Load dashboard
+        this.organizationApi.findByIdDashboards(this.organization.id, params.id).subscribe((dashboard: Dashboard) => {
+          this.dashboard = dashboard;
+          this.loadWidgets();
+        });
+
         this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
 
         // Dashboards
@@ -318,6 +318,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         });
 
       } else {
+        // Load dashboard
+        this.userApi.findByIdDashboards(this.user.id, params.id).subscribe((dashboard: Dashboard) => {
+          this.dashboard = dashboard;
+          this.loadWidgets();
+        });
+
         this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
 
         // Dashboards
@@ -879,7 +885,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       console.log(widget);
       this.loadWidgets();
       this.toasterService.pop('success', 'Success', 'The widget was successfully updated.');
-
       this.editWidgetFlag = false;
       this.addOrEditWidgetModal.hide();
     });
