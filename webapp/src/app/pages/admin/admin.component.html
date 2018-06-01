@@ -224,6 +224,9 @@
                       <mfDefaultSorter by="Devices"><i class="fa fa-sort"></i> Devices</mfDefaultSorter>
                     </th>
                     <th class="text-center">
+                      <mfDefaultSorter by="Messages"><i class="fa fa-sort"></i> Messages</mfDefaultSorter>
+                    </th>
+                    <th class="text-center">
                       <mfDefaultSorter by="loggedAt"><i class="fa fa-sort"></i> Last logged</mfDefaultSorter>
                     </th>
                     <th class="text-center">
@@ -248,8 +251,13 @@
                       </div>
                     </td>
                     <td class="text-center">
-                      <strong>
+                      <strong class="text-device">
                         {{user.Devices}}
+                      </strong>
+                    </td>
+                    <td class="text-center">
+                      <strong class="text-message">
+                        {{user.Messages}}
                       </strong>
                     </td>
                     <td class="text-center">

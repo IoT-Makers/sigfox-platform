@@ -123,6 +123,9 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.userApi.countDevices(user.id).subscribe((result: any) => {
           user.Devices = result.count;
         });
+        this.userApi.countMessages(user.id).subscribe((result: any) => {
+          user.Messages = result.count;
+        });
       });
       this.users = users;
       this.usersReady = true;
