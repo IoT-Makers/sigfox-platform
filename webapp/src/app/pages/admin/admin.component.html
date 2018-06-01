@@ -331,9 +331,9 @@
                       </div>
                     </td>
                     <td class="text-center">
-                      <strong class="text-organization">
-                        {{orga.name}}
-                      </strong>
+                      <a [routerLink]="['/organization/', orga.id]">
+                        <strong class="text-organization">{{orga.name}}</strong>
+                      </a>
                     </td>
                     <td class="text-center">
                       <p *ngFor="let member of orga.Members;">

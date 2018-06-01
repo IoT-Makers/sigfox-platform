@@ -94,7 +94,9 @@
                     <div *ngIf="category.Organizations.length === 0" class="small text-muted">Unshared</div>
                     <ng-container *ngIf="category.Organizations.length > 0">
                       <div class="text-organization" *ngFor="let orga of category.Organizations; let i = index">
-                        <strong [routerLink]="['/organization/', orga.id]">{{orga.name}}</strong>
+                        <a [routerLink]="['/organization/', orga.id]">
+                          <strong class="text-organization">{{orga.name}}</strong>
+                        </a>
                       </div>
                     </ng-container>
                   </td>
