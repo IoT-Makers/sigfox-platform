@@ -126,7 +126,7 @@ class Alert {
       });
   }
 
-  private triggerByDevice(data_parsed: Array<any>, device: any, req: any, next: Function): void {
+  private triggerByDevice(data_parsed: any, device: any, req: any, next: Function): void {
     // Get userId
     const userId = req.accessToken.userId;
     if (!userId) {
@@ -147,10 +147,10 @@ class Alert {
            *  If the key being read is set for an alert and if it is activated
            */
           alert.geofence.forEach((alertGeofence: any) => {
-            const lat_device = +_.filter(data_parsed, {key: 'lat'})[0].value;
-            const lng_device = +_.filter(data_parsed, {key: 'lng'})[0].value;
+            const lat_device: any = _.filter(data_parsed, {key: 'lat'})[0];
+            const lng_device: any = _.filter(data_parsed, {key: 'lng'})[0];
             if (lat_device && lng_device) {
-              const location_device = new loopback.GeoPoint({lat: Number(lat_device), lng: Number(lng_device)});
+              const location_device = new loopback.GeoPoint({lat: Number(lat_device.value), lng: Number(lng_device.value)});
               // If geofence is a circle
               if (alertGeofence.radius) {
                 // Check trigger conditions
