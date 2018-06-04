@@ -134,9 +134,9 @@
                     </div>
                   </td>
                   <td class="text-center">
-                    <div class="text-organization font-weight-bold">
-                      {{organization.name}}
-                    </div>
+                    <a [routerLink]="['/organization/', organization.id]">
+                      <strong class="text-organization">{{organization.name}}</strong>
+                    </a>
                   </td>
                   <td class="text-center">
                     <div class="font-weight-bold">

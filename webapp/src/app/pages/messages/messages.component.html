@@ -82,7 +82,16 @@
                 </div>
               </td>
               <td class="text-center text-device">
-                <span tooltip="Click to filter" placement="right" click-copy (click)="filterQuery = message.deviceId">{{message.deviceId}}</span>
+                <ng-container *ngIf="!organization">
+                  <a [routerLink]="['/messages', message.Device.id]">
+                    <strong class="text-device">{{message.Device.id}}</strong>
+                  </a>
+                </ng-container>
+                <ng-container *ngIf="organization">
+                  <a [routerLink]="['/organization/' + organization.id + '/messages', message.Device.id]">
+                    <strong class="text-device">{{message.Device.id}}</strong>
+                  </a>
+                </ng-container>
                 <br>
                 <small *ngIf="message.Device">{{message.Device.name}}</small>
               </td>
