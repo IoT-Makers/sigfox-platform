@@ -1381,6 +1381,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   onDeviceVisibility(devicePosition: number, widgetPosition: number): any {
     const widget = this.widgets[widgetPosition];
     const device = this.widgets[widgetPosition].data[devicePosition];
+    device.Geolocs = [];
+    device.Messages = [];
 
     if (device.visibility) {
       //const widgetFilter = widget.filter.getInitialState();
@@ -1390,7 +1392,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
       this.getDevicesWithFilter(widgetFilter).subscribe((devices: any[]) => {
         device.Messages = devices[0].Messages;
-        device.Geolocs = [];
 
         if (widget.options.geolocType === 'preferGps') {
           device.Messages.forEach((message: any) => {

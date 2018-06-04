@@ -1,5 +1,7 @@
 import {Model} from '@mean-expert/model';
+
 const path = require('path');
+const loopback = require('loopback');
 
 /**
  * @module user
@@ -63,7 +65,6 @@ class user {
       });
   }
 
-  // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('user: Before Save');
     next();
@@ -173,34 +174,44 @@ class user {
         }
       });
 
-    const options = {
-      type: 'email',
-      to: userInstance.email,
-      from: 'noreply@thenorthweb.com',
-      subject: 'Merci de votre inscription.',
-      template: path.resolve(__dirname, '../../server/views/welcome.ejs'),
-      redirect: '',
-      user: user
-    };
+    // Send mail
+    /*
+    const mailTemplate = fs.readFileSync(__dirname + '/../views/welcome.html', 'utf8');
 
-    // userInstance.verify(options, function (err:any, response:any, next:Function) {
-    //   if (err) {
-    //     console.log(err);
-    //     ctx.res.status(err.status || 500);
-    //   }
-    //
-    //   console.log('> verification email sent:', response);
-    //
-    //   context.res.status(response.status).json('response', {
-    //     title: 'Signed up successfully',
-    //     content: 'Please check your email and click on the verification link ' +
-    //     'before logging in.',
-    //     redirectTo: '/',
-    //     redirectToLinkText: 'Log in'
-    //   });
-    //
-    // });
+    loopback.Email.send({
+      to: '',
+      from: '',
+      subject: 'Welcome!',
+      text: 'Welcome to the Sigfox Platform!',
+      html: mailTemplate.toString()
+    })
+      .then((response: any) => {
+        console.log(response);
+      })
+      .catch((err: any) => {
+        console.error(err);
+      });
+    */
 
+    if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
+      const options = {
+        type: 'email',
+        to: userInstance.email,
+        from: '',
+        subject: 'Welcome to the Sigfox Platform!',
+        template: path.resolve(__dirname, '../../server/views/welcome.html'),
+        redirect: '',
+        user: user
+      };
+
+      userInstance.verify(options, (err: any, response: any, next: Function) => {
+        if (err) {
+          console.log(err);
+          ctx.res.status(err.status || 500);
+        }
+        console.log('> verification email sent:', response);
+      });
+    }
   }
 
   // Before delete user method

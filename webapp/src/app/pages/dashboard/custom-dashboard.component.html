@@ -385,7 +385,7 @@
                   </div>
                 </div>
 
-                <div #deviceListMobile class="floating-panel" *ngIf="mobile && widget.data" style="max-width: 100%; max-height: 20%">
+                <div #deviceListMobile class="floating-panel" *ngIf="mobile && widget.data" style="max-width: 80%; max-height: 20%">
                   <div class="m-1" *ngFor="let device of widget.data; let i = index">
                     <label for="{{device.id}}" class="switch switch-sm switch-3d switch-device-outline-alt">
                       <input id="{{device.id}}"

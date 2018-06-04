@@ -22,7 +22,8 @@
     "public": false
   },
   "Email": {
-    "dataSource": "email"
+    "dataSource": "mailgun",
+    "public": false
   },
   "AccessToken": {
     "dataSource": "mongodb",

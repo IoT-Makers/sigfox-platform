@@ -1,12 +1,12 @@
 'use strict';
 
-var mongodbURI = process.env.MONGO_URL || process.env.MONGODB_URI;
+var mongodbUrl = process.env.MONGO_URL || process.env.MONGODB_URI;
 
-if (mongodbURI) {
-  console.log('Data sources: Using MongoDB config', mongodbURI);
+if (mongodbUrl) {
+  console.log('Data sources: Using MongoDB config', mongodbUrl);
   module.exports = {
     mongodb: {
-      url: mongodbURI,
+      url: mongodbUrl,
       name: 'mongodb',
       connector: 'mongodb'
     }

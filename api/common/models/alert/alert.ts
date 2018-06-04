@@ -253,7 +253,7 @@ class Alert {
           if (connector.type === 'office-365') {
             console.log('Office 365 Email alert!');
             // Set the connector user and pass
-            this.model.app.models.Email.dataSource.connector.transports[0].transporter.options.auth = {
+            this.model.app.models.dataSources.email.connector.transports[0].transporter.options.auth = {
               user: connector.login,
               pass: decrypt(connector.password)
             };

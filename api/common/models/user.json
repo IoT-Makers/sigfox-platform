@@ -6,7 +6,8 @@
   "idInjection": true,
   "options": {
     "validateUpsert": true,
-    "allowEternalTokens": true
+    "allowEternalTokens": true,
+    "emailVerificationRequired": true
   },
   "mixins": {
     "FireLoop": true,

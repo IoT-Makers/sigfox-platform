@@ -547,27 +547,29 @@ class Device {
 
     const deviceId = ctx.where.id;
 
-    Device.findOne({where: {id: deviceId}, include: 'Organizations'}, (err: any, device: any) => {
-      // console.log(category);
-      if (err) {
-        next(err, null);
-      } else {
-        if (device && device.Organizations) {
-          device.toJSON().Organizations.forEach((orga: any) => {
-            device.Organizations.remove(orga.id, (err: any, result: any) => {
-              if (!err) {
-                console.log('Unlinked device from organization (' + orga.name + ')');
-              }
+    if (deviceId) {
+      Device.findOne({where: {id: deviceId}, include: 'Organizations'}, (err: any, device: any) => {
+        // console.log(category);
+        if (err) {
+          next(err, null);
+        } else {
+          if (device && device.Organizations) {
+            device.toJSON().Organizations.forEach((orga: any) => {
+              device.Organizations.remove(orga.id, (err: any, result: any) => {
+                if (!err) {
+                  console.log('Unlinked device from organization (' + orga.name + ')');
+                }
+              });
             });
-          });
+          }
+          console.log('Unlinked device from organization');
         }
-        console.log('Unlinked device from organization');
-      }
-    });
+      });
 
-    Message.destroyAll({deviceId: deviceId}, (error: any, result: any) => { if (!error) console.log('Deleted all messages for device: ' + deviceId); });
-    Geoloc.destroyAll({deviceId: deviceId}, (error: any, result: any) => { if (!error) console.log('Deleted all geolocs for device: ' + deviceId); });
-    Alert.destroyAll({deviceId: deviceId}, (error: any, result: any) => { if (!error) console.log('Deleted all alerts for device: ' + deviceId); });
+      Message.destroyAll({deviceId: deviceId}, (error: any, result: any) => { if (!error) console.log('Deleted all messages for device: ' + deviceId); });
+      Geoloc.destroyAll({deviceId: deviceId}, (error: any, result: any) => { if (!error) console.log('Deleted all geolocs for device: ' + deviceId); });
+      Alert.destroyAll({deviceId: deviceId}, (error: any, result: any) => { if (!error) console.log('Deleted all alerts for device: ' + deviceId); });
+    }
 
     next();
   }

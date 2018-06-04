@@ -7,6 +7,11 @@
     "name": "mongodb",
     "connector": "mongodb"
   },
+  "mailgun": {
+    "connector": "loopback-connector-mailgun",
+    "apikey": "${MAILGUN_API_KEY}",
+    "domain": "${MAILGUN_DOMAIN}"
+  },
   "applicationEmail": {
     "name": "applicationEmail",
     "connector": "mail",
@@ -17,8 +22,8 @@
         "secure": true,
         "port": 465,
         "auth": {
-          "user": "",
-          "pass": ""
+          "user": "{!user:string}",
+          "pass": "{!pass:string}"
         }
       }
     ]
