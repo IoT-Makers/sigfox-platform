@@ -675,7 +675,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-// Tracking
+    // Tracking
     else if (this.newWidget.type === 'tracking') {
       this.newWidget.options.zoom = 6;
       this.newWidget.options.lat = 48.864716;
@@ -721,7 +721,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             or: []
           },
           limit: 100,
-          order: 'updatedAt DESC',
+          order: 'createdAt DESC',
           include: [{
             relation: 'Geolocs',
             scope: {
@@ -741,7 +741,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             or: []
           },
           limit: 100,
-          order: 'updatedAt DESC',
+          order: 'createdAt DESC',
           include: [{
             relation: 'Geolocs',
             scope: {

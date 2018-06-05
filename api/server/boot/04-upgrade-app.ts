@@ -1,9 +1,7 @@
-'use strict';
-
 import {encrypt} from '../../common/models/utils';
 
 /**
- * This bootscript is used to upgrade the application during boot-up !
+ * This bootscript is used to upgrade the application during boot-up!
  * @param app
  */
 

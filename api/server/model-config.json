@@ -22,7 +22,7 @@
     "public": false
   },
   "Email": {
-    "dataSource": "mailgun",
+    "dataSource": null,
     "public": false
   },
   "AccessToken": {

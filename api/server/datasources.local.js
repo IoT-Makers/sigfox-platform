@@ -3,7 +3,7 @@
 var mongodbUrl = process.env.MONGO_URL || process.env.MONGODB_URI;
 
 if (mongodbUrl) {
-  console.log('Data sources: Using MongoDB config', mongodbUrl);
+  console.log('Loading MongoDB with: ' + mongodbUrl);
   module.exports = {
     mongodb: {
       url: mongodbUrl,
