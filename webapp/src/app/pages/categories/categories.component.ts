@@ -143,6 +143,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   downloadFromOrganization(organizationId: string, category: Category, type: string): void {
     this.loadingDownload = true;
     const url = this.document.location.origin + '/api/Categories/download/' + organizationId + '/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    //const url = 'http://localhost:3000/api/Categories/download/' + organizationId + '/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
 
     this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
       const blob: Blob = new Blob([res], {type: 'text/csv'});
@@ -162,6 +163,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   download(category: Category, type: string): void {
     this.loadingDownload = true;
     const url = this.document.location.origin + '/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
 
     this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
       const blob: Blob = new Blob([res], {type: 'text/csv'});

@@ -110,8 +110,12 @@
                               (click)="$event.preventDefault(); showShareCategoryWithOrganizationModal(category)">
                         <i class="fa fa-share"></i>
                       </button>
-                      <button class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
+                      <button *ngIf="!organization" class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
                               (click)="$event.preventDefault(); download(category, 'csv');">
+                        <i class="fa fa-download"></i>
+                      </button>
+                      <button *ngIf="organization" class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
+                              (click)="$event.preventDefault(); downloadFromOrganization(organization.id, category, 'csv');">
                         <i class="fa fa-download"></i>
                       </button>
                     </div>

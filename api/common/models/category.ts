@@ -108,7 +108,7 @@ class Category {
           ]
         },
         include: ['Devices']
-      }, function (err: any, category: any) {
+      }, (err: any, category: any) => {
         if (err) {
           console.error(err);
           res.send(err);
@@ -165,11 +165,11 @@ class Category {
                     }]
                   }
                 }]
-              }, function (err: any, device: any) {
+              }, (err: any, device: any) => {
                 if (err) {
                   console.error(err);
                   res.send(err);
-                } else {
+                } else if (device) {
                   device = device.toJSON();
                   device.Messages.forEach((message: any) => {
                     const obj: any = {};
@@ -222,6 +222,8 @@ class Category {
                     res.send(csv);
                     //next();
                   }
+                } else if (i === category.Devices.length - 1) {
+                  next(null, 'Device does not belong to user - not allowed');
                 }
               });
           });
@@ -266,7 +268,8 @@ class Category {
             }]
           }
         }]
-      }, function (err: any, organization: any) {
+      }, (err: any, organization: any) => {
+        console.error(organization);
         organization = organization.toJSON();
         if (err) {
           console.error(err);
@@ -322,7 +325,7 @@ class Category {
                     }]
                   }
                 }]
-              }, function (err: any, device: any) {
+              }, (err: any, device: any) => {
                 if (err) {
                   console.error(err);
                   res.send(err);

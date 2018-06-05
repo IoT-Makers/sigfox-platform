@@ -1,7 +1,10 @@
 <div class="animated fadeIn">
   <div class="card">
-    <div class="card-header">
+    <div *ngIf="!organization" class="card-header">
       <i class="fa fa-envelope fa-lg text-message"></i><strong> Messages</strong>
+    </div>
+    <div *ngIf="organization" class="card-header">
+      <i class="fa fa-envelope fa-lg text-message"></i><strong> Shared messages</strong>
     </div>
     <div class="card-block">
       <ng-container *ngIf="!messagesReady">

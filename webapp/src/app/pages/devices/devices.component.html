@@ -122,8 +122,11 @@
       <div class="card">
         <div class="card-header">
           <div class="row">
-            <div class="col-md-6">
+            <div *ngIf="!organization" class="col-md-6">
               <i class="fa fa-microchip fa-lg text-device"></i><strong> Devices</strong>
+            </div>
+            <div *ngIf="organization" class="col-md-6">
+              <i class="fa fa-microchip fa-lg text-device"></i><strong> Shared devices</strong>
             </div>
             <div class="col-md-4 offset-md-2">
               <div class="input-group">
