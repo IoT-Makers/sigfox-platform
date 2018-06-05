@@ -193,8 +193,8 @@ class user {
       // || userInstance.email
       const options = {
         type: 'email',
-        to: 'antoinedechassey@gmail.com',
-        from: 'antoinedechassey@gmail.com',
+        to: userInstance.email,
+        from: '',
         subject: 'Welcome to the Sigfox Platform!',
         html: html_body,
         redirect: '',
