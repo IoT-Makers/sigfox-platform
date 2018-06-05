@@ -1,6 +1,6 @@
 import {Model} from '@mean-expert/model';
+import * as path from 'path';
 
-const path = require('path');
 const loopback = require('loopback');
 
 /**
@@ -175,31 +175,26 @@ class user {
       });
 
     // Send mail
-    /*
-    const mailTemplate = fs.readFileSync(__dirname + '/../views/welcome.html', 'utf8');
-
-    loopback.Email.send({
-      to: '',
-      from: '',
-      subject: 'Welcome!',
-      text: 'Welcome to the Sigfox Platform!',
-      html: mailTemplate.toString()
-    })
-      .then((response: any) => {
-        console.log(response);
-      })
-      .catch((err: any) => {
-        console.error(err);
-      });
-    */
-
     if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
+
+      /*// Create a custom object your want to pass to the email template. You can create as many key-value pairs as you want
+      const baseUrl = this.model.app.get('url').replace(/\/$/, '');
+      const emailVerificationUrl = baseUrl + '/api/users/confirm?uid=' + userInstance.id + '&token=' + userInstance.verificationToken;
+      console.log(emailVerificationUrl);
+      console.log(emailVerificationUrl);
+      console.log(emailVerificationUrl);
+      const customMessage = {user: userInstance.email, emailVerificationUrl: emailVerificationUrl};
+
+      // Prepare a loopback template renderer
+      const renderer = loopback.template(path.resolve(__dirname, '../../server/views/welcome.ejs'));
+      const html_body = renderer(customMessage);
+*/
       const options = {
         type: 'email',
-        to: userInstance.email,
-        from: '',
+        to: 'antoinedechassey@gmail.com' || userInstance.email,
+        from: 'antoinedechassey@gmail.com',
         subject: 'Welcome to the Sigfox Platform!',
-        template: path.resolve(__dirname, '../../server/views/welcome.html'),
+        template: path.resolve(__dirname, '../../server/views/verify.ejs'),
         redirect: '',
         user: user
       };
