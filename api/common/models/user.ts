@@ -1,5 +1,6 @@
 import {Model} from '@mean-expert/model';
 import * as path from 'path';
+import {generateVerificationToken} from './utils';
 
 const loopback = require('loopback');
 
@@ -177,35 +178,44 @@ class user {
     // Send mail
     if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
 
-      /*// Create a custom object your want to pass to the email template. You can create as many key-value pairs as you want
+      const verificationToken = generateVerificationToken();
+      userInstance.updateAttributes({ verificationToken: verificationToken });
+
+      // Create a custom object your want to pass to the email template. You can create as many key-value pairs as you want
       const baseUrl = this.model.app.get('url').replace(/\/$/, '');
-      const emailVerificationUrl = baseUrl + '/api/users/confirm?uid=' + userInstance.id + '&token=' + userInstance.verificationToken;
-      console.log(emailVerificationUrl);
-      console.log(emailVerificationUrl);
-      console.log(emailVerificationUrl);
-      const customMessage = {user: userInstance.email, emailVerificationUrl: emailVerificationUrl};
+      const verificationUrl = baseUrl + '/api/users/confirm?uid=' + userInstance.id + '&token=' + verificationToken + '&redirect=' + baseUrl.substr(0, baseUrl.split(':', 2).join(':').length);
+      const customMessage = {verificationUrl: verificationUrl};
 
       // Prepare a loopback template renderer
-      const renderer = loopback.template(path.resolve(__dirname, '../../server/views/welcome.ejs'));
+      const renderer = loopback.template(path.resolve(__dirname, '../../server/views/verify.ejs'));
       const html_body = renderer(customMessage);
-*/
+
+      // || userInstance.email
       const options = {
         type: 'email',
-        to: 'antoinedechassey@gmail.com' || userInstance.email,
+        to: 'antoinedechassey@gmail.com',
         from: 'antoinedechassey@gmail.com',
         subject: 'Welcome to the Sigfox Platform!',
-        template: path.resolve(__dirname, '../../server/views/verify.ejs'),
+        html: html_body,
         redirect: '',
-        user: user
+        user: userInstance
       };
 
-      userInstance.verify(options, (err: any, response: any, next: Function) => {
+      loopback.Email.send(options)
+        .then((response: any) => {
+          console.log('> verification email sent:', response);
+        })
+        .catch((err: any) => {
+          console.error(err);
+        });
+
+      /*userInstance.verify(options, (err: any, response: any, next: Function) => {
         if (err) {
           console.log(err);
           ctx.res.status(err.status || 500);
         }
         console.log('> verification email sent:', response);
-      });
+      });*/
     }
   }
 

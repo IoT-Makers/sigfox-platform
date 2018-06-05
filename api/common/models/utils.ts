@@ -30,3 +30,7 @@ export function decrypt(text: string) {
   }
 }
 
+export function generateVerificationToken(): string {
+  return crypto.randomBytes(64).toString('hex');
+}
+

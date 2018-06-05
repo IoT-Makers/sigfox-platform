@@ -7,7 +7,8 @@
   "options": {
     "validateUpsert": true,
     "allowEternalTokens": true,
-    "emailVerificationRequired": true
+    "emailVerificationRequired": true,
+    "restrictResetPasswordTokenScope": true
   },
   "mixins": {
     "FireLoop": true,
@@ -46,11 +47,6 @@
       "type": [
         "AccessToken"
       ]
-    },
-    "Email": {
-      "type": {
-        "dataSource": "Email"
-      }
     }
   },
   "validations": [],
