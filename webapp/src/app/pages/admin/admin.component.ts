@@ -189,7 +189,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   deleteUser(): void {
-    console.log(this.userToRemove);
     this.userApi.deleteById(this.userToRemove.id).subscribe((value: any) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
