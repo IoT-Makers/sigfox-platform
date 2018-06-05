@@ -41,7 +41,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private messageReadSub: Subscription;
   public messages: Message[] = [];
 
-  private organization: Organization;
+  public organization: Organization;
   private organizations: Organization[] = [];
 
   private messageFilter: any;

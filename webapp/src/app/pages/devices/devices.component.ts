@@ -22,7 +22,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   public filterQuery = '';
 
-  private organization: Organization;
+  public organization: Organization;
   private organizations: Organization[] = [];
 
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
