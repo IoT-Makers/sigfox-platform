@@ -194,7 +194,7 @@ class user {
       const options = {
         type: 'email',
         to: userInstance.email,
-        from: '',
+        from: 'sigfox-platform@'+process.env.MAILGUN_DOMAIN,
         subject: 'Welcome to the Sigfox Platform!',
         html: html_body,
         redirect: '',
