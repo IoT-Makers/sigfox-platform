@@ -417,6 +417,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
       this.dashboardRef.upsert(this.dashboard).subscribe(result => {
         this.editFlag = false;
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toasterService.pop('success', 'Success', 'Successfully saved dashboard.');
       }, err => {
         if (this.toast)
@@ -600,11 +602,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   setFilter(): void {
     console.log('setFilter: START', this.newWidget);
-// Image
+    // Image
     if (this.newWidget.type === 'image') {
       this.newWidget.filter = {};
     }
-// Map
+    // Map
     else if (this.newWidget.type === 'map') {
       this.newWidget.options.zoom = 6;
       this.newWidget.options.lat = 48.864716;
@@ -615,6 +617,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         order: 'updatedAt DESC',
         include: [
           {
+            relation: 'Geolocs',
+            scope: {
+              limit: 1,
+              order: 'createdAt DESC'
+            }
+          }
+          /*{
             relation: 'Messages',
             scope: {
               limit: 1,
@@ -622,11 +631,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               include: [{
                 relation: 'Geolocs',
                 scope: {
-                  limit: 5
+                  limit: 1
                 }
               }]
             }
-          }],
+          }*/],
         where: {
           or: []
         }
