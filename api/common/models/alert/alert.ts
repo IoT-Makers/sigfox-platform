@@ -241,7 +241,7 @@ class Alert {
   private triggerAlert(alert: any, device: any, alertMessage: string) {
     // Models
     const Connector = this.model.app.models.Connector;
-    const Email = this.model.app.models.Email;
+    const EmailOutlook = this.model.app.models.EmailOutlook;
     const Alert = this.model.app.models.Alert;
     const AlertHistory = this.model.app.models.AlertHistory;
 
@@ -253,12 +253,12 @@ class Alert {
           if (connector.type === 'office-365') {
             console.log('Office 365 Email alert!');
             // Set the connector user and pass
-            this.model.app.models.dataSources.email.connector.transports[0].transporter.options.auth = {
+            this.model.app.dataSources.emailOutlook.connector.transports[0].transporter.options.auth = {
               user: connector.login,
               pass: decrypt(connector.password)
             };
             const title = device.name ? device.name : device.id;
-            Email.send({
+            EmailOutlook.send({
               to: connector.recipient,
               from: connector.login,
               subject: '[Sigfox Platform] - Alert for ' + title,
@@ -266,7 +266,7 @@ class Alert {
               html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alertMessage + '</p>'
             }, function (err: any, mail: any) {
               if (err) console.error(err);
-              else console.log('Email sent!');
+              else console.log('EmailOutlook sent!');
             });
           }
 
