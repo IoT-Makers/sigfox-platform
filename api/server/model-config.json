@@ -21,6 +21,10 @@
     "dataSource": "mongodb",
     "public": false
   },
+  "EmailOutlook": {
+    "dataSource": "emailOutlook",
+    "public": false
+  },
   "Email": {
     "dataSource": null,
     "public": false
