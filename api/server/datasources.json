@@ -7,22 +7,6 @@
     "name": "mongodb",
     "connector": "mongodb"
   },
-  "applicationEmail": {
-    "name": "applicationEmail",
-    "connector": "mail",
-    "transports": [
-      {
-        "type": "smtp",
-        "host": "smtp.mailgun.org",
-        "secure": true,
-        "port": 465,
-        "auth": {
-          "user": "{!user:string}",
-          "pass": "{!pass:string}"
-        }
-      }
-    ]
-  },
   "freeMobile": {
     "name": "freeMobile",
     "connector": "rest",
@@ -96,8 +80,8 @@
       }
     ]
   },
-  "email": {
-    "name": "email",
+  "emailOutlook": {
+    "name": "emailOutlook",
     "connector": "mail",
     "transports": [
       {
