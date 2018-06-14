@@ -1394,7 +1394,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         device.Messages = devices[0].Messages;
 
         if (widget.options.geolocType === 'preferGps') {
-          device.Messages.forEach((message: any) => {
+          devices[0].Messages.forEach((message: any) => {
             message.Geolocs.forEach((geoloc: Geoloc) => {
               device.Geolocs.push(geoloc);
               if (message.Geolocs.length > 1 && geoloc.type !== 'gps') {
