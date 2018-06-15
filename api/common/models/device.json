@@ -32,6 +32,9 @@
       "id": true,
       "required": true
     },
+    "pek": {
+      "type": "string"
+    },
     "name": {
       "type": "string"
     },
