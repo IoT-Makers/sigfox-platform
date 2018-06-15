@@ -12,6 +12,7 @@ import {
 declare var Object: any;
 export interface DeviceInterface {
   "id": string;
+  "pek"?: string;
   "name"?: string;
   "successRate"?: number;
   "data_downlink"?: string;
@@ -33,6 +34,7 @@ export interface DeviceInterface {
 
 export class Device implements DeviceInterface {
   "id": string = '';
+  "pek": string = '';
   "name": string = '';
   "successRate": number = 0;
   "data_downlink": string = '';
@@ -85,6 +87,10 @@ export class Device implements DeviceInterface {
       properties: {
         "id": {
           name: 'id',
+          type: 'string'
+        },
+        "pek": {
+          name: 'pek',
           type: 'string'
         },
         "name": {

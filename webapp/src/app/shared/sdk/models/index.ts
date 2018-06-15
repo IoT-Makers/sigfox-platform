@@ -1,5 +1,4 @@
 /* tslint:disable */
-export * from './Email';
 export * from './AccessToken';
 export * from './Role';
 export * from './Device';

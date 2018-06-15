@@ -21,7 +21,6 @@ export interface UserInterface {
   "connected"?: boolean;
   "location"?: any;
   "devAccessTokens"?: Array<any>;
-  "Email"?: any;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -50,7 +49,6 @@ export class User implements UserInterface {
   "connected": boolean = false;
   "location": any = <any>null;
   "devAccessTokens": Array<any> = <any>[];
-  "Email": any = <any>null;
   "realm": string = '';
   "username": string = '';
   "email": string = '';
@@ -124,10 +122,6 @@ export class User implements UserInterface {
         "devAccessTokens": {
           name: 'devAccessTokens',
           type: 'Array&lt;any&gt;'
-        },
-        "Email": {
-          name: 'Email',
-          type: 'any'
         },
         "realm": {
           name: 'realm',

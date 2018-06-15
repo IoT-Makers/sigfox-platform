@@ -1,4 +1,5 @@
 import {Model} from '@mean-expert/model';
+import {computeCtr, decryptPayload, encryptPayload} from './utils';
 
 const loopback = require('loopback');
 
@@ -353,7 +354,7 @@ class Message {
           // Store the userId in the message
           message.userId = deviceInstance.userId;
           if (created) {
-            //console.log('Created new device.');
+            console.log('Created new device: ' + message.deviceId);
           } else {
             //console.log('Found an existing device.');
             const rewriteUserId = true;
@@ -370,6 +371,11 @@ class Message {
                 }
               });
             }
+          }
+
+          if (deviceInstance.pek) {
+            const ctr = computeCtr(deviceInstance.id, false, message.seqNumber.toString());
+            message.data = decryptPayload(message.data, deviceInstance.pek, ctr);
           }
 
           // If message is a duplicate
@@ -543,12 +549,22 @@ class Message {
       let result;
       Device.findOne({where: {id: message.deviceId}}, (err: any, device: any) => {
         if (device.data_downlink) {
-          message.data_downlink = device.data_downlink;
-          result = {
-            [message.deviceId]: {
-              downlinkData: device.data_downlink
-            }
-          };
+          if (device.pek) {
+            const ctr = computeCtr(device.id, false, message.seqNumber.toString());
+            message.data_downlink = encryptPayload(device.data_downlink, device.pek, ctr);
+            result = {
+              [message.deviceId]: {
+                downlinkData: message.data_downlink
+              }
+            };
+          } else {
+            message.data_downlink = device.data_downlink;
+            result = {
+              [message.deviceId]: {
+                downlinkData: device.data_downlink
+              }
+            };
+          }
         } else {
           result = {
             [message.deviceId]: {

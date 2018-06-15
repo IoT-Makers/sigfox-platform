@@ -1,6 +1,5 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
-import { Email } from '../../models/Email';
 import { AccessToken } from '../../models/AccessToken';
 import { Role } from '../../models/Role';
 import { Device } from '../../models/Device';
@@ -27,7 +26,6 @@ export interface Models { [name: string]: any }
 export class SDKModels {
 
   private models: Models = {
-    Email: Email,
     AccessToken: AccessToken,
     Role: Role,
     Device: Device,

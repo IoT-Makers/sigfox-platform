@@ -33,7 +33,8 @@
       "required": true
     },
     "pek": {
-      "type": "string"
+      "type": "string",
+      "max": 32
     },
     "name": {
       "type": "string"
@@ -42,7 +43,8 @@
       "type": "number"
     },
     "data_downlink": {
-      "type": "string"
+      "type": "string",
+      "max": 16
     },
     "properties": {
       "type": [
