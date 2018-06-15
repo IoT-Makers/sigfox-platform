@@ -35,15 +35,14 @@ export function decrypt(text: string) {
   }
 }
 
-export function encryptPayload(payload: string, pek: string, ctr: string) {
-  if (payload && pek && ctr) {
+export function computeSessionKey(pek: string, ctr: string) {
+  if (pek && ctr) {
     try {
       const cipher = crypto.createCipheriv('aes-128-ecb', Buffer.from(pek, 'hex'), '');
-      //cipher.setAutoPadding(false);
-      let sessionKey: any = cipher.update(Buffer.from(ctr, 'hex')).toString('hex');
+      cipher.setAutoPadding(false);
+      let sessionKey = cipher.update(Buffer.from(ctr, 'hex')).toString('hex');
       sessionKey += cipher.final().toString('hex');
-      sessionKey = sessionKey.substr(0, payload.length);
-      return xor(Buffer.from(payload, 'hex'), Buffer.from(sessionKey, 'hex')).toString('hex');
+      return sessionKey;
     } catch (e) {
       console.error(e);
       return '';
@@ -53,19 +52,48 @@ export function encryptPayload(payload: string, pek: string, ctr: string) {
   }
 }
 
-export function decryptPayload(payload: string, pek: string, ctr: string) {
-  if (payload && pek && ctr) {
-    try {
-      const decipher = crypto.createDecipheriv('aes-128-ecb', Buffer.from(pek, 'hex'), '');
-      //decipher.setAutoPadding(false);
-      let sessionKey = decipher.update(Buffer.from(ctr, 'hex')).toString('hex');
-      sessionKey += decipher.final().toString('hex');
-      sessionKey = sessionKey.substr(0, payload.length);
-      return xor(Buffer.from(payload, 'hex'), Buffer.from(sessionKey, 'hex')).toString('hex');
-    } catch (e) {
-      console.error(e);
-      return '';
+export function computeCtr(deviceId: string, isUplink: boolean, seqNumber: string): string {
+  if (deviceId && seqNumber) {
+    deviceId = parseInt(deviceId, 16).toString(2);
+    while (deviceId.length < 32) {
+      deviceId = '0' + deviceId;
     }
+    let uplinkOrDownlink = '0';
+    if (!isUplink) {
+      uplinkOrDownlink = '1';
+    }
+    seqNumber = parseInt(seqNumber, 10).toString(2);
+    while (seqNumber.length < 12) {
+      seqNumber = '0' + seqNumber;
+    }
+    let padding = '';
+    while (padding.length < 83) {
+      padding = '0' + padding;
+    }
+
+    let ctr = deviceId + uplinkOrDownlink + seqNumber + padding;
+    ctr = parseInt(ctr, 2).toString(16);
+    while (ctr.length < 32) {
+      ctr = '0' + ctr;
+    }
+    return ctr;
+  }
+  return '';
+}
+
+export function encryptPayload(payload: string, pek: string, ctr: string): string {
+  if (payload && pek && ctr) {
+    const sessionKey = computeSessionKey(pek, ctr).substr(0, payload.length);
+    return xor(Buffer.from(payload, 'hex'), Buffer.from(sessionKey, 'hex')).toString('hex');
+  } else {
+    return '';
+  }
+}
+
+export function decryptPayload(encryptedPayload: string, pek: string, ctr: string) {
+  if (encryptedPayload && pek && ctr) {
+    const sessionKey = computeSessionKey(pek, ctr).substr(0, encryptedPayload.length);
+    return xor(Buffer.from(encryptedPayload, 'hex'), Buffer.from(sessionKey, 'hex')).toString('hex');
   } else {
     return '';
   }
@@ -76,8 +104,8 @@ export function generateVerificationToken(): string {
 }
 
 export function xor(a: Buffer, b: Buffer) {
-  if (!Buffer.isBuffer(a)) a = new Buffer(a);
-  if (!Buffer.isBuffer(b)) b = new Buffer(b);
+  if (!Buffer.isBuffer(a)) a = Buffer.from(a);
+  if (!Buffer.isBuffer(b)) b = Buffer.from(b);
   const res = [];
   if (a.length > b.length) {
     for (let i = 0; i < b.length; i++) {
@@ -88,6 +116,6 @@ export function xor(a: Buffer, b: Buffer) {
       res.push(a[i] ^ b[i]);
     }
   }
-  return new Buffer(res);
+  return Buffer.from(res);
 }
 
