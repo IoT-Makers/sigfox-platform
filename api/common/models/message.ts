@@ -550,11 +550,16 @@ class Message {
       Device.findOne({where: {id: message.deviceId}}, (err: any, device: any) => {
         if (device.data_downlink) {
           if (device.pek) {
+            device.data_downlink = '';
+            const possible = 'ABCDEF0123456789';
+            for (let i = 0; i < 16; i++) {
+              device.data_downlink += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            message.data_downlink = device.data_downlink;
             const ctr = computeCtr(device.id, false, message.seqNumber.toString());
-            message.data_downlink = encryptPayload(device.data_downlink, device.pek, ctr);
             result = {
               [message.deviceId]: {
-                downlinkData: message.data_downlink
+                downlinkData: encryptPayload(device.data_downlink, device.pek, ctr)
               }
             };
           } else {
@@ -698,10 +703,10 @@ class Message {
       next('Missing "deviceId", "time" and "downlinkAck"', data);
     }
 
-    // Obtain the userId with the access token of ctx
+// Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
-    // Find the message containing the ack request
+// Find the message containing the ack request
     Message.findOne({
       where: {
         and: [
@@ -750,10 +755,10 @@ class Message {
       next('Missing "deviceId", "time" and "seqNumber"', data);
     }
 
-    // Obtain the userId with the access token of ctx
+// Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
-    // Create a new message object
+// Create a new message object
     const message = new Message;
 
     message.userId = userId;
@@ -763,7 +768,7 @@ class Message {
     message.deviceAck = true;
     message.createdAt = new Date(data.time * 1000);
 
-    // Find the message containing the ack request
+// Find the message containing the ack request
     Message.create(message, (err: any, messageInstance: any) => {
       if (err) {
         console.error(err);
@@ -775,17 +780,17 @@ class Message {
     });
   }
 
-  // Before delete message, remove geoloc & category organizaton links
+// Before delete message, remove geoloc & category organizaton links
   beforeDelete(ctx: any, next: Function): void {
     // Models
     const Message = this.model;
     const Geoloc = this.model.app.models.Geoloc;
 
-    // Destroy geolocs corresponding to the messageId
+// Destroy geolocs corresponding to the messageId
     if (ctx.where.id) {
       Geoloc.destroyAll({messageId: ctx.where.id}, (error: any, result: any) => { console.log('Removed geoloc for messageId: ' + ctx.where.id); });
     }
-    // Destroy organization link
+// Destroy organization link
     Message.findOne({where: {id: ctx.where.id}, include: 'Organizations'}, (err: any, message: any) => {
       // console.log(category);
       if (!err) {
