@@ -29,10 +29,10 @@ Object.assign(BaseLoopbackActionsFactory<Widget>(WidgetActionTypes), {
    */
   getUser: class implements Action {
     public readonly type = WidgetActionTypes.GET_USER;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -75,10 +75,10 @@ Object.assign(BaseLoopbackActionsFactory<Widget>(WidgetActionTypes), {
    */
   getDashboard: class implements Action {
     public readonly type = WidgetActionTypes.GET_DASHBOARD;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**

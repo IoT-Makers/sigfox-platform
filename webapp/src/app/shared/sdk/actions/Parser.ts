@@ -69,10 +69,10 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   findByIdDevices: class implements Action {
     public readonly type = ParserActionTypes.FIND_BY_ID_DEVICES;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -115,10 +115,10 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   destroyByIdDevices: class implements Action {
     public readonly type = ParserActionTypes.DESTROY_BY_ID_DEVICES;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -164,10 +164,10 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   updateByIdDevices: class implements Action {
     public readonly type = ParserActionTypes.UPDATE_BY_ID_DEVICES;
-      public payload: {id: any, fk: any, data: any};
+      public payload: {id: any, fk: any, data: any, customHeaders};
 
     constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk, data};
+      this.payload = {id, fk, data, customHeaders};
     }
   },
   /**
@@ -210,10 +210,10 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   getUser: class implements Action {
     public readonly type = ParserActionTypes.GET_USER;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -256,10 +256,10 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   getOrganization: class implements Action {
     public readonly type = ParserActionTypes.GET_ORGANIZATION;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -302,10 +302,10 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   getDevices: class implements Action {
     public readonly type = ParserActionTypes.GET_DEVICES;
-      public payload: {id: any, filter: LoopBackFilter};
+      public payload: {id: any, filter: LoopBackFilter, customHeaders};
 
     constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, filter};
+      this.payload = {id, filter, customHeaders};
     }
   },
   /**
@@ -350,10 +350,10 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   createDevices: class implements Action {
     public readonly type = ParserActionTypes.CREATE_DEVICES;
-      public payload: {id: any, data: any};
+      public payload: {id: any, data: any, customHeaders};
 
     constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, data};
+      this.payload = {id, data, customHeaders};
     }
   },
   /**
@@ -442,10 +442,10 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   parsePayload: class implements Action {
     public readonly type = ParserActionTypes.PARSE_PAYLOAD;
-      public payload: {fn: any, payload: any, req: any};
+      public payload: {fn: any, payload: any, req: any, customHeaders};
 
     constructor(fn: any, payload: any, req: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {fn, payload, req};
+      this.payload = {fn, payload, req, customHeaders};
     }
   },
   /**
@@ -495,10 +495,10 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   parseAllMessages: class implements Action {
     public readonly type = ParserActionTypes.PARSE_ALL_MESSAGES;
-      public payload: {id: any, req: any};
+      public payload: {id: any, req: any, customHeaders};
 
     constructor(id: any, req: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, req};
+      this.payload = {id, req, customHeaders};
     }
   },
   /**
@@ -546,10 +546,10 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   parseAllDevices: class implements Action {
     public readonly type = ParserActionTypes.PARSE_ALL_DEVICES;
-      public payload: {id: any, req: any};
+      public payload: {id: any, req: any, customHeaders};
 
     constructor(id: any, req: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, req};
+      this.payload = {id, req, customHeaders};
     }
   },
   /**
@@ -594,10 +594,10 @@ Object.assign(BaseLoopbackActionsFactory<Parser>(ParserActionTypes), {
    */
   createManyDevices: class implements Action {
     public readonly type = ParserActionTypes.CREATE_MANY_DEVICES;
-      public payload: {id: any, data: any[]};
+      public payload: {id: any, data: any[], customHeaders};
 
     constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
-      this.payload = {id, data};
+      this.payload = {id, data, customHeaders};
     }
   },
   /**

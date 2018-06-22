@@ -45,10 +45,10 @@ Object.assign(BaseLoopbackActionsFactory<Alert>(AlertActionTypes), {
    */
   getDevice: class implements Action {
     public readonly type = AlertActionTypes.GET_DEVICE;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -91,10 +91,10 @@ Object.assign(BaseLoopbackActionsFactory<Alert>(AlertActionTypes), {
    */
   getUser: class implements Action {
     public readonly type = AlertActionTypes.GET_USER;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -137,10 +137,10 @@ Object.assign(BaseLoopbackActionsFactory<Alert>(AlertActionTypes), {
    */
   getOrganization: class implements Action {
     public readonly type = AlertActionTypes.GET_ORGANIZATION;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -183,10 +183,10 @@ Object.assign(BaseLoopbackActionsFactory<Alert>(AlertActionTypes), {
    */
   getConnector: class implements Action {
     public readonly type = AlertActionTypes.GET_CONNECTOR;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -236,10 +236,10 @@ Object.assign(BaseLoopbackActionsFactory<Alert>(AlertActionTypes), {
    */
   triggerByDevice: class implements Action {
     public readonly type = AlertActionTypes.TRIGGER_BY_DEVICE;
-      public payload: {data_parsed: any, device: any, req: any};
+      public payload: {data_parsed: any, device: any, req: any, customHeaders};
 
     constructor(data_parsed: any, device: any, req: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {data_parsed, device, req};
+      this.payload = {data_parsed, device, req, customHeaders};
     }
   },
   /**
@@ -293,10 +293,10 @@ Object.assign(BaseLoopbackActionsFactory<Alert>(AlertActionTypes), {
    */
   triggerBySigfoxGeoloc: class implements Action {
     public readonly type = AlertActionTypes.TRIGGER_BY_SIGFOX_GEOLOC;
-      public payload: {lat: any, lng: any, deviceId: any, req: any};
+      public payload: {lat: any, lng: any, deviceId: any, req: any, customHeaders};
 
     constructor(lat: any, lng: any, deviceId: any, req: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {lat, lng, deviceId, req};
+      this.payload = {lat, lng, deviceId, req, customHeaders};
     }
   },
   /**

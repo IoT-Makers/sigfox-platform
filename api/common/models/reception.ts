@@ -64,7 +64,7 @@ class Reception {
             const sigfoxApiLogin = connector.login;
             const sigfoxApiPassword = decrypt(connector.password);
 
-            const credentials = new Buffer(sigfoxApiLogin + ':' + sigfoxApiPassword).toString('base64');
+            const credentials = Buffer.from(sigfoxApiLogin + ':' + sigfoxApiPassword).toString('base64');
 
             this.model.app.dataSources.sigfox.getMessages(credentials, deviceId, 1, messageTime + 1).then((result: any) => {
               next(null, result.data[0].rinfos);

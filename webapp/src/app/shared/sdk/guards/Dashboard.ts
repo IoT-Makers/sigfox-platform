@@ -1,10 +1,9 @@
 /* tslint:disable */
+import { Observable, of } from 'rxjs';
 import { take, map, switchMap, catchError } from 'rxjs/operators'
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { CanActivate, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
 
 import { DashboardApi } from '../services/index';
 import { getDashboardById } from '../reducers/Dashboard';

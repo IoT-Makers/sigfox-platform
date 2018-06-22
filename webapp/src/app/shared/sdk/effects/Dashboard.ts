@@ -1,13 +1,12 @@
 /* tslint:disable */
-import { map, catchError, mergeMap } from 'rxjs/operators'
-import { of } from 'rxjs/observable/of';
-import { concat } from 'rxjs/observable/concat';
+import { concat, of } from 'rxjs';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 import { Injectable, Inject } from '@angular/core';
 import { Effect, Actions } from '@ngrx/effects';
 
 import { LoopbackAction } from '../models/BaseModels';
 import { BaseLoopbackEffects } from './base';
-import { resolver } from './resolver';
+import { resolver, resolveThrough } from './resolver';
 
 import * as actions from '../actions';
 import { DashboardActionTypes, DashboardActions } from '../actions/Dashboard';
@@ -39,6 +38,7 @@ export class DashboardEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.dashboard.findByIdOrganizations(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'OrganizationDashboard', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Organization', 'findByIdSuccess'),
             of(new DashboardActions.findByIdOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
@@ -73,6 +73,7 @@ export class DashboardEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.dashboard.updateByIdOrganizations(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'OrganizationDashboard', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Organization', 'findByIdSuccess'),
             of(new DashboardActions.updateByIdOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
@@ -90,8 +91,8 @@ export class DashboardEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.dashboard.linkOrganizations(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationDashboardActions'].createSuccess(response, action.meta)),
-          of(new DashboardActions.linkOrganizationsSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationDashboardActions'].createSuccess(response, action.meta)),
+                    of(new DashboardActions.linkOrganizationsSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new DashboardActions.linkOrganizationsFail(error, action.meta)),
@@ -107,8 +108,8 @@ export class DashboardEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.dashboard.unlinkOrganizations(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationDashboardActions'].deleteByIdSuccess(response.id, action.meta)),
-          of(new DashboardActions.unlinkOrganizationsSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationDashboardActions'].deleteByIdSuccess(response.id, action.meta)),
+                     of(new DashboardActions.unlinkOrganizationsSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new DashboardActions.unlinkOrganizationsFail(error, action.meta)),
@@ -175,6 +176,7 @@ export class DashboardEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.dashboard.getOrganizations(action.payload.id, action.payload.filter).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'OrganizationDashboard', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Organization', 'findSuccess'),
             of(new DashboardActions.getOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
@@ -192,6 +194,7 @@ export class DashboardEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.dashboard.createOrganizations(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'OrganizationDashboard', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Organization', 'findSuccess'),
             of(new DashboardActions.createOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
@@ -271,6 +274,7 @@ export class DashboardEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.dashboard.createManyOrganizations(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'OrganizationDashboard', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Organization', 'findSuccess'),
             of(new DashboardActions.createManyOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
