@@ -41,6 +41,7 @@
     },
     "data": {
       "type": "string",
+      "pattern": "([a-fA-F0-9])$",
       "max": 24
     },
     "data_parsed": {
@@ -50,6 +51,8 @@
     },
     "data_downlink": {
       "type": "string",
+      "pattern": "([a-fA-F0-9]{16})$",
+      "min": 16,
       "max": 16
     },
     "downlinkAck": {
