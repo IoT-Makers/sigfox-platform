@@ -343,10 +343,10 @@
                   <div class="col-md-9">
                     <input #pek="ngModel" type="text" class="form-control"
                            placeholder="PEK code in HEX"
-                           name="pek" maxlength="32" pattern="([a-fA-F0-9]{16})$"
+                           name="pek" maxlength="32" pattern="([a-fA-F0-9]{32})$"
                            [(ngModel)]="deviceToEdit.pek">
                     <div [hidden]="pek.valid || pek.pristine" class="text-danger">
-                      Length must be 8 bytes, in hexadecimal
+                      Length must be 16 bytes, in hexadecimal
                     </div>
                   </div>
                 </div>

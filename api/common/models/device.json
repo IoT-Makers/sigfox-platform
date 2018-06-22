@@ -34,6 +34,8 @@
     },
     "pek": {
       "type": "string",
+      "pattern": "([a-fA-F0-9]{32})$",
+      "min": 32,
       "max": 32
     },
     "name": {
@@ -44,6 +46,8 @@
     },
     "data_downlink": {
       "type": "string",
+      "pattern": "([a-fA-F0-9]{16})$",
+      "min": 16,
       "max": 16
     },
     "properties": {
