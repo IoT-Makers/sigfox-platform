@@ -1,13 +1,12 @@
 /* tslint:disable */
-import { map, catchError, mergeMap } from 'rxjs/operators'
-import { of } from 'rxjs/observable/of';
-import { concat } from 'rxjs/observable/concat';
+import { concat, of } from 'rxjs';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 import { Injectable, Inject } from '@angular/core';
 import { Effect, Actions } from '@ngrx/effects';
 
 import { LoopbackAction } from '../models/BaseModels';
 import { BaseLoopbackEffects } from './base';
-import { resolver } from './resolver';
+import { resolver, resolveThrough } from './resolver';
 
 import * as actions from '../actions';
 import { UserActionTypes, UserActions } from '../actions/User';
@@ -73,6 +72,7 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.findByIdRoles(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Role', 'RoleMapping', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Role', 'findByIdSuccess'),
             of(new UserActions.findByIdRolesSuccess(action.payload.id, response, action.meta))
           )),
@@ -107,6 +107,7 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.updateByIdRoles(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Role', 'RoleMapping', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Role', 'findByIdSuccess'),
             of(new UserActions.updateByIdRolesSuccess(action.payload.id, response, action.meta))
           )),
@@ -124,8 +125,8 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.linkRoles(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['RoleMappingActions'].createSuccess(response, action.meta)),
-          of(new UserActions.linkRolesSuccess(action.payload.id, response, action.meta))
+                    of(new actions['RoleMappingActions'].createSuccess(response, action.meta)),
+                    of(new UserActions.linkRolesSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new UserActions.linkRolesFail(error, action.meta)),
@@ -141,8 +142,8 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.unlinkRoles(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['RoleMappingActions'].deleteByIdSuccess(response.id, action.meta)),
-          of(new UserActions.unlinkRolesSuccess(action.payload.id, response, action.meta))
+                    of(new actions['RoleMappingActions'].deleteByIdSuccess(response.id, action.meta)),
+                     of(new UserActions.unlinkRolesSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new UserActions.unlinkRolesFail(error, action.meta)),
@@ -464,6 +465,7 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.findByIdOrganizations(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'Organizationuser', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Organization', 'findByIdSuccess'),
             of(new UserActions.findByIdOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
@@ -498,6 +500,7 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.updateByIdOrganizations(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'Organizationuser', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Organization', 'findByIdSuccess'),
             of(new UserActions.updateByIdOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
@@ -515,8 +518,8 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.linkOrganizations(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationuserActions'].createSuccess(response, action.meta)),
-          of(new UserActions.linkOrganizationsSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationuserActions'].createSuccess(response, action.meta)),
+                    of(new UserActions.linkOrganizationsSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new UserActions.linkOrganizationsFail(error, action.meta)),
@@ -532,8 +535,8 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.unlinkOrganizations(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationuserActions'].deleteByIdSuccess(response.id, action.meta)),
-          of(new UserActions.unlinkOrganizationsSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationuserActions'].deleteByIdSuccess(response.id, action.meta)),
+                     of(new UserActions.unlinkOrganizationsSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new UserActions.unlinkOrganizationsFail(error, action.meta)),
@@ -750,6 +753,7 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.getRoles(action.payload.id, action.payload.filter).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Role', 'RoleMapping', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Role', 'findSuccess'),
             of(new UserActions.getRolesSuccess(action.payload.id, response, action.meta))
           )),
@@ -767,6 +771,7 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.createRoles(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Role', 'RoleMapping', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Role', 'findSuccess'),
             of(new UserActions.createRolesSuccess(action.payload.id, response, action.meta))
           )),
@@ -1086,6 +1091,7 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.getOrganizations(action.payload.id, action.payload.filter).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'Organizationuser', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Organization', 'findSuccess'),
             of(new UserActions.getOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
@@ -1103,6 +1109,7 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.createOrganizations(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'Organizationuser', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Organization', 'findSuccess'),
             of(new UserActions.createOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
@@ -1393,6 +1400,7 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.createManyRoles(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Role', 'RoleMapping', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Role', 'findSuccess'),
             of(new UserActions.createManyRolesSuccess(action.payload.id, response, action.meta))
           )),
@@ -1512,6 +1520,7 @@ export class UserEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.user.createManyOrganizations(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'Organizationuser', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Organization', 'findSuccess'),
             of(new UserActions.createManyOrganizationsSuccess(action.payload.id, response, action.meta))
           )),

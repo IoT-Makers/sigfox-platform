@@ -1,13 +1,12 @@
 /* tslint:disable */
-import { map, catchError, mergeMap } from 'rxjs/operators'
-import { of } from 'rxjs/observable/of';
-import { concat } from 'rxjs/observable/concat';
+import { concat, of } from 'rxjs';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 import { Injectable, Inject } from '@angular/core';
 import { Effect, Actions } from '@ngrx/effects';
 
 import { LoopbackAction } from '../models/BaseModels';
 import { BaseLoopbackEffects } from './base';
-import { resolver } from './resolver';
+import { resolver, resolveThrough } from './resolver';
 
 import * as actions from '../actions';
 import { DeviceActionTypes, DeviceActions } from '../actions/Device';
@@ -175,6 +174,7 @@ export class DeviceEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.device.findByIdOrganizations(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'OrganizationDevice', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Organization', 'findByIdSuccess'),
             of(new DeviceActions.findByIdOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
@@ -209,6 +209,7 @@ export class DeviceEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.device.updateByIdOrganizations(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'OrganizationDevice', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Organization', 'findByIdSuccess'),
             of(new DeviceActions.updateByIdOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
@@ -226,8 +227,8 @@ export class DeviceEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.device.linkOrganizations(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationDeviceActions'].createSuccess(response, action.meta)),
-          of(new DeviceActions.linkOrganizationsSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationDeviceActions'].createSuccess(response, action.meta)),
+                    of(new DeviceActions.linkOrganizationsSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new DeviceActions.linkOrganizationsFail(error, action.meta)),
@@ -243,8 +244,8 @@ export class DeviceEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.device.unlinkOrganizations(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationDeviceActions'].deleteByIdSuccess(response.id, action.meta)),
-          of(new DeviceActions.unlinkOrganizationsSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationDeviceActions'].deleteByIdSuccess(response.id, action.meta)),
+                     of(new DeviceActions.unlinkOrganizationsSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new DeviceActions.unlinkOrganizationsFail(error, action.meta)),
@@ -407,6 +408,7 @@ export class DeviceEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.device.getOrganizations(action.payload.id, action.payload.filter).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'OrganizationDevice', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Organization', 'findSuccess'),
             of(new DeviceActions.getOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
@@ -424,6 +426,7 @@ export class DeviceEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.device.createOrganizations(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'OrganizationDevice', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Organization', 'findSuccess'),
             of(new DeviceActions.createOrganizationsSuccess(action.payload.id, response, action.meta))
           )),
@@ -579,6 +582,7 @@ export class DeviceEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.device.createManyOrganizations(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Organization', 'OrganizationDevice', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Organization', 'findSuccess'),
             of(new DeviceActions.createManyOrganizationsSuccess(action.payload.id, response, action.meta))
           )),

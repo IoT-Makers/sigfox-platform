@@ -97,10 +97,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   findByIdDevices: class implements Action {
     public readonly type = CategoryActionTypes.FIND_BY_ID_DEVICES;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -143,10 +143,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   destroyByIdDevices: class implements Action {
     public readonly type = CategoryActionTypes.DESTROY_BY_ID_DEVICES;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -192,10 +192,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   updateByIdDevices: class implements Action {
     public readonly type = CategoryActionTypes.UPDATE_BY_ID_DEVICES;
-      public payload: {id: any, fk: any, data: any};
+      public payload: {id: any, fk: any, data: any, customHeaders};
 
     constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk, data};
+      this.payload = {id, fk, data, customHeaders};
     }
   },
   /**
@@ -238,10 +238,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   getUser: class implements Action {
     public readonly type = CategoryActionTypes.GET_USER;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -284,10 +284,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   findByIdOrganizations: class implements Action {
     public readonly type = CategoryActionTypes.FIND_BY_ID_ORGANIZATIONS;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -330,10 +330,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   destroyByIdOrganizations: class implements Action {
     public readonly type = CategoryActionTypes.DESTROY_BY_ID_ORGANIZATIONS;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -379,10 +379,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   updateByIdOrganizations: class implements Action {
     public readonly type = CategoryActionTypes.UPDATE_BY_ID_ORGANIZATIONS;
-      public payload: {id: any, fk: any, data: any};
+      public payload: {id: any, fk: any, data: any, customHeaders};
 
     constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk, data};
+      this.payload = {id, fk, data, customHeaders};
     }
   },
   /**
@@ -428,10 +428,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   linkOrganizations: class implements Action {
     public readonly type = CategoryActionTypes.LINK_ORGANIZATIONS;
-      public payload: {id: any, fk: any, data: any};
+      public payload: {id: any, fk: any, data: any, customHeaders};
 
     constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk, data};
+      this.payload = {id, fk, data, customHeaders};
     }
   },
   /**
@@ -474,10 +474,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   unlinkOrganizations: class implements Action {
     public readonly type = CategoryActionTypes.UNLINK_ORGANIZATIONS;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -520,10 +520,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   getDevices: class implements Action {
     public readonly type = CategoryActionTypes.GET_DEVICES;
-      public payload: {id: any, filter: LoopBackFilter};
+      public payload: {id: any, filter: LoopBackFilter, customHeaders};
 
     constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, filter};
+      this.payload = {id, filter, customHeaders};
     }
   },
   /**
@@ -568,10 +568,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   createDevices: class implements Action {
     public readonly type = CategoryActionTypes.CREATE_DEVICES;
-      public payload: {id: any, data: any};
+      public payload: {id: any, data: any, customHeaders};
 
     constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, data};
+      this.payload = {id, data, customHeaders};
     }
   },
   /**
@@ -653,10 +653,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   getOrganizations: class implements Action {
     public readonly type = CategoryActionTypes.GET_ORGANIZATIONS;
-      public payload: {id: any, filter: LoopBackFilter};
+      public payload: {id: any, filter: LoopBackFilter, customHeaders};
 
     constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, filter};
+      this.payload = {id, filter, customHeaders};
     }
   },
   /**
@@ -701,10 +701,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   createOrganizations: class implements Action {
     public readonly type = CategoryActionTypes.CREATE_ORGANIZATIONS;
-      public payload: {id: any, data: any};
+      public payload: {id: any, data: any, customHeaders};
 
     constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, data};
+      this.payload = {id, data, customHeaders};
     }
   },
   /**
@@ -790,10 +790,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   download: class implements Action {
     public readonly type = CategoryActionTypes.DOWNLOAD;
-      public payload: {categoryId: any, type: any, req: any, res: any};
+      public payload: {categoryId: any, type: any, req: any, res: any, customHeaders};
 
     constructor(categoryId: any, type: any, req: any = {}, res: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {categoryId, type, req, res};
+      this.payload = {categoryId, type, req, res, customHeaders};
     }
   },
   /**
@@ -841,10 +841,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   downloadFromOrganization: class implements Action {
     public readonly type = CategoryActionTypes.DOWNLOAD_FROM_ORGANIZATION;
-      public payload: {organizationId: any, categoryId: any, type: any, req: any, res: any};
+      public payload: {organizationId: any, categoryId: any, type: any, req: any, res: any, customHeaders};
 
     constructor(organizationId: any, categoryId: any, type: any, req: any = {}, res: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {organizationId, categoryId, type, req, res};
+      this.payload = {organizationId, categoryId, type, req, res, customHeaders};
     }
   },
   /**
@@ -889,10 +889,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   createManyDevices: class implements Action {
     public readonly type = CategoryActionTypes.CREATE_MANY_DEVICES;
-      public payload: {id: any, data: any[]};
+      public payload: {id: any, data: any[], customHeaders};
 
     constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
-      this.payload = {id, data};
+      this.payload = {id, data, customHeaders};
     }
   },
   /**
@@ -937,10 +937,10 @@ Object.assign(BaseLoopbackActionsFactory<Category>(CategoryActionTypes), {
    */
   createManyOrganizations: class implements Action {
     public readonly type = CategoryActionTypes.CREATE_MANY_ORGANIZATIONS;
-      public payload: {id: any, data: any[]};
+      public payload: {id: any, data: any[], customHeaders};
 
     constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
-      this.payload = {id, data};
+      this.payload = {id, data, customHeaders};
     }
   },
   /**

@@ -25,10 +25,10 @@ Object.assign(BaseLoopbackActionsFactory<Connector>(ConnectorActionTypes), {
    */
   getUser: class implements Action {
     public readonly type = ConnectorActionTypes.GET_USER;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**

@@ -1,13 +1,12 @@
 /* tslint:disable */
-import { map, catchError, mergeMap } from 'rxjs/operators'
-import { of } from 'rxjs/observable/of';
-import { concat } from 'rxjs/observable/concat';
+import { concat, of } from 'rxjs';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 import { Injectable, Inject } from '@angular/core';
 import { Effect, Actions } from '@ngrx/effects';
 
 import { LoopbackAction } from '../models/BaseModels';
 import { BaseLoopbackEffects } from './base';
-import { resolver } from './resolver';
+import { resolver, resolveThrough } from './resolver';
 
 import * as actions from '../actions';
 import { OrganizationActionTypes, OrganizationActions } from '../actions/Organization';
@@ -22,6 +21,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.findByIdMembers(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'User', 'Organizationuser', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'User', 'findByIdSuccess'),
             of(new OrganizationActions.findByIdMembersSuccess(action.payload.id, response, action.meta))
           )),
@@ -56,6 +56,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.updateByIdMembers(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'User', 'Organizationuser', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'User', 'findByIdSuccess'),
             of(new OrganizationActions.updateByIdMembersSuccess(action.payload.id, response, action.meta))
           )),
@@ -73,8 +74,8 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.linkMembers(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationuserActions'].createSuccess(response, action.meta)),
-          of(new OrganizationActions.linkMembersSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationuserActions'].createSuccess(response, action.meta)),
+                    of(new OrganizationActions.linkMembersSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new OrganizationActions.linkMembersFail(error, action.meta)),
@@ -90,8 +91,8 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.unlinkMembers(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationuserActions'].deleteByIdSuccess(response.id, action.meta)),
-          of(new OrganizationActions.unlinkMembersSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationuserActions'].deleteByIdSuccess(response.id, action.meta)),
+                     of(new OrganizationActions.unlinkMembersSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new OrganizationActions.unlinkMembersFail(error, action.meta)),
@@ -124,6 +125,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.findByIdMessages(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Message', 'OrganizationMessage', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Message', 'findByIdSuccess'),
             of(new OrganizationActions.findByIdMessagesSuccess(action.payload.id, response, action.meta))
           )),
@@ -158,6 +160,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.updateByIdMessages(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Message', 'OrganizationMessage', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Message', 'findByIdSuccess'),
             of(new OrganizationActions.updateByIdMessagesSuccess(action.payload.id, response, action.meta))
           )),
@@ -175,8 +178,8 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.linkMessages(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationMessageActions'].createSuccess(response, action.meta)),
-          of(new OrganizationActions.linkMessagesSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationMessageActions'].createSuccess(response, action.meta)),
+                    of(new OrganizationActions.linkMessagesSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new OrganizationActions.linkMessagesFail(error, action.meta)),
@@ -192,8 +195,8 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.unlinkMessages(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationMessageActions'].deleteByIdSuccess(response.id, action.meta)),
-          of(new OrganizationActions.unlinkMessagesSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationMessageActions'].deleteByIdSuccess(response.id, action.meta)),
+                     of(new OrganizationActions.unlinkMessagesSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new OrganizationActions.unlinkMessagesFail(error, action.meta)),
@@ -209,6 +212,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.findByIdDevices(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Device', 'OrganizationDevice', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Device', 'findByIdSuccess'),
             of(new OrganizationActions.findByIdDevicesSuccess(action.payload.id, response, action.meta))
           )),
@@ -243,6 +247,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.updateByIdDevices(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Device', 'OrganizationDevice', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Device', 'findByIdSuccess'),
             of(new OrganizationActions.updateByIdDevicesSuccess(action.payload.id, response, action.meta))
           )),
@@ -260,8 +265,8 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.linkDevices(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationDeviceActions'].createSuccess(response, action.meta)),
-          of(new OrganizationActions.linkDevicesSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationDeviceActions'].createSuccess(response, action.meta)),
+                    of(new OrganizationActions.linkDevicesSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new OrganizationActions.linkDevicesFail(error, action.meta)),
@@ -277,8 +282,8 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.unlinkDevices(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationDeviceActions'].deleteByIdSuccess(response.id, action.meta)),
-          of(new OrganizationActions.unlinkDevicesSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationDeviceActions'].deleteByIdSuccess(response.id, action.meta)),
+                     of(new OrganizationActions.unlinkDevicesSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new OrganizationActions.unlinkDevicesFail(error, action.meta)),
@@ -294,6 +299,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.findByIdCategories(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Category', 'OrganizationCategory', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Category', 'findByIdSuccess'),
             of(new OrganizationActions.findByIdCategoriesSuccess(action.payload.id, response, action.meta))
           )),
@@ -328,6 +334,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.updateByIdCategories(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Category', 'OrganizationCategory', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Category', 'findByIdSuccess'),
             of(new OrganizationActions.updateByIdCategoriesSuccess(action.payload.id, response, action.meta))
           )),
@@ -345,8 +352,8 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.linkCategories(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationCategoryActions'].createSuccess(response, action.meta)),
-          of(new OrganizationActions.linkCategoriesSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationCategoryActions'].createSuccess(response, action.meta)),
+                    of(new OrganizationActions.linkCategoriesSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new OrganizationActions.linkCategoriesFail(error, action.meta)),
@@ -362,8 +369,8 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.unlinkCategories(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationCategoryActions'].deleteByIdSuccess(response.id, action.meta)),
-          of(new OrganizationActions.unlinkCategoriesSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationCategoryActions'].deleteByIdSuccess(response.id, action.meta)),
+                     of(new OrganizationActions.unlinkCategoriesSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new OrganizationActions.unlinkCategoriesFail(error, action.meta)),
@@ -379,6 +386,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.findByIdDashboards(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Dashboard', 'OrganizationDashboard', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Dashboard', 'findByIdSuccess'),
             of(new OrganizationActions.findByIdDashboardsSuccess(action.payload.id, response, action.meta))
           )),
@@ -413,6 +421,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.updateByIdDashboards(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Dashboard', 'OrganizationDashboard', 'findSuccess'),
             resolver({id: action.payload.id, data: response, meta: action.meta}, 'Dashboard', 'findByIdSuccess'),
             of(new OrganizationActions.updateByIdDashboardsSuccess(action.payload.id, response, action.meta))
           )),
@@ -430,8 +439,8 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.linkDashboards(action.payload.id, action.payload.fk, action.payload.data).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationDashboardActions'].createSuccess(response, action.meta)),
-          of(new OrganizationActions.linkDashboardsSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationDashboardActions'].createSuccess(response, action.meta)),
+                    of(new OrganizationActions.linkDashboardsSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new OrganizationActions.linkDashboardsFail(error, action.meta)),
@@ -447,8 +456,8 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.unlinkDashboards(action.payload.id, action.payload.fk).pipe(
           mergeMap((response: any) => concat(
-          of(new actions['OrganizationDashboardActions'].deleteByIdSuccess(response.id, action.meta)),
-          of(new OrganizationActions.unlinkDashboardsSuccess(action.payload.id, response, action.meta))
+                    of(new actions['OrganizationDashboardActions'].deleteByIdSuccess(response.id, action.meta)),
+                     of(new OrganizationActions.unlinkDashboardsSuccess(action.payload.id, response, action.meta))
         )),
           catchError((error: any) => concat(
             of(new OrganizationActions.unlinkDashboardsFail(error, action.meta)),
@@ -464,6 +473,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.getMembers(action.payload.id, action.payload.filter).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'User', 'Organizationuser', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'User', 'findSuccess'),
             of(new OrganizationActions.getMembersSuccess(action.payload.id, response, action.meta))
           )),
@@ -481,6 +491,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.createMembers(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'User', 'Organizationuser', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'User', 'findSuccess'),
             of(new OrganizationActions.createMembersSuccess(action.payload.id, response, action.meta))
           )),
@@ -512,6 +523,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.getMessages(action.payload.id, action.payload.filter).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Message', 'OrganizationMessage', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Message', 'findSuccess'),
             of(new OrganizationActions.getMessagesSuccess(action.payload.id, response, action.meta))
           )),
@@ -529,6 +541,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.createMessages(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Message', 'OrganizationMessage', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Message', 'findSuccess'),
             of(new OrganizationActions.createMessagesSuccess(action.payload.id, response, action.meta))
           )),
@@ -560,6 +573,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.getDevices(action.payload.id, action.payload.filter).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Device', 'OrganizationDevice', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Device', 'findSuccess'),
             of(new OrganizationActions.getDevicesSuccess(action.payload.id, response, action.meta))
           )),
@@ -577,6 +591,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.createDevices(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Device', 'OrganizationDevice', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Device', 'findSuccess'),
             of(new OrganizationActions.createDevicesSuccess(action.payload.id, response, action.meta))
           )),
@@ -608,6 +623,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.getCategories(action.payload.id, action.payload.filter).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Category', 'OrganizationCategory', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Category', 'findSuccess'),
             of(new OrganizationActions.getCategoriesSuccess(action.payload.id, response, action.meta))
           )),
@@ -625,6 +641,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.createCategories(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Category', 'OrganizationCategory', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Category', 'findSuccess'),
             of(new OrganizationActions.createCategoriesSuccess(action.payload.id, response, action.meta))
           )),
@@ -656,6 +673,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.getDashboards(action.payload.id, action.payload.filter).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Dashboard', 'OrganizationDashboard', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Dashboard', 'findSuccess'),
             of(new OrganizationActions.getDashboardsSuccess(action.payload.id, response, action.meta))
           )),
@@ -673,6 +691,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.createDashboards(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Dashboard', 'OrganizationDashboard', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Dashboard', 'findSuccess'),
             of(new OrganizationActions.createDashboardsSuccess(action.payload.id, response, action.meta))
           )),
@@ -718,6 +737,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.createManyMembers(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'User', 'Organizationuser', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'User', 'findSuccess'),
             of(new OrganizationActions.createManyMembersSuccess(action.payload.id, response, action.meta))
           )),
@@ -735,6 +755,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.createManyMessages(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Message', 'OrganizationMessage', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Message', 'findSuccess'),
             of(new OrganizationActions.createManyMessagesSuccess(action.payload.id, response, action.meta))
           )),
@@ -752,6 +773,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.createManyDevices(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Device', 'OrganizationDevice', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Device', 'findSuccess'),
             of(new OrganizationActions.createManyDevicesSuccess(action.payload.id, response, action.meta))
           )),
@@ -769,6 +791,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.createManyCategories(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Category', 'OrganizationCategory', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Category', 'findSuccess'),
             of(new OrganizationActions.createManyCategoriesSuccess(action.payload.id, response, action.meta))
           )),
@@ -786,6 +809,7 @@ export class OrganizationEffects extends BaseLoopbackEffects {
       mergeMap((action: LoopbackAction) =>
         this.organization.createManyDashboards(action.payload.id, action.payload.data).pipe(
           mergeMap((response: any) => concat(
+            resolveThrough(action, response, 'Dashboard', 'OrganizationDashboard', 'findSuccess'),
             resolver({data: response, meta: action.meta}, 'Dashboard', 'findSuccess'),
             of(new OrganizationActions.createManyDashboardsSuccess(action.payload.id, response, action.meta))
           )),

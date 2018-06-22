@@ -109,10 +109,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   getDevice: class implements Action {
     public readonly type = MessageActionTypes.GET_DEVICE;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -155,10 +155,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   findByIdGeolocs: class implements Action {
     public readonly type = MessageActionTypes.FIND_BY_ID_GEOLOCS;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -201,10 +201,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   destroyByIdGeolocs: class implements Action {
     public readonly type = MessageActionTypes.DESTROY_BY_ID_GEOLOCS;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -250,10 +250,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   updateByIdGeolocs: class implements Action {
     public readonly type = MessageActionTypes.UPDATE_BY_ID_GEOLOCS;
-      public payload: {id: any, fk: any, data: any};
+      public payload: {id: any, fk: any, data: any, customHeaders};
 
     constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk, data};
+      this.payload = {id, fk, data, customHeaders};
     }
   },
   /**
@@ -296,10 +296,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   getUser: class implements Action {
     public readonly type = MessageActionTypes.GET_USER;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -342,10 +342,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   findByIdOrganizations: class implements Action {
     public readonly type = MessageActionTypes.FIND_BY_ID_ORGANIZATIONS;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -388,10 +388,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   destroyByIdOrganizations: class implements Action {
     public readonly type = MessageActionTypes.DESTROY_BY_ID_ORGANIZATIONS;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -437,10 +437,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   updateByIdOrganizations: class implements Action {
     public readonly type = MessageActionTypes.UPDATE_BY_ID_ORGANIZATIONS;
-      public payload: {id: any, fk: any, data: any};
+      public payload: {id: any, fk: any, data: any, customHeaders};
 
     constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk, data};
+      this.payload = {id, fk, data, customHeaders};
     }
   },
   /**
@@ -486,10 +486,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   linkOrganizations: class implements Action {
     public readonly type = MessageActionTypes.LINK_ORGANIZATIONS;
-      public payload: {id: any, fk: any, data: any};
+      public payload: {id: any, fk: any, data: any, customHeaders};
 
     constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk, data};
+      this.payload = {id, fk, data, customHeaders};
     }
   },
   /**
@@ -532,10 +532,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   unlinkOrganizations: class implements Action {
     public readonly type = MessageActionTypes.UNLINK_ORGANIZATIONS;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -578,10 +578,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   getGeolocs: class implements Action {
     public readonly type = MessageActionTypes.GET_GEOLOCS;
-      public payload: {id: any, filter: LoopBackFilter};
+      public payload: {id: any, filter: LoopBackFilter, customHeaders};
 
     constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, filter};
+      this.payload = {id, filter, customHeaders};
     }
   },
   /**
@@ -626,10 +626,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   createGeolocs: class implements Action {
     public readonly type = MessageActionTypes.CREATE_GEOLOCS;
-      public payload: {id: any, data: any};
+      public payload: {id: any, data: any, customHeaders};
 
     constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, data};
+      this.payload = {id, data, customHeaders};
     }
   },
   /**
@@ -711,10 +711,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   getOrganizations: class implements Action {
     public readonly type = MessageActionTypes.GET_ORGANIZATIONS;
-      public payload: {id: any, filter: LoopBackFilter};
+      public payload: {id: any, filter: LoopBackFilter, customHeaders};
 
     constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, filter};
+      this.payload = {id, filter, customHeaders};
     }
   },
   /**
@@ -759,10 +759,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   createOrganizations: class implements Action {
     public readonly type = MessageActionTypes.CREATE_ORGANIZATIONS;
-      public payload: {id: any, data: any};
+      public payload: {id: any, data: any, customHeaders};
 
     constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, data};
+      this.payload = {id, data, customHeaders};
     }
   },
   /**
@@ -849,10 +849,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   putSigfox_OldToRemove: class implements Action {
     public readonly type = MessageActionTypes.PUT_SIGFOX__OLD_TO_REMOVE;
-      public payload: {req: any, data: any};
+      public payload: {req: any, data: any, customHeaders};
 
     constructor(req: any = {}, data: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {req, data};
+      this.payload = {req, data, customHeaders};
     }
   },
   /**
@@ -900,10 +900,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   putSigfox: class implements Action {
     public readonly type = MessageActionTypes.PUT_SIGFOX;
-      public payload: {req: any, data: any};
+      public payload: {req: any, data: any, customHeaders};
 
     constructor(req: any = {}, data: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {req, data};
+      this.payload = {req, data, customHeaders};
     }
   },
   /**
@@ -951,10 +951,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   putSigfoxAcknowledge: class implements Action {
     public readonly type = MessageActionTypes.PUT_SIGFOX_ACKNOWLEDGE;
-      public payload: {req: any, data: any};
+      public payload: {req: any, data: any, customHeaders};
 
     constructor(req: any = {}, data: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {req, data};
+      this.payload = {req, data, customHeaders};
     }
   },
   /**
@@ -1002,10 +1002,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   postSigfoxStatus: class implements Action {
     public readonly type = MessageActionTypes.POST_SIGFOX_STATUS;
-      public payload: {req: any, data: any};
+      public payload: {req: any, data: any, customHeaders};
 
     constructor(req: any = {}, data: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {req, data};
+      this.payload = {req, data, customHeaders};
     }
   },
   /**
@@ -1050,10 +1050,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   createManyGeolocs: class implements Action {
     public readonly type = MessageActionTypes.CREATE_MANY_GEOLOCS;
-      public payload: {id: any, data: any[]};
+      public payload: {id: any, data: any[], customHeaders};
 
     constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
-      this.payload = {id, data};
+      this.payload = {id, data, customHeaders};
     }
   },
   /**
@@ -1098,10 +1098,10 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   createManyOrganizations: class implements Action {
     public readonly type = MessageActionTypes.CREATE_MANY_ORGANIZATIONS;
-      public payload: {id: any, data: any[]};
+      public payload: {id: any, data: any[], customHeaders};
 
     constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
-      this.payload = {id, data};
+      this.payload = {id, data, customHeaders};
     }
   },
   /**

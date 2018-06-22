@@ -49,10 +49,10 @@ Object.assign(BaseLoopbackActionsFactory<Role>(RoleActionTypes), {
    */
   findByIdPrincipals: class implements Action {
     public readonly type = RoleActionTypes.FIND_BY_ID_PRINCIPALS;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -95,10 +95,10 @@ Object.assign(BaseLoopbackActionsFactory<Role>(RoleActionTypes), {
    */
   destroyByIdPrincipals: class implements Action {
     public readonly type = RoleActionTypes.DESTROY_BY_ID_PRINCIPALS;
-      public payload: {id: any, fk: any};
+      public payload: {id: any, fk: any, customHeaders};
 
     constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk};
+      this.payload = {id, fk, customHeaders};
     }
   },
   /**
@@ -144,10 +144,10 @@ Object.assign(BaseLoopbackActionsFactory<Role>(RoleActionTypes), {
    */
   updateByIdPrincipals: class implements Action {
     public readonly type = RoleActionTypes.UPDATE_BY_ID_PRINCIPALS;
-      public payload: {id: any, fk: any, data: any};
+      public payload: {id: any, fk: any, data: any, customHeaders};
 
     constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, fk, data};
+      this.payload = {id, fk, data, customHeaders};
     }
   },
   /**
@@ -190,10 +190,10 @@ Object.assign(BaseLoopbackActionsFactory<Role>(RoleActionTypes), {
    */
   getPrincipals: class implements Action {
     public readonly type = RoleActionTypes.GET_PRINCIPALS;
-      public payload: {id: any, filter: LoopBackFilter};
+      public payload: {id: any, filter: LoopBackFilter, customHeaders};
 
     constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, filter};
+      this.payload = {id, filter, customHeaders};
     }
   },
   /**
@@ -238,10 +238,10 @@ Object.assign(BaseLoopbackActionsFactory<Role>(RoleActionTypes), {
    */
   createPrincipals: class implements Action {
     public readonly type = RoleActionTypes.CREATE_PRINCIPALS;
-      public payload: {id: any, data: any};
+      public payload: {id: any, data: any, customHeaders};
 
     constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, data};
+      this.payload = {id, data, customHeaders};
     }
   },
   /**
@@ -325,10 +325,10 @@ Object.assign(BaseLoopbackActionsFactory<Role>(RoleActionTypes), {
    */
   createManyPrincipals: class implements Action {
     public readonly type = RoleActionTypes.CREATE_MANY_PRINCIPALS;
-      public payload: {id: any, data: any[]};
+      public payload: {id: any, data: any[], customHeaders};
 
     constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
-      this.payload = {id, data};
+      this.payload = {id, data, customHeaders};
     }
   },
   /**

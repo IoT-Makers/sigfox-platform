@@ -37,10 +37,10 @@ Object.assign(BaseLoopbackActionsFactory<AlertHistory>(AlertHistoryActionTypes),
    */
   getDevice: class implements Action {
     public readonly type = AlertHistoryActionTypes.GET_DEVICE;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -83,10 +83,10 @@ Object.assign(BaseLoopbackActionsFactory<AlertHistory>(AlertHistoryActionTypes),
    */
   getUser: class implements Action {
     public readonly type = AlertHistoryActionTypes.GET_USER;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -129,10 +129,10 @@ Object.assign(BaseLoopbackActionsFactory<AlertHistory>(AlertHistoryActionTypes),
    */
   getOrganization: class implements Action {
     public readonly type = AlertHistoryActionTypes.GET_ORGANIZATION;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -175,10 +175,10 @@ Object.assign(BaseLoopbackActionsFactory<AlertHistory>(AlertHistoryActionTypes),
    */
   getConnector: class implements Action {
     public readonly type = AlertHistoryActionTypes.GET_CONNECTOR;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**

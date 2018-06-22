@@ -45,10 +45,10 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
    */
   getDevice: class implements Action {
     public readonly type = GeolocActionTypes.GET_DEVICE;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -91,10 +91,10 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
    */
   getMessage: class implements Action {
     public readonly type = GeolocActionTypes.GET_MESSAGE;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -137,10 +137,10 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
    */
   getUser: class implements Action {
     public readonly type = GeolocActionTypes.GET_USER;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -183,10 +183,10 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
    */
   getOrganization: class implements Action {
     public readonly type = GeolocActionTypes.GET_ORGANIZATION;
-      public payload: {id: any, refresh: any};
+      public payload: {id: any, refresh: any, customHeaders};
 
     constructor(id: any, refresh: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {id, refresh};
+      this.payload = {id, refresh, customHeaders};
     }
   },
   /**
@@ -282,10 +282,10 @@ Object.assign(BaseLoopbackActionsFactory<Geoloc>(GeolocActionTypes), {
    */
   postSigfox: class implements Action {
     public readonly type = GeolocActionTypes.POST_SIGFOX;
-      public payload: {req: any, data: any};
+      public payload: {req: any, data: any, customHeaders};
 
     constructor(req: any = {}, data: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {req, data};
+      this.payload = {req, data, customHeaders};
     }
   },
   /**

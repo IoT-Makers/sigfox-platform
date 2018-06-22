@@ -28,10 +28,10 @@ Object.assign(BaseLoopbackActionsFactory<Reception>(ReceptionActionTypes), {
    */
   getBaseStationsByDeviceId: class implements Action {
     public readonly type = ReceptionActionTypes.GET_BASE_STATIONS_BY_DEVICE_ID;
-      public payload: {deviceId: any, time: any, req: any};
+      public payload: {deviceId: any, time: any, req: any, customHeaders};
 
     constructor(deviceId: any, time: any, req: any = {}, customHeaders?: Function, public meta?: any) {
-      this.payload = {deviceId, time, req};
+      this.payload = {deviceId, time, req, customHeaders};
     }
   },
   /**

@@ -1,13 +1,12 @@
 /* tslint:disable */
-import { map, catchError, mergeMap } from 'rxjs/operators'
-import { of } from 'rxjs/observable/of';
-import { concat } from 'rxjs/observable/concat';
+import { concat, of } from 'rxjs';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 import { Injectable, Inject } from '@angular/core';
 import { Effect, Actions } from '@ngrx/effects';
 
 import { LoopbackAction } from '../models/BaseModels';
 import { BaseLoopbackEffects } from './base';
-import { resolver } from './resolver';
+import { resolver, resolveThrough } from './resolver';
 
 import * as actions from '../actions';
 import { AccessTokenActionTypes, AccessTokenActions } from '../actions/AccessToken';
