@@ -700,6 +700,57 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public findByIdBeacons$ = this.actions$
+    .ofType(UserActionTypes.FIND_BY_ID_BEACONS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.findByIdBeacons(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Beacon', 'findByIdSuccess'),
+            of(new UserActions.findByIdBeaconsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.findByIdBeaconsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public destroyByIdBeacons$ = this.actions$
+    .ofType(UserActionTypes.DESTROY_BY_ID_BEACONS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.destroyByIdBeacons(action.payload.id, action.payload.fk).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Beacon', 'deleteByIdSuccess'),
+            of(new UserActions.destroyByIdBeaconsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.destroyByIdBeaconsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public updateByIdBeacons$ = this.actions$
+    .ofType(UserActionTypes.UPDATE_BY_ID_BEACONS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.updateByIdBeacons(action.payload.id, action.payload.fk, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({id: action.payload.id, data: response, meta: action.meta}, 'Beacon', 'findByIdSuccess'),
+            of(new UserActions.updateByIdBeaconsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.updateByIdBeaconsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public getAccessTokens$ = this.actions$
     .ofType(UserActionTypes.GET_ACCESSTOKENS).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -1280,6 +1331,54 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public getBeacons$ = this.actions$
+    .ofType(UserActionTypes.GET_BEACONS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.getBeacons(action.payload.id, action.payload.filter).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Beacon', 'findSuccess'),
+            of(new UserActions.getBeaconsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.getBeaconsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createBeacons$ = this.actions$
+    .ofType(UserActionTypes.CREATE_BEACONS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createBeacons(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Beacon', 'findSuccess'),
+            of(new UserActions.createBeaconsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createBeaconsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public deleteBeacons$ = this.actions$
+    .ofType(UserActionTypes.DELETE_BEACONS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.deleteBeacons(action.payload.id).pipe(
+          map((response: any) => new UserActions.deleteBeaconsSuccess(action.payload, action.meta)),
+          catchError((error: any) => concat(
+            of(new UserActions.deleteBeaconsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public login$ = this.actions$
     .ofType(UserActionTypes.LOGIN).pipe(
       mergeMap((action: LoopbackAction) =>
@@ -1577,6 +1676,23 @@ export class UserEffects extends BaseLoopbackEffects {
           )),
           catchError((error: any) => concat(
             of(new UserActions.createManyWidgetsFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
+  public createManyBeacons$ = this.actions$
+    .ofType(UserActionTypes.CREATE_MANY_BEACONS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.createManyBeacons(action.payload.id, action.payload.data).pipe(
+          mergeMap((response: any) => concat(
+            resolver({data: response, meta: action.meta}, 'Beacon', 'findSuccess'),
+            of(new UserActions.createManyBeaconsSuccess(action.payload.id, response, action.meta))
+          )),
+          catchError((error: any) => concat(
+            of(new UserActions.createManyBeaconsFail(error, action.meta)),
             of(new LoopbackErrorActions.error(error, action.meta))
           ))
         )

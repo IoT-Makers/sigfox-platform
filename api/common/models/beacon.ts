@@ -18,7 +18,7 @@ import { Model } from '@mean-expert/model';
   }
 })
 
-class Beacon {
+class Beacons {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {}
 
@@ -33,4 +33,4 @@ class Beacon {
   }
 }
 
-module.exports = Beacon;
+module.exports = Beacons;

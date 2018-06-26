@@ -21,6 +21,7 @@ import { ReceptionActionTypes, ReceptionActions } from './Reception';
 import { ConnectorActionTypes, ConnectorActions } from './Connector';
 import { WidgetActionTypes, WidgetActions } from './Widget';
 import { PropertyActionTypes, PropertyActions } from './Property';
+import { BeaconActionTypes, BeaconActions } from './Beacon';
 
 export {
   LoopbackAuthActionTypes, LoopbackAuthActions,
@@ -44,4 +45,5 @@ export {
 	ConnectorActionTypes, ConnectorActions,
 	WidgetActionTypes, WidgetActions,
 	PropertyActionTypes, PropertyActions,
+	BeaconActionTypes, BeaconActions,
 };

@@ -31,10 +31,13 @@ export const routes: Routes = [
 
       {path: 'profile', loadChildren: './pages/user/profile/profile.module#ProfileModule'},
 
+      {path: 'api', loadChildren: './pages/api/api.module#ApiModule'},
       {path: 'parsers', loadChildren: './pages/parsers/parsers.module#ParsersModule'},
       {path: 'connectors', loadChildren: './pages/connectors/connectors.module#ConnectorsModule'},
 
-      {path: 'admin', canActivate: [AdminGuard], loadChildren: './pages/admin/admin.module#AdminModule'}
+      {path: 'admin', canActivate: [AdminGuard], loadChildren: './pages/admin/admin.module#AdminModule'},
+
+      {path: 'beacons', canActivate: [AdminGuard], loadChildren: './pages/beacons/beacons.module#BeaconsModule'}
     ]
   },
   {

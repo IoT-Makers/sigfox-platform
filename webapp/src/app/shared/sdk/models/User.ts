@@ -11,7 +11,8 @@ import {
   Organization,
   Alert,
   Connector,
-  Widget
+  Widget,
+  Beacon
 } from '../index';
 
 declare var Object: any;
@@ -41,6 +42,7 @@ export interface UserInterface {
   Alerts?: Alert[];
   Connectors?: Connector[];
   Widgets?: Widget[];
+  Beacons?: Beacon[];
 }
 
 export class User implements UserInterface {
@@ -69,6 +71,7 @@ export class User implements UserInterface {
   Alerts: Alert[] = null;
   Connectors: Connector[] = null;
   Widgets: Widget[] = null;
+  Beacons: Beacon[] = null;
   constructor(data?: UserInterface) {
     Object.assign(this, data);
   }
@@ -253,6 +256,14 @@ export class User implements UserInterface {
           name: 'Widgets',
           type: 'Widget[]',
           model: 'Widget',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
+        },
+        Beacons: {
+          name: 'Beacons',
+          type: 'Beacon[]',
+          model: 'Beacon',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'userId'

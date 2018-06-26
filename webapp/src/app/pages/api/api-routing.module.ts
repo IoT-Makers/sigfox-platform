@@ -1,13 +1,13 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {DemoComponent} from './demo.component';
+import {ApiComponent} from './api.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: DemoComponent,
+    component: ApiComponent,
     data: {
-      title: 'Demo'
+      title: 'Api'
     }
   }
 ];
@@ -17,5 +17,5 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 
-export class DemoRoutingModule {
+export class ApiRoutingModule {
 }

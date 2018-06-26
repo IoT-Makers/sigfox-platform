@@ -4,7 +4,7 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
 import {Subscription} from 'rxjs/Subscription';
 import {RealTime} from '../../shared/sdk/services/core';
-import {AccessToken, Connector, FireLoopRef, User} from '../../shared/sdk/models';
+import {Connector, FireLoopRef, User} from '../../shared/sdk/models';
 
 @Component({
   selector: 'app-profile',
@@ -15,7 +15,6 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   public user: User;
 
-  @ViewChild('confirmTokenModal') confirmTokenModal: any;
   @ViewChild('addConnectorModal') addConnectorModal: any;
   @ViewChild('editConnectorModal') editConnectorModal: any;
   @ViewChild('confirmConnectorModal') confirmConnectorModal: any;
@@ -30,9 +29,6 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   public connectorToAdd: Connector = new Connector();
   public connectorToRemove: Connector = new Connector();
   public connectorToEdit: Connector = new Connector();
-
-  public devAccessTokenToRemove: AccessToken = new AccessToken();
-  public callbackURL;
 
   // Select
   public selectTypes: Array<Object> = [
@@ -73,7 +69,6 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
     // Get the logged in User object (avatar, email, ...)
     this.user = this.userApi.getCachedCurrent();
-    this.callbackURL = this.document.location.origin + '/api';
 
     // Real Time
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
@@ -187,41 +182,6 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
         this.toast = this.toasterService.pop('error', 'Error', err.error.message);
       }
     });
-  }
-
-  createDevAccessToken(): void {
-    const newAccessToken = {
-      ttl: -1
-    };
-    this.userApi.createAccessTokens(this.user.id, newAccessToken).subscribe((accessToken: AccessToken) => {
-      this.user.devAccessTokens.push(accessToken);
-      this.userApi.patchAttributes(this.user.id, {devAccessTokens: this.user.devAccessTokens}).subscribe((user: User) => {
-        this.user = user;
-      });
-    });
-  }
-
-  openConfirmTokenModal(devAccessToken: AccessToken): void {
-    this.devAccessTokenToRemove = devAccessToken;
-    this.confirmTokenModal.show();
-  }
-
-  removeDevAccessToken(): void {
-    this.userApi.destroyByIdAccessTokens(this.user.id, this.devAccessTokenToRemove.id).subscribe(value => {
-        const index = this.user.devAccessTokens.indexOf(this.devAccessTokenToRemove);
-        this.user.devAccessTokens.splice(index, 1);
-        this.userApi.patchAttributes(this.user.id, {devAccessTokens: this.user.devAccessTokens}).subscribe((user: User) => {
-          this.user = user;
-        });
-      }
-    );
-    this.confirmTokenModal.hide();
-  }
-
-  toastClick() {
-    if (this.toast)
-      this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-    this.toast = this.toasterService.pop('info', 'Click', 'Copied to clipboard.');
   }
 
   ngOnDestroy(): void {
