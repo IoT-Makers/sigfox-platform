@@ -251,9 +251,9 @@
             </ng-container>
 
             <ng-container *ngIf="alertToAddOrEdit.deviceId && alertToAddOrEdit.geofence && !alertToAddOrEdit.value">
-              <div id="map"
+              <div id="mapAdd"
                    class="mb-1"
-                   style="height: 300px;"
+                   style="height: 500px;"
                    leaflet
                    leafletDraw
                    (leafletMapReady)="onMapReady($event)"
@@ -292,7 +292,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="addOrEditAlertModal.hide()">Close</button>
-          <button type="submit" *ngIf="addAlertFlag" class="btn btn-success" [disabled]="!addOrEditForm.form.valid"><i class="fa fa-plus-circle"></i> Add alert</button>
+          <button type="submit" class="btn btn-success" [disabled]="!addOrEditForm.form.valid"><i class="fa fa-plus-circle"></i> Add</button>
         </div>
       </form>
       <form *ngIf="!addAlertFlag" (ngSubmit)="editAlert()" class="form-horizontal" #addOrEditForm="ngForm">
@@ -382,9 +382,9 @@
             </ng-container>
 
             <ng-container *ngIf="alertToAddOrEdit.deviceId && alertToAddOrEdit.geofence && !alertToAddOrEdit.value">
-              <div id="map"
+              <div id="mapEdit"
                    class="mb-1"
-                   style="height: 300px;"
+                   style="height: 500px;"
                    leaflet
                    leafletDraw
                    (leafletMapReady)="onMapReady($event)"
@@ -423,7 +423,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="addOrEditAlertModal.hide()">Close</button>
-          <button class="btn btn-primary" [disabled]="!addOrEditForm.form.valid" (click)="editAlert()"><i class="fa fa-check"></i> Update</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!addOrEditForm.form.valid"><i class="fa fa-check"></i> Update</button>
         </div>
       </form>
     </div><!-- /.modal-content -->

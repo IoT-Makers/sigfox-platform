@@ -8,9 +8,10 @@ declare var Object: any;
 export interface BeaconInterface {
   "id": string;
   "type": string;
+  "level": number;
   "location": GeoPoint;
-  "createdAt"?: Date;
   "userId"?: any;
+  "createdAt"?: Date;
   "updatedAt"?: Date;
   user?: User;
 }
@@ -18,9 +19,10 @@ export interface BeaconInterface {
 export class Beacon implements BeaconInterface {
   "id": string = '';
   "type": string = '';
+  "level": number = 0;
   "location": GeoPoint = <any>null;
-  "createdAt": Date = new Date(0);
   "userId": any = <any>null;
+  "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   user: User = null;
   constructor(data?: BeaconInterface) {
@@ -64,17 +66,22 @@ export class Beacon implements BeaconInterface {
           name: 'type',
           type: 'string'
         },
+        "level": {
+          name: 'level',
+          type: 'number',
+          default: 0
+        },
         "location": {
           name: 'location',
           type: 'GeoPoint'
         },
-        "createdAt": {
-          name: 'createdAt',
-          type: 'Date'
-        },
         "userId": {
           name: 'userId',
           type: 'any'
+        },
+        "createdAt": {
+          name: 'createdAt',
+          type: 'Date'
         },
         "updatedAt": {
           name: 'updatedAt',

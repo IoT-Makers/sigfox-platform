@@ -51,7 +51,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
   };
   private mapOptions = {
     layers: [
-      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap contributors' }),
+      tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 21,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: '© OpenStreetMap contributors' }),
       this.drawnItems
     ],
     zoom: 5,
@@ -143,7 +146,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
    */
   onMapReady(map: L.Map): void {
     this.map = map;
-    this.map.options.layers[0] = tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' });
+    this.map.options.layers[0] = tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      maxZoom: 21,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+      attribution: '© OpenStreetMap contributors' });
     /*this.map.options.zoom = 5;
     this.map.options.center = latLng(48.856614, 2.352222);
     this.map.options.trackResize = false;*/
@@ -169,7 +175,9 @@ export class AlertsComponent implements OnInit, OnDestroy {
         }
       });
       setTimeout(() => {
-        this.map.fitBounds(this.drawnItems.getBounds());
+        if (this.alertToAddOrEdit.geofence.length > 0) {
+          this.map.fitBounds(this.drawnItems.getBounds());
+        }
       }, 500);
     }
     console.log('Map loaded!');

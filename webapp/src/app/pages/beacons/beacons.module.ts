@@ -7,7 +7,7 @@ import {ModalModule, TooltipModule} from 'ngx-bootstrap';
 import {MomentModule} from 'angular2-moment';
 import {FormsModule} from '@angular/forms';
 import {DataTableModule} from 'angular2-datatable';
-import {DataFilterPipe} from '../demo/datafilterpipe';
+import {DataFilterPipe} from './datafilterpipe';
 import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 

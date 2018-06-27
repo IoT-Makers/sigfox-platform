@@ -25,6 +25,9 @@ class Beacons {
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('Beacon: Before Save');
+    if (ctx.instance) {
+      ctx.instance.createdAt = new Date();
+    }
     next();
   }
   // Example Remote Method
