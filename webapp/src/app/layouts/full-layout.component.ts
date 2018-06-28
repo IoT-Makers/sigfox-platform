@@ -141,17 +141,30 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           return;
         }
       });
-    });
 
-    // Check if organization view
-    this.route.params.subscribe(params => {
+      // Check if organization view
+      this.route.params.subscribe(params => {
 
-      this.isInitialized = false;
+        this.isInitialized = false;
 
-      console.log('params full layout', params);
-      if (params.id) {
-        this.organizationApi.findById(params.id, {include: 'Members'}).subscribe((organization: Organization) => {
-          this.organization = organization;
+        console.log('params full layout', params);
+        if (params.id) {
+          this.organizationApi.findById(params.id, {include: 'Members'}).subscribe((organization: Organization) => {
+            this.organization = organization;
+            // Real Time
+            if (
+              this.rt.connection.isConnected() &&
+              this.rt.connection.authenticated
+            ) {
+              this.rt.onReady().subscribe(() => this.setup());
+            } else {
+              //this.rt.onAuthenticated().subscribe(() => this.setup());
+              this.rt.onReady().subscribe(() => this.setup());
+            }
+          });
+        } else {
+
+          //Check if real time and setup
           // Real Time
           if (
             this.rt.connection.isConnected() &&
@@ -160,24 +173,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
             this.rt.onReady().subscribe(() => this.setup());
           } else {
             //this.rt.onAuthenticated().subscribe(() => this.setup());
-            this.rt.onReady().subscribe(() => this.setup());
+            this.rt.onReady().subscribe( () => this.setup());
           }
-        });
-      } else {
-
-        //Check if real time and setup
-        // Real Time
-        if (
-          this.rt.connection.isConnected() &&
-          this.rt.connection.authenticated
-        ) {
-          this.rt.onReady().subscribe(() => this.setup());
-        } else {
-          //this.rt.onAuthenticated().subscribe(() => this.setup());
-          this.rt.onReady().subscribe( () => this.setup());
         }
-      }
-      //console.log('Router', params);
+        //console.log('Router', params);
+      });
     });
   }
 
@@ -300,10 +300,15 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         // Beacons
         this.beaconRef = this.userRef.child<Beacon>('Beacons');
         this.subscriptions.push(this.beaconRef.on('change').subscribe((beacons: Beacon[]) => {
-          this.beaconApi.count().subscribe((result: any) => {
-            this.countBeacons = result.count;
+          if (this.admin) {
+            this.beaconApi.count().subscribe((result: any) => {
+              this.countBeacons = result.count;
+              this.countBeaconsReady = true;
+            });
+          } else {
+            this.countBeacons = beacons.length;
             this.countBeaconsReady = true;
-          });
+          }
         }));
 
         // Connectors

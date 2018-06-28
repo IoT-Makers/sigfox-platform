@@ -193,11 +193,6 @@
             Developers
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLinkActive="active" [routerLink]="['/api']">
-              <i class="fa fa-arrows-h text-api"></i> API
-            </a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" routerLinkActive="active" [routerLink]="['/parsers']">
               <i class="fa fa-code text-parser"></i> Parsers
               <span *ngIf="countParsersReady" class="badge badge-parser">{{countParsers}}</span>
@@ -209,16 +204,21 @@
               <span *ngIf="countConnectorsReady" class="badge badge-connector">{{countConnectors}}</span>
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/beacons']">
+              <i class="fa fa-circle-thin text-beacon"></i> Beacons
+              <span *ngIf="countBeaconsReady" class="badge badge-beacon">{{countBeacons}}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/api']">
+              <i class="fa fa-arrows-h text-api"></i> API
+            </a>
+          </li>
 
           <ng-container *ngIf="admin">
             <li class="nav-title">
               Admin
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLinkActive="active" [routerLink]="['/beacons']">
-                <i class="fa fa-circle-thin text-beacon"></i> Beacons
-                <span *ngIf="countBeaconsReady" class="badge badge-beacon">{{countBeacons}}</span>
-              </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" routerLinkActive="active" [routerLink]="['/admin']"><i

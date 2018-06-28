@@ -34,10 +34,9 @@ export const routes: Routes = [
       {path: 'api', loadChildren: './pages/api/api.module#ApiModule'},
       {path: 'parsers', loadChildren: './pages/parsers/parsers.module#ParsersModule'},
       {path: 'connectors', loadChildren: './pages/connectors/connectors.module#ConnectorsModule'},
+      {path: 'beacons', loadChildren: './pages/beacons/beacons.module#BeaconsModule'},
 
-      {path: 'admin', canActivate: [AdminGuard], loadChildren: './pages/admin/admin.module#AdminModule'},
-
-      {path: 'beacons', canActivate: [AdminGuard], loadChildren: './pages/beacons/beacons.module#BeaconsModule'}
+      {path: 'admin', canActivate: [AdminGuard], loadChildren: './pages/admin/admin.module#AdminModule'}
     ]
   },
   {
