@@ -107,12 +107,12 @@ export class BeaconsComponent implements OnInit, OnDestroy {
           return;
         }
       });
+      // Real Time
+      if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
+        this.setup();
+      else
+        this.rt.onAuthenticated().subscribe(() => this.setup());
     });
-    // Real Time
-    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-      this.setup();
-    else
-      this.rt.onAuthenticated().subscribe(() => this.setup());
   }
 
   setup(): void {
