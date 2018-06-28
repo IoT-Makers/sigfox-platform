@@ -35,6 +35,9 @@
       "type": "GeoPoint",
       "required": true
     },
+    "level": {
+      "type": "number"
+    },
     "precision": {
       "type": "number"
     },

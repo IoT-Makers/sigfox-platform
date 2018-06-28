@@ -115,8 +115,10 @@ agm-map {
   message: $message,
   geoloc: $geoloc,
   alert: $alert,
+  api: $api,
   parser: $parser,
   connector: $connector,
+  beacon: $beacon,
   user: $user,
   organization: $organization
 ) {

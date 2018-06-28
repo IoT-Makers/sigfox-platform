@@ -166,6 +166,18 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   UPDATE_BY_ID_WIDGETS_SUCCESS: type('[User] updateByIdWidgets success'),
   UPDATE_BY_ID_WIDGETS_FAIL: type('[User] updateByIdWidgets fail'),
 
+  FIND_BY_ID_BEACONS: type('[User] findByIdBeacons'),
+  FIND_BY_ID_BEACONS_SUCCESS: type('[User] findByIdBeacons success'),
+  FIND_BY_ID_BEACONS_FAIL: type('[User] findByIdBeacons fail'),
+
+  DESTROY_BY_ID_BEACONS: type('[User] destroyByIdBeacons'),
+  DESTROY_BY_ID_BEACONS_SUCCESS: type('[User] destroyByIdBeacons success'),
+  DESTROY_BY_ID_BEACONS_FAIL: type('[User] destroyByIdBeacons fail'),
+
+  UPDATE_BY_ID_BEACONS: type('[User] updateByIdBeacons'),
+  UPDATE_BY_ID_BEACONS_SUCCESS: type('[User] updateByIdBeacons success'),
+  UPDATE_BY_ID_BEACONS_FAIL: type('[User] updateByIdBeacons fail'),
+
   GET_ACCESSTOKENS: type('[User] getAccessTokens'),
   GET_ACCESSTOKENS_SUCCESS: type('[User] getAccessTokens success'),
   GET_ACCESSTOKENS_FAIL: type('[User] getAccessTokens fail'),
@@ -310,6 +322,18 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   DELETE_WIDGETS_SUCCESS: type('[User] deleteWidgets success'),
   DELETE_WIDGETS_FAIL: type('[User] deleteWidgets fail'),
 
+  GET_BEACONS: type('[User] getBeacons'),
+  GET_BEACONS_SUCCESS: type('[User] getBeacons success'),
+  GET_BEACONS_FAIL: type('[User] getBeacons fail'),
+
+  CREATE_BEACONS: type('[User] createBeacons'),
+  CREATE_BEACONS_SUCCESS: type('[User] createBeacons success'),
+  CREATE_BEACONS_FAIL: type('[User] createBeacons fail'),
+
+  DELETE_BEACONS: type('[User] deleteBeacons'),
+  DELETE_BEACONS_SUCCESS: type('[User] deleteBeacons success'),
+  DELETE_BEACONS_FAIL: type('[User] deleteBeacons fail'),
+
   LOGIN: type('[User] login'),
   LOGIN_SUCCESS: type('[User] login success'),
   LOGIN_FAIL: type('[User] login fail'),
@@ -385,6 +409,10 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   CREATE_MANY_WIDGETS: type('[User] createManyWidgets'),
   CREATE_MANY_WIDGETS_SUCCESS: type('[User] createManyWidgets success'),
   CREATE_MANY_WIDGETS_FAIL: type('[User] createManyWidgets fail'),
+
+  CREATE_MANY_BEACONS: type('[User] createManyBeacons'),
+  CREATE_MANY_BEACONS_SUCCESS: type('[User] createManyBeacons success'),
+  CREATE_MANY_BEACONS_FAIL: type('[User] createManyBeacons fail'),
 
 }, {
   /**
@@ -2282,6 +2310,147 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
 
   /**
+   * findByIdBeacons Action.
+   * Find a related item by id for Beacons.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Beacons
+   * @param {any} meta (optional).
+   * 
+   */
+  findByIdBeacons: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_BEACONS;
+      public payload: {id: any, fk: any, customHeaders};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk, customHeaders};
+    }
+  },
+  /**
+   * findByIdBeaconsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  findByIdBeaconsSuccess: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_BEACONS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * findByIdBeaconsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  findByIdBeaconsFail: class implements Action {
+    public readonly type = UserActionTypes.FIND_BY_ID_BEACONS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * destroyByIdBeacons Action.
+   * Delete a related item by id for Beacons.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Beacons
+   * @param {any} meta (optional).
+   * 
+   */
+  destroyByIdBeacons: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_BEACONS;
+      public payload: {id: any, fk: any, customHeaders};
+
+    constructor(id: any, fk: any, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk, customHeaders};
+    }
+  },
+  /**
+   * destroyByIdBeaconsSuccess Action.
+   * 
+   * @param {any} id 
+   * This method returns no data.
+   * @param {any} meta (optional).
+   * 
+   */
+  destroyByIdBeaconsSuccess: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_BEACONS_SUCCESS;
+      public payload: {id: any, fk: any};
+
+    constructor(id: any, fk: any, public meta?: any) {
+      this.payload = {id, fk};
+    }
+  },
+  /**
+   * destroyByIdBeaconsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  destroyByIdBeaconsFail: class implements Action {
+    public readonly type = UserActionTypes.DESTROY_BY_ID_BEACONS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * updateByIdBeacons Action.
+   * Update a related item by id for Beacons.
+   *
+   * @param {any} id user id
+   * @param {any} fk Foreign key for Beacons
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  updateByIdBeacons: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_BEACONS;
+      public payload: {id: any, fk: any, data: any, customHeaders};
+
+    constructor(id: any, fk: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, fk, data, customHeaders};
+    }
+  },
+  /**
+   * updateByIdBeaconsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  updateByIdBeaconsSuccess: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_BEACONS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * updateByIdBeaconsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  updateByIdBeaconsFail: class implements Action {
+    public readonly type = UserActionTypes.UPDATE_BY_ID_BEACONS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
    * getAccessTokens Action.
    * Queries accessTokens of user.
    *
@@ -3878,6 +4047,139 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
   },
 
   /**
+   * getBeacons Action.
+   * Queries Beacons of user.
+   *
+   * @param {any} id user id
+   * @param {object} filter 
+   * @param {any} meta (optional).
+   * 
+   */
+  getBeacons: class implements Action {
+    public readonly type = UserActionTypes.GET_BEACONS;
+      public payload: {id: any, filter: LoopBackFilter, customHeaders};
+
+    constructor(id: any, filter: LoopBackFilter = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, filter, customHeaders};
+    }
+  },
+  /**
+   * getBeaconsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  getBeaconsSuccess: class implements Action {
+    public readonly type = UserActionTypes.GET_BEACONS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * getBeaconsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  getBeaconsFail: class implements Action {
+    public readonly type = UserActionTypes.GET_BEACONS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * createBeacons Action.
+   * Creates a new instance in Beacons of this model.
+   *
+   * @param {any} id user id
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  createBeacons: class implements Action {
+    public readonly type = UserActionTypes.CREATE_BEACONS;
+      public payload: {id: any, data: any, customHeaders};
+
+    constructor(id: any, data: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {id, data, customHeaders};
+    }
+  },
+  /**
+   * createBeaconsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  createBeaconsSuccess: class implements Action {
+    public readonly type = UserActionTypes.CREATE_BEACONS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createBeaconsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  createBeaconsFail: class implements Action {
+    public readonly type = UserActionTypes.CREATE_BEACONS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * deleteBeacons Action.
+   * Deletes all Beacons of this model.
+   *
+   * @param {any} id user id
+   * @param {any} meta (optional).
+   * 
+   */
+  deleteBeacons: class implements Action {
+    public readonly type = UserActionTypes.DELETE_BEACONS;
+      
+    constructor(public payload: any, public meta?: any) {}
+  },
+  /**
+   * deleteBeaconsSuccess Action.
+   * 
+   * @param {any} id 
+   * This method returns no data.
+   * @param {any} meta (optional).
+   * 
+   */
+  deleteBeaconsSuccess: class implements Action {
+    public readonly type = UserActionTypes.DELETE_BEACONS_SUCCESS;
+  
+    constructor(public payload: any, public meta?: any) {}
+  },
+  /**
+   * deleteBeaconsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  deleteBeaconsFail: class implements Action {
+    public readonly type = UserActionTypes.DELETE_BEACONS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
    * login Action.
    * Login a user with username/email and password.
    *
@@ -4773,6 +5075,54 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   createManyWidgetsFail: class implements Action {
     public readonly type = UserActionTypes.CREATE_MANY_WIDGETS_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * createManyBeacons Action.
+   * Creates a new instance in Beacons of this model.
+   *
+   * @param {any} id user id
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   * @param {any} meta (optional).
+   * 
+   */
+  createManyBeacons: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_BEACONS;
+      public payload: {id: any, data: any[], customHeaders};
+
+    constructor(id: any, data: any[] = [], customHeaders?: Function, public meta?: any) {
+      this.payload = {id, data, customHeaders};
+    }
+  },
+  /**
+   * createManyBeaconsSuccess Action.
+   * 
+   * @param {any} id 
+   * @param {object[]} data 
+   * @param {any} meta (optional).
+   * 
+   */
+  createManyBeaconsSuccess: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_BEACONS_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * createManyBeaconsFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  createManyBeaconsFail: class implements Action {
+    public readonly type = UserActionTypes.CREATE_MANY_BEACONS_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

@@ -18,13 +18,16 @@ import { Model } from '@mean-expert/model';
   }
 })
 
-class Beacon {
+class Beacons {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {}
 
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
     console.log('Beacon: Before Save');
+    if (ctx.instance) {
+      ctx.instance.createdAt = new Date();
+    }
     next();
   }
   // Example Remote Method
@@ -33,4 +36,4 @@ class Beacon {
   }
 }
 
-module.exports = Beacon;
+module.exports = Beacons;

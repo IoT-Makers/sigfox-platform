@@ -137,6 +137,7 @@ class Geoloc {
           geoloc_beacon.id = null;
           geoloc_beacon.location.lat = beacon.location.lat;
           geoloc_beacon.location.lng = beacon.location.lng;
+          geoloc_beacon.level = beacon.level;
           // Find or create a new Geoloc
           Geoloc.findOrCreate(
             {

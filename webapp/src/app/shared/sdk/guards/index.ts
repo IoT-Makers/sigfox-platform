@@ -19,6 +19,7 @@ import { ReceptionExistsGuard } from './Reception';
 import { ConnectorExistsGuard } from './Connector';
 import { WidgetExistsGuard } from './Widget';
 import { PropertyExistsGuard } from './Property';
+import { BeaconExistsGuard } from './Beacon';
 
 export const LOOPBACK_GUARDS_PROVIDERS = [
   AuthGuard,
@@ -41,6 +42,7 @@ export const LOOPBACK_GUARDS_PROVIDERS = [
 	ConnectorExistsGuard,
 	WidgetExistsGuard,
 	PropertyExistsGuard,
+	BeaconExistsGuard,
 ];
 
 export * from './auth.guard';
@@ -63,3 +65,4 @@ export * from './Reception';
 export * from './Connector';
 export * from './Widget';
 export * from './Property';
+export * from './Beacon';

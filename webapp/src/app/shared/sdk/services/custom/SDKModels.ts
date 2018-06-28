@@ -19,6 +19,7 @@ import { Reception } from '../../models/Reception';
 import { Connector } from '../../models/Connector';
 import { Widget } from '../../models/Widget';
 import { Property } from '../../models/Property';
+import { Beacon } from '../../models/Beacon';
 
 export interface Models { [name: string]: any }
 
@@ -45,6 +46,7 @@ export class SDKModels {
     Connector: Connector,
     Widget: Widget,
     Property: Property,
+    Beacon: Beacon,
     
   };
 

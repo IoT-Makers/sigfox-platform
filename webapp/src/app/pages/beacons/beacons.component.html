@@ -1,0 +1,285 @@
+<div class="animated fadeIn">
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-10">
+              <i class="fa fa-circle-thin fa-lg text-beacon"></i><strong> Beacons</strong>
+            </div>
+            <div class="col-2">
+              <button class="pull-right btn btn-sm btn-round btn-success" (click)="openAddBeaconModal()">
+                <i class="fa fa-plus-circle"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-block">
+          <ng-container *ngIf="!beaconsReady">
+            Loading beacons...
+            <div class="sk-double-bounce">
+              <div class="sk-child sk-double-bounce1"></div>
+              <div class="sk-child sk-double-bounce2"></div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="beaconsReady && !beacons.length">
+            No beacons yet...
+          </ng-container>
+
+          <!-- Table -->
+          <div *ngIf="beacons.length > 0" class="table-responsive">
+            <table class="table table-hover table-outline" [mfData]="beacons" #mf="mfDataTable" [mfRowsOnPage]="10">
+              <thead class="thead-inverse">
+              <tr>
+                <th class="text-center">
+                  <mfDefaultSorter by="ID"><i class="fa fa-sort"></i> ID</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="type"><i class="fa fa-sort"></i> Type</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="level"><i class="fa fa-sort"></i> Level</mfDefaultSorter>
+                </th>
+                <th class="text-center">
+                  <mfDefaultSorter by="updatedAt"><i class="fa fa-sort"></i> Updated</mfDefaultSorter>
+                </th>
+                <th class="text-center">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let beacon of mf.data; let i = index">
+                <td class="text-center text-beacon">
+                  <strong>{{beacon.id}}</strong>
+                </td>
+                <td class="text-center">
+                  <span>{{beacon.type}}</span>
+                </td>
+                <td class="text-center">
+                  <span>{{beacon.level}}</span>
+                </td>
+                <td class="text-center">
+                  <strong>{{beacon.updatedAt | amTimeAgo}}</strong>
+                </td>
+                <td class="text-center">
+                  <div class="btn-group-sm">
+                    <button class="btn btn-outline-primary btn-round" tooltip="Edit beacon"
+                            (click)="openEditBeaconModal(beacon)"><i class="fa fa-pencil fa-lg"></i></button>
+                    <button class="btn btn-outline-danger btn-round" tooltip="Delete beacon"
+                            (click)="openConfirmBeaconModal(beacon)"><i class="fa fa-trash fa-lg"></i></button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+              <tfoot>
+              <tr>
+                <td colspan="4">
+                  <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                </td>
+              </tr>
+              </tfoot>
+            </table>
+          </div>
+          <!-- End Table -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div bsModal #addOrEditBeaconModal="bs-modal" class="modal fade" [config]="{ignoreBackdropClick: true}" tabindex="-1"
+     role="dialog"
+     aria-labelledby="addOrEditBeaconModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <!-- Form Begin -->
+    <div class="modal-content">
+      <form *ngIf="addBeaconFlag" (ngSubmit)="addBeacon()" class="form-horizontal" #addOrEditForm="ngForm">
+        <div class="modal-header">
+          <h4 class="modal-title">Add beacon</h4>
+          <button type="button" class="close" (click)="addOrEditBeaconModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Add Beacon -->
+          <div class="col-md-12">
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">ID
+                <small class="text-danger">(required)</small>
+              </label>
+              <div class="col-md-9">
+                <input type="text" class="form-control"
+                       name="beaconToAddOrEdit.id"
+                       placeholder="Beacon ID"
+                       [(ngModel)]="beaconToAddOrEdit.id"
+                       required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Type
+                <small class="text-danger">(required)</small>
+              </label>
+              <div class="col-md-3">
+                <angular2-multiselect #selectTypesEdit
+                                      name="selectTypes"
+                                      [data]="selectTypes"
+                                      [(ngModel)]="selectedTypes"
+                                      [settings]="selectOneSettings"
+                                      (onSelect)="beaconToAddOrEdit.type = $event.id; selectTypesEdit.isActive = false;"
+                                      (onDeSelect)="beaconToAddOrEdit.type = null"
+                                      required>
+                </angular2-multiselect>
+              </div>
+              <label class="col-md-3 form-control-label">Level
+                <small class="text-danger">(required)</small>
+              </label>
+              <div class="col-md-3">
+                <input type="number" class="form-control" placeholder="Beacon level" name="beaconToAddOrEdit.level" required [(ngModel)]="beaconToAddOrEdit.level">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 form-control-label">Location (click on map)
+                <small class="text-danger">(required)</small>
+              </label>
+              <div *ngIf="beaconToAddOrEdit.location" class="col-md-4">
+                <input type="text" class="form-control"
+                       name="beaconToAddOrEdit.location.lat"
+                       placeholder="Beacon latitude"
+                       [(ngModel)]="beaconToAddOrEdit.location.lat"
+                       required>
+              </div>
+              <div *ngIf="beaconToAddOrEdit.location" class="col-md-4">
+                <input type="text" class="form-control"
+                       name="beaconToAddOrEdit.location.lng"
+                       placeholder="Beacon longitude"
+                       [(ngModel)]="beaconToAddOrEdit.location.lng"
+                       required>
+              </div>
+            </div>
+            <div id="mapAdd"
+                 class="mb-1"
+                 style="height: 500px;"
+                 leaflet
+                 (leafletMapReady)="onMapReady($event)"
+                 [leafletOptions]="mapOptions">
+            </div>
+          </div>
+          <!-- End Add Beacon -->
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="addOrEditBeaconModal.hide()">Close</button>
+          <button type="submit" class="btn btn-success" [disabled]="!addOrEditForm.form.valid"><i class="fa fa-plus-circle"></i> Add</button>
+        </div>
+      </form>
+
+      <form *ngIf="!addBeaconFlag" (ngSubmit)="editBeacon()" class="form-horizontal" #addOrEditForm="ngForm">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit beacon</h4>
+          <button type="button" class="close" (click)="addOrEditBeaconModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Edit Beacon -->
+          <div class="col-md-12">
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">ID
+                <small class="text-danger">(required)</small>
+              </label>
+              <div class="col-md-9">
+                <input type="text" class="form-control"
+                       name="beaconToAddOrEdit.id"
+                       placeholder="Beacon ID"
+                       [(ngModel)]="beaconToAddOrEdit.id"
+                       disabled
+                       required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Type
+                <small class="text-danger">(required)</small>
+              </label>
+              <div class="col-md-3">
+                <angular2-multiselect #selectTypesEdit
+                                      name="selectTypes"
+                                      [data]="selectTypes"
+                                      [(ngModel)]="selectedTypes"
+                                      [settings]="selectOneSettings"
+                                      (onSelect)="beaconToAddOrEdit.type = $event.id; selectTypesEdit.isActive = false;"
+                                      (onDeSelect)="beaconToAddOrEdit.type = null"
+                                      required>
+                </angular2-multiselect>
+              </div>
+              <label class="col-md-3 form-control-label">Level
+                <small class="text-danger">(required)</small>
+              </label>
+              <div class="col-md-3">
+                <input type="number" class="form-control" placeholder="Beacon level" name="beaconToAddOrEdit.level" required [(ngModel)]="beaconToAddOrEdit.level">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 form-control-label">Location (drag on map)
+                <small class="text-danger">(required)</small>
+              </label>
+              <div *ngIf="beaconToAddOrEdit.location" class="col-md-4">
+                <input type="text" class="form-control"
+                       name="beaconToAddOrEdit.location.lat"
+                       placeholder="Beacon latitude"
+                       [(ngModel)]="beaconToAddOrEdit.location.lat"
+                       required>
+              </div>
+              <div *ngIf="beaconToAddOrEdit.location" class="col-md-4">
+                <input type="text" class="form-control"
+                       name="beaconToAddOrEdit.location.lng"
+                       placeholder="Beacon longitude"
+                       [(ngModel)]="beaconToAddOrEdit.location.lng"
+                       required>
+              </div>
+            </div>
+            <div id="mapEdit"
+                 class="mb-1"
+                 style="height: 500px;"
+                 leaflet
+                 (leafletMapReady)="onMapReady($event)"
+                 [leafletOptions]="mapOptions">
+            </div>
+          </div>
+          <!-- End Edit Beacon -->
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="addOrEditBeaconModal.hide()">Close</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!addOrEditForm.form.valid"><i class="fa fa-check"></i> Update</button>
+        </div>
+      </form>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div bsModal #confirmBeaconModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmBeaconModal"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Remove beacon - {{beaconToRemove.id}}</h4>
+        <button type="button" class="close" (click)="confirmBeaconModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are your sure you wish to delete this beacon?
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-danger" (click)="removeBeacon()">Delete</button>
+        <button class="btn btn-sm btn-default" (click)="confirmBeaconModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

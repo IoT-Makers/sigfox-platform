@@ -18,7 +18,6 @@ import {MomentModule} from 'angular2-moment';
     DataTableModule,
     CommonModule,
     ModalModule.forRoot(),
-    AccordionModule.forRoot(),
     FormsModule,
     ToasterModule.forRoot(),
     SelectModule,

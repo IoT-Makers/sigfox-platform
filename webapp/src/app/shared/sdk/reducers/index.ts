@@ -20,3 +20,4 @@ export * from './Reception';
 export * from './Connector';
 export * from './Widget';
 export * from './Property';
+export * from './Beacon';

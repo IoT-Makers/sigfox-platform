@@ -1,8 +1,21 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Alert, Category, Connector, Dashboard, Device, FireLoopRef, Message, Organization, Parser, Role, User} from '../shared/sdk/models';
+import {
+  Alert,
+  Beacon,
+  Category,
+  Connector,
+  Dashboard,
+  Device,
+  FireLoopRef,
+  Message,
+  Organization,
+  Parser,
+  Role,
+  User
+} from '../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
-import {OrganizationApi, ParserApi, UserApi} from '../shared/sdk/services/custom';
+import {BeaconApi, OrganizationApi, ParserApi, UserApi} from '../shared/sdk/services/custom';
 import {RealTime} from '../shared/sdk/services/core';
 
 @Component({
@@ -22,6 +35,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   public countAlertsReady = false;
   public countParsersReady = false;
   public countConnectorsReady = false;
+  public countBeaconsReady = false;
   public countOrganizationsReady = false;
 
   private user: User;
@@ -46,6 +60,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private countAlerts = 0;
   private countParsers = 0;
   private countConnectors = 0;
+  private countBeacons = 0;
   private countOrganizationUsers = 0;
 
   private userRef: FireLoopRef<User>;
@@ -58,6 +73,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private alertRef: FireLoopRef<Alert>;
   private parserRef: FireLoopRef<Parser>;
   private connectorRef: FireLoopRef<Connector>;
+  private beaconRef: FireLoopRef<Beacon>;
 
   private admin = false;
 
@@ -77,6 +93,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private parserApi: ParserApi,
+              private beaconApi: BeaconApi,
               private route: ActivatedRoute,
               private router: Router) {
 
@@ -277,6 +294,15 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
           this.parserApi.count().subscribe((result: any) => {
             this.countParsers = result.count;
             this.countParsersReady = true;
+          });
+        }));
+
+        // Beacons
+        this.beaconRef = this.userRef.child<Beacon>('Beacons');
+        this.subscriptions.push(this.beaconRef.on('change').subscribe((beacons: Beacon[]) => {
+          this.beaconApi.count().subscribe((result: any) => {
+            this.countBeacons = result.count;
+            this.countBeaconsReady = true;
           });
         }));
 
