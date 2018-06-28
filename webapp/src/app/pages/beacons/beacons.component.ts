@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Alert, Beacon, FireLoopRef, User} from '../../shared/sdk/models';
+import {Beacon, FireLoopRef, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services/core';
 import {Subscription} from 'rxjs/Subscription';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -141,7 +141,9 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
   onLocationFound(e): void {
     const radius = e.accuracy / 2;
-    this.marker = L.marker(e.latlng, {icon: icon(this.blueIconOptions)}).addTo(this.map);
+    this.marker = L.marker(e.latlng, {draggable: true, icon: icon(this.blueIconOptions)});
+    this.marker.on('dragend', (e) => this.onMarkerDragEnd(e));
+    this.map.addLayer(this.marker);
     L.circle(e.latlng, radius, this.locationOptions).addTo(this.map);
     this.marker.bindPopup('You are within <b>' + radius + '</b> meters from this point').openPopup();
   }
@@ -154,9 +156,15 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     if (this.marker) {
       this.map.removeLayer(this.marker);
     }
-    this.marker = L.marker(e.latlng, {icon: icon(this.blueIconOptions)}).addTo(this.map);
-    this.marker.bindPopup('Beacon position - ' + this.beaconToAddOrEdit.id).openPopup();
+    this.marker = L.marker(e.latlng, {draggable: true, icon: icon(this.blueIconOptions)});
+    this.marker.on('dragend', (e) => this.onMarkerDragEnd(e));
+    this.map.addLayer(this.marker);
+    this.marker.bindPopup(e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5)).openPopup();
     this.beaconToAddOrEdit.location = e.latlng;
+  }
+
+  onMarkerDragEnd(e) {
+    this.beaconToAddOrEdit.location = e.target._latlng;
   }
 
   openAddBeaconModal(): void {
@@ -165,16 +173,16 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     this.selectedTypes = [];
     // New beacon
     this.beaconToAddOrEdit = new Beacon();
+    this.beaconToAddOrEdit.type = 'sigfox';
+    this.selectedTypes.push({id: 'sigfox', itemName: 'Sigfox'});
     // Open modal
     this.addOrEditBeaconModal.show();
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 500);
   }
 
   openEditBeaconModal(beacon: Beacon): void {
-    /* this.map.invalidateSize();
-         map._resetView(map.getCenter(), map.getZoom(), true);
-       }, 200);
-     });
- */
     this.addBeaconFlag = false;
     this.beaconToAddOrEdit = beacon;
     // Set selected values
@@ -187,13 +195,20 @@ export class BeaconsComponent implements OnInit, OnDestroy {
         return;
       }
     });
-    if (this.marker) {
-      this.map.removeLayer(this.marker);
-    }
-    this.marker = L.marker(new L.LatLng(beacon.location.lat, beacon.location.lng), {icon: icon(this.blueIconOptions)}).addTo(this.map);
-    this.marker.bindPopup('Beacon position - ' + this.beaconToAddOrEdit.id).openPopup();
 
     this.addOrEditBeaconModal.show();
+
+    setTimeout(() => {
+      this.map.invalidateSize();
+      if (this.marker) {
+        this.map.removeLayer(this.marker);
+      }
+      this.map.setView(new L.LatLng(beacon.location.lat, beacon.location.lng), 20);
+      this.marker = L.marker(new L.LatLng(beacon.location.lat, beacon.location.lng), {draggable: true, icon: icon(this.blueIconOptions)});
+      this.marker.on('dragend', (e) => this.onMarkerDragEnd(e));
+      this.map.addLayer(this.marker);
+      this.marker.bindPopup('Beacon position - ' + this.beaconToAddOrEdit.id);
+    }, 500);
   }
 
   openConfirmBeaconModal(beacon: Beacon): void {

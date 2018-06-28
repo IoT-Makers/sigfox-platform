@@ -121,7 +121,7 @@
               <label class="col-md-3 form-control-label">Type
                 <small class="text-danger">(required)</small>
               </label>
-              <div class="col-md-9">
+              <div class="col-md-3">
                 <angular2-multiselect #selectTypesEdit
                                       name="selectTypes"
                                       [data]="selectTypes"
@@ -132,13 +132,30 @@
                                       required>
                 </angular2-multiselect>
               </div>
-            </div>
-            <div class="form-group row">
               <label class="col-md-3 form-control-label">Level
                 <small class="text-danger">(required)</small>
               </label>
-              <div class="col-md-9">
+              <div class="col-md-3">
                 <input type="number" class="form-control" placeholder="Beacon level" name="beaconToAddOrEdit.level" required [(ngModel)]="beaconToAddOrEdit.level">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 form-control-label">Location (click on map)
+                <small class="text-danger">(required)</small>
+              </label>
+              <div *ngIf="beaconToAddOrEdit.location" class="col-md-4">
+                <input type="text" class="form-control"
+                       name="beaconToAddOrEdit.location.lat"
+                       placeholder="Beacon latitude"
+                       [(ngModel)]="beaconToAddOrEdit.location.lat"
+                       required>
+              </div>
+              <div *ngIf="beaconToAddOrEdit.location" class="col-md-4">
+                <input type="text" class="form-control"
+                       name="beaconToAddOrEdit.location.lng"
+                       placeholder="Beacon longitude"
+                       [(ngModel)]="beaconToAddOrEdit.location.lng"
+                       required>
               </div>
             </div>
             <div id="mapAdd"
@@ -185,7 +202,7 @@
               <label class="col-md-3 form-control-label">Type
                 <small class="text-danger">(required)</small>
               </label>
-              <div class="col-md-9">
+              <div class="col-md-3">
                 <angular2-multiselect #selectTypesEdit
                                       name="selectTypes"
                                       [data]="selectTypes"
@@ -196,13 +213,30 @@
                                       required>
                 </angular2-multiselect>
               </div>
-            </div>
-            <div class="form-group row">
               <label class="col-md-3 form-control-label">Level
                 <small class="text-danger">(required)</small>
               </label>
-              <div class="col-md-9">
+              <div class="col-md-3">
                 <input type="number" class="form-control" placeholder="Beacon level" name="beaconToAddOrEdit.level" required [(ngModel)]="beaconToAddOrEdit.level">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 form-control-label">Location (drag on map)
+                <small class="text-danger">(required)</small>
+              </label>
+              <div *ngIf="beaconToAddOrEdit.location" class="col-md-4">
+                <input type="text" class="form-control"
+                       name="beaconToAddOrEdit.location.lat"
+                       placeholder="Beacon latitude"
+                       [(ngModel)]="beaconToAddOrEdit.location.lat"
+                       required>
+              </div>
+              <div *ngIf="beaconToAddOrEdit.location" class="col-md-4">
+                <input type="text" class="form-control"
+                       name="beaconToAddOrEdit.location.lng"
+                       placeholder="Beacon longitude"
+                       [(ngModel)]="beaconToAddOrEdit.location.lng"
+                       required>
               </div>
             </div>
             <div id="mapEdit"
