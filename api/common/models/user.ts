@@ -22,14 +22,14 @@ const loopback = require('loopback');
     afterRemoteDelete: {name: 'deleteById', type: 'afterRemote'}
   },
   remotes: {
-    /*deleteUser: {
+    loginQr: {
       accepts: [
-        {arg: 'userPassword', type: 'string', required: true, description: 'The user password'},
-        {arg: 'req', type: 'object', http: {source: 'req'}}
+        {arg: 'redirect', type: 'string', required: true},
+        {arg: 'res', type: 'object', http: {source: 'res'}}
       ],
       returns: {arg: 'result', type: 'array'},
-      http: {path: '/delete-user', verb: 'delete'}
-    }*/
+      http: {path: '/login/qr', verb: 'get'}
+    }
   }
 })
 
@@ -37,6 +37,13 @@ class user {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
+  }
+
+  loginQr(redirect: string, res: any, next: Function) {
+    console.log(redirect);
+    res.location(redirect);
+    res.status(302);
+    next();
   }
 
   afterRemoteChangePassword(ctx: any, reuslt: any, next: Function): void {

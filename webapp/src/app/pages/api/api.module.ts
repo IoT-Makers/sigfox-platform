@@ -7,6 +7,7 @@ import {AccordionModule, ModalModule, TooltipModule} from 'ngx-bootstrap';
 import {ToasterModule} from 'angular2-toaster';
 import {FormsModule} from '@angular/forms';
 import {MomentModule} from 'angular2-moment';
+import {ClickCopyDirective} from './click-copy.directive';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import {MomentModule} from 'angular2-moment';
     DataTableModule
   ],
   declarations: [
-    ApiComponent
+    ApiComponent,
+    ClickCopyDirective
   ]
 })
 
