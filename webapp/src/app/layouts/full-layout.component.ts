@@ -300,10 +300,15 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         // Beacons
         this.beaconRef = this.userRef.child<Beacon>('Beacons');
         this.subscriptions.push(this.beaconRef.on('change').subscribe((beacons: Beacon[]) => {
-          this.beaconApi.count().subscribe((result: any) => {
-            this.countBeacons = result.count;
+          if (this.admin) {
+            this.beaconApi.count().subscribe((result: any) => {
+              this.countBeacons = result.count;
+              this.countBeaconsReady = true;
+            });
+          } else {
+            this.countBeacons = beacons.length;
             this.countBeaconsReady = true;
-          });
+          }
         }));
 
         // Connectors

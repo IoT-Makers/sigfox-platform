@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Beacon, FireLoopRef, User} from '../../shared/sdk/models';
+import {Beacon, FireLoopRef, Role, User} from '../../shared/sdk/models';
 import {RealTime} from '../../shared/sdk/services/core';
 import {Subscription} from 'rxjs/Subscription';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -86,6 +86,9 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     trackResize: false
   };
 
+
+  private admin = false;
+
   constructor(private rt: RealTime,
               private userApi: UserApi,
               toasterService: ToasterService) {
@@ -96,6 +99,15 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     console.log('Beacons: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
+    this.userApi.getRoles(this.user.id).subscribe((roles: Role[]) => {
+      this.user.roles = roles;
+      roles.forEach((role: Role) => {
+        if (role.name === 'admin') {
+          this.admin = true;
+          return;
+        }
+      });
+    });
     // Real Time
     if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
       this.setup();
@@ -109,15 +121,27 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     // Get and listen beacons
     this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
     this.beaconRef = this.userRef.child<Beacon>('Beacons');
-    this.beaconSub = this.rt.FireLoop.ref<Beacon>(Beacon).on('change',
-      {
-        limit: 1000,
-        order: 'updatedAt DESC'
-      }
-    ).subscribe((beacons: Beacon[]) => {
-      this.beacons = beacons;
-      this.beaconsReady = true;
-    });
+    if (this.admin) {
+      this.beaconSub = this.rt.FireLoop.ref<Beacon>(Beacon).on('change',
+        {
+          limit: 1000,
+          order: 'updatedAt DESC'
+        }
+      ).subscribe((beacons: Beacon[]) => {
+        this.beacons = beacons;
+        this.beaconsReady = true;
+      });
+    } else {
+      this.beaconSub = this.beaconRef.on('change',
+        {
+          limit: 1000,
+          order: 'updatedAt DESC'
+        }
+      ).subscribe((beacons: Beacon[]) => {
+        this.beacons = beacons;
+        this.beaconsReady = true;
+      });
+    }
   }
 
   /**
