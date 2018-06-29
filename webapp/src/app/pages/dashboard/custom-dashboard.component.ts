@@ -1315,14 +1315,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   this.messageApi.stats(
                     widget.options.period,
                     {},
-                    {
-                      and: [
-                        {userId: this.user.id},
-                        {deviceId: device.id}
-                      ]
-                    }
+                    {deviceId: device.id}
                   ).subscribe((stats: any) => {
-
                     widget.options.chartLabels = [];
                     widget.options.chartOptions = {
                       responsive: true,
@@ -1339,7 +1333,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                     //console.log('Stats: ', stats);
 
                     stats.forEach((stat: any) => {
-
                       data.push(stat.count);
                       if (widget.options.period === 'hourly')
                         widget.options.chartLabels.push(moment(stat.universal).format('h:mm a'));

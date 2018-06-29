@@ -27,6 +27,7 @@ class Beacons {
     console.log('Beacon: Before Save');
     if (ctx.instance) {
       ctx.instance.createdAt = new Date();
+      ctx.instance.id = ctx.instance.id.toUpperCase();
     }
     next();
   }

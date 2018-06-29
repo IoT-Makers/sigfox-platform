@@ -113,6 +113,10 @@
           </ng-container>
 
           <ng-container *ngIf="widget.ready">
+            <!-- Description -->
+            <ng-container *ngIf="widget.description">
+              <p>{{widget.description}}</p>
+            </ng-container>
             <!-- Image -->
             <ng-container *ngIf="widget.type === 'image'">
               <div class="text-center mx-auto">
