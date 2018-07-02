@@ -626,7 +626,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               include: [{
                 relation: 'Geolocs',
                 scope: {
-                  limit: 5
+                  order: 'type ASC',
+                  limit: 1
                 }
               }]
             }
@@ -1386,7 +1387,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     device.Messages = [];
 
     if (device.visibility) {
-      //const widgetFilter = widget.filter.getInitialState();
       const widgetFilter = Object.assign({}, widget.filter);
       widgetFilter.where = {id: device.id};
       widgetFilter.include[0].scope.limit = 1000;
