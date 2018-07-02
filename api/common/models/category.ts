@@ -117,6 +117,7 @@ class Category {
 
           const today = moment().format('YYYY.MM.DD');
           const filename = today + '_' + category.name + '_export.csv';
+          res.setTimeout(600000);
           res.set('Cache-Control', 'max-age=0, no-cache, must-revalidate, proxy-revalidate');
           res.set('Content-Type', 'application/force-download');
           res.set('Content-Type', 'application/octet-stream');
@@ -280,6 +281,7 @@ class Category {
 
           const today = moment().format('YYYY.MM.DD');
           const filename = today + '_' + category.name + '_export.csv';
+          res.setTimeout(600000);
           res.set('Cache-Control', 'max-age=0, no-cache, must-revalidate, proxy-revalidate');
           res.set('Content-Type', 'application/force-download');
           res.set('Content-Type', 'application/octet-stream');
