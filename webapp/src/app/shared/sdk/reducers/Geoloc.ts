@@ -6,9 +6,7 @@ import { Geoloc, GeolocInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { GeolocActionTypes } from '../actions';
 
-
-export interface GeolocsState extends EntityState<Geoloc | GeolocInterface> {
-}
+export interface GeolocsState extends EntityState<Geoloc | GeolocInterface> {};
 
 export const GeolocAdapter: EntityAdapter<Geoloc | GeolocInterface> = createEntityAdapter<Geoloc | GeolocInterface>();
 

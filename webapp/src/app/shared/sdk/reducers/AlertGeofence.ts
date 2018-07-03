@@ -6,9 +6,7 @@ import { AlertGeofence, AlertGeofenceInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { AlertGeofenceActionTypes } from '../actions';
 
-
-export interface AlertGeofencesState extends EntityState<AlertGeofence | AlertGeofenceInterface> {
-}
+export interface AlertGeofencesState extends EntityState<AlertGeofence | AlertGeofenceInterface> {};
 
 export const AlertGeofenceAdapter: EntityAdapter<AlertGeofence | AlertGeofenceInterface> = createEntityAdapter<AlertGeofence | AlertGeofenceInterface>();
 

@@ -362,6 +362,10 @@ Object.assign(BaseLoopbackActionTypesFactory('User'), {
   SET_PASSWORD_SUCCESS: type('[User] setPassword success'),
   SET_PASSWORD_FAIL: type('[User] setPassword fail'),
 
+  LOGIN_QR: type('[User] loginQr'),
+  LOGIN_QR_SUCCESS: type('[User] loginQr success'),
+  LOGIN_QR_FAIL: type('[User] loginQr fail'),
+
   CREATE_MANY_ACCESSTOKENS: type('[User] createManyAccessTokens'),
   CREATE_MANY_ACCESSTOKENS_SUCCESS: type('[User] createManyAccessTokens success'),
   CREATE_MANY_ACCESSTOKENS_FAIL: type('[User] createManyAccessTokens fail'),
@@ -4499,6 +4503,56 @@ Object.assign(BaseLoopbackActionsFactory<User>(UserActionTypes), {
    */
   setPasswordFail: class implements Action {
     public readonly type = UserActionTypes.SET_PASSWORD_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * loginQr Action.
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} redirect 
+   * @param {object} res 
+   * @param {any} meta (optional).
+   * 
+   */
+  loginQr: class implements Action {
+    public readonly type = UserActionTypes.LOGIN_QR;
+      public payload: {redirect: any, res: any, customHeaders};
+
+    constructor(redirect: any, res: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {redirect, res, customHeaders};
+    }
+  },
+  /**
+   * loginQrSuccess Action.
+   * 
+   * @param {any} id 
+   * Data properties:
+   *
+   *  - `result` – `{any}` - 
+   * @param {any} meta (optional).
+   * 
+   */
+  loginQrSuccess: class implements Action {
+    public readonly type = UserActionTypes.LOGIN_QR_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * loginQrFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  loginQrFail: class implements Action {
+    public readonly type = UserActionTypes.LOGIN_QR_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

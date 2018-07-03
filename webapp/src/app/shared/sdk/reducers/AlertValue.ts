@@ -6,9 +6,7 @@ import { AlertValue, AlertValueInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { AlertValueActionTypes } from '../actions';
 
-
-export interface AlertValuesState extends EntityState<AlertValue | AlertValueInterface> {
-}
+export interface AlertValuesState extends EntityState<AlertValue | AlertValueInterface> {};
 
 export const AlertValueAdapter: EntityAdapter<AlertValue | AlertValueInterface> = createEntityAdapter<AlertValue | AlertValueInterface>();
 

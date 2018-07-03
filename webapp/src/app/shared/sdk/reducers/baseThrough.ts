@@ -13,7 +13,7 @@ import * as filterNodes from 'loopback-filters'
  * It provides the core reducer methods for each model to interact with API
  **/
 export function BaseThroughReducerFactory<S, T>(actionTypes: any, adapter: EntityAdapter<T>): any {
-  let cases = {};
+  let cases = {}
 
   cases[actionTypes.CREATE_SUCCESS] = cases[actionTypes.REPLACE_OR_CREATE_SUCCESS] = cases[
     actionTypes.UPDATE_ATTRIBUTES_SUCCESS
@@ -26,13 +26,13 @@ export function BaseThroughReducerFactory<S, T>(actionTypes: any, adapter: Entit
       state = adapter.removeAll({ ...state })
     }
 
-    const payload = resolveDuplicates(action.payload, state);
+    const payload = resolveDuplicates(action.payload, state)
 
     if (Array.isArray(payload)) {
-      let newIds = [...state.ids];
-      let newEntities = Object.assign({}, state.entities);
+      let newIds = [...state.ids]
+      let newEntities = Object.assign({}, state.entities)
       for (let value of payload) {
-        newIds = [...newIds, value.id];
+        newIds = [...newIds, value.id]
         newEntities[value.id] = Object.assign({}, newEntities[value.id], value)
       }
 
@@ -48,17 +48,17 @@ export function BaseThroughReducerFactory<S, T>(actionTypes: any, adapter: Entit
         })
       })
     }
-  };
+  }
 
   cases[actionTypes.CREATE_MANY_SUCCESS] = cases[actionTypes.FIND_SUCCESS] = (state: any, action: LoopbackAction) => {
     if (action.meta && action.meta.resetStore) {
       state = adapter.removeAll({ ...state })
     }
 
-    let newIds = [...state.ids];
-    let newEntities = Object.assign({}, state.entities);
+    let newIds = [...state.ids]
+    let newEntities = Object.assign({}, state.entities)
     for (let value of resolveDuplicates(action.payload, state)) {
-      newIds = [...newIds, value.id];
+      newIds = [...newIds, value.id]
       newEntities[value.id] = Object.assign({}, newEntities[value.id], value)
     }
 
@@ -66,7 +66,7 @@ export function BaseThroughReducerFactory<S, T>(actionTypes: any, adapter: Entit
       ids: Array.from(new Set(newIds)),
       entities: Object.assign({}, newEntities)
     })
-  };
+  }
 
   cases[actionTypes.UPDATE_ALL_SUCCESS] = (state: any, action: any) => {
     if (action.meta && action.meta.resetStore) {
@@ -75,8 +75,8 @@ export function BaseThroughReducerFactory<S, T>(actionTypes: any, adapter: Entit
 
     const idsToUpdate = filterNodes(state.ids.map((id: any) => (state.entities as any)[id]), {
       where: action.where
-    });
-    let newEntities = Object.assign({}, state.entities);
+    })
+    let newEntities = Object.assign({}, state.entities)
     for (let id of idsToUpdate) {
       newEntities[id] = Object.assign({}, newEntities[id], action.data)
     }
@@ -85,7 +85,7 @@ export function BaseThroughReducerFactory<S, T>(actionTypes: any, adapter: Entit
       ids: Array.from(new Set([...state.ids])),
       entities: Object.assign({}, newEntities)
     })
-  };
+  }
 
   cases[actionTypes.DELETE_BY_ID_SUCCESS] = (state: any, action: LoopbackAction) => {
     if (action.meta && action.meta.resetStore) {
@@ -93,22 +93,22 @@ export function BaseThroughReducerFactory<S, T>(actionTypes: any, adapter: Entit
     }
 
     return adapter.removeOne(resolveDuplicates(action.payload, state), state)
-  };
+  }
 
   cases[actionTypes.RESET_STATE] = (state: any, action: LoopbackAction) => {
     return adapter.removeAll({ ...state })
-  };
+  }
 
   return cases
 }
 
 function resolveDuplicates(payload, state): any {
   if (Array.isArray(payload)) {
-    payload = [...payload];
+    payload = [...payload]
     for (let i = 0; i < payload.length; i++) {
       if (payload[i].id && payload[i].id.indexOf('-') !== -1) {
-        const temp = payload[i].id.split('-');
-        const newId = `${temp[1]}-${temp[0]}`;
+        const temp = payload[i].id.split('-')
+        const newId = `${temp[1]}-${temp[0]}`
         if (state.entities.hasOwnProperty(newId)) {
           payload[i] = Object.assign({}, payload[i], {
             id: newId
@@ -118,8 +118,8 @@ function resolveDuplicates(payload, state): any {
     }
   } else {
     if (payload.id && payload.id.indexOf('-') !== -1) {
-      const temp = payload.id.split('-');
-      const newId = `${temp[1]}-${temp[0]}`;
+      const temp = payload.id.split('-')
+      const newId = `${temp[1]}-${temp[0]}`
       if (state.entities.hasOwnProperty(newId)) {
         payload = Object.assign({}, payload, {
           id: newId

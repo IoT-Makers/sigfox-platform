@@ -286,20 +286,6 @@ export class MessageEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
-  public putSigfox_OldToRemove$ = this.actions$
-    .ofType(MessageActionTypes.PUT_SIGFOX__OLD_TO_REMOVE).pipe(
-      mergeMap((action: LoopbackAction) =>
-        this.message.putSigfox_OldToRemove(action.payload.req, action.payload.data).pipe(
-          map((response: any) => new MessageActions.putSigfox_OldToRemoveSuccess(action.payload.id, response, action.meta)),
-          catchError((error: any) => concat(
-            of(new MessageActions.putSigfox_OldToRemoveFail(error, action.meta)),
-            of(new LoopbackErrorActions.error(error, action.meta))
-          ))
-        )
-      )
-    );
-
-  @Effect()
   public putSigfox$ = this.actions$
     .ofType(MessageActionTypes.PUT_SIGFOX).pipe(
       mergeMap((action: LoopbackAction) =>

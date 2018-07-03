@@ -70,10 +70,6 @@ Object.assign(BaseLoopbackActionTypesFactory('Message'), {
   DELETE_ORGANIZATIONS_SUCCESS: type('[Message] deleteOrganizations success'),
   DELETE_ORGANIZATIONS_FAIL: type('[Message] deleteOrganizations fail'),
 
-  PUT_SIGFOX__OLD_TO_REMOVE: type('[Message] putSigfox_OldToRemove'),
-  PUT_SIGFOX__OLD_TO_REMOVE_SUCCESS: type('[Message] putSigfox_OldToRemove success'),
-  PUT_SIGFOX__OLD_TO_REMOVE_FAIL: type('[Message] putSigfox_OldToRemove fail'),
-
   PUT_SIGFOX: type('[Message] putSigfox'),
   PUT_SIGFOX_SUCCESS: type('[Message] putSigfox success'),
   PUT_SIGFOX_FAIL: type('[Message] putSigfox fail'),
@@ -829,57 +825,6 @@ Object.assign(BaseLoopbackActionsFactory<Message>(MessageActionTypes), {
    */
   deleteOrganizationsFail: class implements Action {
     public readonly type = MessageActionTypes.DELETE_ORGANIZATIONS_FAIL;
-
-    constructor(public payload: any, public meta?: any) { }
-  },
-
-  /**
-   * putSigfox_OldToRemove Action.
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {object} data Request data.
-   *
-   *  - `req` – `{object}` - 
-   *
-   *  - `data` – `{object}` - 
-   * @param {any} meta (optional).
-   * 
-   */
-  putSigfox_OldToRemove: class implements Action {
-    public readonly type = MessageActionTypes.PUT_SIGFOX__OLD_TO_REMOVE;
-      public payload: {req: any, data: any, customHeaders};
-
-    constructor(req: any = {}, data: any, customHeaders?: Function, public meta?: any) {
-      this.payload = {req, data, customHeaders};
-    }
-  },
-  /**
-   * putSigfox_OldToRemoveSuccess Action.
-   * 
-   * @param {any} id 
-   * @param {object} data 
-   * @param {any} meta (optional).
-   * 
-   */
-  putSigfox_OldToRemoveSuccess: class implements Action {
-    public readonly type = MessageActionTypes.PUT_SIGFOX__OLD_TO_REMOVE_SUCCESS;
-      public payload: {id: any, data: any};
-
-    constructor(id: any, data: any, public meta?: any) {
-      this.payload = {id, data};
-    }
-  },
-  /**
-   * putSigfox_OldToRemoveFail Action.
-   *
-   * @param {any} payload
-   * @param {any} meta (optional).
-   * 
-   */
-  putSigfox_OldToRemoveFail: class implements Action {
-    public readonly type = MessageActionTypes.PUT_SIGFOX__OLD_TO_REMOVE_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

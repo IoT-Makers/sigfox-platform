@@ -1477,6 +1477,20 @@ export class UserEffects extends BaseLoopbackEffects {
     );
 
   @Effect()
+  public loginQr$ = this.actions$
+    .ofType(UserActionTypes.LOGIN_QR).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.user.loginQr(action.payload.redirect, action.payload.res).pipe(
+          map((response: any) => new UserActions.loginQrSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new UserActions.loginQrFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
+  @Effect()
   public createManyAccessTokens$ = this.actions$
     .ofType(UserActionTypes.CREATE_MANY_ACCESSTOKENS).pipe(
       mergeMap((action: LoopbackAction) =>
