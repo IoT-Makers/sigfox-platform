@@ -229,13 +229,20 @@ class Geoloc {
             });
 
           // Creating a new Geoloc
-          Geoloc.create(
-            geoloc,
-            (err: any, geolocInstance: any) => {
+          Geoloc.findOrCreate(
+            {where: {
+                and: [
+                  {type: geoloc.type},
+                  {messageId: geoloc.messageId}
+                ]
+              }
+            }, // find
+            geoloc, // create
+            (err: any, geolocInstance: any, created: boolean) => { // callback
               if (err) {
                 console.error(err);
                 next(err, geolocInstance);
-              } else {
+              } else if (created) {
                 console.log('Created geoloc as: ', geolocInstance);
                 // Update device in order to trigger a real time upsert event
                 this.updateDeviceLocatedAt(geolocInstance.deviceId);
@@ -257,13 +264,21 @@ class Geoloc {
           message.createdAt = new Date(data.time * 1000);
           message.deviceAck = true;
 
-          Message.create(
-            message,
-            (err: any, messageInstance: any) => {
+          Message.findOrCreate(
+            {where: {
+                and: [
+                  {deviceId: message.deviceId},
+                  {time: message.time},
+                  {seqNumber: message.seqNumber}
+                ]
+              }
+            }, // find
+            message, // create
+            (err: any, messageInstance: any, created: boolean) => { // callback
               if (err) {
                 console.error(err);
                 next(err, messageInstance);
-              } else {
+              } else if (created) {
                 console.log('Created message as: ', messageInstance);
                 // Update device in order to trigger a real time upsert event
                 this.updateDeviceLocatedAt(messageInstance.deviceId);

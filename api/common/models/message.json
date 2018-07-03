@@ -111,7 +111,7 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "property": ["putSigfox_OldToRemove", "putSigfox", "putSigfoxAcknowledge", "postSigfoxStatus", "stats", "find"]
+      "property": ["putSigfox", "putSigfoxAcknowledge", "postSigfoxStatus", "stats", "find"]
     },
     {
       "accessType": "*",
