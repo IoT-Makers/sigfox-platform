@@ -162,7 +162,6 @@ class Geoloc {
                   this.updateDeviceLocatedAt(geolocInstance.deviceId);
                 } else {
                   console.log('Skipped geoloc creation.');
-
                 }
               }
             });
@@ -247,6 +246,8 @@ class Geoloc {
                 // Update device in order to trigger a real time upsert event
                 this.updateDeviceLocatedAt(geolocInstance.deviceId);
                 next(null, geolocInstance);
+              } else {
+                next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
               }
             });
         } else {
@@ -282,6 +283,8 @@ class Geoloc {
                 console.log('Created message as: ', messageInstance);
                 // Update device in order to trigger a real time upsert event
                 this.updateDeviceLocatedAt(messageInstance.deviceId);
+              } else {
+                next(null, 'This message for device (' + message.deviceId + ') has already been created.');
               }
             });
           next(err, null);

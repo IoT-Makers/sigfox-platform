@@ -370,6 +370,8 @@ class Message {
               thisMessage.updateDeviceSuccessRate(messageInstance.deviceId);
               // Share message to organizations if any
               thisMessage.linkMessageToOrganization(messageInstance);
+            } else {
+              next(null, 'This message for device (' + message.deviceId + ') has already been created.');
             }
           });
         // ack is true
@@ -410,6 +412,8 @@ class Message {
             thisMessage.linkMessageToOrganization(messageInstance);
 
             next(null, messageInstance);
+          } else {
+            next(null, 'This message for device (' + message.deviceId + ') has already been created.');
           }
         });
     }
