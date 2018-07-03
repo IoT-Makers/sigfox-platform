@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import {decrypt} from '../utils';
 
 const loopback = require('loopback');
+const nodemailer = require('nodemailer');
 
 /**
  * @module Alert
@@ -253,18 +254,24 @@ class Alert {
           if (connector.type === 'office-365') {
             console.log('Office 365 Email alert!');
             // Set the connector user and pass
-            this.model.app.dataSources.emailOutlook.connector.transports[0].transporter.options.auth = {
-              user: connector.login,
-              pass: decrypt(connector.password)
-            };
+            let transporter = nodemailer.createTransport({
+              type: "SMTP",
+              host: "smtp.office365.com",
+              secure: false,
+              port: 587,
+              auth: {
+                user: connector.login,
+                pass: decrypt(connector.password)
+              }
+            });
             const title = device.name ? device.name : device.id;
-            EmailOutlook.send({
+            transporter.sendMail({
               to: connector.recipient,
               from: connector.login,
               subject: '[Sigfox Platform] - Alert for ' + title,
               text: alertMessage,
               html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alertMessage + '</p>'
-            }, function (err: any, mail: any) {
+            }, (err: any, mail: any) => {
               if (err) console.error(err);
               else console.log('EmailOutlook sent!');
             });
