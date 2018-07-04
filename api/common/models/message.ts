@@ -221,7 +221,7 @@ class Message {
                           req,
                           (err: any, data_parsed: any) => {
                             if (err) {
-                              next(err, null);
+                              //console.error(err);
                             } else {
                               message.data_parsed = data_parsed;
                               message.data_parsed.forEach((p: any) => {
@@ -255,7 +255,7 @@ class Message {
                   req,
                   (err: any, data_parsed: any) => {
                     if (err) {
-                      next(err, null);
+                      //console.error(err);
                     } else {
                       message.data_parsed = data_parsed;
                       message.data_parsed.forEach((p: any) => {
@@ -585,7 +585,7 @@ class Message {
 
     // Broadcast message to MQTT broker
     // TODO: add secure connection - user, password
-    if (process.env.MQTT_HOST && process.env.MQTT_PORT) {
+    if (process.env.MQTT_HOST && process.env.MQTT_PORT && ctx.instance.data_parsed) {
       const client = new Client({host: process.env.MQTT_HOST, port: process.env.MQTT_PORT}, Adapter);
       try {
         client.publish(ctx.instance.deviceId + '/message', ctx.instance.data_parsed.toString(), {retain: true});
