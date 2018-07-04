@@ -1,153 +1,206 @@
 var payload,
-    battery,
-    type,
-    period,
-    mode,
-    humidity,
-    temperature,
-    light,
-    alert,
-    state,
-    firmwareVersion,
-    parsedData = [],
-    obj = {};
+  battery,
+  mode,
+  humidity,
+  temperature,
+  light,
+  door,
+  vibration,
+  magnet,
+  alert,
+  eventCount,
+  firmwareVersion,
+  parsedData = [],
+  obj = {};
 
-// Byte #1
+// Byte #0
 var byte = parseInt(payload.slice(0, 2), 16).toString(2);
 while (byte.length < 8)
-    byte = '0' + byte;
-battery = byte.slice(0, 1);
-type = byte.slice(1, 3);
-switch (type) {
-    case '00':
-        type = 'Periodic';
-        break;
-    case '01':
-        type = 'Button';
-        break;
-    case '10':
-        type = 'Alert';
-        break;
-    case '11':
-        type = 'New Mode';
-        break;
-    default:
-        type = 'Unknown {' + type + '}';
-}
-period = byte.slice(3, 5);
-switch (period) {
-    case '00':
-        period = '10 minutes';
-        break;
-    case '01':
-        period = '1 hour';
-        break;
-    case '10':
-        period = '6 days';
-        break;
-    case '11':
-        period = '24 hours';
-        break;
-    default:
-        period = 'Unknown {' + period + '}';
-}
-mode = byte.slice(5, 8);
-switch (mode) {
-    case '000':
-        mode = 'Button';
-        break;
-    case '100':
-        mode = 'Temperature & Humidity';
-        // Byte #2
-        var byte = parseInt(payload.slice(2, 4), 16).toString(2);
-        while (byte.length < 8)
-            byte = '0' + byte;
-        temperature = byte.slice(0, 4);
-        // Byte #3
-        var byte = parseInt(payload.slice(4, 6), 16).toString(2);
-        while (byte.length < 8)
-            byte = '0' + byte;
-        temperature += byte.slice(2, 8);
-        temperature = ((parseInt(temperature, 2) - 200) / 8).toFixed(2);
+  byte = '0' + byte;
+battery = ((parseInt(byte.slice(0, 5), 2) * 0.05) + 2.7).toFixed(2);
 
-        if (type !== 'Button')
-        // Byte #4
-            humidity = parseInt(payload.slice(6, 8), 16) * 0.5;
-        else {
-            // Byte #4
-            var byte = parseInt(payload.slice(6, 8), 16).toString(2);
-            while (byte.length < 8)
-                byte = '0' + byte;
-            firmwareVersion = parseInt(byte.slice(0, 3), 2) + '.' + parseInt(byte.slice(4, 8), 2);
-        }
-        break;
-    case '010':
-        mode = 'Light';
-        // Byte #3
-        var byte = parseInt(payload.slice(4, 6), 16).toString(2);
-        while (byte.length < 8)
-            byte = '0' + byte;
-        var multiplier = parseInt(byte.slice(0, 2), 2);
-        switch (multiplier) {
-            case 0:
-                multiplier = 1;
-                break;
-            case 1:
-                multiplier = 8;
-                break;
-            case 2:
-                multiplier = 64;
-                break;
-            case 3:
-                multiplier = 2014;
-                break;
-            default:
-                multiplier = 'Unknown multiplier {' + multiplier + '}';
-        }
-        light = parseInt(byte.slice(2, 8), 2);
-        light = multiplier * light * 0.01;
-        break;
-    case '110':
-        mode = 'Door';
-        alert = parseInt(payload.slice(6, 8), 16);
-        break;
-    case '001':
-        mode = 'Move';
-        alert = parseInt(payload.slice(6, 8), 16);
-        break;
-    case '101':
-        mode = 'Magnet';
-        // Byte #3
-        var byte = parseInt(payload.slice(4, 6), 16).toString(2);
-        while (byte.length < 8)
-            byte = '0' + byte;
-        state = parseInt(byte.slice(1, 2), 2);
-        alert = parseInt(payload.slice(6, 8), 16);
-        break;
-    default:
-        mode = 'Unknown mode {' + mode + '}';
-}
 
-// Byte #2
+// Byte #1
 var byte = parseInt(payload.slice(2, 4), 16).toString(2);
 while (byte.length < 8)
+  byte = '0' + byte;
+
+mode = parseInt(byte.slice(0, 5), 2);
+switch (mode) {
+  case 0:
+    mode = 'Standby';
+    break;
+  case 1:
+    mode = 'Temperature & Humidity';
+    break;
+  case 2:
+    mode = 'Light';
+    break;
+  case 3:
+    mode = 'Door';
+    break;
+  case 4:
+    mode = 'Vibration';
+    break;
+  case 5:
+    mode = 'Magnet';
+    break;
+  default:
+    mode = 'Unknown mode {' + mode + '}';
+}
+
+alert = Boolean(parseInt(byte.slice(5,6), 2));
+
+
+// Standby mode
+if (mode === 'Standby') {
+  // Byte #2
+  var byte = parseInt(payload.slice(4, 6), 16).toString(2);
+  while (byte.length < 8)
     byte = '0' + byte;
-battery += byte.slice(4, 8);
-battery = (parseInt(battery, 2) * 0.05 + 2.7).toFixed(2);
+  firmwareVersion = byte;
+  // Byte #3
+  var byte = parseInt(payload.slice(6, 8), 16).toString(2);
+  while (byte.length < 8)
+    byte = '0' + byte;
+  firmwareVersion += byte;
+
+  firmwareVersion = parseInt(firmwareVersion.slice(0, 4), 2) + '.' + parseInt(firmwareVersion.slice(4, 10), 2) + '.' + parseInt(firmwareVersion.slice(10, 16), 2);
+}
+
+// Temperature & Humidity
+if (mode === 'Temperature & Humidity') {
+  // Byte #1
+  var byte = parseInt(payload.slice(2, 4), 16).toString(2);
+  while (byte.length < 8)
+    byte = '0' + byte;
+  temperature = byte.slice(6, 8);
+  // Byte #2
+  var byte = parseInt(payload.slice(4, 6), 16).toString(2);
+  while (byte.length < 8)
+    byte = '0' + byte;
+  temperature += byte;
+
+  temperature = ((parseInt(temperature, 2) - 200) / 8).toFixed(2);
+  // Byte #3
+  humidity = parseInt(payload.slice(6, 8), 16) * 0.5;
+}
+
+
+// Light
+if (mode === 'Light') {
+  // Byte #2
+  var byte = parseInt(payload.slice(4, 6), 16).toString(2);
+  while (byte.length < 8)
+    byte = '0' + byte;
+  light = byte;
+  // Byte #3
+  var byte = parseInt(payload.slice(6, 8), 16).toString(2);
+  while (byte.length < 8)
+    byte = '0' + byte;
+  light += byte;
+
+  light = (parseInt(light, 2) / 96).toFixed(2);
+}
+
+
+
+// Door
+if (mode === 'Door') {
+  // Byte #1
+  var byte = parseInt(payload.slice(2, 4), 16).toString(2);
+  while (byte.length < 8)
+    byte = '0' + byte;
+  door = parseInt(byte.slice(6, 8), 2);
+  switch (door) {
+    case 0:
+      door = 'The calibration of the Door mode has not been done';
+      break;
+    case 1:
+      door = 'Unused value';
+      break;
+    case 2:
+      door = 'Door is closed';
+    break;
+    case 3:
+      door = 'Door is open';
+    break;
+    default:
+      door = 'Unknown door status {' + door + '}';
+  }
+}
+
+
+// Vibration
+if (mode === 'Vibration') {
+  // Byte #1
+  var byte = parseInt(payload.slice(2, 4), 16).toString(2);
+  while (byte.length < 8)
+    byte = '0' + byte;
+  vibration = parseInt(byte.slice(6, 8), 2);
+  switch (vibration) {
+    case 0:
+      vibration = 'No vibration detected';
+      break;
+    case 1:
+      vibration = 'A vibration is detected';
+      break;
+    case 2:
+      vibration = 'Unused value';
+    break;
+    case 3:
+      vibration = 'Unused value';
+    break;
+    default:
+      vibration = 'Unknown vibration status {' + vibration + '}';
+  }
+}
+
+
+// Magnet
+if (mode === 'Magnet') {
+  // Byte #1
+  var byte = parseInt(payload.slice(2, 4), 16).toString(2);
+  while (byte.length < 8)
+    byte = '0' + byte;
+  magnet = parseInt(byte.slice(6, 8), 2);
+  switch (magnet) {
+    case 0:
+      magnet = 'No magnet detected';
+      break;
+    case 1:
+      magnet = 'A magnet is detected';
+      break;
+    case 2:
+      magnet = 'Unused value';
+    break;
+    case 3:
+      magnet = 'Unused value';
+    break;
+    default:
+      magnet = 'Unknown magnet status {' + magnet + '}';
+  }
+}
+
+
+// Event count (Door - Vibration - Magnet)
+if (mode === 'Door' || mode === 'Vibration' || mode === 'Magnet') {
+  // Byte #2
+  var byte = parseInt(payload.slice(4, 6), 16).toString(2);
+  while (byte.length < 8)
+    byte = '0' + byte;
+  eventCount = byte;
+  // Byte #3
+  var byte = parseInt(payload.slice(6, 8), 16).toString(2);
+  while (byte.length < 8)
+    byte = '0' + byte;
+  eventCount += byte;
+  eventCount = parseInt(eventCount, 2);
+}
+
+
 
 // Store objects in parsedData array
-obj = {};
-obj.key = 'type';
-obj.value = type;
-obj.type = 'string';
-obj.unit = '';
-parsedData.push(obj);
-obj = {};
-obj.key = 'period';
-obj.value = period;
-obj.type = 'string';
-obj.unit = '';
-parsedData.push(obj);
 obj = {};
 obj.key = 'mode';
 obj.value = mode;
@@ -179,14 +232,32 @@ obj.type = 'number';
 obj.unit = 'lux';
 parsedData.push(obj);
 obj = {};
-obj.key = 'state';
-obj.value = state;
-obj.type = 'number';
+obj.key = 'alert';
+obj.value = alert;
+obj.type = 'boolean';
 obj.unit = '';
 parsedData.push(obj);
 obj = {};
-obj.key = 'alert';
-obj.value = alert;
+obj.key = 'door';
+obj.value = door;
+obj.type = 'string';
+obj.unit = '';
+parsedData.push(obj);
+obj = {};
+obj.key = 'vibration';
+obj.value = vibration;
+obj.type = 'string';
+obj.unit = '';
+parsedData.push(obj);
+obj = {};
+obj.key = 'magnet';
+obj.value = magnet;
+obj.type = 'string';
+obj.unit = '';
+parsedData.push(obj);
+obj = {};
+obj.key = 'eventCount';
+obj.value = eventCount;
 obj.type = 'number';
 obj.unit = '';
 parsedData.push(obj);
