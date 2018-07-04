@@ -583,6 +583,8 @@ class Message {
     // Share message to organizations if any
     this.linkMessageToOrganization(ctx.instance);
 
+    // Broadcast message to MQTT broker
+    // TODO: add secure connection - user, password
     if (process.env.MQTT_HOST && process.env.MQTT_PORT) {
       const client = new Client({host: process.env.MQTT_HOST, port: process.env.MQTT_PORT}, Adapter);
       try {
