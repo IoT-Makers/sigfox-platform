@@ -2,6 +2,8 @@ import {Model} from '@mean-expert/model';
 import {computeCtr, decryptPayload, encryptPayload} from './utils';
 
 const loopback = require('loopback');
+const Client = require('strong-pubsub');
+const Adapter = require('strong-pubsub-mqtt');
 
 /**
  * @module Message
@@ -12,7 +14,8 @@ const loopback = require('loopback');
  **/
 @Model({
   hooks: {
-    beforeDelete: { name: 'before delete', type: 'operation' }
+    beforeDelete: { name: 'before delete', type: 'operation' },
+    afterSave: { name: 'after save', type: 'operation' }
   },
   remotes: {
     putSigfox: {
@@ -232,25 +235,12 @@ class Message {
                             }
                           });
 
-                        // Trigger alerts (if any)
-                        Alert.triggerByDevice(
-                          message.data_parsed,
-                          deviceInstance,
-                          req,
-                          (err: any, res: any) => {
-                            if (err) {
-                              next(err, null);
-                            } else {
-                              //console.log(res);
-                            }
-                          });
-
                         // Create message
-                        this.createMessageAndSendResponse(message, next);
+                        this.createMessageAndSendResponse(deviceInstance, message, req, next);
                       } else {
                         // Create message with no parsed data because of wrong parser id
                         console.error('The parserId of this device (' + deviceInstance.id + ') is linked to no existing parsers!');
-                        this.createMessageAndSendResponse(message, next);
+                        this.createMessageAndSendResponse(deviceInstance, message, req, next);
                       }
                     });
                   }
@@ -279,86 +269,73 @@ class Message {
                     }
                   });
 
-                // Trigger alerts (if any)
-                Alert.triggerByDevice(
-                  message.data_parsed,
-                  deviceInstance,
-                  req,
-                  (err: any, res: any) => {
-                    if (err) {
-                      next(err, null);
-                    } else {
-                      //console.log(res);
-                    }
-                  });
-
                 // Create message
-                this.createMessageAndSendResponse(message, next);
+                this.createMessageAndSendResponse(deviceInstance, message, req, next);
               }
             } else { // No parser & no data
               // Create message
-              this.createMessageAndSendResponse(message, next);
+              this.createMessageAndSendResponse(deviceInstance, message, req, next);
             }
           }
         }
       });
   }
 
-  createMessageAndSendResponse(message: any, next: Function) {
+  createMessageAndSendResponse(device: any, message: any, req: any, next: Function) {
     // Models
-    const thisMessage = this;
     const Message = this.model;
-    const Device = this.model.app.models.Device;
-    const Geoloc = this.model.app.models.Geoloc;
+    const Alert = this.model.app.models.Alert;
 
     // Ack from BIDIR callback
     if (message.ack) {
       let result;
-      Device.findOne({where: {id: message.deviceId}}, (err: any, device: any) => {
-        if (device.data_downlink) {
-          if (device.pek) {
-            const ctr = computeCtr(device.id, false, message.seqNumber.toString());
-            message.data_downlink = encryptPayload(device.data_downlink, device.pek, ctr);
-            result = {
-              [message.deviceId]: {
-                downlinkData: message.data_downlink
-              }
-            };
-          } else {
-            message.data_downlink = device.data_downlink;
-            result = {
-              [message.deviceId]: {
-                downlinkData: device.data_downlink
-              }
-            };
-          }
-        } else {
+      if (device.data_downlink) {
+        if (device.pek) {
+          const ctr = computeCtr(device.id, false, message.seqNumber.toString());
+          message.data_downlink = encryptPayload(device.data_downlink, device.pek, ctr);
           result = {
             [message.deviceId]: {
-              noData: true
+              downlinkData: message.data_downlink
+            }
+          };
+        } else {
+          message.data_downlink = device.data_downlink;
+          result = {
+            [message.deviceId]: {
+              downlinkData: device.data_downlink
             }
           };
         }
-        // Creating new message with its downlink data
-        Message.findOrCreate(
-          {where: {
-              and: [
-                {deviceId: message.deviceId},
-                {time: message.time},
-                {seqNumber: message.seqNumber}
-              ]
-            }
-          }, // find
-          message, // create
-          (err: any, messageInstance: any, created: boolean) => { // callback
-            if (err) {
-              console.error(err);
-              next(err, messageInstance);
-            } else if (created) {
-              //console.log('Created message as: ', messageInstance);
-              // Check if there is Geoloc in payload and create Geoloc object
-              Geoloc.createFromParsedPayload(
-                messageInstance,
+      } else {
+        result = {
+          [message.deviceId]: {
+            noData: true
+          }
+        };
+      }
+      // Creating new message with its downlink data
+      Message.findOrCreate(
+        {where: {
+            and: [
+              {deviceId: message.deviceId},
+              {time: message.time},
+              {seqNumber: message.seqNumber}
+            ]
+          }
+        }, // find
+        message, // create
+        (err: any, messageInstance: any, created: boolean) => { // callback
+          if (err) {
+            console.error(err);
+            next(err, messageInstance);
+          } else if (created) {
+            //console.log('Created message as: ', messageInstance);
+            if (message.data_parsed) {
+              // Trigger alerts (if any)
+              Alert.triggerByDevice(
+                message.data_parsed,
+                device,
+                req,
                 (err: any, res: any) => {
                   if (err) {
                     next(err, null);
@@ -366,17 +343,13 @@ class Message {
                     //console.log(res);
                   }
                 });
-              // Calculate success rate and update device
-              thisMessage.updateDeviceSuccessRate(messageInstance.deviceId);
-              // Share message to organizations if any
-              thisMessage.linkMessageToOrganization(messageInstance);
-            } else {
-              next(null, 'This message for device (' + message.deviceId + ') has already been created.');
             }
-          });
-        // ack is true
-        next(null, result);
-      });
+          } else {
+            next(null, 'This message for device (' + message.deviceId + ') has already been created.');
+          }
+        });
+      // ack is true
+      next(null, result);
     } else {
       // ack is false
       // Creating new message with no downlink data
@@ -396,21 +369,20 @@ class Message {
             next(err, messageInstance);
           } else if (created) {
             //console.log('Created message as: ', messageInstance);
-            // Check if there is Geoloc in payload and create Geoloc object
-            Geoloc.createFromParsedPayload(
-              messageInstance,
-              (err: any, res: any) => {
-                if (err) {
-                  next(err, null);
-                } else {
-                  //console.log(res);
-                }
-              });
-            // Calculate success rate and update device
-            thisMessage.updateDeviceSuccessRate(messageInstance.deviceId);
-            // Share message to organizations if any
-            thisMessage.linkMessageToOrganization(messageInstance);
-
+            if (message.data_parsed) {
+              // Trigger alerts (if any)
+              Alert.triggerByDevice(
+                message.data_parsed,
+                device,
+                req,
+                (err: any, res: any) => {
+                  if (err) {
+                    next(err, null);
+                  } else {
+                    //console.log(res);
+                  }
+                });
+            }
             next(null, messageInstance);
           } else {
             next(null, 'This message for device (' + message.deviceId + ') has already been created.');
@@ -590,6 +562,42 @@ class Message {
         next(err);
       }
     });
+  }
+
+  afterSave(ctx: any, next: Function): void {
+    // Models
+    const Geoloc = this.model.app.models.Geoloc;
+
+    // Check if there is Geoloc in payload and create Geoloc object
+    Geoloc.createFromParsedPayload(
+      ctx.instance,
+      (err: any, res: any) => {
+        if (err) {
+          next(err, null);
+        } else {
+          //console.log(res);
+        }
+      });
+    // Calculate success rate and update device
+    this.updateDeviceSuccessRate(ctx.instance.deviceId);
+    // Share message to organizations if any
+    this.linkMessageToOrganization(ctx.instance);
+
+    if (process.env.MQTT_HOST && process.env.MQTT_PORT) {
+      const client = new Client({host: process.env.MQTT_HOST, port: process.env.MQTT_PORT}, Adapter);
+      try {
+        client.publish(ctx.instance.deviceId + '/message', ctx.instance.data_parsed.toString(), {retain: true});
+        ctx.instance.data_parsed.forEach((p: any) => {
+          const topic = ctx.instance.deviceId + '/' + p.key;
+          if (p.value) {
+            client.publish(topic, p.value.toString(), {retain: true});
+          }
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    next();
   }
 }
 

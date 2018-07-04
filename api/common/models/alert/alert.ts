@@ -3,6 +3,8 @@ import * as _ from 'lodash';
 import {decrypt} from '../utils';
 
 const loopback = require('loopback');
+const Client = require('strong-pubsub');
+const Adapter = require('strong-pubsub-mqtt');
 const nodemailer = require('nodemailer');
 
 /**
@@ -307,13 +309,11 @@ class Alert {
 
           else if (connector.type === 'mqtt') {
             console.log('MQTT alert!');
-            const Client = require('strong-pubsub');
-            const Adapter = require('strong-pubsub-mqtt');
             const client = new Client({host: connector.host, port: connector.port}, Adapter);
             try {
               client.publish(connector.topic, alertMessage);
             } catch (e) {
-              console.log(e);
+              console.error(e);
             }
           }
 
