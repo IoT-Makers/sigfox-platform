@@ -1,5 +1,3 @@
-import {computeCtr, decryptPayload, encryptPayload} from '../../common/models/utils';
-
 module.exports = (app: any) => {
 
   const AppSetting = app.models.AppSetting;
