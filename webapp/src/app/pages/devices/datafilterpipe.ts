@@ -12,7 +12,7 @@ export class DataFilterPipe implements PipeTransform {
         // Device ID
         const hasDeviceId = row.id && row.id.indexOf(query.toUpperCase().replace(/\s/g, '')) > -1;
         // Name
-        const hasName = row.name && row.name.indexOf(query) > -1;
+        const hasName = row.name && row.name.toUpperCase().indexOf(query.toUpperCase()) > -1;
         return hasDeviceId || hasName;
       });
     }
