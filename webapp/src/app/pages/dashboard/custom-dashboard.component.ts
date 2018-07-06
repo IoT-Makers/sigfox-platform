@@ -225,9 +225,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       animation: 'fade'
     });
 
-  private messageGraphSub: Subscription;
-  private messageGraphRef: FireLoopRef<Message>;
-
   constructor(private rt: RealTime,
               private userApi: UserApi,
               private messageApi: MessageApi,
@@ -372,7 +369,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     if (this.organizationRef) this.organizationRef.dispose();
     if (this.userRef) this.userRef.dispose();
     if (this.dashboardRef) this.dashboardRef.dispose();
-    if (this.messageGraphRef) this.messageGraphRef.dispose();
   }
 
   cancel(): void {
@@ -1016,7 +1012,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           // Devices
           /*this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
           this.deviceRef.on('change', widget.filter).subscribe((devices: any[]) => {*/
-          if (widget.type !== 'image') {
+          if (widget.type === 'image') {
+            widget.ready = true;
+          } else {
             this.getDevicesWithFilter(widget.filter).subscribe((devices: any[]) => {
               // Table
               if (widget.type === 'table') {
@@ -1025,11 +1023,15 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   widget.data = this.buildCustomTable(widget);
                   widget.extraData = devices;
                 }
+
+                widget.ready = true;
               }
 
               // Map
               else if (widget.type === 'map') {
                 widget.data = devices;
+
+                widget.ready = true;
               }
 
               // Tracking
@@ -1041,6 +1043,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   device.directionsDisplayStore = [];
                   device.color = this.getRandomColor();
                 });
+
+                widget.ready = true;
               }
 
               // Gauge
@@ -1051,6 +1055,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 widget.unit = lastData_parsed.unit;
                 widget.label = this.formatTableColumn(lastData_parsed.key);
                 widget.gaugeThresholdConfig = {[widget.options.min]: {color: '#13b22b'}, [(widget.options.min + widget.options.max) / 2]: {color: '#fc7d28'}, [widget.options.max]: {color: '#db2b2a'}};
+
+                widget.ready = true;
               }
 
               // Line
@@ -1190,6 +1196,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                     }
                   };
                 });
+
+                widget.ready = true;
               }
 
               // Bar
@@ -1309,25 +1317,17 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   };
                 });
 
+                widget.ready = true;
               }
 
+              // Stats
               else if (widget.type === 'stats') {
                 devices.forEach((device: any) => {
 
                   widget.options.chartLabels = [];
 
                   // Messages
-                  /*this.messageApi.stats(
-                    widget.options.period,
-                    {},
-                    {deviceId: device.id}*/
-                  this.messageGraphRef = this.rt.FireLoop.ref<Message>(Message);
-                  this.subscriptions.push(this.messageGraphRef.stats(
-                    {
-                      range: widget.options.period,
-                      where: {deviceId: device.id}
-                    }
-                  ).subscribe((stats: any[]) => {
+                  this.messageApi.stats(widget.options.period, null, {deviceId: device.id}, null, null).subscribe((stats: any) => {
                     widget.options.chartLabels = [];
                     widget.options.chartOptions = {
                       responsive: true,
@@ -1363,16 +1363,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                     /*widget.options.hasNoMessageChartData = data.every(value => {
                       return value === 0;
                     });*/
-                  }));
-
+                  });
+                  widget.ready = true;
                 });
               }
-              //console.log('Widget loaded', widget);
-              widget.ready = true;
+
             });
-          }
-          else {
-            widget.ready = true;
           }
         });
         this.dashboardReady = true;

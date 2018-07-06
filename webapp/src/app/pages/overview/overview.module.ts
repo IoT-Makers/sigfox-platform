@@ -8,9 +8,8 @@ import {DataFilterPipe} from './datafilterpipe';
 import {OverviewRoutingModule} from './overview-routing.module';
 import {AgmCoreModule} from '@agm/core';
 import {MomentModule} from 'angular2-moment';
-import {TooltipModule} from 'ngx-bootstrap';
+import {AlertModule, TooltipModule} from 'ngx-bootstrap';
 import {NgxGaugeModule} from 'ngx-gauge';
-import {AlertModule} from 'ngx-bootstrap';
 
 @NgModule({
   imports: [

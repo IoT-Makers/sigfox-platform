@@ -5,10 +5,12 @@ import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow} from '@agm/core';
-import {ConnectorApi, DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
+import {ConnectorApi, DeviceApi, MessageApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
+
+declare var Zone: any;
 
 
 @Component({
@@ -39,7 +41,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   private organizationRouteSub: Subscription;
   private messageSub: Subscription;
-  private messageGraphSub: Subscription;
   private deviceSub: Subscription;
   private deviceReadSub: Subscription;
   private alertSub: Subscription;
@@ -63,7 +64,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private countOrganizationMembers = 0;
 
   private messageRef: FireLoopRef<Message>;
-  private messageGraphRef: FireLoopRef<Message>;
   private deviceRef: FireLoopRef<Device>;
   private deviceReadRef: FireLoopRef<Device>;
   private organizationRef: FireLoopRef<Organization>;
@@ -147,6 +147,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private deviceApi: DeviceApi,
+              private messageApi: MessageApi,
               private connectorApi: ConnectorApi,
               private route: ActivatedRoute) {
   }
@@ -339,8 +340,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     if (option === 'yearly')
       this.isLimit_yearly = true;
     // Dispose and unsubscribe to clean the real time connection
-    if (this.messageGraphRef) this.messageGraphRef.dispose();
-    if (this.messageGraphSub) this.messageGraphSub.unsubscribe();
 
     this.graphRange = option;
     this.messageChartLabels = [];
@@ -357,13 +356,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     // });
 
     // Messages
-    this.messageGraphRef = this.rt.FireLoop.ref<Message>(Message);
-    this.messageGraphSub = this.messageGraphRef.stats(
-      {
-        range: this.graphRange,
-        where: {userId: this.user.id}
-      }
-    ).subscribe((stats: any) => {
+    this.messageApi.stats(this.graphRange, null, null, null).subscribe((stats: any) => {
 
       this.messageChartLabels = [];
       this.messageChartData = [];
@@ -407,9 +400,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private cleanSetup() {
     if (this.organizationRef) this.organizationRef.dispose();
     if (this.userRef) this.userRef.dispose();
-
-    if (this.messageGraphRef) this.messageGraphRef.dispose();
-    if (this.messageGraphSub) this.messageGraphSub.unsubscribe();
 
     if (this.categoryRef) this.categoryRef.dispose();
     if (this.categorySub) this.categorySub.unsubscribe();
