@@ -82,7 +82,7 @@ class Geoloc {
       // Check if there is Beacon geoloc in parsed data
       else if (p.key === 'beaconId') {
         hasBeaconLocation = true;
-        geoloc_beacon.id = p.value.toUpperCase();
+        geoloc_beacon.id = p.value.toString().toUpperCase();
       }
       // Check if there is precision in parsed data
       else if (p.key === 'precision') {
