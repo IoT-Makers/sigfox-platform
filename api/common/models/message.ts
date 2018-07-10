@@ -1,7 +1,6 @@
 import {Model} from '@mean-expert/model';
 import {computeCtr, decryptPayload, encryptPayload} from './utils';
 
-const loopback = require('loopback');
 const Client = require('strong-pubsub');
 const Adapter = require('strong-pubsub-mqtt');
 

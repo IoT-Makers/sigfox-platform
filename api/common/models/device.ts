@@ -68,15 +68,19 @@ const json2csv = require('json2csv').parse;
 
 class Device {
 
-  private sigfoxBackendBaseApiUrl = 'https://backend.sigfox.com/api/';
-
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
   }
 
   // Example Operation Hook
   beforeSave(ctx: any, next: Function): void {
-    console.log('Device: Before Save');
+    if (ctx.data && ctx.data.id) {
+      console.log('Device: Before Save: ' + ctx.data.id);
+      ctx.data.id = ctx.data.id.toUpperCase();
+    } else if (ctx.instance && ctx.instance.id) {
+      console.log('Device: Before Save: ' + ctx.instance.id);
+      ctx.instance.id = ctx.instance.id.toUpperCase();
+    }
     next();
   }
 
@@ -239,7 +243,6 @@ class Device {
 
   getMessagesFromSigfoxBackend(deviceId: string, limit: number, before: number, req: any, next: Function): void {
     // Models
-    const Device = this.model;
     const Message = this.model.app.models.Message;
     const Geoloc = this.model.app.models.Geoloc;
     const Connector = this.model.app.models.Connector;

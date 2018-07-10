@@ -10,12 +10,7 @@ import { Model } from '@mean-expert/model';
   hooks: {
     beforeSave: { name: 'before save', type: 'operation' }
   },
-  remotes: {
-    myRemote: {
-      returns : { arg: 'result', type: 'array' },
-      http    : { path: '/my-remote', verb: 'get' }
-    }
-  }
+  remotes: { }
 })
 
 class Beacons {
@@ -30,10 +25,6 @@ class Beacons {
       ctx.instance.id = ctx.instance.id.toUpperCase();
     }
     next();
-  }
-  // Example Remote Method
-  myRemote(next: Function): void {
-    this.model.find(next);
   }
 }
 

@@ -43,7 +43,7 @@
     "loopback-context": "^3.3.0",
     "loopback-datasource-juggler": "^3.22.1",
     "loopback-ds-timestamp-mixin": "^3.4.1",
-    "loopback3-rt-stats-mixin": "^1.0.0",
+    "loopback3-rt-stats-mixin": "^1.0.3",
     "mocha": "^5.2.0",
     "moment": "^2.21.0",
     "nodemailer": "^4.6.4",

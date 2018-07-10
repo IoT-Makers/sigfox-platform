@@ -17,5 +17,8 @@
     "serve": "cd api/ && node server/server.js",
     "test": "npm run install"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "dependencies": {
+    "loopback3-rt-stats-mixin": "^1.0.1"
+  }
 }
