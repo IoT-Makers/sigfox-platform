@@ -1080,12 +1080,12 @@
             </ng-container>
             <!-- End Chart -->
 
-            <ng-container *ngIf="widget.type === 'stats'">
+            <!-- Bar custom -->
+            <ng-container *ngIf="widget.type === 'bar-custom'">
               <div *ngIf="mobile" class="col-md-12" style="min-height: 200px;">
                 <iframe class="chartjs-hidden-iframe" tabindex="-1"
                         style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
                 <canvas *ngIf="widget.data"
-                        id="widget.id"
                         baseChart
                         [datasets]="widget.data"
                         [labels]="widget.options.chartLabels"
@@ -1098,7 +1098,6 @@
                 <iframe class="chartjs-hidden-iframe" tabindex="-1"
                         style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
                 <canvas *ngIf="widget.data"
-                        id="widget.id"
                         baseChart
                         [datasets]="widget.data"
                         [labels]="widget.options.chartLabels"
@@ -1108,18 +1107,37 @@
                         [chartType]="'bar'"></canvas>
               </div>
             </ng-container>
-            <!--<ng-container *ngIf="widget.type === 'bar'">
-              <div *ngIf="widget.data">
-                <div style="display: block">
-                  <canvas baseChart
-                          [datasets]="widget.data"
-                          [labels]="widget.chartLabels"
-                          [options]="widget.options.chartOptions"
-                          [legend]="true"
-                          [chartType]="widget.chartType"></canvas>
-                </div>
+            <!-- End Bar custom -->
+
+            <!-- Stats custom -->
+            <ng-container *ngIf="widget.type === 'stats'">
+              <div *ngIf="mobile" class="col-md-12" style="min-height: 200px;">
+                <iframe class="chartjs-hidden-iframe" tabindex="-1"
+                        style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
+                <canvas *ngIf="widget.data"
+                        baseChart
+                        [datasets]="widget.data"
+                        [labels]="widget.options.chartLabels"
+                        [options]="widget.options.chartOptions"
+                        [colors]="widget.options.chartColor"
+                        [legend]="true"
+                        [chartType]="'bar'"></canvas>
               </div>
-            </ng-container>-->
+              <div *ngIf="!mobile" class="col-md-12" style="min-height: 400px;">
+                <iframe class="chartjs-hidden-iframe" tabindex="-1"
+                        style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
+                <canvas *ngIf="widget.data"
+                        baseChart
+                        [datasets]="widget.data"
+                        [labels]="widget.options.chartLabels"
+                        [options]="widget.options.chartOptions"
+                        [colors]="widget.options.chartColor"
+                        [legend]="true"
+                        [chartType]="'bar'"></canvas>
+              </div>
+            </ng-container>
+            <!-- End Stats custom -->
+
           </ng-container>
         </div>
       </div>
@@ -1705,7 +1723,81 @@
               </div>
 
             </ng-container>
-            <!-- End Line widget -->
+            <!-- End Line & Bar widget -->
+
+            <!-- Bar custom widget -->
+            <ng-container *ngIf="newWidget.type === 'bar-custom'">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Categories / Devices
+                </label>
+                <div class="col-md-4">
+                  <angular2-multiselect name="selectCategories"
+                                        [data]="selectCategories"
+                                        [(ngModel)]="selectedCategories"
+                                        [settings]="selectCategoriesSettings"
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();">
+                  </angular2-multiselect>
+                </div>
+
+                <div class="col-md-5">
+                  <angular2-multiselect name="selectDevices"
+                                        [data]="selectDevices"
+                                        [(ngModel)]="selectedDevices"
+                                        [settings]="selectDevicesSettings"
+                                        (onSelect)="setFilter();"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelectAll)="setFilter();"
+                                        (onDeSelectAll)="setFilter();">
+                  </angular2-multiselect>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="selectedCategories.length > 0 || selectedDevices.length > 0">
+                <label class="col-md-3 form-control-label">Key</label>
+                <div class="col-md-9">
+                  <angular2-multiselect #selectOneKey
+                                        (onOpen)="loadKeys()"
+                                        name="selectKeys"
+                                        [data]="selectKeys"
+                                        [(ngModel)]="selectedKeys"
+                                        [settings]="selectOneSettings"
+                                        (onDeSelect)="setFilter();"
+                                        (onSelect)="setFilter(); selectOneKey.isActive = false;"
+                                        required>
+                  </angular2-multiselect>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="selectedCategories.length > 0 || selectedDevices.length > 0 && selectedKeys.length > 0">
+                <label class="col-md-3 form-control-label">Exact value</label>
+                <div class="col-md-9">
+                  <input type="text"
+                         class="form-control"
+                         placeholder="Exact value for this key"
+                         name="newWidget.options.exact_value"
+                         [(ngModel)]="newWidget.options.exact_value"
+                         required>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Beginning at
+                </label>
+                <div class="col-md-9">
+                  <angular2-date-picker name="dateTime"
+                                        [(ngModel)]="selectedDateTimeBegin"
+                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter();"
+                                        [settings]="dateTimeSettings"
+                                        required>
+                  </angular2-date-picker>
+                </div>
+              </div>
+
+            </ng-container>
+            <!-- End Bar custom widget -->
 
             <!-- Stats widget -->
             <ng-container *ngIf="newWidget.type === 'stats'">

@@ -6,7 +6,9 @@ import { Category, CategoryInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { CategoryActionTypes } from '../actions';
 
-export interface CategorysState extends EntityState<Category | CategoryInterface> {};
+
+export interface CategorysState extends EntityState<Category | CategoryInterface> {
+}
 
 export const CategoryAdapter: EntityAdapter<Category | CategoryInterface> = createEntityAdapter<Category | CategoryInterface>();
 

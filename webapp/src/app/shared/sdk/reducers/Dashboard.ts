@@ -6,7 +6,9 @@ import { Dashboard, DashboardInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { DashboardActionTypes } from '../actions';
 
-export interface DashboardsState extends EntityState<Dashboard | DashboardInterface> {};
+
+export interface DashboardsState extends EntityState<Dashboard | DashboardInterface> {
+}
 
 export const DashboardAdapter: EntityAdapter<Dashboard | DashboardInterface> = createEntityAdapter<Dashboard | DashboardInterface>();
 

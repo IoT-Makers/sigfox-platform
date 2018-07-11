@@ -6,7 +6,9 @@ import { Property, PropertyInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { PropertyActionTypes } from '../actions';
 
-export interface PropertysState extends EntityState<Property | PropertyInterface> {};
+
+export interface PropertysState extends EntityState<Property | PropertyInterface> {
+}
 
 export const PropertyAdapter: EntityAdapter<Property | PropertyInterface> = createEntityAdapter<Property | PropertyInterface>();
 

@@ -100,13 +100,13 @@ export abstract class BaseLoopBackApi {
       // that are the actual body, Custom remote method properties are different and need
       // to be wrapped into a body object
       let body: any;
-      let postBodyKeys = typeof postBody === 'object' ? Object.keys(postBody) : []
+      let postBodyKeys = typeof postBody === 'object' ? Object.keys(postBody) : [];
       if (postBodyKeys.length === 1) {
         body = postBody[postBodyKeys.shift()];
       } else {
         body = postBody;
       }
-      
+
       let queryString: string = '';
 
       // Separate filter object from url params and add to search query
@@ -125,7 +125,7 @@ export abstract class BaseLoopBackApi {
           /**
           CODE BELOW WILL GENERATE THE FOLLOWING ISSUES:
           - https://github.com/mean-expert-official/loopback-sdk-builder/issues/356
-          - https://github.com/mean-expert-official/loopback-sdk-builder/issues/328 
+          - https://github.com/mean-expert-official/loopback-sdk-builder/issues/328
           **/
           headers = headers.append('where', JSON.stringify(urlParams.where));
         } else {
@@ -133,7 +133,7 @@ export abstract class BaseLoopBackApi {
         }
         delete urlParams.where;
       }
-    
+
       if (typeof customHeaders === 'function') {
         headers = customHeaders(headers);
       }
@@ -637,7 +637,7 @@ TODO Fix Merge Conflict */
       source.addEventListener('data', emit);
       source.onerror = emit;
     } else {
-      console.warn('SDK Builder: EventSource is not supported'); 
+      console.warn('SDK Builder: EventSource is not supported');
     }
     return subject.asObservable();
   }

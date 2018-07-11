@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DashboardApi, RealTime, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {FireLoopRef, Geoloc, Message, Organization} from '../../shared/sdk/models';
+import {FireLoopRef, Geoloc, Message, Organization, Property} from '../../shared/sdk/models';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import {MessageApi, OrganizationApi} from '../../shared/sdk/services/custom';
@@ -108,6 +108,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     {id: 'gauge', itemName: 'Gauge'},
     {id: 'line', itemName: 'Line graph'},
     {id: 'bar', itemName: 'Bar graph'},
+    {id: 'bar-custom', itemName: 'Bar graph with value assertion'},
     {id: 'stats', itemName: 'Message counter'}
   ];
   private selectMapType = [
@@ -783,6 +784,31 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
+    // Bar custom
+    else if (this.newWidget.type === 'bar-custom') {
+      this.newWidget.filter = {
+        limit: 20,
+        order: 'updatedAt DESC',
+        include: [{
+          relation: 'Messages',
+          scope: {
+            fields: ['data_parsed', 'createdAt'],
+            limit: 1000,
+            order: 'createdAt ASC',
+            where: {
+              and: [
+                {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}},
+                {data_parsed: {neq: null}}
+              ]
+            }
+          }
+        }],
+        where: {
+          or: []
+        }
+      };
+    }
+
     // Bar message counter
     else if (this.newWidget.type === 'stats') {
       this.newWidget.filter = {
@@ -964,7 +990,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       }
     });
 
-    if (this.newWidget.type === 'tracking' || this.newWidget.type === 'line' || this.newWidget.type === 'bar') {
+    if (this.newWidget.type === 'tracking' || this.newWidget.type === 'line' || this.newWidget.type === 'bar' || this.newWidget.type === 'bar-custom') {
       this.selectedDateTimeBegin = new Date(this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte);
       this.dateTimeSettings.placeholder = moment(this.selectedDateTimeBegin).format('MMM-DD-YYYY hh:mm A');
     }
@@ -1100,7 +1126,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                               };
                               chartData[w].values.push(item);
                             });
-                            data_parsed.splice(k, 1);
                           }
                         });
                         w++;
@@ -1241,7 +1266,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                               };
                               chartData[w].values.push(item);
                             });
-                            data_parsed.splice(k, 1);
                           }
                         });
                         w++;
@@ -1317,6 +1341,58 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   };
                 });
 
+                widget.ready = true;
+              }
+
+              // Custom bar graph with exact key value
+              else if (widget.type === 'bar-custom') {
+
+                // Loop each device for this widget
+                devices.forEach((device: Device) => {
+                  widget.options.chartLabels = [];
+                  widget.options.chartOptions = {
+                    responsive: true,
+                    scaleShowVerticalLines: false,
+                    maintainAspectRatio: false,
+                    legend: {
+                      display: true,
+                    },
+                    scales: {
+                      xAxes: [{
+                        gridLines: {
+                        },
+                        ticks: {
+                        }
+                      }],
+                      yAxes: [{
+                        gridLines: {
+                        },
+                        ticks: {
+                          max: 1,
+                        }
+                      }]
+                    }
+                  };
+                  widget.options.chartColor = [{backgroundColor: this.getRandomColor()}];
+                  widget.data = [];
+                  const data = [];
+                  device.Messages.forEach((message: Message) => {
+                    message.data_parsed.forEach((p: Property, index: number) => {
+                      //const p = _.filter(message.data_parsed, {key: widget.options.keys[0]})[0]; //, value: widget.options.exact_value
+                      if (p.key === widget.options.keys[0] && p.value.toString() === widget.options.exact_value.toString()) {
+                        data.push(1);
+                        widget.options.chartLabels.push(moment(message.createdAt).format('MMM-DD h:mm a'));
+                        return;
+                      } else if (index === message.data_parsed.length) {
+                        data.push(0);
+                        widget.options.chartLabels.push(moment(message.createdAt).format('MMM-DD h:mm a'));
+                      }
+                    });
+                  });
+                  console.log('Data:', data);
+                  console.log('Labels:', widget.options.chartLabels);
+                  widget.data.push({data: data, label: this.capitalizeFirstLetter(widget.options.keys[0])});
+                });
                 widget.ready = true;
               }
 

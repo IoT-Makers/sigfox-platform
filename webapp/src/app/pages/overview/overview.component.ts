@@ -12,7 +12,6 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 declare var Zone: any;
 
-
 @Component({
   templateUrl: 'overview.component.html'
 })
@@ -150,6 +149,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
               private messageApi: MessageApi,
               private connectorApi: ConnectorApi,
               private route: ActivatedRoute) {
+
+    /*this.eventStreamService.createMessagesChangeStream().addEventListener('data', (msg: any) => {
+      const data = JSON.parse(msg.data);
+      console.log(data);
+    });*/
   }
 
   ngOnInit(): void {

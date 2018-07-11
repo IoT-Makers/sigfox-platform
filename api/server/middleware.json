@@ -6,7 +6,9 @@
   },
   "initial": {
     "loopback-context#per-request": {},
-    "compression": {},
+    "compression": {
+      "enabled":false
+    },
     "cors": {
       "params": {
         "origin": true,

@@ -6,7 +6,9 @@ import { AlertHistory, AlertHistoryInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { AlertHistoryActionTypes } from '../actions';
 
-export interface AlertHistorysState extends EntityState<AlertHistory | AlertHistoryInterface> {};
+
+export interface AlertHistorysState extends EntityState<AlertHistory | AlertHistoryInterface> {
+}
 
 export const AlertHistoryAdapter: EntityAdapter<AlertHistory | AlertHistoryInterface> = createEntityAdapter<AlertHistory | AlertHistoryInterface>();
 

@@ -6,7 +6,9 @@ import { Beacon, BeaconInterface } from '../models';
 import { LoopbackAction } from '../models/BaseModels';
 import { BeaconActionTypes } from '../actions';
 
-export interface BeaconsState extends EntityState<Beacon | BeaconInterface> {};
+
+export interface BeaconsState extends EntityState<Beacon | BeaconInterface> {
+}
 
 export const BeaconAdapter: EntityAdapter<Beacon | BeaconInterface> = createEntityAdapter<Beacon | BeaconInterface>();
 

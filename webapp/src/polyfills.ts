@@ -18,6 +18,8 @@
  * BROWSER POLYFILLS
  */
 
+/** Server Side Events **/
+import 'event-source-polyfill/src/eventsource.min.js';
 /** IE9, IE10 and IE11 requires all of the following polyfills. **/
 import 'core-js/es6/symbol';
 import 'core-js/es6/object';
@@ -33,6 +35,11 @@ import 'core-js/es6/regexp';
 import 'core-js/es6/map';
 import 'core-js/es6/set';
 import 'core-js/es6/reflect';
+import 'core-js/es7/reflect';
+/***************************************************************************************************
+ * Zone JS is required by Angular itself.
+ */
+import 'zone.js/dist/zone'; // Included with Angular CLI.
 
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
 // import 'classlist.js';  // Run `npm install --save classlist.js`.
@@ -41,20 +48,8 @@ import 'core-js/es6/reflect';
 // import 'web-animations-js';  // Run `npm install --save web-animations-js`.
 
 
-/** Evergreen browsers require these. **/
-import 'core-js/es6/reflect';
-import 'core-js/es7/reflect';
-
-
 /** ALL Firefox browsers require the following to support `@angular/animation`. **/
 // import 'web-animations-js';  // Run `npm install --save web-animations-js`.
-
-
-
-/***************************************************************************************************
- * Zone JS is required by Angular itself.
- */
-import 'zone.js/dist/zone';  // Included with Angular CLI.
 
 
 

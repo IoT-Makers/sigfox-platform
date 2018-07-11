@@ -57,7 +57,7 @@ class Geoloc {
 
     // Build the GPS Geoloc object
     const geoloc_gps = new Geoloc;
-    geoloc_gps.location = new loopback.GeoPoint({lat: 0, lng: 0});
+    geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
     geoloc_gps.createdAt = message.createdAt;
     geoloc_gps.userId = message.userId;
     geoloc_gps.messageId = message.id;
@@ -65,7 +65,7 @@ class Geoloc {
 
     // Build the Beacon Geoloc object
     const geoloc_beacon = new Geoloc;
-    geoloc_beacon.location = new loopback.GeoPoint({lat: 0, lng: 0});
+    geoloc_beacon.location = new loopback.GeoPoint({lat: null, lng: null});
     geoloc_beacon.createdAt = message.createdAt;
     geoloc_beacon.userId = message.userId;
     geoloc_beacon.messageId = message.id;

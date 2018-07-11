@@ -1,6 +1,7 @@
 import {Model} from '@mean-expert/model';
 import {computeCtr, decryptPayload, encryptPayload} from './utils';
 
+const es = require('event-stream');
 const Client = require('strong-pubsub');
 const Adapter = require('strong-pubsub-mqtt');
 

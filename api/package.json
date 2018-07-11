@@ -26,6 +26,7 @@
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
     "ejs": "^2.6.1",
+    "event-stream": "^3.3.4",
     "git-repo-info": "^2.0.0",
     "helmet": "^3.12.1",
     "hoek": "^5.0.3",
