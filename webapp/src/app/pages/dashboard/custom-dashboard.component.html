@@ -1056,6 +1056,7 @@
             <!-- Gauge -->
             <ng-container *ngIf="widget.type === 'gauge'">
               <div *ngIf="widget.data" class="text-center">
+                <div class="text-center">{{widget.data[0].Messages[0].createdAt | date:"yyyy/MM/dd - HH:mm:ss"}}</div>
                 <ngx-gauge #gauge
                            [min]="widget.options.min"
                            [max]="widget.options.max"

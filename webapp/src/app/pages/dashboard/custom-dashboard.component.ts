@@ -1079,7 +1079,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 const lastData_parsed: any = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
                 widget.value = lastData_parsed.value;
                 widget.unit = lastData_parsed.unit;
-                widget.label = this.formatTableColumn(lastData_parsed.key);
+                widget.label = this.capitalizeFirstLetter(lastData_parsed.key);
                 widget.gaugeThresholdConfig = {[widget.options.min]: {color: '#13b22b'}, [(widget.options.min + widget.options.max) / 2]: {color: '#fc7d28'}, [widget.options.max]: {color: '#db2b2a'}};
 
                 widget.ready = true;
