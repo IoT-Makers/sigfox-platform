@@ -557,9 +557,10 @@ class Message {
             }
             message.data_downlink = device.data_downlink;
             const ctr = computeCtr(device.id, false, message.seqNumber.toString());
+            device.data_downlink = encryptPayload(device.data_downlink, device.pek, ctr);
             result = {
               [message.deviceId]: {
-                downlinkData: encryptPayload(device.data_downlink, device.pek, ctr)
+                downlinkData: device.data_downlink
               }
             };
           } else {
