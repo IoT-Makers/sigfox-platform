@@ -23,6 +23,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
   private beaconSub: Subscription;
   private beaconRef: FireLoopRef<Beacon>;
+  private beaconAdminRef: FireLoopRef<Beacon>;
 
   public beacons: Beacon[] = [];
   public beaconsReady = false;
@@ -120,9 +121,10 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
     // Get and listen beacons
     this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-    this.beaconRef = this.userRef.child<Beacon>('Beacons');
+
     if (this.admin) {
-      this.beaconSub = this.rt.FireLoop.ref<Beacon>(Beacon).on('change',
+      this.beaconRef = this.rt.FireLoop.ref<Beacon>(Beacon);
+      this.beaconSub = this.beaconRef.on('change',
         {
           limit: 1000,
           order: 'updatedAt DESC'
@@ -132,6 +134,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
         this.beaconsReady = true;
       });
     } else {
+      this.beaconRef = this.userRef.child<Beacon>('Beacons');
       this.beaconSub = this.beaconRef.on('change',
         {
           limit: 1000,
