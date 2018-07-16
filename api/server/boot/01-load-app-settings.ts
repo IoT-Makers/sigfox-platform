@@ -1,3 +1,4 @@
+
 module.exports = (app: any) => {
 
   const AppSetting = app.models.AppSetting;

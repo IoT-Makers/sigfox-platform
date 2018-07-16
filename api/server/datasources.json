@@ -104,5 +104,29 @@
         }
       }
     ]
+  },
+  "here": {
+    "name": "here",
+    "connector": "rest",
+    "debug": "true",
+    "operations": [
+      {
+        "template": {
+          "method": "POST",
+          "url": "https://pos.cit.api.here.com/positioning/v1/locate?app_id={app_id:string}&app_code={app_code:string}",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": "{json:string}"
+        },
+        "functions": {
+          "locate": [
+            "app_id",
+            "app_code",
+            "json"
+          ]
+        }
+      }
+    ]
   }
 }
