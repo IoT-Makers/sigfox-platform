@@ -30,6 +30,10 @@ Object.assign(BaseLoopbackActionTypesFactory('Alert'), {
   TRIGGER_BY_SIGFOX_GEOLOC_SUCCESS: type('[Alert] triggerBySigfoxGeoloc success'),
   TRIGGER_BY_SIGFOX_GEOLOC_FAIL: type('[Alert] triggerBySigfoxGeoloc fail'),
 
+  TEST: type('[Alert] test'),
+  TEST_SUCCESS: type('[Alert] test success'),
+  TEST_FAIL: type('[Alert] test fail'),
+
 });
 export const AlertActions =
 Object.assign(BaseLoopbackActionsFactory<Alert>(AlertActionTypes), {
@@ -326,6 +330,59 @@ Object.assign(BaseLoopbackActionsFactory<Alert>(AlertActionTypes), {
    */
   triggerBySigfoxGeolocFail: class implements Action {
     public readonly type = AlertActionTypes.TRIGGER_BY_SIGFOX_GEOLOC_FAIL;
+
+    constructor(public payload: any, public meta?: any) { }
+  },
+
+  /**
+   * test Action.
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `alertId` – `{string}` - The alert ID
+   *
+   *  - `req` – `{object}` - 
+   * @param {any} meta (optional).
+   * 
+   */
+  test: class implements Action {
+    public readonly type = AlertActionTypes.TEST;
+      public payload: {alertId: any, req: any, customHeaders};
+
+    constructor(alertId: any, req: any = {}, customHeaders?: Function, public meta?: any) {
+      this.payload = {alertId, req, customHeaders};
+    }
+  },
+  /**
+   * testSuccess Action.
+   * 
+   * @param {any} id 
+   * Data properties:
+   *
+   *  - `result` – `{any}` - 
+   * @param {any} meta (optional).
+   * 
+   */
+  testSuccess: class implements Action {
+    public readonly type = AlertActionTypes.TEST_SUCCESS;
+      public payload: {id: any, data: any};
+
+    constructor(id: any, data: any, public meta?: any) {
+      this.payload = {id, data};
+    }
+  },
+  /**
+   * testFail Action.
+   *
+   * @param {any} payload
+   * @param {any} meta (optional).
+   * 
+   */
+  testFail: class implements Action {
+    public readonly type = AlertActionTypes.TEST_FAIL;
 
     constructor(public payload: any, public meta?: any) { }
   },

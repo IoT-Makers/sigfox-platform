@@ -111,6 +111,20 @@ export class AlertEffects extends BaseLoopbackEffects {
       )
     );
 
+  @Effect()
+  public test$ = this.actions$
+    .ofType(AlertActionTypes.TEST).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.alert.test(action.payload.alertId, action.payload.req).pipe(
+          map((response: any) => new AlertActions.testSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new AlertActions.testFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
     /**
    * @author João Ribeiro <@JonnyBGod> <github:JonnyBGod>
    * @description

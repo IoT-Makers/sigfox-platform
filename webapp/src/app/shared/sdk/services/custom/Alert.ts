@@ -287,6 +287,37 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `alertId` – `{string}` - The alert ID
+   *
+   *  - `req` – `{object}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `result` – `{any}` - 
+   */
+  public test(alertId: any, req: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Alerts/test";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof alertId !== 'undefined' && alertId !== null) _urlParams.alertId = alertId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Statistical information for Alert registers.
    *
    * @param {string} range hourly, daily, weekly, monthly, yearly, custom

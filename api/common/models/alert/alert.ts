@@ -36,7 +36,15 @@ const nodemailer = require('nodemailer');
         {arg: 'lng', type: 'number', required: true, description: 'The lng of the device'},
         {arg: 'deviceId', type: 'string', required: true, description: 'The device ID'},
         {arg: 'req', type: 'object', http: {source: 'req'}}
-      ],
+      ]
+    },
+    test: {
+      returns : { arg: 'result', type: 'array' },
+      http    : { path: '/test', verb: 'post' },
+      accepts: [
+        {arg: 'alertId', type: 'string', required: true, description: 'The alert ID'},
+        {arg: 'req', type: 'object', http: {source: 'req'}}
+      ]
     }
   }
 })
@@ -50,6 +58,23 @@ class Alert {
     if (ctx.instance) {
       ctx.instance.createdAt = new Date();
     }
+    next();
+  }
+
+  private test(alertId: string, req: any, next: Function): void {
+    // Models
+    const Alert = this.model.app.models.Alert;
+
+    // Get userId
+    const userId = req.accessToken.userId;
+    if (!userId) {
+      next(null, 'Please login or use a valid access token.');
+    }
+
+    Alert.findOne({where: {id: alertId}, include: 'Device'}, (err: any, alertInstance: any) => {
+      alertInstance = alertInstance.toJSON();
+      this.triggerAlert(alertInstance, alertInstance.Device, 'Testing alert!');
+    });
     next();
   }
 

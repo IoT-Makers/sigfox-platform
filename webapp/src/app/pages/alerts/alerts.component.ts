@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {DeviceApi, UserApi} from '../../shared/sdk/services/custom';
+import {AlertApi, DeviceApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
@@ -136,6 +136,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   constructor(private rt: RealTime,
               private userApi: UserApi,
               private deviceApi: DeviceApi,
+              private alertApi: AlertApi,
               private elRef: ElementRef,
               toasterService: ToasterService) {
     this.toasterService = toasterService;
@@ -405,6 +406,18 @@ export class AlertsComponent implements OnInit, OnDestroy {
       this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
     this.confirmModal.hide();
+  }
+
+  testAlert(alert: Alert): void {
+    this.alertApi.test(alert.id).subscribe(value => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully tested.');
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+    });
   }
 
   editAlert(): void {
