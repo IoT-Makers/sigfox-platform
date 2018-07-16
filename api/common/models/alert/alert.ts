@@ -73,6 +73,7 @@ class Alert {
 
     Alert.findOne({where: {id: alertId}, include: 'Device'}, (err: any, alertInstance: any) => {
       alertInstance = alertInstance.toJSON();
+      //this.triggerAlert(alertInstance, alertInstance.Device, 'Testing alert!', {lat: 48.880543, lng: 2.299845});
       this.triggerAlert(alertInstance, alertInstance.Device, 'Testing alert!');
     });
     next();
@@ -187,7 +188,7 @@ class Alert {
                   let alertMessage = alert.message;
                   if (!alert.message)
                     alertMessage = 'Device is in the circle!';
-                  this.triggerAlert(alert, device, alertMessage);
+                  this.triggerAlert(alert, device, alertMessage, location_device);
                   // Alert has been triggered, removing it from array
                   alerts.splice(index, 1);
                 }
@@ -266,7 +267,7 @@ class Alert {
     next(null, 'Processed alerts.');
   }
 
-  private triggerAlert(alert: any, device: any, alertMessage: string) {
+  private triggerAlert(alert: any, device: any, alertMessage: string, location?: any) {
     // Models
     const Connector = this.model.app.models.Connector;
     const EmailOutlook = this.model.app.models.EmailOutlook;
@@ -292,13 +293,40 @@ class Alert {
               }
             });
             const title = device.name ? device.name : device.id;
-            transporter.sendMail({
-              to: connector.recipient,
-              from: connector.login,
-              subject: '[Sigfox Platform] - Alert for ' + title,
-              text: alertMessage,
-              html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alertMessage + '</p>'
-            }, (err: any, mail: any) => {
+            let options = {
+              to: '',
+              from: '',
+              subject: '',
+              html: ''
+            };
+
+            if (!location) {
+              options = {
+                to: connector.recipient,
+                from: connector.login,
+                subject: '[Sigfox Platform] - Alert for ' + title,
+                html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alertMessage + '</p>'
+              };
+            } else {
+              options = {
+                to: connector.recipient,
+                from: connector.login,
+                subject: '[Sigfox Platform] - Alert for ' + title,
+                html: 'Hey! <p>An alert has been triggered for the device: <b>' + title + '</b></p><p>' + alertMessage + '</p><br>' +
+                '<a href=\"https://www.google.com/maps/place/' + location.lat + ',' + location.lng + '/\">' +
+                '<img src=\"https://maps.googleapis.com/maps/api/staticmap?' +
+                'center=' + location.lat + ',' + location.lng +
+                '&zoom=12' +
+                '&scale=1' +
+                '&size=600x300' +
+                '&maptype=roadmap' +
+                '&key=AIzaSyBFDtqOXHsFg-a60JWayUJmYumKQxn8G1o' +
+                '&format=png' +
+                '&visual_refresh=true' +
+                '&markers=size:mid%7Ccolor:0x792faa%7Clabel:Position%7C' + location.lat + ',' + location.lng + '\" alt=\"Position\"></a>'
+              };
+            }
+            transporter.sendMail(options, (err: any, mail: any) => {
               if (err) console.error(err);
               else console.log('EmailOutlook sent!');
             });
