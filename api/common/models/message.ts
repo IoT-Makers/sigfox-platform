@@ -374,7 +374,7 @@ class Message {
           }
 
           if (deviceInstance.pek && message.ack === true) {
-            const ctr = computeCtr(deviceInstance.id, false, message.seqNumber.toString());
+            const ctr = computeCtr(deviceInstance.id, true, message.seqNumber.toString());
             message.data = decryptPayload(message.data, deviceInstance.pek, ctr);
           }
 
