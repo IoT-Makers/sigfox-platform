@@ -38,7 +38,7 @@
     "level": {
       "type": "number"
     },
-    "precision": {
+    "accuracy": {
       "type": "number"
     },
     "createdAt": {

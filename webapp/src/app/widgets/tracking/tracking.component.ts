@@ -54,7 +54,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     }
   ];
 
-  public circlePrecision = false;
+  public circleAccuracy = false;
   private isCircleVisible: boolean[] = [];
   public directionsRoutes = true;
   public clustering = true;

@@ -201,11 +201,11 @@ class Category {
                         if (options.fields.indexOf('lat_' + geoloc.type) === -1) {
                           options.fields.push('lat_' + geoloc.type);
                           options.fields.push('lng_' + geoloc.type);
-                          options.fields.push('precision_' + geoloc.type);
+                          options.fields.push('accuracy_' + geoloc.type);
                         }
                         obj['lat_' + geoloc.type] = geoloc.location.lat;
                         obj['lng_' + geoloc.type] = geoloc.location.lng;
-                        obj['precision_' + geoloc.type] = geoloc.precision;
+                        obj['accuracy_' + geoloc.type] = geoloc.accuracy;
                       });
                     }
                     data.push(obj);
@@ -362,11 +362,11 @@ class Category {
                         if (options.fields.indexOf('lat_' + geoloc.type) === -1) {
                           options.fields.push('lat_' + geoloc.type);
                           options.fields.push('lng_' + geoloc.type);
-                          options.fields.push('precision_' + geoloc.type);
+                          options.fields.push('accuracy_' + geoloc.type);
                         }
                         obj['lat_' + geoloc.type] = geoloc.location.lat;
                         obj['lng_' + geoloc.type] = geoloc.location.lng;
-                        obj['precision_' + geoloc.type] = geoloc.precision;
+                        obj['accuracy_' + geoloc.type] = geoloc.accuracy;
                       });
                     }
                     data.push(obj);

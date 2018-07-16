@@ -71,7 +71,7 @@
 
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-geoloc-sigfox">Precision</strong>
+            <strong class="text-geoloc-sigfox">Accuracy</strong>
           </div>
           <div class="row">
             <div class="col-sm-12 col-md-4">
@@ -110,9 +110,9 @@
           </div>
           <div class="row">
             <div class="col-sm-12 col-md-4">
-              <label class="mr-1">Precision circles:</label>
+              <label class="mr-1">Accuracy circles:</label>
               <label class="switch switch-text switch-primary">
-                <input type="checkbox" [checked]="circlePrecision" (change)="circlePrecision = !circlePrecision"
+                <input type="checkbox" [checked]="circleAccuracy" (change)="circleAccuracy = !circleAccuracy"
                        class="switch-input" checked="">
                 <span class="switch-label" data-on="On" data-off="Off"></span>
                 <span class="switch-handle"></span>
@@ -207,13 +207,13 @@
                       <br>
                       <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                       <br>
-                      <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                      <strong><b>Accuracy:</b> {{geoloc.accuracy}} m</strong>
                       <br>
                       <strong><b>Position:</b> n°{{i}} <span class="text-success">START</span></strong>
                     </agm-info-window>
                   </agm-marker>
                   <!-- Circle -->
-                  <agm-circle *ngIf="circlePrecision || isCircleVisible[0]" [visible]="isCircleVisible[0]"
+                  <agm-circle *ngIf="circleAccuracy || isCircleVisible[0]" [visible]="isCircleVisible[0]"
                               [zIndex]="1"
                               [strokePosition]="CENTER"
                               [strokeWeight]="1"
@@ -222,7 +222,7 @@
                               [fillColor]="'#8d5dd1'"
                               [latitude]="geoloc.location.lat"
                               [longitude]="geoloc.location.lng"
-                              [radius]="geoloc.precision">
+                              [radius]="geoloc.accuracy">
                   </agm-circle>
                   <!-- End Circle -->
                 </ng-container>
@@ -264,13 +264,13 @@
                       <br>
                       <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                       <br>
-                      <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                      <strong><b>Accuracy:</b> {{geoloc.accuracy}} m</strong>
                       <br>
                       <strong><b>Position:</b> n°{{i}} <span class="text-danger">FINISH</span></strong>
                     </agm-info-window>
                   </agm-marker>
                   <!-- Circle -->
-                  <agm-circle *ngIf="circlePrecision || isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                  <agm-circle *ngIf="circleAccuracy || isCircleVisible[i]" [visible]="isCircleVisible[i]"
                               [zIndex]="1"
                               [strokePosition]="CENTER"
                               [strokeWeight]="1"
@@ -279,7 +279,7 @@
                               [fillColor]="'#8d5dd1'"
                               [latitude]="geoloc.location.lat"
                               [longitude]="geoloc.location.lng"
-                              [radius]="geoloc.precision">
+                              [radius]="geoloc.accuracy">
                   </agm-circle>
                   <!-- End Circle -->
                 </ng-container>
@@ -323,14 +323,14 @@
                         <br>
                         <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                         <br>
-                        <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                        <strong><b>Accuracy:</b> {{geoloc.accuracy}} m</strong>
                         <br>
                         <strong><b>Position: </b> n°{{i}}</strong>
                       </agm-info-window>
                     </agm-marker>
 
                     <!-- Circle -->
-                    <agm-circle *ngIf="circlePrecision || isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                    <agm-circle *ngIf="circleAccuracy || isCircleVisible[i]" [visible]="isCircleVisible[i]"
                                 [zIndex]="1"
                                 [strokePosition]="CENTER"
                                 [strokeWeight]="1"
@@ -339,7 +339,7 @@
                                 [fillColor]="'#8d5dd1'"
                                 [latitude]="geoloc.location.lat"
                                 [longitude]="geoloc.location.lng"
-                                [radius]="geoloc.precision">
+                                [radius]="geoloc.accuracy">
                     </agm-circle>
                     <!-- End Circle -->
                   </ng-container>
@@ -381,14 +381,14 @@
                         <br>
                         <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                         <br>
-                        <strong><b>Precision:</b> {{geoloc.precision}} m</strong>
+                        <strong><b>Accuracy:</b> {{geoloc.accuracy}} m</strong>
                         <br>
                         <strong><b>Position: </b> n°{{i}}</strong>
                       </agm-info-window>
                     </agm-marker>
 
                     <!-- Circle -->
-                    <agm-circle *ngIf="circlePrecision || isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                    <agm-circle *ngIf="circleAccuracy || isCircleVisible[i]" [visible]="isCircleVisible[i]"
                                 [zIndex]="1"
                                 [strokePosition]="CENTER"
                                 [strokeWeight]="1"
@@ -397,7 +397,7 @@
                                 [fillColor]="'#8d5dd1'"
                                 [latitude]="geoloc.location.lat"
                                 [longitude]="geoloc.location.lng"
-                                [radius]="geoloc.precision">
+                                [radius]="geoloc.accuracy">
                     </agm-circle>
                     <!-- End Circle -->
                   </ng-container>

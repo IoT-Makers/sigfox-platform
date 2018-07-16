@@ -12,7 +12,7 @@ export interface GeolocInterface {
   "type": string;
   "location": GeoPoint;
   "level"?: number;
-  "precision"?: number;
+  "accuracy"?: number;
   "createdAt"?: Date;
   "id"?: any;
   "deviceId"?: string;
@@ -30,7 +30,7 @@ export class Geoloc implements GeolocInterface {
   "type": string = '';
   "location": GeoPoint = <any>null;
   "level": number = 0;
-  "precision": number = 0;
+  "accuracy": number = 0;
   "createdAt": Date = new Date(0);
   "id": any = <any>null;
   "deviceId": string = '';
@@ -87,8 +87,8 @@ export class Geoloc implements GeolocInterface {
           name: 'level',
           type: 'number'
         },
-        "precision": {
-          name: 'precision',
+        "accuracy": {
+          name: 'accuracy',
           type: 'number'
         },
         "createdAt": {

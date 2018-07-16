@@ -219,7 +219,7 @@
                   <br>
                   <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
                   <br>
-                  <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
+                  <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                 </agm-info-window>
               </agm-marker>
               <!-- Circle -->
@@ -231,7 +231,7 @@
                           [fillColor]="'#8d5dd1'"
                           [latitude]="geoloc.location.lat"
                           [longitude]="geoloc.location.lng"
-                          [radius]="geoloc.precision">
+                          [radius]="geoloc.accuracy">
               </agm-circle>
               <!-- End Circle -->
             </ng-container>
@@ -265,7 +265,7 @@
                   <br>
                   <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
                   <br>
-                  <strong><b>Precision: </b>{{geoloc.precision}} m</strong>
+                  <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                 </agm-info-window>
               </agm-marker>
               <!-- Circle -->
@@ -277,7 +277,7 @@
                           [fillColor]="'#3c58ce'"
                           [latitude]="geoloc.location.lat"
                           [longitude]="geoloc.location.lng"
-                          [radius]="geoloc.precision">
+                          [radius]="geoloc.accuracy">
               </agm-circle>
               <!-- End Circle -->
             </ng-container>

@@ -128,7 +128,7 @@ class Alert {
                       let alertMessage = alert.message;
                       if (!alert.message)
                         alertMessage = 'Device is in the circle!';
-                      this.triggerAlert(alert, deviceInstance, alertMessage);
+                      this.triggerAlert(alert, deviceInstance, alertMessage, location_device);
                       // Alert has been triggered, removing it from array
                       alerts.splice(index, 1);
                     }
@@ -141,7 +141,7 @@ class Alert {
                       let alertMessage = alert.message;
                       if (!alert.message)
                         alertMessage = 'Device is in the polygon!';
-                      this.triggerAlert(alert, deviceInstance, alertMessage);
+                      this.triggerAlert(alert, deviceInstance, alertMessage, location_device);
                       // Alert has been triggered, removing it from array
                       alerts.splice(index, 1);
                     }
@@ -201,7 +201,7 @@ class Alert {
                   let alertMessage = alert.message;
                   if (!alert.message)
                     alertMessage = 'Device is in the polygon!';
-                  this.triggerAlert(alert, device, alertMessage);
+                  this.triggerAlert(alert, device, alertMessage, location_device);
                   // Alert has been triggered, removing it from array
                   alerts.splice(index, 1);
                 }

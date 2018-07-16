@@ -84,9 +84,9 @@ class Geoloc {
         hasBeaconLocation = true;
         geoloc_beacon.id = p.value.toString().toUpperCase();
       }
-      // Check if there is precision in parsed data
-      else if (p.key === 'precision') {
-        geoloc_beacon.precision = p.value;
+      // Check if there is accuracy in parsed data
+      else if (p.key === 'accuracy' || p.key === 'precision') {
+        geoloc_beacon.accuracy = p.value;
       }
       // Check if there is Beacon geoloc in parsed data
       else if (p.key === 'wifi_mac_1') {
@@ -211,7 +211,12 @@ class Geoloc {
           const geoloc = new Geoloc;
           geoloc.type = 'sigfox';
           geoloc.location = new loopback.GeoPoint(data.geoloc.location);
-          geoloc.precision = data.geoloc.precision;
+          // TODO: below is retro-compatibility
+          if (data.geoloc.accuracy) {
+            geoloc.accuracy = data.geoloc.accuracy;
+          } else {
+            geoloc.accuracy = data.geoloc.precision;
+          }
           geoloc.createdAt = messageInstance.createdAt;
           geoloc.userId = userId;
           geoloc.messageId = messageInstance.id;

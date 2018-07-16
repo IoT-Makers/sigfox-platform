@@ -335,7 +335,7 @@ class Device {
                         const geoloc = new Geoloc;
                         geoloc.type = 'sigfox';
                         geoloc.location = new loopback.GeoPoint({lat: messageInstance.computedLocation.lat, lng: messageInstance.computedLocation.lng});
-                        geoloc.precision = messageInstance.computedLocation.radius;
+                        geoloc.accuracy = messageInstance.computedLocation.radius;
                         geoloc.createdAt = messagePostProcess.createdAt;
                         geoloc.userId = messagePostProcess.userId;
                         geoloc.messageId = messagePostProcess.id;
@@ -515,11 +515,11 @@ class Device {
                 if (options.fields.indexOf('lat_' + geoloc.type) === -1) {
                   options.fields.push('lat_' + geoloc.type);
                   options.fields.push('lng_' + geoloc.type);
-                  options.fields.push('precision_' + geoloc.type);
+                  options.fields.push('accuracy_' + geoloc.type);
                 }
                 obj['lat_' + geoloc.type] = geoloc.location.lat;
                 obj['lng_' + geoloc.type] = geoloc.location.lng;
-                obj['precision_' + geoloc.type] = geoloc.precision;
+                obj['accuracy_' + geoloc.type] = geoloc.accuracy;
               });
             }
             data.push(obj);
