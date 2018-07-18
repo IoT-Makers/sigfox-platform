@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {MomentModule} from 'angular2-moment';
-import {AgmCoreModule} from '@agm/core';
 import {DevicesComponent} from './devices.component';
 import {DevicesRoutingModule} from './devices-routing.module';
 import {ModalModule, TabsModule, TooltipModule} from 'ngx-bootstrap';
@@ -23,7 +22,6 @@ import {DataFilterPipe} from './datafilterpipe';
     TabsModule.forRoot(),
     ModalModule.forRoot(),
     TooltipModule.forRoot(),
-    AgmCoreModule,
     LaddaModule,
     ToasterModule.forRoot(),
     AngularMultiSelectModule,

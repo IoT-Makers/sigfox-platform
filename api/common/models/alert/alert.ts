@@ -178,7 +178,7 @@ class Alert {
           alert.geofence.forEach((alertGeofence: any) => {
             const lat_device: any = _.filter(data_parsed, {key: 'lat'})[0];
             const lng_device: any = _.filter(data_parsed, {key: 'lng'})[0];
-            if (lat_device && lng_device) {
+            if (lat_device && lat_device.value && lng_device && lng_device.value) {
               const location_device = new loopback.GeoPoint({lat: Number(lat_device.value), lng: Number(lng_device.value)});
               // If geofence is a circle
               if (alertGeofence.radius) {

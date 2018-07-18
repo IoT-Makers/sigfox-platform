@@ -468,4 +468,3 @@ export class DevicesComponent implements OnInit, OnDestroy {
   //   });
   // }
 }
-
