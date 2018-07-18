@@ -233,10 +233,9 @@ class Message {
                                 }
                               });
                             }
+                            // Create message
+                            this.createMessageAndSendResponse(deviceInstance, message, req, next);
                           });
-
-                        // Create message
-                        this.createMessageAndSendResponse(deviceInstance, message, req, next);
                       } else {
                         // Create message with no parsed data because of wrong parser id
                         console.error('The parserId of this device (' + deviceInstance.id + ') is linked to no existing parsers!');
@@ -255,7 +254,7 @@ class Message {
                   req,
                   (err: any, data_parsed: any) => {
                     if (err) {
-                      //console.error(err);
+                      console.error(err);
                     } else {
                       message.data_parsed = data_parsed;
                       message.data_parsed.forEach((p: any) => {
@@ -267,10 +266,9 @@ class Message {
                         }
                       });
                     }
+                    // Create message
+                    this.createMessageAndSendResponse(deviceInstance, message, req, next);
                   });
-
-                // Create message
-                this.createMessageAndSendResponse(deviceInstance, message, req, next);
               }
             } else { // No parser & no data
               // Create message
