@@ -457,7 +457,7 @@ class Device {
       {
         where: {
           and: [
-            {userId: userId},
+            //{userId: userId},
             {deviceId: deviceId}
           ]
         },

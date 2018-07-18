@@ -270,17 +270,16 @@ class Category {
           }
         }]
       }, (err: any, organization: any) => {
-        console.error(organization);
         organization = organization.toJSON();
         if (err) {
           console.error(err);
           res.send(err);
-        } else if (organization && organization.Categories.length === 1) {
+        } else if (organization && organization.Categories.length >= 1) {
           const category = organization.Categories[0];
           const devices = category.Devices;
 
           const today = moment().format('YYYY.MM.DD');
-          const filename = today + '_' + category.name + '_export.csv';
+          const filename = today + '_' + category.id + '_export.csv';
           res.setTimeout(600000);
           res.set('Cache-Control', 'max-age=0, no-cache, must-revalidate, proxy-revalidate');
           res.set('Content-Type', 'application/force-download');
