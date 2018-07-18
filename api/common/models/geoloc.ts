@@ -192,7 +192,6 @@ class Geoloc {
           wlan: []
         };
         geoloc_wifi.wifiAccessPoints.forEach((wifiAccessPoint: any) => {
-          console.log(wifiAccessPoint);
           if (wifiAccessPoint.signalStrength) {
             wlans.wlan.push({mac: wifiAccessPoint.macAddress, powrx: wifiAccessPoint.signalStrength});
           } else {
