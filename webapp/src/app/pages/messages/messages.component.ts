@@ -297,7 +297,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
           limit: 100,
           include: ['Device', 'Geolocs'],
           where: {
-            deviceId: this.filterQuery
+            and: [{deviceId: this.filterQuery}]
           }
         };
       } else {
@@ -334,7 +334,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
             if (!this.messageFilter.where) {
               this.messageFilter.where = {userId: this.user.id};
             } else {
-              this.messageFilter.where.push({userId: this.user.id});
+              this.messageFilter.where.and.push({userId: this.user.id});
             }
             this.messageReadRef = this.rt.FireLoop.ref<Message>(Message);
             this.messageReadSub = this.messageReadRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
