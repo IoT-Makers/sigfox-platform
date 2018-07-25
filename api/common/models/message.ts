@@ -567,15 +567,17 @@ class Message {
     const Geoloc = this.model.app.models.Geoloc;
 
     // Check if there is Geoloc in payload and create Geoloc object
-    Geoloc.createFromParsedPayload(
-      ctx.instance,
-      (err: any, res: any) => {
-        if (err) {
-          next(err, null);
-        } else {
-          //console.log(res);
-        }
-      });
+    if (ctx.instance.data_parsed) {
+      Geoloc.createFromParsedPayload(
+        ctx.instance,
+        (err: any, res: any) => {
+          if (err) {
+            next(err, null);
+          } else {
+            //console.log(res);
+          }
+        });
+    }
     // Calculate success rate and update device
     this.updateDeviceSuccessRate(ctx.instance.deviceId);
     // Share message to organizations if any

@@ -199,6 +199,7 @@ class Geoloc {
 
     return new Promise((resolve: any, reject: any) => {
       this.model.app.dataSources.here.locate(process.env.HERE_APP_ID, process.env.HERE_APP_CODE, wlans).then((result: any) => {
+        //console.error('---------------------------------------------------------------------\n', result);
         geoloc_wifi.source = 'here';
         geoloc_wifi.type = 'wifi';
         geoloc_wifi.location.lat = result.location.lat;
@@ -216,10 +217,10 @@ class Geoloc {
               // Update device in order to trigger a real time upsert event
               this.updateDeviceLocatedAt(geolocInstance.deviceId);
             }
+            resolve(true);
           });
-        resolve(true);
       }).catch((err: any) => {
-        console.error(err);
+        //console.error(err);
         reject(false);
       });
     });
@@ -230,6 +231,7 @@ class Geoloc {
 
     return new Promise((resolve: any, reject: any) => {
       this.model.app.dataSources.google.locate(process.env.GOOGLE_API_KEY, geoloc_wifi.wifiAccessPoints).then((result: any) => {
+        //console.error('---------------------------------------------------------------------\n', result);
         geoloc_wifi.source = 'google';
         geoloc_wifi.type = 'wifi';
         geoloc_wifi.location.lat = result.location.lat;
@@ -247,10 +249,10 @@ class Geoloc {
               // Update device in order to trigger a real time upsert event
               this.updateDeviceLocatedAt(geolocInstance.deviceId);
             }
+            resolve(true);
           });
-        resolve(true);
       }).catch((err: any) => {
-        console.error(err);
+        //console.error(err);
         reject(false);
       });
     });
