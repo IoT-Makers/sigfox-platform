@@ -199,12 +199,12 @@ class Geoloc {
 
     return new Promise((resolve: any, reject: any) => {
       this.model.app.dataSources.here.locate(process.env.HERE_APP_ID, process.env.HERE_APP_CODE, wlans).then((result: any) => {
-
+        geoloc_wifi.source = 'here';
+        geoloc_wifi.type = 'wifi';
         geoloc_wifi.location.lat = result.location.lat;
         geoloc_wifi.location.lng = result.location.lng;
         geoloc_wifi.accuracy = result.location.accuracy;
 
-        geoloc_wifi.type = 'wifi';
         // Find or create a new Geoloc
         Geoloc.create(
           geoloc_wifi,
@@ -230,12 +230,12 @@ class Geoloc {
 
     return new Promise((resolve: any, reject: any) => {
       this.model.app.dataSources.google.locate(process.env.GOOGLE_API_KEY, geoloc_wifi.wifiAccessPoints).then((result: any) => {
-
+        geoloc_wifi.source = 'google';
+        geoloc_wifi.type = 'wifi';
         geoloc_wifi.location.lat = result.location.lat;
         geoloc_wifi.location.lng = result.location.lng;
         geoloc_wifi.accuracy = result.accuracy;
 
-        geoloc_wifi.type = 'wifi';
         // Find or create a new Geoloc
         Geoloc.create(
           geoloc_wifi,
