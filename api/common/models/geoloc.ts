@@ -114,31 +114,15 @@ class Geoloc {
     if (hasGpsLocation) {
       geoloc_gps.type = 'gps';
       // Find or create a new Geoloc
-      Geoloc.findOrCreate(
-        {
-          where: {
-            and: [
-              {location: geoloc_gps.location},
-              {type: geoloc_gps.type},
-              {createdAt: geoloc_gps.createdAt},
-              {userId: geoloc_gps.userId},
-              {messageId: geoloc_gps.messageId},
-              {deviceId: geoloc_gps.deviceId}
-            ]
-          }
-        },
+      Geoloc.create(
         geoloc_gps,
-        (err: any, geolocInstance: any, created: boolean) => {
+        (err: any, geolocInstance: any) => {
           if (err) {
             console.error(err);
           } else {
-            if (created) {
-              console.log('Created geoloc as: ', geolocInstance);
-              // Update device in order to trigger a real time upsert event
-              this.updateDeviceLocatedAt(geolocInstance.deviceId);
-            } else {
-              console.log('Skipped geoloc creation.');
-            }
+            console.log('Created geoloc as: ', geolocInstance);
+            // Update device in order to trigger a real time upsert event
+            this.updateDeviceLocatedAt(geolocInstance.deviceId);
           }
         });
     }
@@ -154,31 +138,15 @@ class Geoloc {
           geoloc_beacon.location.lng = beacon.location.lng;
           geoloc_beacon.level = beacon.level;
           // Find or create a new Geoloc
-          Geoloc.findOrCreate(
-            {
-              where: {
-                and: [
-                  {location: geoloc_beacon.location},
-                  {type: geoloc_beacon.type},
-                  {createdAt: geoloc_beacon.createdAt},
-                  {userId: geoloc_beacon.userId},
-                  {messageId: geoloc_beacon.messageId},
-                  {deviceId: geoloc_beacon.deviceId}
-                ]
-              }
-            },
+          Geoloc.create(
             geoloc_beacon,
-            (err: any, geolocInstance: any, created: boolean) => {
+            (err: any, geolocInstance: any) => {
               if (err) {
                 console.error(err);
               } else {
-                if (created) {
-                  console.log('Created geoloc as: ', geolocInstance);
-                  // Update device in order to trigger a real time upsert event
-                  this.updateDeviceLocatedAt(geolocInstance.deviceId);
-                } else {
-                  console.log('Skipped geoloc creation.');
-                }
+                console.log('Created geoloc as: ', geolocInstance);
+                // Update device in order to trigger a real time upsert event
+                this.updateDeviceLocatedAt(geolocInstance.deviceId);
               }
             });
         }
@@ -186,63 +154,106 @@ class Geoloc {
     }
 
     if (hasWifiLocation) {
-      if (process.env.HERE_APP_ID && process.env.HERE_APP_CODE) {
-        // Call HERE coordinates provider
-        const wlans: any = {
-          wlan: []
-        };
-        geoloc_wifi.wifiAccessPoints.forEach((wifiAccessPoint: any) => {
-          if (wifiAccessPoint.signalStrength) {
-            wlans.wlan.push({mac: wifiAccessPoint.macAddress, powrx: wifiAccessPoint.signalStrength});
-          } else {
-            wlans.wlan.push({mac: wifiAccessPoint.macAddress});
-          }
+      if (process.env.HERE_APP_ID && process.env.HERE_APP_CODE && !process.env.GOOGLE_API_KEY) {
+        this.getHereGeolocation(geoloc_wifi).then(value => {
+          console.log('[WiFi Geolocation] - Device located successfully with Here.');
+        }).catch(reason => {
+          console.log('[WiFi Geolocation] - Could not locate device with Here.');
         });
-
-        this.model.app.dataSources.here.locate(process.env.HERE_APP_ID, process.env.HERE_APP_CODE, wlans).then((result: any) => {
-          console.log(result);
-
-          geoloc_wifi.location.lat = result.location.lat;
-          geoloc_wifi.location.lng = result.location.lng;
-          geoloc_wifi.accuracy = result.location.accuracy;
-
-          geoloc_wifi.type = 'wifi';
-          // Find or create a new Geoloc
-          Geoloc.findOrCreate(
-            {
-              where: {
-                and: [
-                  {location: geoloc_wifi.location},
-                  {type: geoloc_wifi.type},
-                  {createdAt: geoloc_wifi.createdAt},
-                  {userId: geoloc_wifi.userId},
-                  {messageId: geoloc_wifi.messageId},
-                  {deviceId: geoloc_wifi.deviceId}
-                ]
-              }
-            },
-            geoloc_wifi,
-            (err: any, geolocInstance: any, created: boolean) => {
-              if (err) {
-                console.error(err);
-              } else {
-                if (created) {
-                  console.log('Created geoloc as: ', geolocInstance);
-                  // Update device in order to trigger a real time upsert event
-                  this.updateDeviceLocatedAt(geolocInstance.deviceId);
-                } else {
-                  console.log('Skipped geoloc creation.');
-                }
-              }
-            });
-        }).catch((err: any) => {
-          if (err) console.error(err);
+      } else if (!process.env.HERE_APP_ID && !process.env.HERE_APP_CODE && process.env.GOOGLE_API_KEY) {
+        this.getGoogleGeolocation(geoloc_wifi).then(value => {
+          console.log('[WiFi Geolocation] - Device located successfully with Google.');
+        }).catch(reason => {
+          console.log('[WiFi Geolocation] - Could not locate device with Google.');
         });
-
+      } else if (process.env.HERE_APP_ID && process.env.HERE_APP_CODE && process.env.GOOGLE_API_KEY) {
+        this.getHereGeolocation(geoloc_wifi).then(value => {
+          console.log('[WiFi Geolocation] - Device located successfully with Here.');
+        }).catch(reason => {
+          console.log('[WiFi Geolocation] - Could not locate device with Here => falling back on Google.');
+          this.getGoogleGeolocation(geoloc_wifi).then(value => {
+            console.log('[WiFi Geolocation] - Device located successfully with Google.');
+          }).catch(reason => {
+            console.log('[WiFi Geolocation] - Could not locate device with Google.');
+          });
+        });
       } else {
-        console.error('Trying to position with WiFi but no service provider has been set - check your environment variables!');
+        console.error('[WiFi Geolocation] - Trying to position with WiFi but no service provider has been set - check your environment variables!');
       }
     }
+  }
+
+  getHereGeolocation(geoloc_wifi: any): Promise<boolean> {
+    const Geoloc = this.model;
+
+    const wlans: any = {
+      wlan: []
+    };
+    geoloc_wifi.wifiAccessPoints.forEach((wifiAccessPoint: any) => {
+      if (wifiAccessPoint.signalStrength) {
+        wlans.wlan.push({mac: wifiAccessPoint.macAddress, powrx: wifiAccessPoint.signalStrength});
+      } else {
+        wlans.wlan.push({mac: wifiAccessPoint.macAddress});
+      }
+    });
+
+    return new Promise((resolve: any, reject: any) => {
+      this.model.app.dataSources.here.locate(process.env.HERE_APP_ID, process.env.HERE_APP_CODE, wlans).then((result: any) => {
+
+        geoloc_wifi.location.lat = result.location.lat;
+        geoloc_wifi.location.lng = result.location.lng;
+        geoloc_wifi.accuracy = result.location.accuracy;
+
+        geoloc_wifi.type = 'wifi';
+        // Find or create a new Geoloc
+        Geoloc.create(
+          geoloc_wifi,
+          (err: any, geolocInstance: any) => {
+            if (err) {
+              console.error(err);
+            } else {
+              console.log('Created geoloc as: ', geolocInstance);
+              // Update device in order to trigger a real time upsert event
+              this.updateDeviceLocatedAt(geolocInstance.deviceId);
+            }
+          });
+        resolve(true);
+      }).catch((err: any) => {
+        console.error(err);
+        reject(false);
+      });
+    });
+  }
+
+  getGoogleGeolocation(geoloc_wifi: any): Promise<boolean> {
+    const Geoloc = this.model;
+
+    return new Promise((resolve: any, reject: any) => {
+      this.model.app.dataSources.google.locate(process.env.GOOGLE_API_KEY, geoloc_wifi.wifiAccessPoints).then((result: any) => {
+
+        geoloc_wifi.location.lat = result.location.lat;
+        geoloc_wifi.location.lng = result.location.lng;
+        geoloc_wifi.accuracy = result.accuracy;
+
+        geoloc_wifi.type = 'wifi';
+        // Find or create a new Geoloc
+        Geoloc.create(
+          geoloc_wifi,
+          (err: any, geolocInstance: any) => {
+            if (err) {
+              console.error(err);
+            } else {
+              console.log('Created geoloc as: ', geolocInstance);
+              // Update device in order to trigger a real time upsert event
+              this.updateDeviceLocatedAt(geolocInstance.deviceId);
+            }
+          });
+        resolve(true);
+      }).catch((err: any) => {
+        console.error(err);
+        reject(false);
+      });
+    });
   }
 
   postSigfox(req: any, data: any, next: Function): void {

@@ -128,5 +128,28 @@
         }
       }
     ]
+  },
+  "google": {
+    "name": "google",
+    "connector": "rest",
+    "debug": "true",
+    "operations": [
+      {
+        "template": {
+          "method": "POST",
+          "url": "https://www.googleapis.com/geolocation/v1/geolocate?key={key:string}",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": "{json:string}"
+        },
+        "functions": {
+          "locate": [
+            "key",
+            "json"
+          ]
+        }
+      }
+    ]
   }
 }

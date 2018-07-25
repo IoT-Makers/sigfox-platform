@@ -230,6 +230,10 @@ class Parser {
         } else {
           const fn = device.Parser.function;
           if (device.Messages) {
+            /**
+             * Destroy all geolocs different than Sigfox
+             */
+            Geoloc.destroyAll({deviceId: deviceId, type: {neq: 'sigfox'}}, (error: any, result: any) => { if (!error) console.log('Deleted all geolocs for device, except for Sigfox type: ' + deviceId); });
             device.Messages.forEach((message: any, msgCount: number) => {
               if (message.data) {
                 Parser.parsePayload(fn, message.data, req, (err: any, data_parsed: any) => {
@@ -239,20 +243,8 @@ class Parser {
                     if (data_parsed) {
                       message.data_parsed = data_parsed;
                       Message.upsert(message, (err: any, messageUpdated: any) => {
-                        if (!err) {
-                          // Check if there is Geoloc in payload and create Geoloc object
-                          Geoloc.createFromParsedPayload(
-                            messageUpdated,
-                            (err: any, res: any) => {
-                              if (err) {
-                                next(err, null);
-                              } else {
-                                console.log(res);
-                              }
-                            });
-                        } else {
-                          response.message = 'An error occured while adding geoloc.';
-                          next(null, response);
+                        if (err) {
+                          next(err, response);
                         }
                         if (msgCount === device.Messages.length - 1) {
                           // Send the response
