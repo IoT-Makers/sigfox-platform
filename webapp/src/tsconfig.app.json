@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
-    "module": "es2017",
+    "module": "es2016",
     "types": []
   },
   "exclude": [

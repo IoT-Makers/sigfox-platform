@@ -5,11 +5,11 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": [
-      "es2017",
+      "es2016",
       "dom"
     ],
     "mapRoot": "./",
-    "module": "es2017",
+    "module": "es2016",
     "moduleResolution": "node",
     "outDir": "../dist/out-tsc",
     "sourceMap": true,
