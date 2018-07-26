@@ -68,7 +68,7 @@ class Message {
     const Message = this.model;
     const Device = this.model.app.models.Device;
     const Parser = this.model.app.models.Parser;
-    const Alert = this.model.app.models.Alert;
+    const Geoloc = this.model.app.models.Geoloc;
 
     if (typeof data.deviceId  === 'undefined'
       || typeof data.time  === 'undefined'
@@ -232,6 +232,16 @@ class Message {
                                   return;
                                 }
                               });
+                              // Check if there is Geoloc in payload and create Geoloc object
+                              Geoloc.createFromParsedPayload(
+                                message,
+                                (err: any, res: any) => {
+                                  if (err) {
+                                    next(err, null);
+                                  } else {
+                                    //console.log(res);
+                                  }
+                                });
                             }
                             // Create message
                             this.createMessageAndSendResponse(deviceInstance, message, req, next);
@@ -563,21 +573,6 @@ class Message {
   }
 
   afterSave(ctx: any, next: Function): void {
-    // Models
-    const Geoloc = this.model.app.models.Geoloc;
-
-    // Check if there is Geoloc in payload and create Geoloc object
-    if (ctx.instance.data_parsed) {
-      Geoloc.createFromParsedPayload(
-        ctx.instance,
-        (err: any, res: any) => {
-          if (err) {
-            next(err, null);
-          } else {
-            //console.log(res);
-          }
-        });
-    }
     // Calculate success rate and update device
     this.updateDeviceSuccessRate(ctx.instance.deviceId);
     // Share message to organizations if any

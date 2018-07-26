@@ -147,7 +147,9 @@ class Parser {
                             if (data_parsed) {
                               message.data_parsed = data_parsed;
                               Message.upsert(message, (err: any, messageUpdated: any) => {
-                                if (!err) {
+                                if (err) {
+                                  next(err, response);
+                                } else {
                                   // Check if there is Geoloc in payload and create Geoloc object
                                   Geoloc.createFromParsedPayload(
                                     messageUpdated,
@@ -158,9 +160,6 @@ class Parser {
                                         //console.log(res);
                                       }
                                     });
-                                } else {
-                                  response.message = 'An error occured while adding geoloc.';
-                                  next(null, response);
                                 }
                               });
                             }
@@ -245,6 +244,17 @@ class Parser {
                       Message.upsert(message, (err: any, messageUpdated: any) => {
                         if (err) {
                           next(err, response);
+                        } else {
+                          // Check if there is Geoloc in payload and create Geoloc object
+                          Geoloc.createFromParsedPayload(
+                            messageUpdated,
+                            (err: any, res: any) => {
+                              if (err) {
+                                next(err, null);
+                              } else {
+                                //console.log(res);
+                              }
+                            });
                         }
                         if (msgCount === device.Messages.length - 1) {
                           // Send the response

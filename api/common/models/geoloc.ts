@@ -113,18 +113,7 @@ class Geoloc {
 
     if (hasGpsLocation) {
       geoloc_gps.type = 'gps';
-      // Find or create a new Geoloc
-      Geoloc.create(
-        geoloc_gps,
-        (err: any, geolocInstance: any) => {
-          if (err) {
-            console.error(err);
-          } else {
-            console.log('Created geoloc as: ', geolocInstance);
-            // Update device in order to trigger a real time upsert event
-            this.updateDeviceLocatedAt(geolocInstance.deviceId);
-          }
-        });
+      this.createGeoloc(geoloc_gps);
     }
 
     if (hasBeaconLocation) {
@@ -137,18 +126,7 @@ class Geoloc {
           geoloc_beacon.location.lat = beacon.location.lat;
           geoloc_beacon.location.lng = beacon.location.lng;
           geoloc_beacon.level = beacon.level;
-          // Find or create a new Geoloc
-          Geoloc.create(
-            geoloc_beacon,
-            (err: any, geolocInstance: any) => {
-              if (err) {
-                console.error(err);
-              } else {
-                console.log('Created geoloc as: ', geolocInstance);
-                // Update device in order to trigger a real time upsert event
-                this.updateDeviceLocatedAt(geolocInstance.deviceId);
-              }
-            });
+          this.createGeoloc(geoloc_beacon);
         }
       });
     }
@@ -184,8 +162,6 @@ class Geoloc {
   }
 
   getHereGeolocation(geoloc_wifi: any): Promise<boolean> {
-    const Geoloc = this.model;
-
     const wlans: any = {
       wlan: []
     };
@@ -206,19 +182,8 @@ class Geoloc {
         geoloc_wifi.location.lng = result.location.lng;
         geoloc_wifi.accuracy = result.location.accuracy;
 
-        // Find or create a new Geoloc
-        Geoloc.create(
-          geoloc_wifi,
-          (err: any, geolocInstance: any) => {
-            if (err) {
-              console.error(err);
-            } else {
-              console.log('Created geoloc as: ', geolocInstance);
-              // Update device in order to trigger a real time upsert event
-              this.updateDeviceLocatedAt(geolocInstance.deviceId);
-            }
-            resolve(true);
-          });
+        this.createGeoloc(geoloc_wifi);
+        resolve(true);
       }).catch((err: any) => {
         //console.error(err);
         reject(false);
@@ -227,8 +192,6 @@ class Geoloc {
   }
 
   getGoogleGeolocation(geoloc_wifi: any): Promise<boolean> {
-    const Geoloc = this.model;
-
     return new Promise((resolve: any, reject: any) => {
       this.model.app.dataSources.google.locate(process.env.GOOGLE_API_KEY, geoloc_wifi.wifiAccessPoints).then((result: any) => {
         //console.error('---------------------------------------------------------------------\n', result);
@@ -238,19 +201,8 @@ class Geoloc {
         geoloc_wifi.location.lng = result.location.lng;
         geoloc_wifi.accuracy = result.accuracy;
 
-        // Find or create a new Geoloc
-        Geoloc.create(
-          geoloc_wifi,
-          (err: any, geolocInstance: any) => {
-            if (err) {
-              console.error(err);
-            } else {
-              console.log('Created geoloc as: ', geolocInstance);
-              // Update device in order to trigger a real time upsert event
-              this.updateDeviceLocatedAt(geolocInstance.deviceId);
-            }
-            resolve(true);
-          });
+        this.createGeoloc(geoloc_wifi);
+        resolve(true);
       }).catch((err: any) => {
         //console.error(err);
         reject(false);
@@ -271,10 +223,10 @@ class Geoloc {
       || typeof data.seqNumber === 'undefined') {
       next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
     }
-// Obtain the userId with the access token of ctx
+    // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
-// Find the corresponding message in order to retrieve its message ID
+    // Find the corresponding message in order to retrieve its message ID
     Message.findOne({
       where: {
         and: [
@@ -412,6 +364,21 @@ class Geoloc {
         }
       }
     });
+  }
+
+  createGeoloc(geoloc: any) {
+    const Geoloc = this.model;
+    Geoloc.create(
+      geoloc,
+      (err: any, geolocInstance: any) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('Created geoloc as: ', geolocInstance);
+          // Update device in order to trigger a real time upsert event
+          this.updateDeviceLocatedAt(geolocInstance.deviceId);
+        }
+      });
   }
 
   afterSave(ctx: any, next: Function): void {
