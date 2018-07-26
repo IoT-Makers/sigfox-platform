@@ -138,7 +138,7 @@ class Geoloc {
         }).catch(reason => {
           console.log('[WiFi Geolocation] - Could not locate device with Here.');
         });
-      } else if (!process.env.HERE_APP_ID && !process.env.HERE_APP_CODE && process.env.GOOGLE_API_KEY) {
+      } else if ((!process.env.HERE_APP_ID || !process.env.HERE_APP_CODE) && process.env.GOOGLE_API_KEY) {
         this.getGoogleGeolocation(geoloc_wifi).then(value => {
           console.log('[WiFi Geolocation] - Device located successfully with Google.');
         }).catch(reason => {
@@ -174,7 +174,7 @@ class Geoloc {
     });
 
     return new Promise((resolve: any, reject: any) => {
-      this.model.app.dataSources.here.locate(process.env.HERE_APP_ID, process.env.HERE_APP_CODE, {wlan: wlans}).then((result: any) => {
+      this.model.app.dataSources.here.locate(process.env.HERE_APP_ID, process.env.HERE_APP_CODE, wlans).then((result: any) => {
         //console.error('---------------------------------------------------------------------\n', result);
         geoloc_wifi.source = 'here';
         geoloc_wifi.type = 'wifi';

@@ -602,11 +602,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   setFilter(): void {
     console.log('setFilter: START', this.newWidget);
-// Image
+    // Image
     if (this.newWidget.type === 'image') {
       this.newWidget.filter = {};
     }
-// Map
+    // Map
     else if (this.newWidget.type === 'map') {
       this.newWidget.options.zoom = 6;
       this.newWidget.options.lat = 48.864716;
@@ -636,7 +636,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-// Table
+    // Table
     else if (this.newWidget.type === 'table') {
       this.newWidget.filter = {
         limit: 100,
@@ -696,20 +696,21 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           where: {
             or: []
           },
-          limit: 100,
+          limit: 300,
           include: [{
             relation: 'Messages',
-            order: 'createdAt DESC',
+            order: 'createdAt ASC',
             scope: {
               limit: 1,
               fields: ['id'],
-              order: 'createdAt DESC',
+              order: 'createdAt ASC',
               where: {
                 and: [
                   {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}}
                 ]
               },
               include: [{
+                order: 'createdAt ASC',
                 relation: 'Geolocs',
                 scope: {
                   limit: 5
@@ -723,11 +724,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           where: {
             or: []
           },
-          limit: 100,
-          order: 'createdAt DESC',
+          limit: 300,
+          order: 'createdAt ASC',
           include: [{
             relation: 'Geolocs',
             scope: {
+              order: 'createdAt ASC',
               limit: 1,
               where: {
                 and: [
@@ -743,9 +745,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           where: {
             or: []
           },
-          limit: 100,
-          order: 'createdAt DESC',
+          limit: 300,
+          order: 'createdAt ASC',
           include: [{
+            order: 'createdAt ASC',
             relation: 'Geolocs',
             scope: {
               limit: 1,
@@ -822,10 +825,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-// Reset filters arrays
+    // Reset filters arrays
     this.newWidget.options.keys = [];
     this.newWidget.filter.where.or = [];
-// Set filter arrays by looping on selected data
+    // Set filter arrays by looping on selected data
     this.selectedKeys.forEach((item: any) => {
       this.newWidget.options.keys.push(item.id);
     });
