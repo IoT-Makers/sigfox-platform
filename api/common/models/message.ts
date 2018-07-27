@@ -68,7 +68,6 @@ class Message {
     const Message = this.model;
     const Device = this.model.app.models.Device;
     const Parser = this.model.app.models.Parser;
-    const Geoloc = this.model.app.models.Geoloc;
 
     if (typeof data.deviceId  === 'undefined'
       || typeof data.time  === 'undefined'
@@ -232,16 +231,6 @@ class Message {
                                   return;
                                 }
                               });
-                              // Check if there is Geoloc in payload and create Geoloc object
-                              Geoloc.createFromParsedPayload(
-                                message,
-                                (err: any, res: any) => {
-                                  if (err) {
-                                    next(err, null);
-                                  } else {
-                                    //console.log(res);
-                                  }
-                                });
                             }
                             // Create message
                             this.createMessageAndSendResponse(deviceInstance, message, req, next);
@@ -275,16 +264,6 @@ class Message {
                           return;
                         }
                       });
-                      // Check if there is Geoloc in payload and create Geoloc object
-                      Geoloc.createFromParsedPayload(
-                        message,
-                        (err: any, res: any) => {
-                          if (err) {
-                            next(err, null);
-                          } else {
-                            //console.log(res);
-                          }
-                        });
                     }
                     // Create message
                     this.createMessageAndSendResponse(deviceInstance, message, req, next);
@@ -303,6 +282,7 @@ class Message {
     // Models
     const Message = this.model;
     const Alert = this.model.app.models.Alert;
+    const Geoloc = this.model.app.models.Geoloc;
 
     // Ack from BIDIR callback
     if (message.ack) {
@@ -349,6 +329,16 @@ class Message {
           } else if (created) {
             //console.log('Created message as: ', messageInstance);
             if (message.data_parsed) {
+              // Check if there is Geoloc in payload and create Geoloc object
+              Geoloc.createFromParsedPayload(
+                message,
+                (err: any, res: any) => {
+                  if (err) {
+                    next(err, null);
+                  } else {
+                    //console.log(res);
+                  }
+                });
               // Trigger alerts (if any)
               Alert.triggerByDevice(
                 message.data_parsed,
@@ -388,6 +378,16 @@ class Message {
           } else if (created) {
             //console.log('Created message as: ', messageInstance);
             if (message.data_parsed) {
+              // Check if there is Geoloc in payload and create Geoloc object
+              Geoloc.createFromParsedPayload(
+                message,
+                (err: any, res: any) => {
+                  if (err) {
+                    next(err, null);
+                  } else {
+                    //console.log(res);
+                  }
+                });
               // Trigger alerts (if any)
               Alert.triggerByDevice(
                 message.data_parsed,
