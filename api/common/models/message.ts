@@ -275,6 +275,16 @@ class Message {
                           return;
                         }
                       });
+                      // Check if there is Geoloc in payload and create Geoloc object
+                      Geoloc.createFromParsedPayload(
+                        message,
+                        (err: any, res: any) => {
+                          if (err) {
+                            next(err, null);
+                          } else {
+                            //console.log(res);
+                          }
+                        });
                     }
                     // Create message
                     this.createMessageAndSendResponse(deviceInstance, message, req, next);
