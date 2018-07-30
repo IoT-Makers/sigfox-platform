@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import {MessageApi, OrganizationApi} from '../../shared/sdk/services/custom';
 import {Observable} from 'rxjs/Rx';
-import {AgmMap} from '@agm/core';
+import {AgmMap, LatLngBounds} from '@agm/core';
 import {Subscription} from 'rxjs/Subscription';
 
 declare let d3: any;
@@ -127,7 +127,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     {id: 'sigfox', itemName: 'Sigfox'},
     {id: 'beacon', itemName: 'Beacon'},
     {id: 'wifi', itemName: 'WiFi'},
-    {id: 'preferGps', itemName: 'Prefer GPS'},
+    {id: 'preferBestAccuracy', itemName: 'Prefer best accuracy'},
     {id: 'all', itemName: 'All kinds'}
   ];
   private selectBarMsgCounterPeriod = [
@@ -624,7 +624,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               include: [{
                 relation: 'Geolocs',
                 scope: {
-                  order: 'type ASC',
+                  order: 'accuracy ASC',
                   limit: 1
                 }
               }]
@@ -691,29 +691,29 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         // Month in milliseconds
       const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;
 
-      if (this.newWidget.options.geolocType === 'preferGps') {
+      if (this.newWidget.options.geolocType === 'preferBestAccuracy') {
         this.newWidget.filter = {
           where: {
             or: []
           },
+          order: 'updatedAt DESC',
           limit: 300,
           include: [{
             relation: 'Messages',
-            order: 'createdAt ASC',
             scope: {
+              order: 'createdAt ASC',
               limit: 1,
               fields: ['id'],
-              order: 'createdAt ASC',
               where: {
                 and: [
                   {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}}
                 ]
               },
               include: [{
-                order: 'createdAt ASC',
                 relation: 'Geolocs',
                 scope: {
-                  limit: 5
+                  order: 'accuracy ASC',
+                  limit: 1
                 }
               }]
             }
@@ -725,12 +725,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             or: []
           },
           limit: 300,
-          order: 'createdAt ASC',
+          order: 'updatedAt DESC',
           include: [{
             relation: 'Geolocs',
             scope: {
               order: 'createdAt ASC',
-              limit: 1,
               where: {
                 and: [
                   {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}},
@@ -746,12 +745,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             or: []
           },
           limit: 300,
-          order: 'createdAt ASC',
+          order: 'updatedAt DESC',
           include: [{
             order: 'createdAt ASC',
             relation: 'Geolocs',
             scope: {
-              limit: 1,
               where: {
                 and: [
                   {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}}
@@ -1469,22 +1467,29 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
       this.getDevicesWithFilter(widgetFilter).subscribe((devices: any[]) => {
         device.Messages = devices[0].Messages;
+        const bounds: LatLngBounds = new google.maps.LatLngBounds();
 
-        if (widget.options.geolocType === 'preferGps') {
+        if (widget.options.geolocType === 'preferBestAccuracy') {
           devices[0].Messages.forEach((message: any) => {
             message.Geolocs.forEach((geoloc: Geoloc) => {
               device.Geolocs.push(geoloc);
-              if (message.Geolocs.length > 1 && geoloc.type !== 'gps') {
-                device.Geolocs.splice(geoloc, 1);
-              }
+              /* if (message.Geolocs.length > 1 && geoloc.type !== 'gps') {
+                 device.Geolocs.splice(geoloc, 1);
+               }*/
             });
           });
         } else {
           device.Geolocs = devices[0].Geolocs;
+          for (const geoloc of device.Geolocs) {
+            bounds.extend(new google.maps.LatLng(geoloc.location.lat, geoloc.location.lng));
+          }
         }
-        if (device.Geolocs.length > 0) {
+        if (device.Geolocs.length > 0 && !widget.options.directions) {
           this.agmMaps.forEach((agmMap: any) => {
-            agmMap._mapsWrapper.setCenter(device.Geolocs[device.Geolocs.length - 1].location);
+            //agmMap._mapsWrapper.setCenter(device.Geolocs[device.Geolocs.length - 1].location);
+            if (agmMap._elem.nativeElement.id === widget.id) {
+              agmMap._mapsWrapper.fitBounds(bounds);
+            }
           });
         }
       });

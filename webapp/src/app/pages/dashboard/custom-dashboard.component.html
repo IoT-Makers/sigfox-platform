@@ -128,8 +128,7 @@
             <!-- Map -->
             <ng-container *ngIf="widget.type === 'map'">
               <ng-container *ngIf="widget.data">
-                <agm-map #agmMap
-                         (mapReady)="onMapReady($event)"
+                <agm-map (mapReady)="onMapReady($event)"
                          [latitude]="widget.options.lat"
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
@@ -401,8 +400,8 @@
 
                 <div #deviceList class="floating-panel" *ngIf="!mobile && widget.data">
                   <div class="m-1" *ngFor="let device of widget.data; let i = index">
-                    <label for="{{device.id}}" class="switch switch-sm switch-3d switch-device-outline-alt">
-                      <input id="{{device.id}}"
+                    <label for="{{device.id + widget.id}}" class="switch switch-sm switch-3d switch-device-outline-alt">
+                      <input id="{{device.id + widget.id}}"
                              (change)="onDeviceVisibility(i, w)"
                              [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
                       <span class="switch-label"></span>
@@ -415,8 +414,8 @@
 
                 <div #deviceListMobile class="floating-panel" *ngIf="mobile && widget.data" style="max-width: 80%; max-height: 20%">
                   <div class="m-1" *ngFor="let device of widget.data; let i = index">
-                    <label for="{{device.id}}" class="switch switch-sm switch-3d switch-device-outline-alt">
-                      <input id="{{device.id}}"
+                    <label for="{{device.id + widget.id}}" class="switch switch-sm switch-3d switch-device-outline-alt">
+                      <input id="{{device.id + widget.id}}"
                              (change)="onDeviceVisibility(i, w)"
                              [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
                       <span class="switch-label"></span>
@@ -427,7 +426,8 @@
                   </div>
                 </div>
 
-                <agm-map #agmMap
+                <agm-map id="{{widget.id}}"
+                         #agmMap
                          [latitude]="widget.options.lat"
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
