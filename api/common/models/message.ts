@@ -331,7 +331,7 @@ class Message {
             if (message.data_parsed) {
               // Check if there is Geoloc in payload and create Geoloc object
               Geoloc.createFromParsedPayload(
-                message,
+                messageInstance,
                 (err: any, res: any) => {
                   if (err) {
                     next(err, null);
@@ -380,7 +380,7 @@ class Message {
             if (message.data_parsed) {
               // Check if there is Geoloc in payload and create Geoloc object
               Geoloc.createFromParsedPayload(
-                message,
+                messageInstance,
                 (err: any, res: any) => {
                   if (err) {
                     next(err, null);
