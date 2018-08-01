@@ -127,8 +127,9 @@
 
             <!-- Map -->
             <ng-container *ngIf="widget.type === 'map'">
-              <ng-container *ngIf="widget.data">
-                <agm-map (mapReady)="onMapReady($event)"
+                <agm-map id="{{widget.id}}"
+                         #agmMap
+                         (mapReady)="onMapLocationReady($event, widget.data)"
                          [latitude]="widget.options.lat"
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
@@ -228,7 +229,6 @@
                   </ng-container>
 
                 </agm-map>
-              </ng-container>
             </ng-container>
             <!-- End Map widget -->
 
@@ -432,7 +432,7 @@
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
                          [fullscreenControl]="true"
-                         (mapReady)="onMapReady($event)"
+                         (mapReady)="onMapTrackingReady($event)"
                          [mapTypeId]="widget.options.mapTypeId !== 'custom' && widget.options.mapTypeId ? widget.options.mapTypeId : 'roadmap'"
                          [styles]="widget.options.style ? widget.options.style : '' ">
 

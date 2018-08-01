@@ -998,7 +998,24 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  onMapReady(event: any) {
+  onMapLocationReady(event: any, devices: any) {
+    this.map = event;
+    if (!this.mobile) {
+      const input = this.searchBoxInput.nativeElement;
+      this.searchBox = new google.maps.places.SearchBox(input);
+      this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
+      this.searchBox.addListener('places_changed', () => this.goToSearchedPlace());
+    }
+    const bounds: LatLngBounds = new google.maps.LatLngBounds();
+    devices.forEach((device: any) => {
+      if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
+        bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
+      }
+    });
+    this.map.fitBounds(bounds);
+  }
+
+  onMapTrackingReady(event: any, devices: any) {
     this.map = event;
     if (!this.mobile) {
       const input = this.searchBoxInput.nativeElement;
@@ -1058,7 +1075,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               // Map
               else if (widget.type === 'map') {
                 widget.data = devices;
-
                 widget.ready = true;
               }
 
@@ -1480,9 +1496,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           });
         } else {
           device.Geolocs = devices[0].Geolocs;
-          for (const geoloc of device.Geolocs) {
-            bounds.extend(new google.maps.LatLng(geoloc.location.lat, geoloc.location.lng));
-          }
+        }
+        for (const geoloc of device.Geolocs) {
+          bounds.extend(new google.maps.LatLng(geoloc.location.lat, geoloc.location.lng));
         }
         if (device.Geolocs.length > 0 && !widget.options.directions) {
           this.agmMaps.forEach((agmMap: any) => {
