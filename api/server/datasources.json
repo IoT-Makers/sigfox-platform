@@ -105,8 +105,8 @@
       }
     ]
   },
-  "here": {
-    "name": "here",
+  "hereGeoloc": {
+    "name": "hereGeoloc",
     "connector": "rest",
     "debug": "true",
     "operations": [
@@ -129,8 +129,8 @@
       }
     ]
   },
-  "google": {
-    "name": "google",
+  "googleGeoloc": {
+    "name": "googleGeoloc",
     "connector": "rest",
     "debug": "true",
     "operations": [
@@ -147,6 +147,27 @@
           "locate": [
             "key",
             "json"
+          ]
+        }
+      }
+    ]
+  },
+  "googlePlace": {
+    "name": "googlePlace",
+    "connector": "rest",
+    "debug": "true",
+    "operations": [
+      {
+        "template": {
+          "method": "GET",
+          "url": "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={latitude:number},{longitude:number}&radius={accuracy:number}&key={key:string}"
+        },
+        "functions": {
+          "locate": [
+            "key",
+            "latitude",
+            "longitude",
+            "accuracy"
           ]
         }
       }

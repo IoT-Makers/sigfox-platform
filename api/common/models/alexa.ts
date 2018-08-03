@@ -40,9 +40,7 @@ class Alexa {
     const Geoloc = this.model.app.models.Geoloc;
 
     // TODO: accept only Amazon Alexa req
-
     //console.log(body);
-
     let response: any = {};
     if (body.request.type === 'LaunchRequest') {
       response = {
@@ -108,10 +106,22 @@ class Alexa {
                 response.response.reprompt.outputSpeech.text = 'Error, no geoloc found.';
                 next(null, response);
               } else if (geolocInstance) {
-                response.response.outputSpeech.text = 'Your device is here: ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
-                response.response.card.content = 'Your device is here: ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
-                response.response.reprompt.outputSpeech.text = 'Your device is here: ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
-                next(null, response);
+                return new Promise((resolve: any, reject: any) => {
+                  this.model.app.dataSources.googlePlace.locate(process.env.GOOGLE_API_KEY, 43, 2, 2000).then((result: any) => {
+                    response.response.outputSpeech.text = 'Your ' + deviceInstance.name + ' is at: ' + result.results[0].vicinity;
+                    response.response.card.content = 'Your ' + deviceInstance.name + ' is at: ' + result.results[0].vicinity;
+                    response.response.reprompt.outputSpeech.text = 'Your ' + deviceInstance.name + ' is at: ' + result.results[0].vicinity;
+                    next(null, response);
+                    resolve(true);
+                  }).catch((err: any) => {
+                    console.error(err);
+                    response.response.outputSpeech.text = 'Your ' + deviceInstance.name + ' is here: ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
+                    response.response.card.content = 'Your ' + deviceInstance.name + ' is here: ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
+                    response.response.reprompt.outputSpeech.text = 'Your ' + deviceInstance.name + ' is here: ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
+                    next(null, response);
+                    reject(false);
+                  });
+                });
               } else {
                 response.response.outputSpeech.text = 'Error, no geoloc found.';
                 response.response.card.content = 'Error, no geoloc found.';
