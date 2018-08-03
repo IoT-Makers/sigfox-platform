@@ -73,7 +73,7 @@ class Alexa {
       next(null, response);
     } else if (body.request.type === 'IntentRequest' && body.request.intent.name === 'DeviceLocationIntent') {
       if (body.request.intent.slots.name && body.request.intent.slots.name.value) {
-        const deviceName = body.request.intent.slots.DeviceName.value;
+        const deviceName = body.request.intent.slots.name.value;
 
         response = {
           version: 1.0,
