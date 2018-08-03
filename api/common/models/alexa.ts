@@ -72,8 +72,8 @@ class Alexa {
       };
       next(null, response);
     } else if (body.request.type === 'IntentRequest' && body.request.intent.name === 'DeviceLocationIntent') {
-      if (body.request.intent.slots.SlotName.name === 'deviceName') {
-        const deviceName = body.request.intent.slots.SlotName.value;
+      if (body.request.intent.slots.name && body.request.intent.slots.name.value) {
+        const deviceName = body.request.intent.slots.DeviceName.value;
 
         response = {
           version: 1.0,
@@ -98,7 +98,7 @@ class Alexa {
           sessionAttributes: {}
         };
 
-        Device.findOne({where: {name: deviceName}}, (err: any, deviceInstance: any) => {
+        Device.findOne({where: {name: {like: deviceName}}}, (err: any, deviceInstance: any) => {
           if (err) {
             console.error(err);
             next(null, response);
@@ -129,7 +129,55 @@ class Alexa {
             next(null, response);
           }
         });
+      } else {
+        response = {
+          version: 1.0,
+          response: {
+            outputSpeech: {
+              type: 'PlainText',
+              text: 'Oups!'
+            },
+            card: {
+              type: 'Simple',
+              title: 'Sigfox Platform',
+              content: 'Oups!'
+            },
+            reprompt: {
+              outputSpeech: {
+                type: 'PlainText',
+                text: 'Oups!'
+              }
+            },
+            shouldEndSession: true
+          },
+          sessionAttributes: {}
+        };
+        next(null, response);
       }
+    } else {
+      response = {
+        version: 1.0,
+        response: {
+          outputSpeech: {
+            type: 'PlainText',
+            text: 'None of my business!'
+          },
+          card: {
+            type: 'Simple',
+            title: 'Sigfox Platform',
+            content: 'None of my business!'
+          },
+          reprompt: {
+            outputSpeech: {
+              type: 'PlainText',
+              text: 'None of my business!'
+            }
+          },
+          shouldEndSession: true
+        },
+        sessionAttributes: {}
+      };
+      next(null, response);
     }
   }
 
