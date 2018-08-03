@@ -1,5 +1,4 @@
 {
-  "replaceOnPUT": false,
   "name": "Geoloc",
   "plural": "Geolocs",
   "base": "PersistedModel",
@@ -7,6 +6,7 @@
   "options": {
     "validateUpsert": true
   },
+  "replaceOnPUT": false,
   "mixins": {
     "FireLoop": true,
     "TimeStamp": {
@@ -87,7 +87,9 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "property": ["postSigfox"]
+      "property": [
+        "postSigfox"
+      ]
     },
     {
       "accessType": "*",
@@ -101,6 +103,5 @@
       "principalId": "$owner",
       "permission": "ALLOW"
     }
-  ],
-  "methods": {}
+  ]
 }

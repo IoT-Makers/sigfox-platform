@@ -1,5 +1,4 @@
 {
-  "replaceOnPUT": false,
   "name": "Category",
   "plural": "Categories",
   "base": "PersistedModel",
@@ -7,6 +6,7 @@
   "options": {
     "validateUpsert": true
   },
+  "replaceOnPUT": false,
   "mixins": {
     "FireLoop": true,
     "TimeStamp": {
@@ -88,7 +88,9 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "property": ["downloadFromOrganization"]
+      "property": [
+        "downloadFromOrganization"
+      ]
     }
   ],
   "methods": {}

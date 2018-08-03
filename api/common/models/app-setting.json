@@ -1,5 +1,4 @@
 {
-  "replaceOnPUT": false,
   "name": "AppSetting",
   "plural": "AppSettings",
   "base": "PersistedModel",
@@ -7,6 +6,7 @@
   "options": {
     "validateUpsert": true
   },
+  "replaceOnPUT": false,
   "mixins": {
     "FireLoop": true,
     "TimeStamp": {

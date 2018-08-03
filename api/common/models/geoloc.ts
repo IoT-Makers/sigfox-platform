@@ -381,6 +381,12 @@ class Geoloc {
       });
   }
 
+  postAlexaDeviceLocation(req: any, body: any, next: Function): void {
+    // Models
+    const Geoloc = this.model;
+    console.log(body);
+  }
+
   afterSave(ctx: any, next: Function): void {
     if (process.env.MQTT_HOST && process.env.MQTT_PORT) {
       const client = new Client({host: process.env.MQTT_HOST, port: process.env.MQTT_PORT}, Adapter);

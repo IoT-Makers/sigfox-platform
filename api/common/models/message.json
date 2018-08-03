@@ -1,5 +1,4 @@
 {
-  "replaceOnPUT": false,
   "name": "Message",
   "plural": "Messages",
   "base": "PersistedModel",
@@ -7,6 +6,7 @@
   "options": {
     "validateUpsert": true
   },
+  "replaceOnPUT": false,
   "mixins": {
     "FireLoop": true,
     "TimeStamp": {
@@ -111,7 +111,13 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "property": ["putSigfox", "putSigfoxAcknowledge", "postSigfoxStatus", "stats", "find"]
+      "property": [
+        "putSigfox",
+        "putSigfoxAcknowledge",
+        "postSigfoxStatus",
+        "stats",
+        "find"
+      ]
     },
     {
       "accessType": "*",

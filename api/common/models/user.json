@@ -1,5 +1,4 @@
 {
-  "replaceOnPUT": false,
   "name": "user",
   "plural": "users",
   "base": "User",
@@ -10,6 +9,7 @@
     "emailVerificationRequired": true,
     "restrictResetPasswordTokenScope": true
   },
+  "replaceOnPUT": false,
   "mixins": {
     "FireLoop": true,
     "TimeStamp": {

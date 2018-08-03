@@ -154,5 +154,9 @@
   "Beacon": {
     "dataSource": "mongodb",
     "public": true
+  },
+  "Alexa": {
+    "dataSource": null,
+    "public": true
   }
 }

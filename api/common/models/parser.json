@@ -1,13 +1,13 @@
 {
-  "replaceOnPUT": false,
-  "strict": false,
   "name": "Parser",
   "plural": "Parsers",
   "base": "PersistedModel",
+  "strict": false,
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
+  "replaceOnPUT": false,
   "mixins": {
     "FireLoop": true,
     "TimeStamp": {

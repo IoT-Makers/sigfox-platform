@@ -1,5 +1,4 @@
 {
-  "replaceOnPUT": false,
   "name": "Device",
   "plural": "Devices",
   "base": "PersistedModel",
@@ -7,6 +6,7 @@
   "options": {
     "validateUpsert": true
   },
+  "replaceOnPUT": false,
   "mixins": {
     "FireLoop": true,
     "TimeStamp": {
@@ -115,7 +115,9 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "property": ["find"]
+      "property": [
+        "find"
+      ]
     },
     {
       "accessType": "*",
@@ -134,7 +136,9 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "property": ["download"]
+      "property": [
+        "download"
+      ]
     }
   ],
   "methods": {}

@@ -1,5 +1,4 @@
 {
-  "replaceOnPUT": false,
   "name": "Organization",
   "plural": "Organizations",
   "base": "PersistedModel",
@@ -7,6 +6,7 @@
   "options": {
     "validateUpsert": true
   },
+  "replaceOnPUT": false,
   "mixins": {
     "FireLoop": true,
     "TimeStamp": {
@@ -86,7 +86,7 @@
     {
       "accessType": "READ",
       "principalType": "ROLE",
-        "principalId": "organizationMember",
+      "principalId": "organizationMember",
       "permission": "ALLOW",
       "property": [
         "getFilteredMessages",

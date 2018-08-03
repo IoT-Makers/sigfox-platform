@@ -7,7 +7,7 @@
   "initial": {
     "loopback-context#per-request": {},
     "compression": {
-      "enabled":false
+      "enabled": false
     },
     "cors": {
       "params": {
