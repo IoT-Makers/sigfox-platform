@@ -73,8 +73,8 @@ class Alert {
 
     Alert.findOne({where: {id: alertId}, include: 'Device'}, (err: any, alertInstance: any) => {
       alertInstance = alertInstance.toJSON();
-      //this.triggerAlert(alertInstance, alertInstance.Device, 'Testing alert!', {lat: 48.880543, lng: 2.299845});
-      this.triggerAlert(alertInstance, alertInstance.Device, 'Testing alert!');
+      //this.triggerAlert(alertInstance, alertInstance.Device, 'Testing alert!', {lat: 48.880543, lng: 2.299845}, true);
+      this.triggerAlert(alertInstance, alertInstance.Device, 'Testing alert!', null, true);
     });
     next();
   }
@@ -256,9 +256,8 @@ class Alert {
                 }
                 // Trigger alert
                 this.triggerAlert(alert, device, alertMessage);
-                // Alert has been triggered, removing it from array
-                alerts.splice(index, 1);
               }
+              return;
             }
           });
         }
@@ -267,10 +266,9 @@ class Alert {
     next(null, 'Processed alerts.');
   }
 
-  private triggerAlert(alert: any, device: any, alertMessage: string, location?: any) {
+  private triggerAlert(alert: any, device: any, alertMessage: string, location?: any, test?: boolean) {
     // Models
     const Connector = this.model.app.models.Connector;
-    const EmailOutlook = this.model.app.models.EmailOutlook;
     const Alert = this.model.app.models.Alert;
     const AlertHistory = this.model.app.models.AlertHistory;
 
@@ -337,7 +335,11 @@ class Alert {
             try {
               alertMessage = JSON.parse(alertMessage);
             } catch (e) {
-              alertMessage = 'Invalid JSON in webhook alert message!';
+              if (test) {
+                alertMessage = JSON.parse('{"text": "This is a test message!"}');
+              } else {
+                alertMessage = JSON.parse('{"text": "Invalid JSON in webhook alert message!"}');
+              }
             }
             this.model.app.dataSources.webhook.send(connector.url, connector.method, decrypt(connector.password), alertMessage).then((result: any) => {
               console.log('Webhook request sent!');
@@ -370,24 +372,26 @@ class Alert {
             }
           }
 
-          // Check if alert is one shot only, if yes: deactivate it
-          if (alert.one_shot) alert.active = false;
-          // Update the alert last trigger time
-          alert.triggeredAt = new Date();
-          Alert.upsert(
-            alert,
-            (err: any, alertInstance: any) => {
-              if (err) {
-                console.error(err);
-              } else {
-                console.log('Updated alert as: ', alertInstance);
-                // Save triggered alerts in AlertHistory
-                alertInstance.message = alertMessage;
-                AlertHistory.create(alertInstance, (err: any, alert: any) => {
-                  console.log('Created alert history');
-                });
-              }
-            });
+          if (!test) {
+            // Check if alert is one shot only, if yes: deactivate it
+            if (alert.one_shot) alert.active = false;
+            // Update the alert last trigger time
+            alert.triggeredAt = new Date();
+            Alert.upsert(
+              alert,
+              (err: any, alertInstance: any) => {
+                if (err) {
+                  console.error(err);
+                } else {
+                  console.log('Updated alert as: ', alertInstance);
+                  // Save triggered alerts in AlertHistory
+                  alertInstance.message = alertMessage;
+                  AlertHistory.create(alertInstance, (err: any, alert: any) => {
+                    console.log('Created alert history');
+                  });
+                }
+              });
+          }
         }
       });
   }

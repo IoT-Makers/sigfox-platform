@@ -2,15 +2,15 @@
   "name": "sigfox-platform",
   "version": "1.0.0",
   "description": "A real time platform to manage different Sigfox devices.",
-  "author": "",
-  "license": "MIT",
+  "author": "Antoine de Chassey & Louis Moreau",
+  "license": "AGPL-3.0-only",
   "engines": {
     "node": ">=10.1.0",
     "npm": ">=6.0.1"
   },
   "scripts": {
     "ng": "./node_modules/.bin/ng",
-    "start": "node server.js",
+    "start": "node server/server.ts",
     "test": "ng test",
     "build": "ng build --prod",
     "lint": "ng lint",

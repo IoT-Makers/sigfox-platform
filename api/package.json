@@ -6,6 +6,9 @@
     "node": ">=10.1.0",
     "npm": ">=6.0.1"
   },
+  "author": "Antoine de Chassey & Louis Moreau",
+  "license": "AGPL-3.0-only",
+  "description": "api-server",
   "scripts": {
     "lint": "eslint .",
     "start": "node server/server.js",
@@ -66,7 +69,5 @@
   "repository": {
     "type": "",
     "url": ""
-  },
-  "license": "UNLICENSED",
-  "description": "api-server"
+  }
 }

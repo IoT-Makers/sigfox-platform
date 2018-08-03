@@ -2,9 +2,9 @@
   "name": "sigfox-platform",
   "version": "1.0.0",
   "description": "",
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
+  "keywords": ["Platform", "IoT", "real-time"],
+  "author": "Antoine de Chassey & Louis Moreau",
+  "license": "AGPL-3.0-only",
   "engines": {
     "node": ">=10.1.0",
     "npm": ">=6.0.1"
@@ -14,7 +14,8 @@
     "postinstall": "npm run build",
     "build": "cd webapp/ && npm cache verify && npm run build && cd ..",
     "start": "npm run serve",
-    "serve": "cd api/ && node server/server.js",
+    "api": "cd api/ && node server/server.js && cd ..",
+    "webapp": "cd webapp/ && node server/server.ts && cd ..",
     "test": "npm run install"
   },
   "devDependencies": {},
