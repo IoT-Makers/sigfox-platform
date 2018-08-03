@@ -107,7 +107,7 @@ class Alexa {
                 next(null, response);
               } else if (geolocInstance) {
                 return new Promise((resolve: any, reject: any) => {
-                  this.model.app.dataSources.googlePlace.locate(process.env.GOOGLE_API_KEY, 43, 2, 2000).then((result: any) => {
+                  this.model.app.dataSources.googlePlace.locate(process.env.GOOGLE_API_KEY, geolocInstance.location.lat, geolocInstance.location.lng, geolocInstance.accuracy).then((result: any) => {
                     response.response.outputSpeech.text = 'Your ' + deviceInstance.name + ' is at: ' + result.results[0].vicinity;
                     response.response.card.content = 'Your ' + deviceInstance.name + ' is at: ' + result.results[0].vicinity;
                     response.response.reprompt.outputSpeech.text = 'Your ' + deviceInstance.name + ' is at: ' + result.results[0].vicinity;
