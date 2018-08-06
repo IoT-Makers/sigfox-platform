@@ -69,9 +69,10 @@ class Alexa {
         const Device = app.models.Device;
         const Geoloc = app.models.Geoloc;
 
-        if (handlerInput.requestEnvelope.request.intent.slots.name && handlerInput.requestEnvelope.request.intent.slots.name.value) {
+        const slot = handlerInput.requestEnvelope.request.intent.slots.DeviceName;
+        if (slot && slot.value) {
 
-          const deviceName = handlerInput.requestEnvelope.request.intent.slots.name.value;
+          const deviceName = slot.value;
 
           return new Promise((resolve, reject) => {
             Device.findOne({where: {name: {regexp: '/' + deviceName + '/i'}}, order: 'updatedAt DESC'}, (err: any, deviceInstance: any) => {
