@@ -33,17 +33,24 @@ class Alexa {
 
   constructor(public model: any) {
 
+    const messages = {
+      WELCOME: 'Welcome to the Sigfox Plaform!  You can ask for a device geolocation by saying find and a device name.  Which device do you wish to find?',
+      WHAT_DO_YOU_WANT: 'What do you want to ask?',
+      ERROR: 'Uh Oh. Looks like something went wrong.',
+      LOCATION_FAILURE: 'There was an error with the Device Address API. Please try again.',
+      GOODBYE: 'Bye! Thanks for using the Sigfox Platform Skill!',
+      UNHANDLED: 'This skill doesn\'t support that. Please ask something else.',
+      HELP: 'You can use this skill by asking something like: find my device?',
+      STOP: 'Bye! Thanks for using the Sigfox Platform Skill!',
+    };
+
     const LaunchRequestHandler = {
       canHandle(handlerInput: any) {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
       },
       handle(handlerInput: any) {
-        const speechText = 'Welcome to the Alexa Skills Kit, you can say hello!';
-
-        return handlerInput.responseBuilder
-          .speak(speechText)
-          .reprompt(speechText)
-          .withSimpleCard('Welcome', speechText)
+        return handlerInput.responseBuilder.speak(messages.WELCOME)
+          .reprompt(messages.WHAT_DO_YOU_WANT)
           .getResponse();
       }
     };
@@ -138,16 +145,14 @@ class Alexa {
 
     const HelpIntentHandler = {
       canHandle(handlerInput: any) {
-        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-          && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
+        const { request } = handlerInput.requestEnvelope;
+
+        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.HelpIntent';
       },
       handle(handlerInput: any) {
-        const speechText = 'You can say hello to me!';
-
         return handlerInput.responseBuilder
-          .speak(speechText)
-          .reprompt(speechText)
-          .withSimpleCard('Hello World', speechText)
+          .speak(messages.HELP)
+          .reprompt(messages.HELP)
           .getResponse();
       },
     };
@@ -179,6 +184,44 @@ class Alexa {
       },
     };
 
+    const CancelIntentHandler = {
+      canHandle(handlerInput: any) {
+        const { request } = handlerInput.requestEnvelope;
+
+        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.CancelIntent';
+      },
+      handle(handlerInput: any) {
+        return handlerInput.responseBuilder
+          .speak(messages.GOODBYE)
+          .getResponse();
+      },
+    };
+
+    const StopIntentHandler = {
+      canHandle(handlerInput: any) {
+        const { request } = handlerInput.requestEnvelope;
+
+        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.StopIntent';
+      },
+      handle(handlerInput: any) {
+        return handlerInput.responseBuilder
+          .speak(messages.STOP)
+          .getResponse();
+      },
+    };
+
+    const UnhandledIntentHandler = {
+      canHandle() {
+        return true;
+      },
+      handle(handlerInput: any) {
+        return handlerInput.responseBuilder
+          .speak(messages.UNHANDLED)
+          .reprompt(messages.UNHANDLED)
+          .getResponse();
+      },
+    };
+
     const ErrorHandler = {
       canHandle() {
         return true;
@@ -200,7 +243,11 @@ class Alexa {
         DeviceLocationIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
-        SessionEndedRequestHandler
+        SessionEndedRequestHandler,
+        HelpIntentHandler,
+        CancelIntentHandler,
+        StopIntentHandler,
+        UnhandledIntentHandler,
       )
       .addErrorHandlers(ErrorHandler)
       .create();
