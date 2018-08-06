@@ -32,8 +32,6 @@ class Alexa {
   private skill: any;
 
   constructor(public model: any) {
-    // Models
-    //const Device = this.model.app.models.Device;
 
     const LaunchRequestHandler = {
       canHandle(handlerInput: any) {
@@ -56,56 +54,84 @@ class Alexa {
           && handlerInput.requestEnvelope.request.intent.name === 'DeviceLocationIntent';
       },
       handle(handlerInput: any) {
-        const speechText = 'CUSTOM';
-        console.log(handlerInput);
-        /*Device.findOne({where: {name: {regexp: '/' + deviceName + '/i'}}}, (err: any, deviceInstance: any) => {
-          if (err) {
-            console.error(err);
-            next(null, response);
-          } else if (deviceInstance) {
-            Geoloc.findOne({where: {deviceId: deviceInstance.id}, order: 'createdAt DESC'}, (err: any, geolocInstance: any) => {
+        /*const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+
+        const deviceSlot = handlerInput.requestEnvelope.request.intent.slots.DeviceName;
+        let deviceName;
+        if (deviceSlot && deviceSlot.value) {
+          deviceName = deviceSlot.value;
+        }*/
+
+
+        // Models
+        const app = require('../../server/server');
+        const Device = app.models.Device;
+        const Geoloc = app.models.Geoloc;
+
+        if (handlerInput.requestEnvelope.request.intent.slots.name && handlerInput.requestEnvelope.request.intent.slots.name.value) {
+
+          const deviceName = handlerInput.requestEnvelope.request.intent.slots.name.value;
+
+          return new Promise((resolve, reject) => {
+            Device.findOne({where: {name: {regexp: '/' + deviceName + '/i'}}, order: 'updatedAt DESC'}, (err: any, deviceInstance: any) => {
               if (err) {
                 console.error(err);
-                response.response.outputSpeech.text = 'Error, no geoloc found.';
-                response.response.card.content = 'Error, no geoloc found.';
-                response.response.reprompt.outputSpeech.text = 'Error, no geoloc found.';
-                next(null, response);
-              } else if (geolocInstance) {
-                return new Promise((resolve: any, reject: any) => {
-                  this.model.app.dataSources.googlePlace.locate(process.env.GOOGLE_API_KEY, geolocInstance.location.lat, geolocInstance.location.lng, geolocInstance.accuracy).then((result: any) => {
-                    response.response.outputSpeech.text = 'Your ' + deviceInstance.name + ' is at: ' + result.results[0].vicinity;
-                    response.response.card.content = 'Your ' + deviceInstance.name + ' is at: ' + result.results[0].vicinity;
-                    response.response.reprompt.outputSpeech.text = 'Your ' + deviceInstance.name + ' is at: ' + result.results[0].vicinity;
-                    next(null, response);
-                    resolve(true);
-                  }).catch((err: any) => {
+                const speechText = 'Error while finding device.';
+                reject(handlerInput.responseBuilder
+                  .speak(speechText)
+                  .withSimpleCard('Error', speechText)
+                  .getResponse());
+              } else if (deviceInstance) {
+                Geoloc.findOne({where: {deviceId: deviceInstance.id}, order: 'createdAt DESC'}, (err: any, geolocInstance: any) => {
+                  if (err) {
                     console.error(err);
-                    response.response.outputSpeech.text = 'Your ' + deviceInstance.name + ' is here: ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
-                    response.response.card.content = 'Your ' + deviceInstance.name + ' is here: ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
-                    response.response.reprompt.outputSpeech.text = 'Your ' + deviceInstance.name + ' is here: ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
-                    next(null, response);
-                    reject(false);
-                  });
+                    const speechText = 'Error while finding geoloc.';
+                    reject(handlerInput.responseBuilder
+                      .speak(speechText)
+                      .withSimpleCard('Error', speechText)
+                      .getResponse());
+                  } else if (geolocInstance) {
+                    app.dataSources.googlePlace.locate(process.env.GOOGLE_API_KEY, geolocInstance.location.lat, geolocInstance.location.lng)
+                      .then((result: any) => {
+                        const speechText = deviceInstance.name + ' is at ' + result.results[0].formatted_address + ' with an accuracy of ' + geolocInstance.accuracy + ' meters';
+                        resolve(handlerInput.responseBuilder
+                          .speak(speechText)
+                          .withSimpleCard(deviceInstance.name, speechText)
+                          .getResponse());
+                      })
+                      .catch((err: any) => {
+                        console.error(err);
+                        const speechText = deviceInstance.name + ' is here ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
+                        resolve(handlerInput.responseBuilder
+                          .speak(speechText)
+                          .withSimpleCard(deviceInstance.name, speechText)
+                          .getResponse());
+                      });
+                  } else {
+                    const speechText = 'No geoloc found.';
+                    reject(handlerInput.responseBuilder
+                      .speak(speechText)
+                      .withSimpleCard(deviceInstance.name, speechText)
+                      .getResponse());
+                  }
                 });
               } else {
-                response.response.outputSpeech.text = 'Error, no geoloc found.';
-                response.response.card.content = 'Error, no geoloc found.';
-                response.response.reprompt.outputSpeech.text = 'Error, no geoloc found.';
-                next(null, response);
+                const speechText = 'No device found.';
+                resolve(handlerInput.responseBuilder
+                  .speak(speechText)
+                  .withSimpleCard(deviceName, speechText)
+                  .getResponse());
               }
             });
-          } else {
-            response.response.outputSpeech.text = 'Error, no device found.';
-            response.response.card.content = 'Error, no device found.';
-            response.response.reprompt.outputSpeech.text = 'Error, no device found.';
-            next(null, response);
-          }
-        });*/
-
-        return handlerInput.responseBuilder
-          .speak(speechText)
-          .withSimpleCard('Device location', speechText)
-          .getResponse();
+          });
+        } else {
+          const speechText = 'Hummm, no service for this request.';
+          return handlerInput.responseBuilder
+            .speak(speechText)
+            .withSimpleCard('Error', speechText)
+            .getResponse();
+        }
       }
     };
 
@@ -185,152 +211,6 @@ class Alexa {
     const Geoloc = this.model.app.models.Geoloc;
 
     // TODO: accept only Amazon Alexa req
-    //console.log(body);
-    /*let response: any = {};
-    if (body.request.type === 'LaunchRequest') {
-      response = {
-        version: 1.0,
-        response: {
-          outputSpeech: {
-            type: 'PlainText',
-            text: 'Welcome to the Sigfox Platform!'
-          },
-          card: {
-            type: 'Simple',
-            title: 'Sigfox Platform',
-            content: 'Welcome to the Sigfox Platform!'
-          },
-          reprompt: {
-            outputSpeech: {
-              type: 'PlainText',
-              text: 'Welcome to the Sigfox Platform!'
-            }
-          },
-          shouldEndSession: false
-        },
-        sessionAttributes: {}
-      };
-      next(null, response);
-    } else if (body.request.type === 'IntentRequest' && body.request.intent.name === 'DeviceLocationIntent') {
-      if (body.request.intent.slots.name && body.request.intent.slots.name.value) {
-        const deviceName = body.request.intent.slots.name.value;
-
-        response = {
-          version: 1.0,
-          response: {
-            outputSpeech: {
-              type: 'PlainText',
-              text: 'Error, no device found.'
-            },
-            card: {
-              type: 'Simple',
-              title: 'Sigfox Platform',
-              content: 'Error, no device found.'
-            },
-            reprompt: {
-              outputSpeech: {
-                type: 'PlainText',
-                text: 'Error, no device found.'
-              }
-            },
-            shouldEndSession: true
-          },
-          sessionAttributes: {}
-        };
-
-        Device.findOne({where: {name: {regexp: '/' + deviceName + '/i'}}}, (err: any, deviceInstance: any) => {
-          if (err) {
-            console.error(err);
-            next(null, response);
-          } else if (deviceInstance) {
-            Geoloc.findOne({where: {deviceId: deviceInstance.id}, order: 'createdAt DESC'}, (err: any, geolocInstance: any) => {
-              if (err) {
-                console.error(err);
-                response.response.outputSpeech.text = 'Error, no geoloc found.';
-                response.response.card.content = 'Error, no geoloc found.';
-                response.response.reprompt.outputSpeech.text = 'Error, no geoloc found.';
-                next(null, response);
-              } else if (geolocInstance) {
-                return new Promise((resolve: any, reject: any) => {
-                  this.model.app.dataSources.googlePlace.locate(process.env.GOOGLE_API_KEY, geolocInstance.location.lat, geolocInstance.location.lng, geolocInstance.accuracy).then((result: any) => {
-                    response.response.outputSpeech.text = 'Your ' + deviceInstance.name + ' is at: ' + result.results[0].vicinity;
-                    response.response.card.content = 'Your ' + deviceInstance.name + ' is at: ' + result.results[0].vicinity;
-                    response.response.reprompt.outputSpeech.text = 'Your ' + deviceInstance.name + ' is at: ' + result.results[0].vicinity;
-                    next(null, response);
-                    resolve(true);
-                  }).catch((err: any) => {
-                    console.error(err);
-                    response.response.outputSpeech.text = 'Your ' + deviceInstance.name + ' is here: ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
-                    response.response.card.content = 'Your ' + deviceInstance.name + ' is here: ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
-                    response.response.reprompt.outputSpeech.text = 'Your ' + deviceInstance.name + ' is here: ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
-                    next(null, response);
-                    reject(false);
-                  });
-                });
-              } else {
-                response.response.outputSpeech.text = 'Error, no geoloc found.';
-                response.response.card.content = 'Error, no geoloc found.';
-                response.response.reprompt.outputSpeech.text = 'Error, no geoloc found.';
-                next(null, response);
-              }
-            });
-          } else {
-            response.response.outputSpeech.text = 'Error, no device found.';
-            response.response.card.content = 'Error, no device found.';
-            response.response.reprompt.outputSpeech.text = 'Error, no device found.';
-            next(null, response);
-          }
-        });
-      } else {
-        response = {
-          version: 1.0,
-          response: {
-            outputSpeech: {
-              type: 'PlainText',
-              text: 'Oups!'
-            },
-            card: {
-              type: 'Simple',
-              title: 'Sigfox Platform',
-              content: 'Oups!'
-            },
-            reprompt: {
-              outputSpeech: {
-                type: 'PlainText',
-                text: 'Oups!'
-              }
-            },
-            shouldEndSession: true
-          },
-          sessionAttributes: {}
-        };
-        next(null, response);
-      }
-    } else {
-      response = {
-        version: 1.0,
-        response: {
-          outputSpeech: {
-            type: 'PlainText',
-            text: 'None of my business!'
-          },
-          card: {
-            type: 'Simple',
-            title: 'Sigfox Platform',
-            content: 'None of my business!'
-          },
-          reprompt: {
-            outputSpeech: {
-              type: 'PlainText',
-              text: 'None of my business!'
-            }
-          },
-          shouldEndSession: true
-        },
-        sessionAttributes: {}
-      };
-      next(null, response);
-    }*/
 
     this.skill.invoke(body).then((responseBody: any) => {
       next(null, responseBody);
