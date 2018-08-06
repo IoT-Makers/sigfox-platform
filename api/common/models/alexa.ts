@@ -34,14 +34,15 @@ class Alexa {
   constructor(public model: any) {
 
     const messages = {
-      WELCOME: 'Welcome to the Sigfox Plaform!  You can ask for a device geolocation by saying find and a device name.  Which device do you wish to find?',
+      WELCOME: 'Welcome to the Sigfox Platform! You can ask for a device geolocation by saying: "find", followed by a device name. Which device do you wish to find?',
       WHAT_DO_YOU_WANT: 'What do you want to ask?',
       ERROR: 'Uh Oh. Looks like something went wrong.',
-      LOCATION_FAILURE: 'There was an error with the Device Address API. Please try again.',
+      UNKNOWN_DEVICE: 'This device name is unknown to me. Please try again.',
+      UNKNOWN_GEOLOCATION: 'This device has no geolocation. Please try again.',
       GOODBYE: 'Bye! Thanks for using the Sigfox Platform Skill!',
       UNHANDLED: 'This skill doesn\'t support that. Please ask something else.',
-      HELP: 'You can use this skill by asking something like: find my device?',
-      STOP: 'Bye! Thanks for using the Sigfox Platform Skill!',
+      HELP: 'You can use this skill by asking something like: find sensit?',
+      STOP: 'Bye! Thanks for using the Sigfox Platform Skill!'
     };
 
     const LaunchRequestHandler = {
@@ -85,19 +86,19 @@ class Alexa {
             Device.findOne({where: {name: {regexp: '/' + deviceName + '/i'}}, order: 'updatedAt DESC'}, (err: any, deviceInstance: any) => {
               if (err) {
                 console.error(err);
-                const speechText = 'Error while finding device.';
                 reject(handlerInput.responseBuilder
-                  .speak(speechText)
-                  .withSimpleCard('Error', speechText)
+                  .speak(messages.UNKNOWN_DEVICE)
+                  .withSimpleCard('Error', messages.UNKNOWN_DEVICE)
+                  .reprompt(messages.UNKNOWN_DEVICE)
                   .getResponse());
               } else if (deviceInstance) {
                 Geoloc.findOne({where: {deviceId: deviceInstance.id}, order: 'createdAt DESC'}, (err: any, geolocInstance: any) => {
                   if (err) {
                     console.error(err);
-                    const speechText = 'Error while finding geoloc.';
                     reject(handlerInput.responseBuilder
-                      .speak(speechText)
-                      .withSimpleCard('Error', speechText)
+                      .speak(messages.UNKNOWN_GEOLOCATION)
+                      .withSimpleCard('Error', messages.UNKNOWN_GEOLOCATION)
+                      .reprompt(messages.UNKNOWN_GEOLOCATION)
                       .getResponse());
                   } else if (geolocInstance) {
                     app.dataSources.googlePlace.locate(process.env.GOOGLE_API_KEY, geolocInstance.location.lat, geolocInstance.location.lng)
@@ -117,27 +118,26 @@ class Alexa {
                           .getResponse());
                       });
                   } else {
-                    const speechText = 'No geoloc found.';
                     reject(handlerInput.responseBuilder
-                      .speak(speechText)
-                      .withSimpleCard(deviceInstance.name, speechText)
+                      .speak(messages.UNKNOWN_GEOLOCATION)
+                      .withSimpleCard(deviceInstance.name, messages.UNKNOWN_GEOLOCATION)
+                      .reprompt(messages.UNKNOWN_GEOLOCATION)
                       .getResponse());
                   }
                 });
               } else {
-                const speechText = 'No device found.';
                 resolve(handlerInput.responseBuilder
-                  .speak(speechText)
-                  .withSimpleCard(deviceName, speechText)
+                  .speak(messages.UNKNOWN_DEVICE)
+                  .withSimpleCard(deviceName, messages.UNKNOWN_DEVICE)
+                  .reprompt(messages.UNKNOWN_DEVICE)
                   .getResponse());
               }
             });
           });
         } else {
-          const speechText = 'Hummm, no service for this request.';
           return handlerInput.responseBuilder
-            .speak(speechText)
-            .withSimpleCard('Error', speechText)
+            .speak(messages.UNHANDLED)
+            .reprompt(messages.UNHANDLED)
             .getResponse();
         }
       }
@@ -153,22 +153,6 @@ class Alexa {
         return handlerInput.responseBuilder
           .speak(messages.HELP)
           .reprompt(messages.HELP)
-          .getResponse();
-      },
-    };
-
-    const CancelAndStopIntentHandler = {
-      canHandle(handlerInput: any) {
-        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-          && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent'
-            || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
-      },
-      handle(handlerInput: any) {
-        const speechText = 'Goodbye!';
-
-        return handlerInput.responseBuilder
-          .speak(speechText)
-          .withSimpleCard('Goodbye', speechText)
           .getResponse();
       },
     };
@@ -242,21 +226,17 @@ class Alexa {
         LaunchRequestHandler,
         DeviceLocationIntentHandler,
         HelpIntentHandler,
-        CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
-        HelpIntentHandler,
         CancelIntentHandler,
         StopIntentHandler,
         UnhandledIntentHandler,
       )
       .addErrorHandlers(ErrorHandler)
+      .withApiClient(new AlexaSdk.DefaultApiClient())
       .create();
   }
 
   postIntents(req: any, body: any, next: Function): void {
-    // Models
-    const Device = this.model.app.models.Device;
-    const Geoloc = this.model.app.models.Geoloc;
 
     // TODO: accept only Amazon Alexa req
 
