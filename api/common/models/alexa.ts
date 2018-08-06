@@ -103,10 +103,11 @@ class Alexa {
                   } else if (geolocInstance) {
                     app.dataSources.googlePlace.locate(process.env.GOOGLE_API_KEY, geolocInstance.location.lat, geolocInstance.location.lng)
                       .then((result: any) => {
-                        const speechText = deviceInstance.name + ' is at ' + result.results[0].formatted_address + ' with an accuracy of ' + geolocInstance.accuracy + ' meters';
+                        const speechText = deviceInstance.name + ' is located at: ' + result.results[0].formatted_address + ', with an accuracy of: ' + geolocInstance.accuracy + ' meters';
                         resolve(handlerInput.responseBuilder
                           .speak(speechText)
                           .withSimpleCard(deviceInstance.name, speechText)
+                          .withShouldEndSession(false)
                           .getResponse());
                       })
                       .catch((err: any) => {
