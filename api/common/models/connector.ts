@@ -1,5 +1,5 @@
 import {Model} from '@mean-expert/model';
-import {encrypt} from './utils';
+import {decrypt, encrypt} from './utils';
 
 /**
  * @module Connector
@@ -13,19 +13,17 @@ import {encrypt} from './utils';
     beforeSave: { name: 'before save', type: 'operation' }
   },
   remotes: {
-    /*testConnection: {
+    createSigfoxBackendCallbacks: {
       accepts: [
-        {arg: 'name', type: 'string', required: true, description: 'The connector name.'},
-        {arg: 'login', type: 'string', required: true, description: 'The connector login.'},
-        {arg: 'password', type: 'string', required: true, description: 'The connector password.'},
-        {arg: 'req', type: 'object', http: {source: 'req'}}
+        {arg: 'req', type: 'object', http: {source: 'req'}},
+        {arg: 'devicetypeId', type: 'string', required: true}
       ],
       http: {
-        path: '/test-connection',
+        path: '/create-sigfox-backend-callbacks',
         verb: 'get'
       },
       returns: {type: [], root: true}
-    }*/
+    }
   }
 })
 
@@ -51,6 +49,94 @@ class Connector {
     } else {
       next();
     }
+  }
+
+  createSigfoxBackendCallbacks(req: any, devicetypeId: string, next: Function) {
+    // Models
+    const User = this.model.app.models.user;
+
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
+    User.findById(
+      userId,
+      {},
+      (err: any, userInstance: any) => {
+        if (err) {
+          console.error(err);
+          next(err, userInstance);
+        } else if (userInstance) {
+
+          const devAccessTokens = userInstance.devAccessTokens;
+
+          if (!devAccessTokens || devAccessTokens.length === 0) {
+            return next(err, 'Please create a developer access token first.');
+          }
+
+          this.model.findOne(
+            {
+              where: {
+                userId: userId,
+                type: 'sigfox-api'
+              }
+            },
+            (err: any, connector: any) => {
+              if (err) {
+                console.log(err);
+                next(err, null);
+              } else {
+                console.log(connector);
+                if (connector) {
+                  const sigfoxApiLogin = connector.login;
+                  const sigfoxApiPassword = decrypt(connector.password);
+
+                  const credentials = Buffer.from(sigfoxApiLogin + ':' + sigfoxApiPassword).toString('base64');
+
+                  const body: any = [
+                    {
+                      channel: 'URL',
+                      callbackType: 0,
+                      callbackSubtype: 3,
+                      url: 'https://app.iotagency.sigfox.com/api/Messages/sigfox',
+                      httpMethod: 'PUT',
+                      enabled: true,
+                      sendDuplicate: true,
+                      sendSni: false,
+                      bodyTemplate: '{\n\t\"deviceId\": \"{device}\",\n\t\"time\": {time},\n\t\"seqNumber\": {seqNumber},\n\t\"data\": \"{data}\",\n\t\"reception\": [{ \"id\": \"{station}\", \"RSSI\": {rssi}, \"SNR\": {snr} }],\n\t\"duplicate\": {duplicate},\n\t\"ack\": {ack}\n}',
+                      headers: {
+                        Authorization: devAccessTokens[0].id
+                      },
+                      contentType: 'application/json'
+                    },
+                    {
+                      channel: 'URL',
+                      callbackType: 1,
+                      callbackSubtype: 1,
+                      url: 'https://app.iotagency.sigfox.com/api/Geolocs/sigfox',
+                      httpMethod: 'POST',
+                      enabled: true,
+                      sendDuplicate: false,
+                      sendSni: false,
+                      bodyTemplate: '{\n\t\"deviceId\": \"{device}\",\n\t\"time\": {time},\n\t\"seqNumber\": {seqNumber},\n\t\"geoloc\": {\n\t\t\"location\": {\n\t\t\t\"lat\": {lat},\n\t\t\t\"lng\": {lng}\n\t\t},\n\t\t\"accuracy\": {radius} \n\t}\n}',
+                      headers: {
+                        Authorization: devAccessTokens[0].id
+                      },
+                      contentType: 'application/json'
+                    }
+                  ];
+
+                  this.model.app.dataSources.sigfox.createCallbacks(credentials, devicetypeId, body).then((result: any) => {
+                    next(null, 'Success');
+                  }).catch((err: any) => {
+                    next(err, null);
+                  });
+                } else {
+                  next(err, 'Please refer your Sigfox API connector first');
+                }
+              }
+            });
+        }
+      });
   }
 
   // Test connector connection

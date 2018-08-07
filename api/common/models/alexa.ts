@@ -1,6 +1,7 @@
 import {Model} from '@mean-expert/model';
 
 const AlexaSdk = require('ask-sdk');
+const moment = require('moment');
 
 /**
  * @module Alexa
@@ -65,7 +66,7 @@ class Alexa {
       WELCOME: 'Bienvenue sur la Sigfox Platform! Vous pouvez demander la géolocalisation d\'un objet en disant: "trouve", suivit par le nom de l\'objet. Quel objet voulez-vous trouver ?',
       WHAT_DO_YOU_WANT: 'Que voulez-vous demander ?',
       ERROR: 'Oups. On dirait qu\'une erreur est survenue.',
-      UNKNOWN_DEVICE: 'Ce nom d\'object m\'est inconnu. Merci de réessayer.',
+      UNKNOWN_DEVICE: 'Ce nom d\'objet m\'est inconnu. Merci de réessayer.',
       UNKNOWN_GEOLOCATION: 'Cet objet n\'a pas de géolocalisation. Merci de réessayer.',
       SUCCESS_GEOLOCATION: 'CUSTOM MESSAGE',
       ERROR_GOOGLE: 'CUSTOM MESSAGE',
@@ -138,7 +139,7 @@ class Alexa {
                     if (handlerInput.requestEnvelope.request.locale === 'fr-FR') {
                       language = 'fr';
                     }
-                    app.dataSources.googlePlace.locate(process.env.GOOGLE_API_KEY, geolocInstance.location.lat, geolocInstance.location.lng, language)
+                    app.dataSources.google.geocode(process.env.GOOGLE_API_KEY, geolocInstance.location.lat, geolocInstance.location.lng, language)
                       .then((result: any) => {
                         let deviceAddress = result.results[0].formatted_address;
                         const deviceAccuracy = geolocInstance.accuracy;
@@ -163,7 +164,8 @@ class Alexa {
                                 break;
                               }
                             }
-                            messages.SUCCESS_GEOLOCATION = `${deviceName} est ${deviceAddress}.`;
+                            moment.locale('fr');
+                            messages.SUCCESS_GEOLOCATION = `${deviceName} est ${deviceAddress}, ${moment(geolocInstance.createdAt).fromNow()}.`;
                           } else {
                             for (let ac = 0; ac < result.results[0].address_components.length; ac++) {
                               const component = result.results[0].address_components[ac];
@@ -178,7 +180,8 @@ class Alexa {
                                 break;
                               }
                             }
-                            messages.SUCCESS_GEOLOCATION = `${deviceName} is located ${deviceAddress}.`;
+                            moment.locale('en');
+                            messages.SUCCESS_GEOLOCATION = `${deviceName} is located ${deviceAddress}, ${moment(geolocInstance.createdAt).fromNow()}.`;
                           }
                         }
                         resolve(handlerInput.responseBuilder

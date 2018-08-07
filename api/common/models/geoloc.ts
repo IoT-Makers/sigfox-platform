@@ -174,7 +174,7 @@ class Geoloc {
     });
 
     return new Promise((resolve: any, reject: any) => {
-      this.model.app.dataSources.hereGeoloc.locate(process.env.HERE_APP_ID, process.env.HERE_APP_CODE, wlans).then((result: any) => {
+      this.model.app.dataSources.here.locate(process.env.HERE_APP_ID, process.env.HERE_APP_CODE, wlans).then((result: any) => {
         //console.error('---------------------------------------------------------------------\n', result);
         geoloc_wifi.source = 'here';
         geoloc_wifi.type = 'wifi';
@@ -193,7 +193,7 @@ class Geoloc {
 
   getGoogleGeolocation(geoloc_wifi: any): Promise<boolean> {
     return new Promise((resolve: any, reject: any) => {
-      this.model.app.dataSources.googleGeoloc.locate(process.env.GOOGLE_API_KEY, {considerIp: false, wifiAccessPoints: geoloc_wifi.wifiAccessPoints}).then((result: any) => {
+      this.model.app.dataSources.google.locate(process.env.GOOGLE_API_KEY, {considerIp: false, wifiAccessPoints: geoloc_wifi.wifiAccessPoints}).then((result: any) => {
         //console.error('---------------------------------------------------------------------\n', result);
         geoloc_wifi.source = 'google';
         geoloc_wifi.type = 'wifi';

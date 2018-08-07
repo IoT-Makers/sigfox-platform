@@ -40,9 +40,9 @@
       {
         "template": {
           "method": "GET",
-          "url": "https://backend.sigfox.com/api/devices/{deviceId:string}/messages",
+          "url": "https://backend.sigfox.com/api/devices/{!deviceId:string}/messages",
           "headers": {
-            "Authorization": "Basic {credentials:string}"
+            "Authorization": "Basic {!credentials:string}"
           },
           "query": {
             "limit": "{!limit=1:number}",
@@ -66,15 +66,19 @@
       },
       {
         "template": {
-          "method": "GET",
-          "url": "https://backend.sigfox.com/api/devicetypes",
+          "method": "POST",
+          "url": "https://backend.sigfox.com/api/devicetypes/{!devicetypeId:string}/callbacks/new",
           "headers": {
-            "Authorization": "Basic {credentials:string}"
-          }
+            "Authorization": "Basic {!credentials:string}",
+            "Content-Type": "application/json"
+          },
+          "body": "{!body:any}"
         },
         "functions": {
-          "testConnection": [
-            "credentials"
+          "createCallbacks": [
+            "credentials",
+            "devicetypeId",
+            "body"
           ]
         }
       }
@@ -105,19 +109,19 @@
       }
     ]
   },
-  "hereGeoloc": {
-    "name": "hereGeoloc",
+  "here": {
+    "name": "here",
     "connector": "rest",
     "debug": "true",
     "operations": [
       {
         "template": {
           "method": "POST",
-          "url": "https://pos.cit.api.here.com/positioning/v1/locate?app_id={app_id:string}&app_code={app_code:string}",
+          "url": "https://pos.cit.api.here.com/positioning/v1/locate?app_id={!app_id:string}&app_code={!app_code:string}",
           "headers": {
             "Content-Type": "application/json"
           },
-          "body": "{json:string}"
+          "body": "{!json:string}"
         },
         "functions": {
           "locate": [
@@ -129,19 +133,19 @@
       }
     ]
   },
-  "googleGeoloc": {
-    "name": "googleGeoloc",
+  "google": {
+    "name": "google",
     "connector": "rest",
     "debug": "true",
     "operations": [
       {
         "template": {
           "method": "POST",
-          "url": "https://www.googleapis.com/geolocation/v1/geolocate?key={key:string}",
+          "url": "https://www.googleapis.com/geolocation/v1/geolocate?key={!key:string}",
           "headers": {
             "Content-Type": "application/json"
           },
-          "body": "{json:string}"
+          "body": "{!json:string}"
         },
         "functions": {
           "locate": [
@@ -149,21 +153,14 @@
             "json"
           ]
         }
-      }
-    ]
-  },
-  "googlePlace": {
-    "name": "googlePlace",
-    "connector": "rest",
-    "debug": "true",
-    "operations": [
+      },
       {
         "template": {
           "method": "GET",
-          "url": "https://maps.googleapis.com/maps/api/geocode/json?latlng={latitude:number},{longitude:number}&key={key:string}&language={language:string}"
+          "url": "https://maps.googleapis.com/maps/api/geocode/json?latlng={!latitude:number},{!longitude:number}&key={!key:string}&language={language:string}"
         },
         "functions": {
-          "locate": [
+          "geocode": [
             "key",
             "latitude",
             "longitude",
