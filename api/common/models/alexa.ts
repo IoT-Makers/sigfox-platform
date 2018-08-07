@@ -33,16 +33,32 @@ class Alexa {
 
   constructor(public model: any) {
 
-    const messages = {
+    let messages = {
       WELCOME: 'Welcome to the Sigfox Platform! You can ask for a device geolocation by saying: "find", followed by a device name. Which device do you wish to find?',
       WHAT_DO_YOU_WANT: 'What do you want to ask?',
       ERROR: 'Uh Oh. Looks like something went wrong.',
       UNKNOWN_DEVICE: 'This device name is unknown to me. Please try again.',
       UNKNOWN_GEOLOCATION: 'This device has no geolocation. Please try again.',
+      SUCCESS_GEOLOCATION: 'CUSTOM MESSAGE',
+      ERROR_GOOGLE: 'CUSTOM MESSAGE',
       GOODBYE: 'Bye! Thanks for using the Sigfox Platform Skill!',
       UNHANDLED: 'This skill doesn\'t support that. Please ask something else.',
       HELP: 'You can use this skill by asking something like: find sensit?',
       STOP: 'Bye! Thanks for using the Sigfox Platform Skill!'
+    };
+
+    const messages_FR = {
+      WELCOME: 'Bienvenu sur la Sigfox Platform! Vous pouvez demander la géolocalisation d\'un objet en disant: "trouve", suivit par le nom de l\'objet. Quel objet voulez-vous trouver ?',
+      WHAT_DO_YOU_WANT: 'Que voulez-vous demander ?',
+      ERROR: 'Oups. On dirait qu\'une erreur est survenue.',
+      UNKNOWN_DEVICE: 'Ce nom d\'object m\'est inconnu. Merci de réessayer.',
+      UNKNOWN_GEOLOCATION: 'Cet objet n\'a pas de géolocalisation. Merci de réessayer.',
+      SUCCESS_GEOLOCATION: 'CUSTOM MESSAGE',
+      ERROR_GOOGLE: 'CUSTOM MESSAGE',
+      GOODBYE: 'Au revoir! Merci d\'avoir utilisé la skill Sigfox Platform!',
+      UNHANDLED: 'Cette skill ne supporte pas cela. Merci de demander quelque chose d\'autre.',
+      HELP: 'Vous pouvez utiliser cette skill en demandant quelque chose comme: trouve sensit?',
+      STOP: 'Au revoir! Merci d\'avoir utilisé la skill Sigfox Platform!'
     };
 
     const LaunchRequestHandler = {
@@ -92,6 +108,9 @@ class Alexa {
                   .reprompt(messages.UNKNOWN_DEVICE)
                   .getResponse());
               } else if (deviceInstance) {
+
+                const deviceName = deviceInstance.name;
+
                 Geoloc.findOne({where: {deviceId: deviceInstance.id}, order: 'createdAt DESC'}, (err: any, geolocInstance: any) => {
                   if (err) {
                     console.error(err);
@@ -101,21 +120,68 @@ class Alexa {
                       .reprompt(messages.UNKNOWN_GEOLOCATION)
                       .getResponse());
                   } else if (geolocInstance) {
-                    app.dataSources.googlePlace.locate(process.env.GOOGLE_API_KEY, geolocInstance.location.lat, geolocInstance.location.lng)
+                    let language = 'en';
+                    if (handlerInput.requestEnvelope.request.locale === 'fr-FR') {
+                      language = 'fr';
+                    }
+                    app.dataSources.googlePlace.locate(process.env.GOOGLE_API_KEY, geolocInstance.location.lat, geolocInstance.location.lng, language)
                       .then((result: any) => {
-                        const speechText = deviceInstance.name + ' is located at: ' + result.results[0].formatted_address + ', with an accuracy of: ' + geolocInstance.accuracy + ' meters';
+                        let deviceAddress = result.results[0].formatted_address;
+                        const deviceAccuracy = geolocInstance.accuracy;
+                        if (deviceAccuracy < 300) {
+                          if (handlerInput.requestEnvelope.request.locale === 'fr-FR') {
+                            messages.SUCCESS_GEOLOCATION = `${deviceName} est à: ${deviceAddress}, avec une précision de: ${deviceAccuracy} mètres.`;
+                          } else {
+                            messages.SUCCESS_GEOLOCATION = `${deviceName} is located at: ${deviceAddress}, with an accuracy of: ${deviceAccuracy} meters.`;
+                          }
+                        } else {
+                          if (handlerInput.requestEnvelope.request.locale === 'fr-FR') {
+                            for (let ac = 0; ac < result.results[0].address_components.length; ac++) {
+                              const component = result.results[0].address_components[ac];
+                              if (component.types.includes('locality') || component.types.includes('sublocality')) {
+                                deviceAddress = 'à ' + component.long_name;
+                                break;
+                              } else if (component.types.includes('administrative_area_level_1')) {
+                                deviceAddress = 'en ' + component.long_name;
+                                break;
+                              } else if (component.types.includes('country')) {
+                                deviceAddress = 'en ' + component.long_name;
+                                break;
+                              }
+                            }
+                            messages.SUCCESS_GEOLOCATION = `${deviceName} est ${deviceAddress}.`;
+                          } else {
+                            for (let ac = 0; ac < result.results[0].address_components.length; ac++) {
+                              const component = result.results[0].address_components[ac];
+                              if (component.types.includes('locality') || component.types.includes('sublocality')) {
+                                deviceAddress = 'at ' + component.long_name;
+                                break;
+                              } else if (component.types.includes('administrative_area_level_1')) {
+                                deviceAddress = 'in ' + component.long_name;
+                                break;
+                              } else if (component.types.includes('country')) {
+                                deviceAddress = 'in ' + component.long_name;
+                                break;
+                              }
+                            }
+                            messages.SUCCESS_GEOLOCATION = `${deviceName} is located ${deviceAddress}.`;
+                          }
+                        }
                         resolve(handlerInput.responseBuilder
-                          .speak(speechText)
-                          .withSimpleCard(deviceInstance.name, speechText)
+                          .speak(messages.SUCCESS_GEOLOCATION)
+                          .withSimpleCard(this.deviceName, messages.SUCCESS_GEOLOCATION)
                           .withShouldEndSession(false)
                           .getResponse());
                       })
                       .catch((err: any) => {
                         console.error(err);
-                        const speechText = deviceInstance.name + ' is here ' + geolocInstance.location.lat + ', ' + geolocInstance.location.lng;
+                        messages.ERROR_GOOGLE = `${deviceName} could not be geolocated because of a request error, check you have set the Google API environment variable.`;
+                        if (handlerInput.requestEnvelope.request.locale === 'fr-FR') {
+                          messages.ERROR_GOOGLE = `${deviceName} n\'a pas pu être géolocalisé car une erreur est survenue lors du géocodage inverse. Merci de vérifier que la variable d'environnement de Google API est renseignée.`;
+                        }
                         resolve(handlerInput.responseBuilder
-                          .speak(speechText)
-                          .withSimpleCard(deviceInstance.name, speechText)
+                          .speak(messages.ERROR_GOOGLE)
+                          .withSimpleCard(deviceName, messages.ERROR_GOOGLE)
                           .getResponse());
                       });
                   } else {
@@ -221,8 +287,18 @@ class Alexa {
       },
     };
 
+    const LocalizationInterceptor = {
+      process(handlerInput: any) {
+        if (handlerInput.requestEnvelope.request.locale === 'fr-FR') {
+          messages = messages_FR;
+        }
+        return;
+      }
+    };
+
     this.skill = AlexaSdk.SkillBuilders
       .custom()
+      .addRequestInterceptors(LocalizationInterceptor)
       .addRequestHandlers(
         LaunchRequestHandler,
         DeviceLocationIntentHandler,

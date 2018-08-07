@@ -160,13 +160,14 @@
       {
         "template": {
           "method": "GET",
-          "url": "https://maps.googleapis.com/maps/api/geocode/json?latlng={latitude:number},{longitude:number}&key={key:string}"
+          "url": "https://maps.googleapis.com/maps/api/geocode/json?latlng={latitude:number},{longitude:number}&key={key:string}&language={language:string}"
         },
         "functions": {
           "locate": [
             "key",
             "latitude",
-            "longitude"
+            "longitude",
+            "language"
           ]
         }
       }
