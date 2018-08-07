@@ -34,6 +34,20 @@ class Alexa {
   constructor(public model: any) {
 
     let messages = {
+      WELCOME: '',
+      WHAT_DO_YOU_WANT: '',
+      ERROR: '',
+      UNKNOWN_DEVICE: '',
+      UNKNOWN_GEOLOCATION: '',
+      SUCCESS_GEOLOCATION: '',
+      ERROR_GOOGLE: '',
+      GOODBYE: '',
+      UNHANDLED: '',
+      HELP: '',
+      STOP: ''
+    };
+
+    const messages_US = {
       WELCOME: 'Welcome to the Sigfox Platform! You can ask for a device geolocation by saying: "find", followed by a device name. Which device do you wish to find?',
       WHAT_DO_YOU_WANT: 'What do you want to ask?',
       ERROR: 'Uh Oh. Looks like something went wrong.',
@@ -48,7 +62,7 @@ class Alexa {
     };
 
     const messages_FR = {
-      WELCOME: 'Bienvenu sur la Sigfox Platform! Vous pouvez demander la géolocalisation d\'un objet en disant: "trouve", suivit par le nom de l\'objet. Quel objet voulez-vous trouver ?',
+      WELCOME: 'Bienvenue sur la Sigfox Platform! Vous pouvez demander la géolocalisation d\'un objet en disant: "trouve", suivit par le nom de l\'objet. Quel objet voulez-vous trouver ?',
       WHAT_DO_YOU_WANT: 'Que voulez-vous demander ?',
       ERROR: 'Oups. On dirait qu\'une erreur est survenue.',
       UNKNOWN_DEVICE: 'Ce nom d\'object m\'est inconnu. Merci de réessayer.',
@@ -291,6 +305,8 @@ class Alexa {
       process(handlerInput: any) {
         if (handlerInput.requestEnvelope.request.locale === 'fr-FR') {
           messages = messages_FR;
+        } else {
+          messages = messages_US;
         }
         return;
       }
