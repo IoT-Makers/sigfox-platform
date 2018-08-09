@@ -216,6 +216,9 @@ class Geoloc {
     const Message = this.model.app.models.Message;
     const Alert = this.model.app.models.Alert;
 
+    // Auto set uppercase for deviceId
+    data.deviceId = data.deviceId.toUpperCase();
+
     if (typeof data.geoloc === 'undefined'
       || typeof data.geoloc.location === 'undefined'
       || typeof data.deviceId === 'undefined'

@@ -78,6 +78,9 @@ class Message {
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
+    // Auto set uppercase for deviceId
+    data.deviceId = data.deviceId.toUpperCase();
+
     // Create a new message object
     let message = new Message;
     message = data;
@@ -111,7 +114,7 @@ class Message {
 
     // Check if the device exists or create it
     Device.findOrCreate(
-      {where: {id: message.deviceId}, include: ['Alerts', 'Parser']}, // find
+      {where: {id: device.id}, include: ['Alerts', 'Parser']}, // find
       device, // create
       (err: any, deviceInstance: any, created: boolean) => { // callback
         if (err) {
@@ -410,6 +413,7 @@ class Message {
   }
 
   updateDeviceSuccessRate(deviceId: string) {
+
     // Model
     const Device = this.model.app.models.Device;
     Device.findOne(
@@ -424,11 +428,11 @@ class Message {
           }
         }]
       },
-      (err: any, device: any) => {
+      (err: any, deviceInstance: any) => {
         if (err) {
           console.error(err);
-        } else if (device) {
-          device = device.toJSON();
+        } else if (deviceInstance && deviceInstance.Messages && deviceInstance.Messages.length > 0) {
+          const device = deviceInstance.toJSON();
           let attendedNbMessages: number;
           attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber + 1;
           if (device.Messages[device.Messages.length - 1].seqNumber > device.Messages[0].seqNumber) {
@@ -436,15 +440,7 @@ class Message {
           }
           device.successRate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
 
-          Device.upsert(
-            device,
-            (err: any, deviceUpdated: any) => {
-              if (err) {
-                console.error(err);
-              } else {
-                //console.log('Updated device as: ' + deviceUpdated);
-              }
-            });
+          deviceInstance.updateAttributes({ successRate: device.successRate });
         } else {
           console.error('Could not update the success rate of an unknown device');
         }
@@ -455,10 +451,9 @@ class Message {
     // Model
     const Device = this.model.app.models.Device;
 
-    Device.findOne({where: {id: message.deviceId}, include: 'Organizations'}, (err: any, device: any) => {
-      //console.log(device);
-      if (device.Organizations) {
-        device.toJSON().Organizations.forEach((orga: any) => {
+    Device.findOne({where: {id: message.deviceId}, include: 'Organizations'}, (err: any, deviceInstance: any) => {
+      if (deviceInstance && deviceInstance.Organizations) {
+        deviceInstance.toJSON().Organizations.forEach((orga: any) => {
           message.Organizations.add(orga.id, (err: any, result: any) => {
             //console.log("Linked message with organization", result);
           });
@@ -531,6 +526,9 @@ class Message {
 
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
+
+    // Auto set uppercase for deviceId
+    data.deviceId = data.deviceId.toUpperCase();
 
     // Create a new message object
     const message = new Message;
