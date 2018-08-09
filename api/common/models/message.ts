@@ -427,7 +427,7 @@ class Message {
       (err: any, device: any) => {
         if (err) {
           console.error(err);
-        } else {
+        } else if (device) {
           device = device.toJSON();
           let attendedNbMessages: number;
           attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber + 1;
@@ -445,6 +445,8 @@ class Message {
                 //console.log('Updated device as: ' + deviceUpdated);
               }
             });
+        } else {
+          console.error('Could not update the success rate of an unknown device');
         }
       });
   }
