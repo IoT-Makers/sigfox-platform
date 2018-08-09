@@ -72,7 +72,7 @@ class Message {
     if (typeof data.deviceId  === 'undefined'
       || typeof data.time  === 'undefined'
       || typeof data.seqNumber === 'undefined') {
-      next('Missing "deviceId", "time" and "seqNumber"', data);
+      return next('Missing "deviceId", "time" and "seqNumber"', data);
     }
 
     // Obtain the userId with the access token of ctx
@@ -472,7 +472,7 @@ class Message {
     if (typeof data.deviceId  === 'undefined'
       || typeof data.time  === 'undefined'
       || typeof data.downlinkAck === 'undefined') {
-      next('Missing "deviceId", "time" and "downlinkAck"', data);
+      return next('Missing "deviceId", "time" and "downlinkAck"', data);
     }
 
     // Obtain the userId with the access token of ctx
@@ -524,7 +524,7 @@ class Message {
     if (typeof data.deviceId  === 'undefined'
       || typeof data.time  === 'undefined'
       || typeof data.seqNumber === 'undefined') {
-      next('Missing "deviceId", "time" and "seqNumber"', data);
+      return next('Missing "deviceId", "time" and "seqNumber"', data);
     }
 
     // Obtain the userId with the access token of ctx
