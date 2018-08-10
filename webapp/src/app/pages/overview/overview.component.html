@@ -639,7 +639,7 @@
                       <ng-container *ngIf="device.Messages[0] && device.Messages[0].data_parsed">
                         <ng-container *ngFor="let p of device.Messages[0].data_parsed">
                           <!-- Battery -->
-                          <ng-container *ngIf="p.key === 'battery' && p.value !== null">
+                          <ng-container *ngIf="p.key === 'battery' && (p.value !== null) && (p.unit === '%')">
                             <div>
                               <ng-container *ngIf="p.value >= 70">
                                 <span class="text-success"><i class="fa fa-battery-three-quarters"></i> {{p.value}} {{p.unit}}</span>
