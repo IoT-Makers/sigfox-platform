@@ -13,12 +13,11 @@ class OnConnected {
     //app.on('socket-authenticated', (socket: Socket) => this.handlerConnected(socket));
   }
   handlerConnected(socket: Socket): void {
-    console.log(socket);
     if (socket.token && socket.token.userId) {
       const userId = `${ socket.token.userId }`;
       this.app.models.user.findById(userId, (err: Error, user: User) => {
         console.log('A user has connected:', user.email);
-        user.updateAttributes({ connected: true, seenAt: new Date() });
+        user.updateAttributes({ connected: true });
       });
     }
   }

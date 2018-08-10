@@ -20,7 +20,7 @@ export interface UserInterface {
   "avatar"?: string;
   "loggedAt"?: Date;
   "connected"?: boolean;
-  "location"?: any;
+  "position"?: any;
   "devAccessTokens"?: Array<any>;
   "realm"?: string;
   "username"?: string;
@@ -49,7 +49,7 @@ export class User implements UserInterface {
   "avatar": string = 'https://www.shareicon.net/data/128x128/2016/08/04/806683_man_512x512.png';
   "loggedAt": Date = new Date(0);
   "connected": boolean = false;
-  "location": any = <any>null;
+  "position": any = <any>null;
   "devAccessTokens": Array<any> = <any>[];
   "realm": string = '';
   "username": string = '';
@@ -118,8 +118,8 @@ export class User implements UserInterface {
           name: 'connected',
           type: 'boolean'
         },
-        "location": {
-          name: 'location',
+        "position": {
+          name: 'position',
           type: 'any'
         },
         "devAccessTokens": {

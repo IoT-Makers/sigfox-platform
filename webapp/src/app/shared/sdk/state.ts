@@ -24,6 +24,7 @@ import { ConnectorEffects } from './effects/Connector';
 import { WidgetEffects } from './effects/Widget';
 import { PropertyEffects } from './effects/Property';
 import { BeaconEffects } from './effects/Beacon';
+import { AlexaEffects } from './effects/Alexa';
 
 export interface LoopbackStateInterface {
   LoopbackAuth: SDKToken;
@@ -47,6 +48,7 @@ export interface LoopbackStateInterface {
   Widgets: reducers.WidgetsState;
   Propertys: reducers.PropertysState;
   Beacons: reducers.BeaconsState;
+  Alexas: reducers.AlexasState;
 }
 
 export const LoopbackReducer = {
@@ -71,6 +73,7 @@ export const LoopbackReducer = {
 	Widgets: reducers.WidgetsReducer,
 	Propertys: reducers.PropertysReducer,
 	Beacons: reducers.BeaconsReducer,
+	Alexas: reducers.AlexasReducer,
 };
 
 export const LoopbackEffects = [
@@ -95,4 +98,5 @@ export const LoopbackEffects = [
   WidgetEffects,
   PropertyEffects,
   BeaconEffects,
+  AlexaEffects,
 ];

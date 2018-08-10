@@ -19,5 +19,6 @@ export * from './Connector';
 export * from './Widget';
 export * from './Property';
 export * from './Beacon';
+export * from './Alexa';
 export * from './SDKModels';
 export * from './logger.service';

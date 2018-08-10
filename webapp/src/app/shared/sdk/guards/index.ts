@@ -20,6 +20,7 @@ import { ConnectorExistsGuard } from './Connector';
 import { WidgetExistsGuard } from './Widget';
 import { PropertyExistsGuard } from './Property';
 import { BeaconExistsGuard } from './Beacon';
+import { AlexaExistsGuard } from './Alexa';
 
 export const LOOPBACK_GUARDS_PROVIDERS = [
   AuthGuard,
@@ -43,6 +44,7 @@ export const LOOPBACK_GUARDS_PROVIDERS = [
 	WidgetExistsGuard,
 	PropertyExistsGuard,
 	BeaconExistsGuard,
+	AlexaExistsGuard,
 ];
 
 export * from './auth.guard';
@@ -66,3 +68,4 @@ export * from './Connector';
 export * from './Widget';
 export * from './Property';
 export * from './Beacon';
+export * from './Alexa';

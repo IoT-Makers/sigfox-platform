@@ -68,6 +68,7 @@ import { ConnectorApi } from './services/custom/Connector';
 import { WidgetApi } from './services/custom/Widget';
 import { PropertyApi } from './services/custom/Property';
 import { BeaconApi } from './services/custom/Beacon';
+import { AlexaApi } from './services/custom/Alexa';
 /**
 * @module SDKBrowserModule
 * @description
@@ -118,6 +119,7 @@ export class SDKBrowserModule {
         WidgetApi,
         PropertyApi,
         BeaconApi,
+        AlexaApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }

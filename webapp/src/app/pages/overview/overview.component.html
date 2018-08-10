@@ -128,7 +128,8 @@
           </ng-container>
 
           <ng-container *ngIf="devices.length > 0">
-            <agm-map [latitude]="mapLat"
+            <agm-map (mapReady)="onMapReady($event)"
+                     [latitude]="mapLat"
                      [longitude]="mapLng"
                      [zoom]="mapZoom"
                      [fullscreenControl]="true">
@@ -366,7 +367,7 @@
             </div>
           </div>
 
-          <div *ngIf="battery && battery.value" class="col-sm-12 col-md-12">
+          <div *ngIf="battery && (battery.value !== null) " class="col-sm-12 col-md-12">
             <div class="card">
               <div class="card-header">
                 <i class="fa fa-battery-three-quarters fa-lg"></i> <strong> Battery</strong>
@@ -620,9 +621,9 @@
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">See</th>
-                <th class="text-center">ID</th>
+                <th class="text-center">Info</th>
                 <th class="text-center">Geoloc</th>
-                <th class="text-center">Last Message</th>
+                <th class="text-center">Last message</th>
                 <th class="text-center">Properties</th>
               </tr>
               </thead>
@@ -633,14 +634,80 @@
                           (click)="seeDevice(device)"><i class="fa fa-eye fa-lg"></i></button>
                 </td>
                 <td class="text-center">
-                  <a [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
-                  <div class="small" *ngIf="device.name">
-                    <span class="text-gray-dark">Name: </span>
-                    <span class="text-device">{{device.name ? device.name : "None"}}</span>
-                  </div>
-                  <div class="small" *ngIf="device.Category">
-                    <span class="text-gray-dark">Category: </span>
-                    <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <ng-container *ngIf="device.Messages[0] && device.Messages[0].data_parsed">
+                        <ng-container *ngFor="let p of device.Messages[0].data_parsed">
+                          <!-- Battery -->
+                          <ng-container *ngIf="p.key === 'battery' && p.value !== null">
+                            <div>
+                              <ng-container *ngIf="p.value >= 70">
+                                <span class="text-success"><i class="fa fa-battery-three-quarters"></i> {{p.value}} {{p.unit}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="p.value < 70 && p.value >= 40">
+                                <span class="text-info"><i class="fa fa-battery-half"></i> {{p.value}} {{p.unit}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="p.value < 40 && p.value >= 20">
+                                <span class="text-warning"><i class="fa fa-battery-quarter"></i> {{p.value}} {{p.unit}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="p.value < 20">
+                                <span class="text-alert"><i class="fa fa-battery-empty"></i> {{p.value}} {{p.unit}}</span>
+                              </ng-container>
+                            </div>
+                          </ng-container>
+
+                          <!-- Temperature -->
+                          <ng-container *ngIf="p.key === 'temperature' && p.value !== null">
+                            <div>
+                              <span class="text-gray-dark"><i class="fa fa-thermometer"></i> {{p.value}} {{p.unit}}</span>
+                              <!--<ng-container *ngIf="p.value >= 30">
+                                <span class="text-alert"><i class="fa fa-thermometer-full"></i> {{p.value}} {{p.unit}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="p.value < 30 && p.value >= 23">
+                                <span class="text-warning"><i class="fa fa-thermometer-three-quarters"></i> {{p.value}} {{p.unit}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="p.value < 23 && p.value >= 17">
+                                <span class="text-success"><i class="fa fa-thermometer-half"></i> {{p.value}} {{p.unit}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="p.value < 17">
+                                <span class="text-info"><i class="fa fa-thermometer-quarter"></i> {{p.value}} {{p.unit}}</span>
+                              </ng-container>-->
+                            </div>
+                          </ng-container>
+
+                          <!-- Humidity -->
+                          <ng-container *ngIf="p.key === 'humidity' && p.value !== null">
+                            <div>
+                              <span class="text-gray-dark"><i class="fa fa-cloud"></i> {{p.value}} {{p.unit}}</span>
+                              <!--<ng-container *ngIf="p.value >= 70">
+                                <span class="text-info"><i class="fa fa-cloud"></i> {{p.value}} {{p.unit}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="p.value < 70 && p.value >= 40">
+                                <span class="text-success"><i class="fa fa-cloud"></i> {{p.value}} {{p.unit}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="p.value < 40 && p.value >= 20">
+                                <span class="text-warning"><i class="fa fa-cloud"></i> {{p.value}} {{p.unit}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="p.value < 20">
+                                <span class="text-alert"><i class="fa fa-cloud"></i> {{p.value}} {{p.unit}}</span>
+                              </ng-container>-->
+                            </div>
+                          </ng-container>
+
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                    <div class="col-md-8">
+                      <a [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
+                      <div class="small" *ngIf="device.name">
+                        <span class="text-gray-dark">Name: </span>
+                        <span class="text-device">{{device.name ? device.name : "None"}}</span>
+                      </div>
+                      <div class="small" *ngIf="device.Category">
+                        <span class="text-gray-dark">Category: </span>
+                        <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
+                      </div>
+                    </div>
                   </div>
                 </td>
                 <td class="text-center">

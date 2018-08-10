@@ -32,6 +32,20 @@ export class ConnectorEffects extends BaseLoopbackEffects {
       )
     );
 
+  @Effect()
+  public createSigfoxBackendCallbacks$ = this.actions$
+    .ofType(ConnectorActionTypes.CREATE_SIGFOX_BACKEND_CALLBACKS).pipe(
+      mergeMap((action: LoopbackAction) =>
+        this.connector.createSigfoxBackendCallbacks(action.payload.req, action.payload.devicetypeId).pipe(
+          map((response: any) => new ConnectorActions.createSigfoxBackendCallbacksSuccess(action.payload.id, response, action.meta)),
+          catchError((error: any) => concat(
+            of(new ConnectorActions.createSigfoxBackendCallbacksFail(error, action.meta)),
+            of(new LoopbackErrorActions.error(error, action.meta))
+          ))
+        )
+      )
+    );
+
     /**
    * @author João Ribeiro <@JonnyBGod> <github:JonnyBGod>
    * @description

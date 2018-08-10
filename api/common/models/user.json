@@ -40,8 +40,8 @@
     "connected": {
       "type": "boolean"
     },
-    "location": {
-      "type": "Geoloc"
+    "position": {
+      "type": "object"
     },
     "devAccessTokens": {
       "type": [

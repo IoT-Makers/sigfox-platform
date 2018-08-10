@@ -130,6 +130,30 @@ while (byte.length < 8)
 battery += byte.slice(4, 8);
 battery = (parseInt(battery, 2) * 0.05 + 2.7).toFixed(2);
 
+if (battery >= 4.2) {
+    battery = 100;
+} else if (battery >= 4.13) {
+    battery = 90;
+} else if (battery >= 4.06) {
+    battery = 80;
+} else if (battery >= 3.99) {
+    battery = 70;
+} else if (battery >= 3.92) {
+    battery = 60;
+} else if (battery >= 3.85) {
+    battery = 50;
+} else if (battery >= 3.78) {
+    battery = 40;
+} else if (battery >= 3.71) {
+    battery = 30;
+} else if (battery >= 3.64) {
+    battery = 20;
+} else if (battery >= 3.57) {
+    battery = 10;
+} else if (battery <= 3.56) {
+    battery = 0;
+}
+
 // Store objects in parsedData array
 obj = {};
 obj.key = 'type';
@@ -183,7 +207,7 @@ obj = {};
 obj.key = 'battery';
 obj.value = battery;
 obj.type = 'number';
-obj.unit = 'V';
+obj.unit = '%';
 parsedData.push(obj);
 
 //console.log(parsedData);

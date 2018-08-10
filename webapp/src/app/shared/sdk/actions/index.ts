@@ -22,6 +22,7 @@ import { ConnectorActionTypes, ConnectorActions } from './Connector';
 import { WidgetActionTypes, WidgetActions } from './Widget';
 import { PropertyActionTypes, PropertyActions } from './Property';
 import { BeaconActionTypes, BeaconActions } from './Beacon';
+import { AlexaActionTypes, AlexaActions } from './Alexa';
 
 export {
   LoopbackAuthActionTypes, LoopbackAuthActions,
@@ -46,4 +47,5 @@ export {
 	WidgetActionTypes, WidgetActions,
 	PropertyActionTypes, PropertyActions,
 	BeaconActionTypes, BeaconActions,
+	AlexaActionTypes, AlexaActions,
 };

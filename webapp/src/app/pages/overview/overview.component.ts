@@ -4,13 +4,14 @@ import {Alert, Category, Device, FireLoopRef, Message, Organization, User} from 
 import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
-import {AgmInfoWindow} from '@agm/core';
+import {AgmInfoWindow, LatLngBounds} from '@agm/core';
 import {ConnectorApi, DeviceApi, MessageApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 
 declare var Zone: any;
+declare const google: any;
 
 @Component({
   templateUrl: 'overview.component.html'
@@ -325,6 +326,15 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   }
 
+  onMapReady(event: any) {
+    const bounds: LatLngBounds = new google.maps.LatLngBounds();
+    this.devices.forEach((device: any) => {
+      if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
+        bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
+      }
+    });
+    event.fitBounds(bounds);
+  }
 
   getMessagesGraph(option: string): void {
     // Reset buttons
