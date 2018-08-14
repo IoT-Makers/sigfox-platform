@@ -183,7 +183,7 @@ class user {
       });
 
     // Send mail
-    if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
+    if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN && process.env.MAILGUN_REGION) {
 
       const verificationToken = generateVerificationToken();
       userInstance.updateAttributes({ verificationToken: verificationToken });
@@ -200,20 +200,29 @@ class user {
       const options = {
         type: 'email',
         to: userInstance.email,
-        from: 'sigfox-platform@' + process.env.MAILGUN_DOMAIN,
+        from: 'Sigfox Platform <sigfox-platform@iotageny.sigfox.com>',
         subject: 'Welcome to the Sigfox Platform!',
         html: html_body,
         redirect: '',
         user: userInstance
       };
 
-      loopback.Email.send(options)
+      const mailgun = require('mailgun-js')({host: 'api.' + process.env.MAILGUN_REGION + '.mailgun.net', apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN});
+      mailgun.messages().send(options, (error: any, body: any) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log('> verification email sent:', body);
+        }
+      });
+
+      /*loopback.Email.send(options)
         .then((response: any) => {
           console.log('> verification email sent:', response);
         })
         .catch((err: any) => {
           console.error(err);
-        });
+        });*/
 
       /*userInstance.verify(options, (err: any, response: any, next: Function) => {
         if (err) {
