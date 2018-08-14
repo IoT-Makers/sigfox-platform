@@ -234,7 +234,7 @@ class user {
     const userId = ctx.args.id;
 
     User.findOne({where: {id: userId}, include: 'Organizations'}, (err: any, user: any) => {
-      if (user.Organizations) {
+      if (!err && user && user.Organizations) {
         user.toJSON().Organizations.forEach((orga: any) => {
           user.Organizations.remove(orga.id, (err: any, result: any) => {
             if (!err) {

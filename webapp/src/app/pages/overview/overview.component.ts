@@ -76,6 +76,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private mapLat = 48.858093;
   private mapLng = 2.294694;
   private mapZoom = 2;
+  private map;
 
   public filterQuery = '';
 
@@ -236,6 +237,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         console.log('devices', devices);
         this.devices = devices;
         this.devicesReady = true;
+        this.fitMapBounds();
         this.organizationApi.countDevices(this.organization.id).subscribe(result => {
           this.countDevices = result.count;
           this.countDevicesReady = true;
@@ -291,6 +293,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         }).subscribe((devices: Device[]) => {
         console.log('devices: ', devices);
         this.devices = devices;
+        this.fitMapBounds();
         this.devicesReady = true;
         this.userApi.countDevices(this.user.id).subscribe(result => {
           this.countDevices = result.count;
@@ -327,13 +330,20 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   onMapReady(event: any) {
-    const bounds: LatLngBounds = new google.maps.LatLngBounds();
-    this.devices.forEach((device: any) => {
-      if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
-        bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
-      }
-    });
-    event.fitBounds(bounds);
+    this.map = event;
+    this.fitMapBounds();
+  }
+
+  fitMapBounds() {
+    if (this.map) {
+      const bounds: LatLngBounds = new google.maps.LatLngBounds();
+      this.devices.forEach((device: any) => {
+        if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
+          bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
+        }
+      });
+      this.map.fitBounds(bounds);
+    }
   }
 
   getMessagesGraph(option: string): void {
@@ -450,13 +460,15 @@ export class OverviewComponent implements OnInit, OnDestroy {
     // Used for time & geoloc
     this.message = device.Messages[0];
 
-    this.humidity = _.filter(this.message.data_parsed, {key: 'humidity'})[0];
-    this.temperature = _.filter(this.message.data_parsed, {key: 'temperature'})[0];
-    this.altitude = _.filter(this.message.data_parsed, {key: 'altitude'})[0];
-    this.pressure = _.filter(this.message.data_parsed, {key: 'pressure'})[0];
-    this.speed = _.filter(this.message.data_parsed, {key: 'speed'})[0];
-    this.light = _.filter(this.message.data_parsed, {key: 'light'})[0];
-    this.battery = _.filter(this.message.data_parsed, {key: 'battery'})[0];
+    if (this.message && this.message.data_parsed) {
+      this.humidity = _.filter(this.message.data_parsed, {key: 'humidity'})[0];
+      this.temperature = _.filter(this.message.data_parsed, {key: 'temperature'})[0];
+      this.altitude = _.filter(this.message.data_parsed, {key: 'altitude'})[0];
+      this.pressure = _.filter(this.message.data_parsed, {key: 'pressure'})[0];
+      this.speed = _.filter(this.message.data_parsed, {key: 'speed'})[0];
+      this.light = _.filter(this.message.data_parsed, {key: 'light'})[0];
+      this.battery = _.filter(this.message.data_parsed, {key: 'battery'})[0];
+    }
   }
 
 

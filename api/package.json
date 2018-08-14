@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server/server.js",
   "engines": {
-    "node": ">=10.1.0",
+    "node": ">=10.8.0",
     "npm": ">=6.0.1"
   },
   "author": "Antoine de Chassey & Louis Moreau",

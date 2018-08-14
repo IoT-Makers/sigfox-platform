@@ -7,6 +7,7 @@ var payload,
     temperature,
     light,
     alert,
+    eventCount,
     firmwareVersion,
     parsedData = [],
     obj = {};
@@ -24,6 +25,7 @@ switch (type) {
         break;
     case 1:
         type = 'Button';
+        alert = true;
         break;
     case 2:
         type = 'Alert';
@@ -70,9 +72,10 @@ switch (mode) {
         temperature += byte.slice(2, 8);
         temperature = ((parseInt(temperature, 2) - 200) / 8).toFixed(2);
 
-        if (type !== 'Button')
-        // Byte #4
+        if (type !== 'Button') {
+            // Byte #4
             humidity = parseInt(payload.slice(6, 8), 16) * 0.5;
+        }
         else {
             // Byte #4
             var byte = parseInt(payload.slice(6, 8), 16).toString(2);
@@ -109,15 +112,15 @@ switch (mode) {
         break;
     case 3:
         mode = 'Door';
-        alert = parseInt(payload.slice(6, 8), 16);
+        eventCount = parseInt(payload.slice(6, 8), 16);
         break;
     case 4:
         mode = 'Move';
-        alert = parseInt(payload.slice(6, 8), 16);
+        eventCount = parseInt(payload.slice(6, 8), 16);
         break;
     case 5:
         mode = 'Reed switch';
-        alert = parseInt(payload.slice(6, 8), 16);
+        eventCount = parseInt(payload.slice(6, 8), 16);
         break;
     default:
         mode = 'Unknown mode {' + mode + '}';
@@ -150,7 +153,11 @@ if (battery >= 4.2) {
     battery = 20;
 } else if (battery >= 3.57) {
     battery = 10;
-} else if (battery <= 3.56) {
+} else if (battery >= 3.51) {
+    battery = 5;
+} else if (battery >= 3.31) {
+    battery = 3;
+} else if (battery < 3.31) {
     battery = 0;
 }
 
@@ -201,6 +208,12 @@ obj = {};
 obj.key = 'alert';
 obj.value = alert;
 obj.type = 'boolean';
+obj.unit = '';
+parsedData.push(obj);
+obj = {};
+obj.key = 'eventCount';
+obj.value = eventCount;
+obj.type = 'number';
 obj.unit = '';
 parsedData.push(obj);
 obj = {};

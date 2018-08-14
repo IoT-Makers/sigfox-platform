@@ -18,6 +18,7 @@ var byte = parseInt(payload.slice(0, 2), 16).toString(2);
 while (byte.length < 8)
     byte = '0' + byte;
 battery = ((parseInt(byte.slice(0, 5), 2) * 0.05) + 2.7).toFixed(2);
+
 if (battery >= 4.2) {
     battery = 100;
 } else if (battery >= 4.13) {
@@ -38,7 +39,11 @@ if (battery >= 4.2) {
     battery = 20;
 } else if (battery >= 3.57) {
     battery = 10;
-} else if (battery <= 3.56) {
+} else if (battery >= 3.51) {
+    battery = 5;
+} else if (battery >= 3.31) {
+    battery = 3;
+} else if (battery < 3.31) {
     battery = 0;
 }
 

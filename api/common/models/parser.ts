@@ -113,7 +113,7 @@ class Parser {
           order: 'updatedAt DESC'
         }
       }]
-    }, function (err: any, parser: any) {
+    }, (err: any, parser: any) => {
       if (err) {
         next(err, null);
       } else if (parser) {
