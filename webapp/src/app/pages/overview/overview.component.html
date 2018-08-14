@@ -647,7 +647,7 @@
                     <ng-container class="text-left">
                       <ng-container *ngFor="let p of device.Messages[0].data_parsed">
                         <!-- Battery -->
-                        <ng-container *ngIf="p.key === 'battery' && (p.value !== null) && (p.unit === '%')">
+                        <ng-container *ngIf="p.key === 'battery' && (p.value != null) && (p.unit === '%')">
                           <div>
                             <ng-container *ngIf="p.value >= 70">
                               <span class="text-success"><i class="fa fa-battery-three-quarters"></i> {{p.value}} {{p.unit}}</span>
@@ -665,7 +665,7 @@
                         </ng-container>
 
                         <!-- Temperature -->
-                        <ng-container *ngIf="p.key === 'temperature' && (p.value !== null)">
+                        <ng-container *ngIf="p.key === 'temperature' && (p.value != null)">
                           <div>
                             <span class="text-gray-dark"><i class="fa fa-thermometer"></i> {{p.value}} {{p.unit}}</span>
                             <!--<ng-container *ngIf="p.value >= 30">
@@ -684,7 +684,7 @@
                         </ng-container>
 
                         <!-- Humidity -->
-                        <ng-container *ngIf="p.key === 'humidity' && (p.value !== null)">
+                        <ng-container *ngIf="p.key === 'humidity' && (p.value != null)">
                           <div>
                             <span class="text-gray-dark"><i class="fa fa-cloud"></i> {{p.value}} {{p.unit}}</span>
                             <!--<ng-container *ngIf="p.value >= 70">

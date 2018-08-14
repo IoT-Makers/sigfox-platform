@@ -197,7 +197,6 @@ class user {
       const renderer = loopback.template(path.resolve(__dirname, '../../server/views/verify.ejs'));
       const html_body = renderer(customMessage);
 
-      // || userInstance.email
       const options = {
         type: 'email',
         to: userInstance.email,
