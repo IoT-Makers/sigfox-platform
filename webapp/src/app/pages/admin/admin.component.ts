@@ -21,6 +21,8 @@ import {
 })
 export class AdminComponent implements OnInit, OnDestroy {
 
+  @ViewChild('addOrEditUserModal') addOrEditUserModal: any
+
   private myUser: User;
   private userToRemove: User;
   public users: User[] = [];
@@ -44,6 +46,11 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private organization: Organization;
   public organizations: Organization[] = [];
+
+  public addUserFlag = true;
+  private userToAddOrEdit: User = new User();
+  public verifyPassword = '';
+  public errorMessage = '';
 
   private userRef: FireLoopRef<User>;
   private userSub: Subscription;
@@ -230,8 +237,50 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
   }
 
-  editUser() {
+  openAddUserModal(): void {
+    this.userToAddOrEdit = new User();
+    this.verifyPassword = '';
+    this.addUserFlag = true;
 
+    this.addOrEditUserModal.show();
+  }
+
+  verify(): void {
+    if (this.userToAddOrEdit.password !== this.verifyPassword) {
+      this.errorMessage = 'Passwords do not match';
+    } else {
+      this.errorMessage = '';
+    }
+  }
+
+  addUser(): void {
+    console.log('Admin | Try to create user...', this.userToAddOrEdit);
+
+    this.userToAddOrEdit.email = this.userToAddOrEdit.email.toLocaleLowerCase();
+    this.userToAddOrEdit.id = null;
+    this.userToAddOrEdit.createdAt = new Date();
+
+    this.userRef.create(this.userToAddOrEdit).subscribe((user: User) => {
+      console.log('Admin | User created', user);
+      this.getUsers();
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'Account was created successfully.');
+    }, (err) => {
+      if (err.error.statusCode === 422) {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', 'Email exists.');
+        console.log('Admin | Error 422 | Email already taken');
+      } else {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', 'Invalid username or password');
+        console.log('Admin | Error | Invalid username or password ', err);
+      }
+    });
+
+    this.addOrEditUserModal.hide();
   }
 
   deleteOrganization(organization: Organization): void {
