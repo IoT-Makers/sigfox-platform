@@ -11,4 +11,6 @@ if (mongodbUrl) {
       connector: 'mongodb'
     }
   };
+} else {
+  console.error("Env MONGO_URL not set");
 }
