@@ -189,7 +189,7 @@ class user {
       userInstance.updateAttributes({ verificationToken: verificationToken });
 
       // Create a custom object your want to pass to the email template. You can create as many key-value pairs as you want
-      const baseUrl = this.model.app.get('url').replace(/\/$/, '');
+      const baseUrl = process.env.BASE_URL || this.model.app.get('url').replace(/\/$/, '');
       const verificationUrl = baseUrl + '/api/users/confirm?uid=' + userInstance.id + '&token=' + verificationToken + '&redirect=' + baseUrl.substr(0, baseUrl.split(':', 2).join(':').length);
       const customMessage = {verificationUrl: verificationUrl};
 

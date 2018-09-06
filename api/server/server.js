@@ -27,7 +27,7 @@ if (cluster.isMaster && process.env.CLUSTER === "true") {
     // Start the web server
     var server = app.listen(function() {
       app.emit('started', server);
-      var baseUrl = app.get('url').replace(/\/$/, '');
+      let baseUrl = process.env.BASE_URL || app.get('url').replace(/\/$/, '');
       console.log('Web server listening at: %s', baseUrl);
       if (app.get('loopback-component-explorer')) {
         var explorerPath = app.get('loopback-component-explorer').mountPath;
