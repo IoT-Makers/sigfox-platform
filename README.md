@@ -21,7 +21,7 @@ Warning: When using the free plan, the application goes to sleep after 30 min of
 An alternative way to get it running at Heroku is to install the [Heroku Toolbelt](https://toolbelt.heroku.com) and follow these steps:
 
 ```
-git clone https://github.com/luisomoreau/sigfox-platform.git my-project
+git clone https://github.com/IoT-Makers/sigfox-platform.git my-project
 cd my-project
 heroku apps:create my-project
 git push heroku master
