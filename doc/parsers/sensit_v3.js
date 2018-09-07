@@ -207,8 +207,6 @@ if (mode === 'Door' || mode === 'Vibration' || mode === 'Magnet') {
     eventCount = parseInt(eventCount, 2);
 }
 
-
-
 // Store objects in parsedData array
 obj = {};
 obj.key = 'mode';
