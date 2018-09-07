@@ -2,7 +2,11 @@
   "name": "sigfox-platform",
   "version": "1.0.0",
   "description": "",
-  "keywords": ["Platform", "IoT", "real-time"],
+  "keywords": [
+    "Platform",
+    "IoT",
+    "real-time"
+  ],
   "author": "Antoine de Chassey & Louis Moreau",
   "license": "AGPL-3.0-only",
   "engines": {
