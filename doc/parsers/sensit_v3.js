@@ -17,35 +17,17 @@ var payload,
 var byte = parseInt(payload.slice(0, 2), 16).toString(2);
 while (byte.length < 8)
     byte = '0' + byte;
-battery = ((parseInt(byte.slice(0, 5), 2) * 0.05) + 2.7).toFixed(2);
-
-if (battery >= 4.2) {
+battery = ((parseInt(byte.slice(0, 5), 2) * 0.05) + 2.7);
+if (battery >= 4.15) {
     battery = 100;
-} else if (battery >= 4.13) {
-    battery = 90;
-} else if (battery >= 4.06) {
-    battery = 80;
-} else if (battery >= 3.99) {
-    battery = 70;
-} else if (battery >= 3.92) {
-    battery = 60;
-} else if (battery >= 3.85) {
-    battery = 50;
-} else if (battery >= 3.78) {
-    battery = 40;
-} else if (battery >= 3.71) {
-    battery = 30;
-} else if (battery >= 3.64) {
-    battery = 20;
-} else if (battery >= 3.57) {
-    battery = 10;
-} else if (battery >= 3.51) {
-    battery = 5;
-} else if (battery >= 3.31) {
-    battery = 3;
-} else if (battery < 3.31) {
-    battery = 0;
+} else if (battery >= 3.8 && battery < 4.15) {
+    battery = Math.round((battery - 3.275) * 114);
+} else if (battery >= 3.6 && battery < 3.8) {
+    battery = Math.round((battery - 3.56) * 250);
+} else if (battery > 3 && battery < 3.6) {
+    battery = Math.round((battery - 3) * 16);
 }
+battery = battery < 0 ? 0 : battery;
 
 // Byte #1
 var byte = parseInt(payload.slice(2, 4), 16).toString(2);
@@ -224,8 +206,6 @@ if (mode === 'Door' || mode === 'Vibration' || mode === 'Magnet') {
     eventCount += byte;
     eventCount = parseInt(eventCount, 2);
 }
-
-
 
 // Store objects in parsedData array
 obj = {};

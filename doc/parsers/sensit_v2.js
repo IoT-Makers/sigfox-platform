@@ -8,6 +8,7 @@ var payload,
     light,
     alert,
     eventCount,
+    state,
     firmwareVersion,
     parsedData = [],
     obj = {};
@@ -72,10 +73,9 @@ switch (mode) {
         temperature += byte.slice(2, 8);
         temperature = ((parseInt(temperature, 2) - 200) / 8).toFixed(2);
 
-        if (type !== 'Button') {
-            // Byte #4
+        if (type !== 'Button')
+        // Byte #4
             humidity = parseInt(payload.slice(6, 8), 16) * 0.5;
-        }
         else {
             // Byte #4
             var byte = parseInt(payload.slice(6, 8), 16).toString(2);
@@ -121,6 +121,12 @@ switch (mode) {
     case 5:
         mode = 'Reed switch';
         eventCount = parseInt(payload.slice(6, 8), 16);
+        // Byte #3
+        var byte = parseInt(payload.slice(4, 6), 16).toString(2);
+        while (byte.length < 8)
+            byte = '0' + byte;
+        temperature = (parseInt(byte.slice(2, 8), 2) - 200) / -8;
+        state = parseInt(byte.slice(1, 2), 2);
         break;
     default:
         mode = 'Unknown mode {' + mode + '}';
@@ -131,35 +137,17 @@ var byte = parseInt(payload.slice(2, 4), 16).toString(2);
 while (byte.length < 8)
     byte = '0' + byte;
 battery += byte.slice(4, 8);
-battery = (parseInt(battery, 2) * 0.05 + 2.7).toFixed(2);
-
-if (battery >= 4.2) {
+battery = (parseInt(battery, 2) * 0.05 + 2.7);
+if (battery >= 4.15) {
     battery = 100;
-} else if (battery >= 4.13) {
-    battery = 90;
-} else if (battery >= 4.06) {
-    battery = 80;
-} else if (battery >= 3.99) {
-    battery = 70;
-} else if (battery >= 3.92) {
-    battery = 60;
-} else if (battery >= 3.85) {
-    battery = 50;
-} else if (battery >= 3.78) {
-    battery = 40;
-} else if (battery >= 3.71) {
-    battery = 30;
-} else if (battery >= 3.64) {
-    battery = 20;
-} else if (battery >= 3.57) {
-    battery = 10;
-} else if (battery >= 3.51) {
-    battery = 5;
-} else if (battery >= 3.31) {
-    battery = 3;
-} else if (battery < 3.31) {
-    battery = 0;
+} else if (battery >= 3.8 && battery < 4.15) {
+    battery = Math.round((battery - 3.275) * 114);
+} else if (battery >= 3.6 && battery < 3.8) {
+    battery = Math.round((battery - 3.56) * 250);
+} else if (battery > 3 && battery < 3.6) {
+    battery = Math.round((battery - 3) * 16);
 }
+battery = battery < 0 ? 0 : battery;
 
 // Store objects in parsedData array
 obj = {};
@@ -213,6 +201,12 @@ parsedData.push(obj);
 obj = {};
 obj.key = 'eventCount';
 obj.value = eventCount;
+obj.type = 'number';
+obj.unit = '';
+parsedData.push(obj);
+obj = {};
+obj.key = 'state';
+obj.value = state;
 obj.type = 'number';
 obj.unit = '';
 parsedData.push(obj);
