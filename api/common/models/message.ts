@@ -337,7 +337,7 @@ class Message {
                 messageInstance,
                 (err: any, res: any) => {
                   if (err) {
-                    next(err, null);
+                    console.error(err);
                   } else {
                     //console.log(res);
                   }
@@ -349,14 +349,14 @@ class Message {
                 req,
                 (err: any, res: any) => {
                   if (err) {
-                    next(err, null);
+                    console.error(err);
                   } else {
                     //console.log(res);
                   }
                 });
             }
           } else {
-            next(null, 'This message for device (' + message.deviceId + ') has already been created.');
+            console.error('This message for device (' + message.deviceId + ') has already been created.');
           }
         });
       // ack is true

@@ -9,6 +9,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: pwd
       MONGO_INITDB_DATABASE: testdb
   node:
+    # restart: always
     image: "node:8"
     user: "node"
     working_dir: /home/node/app/api
