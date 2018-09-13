@@ -1,0 +1,55 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=10.8.0",
+    "npm": ">=6.0.1"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "start": "node server/server.js",
+    "compile": "tsc && copyfiles \"server/**/*.json\" build/server -u 1",
+    "posttest": "npm run lint && nsp check"
+  },
+  "dependencies": {
+    "@mean-expert/boot-script": "^1.0.0",
+    "@mean-expert/model": "^1.0.9",
+    "@types/lodash": "^4.14.116",
+    "ask-sdk": "^2.0.9",
+    "compression": "^1.0.3",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.5.2",
+    "event-stream": "^3.3.6",
+    "helmet": "^3.10.0",
+    "json2csv": "^4.2.1",
+    "lodash": "^4.17.11",
+    "loopback": "^3.22.0",
+    "loopback-boot": "^2.6.5",
+    "loopback-component-explorer": "^6.2.0",
+    "loopback-connector-es": "^1.4.1",
+    "loopback-connector-mailgun": "0.0.12",
+    "loopback-connector-mongodb": "^3.6.0",
+    "loopback-connector-rest": "^3.2.0",
+    "loopback-ds-timestamp-mixin": "^3.4.1",
+    "loopback3-rt-stats-mixin": "^1.0.3",
+    "serve-favicon": "^2.0.1",
+    "strong-error-handler": "^3.0.0",
+    "strong-pubsub": "^0.2.0",
+    "strong-pubsub-mqtt": "^0.1.0",
+    "ts-node": "^7.0.1"
+  },
+  "devDependencies": {
+    "@mean-expert/loopback-sdk-builder": "^2.3.1",
+    "@types/node": "^10.9.4",
+    "copyfiles": "^2.1.0",
+    "eslint": "^3.17.1",
+    "eslint-config-loopback": "^8.0.0",
+    "typescript": "^3.0.3"
+  },
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "license": "UNLICENSED",
+  "description": "api"
+}

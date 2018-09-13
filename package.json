@@ -14,12 +14,12 @@
     "npm": ">=6.0.1"
   },
   "scripts": {
-    "preinstall": "cd api/ && npm install && cd ../webapp && npm install && cd ..",
+    "preinstall": "cd backend/ && npm install && cd ../frontend && npm install && cd ..",
     "postinstall": "npm run build",
-    "build": "cd webapp/ && npm cache verify && npm run build && cd ..",
+    "build": "cd frontend/ && npm cache verify && npm run build && cd ..",
     "start": "npm run serve",
-    "api": "cd api/ && node server/server.js && cd ..",
-    "webapp": "cd webapp/ && node server/server.ts && cd ..",
+    "backend": "cd backend/ && node server/server.js && cd ..",
+    "frontend": "cd frontend/ && node server/server.ts && cd ..",
     "test": "npm run install"
   },
   "devDependencies": {},
