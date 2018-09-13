@@ -12,7 +12,7 @@ services:
     # restart: always
     image: "node:8"
     user: "node"
-    working_dir: /home/node/app/api
+    working_dir: /home/node/app/backend
     environment:
       - NODE_ENV=dev
     volumes:
