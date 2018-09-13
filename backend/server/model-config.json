@@ -21,6 +21,10 @@
     "dataSource": "mongodb",
     "public": false
   },
+  "Email": {
+    "dataSource": null,
+    "public": false
+  },
   "AccessToken": {
     "dataSource": "mongodb",
     "public": true,
@@ -54,10 +58,7 @@
   },
   "RoleMapping": {
     "dataSource": "mongodb",
-    "public": false,
-    "options": {
-      "strictObjectIDCoercion": true
-    }
+    "public": false
   },
   "Role": {
     "dataSource": "mongodb",
