@@ -41,6 +41,9 @@
     "accuracy": {
       "type": "number"
     },
+    "source": {
+      "type": "string"
+    },
     "createdAt": {
       "type": "date",
       "defaultFn": "now"

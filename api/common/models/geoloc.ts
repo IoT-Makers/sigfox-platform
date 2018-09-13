@@ -132,6 +132,7 @@ class Geoloc {
     }
 
     if (hasWifiLocation) {
+      geoloc_wifi.type = 'wifi';
       if (process.env.HERE_APP_ID && process.env.HERE_APP_CODE && !process.env.GOOGLE_API_KEY) {
         this.getHereGeolocation(geoloc_wifi).then(value => {
           console.log('[WiFi Geolocation] - Device located successfully with Here.');
@@ -161,6 +162,34 @@ class Geoloc {
     }
   }
 
+  getUbiscaleGeolocation(geoloc_gps: any, geoloc_sigfox: any, deviceId: any, ubiscaleData: any, time: any): Promise<boolean> {
+    return new Promise((resolve: any, reject: any) => {
+      const credentials = new Buffer(process.env.UBISCALE_LOGIN + ':' + process.env.UBISCALE_PASSWORD).toString('base64');
+      const json = {
+        network: 'sigfox',
+        device: deviceId,
+        data: ubiscaleData,
+        time: time,
+        lat: geoloc_sigfox.location.lat,
+        lng: geoloc_sigfox.location.lng
+      };
+
+      this.model.app.dataSources.ubiscale.locate(credentials, json).then((result: any) => {
+        //console.error('---------------------------------------------------------------------\n', result);
+        geoloc_gps.source = 'ubiscale';
+        geoloc_gps.location.lat = result.lat;
+        geoloc_gps.location.lng = result.lng;
+        geoloc_gps.accuracy = result.accuracy;
+
+        this.createGeoloc(geoloc_gps);
+        resolve(true);
+      }).catch((err: any) => {
+        console.error(err);
+        reject(false);
+      });
+    });
+  }
+
   getHereGeolocation(geoloc_wifi: any): Promise<boolean> {
     const wlans: any = {
       wlan: []
@@ -177,7 +206,6 @@ class Geoloc {
       this.model.app.dataSources.here.locate(process.env.HERE_APP_ID, process.env.HERE_APP_CODE, wlans).then((result: any) => {
         //console.error('---------------------------------------------------------------------\n', result);
         geoloc_wifi.source = 'here';
-        geoloc_wifi.type = 'wifi';
         geoloc_wifi.location.lat = result.location.lat;
         geoloc_wifi.location.lng = result.location.lng;
         geoloc_wifi.accuracy = result.location.accuracy;
@@ -196,7 +224,6 @@ class Geoloc {
       this.model.app.dataSources.google.locate(process.env.GOOGLE_API_KEY, {considerIp: false, wifiAccessPoints: geoloc_wifi.wifiAccessPoints}).then((result: any) => {
         //console.error('---------------------------------------------------------------------\n', result);
         geoloc_wifi.source = 'google';
-        geoloc_wifi.type = 'wifi';
         geoloc_wifi.location.lat = result.location.lat;
         geoloc_wifi.location.lng = result.location.lng;
         geoloc_wifi.accuracy = result.accuracy;
@@ -261,6 +288,35 @@ class Geoloc {
           geoloc.messageId = messageInstance.id;
           geoloc.deviceId = messageInstance.deviceId;
 
+          /**
+           * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
+           */
+            // Build the GPS Geoloc object
+          const geoloc_gps = new Geoloc;
+          geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
+          geoloc_gps.createdAt = messageInstance.createdAt;
+          geoloc_gps.userId = messageInstance.userId;
+          geoloc_gps.messageId = messageInstance.id;
+          geoloc_gps.deviceId = messageInstance.deviceId;
+
+          if (messageInstance.data_parsed) {
+            messageInstance.data_parsed.forEach((p: any) => {
+              if (p.value !== null && typeof p.value !== 'undefined') {
+                // Check if there is Ubiscale geoloc in parsed data
+                if (p.key === 'ubiscale') {
+                  geoloc_gps.type = 'gps';
+                  if (process.env.UBISCALE_LOGIN && process.env.UBISCALE_PASSWORD) {
+                    this.getUbiscaleGeolocation(geoloc_gps, geoloc, messageInstance.deviceId, p.value, messageInstance.time).then(value => {
+                      console.log('[Ubiscale Geolocation] - Device located successfully with Ubiscale.');
+                    }).catch(reason => {
+                      console.log('[Ubiscale Geolocation] - Could not locate device with Ubiscale.');
+                    });
+                  }
+                }
+              }
+            });
+          }
+
           // Trigger alerts (if any)
           Alert.triggerBySigfoxGeoloc(
             geoloc.location.lat,
@@ -295,6 +351,7 @@ class Geoloc {
                 next(err, geolocInstance);
               } else if (created) {
                 console.log('Created geoloc as: ', geolocInstance);
+
                 // Update device in order to trigger a real time upsert event
                 this.updateDeviceLocatedAt(geolocInstance.deviceId);
                 next(null, geolocInstance);
