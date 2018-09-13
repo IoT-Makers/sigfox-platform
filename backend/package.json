@@ -36,15 +36,15 @@
     "strong-error-handler": "^3.0.0",
     "strong-pubsub": "^0.2.0",
     "strong-pubsub-mqtt": "^0.1.0",
-    "ts-node": "^7.0.1"
+    "ts-node": "^7.0.1",
+    "@types/node": "^10.9.4",
+    "typescript": "^3.0.3"
   },
   "devDependencies": {
     "@mean-expert/loopback-sdk-builder": "^2.3.1",
-    "@types/node": "^10.9.4",
     "copyfiles": "^2.1.0",
     "eslint": "^3.17.1",
-    "eslint-config-loopback": "^8.0.0",
-    "typescript": "^3.0.3"
+    "eslint-config-loopback": "^8.0.0"
   },
   "repository": {
     "type": "",
