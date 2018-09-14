@@ -136,8 +136,7 @@ class Message {
             console.log("Created new device: " + message.deviceId);
           } else {
             // console.log('Found an existing device.');
-            const rewriteUserId = true;
-            if ((rewriteUserId || deviceInstance.locked === false) && deviceInstance.userId.toString() !== userId.toString()) {
+            if (deviceInstance.locked === false && deviceInstance.userId.toString() !== userId.toString()) {
               // Store the userId in the message
               message.userId = userId;
 

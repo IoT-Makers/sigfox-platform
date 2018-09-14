@@ -119,8 +119,7 @@
         "putSigfox",
         "putSigfoxAcknowledge",
         "postSigfoxStatus",
-        "stats",
-        "find"
+        "stats"
       ]
     },
     {

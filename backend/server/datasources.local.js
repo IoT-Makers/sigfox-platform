@@ -6,6 +6,7 @@ if (mongodbUrl) {
   console.log('Using MongoDB with: ' + mongodbUrl);
   module.exports = {
     mongodb: {
+      useNewUrlParser: true,
       url: mongodbUrl,
       name: 'mongodb',
       connector: 'mongodb',
