@@ -10,6 +10,7 @@ if (mongodbUrl) {
       url: mongodbUrl,
       name: 'mongodb',
       connector: 'mongodb',
+      disableDefaultSort: true
     },
   };
 } else {

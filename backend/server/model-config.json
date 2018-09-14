@@ -14,7 +14,6 @@
       "./mixins",
       "../node_modules/loopback-ds-timestamp-mixin",
       "../node_modules/loopback3-rt-stats-mixin/dist"
-
     ]
   },
   "User": {
