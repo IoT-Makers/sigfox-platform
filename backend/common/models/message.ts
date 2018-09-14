@@ -85,6 +85,9 @@ class Message {
     let message = new Message;
     message = data;
 
+    // Set the message id
+    message.id = message.deviceId + message.time + message.seqNumber;
+
     // Set the createdAt time
     message.createdAt = new Date(message.time * 1000);
 
@@ -316,21 +319,13 @@ class Message {
         };
       }
       // Creating new message with its downlink data
-      Message.findOrCreate(
-        {where: {
-            and: [
-              {deviceId: message.deviceId},
-              {time: message.time},
-              {seqNumber: message.seqNumber},
-            ],
-          },
-        }, // find
+      Message.create(
         message, // create
-        (err: any, messageInstance: any, created: boolean) => { // callback
+        (err: any, messageInstance: any) => { // callback
           if (err) {
             console.error(err);
             next(err, messageInstance);
-          } else if (created) {
+          } else if (messageInstance) {
             // console.log('Created message as: ', messageInstance);
             if (message.data_parsed) {
               // Check if there is Geoloc in payload and create Geoloc object
@@ -365,21 +360,13 @@ class Message {
     } else {
       // ack is false
       // Creating new message with no downlink data
-      Message.findOrCreate(
-        {where: {
-            and: [
-              {deviceId: message.deviceId},
-              {time: message.time},
-              {seqNumber: message.seqNumber},
-            ],
-          },
-        }, // find
+      Message.create(
         message, // create
-        (err: any, messageInstance: any, created: boolean) => { // callback
+        (err: any, messageInstance: any) => { // callback
           if (err) {
             console.error(err);
             next(err, messageInstance);
-          } else if (created) {
+          } else if (messageInstance) {
             // console.log('Created message as: ', messageInstance);
             if (message.data_parsed) {
               // Check if there is Geoloc in payload and create Geoloc object
