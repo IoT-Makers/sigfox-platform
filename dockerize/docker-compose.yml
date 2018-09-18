@@ -8,20 +8,48 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: pwd
       MONGO_INITDB_DATABASE: testdb
-  node:
+
+  backend:
     # restart: always
-    image: "node:8"
+    image: "node:10"
+    ports:
+      - 3000:3000
     user: "node"
     working_dir: /home/node/app/backend
     environment:
       - NODE_ENV=dev
     volumes:
       - ../:/home/node/app
-    ports:
-      - 3000:3000
+
     depends_on:
       - mongo
     environment:
       - SECRET=lol
       - MONGO_URL=mongodb://usr:pwd@mongo:27017/testdb
+    command: "npm start"
+
+  frontend:
+    image: "node:10"
+    ports:
+      - 8888:8888
+    working_dir: /home/node/app/frontend
+    environment:
+      - NODE_ENV=dev
+    volumes:
+      - ../:/home/node/app
+    environment:
+      - port=8888
+    command: "node server/server.ts"
+
+  primus:
+    image: "node:10"
+    ports:
+    - 2333:2333
+    working_dir: /home/node/app/primus
+    environment:
+      - NODE_ENV=dev
+    volumes:
+      - ../:/home/node/app
+    environment:
+      - port=2333
     command: "npm start"
