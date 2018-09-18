@@ -20,6 +20,7 @@
     "start": "npm run serve",
     "backend": "cd backend/ && node server/server.js && cd ..",
     "frontend": "cd frontend/ && node server/server.ts && cd ..",
+    "primus": "cd primus/ && npm start && cd ..",
     "test": "npm run install"
   },
   "devDependencies": {},

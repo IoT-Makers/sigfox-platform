@@ -15,6 +15,7 @@
     "@mean-expert/boot-script": "^1.0.0",
     "@mean-expert/model": "^1.0.9",
     "@types/lodash": "^4.14.116",
+    "@types/node": "^10.9.4",
     "ask-sdk": "^2.0.9",
     "compression": "^1.0.3",
     "cookie-parser": "^1.4.3",
@@ -36,8 +37,8 @@
     "strong-error-handler": "^3.0.0",
     "strong-pubsub": "^0.2.0",
     "strong-pubsub-mqtt": "^0.1.0",
+    "strong-pubsub-primus": "^0.1.0",
     "ts-node": "^7.0.1",
-    "@types/node": "^10.9.4",
     "typescript": "^3.0.3"
   },
   "devDependencies": {

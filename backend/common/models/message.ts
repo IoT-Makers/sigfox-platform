@@ -240,6 +240,7 @@ class Message {
                             }
                             // Create message
                             this.createMessageAndSendResponse(deviceInstance, message, req, next);
+                            // TODO: pub message here
                           });
                       } else {
                         // Create message with no parsed data because of wrong parser id
