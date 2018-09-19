@@ -8,6 +8,7 @@ var payload,
     vibration,
     magnet,
     alert,
+    state,
     eventCount,
     firmwareVersion,
     parsedData = [],
@@ -130,9 +131,11 @@ if (mode === 'Door') {
             break;
         case 2:
             door = 'Door is closed';
+            state = 1;
             break;
         case 3:
             door = 'Door is open';
+            state = 0;
             break;
         default:
             door = 'Unknown door status {' + door + '}';
@@ -150,9 +153,11 @@ if (mode === 'Vibration') {
     switch (vibration) {
         case 0:
             vibration = 'No vibration detected';
+            state = 0;
             break;
         case 1:
             vibration = 'A vibration is detected';
+            state = 1;
             break;
         case 2:
             vibration = 'Unused value';
@@ -176,9 +181,11 @@ if (mode === 'Magnet') {
     switch (magnet) {
         case 0:
             magnet = 'No magnet detected';
+            state = 0;
             break;
         case 1:
             magnet = 'A magnet is detected';
+            state = 1;
             break;
         case 2:
             magnet = 'Unused value';
@@ -206,6 +213,8 @@ if (mode === 'Door' || mode === 'Vibration' || mode === 'Magnet') {
     eventCount += byte;
     eventCount = parseInt(eventCount, 2);
 }
+
+
 
 // Store objects in parsedData array
 obj = {};
@@ -260,6 +269,12 @@ obj = {};
 obj.key = 'magnet';
 obj.value = magnet;
 obj.type = 'string';
+obj.unit = '';
+parsedData.push(obj);
+obj = {};
+obj.key = 'state';
+obj.value = state;
+obj.type = 'number';
 obj.unit = '';
 parsedData.push(obj);
 obj = {};

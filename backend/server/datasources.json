@@ -183,5 +183,29 @@
         }
       }
     ]
+  },
+  "ubiscale": {
+    "name": "ubiscale",
+    "connector": "rest",
+    "debug": "true",
+    "operations": [
+      {
+        "template": {
+          "method": "POST",
+          "url": "https://api.ubignss.com/position",
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Basic {!credentials:string}"
+          },
+          "body": "{!json:string}"
+        },
+        "functions": {
+          "locate": [
+            "credentials",
+            "json"
+          ]
+        }
+      }
+    ]
   }
 }

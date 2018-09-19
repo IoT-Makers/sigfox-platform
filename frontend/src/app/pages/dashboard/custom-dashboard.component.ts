@@ -1479,7 +1479,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     if (device.visibility) {
       const widgetFilter = Object.assign({}, widget.filter);
       widgetFilter.where = {id: device.id};
-      widgetFilter.include[0].scope.limit = 1000;
+      widgetFilter.include[0].scope.limit = 5000;
 
       this.getDevicesWithFilter(widgetFilter).subscribe((devices: any[]) => {
         device.Messages = devices[0].Messages;
