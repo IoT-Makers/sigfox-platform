@@ -33,7 +33,7 @@ services:
 #    volumes:
 #      - ../:/home/node/app
 #    environment:
-#      - port=8888
+#      - PORT=8888
 #    env_file: dev.env
 #    command: "node server/server.ts"
 #
@@ -45,6 +45,6 @@ services:
 #    volumes:
 #      - ../:/home/node/app
 #    environment:
-#      - port=2333
+#      - PORT=2333
 #    env_file: dev.env
 #    command: "npm start"

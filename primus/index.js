@@ -43,9 +43,10 @@ primus.on('connection', function connection(spark) {
         if (packet === 'user_online') {
             db.collection("onlineUser").insertOne({
                 "user_id": packet.user_online.user_id,
-                "timestamp": packet.user_online.timestamp,
+                "timestamp": new Date().getTime(),
+                "page": packet.user_online.page,
                 "spark_id": spark.id,
-                "action": "connect"
+                "status": "connected"
             });
         }
     });

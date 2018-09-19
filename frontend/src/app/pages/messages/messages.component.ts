@@ -497,11 +497,17 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   subscribe(): void {
-    this.primusClient = new Primus("http://localhost:2333", {});
+    this.primusClient = new Primus(process.env.PRIMUS_URL || "http://localhost:2333", {});
     console.log('Messages: connecting....');
 
     this.primusClient.on('open', () => {
       console.log('Messages: connected!!');
+      this.primusClient.write({
+        "user_online" : {
+          "user_id": this.user.id,
+          "page": "message"
+        }
+      })
     });
   }
 }
