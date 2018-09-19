@@ -33,14 +33,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
   public geolocs: Geoloc[] = [];
 
   private primusClient: any;
-  private userRef: FireLoopRef<User>;
-  private organizationRef: FireLoopRef<Organization>;
 
   private organizationRouteSub: Subscription;
-  private messageRef: FireLoopRef<Message>;
-  private messageReadRef: FireLoopRef<Message>;
-  private messageSub: Subscription;
-  private messageReadSub: Subscription;
   public messages: Message[] = [];
 
   public organization: Organization;
@@ -271,19 +265,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
       if (parentParams.id) {
         this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
           this.organization = organization;
-
-          // Check if real time and setup
-          if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-            this.setup();
-          else
-            this.rt.onAuthenticated().subscribe(() => this.setup());
+          this.setup();
         });
       } else {
-        // Check if real time and setup
-        if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-          this.setup();
-        else
-          this.rt.onAuthenticated().subscribe(() => this.setup());
+        this.setup();
       }
     });
   }
@@ -310,79 +295,53 @@ export class MessagesComponent implements OnInit, OnDestroy {
         };
       }
 
-      this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-
       if (this.organization) {
 
-        this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
-          this.messages = messages;
-          this.messagesReady = true;
-        });
-
-        this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-          this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-          this.messageRef = this.organizationRef.child<Message>('Messages');
-          if (result.count < 1000) {
-            this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
-              this.messages = messages;
-            });
-          }
-        });
+        // this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
+        //   this.messages = messages;
+        //   this.messagesReady = true;
+        // });
+        //
+        // this.organizationApi.countMessages(this.organization.id).subscribe(result => {
+        //   this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
+        //   this.messageRef = this.organizationRef.child<Message>('Messages');
+        //   if (result.count < 1000) {
+        //     this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+        //       this.messages = messages;
+        //     });
+        //   }
+        // });
 
       } else {
-
-        this.userApi.countMessages(this.user.id).subscribe((result: any) => {
-          if (result.count < 1000) {
-            if (!this.messageFilter.where) {
-              this.messageFilter.where = {userId: this.user.id};
-            } else {
-              this.messageFilter.where.and.push({userId: this.user.id});
-            }
-            this.messageReadRef = this.rt.FireLoop.ref<Message>(Message);
-            this.messageReadSub = this.messageReadRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
-              this.messages = messages;
-              this.messagesReady = true;
-            });
-            console.log('Real-time global activated!');
-          } else {
-            this.messageRef = this.userRef.child<Message>('Messages');
-            this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
-              this.messages = messages;
-              this.messagesReady = true;
-            });
-            console.log('Real-time global deactivated!');
-          }
-        });
-
-        /*this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
-          this.messages = messages;
+        console.log("gett0ing");
+        this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((result: any) => {
+          this.messages = result;
           this.messagesReady = true;
+          console.log("ok");
         });
-
-        this.userApi.countMessages(this.user.id).subscribe(result => {
-          this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-          this.messageRef = this.userRef.child<Message>('Messages');
-          if (result.count < 1000) {
-            this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
-              this.messages = messages;
-            });
-          }
-        });*/
-
-        /*
-          this.messageFilter.where.and.push({userId: this.user.id});
-          this.messageReadRef = this.rt.FireLoop.ref<Message>(Message);
-          this.messageReadSub = this.messageReadRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
-          console.error(message);
-          const tempMessages = this.messages;
-          this.messages = [];
-          tempMessages.push(message);
-          this.messages = messages;
-          this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
-            this.messages = messages;
-            });
-          });
-        */
+        // this.userApi.countMessages(this.user.id).subscribe((result: any) => {
+        //
+        //   if (result.count < 1000) {
+        //     if (!this.messageFilter.where) {
+        //       this.messageFilter.where = {userId: this.user.id};
+        //     } else {
+        //       this.messageFilter.where.and.push({userId: this.user.id});
+        //     }
+        //     this.messageReadRef = this.rt.FireLoop.ref<Message>(Message);
+        //     this.messageReadSub = this.messageReadRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+        //       this.messages = messages;
+        //       this.messagesReady = true;
+        //     });
+        //     console.log('Real-time global activated!');
+        //   } else {
+        //     this.messageRef = this.userRef.child<Message>('Messages');
+        //     this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
+        //       this.messages = messages;
+        //       this.messagesReady = true;
+        //     });
+        //     console.log('Real-time global deactivated!');
+        //   }
+        // });
       }
     });
   }
@@ -397,24 +356,18 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   private cleanSetup() {
     if (this.deviceSub) this.deviceSub.unsubscribe();
-    if (this.organizationRef) this.organizationRef.dispose();
-    if (this.userRef) this.userRef.dispose();
-    if (this.messageRef) this.messageRef.dispose();
-    if (this.messageReadRef) this.messageReadRef.dispose();
-    if (this.messageSub) this.messageSub.unsubscribe();
-    if (this.messageReadSub) this.messageReadSub.unsubscribe();
   }
 
-  remove(message: Message): void {
-    this.messageRef.remove(message).subscribe(value => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'The message has been deleted.');
-    }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error);
-    });
+  deleteMessage(message: Message): void {
+    // this.messageRef.remove(message).subscribe(value => {
+    //   if (this.toast)
+    //     this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+    //   this.toast = this.toasterService.pop('success', 'Success', 'The message has been deleted.');
+    // }, err => {
+    //   if (this.toast)
+    //     this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+    //   this.toast = this.toasterService.pop('error', 'Error', err.error);
+    // });
   }
 
   showMarkers(message: Message): void {
@@ -470,15 +423,14 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.messages = [];
     this.messagesReady = false;
     // Reset buttons
-    this.isLimit_100 = false;
-    this.isLimit_500 = false;
-    this.isLimit_1000 = false;
-    this.isLimit_0 = false;
+    this.isLimit_100 = limit == 100;
+    this.isLimit_500 = limit == 500;
+    this.isLimit_1000 = limit == 1000;
+    this.isLimit_0 = limit == 10000;
 
     this.messageFilter.limit = limit;
 
     console.log(this.messageFilter);
-    if (this.messageSub) this.messageSub.unsubscribe();
 
     if (this.organization) {
       this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
@@ -498,7 +450,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   subscribe(): void {
-    this.primusClient = new Primus(environment.PRIMUS_URL || "http://localhost:2333", {});
+    this.primusClient = new Primus(environment.PRIMUS_URL || "http://localhost:2333",
+      {transformer: 'engine.io'});
     console.log('Messages: connecting....');
 
     this.primusClient.on('open', () => {
@@ -509,6 +462,12 @@ export class MessagesComponent implements OnInit, OnDestroy {
           "page": "message"
         }
       })
+    });
+
+    this.primusClient.on('data', (data) => {
+      console.log(data);
+      // console.log(this.messages[0]);
+      this.messages.push(data);
     });
   }
 }

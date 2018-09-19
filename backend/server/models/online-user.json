@@ -1,0 +1,33 @@
+{
+  "name": "onlineUser",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "required": true
+    },
+    "timestamp": {
+      "type": "number",
+      "required": true
+    },
+    "page": {
+      "type": "string",
+      "required": true
+    },
+    "spark_id": {
+      "type": "string",
+      "required": true
+    },
+    "status": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

@@ -20,6 +20,8 @@
     "compression": "^1.0.3",
     "cookie-parser": "^1.4.3",
     "cors": "^2.5.2",
+    "engine.io": "^3.2.0",
+    "engine.io-client": "^3.2.1",
     "event-stream": "^3.3.6",
     "helmet": "^3.10.0",
     "json2csv": "^4.2.1",
@@ -36,9 +38,6 @@
     "primus": "^7.2.2",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^3.0.0",
-    "strong-pubsub": "^0.2.0",
-    "strong-pubsub-mqtt": "^0.1.0",
-    "strong-pubsub-primus": "github:strongloop/strong-pubsub-primus",
     "ts-node": "^7.0.1",
     "typescript": "^3.0.3"
   },

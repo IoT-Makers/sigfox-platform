@@ -1,9 +1,9 @@
 import {Model} from "@mean-expert/model";
 import {computeCtr, decryptPayload, encryptPayload} from "./utils";
+import {environment} from "../../../frontend/environments/environment";
 
-const es = require("event-stream");
-const Client = require("strong-pubsub");
-const Adapter = require("strong-pubsub-mqtt");
+const Primus = require("primus");
+
 
 /**
  * @module Message
@@ -55,12 +55,13 @@ const Adapter = require("strong-pubsub-mqtt");
 })
 
 class Message {
+
+  private primusClient: any;
+
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-    /*this.model.observe('after save', (ctx: any, next: Function) => {
-      this.model.app.mx.IO.emit('message-after-save.' + ctx.instance.userId);
-      next();
-    });*/
+    let Socket = Primus.createSocket({ transformer: 'engine.io' });
+    this.primusClient = new Socket(process.env.PRIMUS_URL || "http://localhost:2333");
   }
 
   public putSigfox(req: any, data: any, next: Function): void {
@@ -240,7 +241,6 @@ class Message {
                             }
                             // Create message
                             this.createMessageAndSendResponse(deviceInstance, message, req, next);
-                            // TODO: pub message here
                           });
                       } else {
                         // Create message with no parsed data because of wrong parser id
@@ -576,22 +576,33 @@ class Message {
     // Share message to organizations if any
     this.linkMessageToOrganization(ctx.instance);
 
-    // Broadcast message to MQTT broker
-    // TODO: add secure connection - user, password
-    if (process.env.MQTT_HOST && process.env.MQTT_PORT && ctx.instance.data_parsed) {
-      const client = new Client({host: process.env.MQTT_HOST, port: process.env.MQTT_PORT}, Adapter);
-      try {
-        client.publish(ctx.instance.deviceId + "/message", ctx.instance.data_parsed.toString(), {retain: true});
-        ctx.instance.data_parsed.forEach((p: any) => {
-          const topic = ctx.instance.deviceId + "/" + p.key;
-          if (p.value) {
-            client.publish(topic, p.value.toString(), {retain: true});
-          }
-        });
-      } catch (e) {
-        console.error(e);
+    // Pub-sub
+    let msg = ctx.instance;
+    let OnlineUser = this.model.app.models.onlineUser;
+    console.log("msg for " + msg.userId);
+    OnlineUser.find({user_id: msg.userId}, (err: any, users: any) => {
+      if (err || !users || !users.length) {
+        return;
       }
-    }
+      for (let u of users) {
+        var payload = {
+          "forward": {
+            "target_spark": u.spark_id,
+            "message": msg
+          }
+        };
+        console.log(payload);
+        this.primusClient.write(payload);
+      }
+
+    });
+
+    // msg.data_parsed.forEach((p: any) => {
+    //   if (p.value) {
+    //     client.publish(topic, p.value.toString(), {retain: true});
+    //   }
+    // });
+
     next();
   }
 }

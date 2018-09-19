@@ -10,5 +10,6 @@
   "properties": {},
   "validations": [],
   "relations": {},
-  "acls": []
+  "acls": [],
+  "methods": {}
 }

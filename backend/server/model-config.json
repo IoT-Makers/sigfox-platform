@@ -157,5 +157,9 @@
   "Alexa": {
     "dataSource": null,
     "public": true
+  },
+  "onlineUser": {
+    "dataSource": "mongodb",
+    "public": false
   }
 }

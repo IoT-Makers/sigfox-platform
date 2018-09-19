@@ -3,8 +3,6 @@ import * as _ from "lodash";
 import {decrypt} from "../utils";
 
 const loopback = require("loopback");
-const Client = require("strong-pubsub");
-const Adapter = require("strong-pubsub-mqtt");
 const nodemailer = require("nodemailer");
 
 /**
@@ -374,13 +372,13 @@ class Alert {
             console.log("Twilio SMS alert!");
             // TODO: implement twilio connector
           } else if (connector.type === "mqtt") {
-            console.log("MQTT alert!");
-            const client = new Client({host: connector.host, port: connector.port}, Adapter);
-            try {
-              client.publish(connector.topic, alertMessage);
-            } catch (e) {
-              console.error(e);
-            }
+            // console.log("MQTT alert!");
+            // const client = new Client({host: connector.host, port: connector.port}, Adapter);
+            // try {
+            //   client.publish(connector.topic, alertMessage);
+            // } catch (e) {
+            //   console.error(e);
+            // }
           }
 
           if (!test) {
