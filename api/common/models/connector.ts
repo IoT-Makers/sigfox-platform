@@ -57,6 +57,10 @@ class Connector {
     // Models
     const User = this.model.app.models.user;
 
+    if (!process.env.BASE_URL) {
+      return next('Please refer the environment variable `BASE_URL` first.');
+    }
+
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
@@ -94,7 +98,7 @@ class Connector {
                   const credentials = Buffer.from(sigfoxApiLogin + ':' + sigfoxApiPassword).toString('base64');
 
                   const options = { method: 'POST',
-                    url: 'https://backend.sigfox.com/api/devicetypes/5aafbc849058c226710d09e1/callbacks/new',
+                    url: 'https://backend.sigfox.com/api/devicetypes/' + devicetypeId + '/callbacks/new',
                     headers:
                       { 'cache-control': 'no-cache',
                         authorization: 'Basic ' + credentials,
@@ -103,7 +107,7 @@ class Connector {
                       [ { channel: 'URL',
                         callbackType: 0,
                         callbackSubtype: 3,
-                        url: 'https://app.iotagency.sigfox.com/api/Messages/sigfox',
+                        url: process.env.BASE_URL + '/api/Messages/sigfox',
                         httpMethod: 'PUT',
                         enabled: true,
                         sendDuplicate: true,
@@ -114,7 +118,7 @@ class Connector {
                         { channel: 'URL',
                           callbackType: 1,
                           callbackSubtype: 1,
-                          url: 'https://app.iotagency.sigfox.com/api/Geolocs/sigfox',
+                          url: process.env.BASE_URL + '/api/Geolocs/sigfox',
                           httpMethod: 'POST',
                           enabled: true,
                           sendDuplicate: false,
@@ -126,8 +130,8 @@ class Connector {
 
                   request(options, (error: any, response: any, body: any) => {
                     if (error) throw next(error, null);
-                    next(null, 'Success');
-                    console.log(body);
+                    next(null, response);
+                    //console.log(body);
                   });
 
 
@@ -153,7 +157,7 @@ class Connector {
                       channel: 'URL',
                       callbackType: 1,
                       callbackSubtype: 1,
-                      url: 'https://app.iotagency.sigfox.com/api/Geolocs/sigfox',
+                      url: process.env.BASE_URL + '/api/Geolocs/sigfox',
                       httpMethod: 'POST',
                       enabled: true,
                       sendDuplicate: false,
