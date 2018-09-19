@@ -8,6 +8,7 @@ import {AgmMap} from '@agm/core';
 import {ActivatedRoute} from '@angular/router';
 import {OrganizationApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-messages',
@@ -497,7 +498,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   subscribe(): void {
-    this.primusClient = new Primus(process.env.PRIMUS_URL || "http://localhost:2333", {});
+    this.primusClient = new Primus(environment.PRIMUS_URL || "http://localhost:2333", {});
     console.log('Messages: connecting....');
 
     this.primusClient.on('open', () => {
