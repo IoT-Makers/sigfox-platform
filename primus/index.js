@@ -1,10 +1,13 @@
 'use strict';
 
-var Primus = require('primus')
-    , http = require('http');
+var Primus = require('primus');
+// var http = require('http');
+// var server = http.createServer(/* request handler */);
+var primus = Primus.createServer(function connection(spark) {
 
-var server = http.createServer(/* request handler */)
-    , primus = new Primus(server, {/* options */});
+}, { port: process.env.PORT || 2333,
+    transformer: 'websockets'
+});
 
 
 var MongoClient = require('mongodb').MongoClient;
@@ -13,7 +16,7 @@ var db;
 
 // Connect to the db
 MongoClient.connect(mongodbUrl, { useNewUrlParser: true }, function(err, client) {
-    if(err) {
+    if (err) {
         console.error("mongodbUrl not set on primus");
         throw err;
     }
@@ -24,7 +27,6 @@ MongoClient.connect(mongodbUrl, { useNewUrlParser: true }, function(err, client)
     db = client.db(dbName);
     console.log("Primus connected to mongo");
 });
-
 
 
 //
@@ -56,22 +58,16 @@ primus.on('disconnection', function end(spark) {
 });
 
 
-Primus.createServer(function connection(spark) {
-
-}, { port: process.env.PORT || 2333,
-    transformer: 'websockets'
-});
-
-
+primus.library();
 primus.save(__dirname +'/primus.js', function save(err) {
     if (err) throw "primus.js can not be saved";
 });
 
-server = http.createServer(function server(req, res) {
-    res.setHeader('Content-Type', 'text/html');
-    fs.createReadStream(
-        __dirname + (~req.url.indexOf('primus.js') ? '/primus.js' : '/index.html')
-    ).pipe(res);
-});
+// server = http.createServer(function server(req, res) {
+//     res.setHeader('Content-Type', 'text/html');
+//     fs.createReadStream(
+//         __dirname + (~req.url.indexOf('primus.js') ? '/primus.js' : '/index.html')
+//     ).pipe(res);
+// });
 
-server.listen(2334);
+// server.listen(2334);
