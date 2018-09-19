@@ -24,9 +24,9 @@
             <div class="input-group">
               <span class="input-group-addon" (click)="searchFilter(100)">Show</span>
               <div class="btn-group" role="group" aria-label="Quantity">
-                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_500}" (click)="searchFilter(500); isLimit_500 = true">500</button>
-                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_1000}" (click)="searchFilter(1000); isLimit_1000 = true">1000</button>
-                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_0}" (click)="searchFilter(10000); isLimit_0 = true">All</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_500}" (click)="searchFilter(500)">500</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_1000}" (click)="searchFilter(1000)">1000</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_0}" (click)="searchFilter(10000)">All</button>
               </div>
             </div>
 
@@ -159,7 +159,7 @@
                 </p>
               </td>
               <td class="text-center">
-                <button type="button" class="btn btn-outline-danger btn-round" (click)="remove(message)">
+                <button type="button" class="btn btn-outline-danger btn-round" (click)="deleteMessage(message)">
                   <i class="fa fa-trash"></i>
                 </button>
               </td>

@@ -6,7 +6,7 @@ var Primus = require('primus');
 var primus = Primus.createServer(function connection(spark) {
 
 }, { port: process.env.PORT || 2333,
-    transformer: 'websockets'
+    transformer: 'engine.io'
 });
 
 
@@ -37,19 +37,38 @@ primus.on('connection', function connection(spark) {
 
     spark.on('data', function data(packet) {
         if (!packet) return;
+        console.log('incoming data');
+        console.log(packet);
 
-        console.log('incoming:', packet);
+        if (packet.user_online) {
+            console.log('incoming user ' + spark.id);
 
-        if (packet === 'user_online') {
             db.collection("onlineUser").insertOne({
                 "user_id": packet.user_online.user_id,
                 "timestamp": new Date().getTime(),
                 "page": packet.user_online.page,
                 "spark_id": spark.id,
                 "status": "connected"
+            }, (err) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("OK");
+                }
             });
+        } else if (packet.forward) {
+            console.log('incoming message to forward');
+
+            let pkg = packet.forward;
+            let spark = primus.spark(pkg.target_spark);
+            if (spark)
+                spark.write(pkg.message);
         }
     });
+});
+
+primus.on('data', function message(data) {
+    console.log('Received a new message from the server', data);
 });
 
 

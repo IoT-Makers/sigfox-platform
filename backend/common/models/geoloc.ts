@@ -1,8 +1,7 @@
 import {Model} from '@mean-expert/model';
 
 const loopback = require('loopback');
-const Client = require('strong-pubsub');
-const Adapter = require('strong-pubsub-mqtt');
+
 
 /**
  * @module Geoloc
@@ -448,14 +447,14 @@ class Geoloc {
   }
 
   afterSave(ctx: any, next: Function): void {
-    if (process.env.MQTT_HOST && process.env.MQTT_PORT) {
-      const client = new Client({host: process.env.MQTT_HOST, port: process.env.MQTT_PORT}, Adapter);
-      try {
-        client.publish(ctx.instance.deviceId + '/geoloc', ctx.instance, {retain: true});
-      } catch (e) {
-        console.log(e);
-      }
-    }
+    // if (process.env.MQTT_HOST && process.env.MQTT_PORT) {
+    //   const client = new Client({host: process.env.MQTT_HOST, port: process.env.MQTT_PORT}, Adapter);
+    //   try {
+    //     client.publish(ctx.instance.deviceId + '/geoloc', ctx.instance, {retain: true});
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
+    // }
     next();
   }
 }
