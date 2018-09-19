@@ -101,7 +101,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     classes: 'select-one'
   };
   private selectWidgetType = [
+    {id: 'value', itemName: 'Value'},
     {id: 'image', itemName: 'Image'},
+    {id: 'divider', itemName: 'Divider'},
     {id: 'table', itemName: 'Table'},
     {id: 'map', itemName: 'Map (latest location)'},
     {id: 'tracking', itemName: 'Tracking'},
@@ -602,8 +604,35 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   setFilter(): void {
     console.log('setFilter: START', this.newWidget);
+    // Value
+    if (this.newWidget.type === 'value') {
+      this.newWidget.filter = {
+        limit: 1,
+        order: 'updatedAt DESC',
+        include: [{
+          relation: 'Messages',
+          scope: {
+            fields: ['data_parsed', 'createdAt'],
+            limit: 1,
+            order: 'createdAt DESC',
+            where: {
+              and: [
+                {data_parsed: {neq: null}}
+              ]
+            }
+          }
+        }],
+        where: {
+          or: []
+        }
+      };
+    }
     // Image
     if (this.newWidget.type === 'image') {
+      this.newWidget.filter = {};
+    }
+    // Divider
+    if (this.newWidget.type === 'divider') {
       this.newWidget.filter = {};
     }
     // Map
@@ -654,7 +683,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       };
     }
 
-// Alert & Gauge
+    // Alert & Gauge
     else if (this.newWidget.type === 'gauge') {
       this.newWidget.filter = {
         limit: 1,
@@ -872,7 +901,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   addWidget(): void {
-    if (this.newWidget.type !== 'image' && this.newWidget.filter.where.or.length === 0) {
+    if (this.newWidget.type !== 'image' && this.newWidget.type !== 'divider' && this.newWidget.filter.where.or.length === 0) {
       this.toasterService.pop('error', 'Error', 'Please select at least one category or device.');
       return;
     }
@@ -895,7 +924,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   updateWidget(): void {
-    if (this.newWidget.type !== 'image' && this.newWidget.filter.where.or.length === 0) {
+    if (this.newWidget.type !== 'image' && this.newWidget.type !== 'divider' && this.newWidget.filter.where.or.length === 0) {
       this.toasterService.pop('error', 'Error', 'Please select at least one category or device.');
       return;
     }
@@ -1057,12 +1086,19 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           // Devices
           /*this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
           this.deviceRef.on('change', widget.filter).subscribe((devices: any[]) => {*/
-          if (widget.type === 'image') {
+          if (widget.type === 'image' || widget.type === 'divider') {
             widget.ready = true;
           } else {
             this.getDevicesWithFilter(widget.filter).subscribe((devices: any[]) => {
+              // Value
+              if (widget.type === 'value') {
+                widget.data = _.filter(devices[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
+
+                widget.ready = true;
+              }
+
               // Table
-              if (widget.type === 'table') {
+              else if (widget.type === 'table') {
                 widget.data = devices;
                 if (widget.options.tableType === 'custom') {
                   widget.data = this.buildCustomTable(widget);
