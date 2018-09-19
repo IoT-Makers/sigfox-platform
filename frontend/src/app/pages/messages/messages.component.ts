@@ -31,6 +31,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   public receptions: any[] = [];
   public geolocs: Geoloc[] = [];
 
+  private primusClient: any;
   private userRef: FireLoopRef<User>;
   private organizationRef: FireLoopRef<Organization>;
 
@@ -262,6 +263,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     console.log('Messages: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
+    this.subscribe();
 
     // Check if organization view
     this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
@@ -287,7 +289,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.cleanSetup();
-
     // Get and listen messages
     this.deviceSub = this.route.params.subscribe(params => {
       this.filterQuery = params['id'];
@@ -493,5 +494,14 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   download(): void {
 
+  }
+
+  subscribe(): void {
+    this.primusClient = new Primus("http://localhost:2333", {});
+    console.log('Messages: connecting....');
+
+    this.primusClient.on('open', () => {
+      console.log('Messages: connected!!');
+    });
   }
 }

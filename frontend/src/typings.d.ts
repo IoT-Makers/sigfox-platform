@@ -10,3 +10,5 @@ declare module 'leaflet' {
     function fullscreen(v: any);
   }
 }*/
+
+declare var Primus: any;
