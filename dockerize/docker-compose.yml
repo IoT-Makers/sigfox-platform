@@ -16,40 +16,35 @@ services:
       - 3000:3000
     user: "node"
     working_dir: /home/node/app/backend
-    environment:
-      - NODE_ENV=dev
     volumes:
       - ../:/home/node/app
-
     depends_on:
       - mongo
     environment:
       - SECRET=lol
-      - MONGO_URL=mongodb://usr:pwd@mongo:27017/testdb
+    env_file: dev.env
     command: "npm start"
 
-  frontend:
-    image: "node:10"
-    ports:
-      - 8888:8888
-    working_dir: /home/node/app/frontend
-    environment:
-      - NODE_ENV=dev
-    volumes:
-      - ../:/home/node/app
-    environment:
-      - port=8888
-    command: "node server/server.ts"
-
-  primus:
-    image: "node:10"
-    ports:
-    - 2333:2333
-    working_dir: /home/node/app/primus
-    environment:
-      - NODE_ENV=dev
-    volumes:
-      - ../:/home/node/app
-    environment:
-      - port=2333
-    command: "npm start"
+#  frontend:
+#    image: "node:10"
+#    ports:
+#      - 8888:8888
+#    working_dir: /home/node/app/frontend
+#    volumes:
+#      - ../:/home/node/app
+#    environment:
+#      - port=8888
+#    env_file: dev.env
+#    command: "node server/server.ts"
+#
+#  primus:
+#    image: "node:10"
+#    ports:
+#    - 2333:2333
+#    working_dir: /home/node/app/primus
+#    volumes:
+#      - ../:/home/node/app
+#    environment:
+#      - port=2333
+#    env_file: dev.env
+#    command: "npm start"
