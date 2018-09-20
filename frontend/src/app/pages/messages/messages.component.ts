@@ -472,8 +472,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
     });
 
     this.primusClient.on('data', (data) => {
-      console.log(this.messages);
-      // console.log(this.messages[0]);
       this.messages.unshift(data);
     });
   }

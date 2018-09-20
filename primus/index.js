@@ -3,6 +3,7 @@
 const Primus = require('primus');
 const MongoClient = require('mongodb').MongoClient;
 const mongodbUrl = process.env.MONGO_URL;
+const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.split(' ');
 let db;
 
 // var http = require('http');
@@ -33,11 +34,15 @@ MongoClient.connect(mongodbUrl, { useNewUrlParser: true }, function(err, client)
 // Add auth hook on server
 //
 primus.authorize(function (req, done) {
-    let access_token = req.query.access_token;
-    db.collection("AccessToken").findOne({"_id": access_token}, (err, token) => {
-        if (err || !token) return;
+    const access_token = req.query.access_token;
+    if (serverAccessTokens.includes(access_token)) {
         done();
-    })
+    } else {
+        db.collection("AccessToken").findOne({"_id": access_token}, (err, token) => {
+            if (err || !token) return;
+            done();
+        })
+    }
 });
 
 //

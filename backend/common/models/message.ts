@@ -60,7 +60,9 @@ class Message {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
     let Socket = Primus.createSocket({ transformer: 'engine.io' });
-    this.primusClient = new Socket(process.env.PRIMUS_URL || "http://localhost:2333");
+    const primusURL = process.env.PRIMUS_URL || "http://localhost:2333";
+    this.primusClient = new Socket(primusURL + "?access_token=" + process.env.SERVER_ACCESS_TOKEN);
+
   }
 
   public putSigfox(req: any, data: any, next: Function): void {
