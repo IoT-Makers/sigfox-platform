@@ -464,8 +464,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.primusClient.on('open', () => {
       console.log('Messages: connected!!');
       this.primusClient.write({
-        "user_online" : {
-          "user_id": this.user.id,
+        "frontend" : {
+          "userId": this.user.id,
           "page": "message"
         }
       })

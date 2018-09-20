@@ -51,15 +51,16 @@ primus.on('connection', function connection(spark) {
         console.log('incoming data');
         // console.log(packet);
 
-        if (packet.user_online) {
+        // Browser client
+        if (packet.frontend) {
             console.log('incoming user ' + spark.id);
 
-            db.collection("onlineUser").insertOne({
-                "user_id": packet.user_online.user_id,
-                "timestamp": new Date().getTime(),
-                "page": packet.user_online.page,
-                "spark_id": spark.id,
-                "status": "connected"
+            //TODO: Authorize only userId belonging to access token
+            db.collection("OnlineClient").insertOne({
+                createdAt: new Date(),
+                userId: packet.frontend.userId,
+                page: packet.frontend.page,
+                sparkId: spark.id
             }, (err) => {
                 if (err) {
                     console.log(err);
@@ -67,10 +68,12 @@ primus.on('connection', function connection(spark) {
                     console.log("OK");
                 }
             });
-        } else if (packet.forward) {
+
+
+        } else if (packet.backend) { // Backend client
             console.log('incoming message to forward');
 
-            let pkg = packet.forward;
+            let pkg = packet.backend;
             let spark = primus.spark(pkg.target_spark);
             if (spark)
                 spark.write(pkg.message);
@@ -85,7 +88,7 @@ primus.on('data', function message(data) {
 
 primus.on('disconnection', function end(spark) {
     console.log('disconnection');
-    db.collection("onlineUser").findOneAndDelete({"spark_id": spark.id});
+    db.collection("OnlineClient").findOneAndDelete({"sparkId": spark.id});
 });
 
 

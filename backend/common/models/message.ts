@@ -1,6 +1,5 @@
 import {Model} from "@mean-expert/model";
 import {computeCtr, decryptPayload, encryptPayload} from "./utils";
-import {environment} from "../../../frontend/environments/environment";
 
 const Primus = require("primus");
 
@@ -575,9 +574,10 @@ class Message {
     this.updateDeviceSuccessRate(ctx.instance.deviceId);
     // Share message to organizations if any
     this.linkMessageToOrganization(ctx.instance);
-
     // Pub-sub
     let msg = ctx.instance;
+    this.primusClient.write(msg);
+
     let OnlineClient = this.model.app.models.OnlineClient;
     console.log("msg for " + msg.userId);
     OnlineClient.find({userId: msg.userId}, (err: any, users: any) => {
@@ -588,8 +588,8 @@ class Message {
       this.model.findOne({where: {_id: msg.id}, include: ["Device", "Geolocs"]}, (err: any, msg: any) => {
         for (let u of users) {
           const payload = {
-            "forward": {
-              "target_spark": u.spark_id,
+            "backend": {
+              "target_spark": u.sparkId,
               "message": msg
             }
           };
