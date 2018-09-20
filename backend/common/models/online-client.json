@@ -1,24 +1,22 @@
 {
-  "name": "onlineUser",
+  "name": "OnlineClient",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "TimeStamp": {
+      "required": false,
+      "validateUpsert": true
+    }
+  },
   "properties": {
-    "user_id": {
-      "type": "string",
-      "required": true
-    },
-    "timestamp": {
-      "type": "number",
-      "required": true
-    },
     "page": {
       "type": "string",
       "required": true
     },
-    "spark_id": {
+    "sparkId": {
       "type": "string",
       "required": true
     },
@@ -27,7 +25,13 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    }
+  },
   "acls": [],
   "methods": {}
 }

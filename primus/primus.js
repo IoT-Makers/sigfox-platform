@@ -3281,7 +3281,7 @@ Primus.prototype.client = function client() {
     socket = null;
   });
 };
-Primus.prototype.authorization = false;
+Primus.prototype.authorization = true;
 Primus.prototype.pathname = "/primus";
 Primus.prototype.encoder = function encoder(data, fn) {
   var err;

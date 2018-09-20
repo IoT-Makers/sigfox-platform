@@ -158,7 +158,7 @@
     "dataSource": null,
     "public": true
   },
-  "onlineUser": {
+  "OnlineClient": {
     "dataSource": "mongodb",
     "public": false
   }

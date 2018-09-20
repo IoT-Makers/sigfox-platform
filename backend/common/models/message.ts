@@ -578,16 +578,16 @@ class Message {
 
     // Pub-sub
     let msg = ctx.instance;
-    let OnlineUser = this.model.app.models.onlineUser;
+    let OnlineClient = this.model.app.models.OnlineClient;
     console.log("msg for " + msg.userId);
-    OnlineUser.find({user_id: msg.userId}, (err: any, users: any) => {
+    OnlineClient.find({userId: msg.userId}, (err: any, users: any) => {
       if (err || !users || !users.length) {
         return;
       }
       console.log(msg.id);
       this.model.findOne({where: {_id: msg.id}, include: ["Device", "Geolocs"]}, (err: any, msg: any) => {
         for (let u of users) {
-          var payload = {
+          const payload = {
             "forward": {
               "target_spark": u.spark_id,
               "message": msg

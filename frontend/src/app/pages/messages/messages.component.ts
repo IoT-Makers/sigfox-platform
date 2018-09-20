@@ -450,15 +450,16 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   subscribe(): void {
-    this.primusClient = new Primus(environment.PRIMUS_URL || "http://localhost:2333",
-      {transformer: 'engine.io',
+    const primusURL = environment.PRIMUS_URL || "http://localhost:2333";
+    this.primusClient = new Primus(primusURL + "?access_token=" + this.userApi.getCurrentToken().id,
+      {
+        transformer: 'engine.io',
         reconnect: {
           max: Infinity // Number: The max delay before we try to reconnect.
           , min: 500 // Number: The minimum delay before we try reconnect.
           , retries: 5 // Number: How many times we should try to reconnect.
         }
       });
-    console.log('Messages: connecting....');
 
     this.primusClient.on('open', () => {
       console.log('Messages: connected!!');

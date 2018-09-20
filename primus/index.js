@@ -1,18 +1,19 @@
 'use strict';
 
-var Primus = require('primus');
+const Primus = require('primus');
+const MongoClient = require('mongodb').MongoClient;
+const mongodbUrl = process.env.MONGO_URL;
+let db;
+const authParser = require('basic-auth-parser');
+
 // var http = require('http');
 // var server = http.createServer(/* request handler */);
-var primus = Primus.createServer(function connection(spark) {
+const primus = Primus.createServer(function connection(spark) {
 
 }, { port: process.env.PORT || 2333,
     transformer: 'engine.io'
 });
 
-
-var MongoClient = require('mongodb').MongoClient;
-const mongodbUrl = process.env.MONGO_URL;
-var db;
 
 // Connect to the db
 MongoClient.connect(mongodbUrl, { useNewUrlParser: true }, function(err, client) {
@@ -30,6 +31,17 @@ MongoClient.connect(mongodbUrl, { useNewUrlParser: true }, function(err, client)
 
 
 //
+// Add auth hook on server
+//
+primus.authorize(function (req, done) {
+    let access_token = req.query.access_token;
+    db.collection("AccessToken").findOne({"_id": access_token}, (err, token) => {
+        if (err || !token) return;
+        done();
+    })
+});
+
+//
 // Listen for new connections and send data
 //
 primus.on('connection', function connection(spark) {
@@ -38,7 +50,7 @@ primus.on('connection', function connection(spark) {
     spark.on('data', function data(packet) {
         if (!packet) return;
         console.log('incoming data');
-        console.log(packet);
+        // console.log(packet);
 
         if (packet.user_online) {
             console.log('incoming user ' + spark.id);
