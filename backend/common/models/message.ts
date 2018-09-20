@@ -62,7 +62,6 @@ class Message {
     let Socket = Primus.createSocket({ transformer: 'engine.io' });
     const primusURL = process.env.PRIMUS_URL || "http://localhost:2333";
     this.primusClient = new Socket(primusURL + "?access_token=" + process.env.SERVER_ACCESS_TOKEN);
-
   }
 
   public putSigfox(req: any, data: any, next: Function): void {

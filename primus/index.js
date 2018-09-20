@@ -102,11 +102,3 @@ primus.save(__dirname +'/primus.js', function save(err) {
     if (err) throw "primus.js can not be saved";
 });
 
-// server = http.createServer(function server(req, res) {
-//     res.setHeader('Content-Type', 'text/html');
-//     fs.createReadStream(
-//         __dirname + (~req.url.indexOf('primus.js') ? '/primus.js' : '/index.html')
-//     ).pipe(res);
-// });
-
-// server.listen(2334);
