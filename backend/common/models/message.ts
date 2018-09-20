@@ -62,6 +62,10 @@ class Message {
     let Socket = Primus.createSocket({ transformer: 'engine.io' });
     const primusURL = process.env.PRIMUS_URL || "http://localhost:2333";
     this.primusClient = new Socket(primusURL + "?access_token=" + process.env.SERVER_ACCESS_TOKEN);
+
+    this.primusClient.on('close', () => {
+      console.warn('close');
+    });
   }
 
   public putSigfox(req: any, data: any, next: Function): void {
@@ -585,7 +589,6 @@ class Message {
       if (err || !users || !users.length) {
         return;
       }
-      console.log(msg.id);
       this.model.findOne({where: {_id: msg.id}, include: ["Device", "Geolocs"]}, (err: any, msg: any) => {
         for (let u of users) {
           const payload = {
@@ -594,30 +597,10 @@ class Message {
               "message": msg
             }
           };
-          console.log(payload);
           this.primusClient.write(payload);
         }
       });
-
-      // for (let u of users) {
-      //   var payload = {
-      //     "forward": {
-      //       "target_spark": u.spark_id,
-      //       "message": msg
-      //     }
-      //   };
-      //   console.log(payload);
-      //   this.primusClient.write(payload);
-      // }
-
     });
-
-    // msg.data_parsed.forEach((p: any) => {
-    //   if (p.value) {
-    //     client.publish(topic, p.value.toString(), {retain: true});
-    //   }
-    // });
-
     next();
   }
 }
