@@ -4,7 +4,6 @@ const Primus = require('primus');
 const MongoClient = require('mongodb').MongoClient;
 const mongodbUrl = process.env.MONGO_URL;
 let db;
-const authParser = require('basic-auth-parser');
 
 // var http = require('http');
 // var server = http.createServer(/* request handler */);
