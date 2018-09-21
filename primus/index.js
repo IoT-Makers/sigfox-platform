@@ -65,36 +65,35 @@ primus.on('connection', function connection(spark) {
         });
     }
 
-    spark.on('data', function data(payload) {
-        if (!payload) return;
+    spark.on('data', function data(data) {
+        if (!data) return;
         console.log('incoming data');
-        // Browser client
-        if (payload.backend) { // Backend client
+
+        const payload = data.payload;
+        if (payload) {
             console.log('incoming message to forward');
 
-            const pkg = payload.backend;
-
-            if (pkg.message) {
+            const msg = payload.message;
+            if (msg) {
                 // from message.ts
                 let Message = db.collection("Message");
 
-                const msg = pkg.message;
                 // console.log(msg.id);
                 Message.findOne({_id: msg.id}, (err, msg) => {
                     if (!msg) return;
                     db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
                         // if ()
                         msg.Geolocs = geolocs;
-                        msg.Device = pkg.device;
-                        const payload = {
+                        msg.Device = payload.device;
+                        const outgoingPayload = {
                             payload: {
-                                action: pkg.action,
+                                action: payload.action,
                                 message: msg
                             }
                         };
                         primus.forEach(function (spark, id, connections) {
                             if (spark.userId === msg.userId.toString()) {
-                                spark.write(payload);
+                                spark.write(outgoingPayload);
                                 console.log("sent");
                             }
                         });

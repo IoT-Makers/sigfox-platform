@@ -585,7 +585,7 @@ class Message {
       let msg = ctx.instance;
       // msg.Device = device;
       const payload = {
-        backend: {
+        payload: {
           device: device,
           message: msg,
           action: ctx.isNewInstance ? "CREATE" : "UPDATE"
