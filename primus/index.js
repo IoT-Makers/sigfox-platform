@@ -71,18 +71,26 @@ primus.on('connection', function connection(spark) {
 
         const payload = data.payload;
         if (payload) {
-            console.log('incoming message to forward');
-
             const msg = payload.message;
             if (msg) {
                 // from message.ts
+                console.log('message ' + msg.id + ' for user ' + msg.userId);
+
                 let Message = db.collection("Message");
 
-                // console.log(msg.id);
+                let targetClients = [];
+                primus.forEach(function (spark, id, connections) {
+                    if (spark.userId === msg.userId.toString()) {
+                        targetClients.push(spark);
+                    }
+                });
+                console.log('user ' + msg.userId + 'has ' + targetClients.length + ' client online');
+                // if the message owner is not online, no need to look up
+                if (!targetClients.length)
+                    return;
                 Message.findOne({_id: msg.id}, (err, msg) => {
                     if (!msg) return;
                     db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
-                        // if ()
                         msg.Geolocs = geolocs;
                         msg.Device = payload.device;
                         const outgoingPayload = {
@@ -91,11 +99,9 @@ primus.on('connection', function connection(spark) {
                                 message: msg
                             }
                         };
-                        primus.forEach(function (spark, id, connections) {
-                            if (spark.userId === msg.userId.toString()) {
-                                spark.write(outgoingPayload);
-                                console.log("sent");
-                            }
+                        targetClients.forEach(function (spark) {
+                            spark.write(outgoingPayload);
+                            console.log("sent");
                         });
                     });
                 });
