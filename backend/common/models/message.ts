@@ -405,7 +405,7 @@ class Message {
     }
   }
 
-  public updateDeviceSuccessRate(deviceId: string) {
+  public updateDeviceSuccessRate(deviceId: string, cb?: (device: any) => void) {
 
     // Model
     const Device = this.model.app.models.Device;
@@ -434,13 +434,14 @@ class Message {
           device.successRate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
 
           deviceInstance.updateAttributes({ successRate: device.successRate });
+          cb(deviceInstance);
         } else {
           console.error("Could not update the success rate of an unknown device");
         }
       });
   }
 
-  public linkMessageToOrganization(message: any, cb?: (device: any) => void) {
+  public linkMessageToOrganization(message: any) {
     // Model
     const Device = this.model.app.models.Device;
 
@@ -452,8 +453,6 @@ class Message {
           });
         });
       }
-      if (deviceInstance)
-        cb(deviceInstance);
     });
   }
 
@@ -592,9 +591,9 @@ class Message {
 
   public afterSave(ctx: any, next: Function): void {
     // Calculate success rate and update device
-    this.updateDeviceSuccessRate(ctx.instance.deviceId);
-    // Share message to organizations if any
-    this.linkMessageToOrganization(ctx.instance, (device => {
+    this.linkMessageToOrganization(ctx.instance);
+    // Calculate success rate and update device
+    this.updateDeviceSuccessRate(ctx.instance.deviceId, (device => {
       // Pub-sub
       let msg = ctx.instance;
       const payload = {
