@@ -110,50 +110,15 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
       if (this.organization) {
 
-        // this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
-        //   this.messages = messages;
-        //   this.messagesReady = true;
-        // });
-        //
-        // this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-        //   this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-        //   this.messageRef = this.organizationRef.child<Message>('Messages');
-        //   if (result.count < 1000) {
-        //     this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
-        //       this.messages = messages;
-        //     });
-        //   }
-        // });
-
+        this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
+          this.messages = messages;
+          this.messagesReady = true;
+        });
       } else {
         this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((result: any) => {
           this.messages = result;
           this.messagesReady = true;
-          console.log(this.messages);
         });
-        // this.userApi.countMessages(this.user.id).subscribe((result: any) => {
-        //
-        //   if (result.count < 1000) {
-        //     if (!this.messageFilter.where) {
-        //       this.messageFilter.where = {userId: this.user.id};
-        //     } else {
-        //       this.messageFilter.where.and.push({userId: this.user.id});
-        //     }
-        //     this.messageReadRef = this.rt.FireLoop.ref<Message>(Message);
-        //     this.messageReadSub = this.messageReadRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
-        //       this.messages = messages;
-        //       this.messagesReady = true;
-        //     });
-        //     console.log('Real-time global activated!');
-        //   } else {
-        //     this.messageRef = this.userRef.child<Message>('Messages');
-        //     this.messageSub = this.messageRef.on('change', this.messageFilter).subscribe((messages: Message[]) => {
-        //       this.messages = messages;
-        //       this.messagesReady = true;
-        //     });
-        //     console.log('Real-time global deactivated!');
-        //   }
-        // });
       }
     });
   }
@@ -171,15 +136,15 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   deleteMessage(message: Message): void {
-    // this.messageRef.remove(message).subscribe(value => {
-    //   if (this.toast)
-    //     this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-    //   this.toast = this.toasterService.pop('success', 'Success', 'The message has been deleted.');
-    // }, err => {
-    //   if (this.toast)
-    //     this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-    //   this.toast = this.toasterService.pop('error', 'Error', err.error);
-    // });
+    this.userApi.destroyByIdMessages(this.user.id, message.id).subscribe(value => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The message has been deleted.');
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error);
+    });
   }
 
   showMarkers(message: Message): void {
@@ -289,7 +254,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
         if (payload.message)
           if (payload.action == "CREATE") {
             this.messages.unshift(payload.message);
-            console.log(data);
+          } else if (payload.action == "DELETE") {
+            this.messages = this.messages.filter(function(msg) {
+              return msg.id !== payload.message.id;
+            });
           }
     });
   }

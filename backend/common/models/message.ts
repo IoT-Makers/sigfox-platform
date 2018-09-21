@@ -14,6 +14,7 @@ const Primus = require("primus");
 @Model({
   hooks: {
     beforeDelete: { name: "before delete", type: "operation" },
+    afterDelete: { name: "after delete", type: "operation" },
     afterSave: { name: "after save", type: "operation" },
   },
   remotes: {
@@ -576,6 +577,19 @@ class Message {
     });
   }
 
+
+  public afterDelete(ctx: any, next: Function): void {
+    let msg = ctx.instance;
+    const payload = {
+      payload: {
+        message: msg,
+        action: "DELETE"
+      }
+    };
+    this.primusClient.write(payload);
+  }
+
+
   public afterSave(ctx: any, next: Function): void {
     // Calculate success rate and update device
     this.updateDeviceSuccessRate(ctx.instance.deviceId);
@@ -583,7 +597,6 @@ class Message {
     this.linkMessageToOrganization(ctx.instance, (device => {
       // Pub-sub
       let msg = ctx.instance;
-      // msg.Device = device;
       const payload = {
         payload: {
           device: device,

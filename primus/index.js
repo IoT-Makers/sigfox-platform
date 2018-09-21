@@ -74,7 +74,7 @@ primus.on('connection', function connection(spark) {
             const msg = payload.message;
             if (msg) {
                 // from message.ts
-                console.log('message ' + msg.id + ' for user ' + msg.userId);
+                console.log(payload.action + ' message ' + msg.id + ' for user ' + msg.userId);
 
                 let Message = db.collection("Message");
 
@@ -88,8 +88,24 @@ primus.on('connection', function connection(spark) {
                 // if the message owner is not online, no need to look up
                 if (!targetClients.length)
                     return;
+
+                if (payload.action === "DELETE") {
+                    const outgoingPayload = {
+                        payload: {
+                            action: payload.action,
+                            message: msg
+                        }
+                    };
+                    targetClients.forEach(function (spark) {
+                        spark.write(outgoingPayload);
+                        console.log("delete sent");
+                    });
+                    return;
+                }
+
                 Message.findOne({_id: msg.id}, (err, msg) => {
                     if (!msg) return;
+                    msg.id = msg._id;
                     db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
                         msg.Geolocs = geolocs;
                         msg.Device = payload.device;
