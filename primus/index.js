@@ -51,37 +51,63 @@ primus.authorize(function (req, done) {
 primus.on('connection', function connection(spark) {
     console.log('new connection');
 
-    spark.on('data', function data(packet) {
-        if (!packet) return;
+    let OnlineClient = db.collection("OnlineClient");
+    spark.on('data', function data(payload) {
+        if (!payload) return;
         console.log('incoming data');
         // console.log(packet);
 
         // Browser client
-        if (packet.frontend) {
-            console.log('incoming user ' + spark.id);
-
+        if (payload.frontend) {
+            spark.userId = payload.frontend.userId;
+            console.log('incoming user ' + spark.userId + '\n spark id ' + spark.id);
             //TODO: Authorize only userId belonging to access token
-            db.collection("OnlineClient").insertOne({
+            OnlineClient.insertOne({
                 createdAt: new Date(),
-                userId: packet.frontend.userId,
-                page: packet.frontend.page,
+                userId: payload.frontend.userId,
+                page: payload.frontend.page,
                 sparkId: spark.id
             }, (err) => {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log("OK");
+                    console.log("OnlineClient registred");
                 }
             });
 
 
-        } else if (packet.backend) { // Backend client
+        } else if (payload.backend) { // Backend client
             console.log('incoming message to forward');
 
-            let pkg = packet.backend;
-            let spark = primus.spark(pkg.target_spark);
-            if (spark)
-                spark.write(pkg.message);
+            const pkg = payload.backend;
+
+            if (pkg.message) {
+                // from message.ts
+                let Message = db.collection("Message");
+
+                const msg = pkg.message;
+                console.log(msg.id);
+
+                Message.findOne({_id: msg.id}, (err, msg) => {
+                    if (!msg) return;
+                    db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
+                        // if ()
+                        msg.Geolocs = geolocs;
+                        msg.Device = pkg.device;
+                        const payload = {
+                            payload: {
+                                action: pkg.action,
+                                message: msg
+                            }
+                        };
+                        primus.forEach(function (spark, id, connections) {
+                            if (spark.userId === msg.userId.toString()) {
+                                spark.write(payload);
+                            }
+                        });
+                    });
+                });
+            }
         }
     });
 });

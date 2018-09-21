@@ -313,11 +313,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
         // });
 
       } else {
-        console.log("gett0ing");
         this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((result: any) => {
           this.messages = result;
           this.messagesReady = true;
-          console.log("ok");
+          console.log(this.messages);
         });
         // this.userApi.countMessages(this.user.id).subscribe((result: any) => {
         //
@@ -472,7 +471,13 @@ export class MessagesComponent implements OnInit, OnDestroy {
     });
 
     this.primusClient.on('data', (data) => {
-      this.messages.unshift(data);
+      const payload = data.payload;
+      if (payload)
+        if (payload.message)
+          if (payload.action == "CREATE") {
+            this.messages.unshift(payload.message);
+            console.log(data);
+          }
     });
   }
 }

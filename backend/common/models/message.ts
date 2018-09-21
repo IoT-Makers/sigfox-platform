@@ -439,7 +439,7 @@ class Message {
       });
   }
 
-  public linkMessageToOrganization(message: any) {
+  public linkMessageToOrganization(message: any, cb?: (device: any) => void) {
     // Model
     const Device = this.model.app.models.Device;
 
@@ -451,6 +451,8 @@ class Message {
           });
         });
       }
+      if (deviceInstance)
+        cb(deviceInstance);
     });
   }
 
@@ -578,29 +580,19 @@ class Message {
     // Calculate success rate and update device
     this.updateDeviceSuccessRate(ctx.instance.deviceId);
     // Share message to organizations if any
-    this.linkMessageToOrganization(ctx.instance);
-    // Pub-sub
-    let msg = ctx.instance;
-    this.primusClient.write(msg);
-
-    let OnlineClient = this.model.app.models.OnlineClient;
-    console.log("msg for " + msg.userId);
-    OnlineClient.find({userId: msg.userId}, (err: any, users: any) => {
-      if (err || !users || !users.length) {
-        return;
-      }
-      this.model.findOne({where: {_id: msg.id}, include: ["Device", "Geolocs"]}, (err: any, msg: any) => {
-        for (let u of users) {
-          const payload = {
-            "backend": {
-              "target_spark": u.sparkId,
-              "message": msg
-            }
-          };
-          this.primusClient.write(payload);
+    this.linkMessageToOrganization(ctx.instance, (device => {
+      // Pub-sub
+      let msg = ctx.instance;
+      // msg.Device = device;
+      const payload = {
+        backend: {
+          device: device,
+          message: msg,
+          action: ctx.isNewInstance ? "CREATE" : "UPDATE"
         }
-      });
-    });
+      };
+      this.primusClient.write(payload);
+    }));
     next();
   }
 }
