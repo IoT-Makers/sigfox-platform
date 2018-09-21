@@ -33,17 +33,17 @@ MongoClient.connect(mongodbUrl, { useNewUrlParser: true }, function(err, client)
 //
 // Add auth hook on server
 //
-primus.authorize(function (req, done) {
-    const access_token = req.query.access_token;
-    if (serverAccessTokens.includes(access_token)) {
-        done();
-    } else {
-        db.collection("AccessToken").findOne({"_id": access_token}, (err, token) => {
-            if (err || !token) return;
-            done();
-        })
-    }
-});
+// primus.authorize(function (req, done) {
+//     const access_token = req.query.access_token;
+//     if (serverAccessTokens.includes(access_token)) {
+//         done();
+//     } else {
+//         db.collection("AccessToken").findOne({"_id": access_token}, (err, token) => {
+//             if (err || !token) return;
+//             done();
+//         })
+//     }
+// });
 
 //
 // Listen for new connections and send data
@@ -51,32 +51,25 @@ primus.authorize(function (req, done) {
 primus.on('connection', function connection(spark) {
     console.log('new connection');
 
-    let OnlineClient = db.collection("OnlineClient");
+    // manual auth hook, attach userId to spark if access token found
+    const access_token = spark.request.query.access_token;
+    let AccessToken = db.collection("AccessToken");
+    if (!serverAccessTokens.includes(access_token)) {
+        AccessToken.findOne({_id: access_token}, (err, token) => {
+            if (err || !token) {
+                console.info("Access token not found");
+                spark.end();
+                return;
+            }
+            spark.userId = token.userId.toString();
+        });
+    }
+
     spark.on('data', function data(payload) {
         if (!payload) return;
         console.log('incoming data');
-        // console.log(packet);
-
         // Browser client
-        if (payload.frontend) {
-            spark.userId = payload.frontend.userId;
-            console.log('incoming user ' + spark.userId + '\n spark id ' + spark.id);
-            //TODO: Authorize only userId belonging to access token
-            OnlineClient.insertOne({
-                createdAt: new Date(),
-                userId: payload.frontend.userId,
-                page: payload.frontend.page,
-                sparkId: spark.id
-            }, (err) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log("OnlineClient registred");
-                }
-            });
-
-
-        } else if (payload.backend) { // Backend client
+        if (payload.backend) { // Backend client
             console.log('incoming message to forward');
 
             const pkg = payload.backend;
@@ -86,8 +79,7 @@ primus.on('connection', function connection(spark) {
                 let Message = db.collection("Message");
 
                 const msg = pkg.message;
-                console.log(msg.id);
-
+                // console.log(msg.id);
                 Message.findOne({_id: msg.id}, (err, msg) => {
                     if (!msg) return;
                     db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
@@ -103,6 +95,7 @@ primus.on('connection', function connection(spark) {
                         primus.forEach(function (spark, id, connections) {
                             if (spark.userId === msg.userId.toString()) {
                                 spark.write(payload);
+                                console.log("sent");
                             }
                         });
                     });

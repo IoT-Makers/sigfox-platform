@@ -460,15 +460,15 @@ export class MessagesComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.primusClient.on('open', () => {
-      console.log('Messages: connected!!');
-      this.primusClient.write({
-        "frontend" : {
-          "userId": this.user.id,
-          "page": "message"
-        }
-      })
-    });
+    // this.primusClient.on('open', () => {
+    //   console.log('Messages: connected!!');
+    //   this.primusClient.write({
+    //     "frontend" : {
+    //       "userId": this.user.id,
+    //       "page": "message"
+    //     }
+    //   })
+    // });
 
     this.primusClient.on('data', (data) => {
       const payload = data.payload;
