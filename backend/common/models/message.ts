@@ -586,6 +586,7 @@ class Message {
       }
     };
     this.primusClient.write(payload);
+    next();
   }
 
 
