@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Connector, Device, FireLoopRef, Geoloc, Message, Organization, User} from '../../shared/sdk/models';
-import {RealTime, UserApi} from '../../shared/sdk/services';
+import {Connector, Device, Geoloc, Message, Organization, User} from '../../shared/sdk/models';
+import {UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
 import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
@@ -9,6 +9,7 @@ import {ActivatedRoute} from '@angular/router';
 import {OrganizationApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import { environment } from '../../../../environments/environment';
+import {RealtimeService} from "../../shared/realtime/RealtimeService";
 
 @Component({
   selector: 'app-messages',
@@ -58,12 +59,12 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   private filterQuery = '';
 
-  constructor(private rt: RealTime,
-              private userApi: UserApi,
+  constructor(private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private receptionApi: ReceptionApi,
               toasterService: ToasterService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private rt: RealtimeService) {
     this.toasterService = toasterService;
   }
 
@@ -227,28 +228,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   subscribe(): void {
-    const primusURL = environment.PRIMUS_URL || "http://localhost:2333";
-    this.primusClient = new Primus(primusURL + "?access_token=" + this.userApi.getCurrentToken().id,
-      {
-        transformer: 'engine.io',
-        reconnect: {
-          max: Infinity // Number: The max delay before we try to reconnect.
-          , min: 500 // Number: The minimum delay before we try reconnect.
-          , retries: 5 // Number: How many times we should try to reconnect.
-        }
-      });
-
-    // this.primusClient.on('open', () => {
-    //   console.log('Messages: connected!!');
-    //   this.primusClient.write({
-    //     "frontend" : {
-    //       "userId": this.user.id,
-    //       "page": "message"
-    //     }
-    //   })
-    // });
-
-    this.primusClient.on('data', (data) => {
+    this.rt.addListener((data) => {
       const payload = data.payload;
       if (payload)
         if (payload.message)

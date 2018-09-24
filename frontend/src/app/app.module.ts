@@ -22,6 +22,8 @@ import {LeafletDrawModule} from '@asymmetrik/ngx-leaflet-draw';
 import {AdminGuard} from './_guards/admin.guard';
 import {DashboardGuard} from './_guards/dashboard.guard';
 import {OrganizationGuard} from './_guards/organization.guard';
+import {RealtimeModule} from "./shared/realtime/RealtimeModule";
+import {environment} from "../../environments/environment";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -43,6 +45,9 @@ import {OrganizationGuard} from './_guards/organization.guard';
       libraries: ['places']
     }),
     AngularMultiSelectModule,
+    RealtimeModule.forRoot({
+      primusURL: environment.PRIMUS_URL || "http://localhost:2333"
+    }),
     TooltipModule.forRoot()
   ],
   declarations: [
