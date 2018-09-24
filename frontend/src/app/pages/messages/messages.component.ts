@@ -111,7 +111,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
       }
 
       if (this.organization) {
-
         this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
           this.messages = messages;
           this.messagesReady = true;
@@ -232,7 +231,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
   rtHandler = (payload:any) => { // <-- note syntax here
     if (payload.event === "message")
       if (payload.action == "CREATE") {
-        console.log("hahah");
         this.messages.unshift(payload.content);
       } else if (payload.action == "DELETE") {
         this.messages = this.messages.filter(function (msg) {
