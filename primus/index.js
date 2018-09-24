@@ -65,70 +65,74 @@ primus.on('connection', function connection(spark) {
         });
     }
 
-    spark.on('data', function data(data) {
-        if (!data) return;
+    spark.on('data', function data(payload) {
+        if (!payload) return;
         console.log('incoming data');
-
-        const payload = data.payload;
-        if (payload) {
-            const msg = payload.message;
-            if (msg) {
-                // from message.ts
-                console.log(payload.action + ' message ' + msg.id + ' for user ' + msg.userId);
-
-                let Message = db.collection("Message");
-
-                let targetClients = [];
-                primus.forEach(function (spark, id, connections) {
-                    if (spark.userId === msg.userId.toString()) {
-                        targetClients.push(spark);
-                    }
-                });
-                console.log('user ' + msg.userId + 'has ' + targetClients.length + ' client online');
-                // if the message owner is not online, no need to look up
-                if (!targetClients.length)
-                    return;
-
-                if (payload.action === "DELETE") {
-                    const outgoingPayload = {
-                        payload: {
-                            action: payload.action,
-                            message: msg
-                        }
-                    };
-                    targetClients.forEach(function (spark) {
-                        spark.write(outgoingPayload);
-                        console.log("delete sent");
-                    });
-                    return;
-                }
-
-                Message.findOne({_id: msg.id}, (err, msg) => {
-                    if (!msg) return;
-                    msg.id = msg._id;
-                    db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
-                        msg.Geolocs = geolocs;
-                        msg.Device = payload.device;
-                        const outgoingPayload = {
-                            payload: {
-                                action: payload.action,
-                                message: msg
-                            }
-                        };
-                        targetClients.forEach(function (spark) {
-                            spark.write(outgoingPayload);
-                            console.log("sent");
-                        });
-                    });
-                });
-            }
+        switch(payload.event) {
+            case "message":
+                messageHandler(payload);
+                break;
+            default:
+                break;
         }
     });
 });
 
-primus.on('data', function message(data) {
-    console.log('Received a new message from the server', data);
-});
+
+function messageHandler(payload) {
+    const msg = payload.content;
+    if (msg) {
+        // from message.ts
+        console.log(payload.action + ' message ' + msg.id + ' for user ' + msg.userId);
+
+        let Message = db.collection("Message");
+
+        let targetClients = [];
+        primus.forEach(function (spark, id, connections) {
+            if (spark.userId === msg.userId.toString()) {
+                targetClients.push(spark);
+            }
+        });
+        console.log('user ' + msg.userId + 'has ' + targetClients.length + ' client online');
+        // if the message owner is not online, no need to look up
+        if (!targetClients.length)
+            return;
+
+        if (payload.action === "DELETE") {
+            const outgoingPayload = {
+                event: "message",
+                action: payload.action,
+                content: msg
+
+            };
+            targetClients.forEach(function (spark) {
+                spark.write(outgoingPayload);
+                console.log("delete sent");
+            });
+            return;
+        }
+
+        Message.findOne({_id: msg.id}, (err, msg) => {
+            if (!msg) return;
+            msg.id = msg._id;
+            db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
+                msg.Geolocs = geolocs;
+                msg.Device = payload.device;
+                const outgoingPayload = {
+                    event: "message",
+                    action: payload.action,
+                    content: msg
+
+                };
+                targetClients.forEach(function (spark) {
+                    spark.write(outgoingPayload);
+                    console.log("sent");
+                });
+            });
+        });
+    }
+}
+
 
 
 primus.on('disconnection', function end(spark) {

@@ -228,17 +228,17 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   subscribe(): void {
-    this.rt.addListener((data) => {
-      const payload = data.payload;
-      if (payload)
-        if (payload.message)
+    this.rt.addListener((payload) => {
+      if (payload) {
+        if (payload.event === "message")
           if (payload.action == "CREATE") {
-            this.messages.unshift(payload.message);
+            this.messages.unshift(payload.content);
           } else if (payload.action == "DELETE") {
-            this.messages = this.messages.filter(function(msg) {
-              return msg.id !== payload.message.id;
+            this.messages = this.messages.filter(function (msg) {
+              return msg.id !== payload.content.id;
             });
           }
+      }
     });
   }
 }
