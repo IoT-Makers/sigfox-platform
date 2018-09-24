@@ -1,7 +1,12 @@
 {
-  "name": "sigfox-platform",
+  "name": "frontend",
   "version": "1.0.0",
-  "description": "A real time platform to manage different Sigfox devices.",
+  "description": "The frontend application.",
+  "keywords": [
+    "Platform",
+    "IoT",
+    "real-time"
+  ],
   "author": "Antoine de Chassey & Louis Moreau",
   "license": "AGPL-3.0-only",
   "engines": {

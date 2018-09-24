@@ -1,7 +1,7 @@
 {
-  "name": "sigfox-platform",
+  "name": "primus",
   "version": "1.0.0",
-  "description": "primus",
+  "description": "The Primus real-time pub/sub layer.",
   "keywords": [
     "Platform",
     "IoT",

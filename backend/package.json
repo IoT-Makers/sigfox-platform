@@ -1,6 +1,14 @@
 {
-  "name": "api",
+  "name": "backend",
   "version": "1.0.0",
+  "description": "The backend API.",
+  "keywords": [
+    "Platform",
+    "IoT",
+    "real-time"
+  ],
+  "author": "Antoine de Chassey & Louis Moreau",
+  "license": "AGPL-3.0-only",
   "engines": {
     "node": ">=10.8.0",
     "npm": ">=6.0.1"
@@ -50,7 +58,5 @@
   "repository": {
     "type": "",
     "url": ""
-  },
-  "license": "UNLICENSED",
-  "description": "api"
+  }
 }
