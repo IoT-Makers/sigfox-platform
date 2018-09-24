@@ -1,5 +1,3 @@
-'use strict';
-
 var log = require('debug')('boot:01-load-parsers');
 
 module.exports = function(app){
