@@ -158,8 +158,8 @@
     "dataSource": null,
     "public": true
   },
-  "OnlineClient": {
+  "Employee": {
     "dataSource": "mongodb",
-    "public": false
+    "public": true
   }
 }
