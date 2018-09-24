@@ -93,7 +93,7 @@ function messageHandler(payload) {
                 targetClients.push(spark);
             }
         });
-        console.log('user ' + msg.userId + 'has ' + targetClients.length + ' client online');
+        console.log('user ' + msg.userId + ' has ' + targetClients.length + ' client online');
         // if the message owner is not online, no need to look up
         if (!targetClients.length)
             return;

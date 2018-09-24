@@ -72,7 +72,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
     console.log('Messages: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-    this.subscribe();
 
     // Check if organization view
     this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
@@ -89,6 +88,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.cleanSetup();
+    this.subscribe();
+
     // Get and listen messages
     this.deviceSub = this.route.params.subscribe(params => {
       this.filterQuery = params['id'];
@@ -134,6 +135,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   private cleanSetup() {
     if (this.deviceSub) this.deviceSub.unsubscribe();
+    this.unsubscribe();
   }
 
   deleteMessage(message: Message): void {
@@ -227,18 +229,23 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   }
 
-  subscribe(): void {
-    this.rt.addListener((payload) => {
-      if (payload) {
-        if (payload.event === "message")
-          if (payload.action == "CREATE") {
-            this.messages.unshift(payload.content);
-          } else if (payload.action == "DELETE") {
-            this.messages = this.messages.filter(function (msg) {
-              return msg.id !== payload.content.id;
-            });
-          }
+  rtHandler = (payload:any) => { // <-- note syntax here
+    if (payload.event === "message")
+      if (payload.action == "CREATE") {
+        console.log("hahah");
+        this.messages.unshift(payload.content);
+      } else if (payload.action == "DELETE") {
+        this.messages = this.messages.filter(function (msg) {
+          return msg.id !== payload.content.id;
+        });
       }
-    });
+  };
+
+  subscribe(): void {
+    this.rtHandler = this.rt.addListener(this.rtHandler);
+  }
+
+  unsubscribe(): void {
+    this.rt.removeListener(this.rtHandler);
   }
 }
