@@ -114,7 +114,6 @@ function messageHandler(payload) {
             return;
         }
 
-        msg.id = msg._id;
         db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
             msg.Geolocs = geolocs;
             msg.Device = payload.device;
