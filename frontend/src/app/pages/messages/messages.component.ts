@@ -228,19 +228,18 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   }
 
-  rtHandler = (payload:any) => { // <-- note syntax here
-    if (payload.event === "message")
-      if (payload.action == "CREATE") {
-        this.messages.unshift(payload.content);
-      } else if (payload.action == "DELETE") {
-        this.messages = this.messages.filter(function (msg) {
-          return msg.id !== payload.content.id;
-        });
-      }
+  rtHandler = (payload:any) => {
+    if (payload.action == "CREATE") {
+      this.messages.unshift(payload.content);
+    } else if (payload.action == "DELETE") {
+      this.messages = this.messages.filter(function (msg) {
+        return msg.id !== payload.content.id;
+      });
+    }
   };
 
   subscribe(): void {
-    this.rtHandler = this.rt.addListener(this.rtHandler);
+    this.rtHandler = this.rt.addListener("message", this.rtHandler);
   }
 
   unsubscribe(): void {

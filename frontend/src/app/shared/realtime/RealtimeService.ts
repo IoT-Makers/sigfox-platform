@@ -50,9 +50,9 @@ export class RealtimeService {
   }
 
 
-  public addListener(listener: (data:any)=>void): (data) => void {
+  public addListener(event: string, listener: (data:any)=>void): (data) => void {
     const cb = (data) => {
-      if (data)
+      if (data && data.event === event)
         listener(data);
     };
     this.primusClient.on('data', cb);
@@ -61,7 +61,8 @@ export class RealtimeService {
 
 
   public removeListener(listener: any): void {
-    this.primusClient.off('data', listener);
+    if (this.primusClient)
+      this.primusClient.off('data', listener);
   }
 }
 
