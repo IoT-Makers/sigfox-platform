@@ -31,6 +31,7 @@
     "engine.io": "^3.2.0",
     "engine.io-client": "^3.2.1",
     "event-stream": "^3.3.6",
+    "fast-csv": "^2.4.1",
     "helmet": "^3.10.0",
     "json2csv": "^4.2.1",
     "lodash": "^4.17.11",

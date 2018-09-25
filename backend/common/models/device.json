@@ -60,6 +60,11 @@
   },
   "validations": [],
   "relations": {
+    "Employee": {
+      "type": "belongsTo",
+      "model": "Employee",
+      "foreignKey": "employeeId"
+    },
     "user": {
       "type": "belongsTo",
       "model": "user",

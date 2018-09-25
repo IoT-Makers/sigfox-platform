@@ -12,20 +12,38 @@
     }
   },
   "properties": {
-    "name": {
-      "type": "string",
-      "required": true
+    "firstName": {
+      "type": "string"
     },
-    "surname": {
-      "type": "string",
-      "required": true
+    "lastName": {
+      "type": "string"
     },
-    "expertise": {
+    "jobTitle": {
+      "type": "string"
+    },
+    "company": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "email": {
       "type": "string"
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "Device": {
+      "type": "hasOne",
+      "model": "Device",
+      "foreignKey": "employeeId"
+    },
+    "Geolocs": {
+      "type": "hasMany",
+      "model": "Geoloc",
+      "foreignKey": "employeeId"
+    }
+  },
   "acls": [
     {
       "accessType": "*",
