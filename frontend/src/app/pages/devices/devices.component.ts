@@ -456,11 +456,24 @@ export class DevicesComponent implements OnInit, OnDestroy {
     }
   };
 
+  rtLastMessageHandler = (payload:any) => {
+    if (payload.action == "CREATE" || payload.action == "UPDATE") {
+      let idx = this.devices.findIndex(x => x.id == payload.content.Device.id);
+      if (idx != -1) {
+        let updatedDevice = this.devices[idx];
+        updatedDevice.Messages = [payload.content];
+        this.devices[idx] = updatedDevice;
+      }
+    }
+  };
+
   subscribe(): void {
     this.rtHandler = this.rt.addListener("device", this.rtHandler);
+    this.rtLastMessageHandler = this.rt.addListener("message", this.rtLastMessageHandler);
   }
 
   unsubscribe(): void {
     this.rt.removeListener(this.rtHandler);
+    this.rt.removeListener(this.rtLastMessageHandler);
   }
 }
