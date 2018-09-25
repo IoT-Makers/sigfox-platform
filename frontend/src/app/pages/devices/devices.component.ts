@@ -210,26 +210,15 @@ export class DevicesComponent implements OnInit, OnDestroy {
       this.userApi.getDevices(this.user.id, filter).subscribe((result: any) => {
         this.devices = result;
         this.devicesReady = true;
-        console.log(this.devices);
       });
     }
 
-    // TODO: DO WITH REST
-    // this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-    // this.deviceRef = this.userRef.child<Device>('Devices');
-    //
-    // // Get and listen parsers
-    // this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-    // this.parserSub = this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-    //   this.parsers = parsers;
-    // });
-    // // Get and listen user categories
-    // this.categoryRef = this.userRef.child<Category>('Categories');
-    // this.categorySub = this.categoryRef.on('change').subscribe((categories: Category[]) => {
-    //   this.categories = categories;
-    // });
-    //
-
+    this.userApi.getParsers(this.user.id).subscribe((result: any) => {
+      this.parsers = result;
+    });
+    this.userApi.getCategories(this.user.id).subscribe((result: any) => {
+      this.categories = result;
+    });
   }
 
   ngOnDestroy(): void {
@@ -254,7 +243,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   updateDevice(): void {
     this.edit = false;
-    this.deviceRef.upsert(this.deviceToEdit).subscribe(value => {
+    this.userApi.updateByIdDevices(this.user.id, this.deviceToEdit.id, this.deviceToEdit).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The device was successfully updated.');
@@ -291,7 +280,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   retrieveMessages(deviceId: string, limit: number, before: number): void {
-
     this.userApi.getConnectors(this.user.id, {where: {type: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
       if (connectors.length > 0) {
         this.loadingFromBackend = true;
@@ -453,6 +441,11 @@ export class DevicesComponent implements OnInit, OnDestroy {
       this.devices = this.devices.filter(function (device) {
         return device.id !== payload.content.id;
       });
+    } else if (payload.action == "UPDATE") {
+      let idx = this.devices.findIndex(x => x.id == payload.content.id);
+      if (idx != -1) {
+        this.devices[idx] = payload.content;
+      }
     }
   };
 
