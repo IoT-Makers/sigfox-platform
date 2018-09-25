@@ -76,6 +76,7 @@ class user {
   }
 
   public beforeSave(ctx: any, next: Function): void {
+    if (ctx.instance) ctx.instance.createdAt = new Date();
     console.log("user: Before Save");
     next();
   }

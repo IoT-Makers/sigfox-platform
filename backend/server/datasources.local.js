@@ -1,6 +1,6 @@
 'use strict';
 
-var mongodbUrl = process.env.MONGO_URL || process.env.MONGODB_URI;
+const mongodbUrl = process.env.MONGO_URL || process.env.MONGODB_URI;
 
 if (mongodbUrl) {
   console.log('Using MongoDB with: ' + mongodbUrl);
@@ -13,6 +13,4 @@ if (mongodbUrl) {
       disableDefaultSort: true
     },
   };
-} else {
-  console.error('Env MONGO_URL not set');
-}
+} else console.error('Env MONGO_URL not set');

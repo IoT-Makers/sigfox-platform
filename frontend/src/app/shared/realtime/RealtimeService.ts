@@ -1,13 +1,8 @@
-import {environment} from "../../../../environments/environment";
 import {Injectable, Optional} from '@angular/core';
-
-import {OrganizationApi, ReceptionApi, UserApi} from "../sdk/services/index";
-
 
 export class RealtimeServiceConfig {
   public primusURL: string
 }
-
 
 @Injectable({
   providedIn: 'root',
@@ -17,11 +12,9 @@ export class RealtimeService {
   private primusClient: any;
   private readonly primusURL: string;
 
-
   public constructor(@Optional() config: RealtimeServiceConfig) {
     this.primusURL = config.primusURL;
   }
-
 
   public connect(accessToken: string) {
     if (this.primusClient)
@@ -49,7 +42,6 @@ export class RealtimeService {
     // });
   }
 
-
   public addListener(listener: (data:any)=>void): (data) => void {
     const cb = (data) => {
       if (data)
@@ -58,7 +50,6 @@ export class RealtimeService {
     this.primusClient.on('data', cb);
     return cb;
   }
-
 
   public removeListener(listener: any): void {
     this.primusClient.off('data', listener);

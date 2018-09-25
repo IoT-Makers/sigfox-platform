@@ -1,4 +1,5 @@
-import { Model } from "@mean-expert/model";
+import {Model} from "@mean-expert/model";
+
 /**
  * @module AppSetting
  * @description
@@ -25,6 +26,7 @@ class AppSetting {
   // Example Operation Hook
   public beforeSave(ctx: any, next: Function): void {
     console.log("AppSetting: Before Save");
+    if (ctx.instance) ctx.instance.createdAt = new Date();
     next();
   }
 

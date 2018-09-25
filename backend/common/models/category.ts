@@ -54,13 +54,11 @@ class Category {
   // Example Operation Hook
   public beforeSave(ctx: any, next: Function): void {
     console.log("Category: Before Save");
-    if (ctx.instance) {
-      ctx.instance.createdAt = new Date();
-    }
+    if (ctx.instance) ctx.instance.createdAt = new Date();
     next();
   }
 
-  // Before delete category, remove category organizaton links
+  // Before delete category, remove category organization links
   public beforeDelete(ctx: any, next: Function): void {
     // Models
     const Category = this.model;
@@ -238,12 +236,11 @@ class Category {
     const Organization = this.model.app.models.Organization;
     const Device = this.model.app.models.Device;
 
-    if ((type !== "csv"
-      && type !== "json")
+    if (
+      (type !== "csv" && type !== "json")
       || typeof categoryId === "undefined"
-      || typeof organizationId === "undefined") {
-      res.send('Missing "type" ("csv" or "json"), "categoryId"');
-    }
+      || typeof organizationId === "undefined"
+    ) res.send('Missing "type" ("csv" or "json"), "categoryId"');
 
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
@@ -385,9 +382,7 @@ class Category {
                 }
               });
           });
-        } else {
-          next(null, "Error occured - not allowed");
-        }
+        } else next(null, "Error occured - not allowed");
       });
   }
 }
