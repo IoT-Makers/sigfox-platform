@@ -4,6 +4,7 @@ import {AppSettingApi, UserApi} from '../../../shared/sdk/services';
 import {ActivatedRoute, Router} from '@angular/router';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {RealtimeService} from "../../../shared/realtime/RealtimeService";
 
 @Component({
   selector: 'app-login',
@@ -33,11 +34,13 @@ export class LoginComponent implements OnInit, OnDestroy {
       animation: 'fade'
     });
 
-  constructor(private userApi: UserApi,
-              private appSettingApi: AppSettingApi,
-              private route: ActivatedRoute,
-              private router: Router,
-              toasterService: ToasterService) {
+  constructor(
+    private rt:RealtimeService,
+    private userApi: UserApi,
+    private appSettingApi: AppSettingApi,
+    private route: ActivatedRoute,
+    private router: Router,
+    toasterService: ToasterService) {
     this.toasterService = toasterService;
   }
 
@@ -46,6 +49,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.userApi.login(this.user).subscribe(
       (token: AccessToken) => {
         // console.log('New token: ', token);
+        this.rt.connect(token.id);
 
         // Update the last login date
         this.userApi.patchAttributes(
