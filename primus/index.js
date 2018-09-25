@@ -72,6 +72,9 @@ primus.on('connection', function connection(spark) {
             case "message":
                 messageHandler(payload);
                 break;
+            case "device":
+                deviceHandler(payload);
+                break;
             default:
                 break;
         }
@@ -81,15 +84,14 @@ primus.on('connection', function connection(spark) {
 
 function messageHandler(payload) {
     const msg = payload.content;
+    const userId = msg.userId.toString();
     if (msg) {
         // from message.ts
-        console.log(payload.action + ' message ' + msg.id + ' for user ' + msg.userId);
-
-        let Message = db.collection("Message");
+        console.log(payload.action + ' message ' + msg.id + ' for user ' + userId);
 
         let targetClients = [];
         primus.forEach(function (spark, id, connections) {
-            if (spark.userId === msg.userId.toString()) {
+            if (spark.userId === userId) {
                 targetClients.push(spark);
             }
         });
@@ -112,22 +114,19 @@ function messageHandler(payload) {
             return;
         }
 
-        Message.findOne({_id: msg.id}, (err, msg) => {
-            if (!msg) return;
-            msg.id = msg._id;
-            db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
-                msg.Geolocs = geolocs;
-                msg.Device = payload.device;
-                const outgoingPayload = {
-                    event: "message",
-                    action: payload.action,
-                    content: msg
+        msg.id = msg._id;
+        db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
+            msg.Geolocs = geolocs;
+            msg.Device = payload.device;
+            const outgoingPayload = {
+                event: "message",
+                action: payload.action,
+                content: msg
 
-                };
-                targetClients.forEach(function (spark) {
-                    spark.write(outgoingPayload);
-                    console.log("sent");
-                });
+            };
+            targetClients.forEach(function (spark) {
+                spark.write(outgoingPayload);
+                console.log("sent");
             });
         });
     }
