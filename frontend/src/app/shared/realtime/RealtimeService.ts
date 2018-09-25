@@ -31,8 +31,8 @@ export class RealtimeService {
         transformer: 'engine.io',
         reconnect: {
           max: Infinity // Number: The max delay before we try to reconnect.
-          , min: 500 // Number: The minimum delay before we try reconnect.
-          , retries: 5 // Number: How many times we should try to reconnect.
+          , min: 1000 // Number: The minimum delay before we try reconnect.
+          , retries: 10 // Number: How many times we should try to reconnect.
         }
       });
     this.primusClient.on('error', function error(err) {

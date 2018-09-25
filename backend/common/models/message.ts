@@ -571,12 +571,15 @@ class Message {
 
   public afterDelete(ctx: any, next: Function): void {
     let msg = ctx.instance;
-    const payload = {
-      event: "message",
-      content: msg,
-      action: "DELETE"
-    };
-    this.primusClient.write(payload);
+    if (msg) {
+      // if the message is delete via a cascade, no instance is provided
+      const payload = {
+        event: "message",
+        content: msg,
+        action: "DELETE"
+      };
+      this.primusClient.write(payload);
+    }
     next();
   }
 

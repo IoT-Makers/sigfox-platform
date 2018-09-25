@@ -1,6 +1,7 @@
 import {Model} from "@mean-expert/model";
 import * as _ from "lodash";
 import {decrypt} from "./utils";
+import {PrimusClientFn} from "../../server/PrimusClientFn";
 
 const moment = require("moment");
 const loopback = require("loopback");
@@ -16,7 +17,9 @@ const json2csv = require("json2csv").parse;
 @Model({
   hooks: {
     beforeSave: {name: "before save", type: "operation"},
+    afterSave: { name: "after save", type: "operation" },
     beforeDelete: { name: "before delete", type: "operation" },
+    afterDelete: { name: "after delete", type: "operation" },
     afterRemoteLinkOrganizations: {name: "prototype.__link__Organizations", type: "afterRemote"},
     afterRemoteUnlinkOrganizations: {name: "prototype.__unlink__Organizations", type: "afterRemote"},
   },
@@ -67,8 +70,11 @@ const json2csv = require("json2csv").parse;
 
 class Device {
 
+  private primusClient: any;
+
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
+    this.primusClient = PrimusClientFn.newClient();
   }
 
   // Example Operation Hook
@@ -570,6 +576,31 @@ class Device {
       Alert.destroyAll({deviceId}, (error: any, result: any) => { if (!error) { console.log("Deleted all alerts for device: " + deviceId); } });
     }
 
+    next();
+  }
+
+
+  public afterDelete(ctx: any, next: Function): void {
+    let device = ctx.instance;
+    const payload = {
+      event: "device",
+      content: device,
+      action: "DELETE"
+    };
+    this.primusClient.write(payload);
+    next();
+  }
+
+  public afterSave(ctx: any, next: Function): void {
+      // Pub-sub
+      let device = ctx.instance;
+      const payload = {
+        event: "device",
+        content: device,
+        action: ctx.isNewInstance ? "CREATE" : "UPDATE"
+
+      };
+      this.primusClient.write(payload);
     next();
   }
 }
