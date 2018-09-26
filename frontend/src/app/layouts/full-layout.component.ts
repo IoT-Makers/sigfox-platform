@@ -46,13 +46,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private organizationToAddOrEdit: Organization = new Organization();
   private organizations: Organization[] = [];
 
-  private subscriptions: Subscription[] = [];
-
-  private deviceSub: Subscription;
-  private messageSub: Subscription;
-
-  private dashboards: Dashboard[] = [];
-
   private countCategories = 0;
   private countDevices = 0;
   private countMessages = 0;
@@ -146,10 +139,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
+    this.cleanSetup();
+    this.subscribe();
     if (!this.isInitialized) {
       this.isInitialized = true;
       console.log('Setup Full layout');
-      // this.cleanSetup();
 
       // For organizations menu
       this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
@@ -159,7 +153,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       });
 
       const api = this.organization ? this.organizationApi : this.userApi;
-      const id = this.organization ? this.organization.id : this.user.id
+      const id = this.organization ? this.organization.id : this.user.id;
       // Categories
       api.countCategories(id).subscribe(result => {
         this.countCategories = result.count;
@@ -219,8 +213,13 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
+  private cleanSetup() {
+    this.unsubscribe();
+  }
+
   ngOnDestroy(): void {
     console.log('Full Layout: ngOnDestroy');
+    this.cleanSetup();
   }
 
   public toggled(open: boolean): void {
@@ -362,29 +361,45 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   //   localStorage.setItem('adminView', 'true');
   //   this.setup();
   // }
-  rtMsgHandler = (payload:any) => {
-    if (payload.action == "CREATE") {
-      this.countMessages++;
-    } else if (payload.action == "DELETE") {
-      this.countMessages--;
-    }
+  rtCategoryHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countCategories++ : payload.action == "DELETE" ? this.countCategories-- : 0;
   };
-
   rtDeviceHandler = (payload:any) => {
-    if (payload.action == "CREATE") {
-      this.countDevices++;
-    } else if (payload.action == "DELETE") {
-      this.countDevices--;
-    }
+    payload.action == "CREATE" ? this.countDevices++ : payload.action == "DELETE" ? this.countDevices-- : 0;
+  };
+  rtMsgHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countMessages++ : payload.action == "DELETE" ? this.countMessages-- : 0;
+  };
+  rtAlertHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countAlerts++ : payload.action == "DELETE" ? this.countAlerts-- : 0;
+  };
+  rtParserHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countParsers++ : payload.action == "DELETE" ? this.countParsers-- : 0;
+  };
+  rtConnectorHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countConnectors++ : payload.action == "DELETE" ? this.countConnectors-- : 0;
+  };
+  rtBeaconHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countBeacons++ : payload.action == "DELETE" ? this.countBeacons-- : 0;
   };
 
   subscribe(): void {
-    this.rtMsgHandler = this.rt.addListener("message", this.rtMsgHandler);
+    this.rtCategoryHandler = this.rt.addListener("category", this.rtCategoryHandler);
     this.rtDeviceHandler = this.rt.addListener("device", this.rtDeviceHandler);
+    this.rtMsgHandler = this.rt.addListener("message", this.rtMsgHandler);
+    this.rtAlertHandler = this.rt.addListener("alert", this.rtAlertHandler);
+    this.rtParserHandler = this.rt.addListener("parser", this.rtParserHandler);
+    this.rtConnectorHandler = this.rt.addListener("Connector", this.rtConnectorHandler);
+    this.rtBeaconHandler = this.rt.addListener("beacon", this.rtBeaconHandler);
   }
 
   unsubscribe(): void {
-    this.rt.removeListener(this.rtMsgHandler);
+    this.rt.removeListener(this.rtCategoryHandler);
     this.rt.removeListener(this.rtDeviceHandler);
+    this.rt.removeListener(this.rtMsgHandler);
+    this.rt.removeListener(this.rtAlertHandler);
+    this.rt.removeListener(this.rtParserHandler);
+    this.rt.removeListener(this.rtConnectorHandler);
+    this.rt.removeListener(this.rtBeaconHandler);
   }
 }
