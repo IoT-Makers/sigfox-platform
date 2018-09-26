@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FireLoopRef, Parser, User} from '../../shared/sdk/models';
-import {RealTime} from '../../shared/sdk/services';
+import {Parser, User} from '../../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import {ParserApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {RealtimeService} from "../../shared/realtime/realtime.service";
 
 @Component({
   templateUrl: './parsers.component.html',
@@ -21,15 +21,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   public parserToRemove: Parser = new Parser();
   private decodedPayload = [];
   private testPayload = [];
-
-  private payload: any;
-
   public parsers: Parser[] = [];
-
-  private userRef: FireLoopRef<User>;
-  private parserRef: FireLoopRef<Parser>;
-  private parserSub: Subscription;
-
 
   // Notifications
   private toast;
@@ -41,7 +33,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
       animation: 'fade'
     });
 
-  constructor(private rt: RealTime,
+  constructor(private rt: RealtimeService,
               private userApi: UserApi,
               toasterService: ToasterService,
               private parserApi: ParserApi) {
@@ -50,21 +42,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Parsers: ngOnInit');
-    // Real Time
-    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-      this.setup();
-    else
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-    /*if (
-      this.rt.connection.isConnected() &&
-      this.rt.connection.authenticated
-    ) {
-      this.rt.onReady().subscribe(() => this.setup());
-    } else {
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-      this.rt.onReady().subscribe();
-    }*/
-
+    this.setup();
     this.parserToAdd.function = 'var payload,\n' +
       '  temperature,\n' +
       '  parsedData = [],\n' +
@@ -83,28 +61,22 @@ export class ParsersComponent implements OnInit, OnDestroy {
       '\n' +
       '//console.log(parsedData);\n' +
       'return parsedData;';
-
-
   }
 
   setup(): void {
     this.cleanSetup();
+    this.subscribe();
+
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-
-
 
     // Parsers
-    this.parserRef = this.userRef.child<Parser>('Parsers');
-    this.parserSub = this.parserRef.on('change').subscribe(
-      (parsers: Parser[]) => {
-        this.parserApi.find({
-          include: ['Devices']
-        }).subscribe((parsers: Parser[]) => {
-          this.parsers = parsers;
-        });
-      });
+    this.parserApi.find({
+      include: ['Devices']
+    }).subscribe((parsers: Parser[]) => {
+      this.parsers = parsers;
+      console.log(this.parsers);
+    });
   }
 
   ngOnDestroy(): void {
@@ -113,9 +85,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   private cleanSetup() {
-    if (this.parserRef) this.parserRef.dispose();
-    if (this.userRef) this.userRef.dispose();
-    if (this.parserSub) this.parserSub.unsubscribe();
+
   }
 
   decodePayload(i: number, parser: Parser, payload: string): void {
@@ -136,7 +106,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   create(): void {
-    this.parserRef.create(this.parserToAdd).subscribe(value => {
+    this.userApi.createParsers(this.user.id, this.parserToAdd).subscribe(value => {
       this.parserToAdd = new Parser();
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
@@ -159,7 +129,6 @@ export class ParsersComponent implements OnInit, OnDestroy {
         this.parserToEdit = parser;
         this.confirmParseModal.show();
       }
-
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
@@ -168,21 +137,17 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   updateParsedData() {
-    // Disconnect real-time to avoid app crashing
-    this.rt.connection.disconnect();
     this.parserApi.parseAllDevices(this.parserToEdit.id, null, null).subscribe(result => {
       if (result.message === 'Success') {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
         this.confirmParseModal.hide();
-        this.rt.onReady();
       } else {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('warning', 'Warning', result.message);
         this.confirmParseModal.hide();
-        this.rt.onReady();
       }
     });
   }
@@ -193,7 +158,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   remove(): void {
-    this.parserRef.remove(this.parserToRemove).subscribe(value => {
+    this.userApi.destroyByIdParsers(this.user.id, this.parserToRemove.id).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully deleted.');
@@ -203,5 +168,28 @@ export class ParsersComponent implements OnInit, OnDestroy {
       this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
     });
     this.confirmModal.hide();
+  }
+
+  rtHandler = (payload:any) => {
+    if (payload.action == "CREATE") {
+      this.parsers.unshift(payload.content);
+    } else if (payload.action == "DELETE") {
+      this.parsers = this.parsers.filter(function (parser) {
+        return parser.id !== payload.content.id;
+      });
+    } else if (payload.action == "UPDATE") {
+      let idx = this.parsers.findIndex(x => x.id == payload.content.id);
+      if (idx != -1) {
+        this.parsers[idx] = payload.content;
+      }
+    }
+  };
+
+  subscribe(): void {
+    this.rtHandler = this.rt.addListener("parser", this.rtHandler);
+  }
+
+  unsubscribe(): void {
+    this.rt.removeListener(this.rtHandler);
   }
 }

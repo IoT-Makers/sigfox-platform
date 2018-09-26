@@ -19,6 +19,7 @@ export class RealtimeService {
   public connect(accessToken: string) {
     if (this.primusClient)
       this.primusClient.end();
+    //TODO: use cookie
     this.primusClient = new Primus(this.primusURL + "?access_token=" + accessToken,
       {
         transformer: 'engine.io',

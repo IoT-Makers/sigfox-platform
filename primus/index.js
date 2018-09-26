@@ -29,8 +29,6 @@ MongoClient.connect(mongodbUrl, { useNewUrlParser: true }, function(err, client)
     db = client.db(dbName);
     console.log("Primus connected to mongo");
 });
-
-
 //
 // Add auth hook on server
 //
@@ -79,13 +77,16 @@ primus.on('connection', function connection(spark) {
             case "device":
                 deviceHandler(payload);
                 break;
+            case "parser":
+                parserHandler(payload);
+                break;
             default:
                 break;
         }
     });
 });
 
-
+// TODO: if action == update, no need to query the db
 function messageHandler(payload) {
     const msg = payload.content;
     const userId = msg.userId.toString();
@@ -185,6 +186,55 @@ function deviceHandler(payload) {
     }
 }
 
+
+function parserHandler(payload) {
+    console.log(payload);
+    const parser = payload.content;
+    const userId = parser.userId.toString();
+    if (parser) {
+        // from message.ts
+        console.log(payload.action + ' device ' + parser.id + ' for user ' + userId);
+
+
+        let targetClients = [];
+        primus.forEach(function (spark, id, connections) {
+            if (spark.userId === userId) {
+                targetClients.push(spark);
+            }
+        });
+        console.log('user ' + userId + ' has ' + targetClients.length + ' client online');
+        // if the message owner is not online, no need to look up
+        if (!targetClients.length)
+            return;
+
+        if (payload.action === "DELETE") {
+            const outgoingPayload = {
+                event: "parser",
+                action: payload.action,
+                content: parser
+
+            };
+            targetClients.forEach(function (spark) {
+                spark.write(outgoingPayload);
+                console.log("delete sent");
+            });
+            return;
+        }
+
+        db.collection("Device").find({parserId:parser.id}).toArray((err, devices) => {
+            parser.Devices = devices;
+            const outgoingPayload = {
+                event: "parser",
+                action: payload.action,
+                content: parser
+            };
+            targetClients.forEach(function (spark) {
+                spark.write(outgoingPayload);
+                console.log("sent");
+            });
+        });
+    }
+}
 
 primus.on('disconnection', function end(spark) {
     console.log('disconnection');

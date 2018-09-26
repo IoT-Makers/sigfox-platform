@@ -284,6 +284,33 @@ class Parser {
       }
     });
   }
+
+  public afterDelete(ctx: any, next: Function): void {
+    let parser = ctx.instance;
+    if (parser) {
+      // if the message is delete via a cascade, no instance is provided
+      const payload = {
+        event: "parser",
+        content: parser,
+        action: "DELETE"
+      };
+      this.primusClient.write(payload);
+    }
+    next();
+  }
+
+
+  public afterSave(ctx: any, next: Function): void {
+    // Pub-sub
+    let parser = ctx.instance;
+    const payload = {
+      event: "parser",
+      content: parser,
+      action: ctx.isNewInstance ? "CREATE" : "UPDATE"
+    };
+    this.primusClient.write(payload);
+    next();
+  }
 }
 
 module.exports = Parser;

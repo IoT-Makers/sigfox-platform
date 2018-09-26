@@ -20,7 +20,7 @@ import {DOCUMENT} from '@angular/common';
 import {saveAs} from 'file-saver';
 import * as moment from 'moment';
 import {ActivatedRoute} from '@angular/router';
-import {RealtimeService} from "../../shared/realtime/RealtimeService";
+import {RealtimeService} from "../../shared/realtime/realtime.service";
 
 @Component({
   selector: 'app-devices',

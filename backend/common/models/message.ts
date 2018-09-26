@@ -588,7 +588,6 @@ class Message {
   public afterSave(ctx: any, next: Function): void {
     // Calculate success rate and update device
     this.linkMessageToOrganization(ctx.instance);
-    // Calculate success rate and update device
     this.updateDeviceSuccessRate(ctx.instance.deviceId, (device => {
       // Pub-sub
       let msg = ctx.instance;
@@ -597,7 +596,6 @@ class Message {
         device: device,
         content: msg,
         action: ctx.isNewInstance ? "CREATE" : "UPDATE"
-
       };
       this.primusClient.write(payload);
     }));
