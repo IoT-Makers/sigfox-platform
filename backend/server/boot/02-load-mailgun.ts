@@ -20,7 +20,5 @@ module.exports = (app: any) => {
     });
 
     app.models.Email.attachTo(dataSource);
-  } else {
-    console.log('No email service provided.');
-  }
+  } else console.log('No email service provided.');
 };

@@ -1,4 +1,5 @@
-import { Model } from "@mean-expert/model";
+import {Model} from "@mean-expert/model";
+
 /**
  * @module Beacon
  * @description

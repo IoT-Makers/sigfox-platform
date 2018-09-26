@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Connector, Device, FireLoopRef, Geoloc, Message, Organization, User} from '../../shared/sdk/models';
-import {RealTime, UserApi} from '../../shared/sdk/services';
+import {Connector, Device, Geoloc, Message, Organization, User} from '../../shared/sdk/models';
+import {UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
 import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
@@ -9,6 +9,7 @@ import {ActivatedRoute} from '@angular/router';
 import {OrganizationApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import { environment } from '../../../../environments/environment';
+import {RealtimeService} from "../../shared/realtime/RealtimeService";
 
 @Component({
   selector: 'app-messages',
@@ -58,12 +59,12 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   private filterQuery = '';
 
-  constructor(private rt: RealTime,
-              private userApi: UserApi,
+  constructor(private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private receptionApi: ReceptionApi,
               toasterService: ToasterService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private rt: RealtimeService) {
     this.toasterService = toasterService;
   }
 
@@ -71,7 +72,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
     console.log('Messages: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-    this.subscribe();
 
     // Check if organization view
     this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
@@ -88,6 +88,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.cleanSetup();
+    this.subscribe();
+
     // Get and listen messages
     this.deviceSub = this.route.params.subscribe(params => {
       this.filterQuery = params['id'];
@@ -133,6 +135,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   private cleanSetup() {
     if (this.deviceSub) this.deviceSub.unsubscribe();
+    this.unsubscribe();
   }
 
   deleteMessage(message: Message): void {
@@ -226,39 +229,23 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   }
 
+  rtHandler = (payload:any) => { // <-- note syntax here
+    if (payload.event === "message")
+      if (payload.action == "CREATE") {
+        console.log("hahah");
+        this.messages.unshift(payload.content);
+      } else if (payload.action == "DELETE") {
+        this.messages = this.messages.filter(function (msg) {
+          return msg.id !== payload.content.id;
+        });
+      }
+  };
+
   subscribe(): void {
-    const primusURL = environment.PRIMUS_URL || "http://localhost:2333";
-    this.primusClient = new Primus(primusURL + "?access_token=" + this.userApi.getCurrentToken().id,
-      {
-        transformer: 'engine.io',
-        reconnect: {
-          max: Infinity // Number: The max delay before we try to reconnect.
-          , min: 500 // Number: The minimum delay before we try reconnect.
-          , retries: 5 // Number: How many times we should try to reconnect.
-        }
-      });
+    this.rtHandler = this.rt.addListener(this.rtHandler);
+  }
 
-    // this.primusClient.on('open', () => {
-    //   console.log('Messages: connected!!');
-    //   this.primusClient.write({
-    //     "frontend" : {
-    //       "userId": this.user.id,
-    //       "page": "message"
-    //     }
-    //   })
-    // });
-
-    this.primusClient.on('data', (data) => {
-      const payload = data.payload;
-      if (payload)
-        if (payload.message)
-          if (payload.action == "CREATE") {
-            this.messages.unshift(payload.message);
-          } else if (payload.action == "DELETE") {
-            this.messages = this.messages.filter(function(msg) {
-              return msg.id !== payload.message.id;
-            });
-          }
-    });
+  unsubscribe(): void {
+    this.rt.removeListener(this.rtHandler);
   }
 }

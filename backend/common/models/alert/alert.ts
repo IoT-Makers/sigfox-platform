@@ -53,9 +53,6 @@ class Alert {
 
   public beforeSave(ctx: any, next: Function): void {
     console.log("Alert: Before Save");
-    if (ctx.instance) {
-      ctx.instance.createdAt = new Date();
-    }
     next();
   }
 
@@ -330,17 +327,17 @@ class Alert {
                 from: connector.login,
                 subject: "[Sigfox Platform] - Alert for " + title,
                 html: "Hey! <p>An alert has been triggered for the device: <b>" + title + "</b></p><p>" + alertMessage + "</p><br>" +
-                '<a href=\"https://www.google.com/maps/place/' + location.lat + "," + location.lng + '/\">' +
-                '<img src=\"https://maps.googleapis.com/maps/api/staticmap?' +
-                "center=" + location.lat + "," + location.lng +
-                "&zoom=12" +
-                "&scale=1" +
-                "&size=600x300" +
-                "&maptype=roadmap" +
-                "&key=AIzaSyBFDtqOXHsFg-a60JWayUJmYumKQxn8G1o" +
-                "&format=png" +
-                "&visual_refresh=true" +
-                "&markers=size:mid%7Ccolor:0x792faa%7Clabel:Position%7C" + location.lat + "," + location.lng + '\" alt=\"Position\"></a>',
+                  '<a href=\"https://www.google.com/maps/place/' + location.lat + "," + location.lng + '/\">' +
+                  '<img src=\"https://maps.googleapis.com/maps/api/staticmap?' +
+                  "center=" + location.lat + "," + location.lng +
+                  "&zoom=12" +
+                  "&scale=1" +
+                  "&size=600x300" +
+                  "&maptype=roadmap" +
+                  "&key=AIzaSyBFDtqOXHsFg-a60JWayUJmYumKQxn8G1o" +
+                  "&format=png" +
+                  "&visual_refresh=true" +
+                  "&markers=size:mid%7Ccolor:0x792faa%7Clabel:Position%7C" + location.lat + "," + location.lng + '\" alt=\"Position\"></a>',
               };
             }
             transporter.sendMail(options, (err: any, mail: any) => {

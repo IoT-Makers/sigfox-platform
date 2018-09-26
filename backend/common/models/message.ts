@@ -580,10 +580,9 @@ class Message {
   public afterDelete(ctx: any, next: Function): void {
     let msg = ctx.instance;
     const payload = {
-      payload: {
-        message: msg,
-        action: "DELETE"
-      }
+      event: "message",
+      content: msg,
+      action: "DELETE"
     };
     this.primusClient.write(payload);
     next();
@@ -598,11 +597,11 @@ class Message {
       // Pub-sub
       let msg = ctx.instance;
       const payload = {
-        payload: {
-          device: device,
-          message: msg,
-          action: ctx.isNewInstance ? "CREATE" : "UPDATE"
-        }
+        event: "message",
+        device: device,
+        content: msg,
+        action: ctx.isNewInstance ? "CREATE" : "UPDATE"
+
       };
       this.primusClient.write(payload);
     }));

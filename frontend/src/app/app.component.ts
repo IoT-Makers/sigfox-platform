@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {setTheme} from 'ngx-bootstrap';
-import {Geoloc} from './shared/sdk/models/Geoloc';
 import {UserApi} from './shared/sdk/services/custom';
 import {User} from './shared/sdk/models';
+import {RealtimeModule} from "./shared/realtime/RealtimeModule";
+import {environment} from "../../environments/environment";
+import {RealtimeService} from "./shared/realtime/RealtimeService";
 
 @Component({
   selector: 'body',
@@ -12,7 +14,7 @@ export class AppComponent implements OnInit {
 
   public user: User = new User();
 
-  constructor(private userApi: UserApi) {
+  constructor(private userApi: UserApi, private rt: RealtimeService) {
     setTheme('bs4'); // or 'bs3'
   }
 
@@ -24,6 +26,10 @@ export class AppComponent implements OnInit {
       this.setUserPosition();
       this.setUserConnected();
     }
+    const accessToken = this.userApi.getCurrentToken().id;
+    if (accessToken)
+      this.rt.connect(accessToken);
+
   }
 
   setUserPosition(): void {

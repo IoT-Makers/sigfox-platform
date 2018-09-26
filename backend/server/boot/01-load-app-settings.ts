@@ -1,4 +1,5 @@
 module.exports = (app: any) => {
+
   const AppSetting = app.models.AppSetting;
   let countAppSettings = 0;
 
