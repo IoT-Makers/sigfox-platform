@@ -337,11 +337,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     //     this.organization = organization;
     //     this.addOrEditOrganizationModal.hide();
     //   });
-      /*this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
-        console.log(organizations);
-        this.organizations = organizations;
-        this.addOrEditOrganizationModal.hide();
-      });*/
+    /*this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
+      console.log(organizations);
+      this.organizations = organizations;
+      this.addOrEditOrganizationModal.hide();
+    });*/
     // });
   }
 
