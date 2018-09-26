@@ -55,8 +55,8 @@ primus.on('connection', function connection(spark) {
 
     // manual auth hook, attach userId to spark if access token found
     const access_token = spark.request.query.access_token;
-    let AccessToken = db.collection("AccessToken");
     if (!serverAccessTokens.includes(access_token)) {
+        let AccessToken = db.collection("AccessToken");
         AccessToken.findOne({_id: access_token}, (err, token) => {
             if (err || !token) {
                 console.info("Access token not found");
@@ -88,7 +88,7 @@ primus.on('connection', function connection(spark) {
     });
 });
 
-// TODO: if action == update, no need to query the db
+// TODO: if action == update, sometimes there's no need to query the db
 function messageHandler(payload) {
     const msg = payload.content;
     const userId = msg.userId.toString();
@@ -175,7 +175,6 @@ function deviceHandler(payload) {
                     device.Parser = parser;
                     db.collection("Organization").find({deviceId: device.id}).toArray((err, organizations) => {
                         device.Organizations = organizations;
-                        console.log(parser);
                         const outgoingPayload = {
                             event: "device",
                             action: payload.action,
