@@ -1,5 +1,15 @@
-import {AppSetting, Category, Connector, Device, FireLoopRef, Geoloc, Organization, Parser, User} from '../../shared/sdk/models';
-import {RealTime} from '../../shared/sdk/services';
+import {
+  AppSetting,
+  Category,
+  Connector,
+  Device,
+  FireLoopRef,
+  Geoloc,
+  Message,
+  Organization,
+  Parser,
+  User
+} from '../../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import {AgmInfoWindow} from '@agm/core';
 import {AppSettingApi, DeviceApi, MessageApi, OrganizationApi, ParserApi, UserApi} from '../../shared/sdk/services/custom';
@@ -10,6 +20,7 @@ import {DOCUMENT} from '@angular/common';
 import {saveAs} from 'file-saver';
 import * as moment from 'moment';
 import {ActivatedRoute} from '@angular/router';
+import {RealtimeService} from "../../shared/realtime/RealtimeService";
 
 @Component({
   selector: 'app-devices',
@@ -50,13 +61,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
   public devices: Device[] = [];
   private parsers: Parser[] = [];
 
-  private userRef: FireLoopRef<User>;
-  private organizationRef: FireLoopRef<Organization>;
-  private categoryRef: FireLoopRef<Category>;
-  private deviceRef: FireLoopRef<Device>;
-  private deviceReadRef: FireLoopRef<Device>;
-  private parserRef: FireLoopRef<Parser>;
-
   public deviceToEdit: Device = new Device();
   public deviceToRemove: Device = new Device();
 
@@ -91,7 +95,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     classes: 'select-organization'
   };
 
-  constructor(private rt: RealTime,
+  constructor(private rt: RealtimeService,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private parserApi: ParserApi,
@@ -130,18 +134,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
       if (parentParams.id) {
         this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
           this.organization = organization;
-          // Check if real time and setup
-          if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-            this.setup();
-          else
-            this.rt.onAuthenticated().subscribe(() => this.setup());
+          this.setup();
         });
       } else {
-        // Check if real time and setup
-        if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-          this.setup();
-        else
-          this.rt.onAuthenticated().subscribe(() => this.setup());
+        this.setup();
       }
     });
   }
@@ -182,6 +178,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.cleanSetup();
+    this.subscribe();
     console.log('Setup Devices');
 
     const filter = {
@@ -204,44 +201,24 @@ export class DevicesComponent implements OnInit, OnDestroy {
       }]
     };
 
-    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-    this.deviceRef = this.userRef.child<Device>('Devices');
-
-    // Get and listen parsers
-    this.parserRef = this.rt.FireLoop.ref<Parser>(Parser);
-    this.parserSub = this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-      this.parsers = parsers;
-    });
-    // Get and listen user categories
-    this.categoryRef = this.userRef.child<Category>('Categories');
-    this.categorySub = this.categoryRef.on('change').subscribe((categories: Category[]) => {
-      this.categories = categories;
-    });
-
     if (this.organization) {
-      this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-      this.deviceRef = this.organizationRef.child<Device>('Devices');
-      this.deviceSub = this.deviceRef.on('change', filter).subscribe((devices: Device[]) => {
+      this.organizationApi.getDevices(this.organization.id, filter).subscribe((devices: Device[]) => {
         this.devices = devices;
         this.devicesReady = true;
       });
     } else {
-      this.userApi.countDevices(this.user.id).subscribe((result: any) => {
-        if (result.count < 10) {
-          filter.where = {userId: this.user.id};
-          this.deviceReadRef = this.rt.FireLoop.ref<Device>(Device);
-          this.deviceReadSub = this.deviceReadRef.on('change', filter).subscribe((devices: Device[]) => {
-            this.devices = devices;
-            this.devicesReady = true;
-          });
-        } else {
-          this.deviceSub = this.deviceRef.on('change', filter).subscribe((devices: Device[]) => {
-            this.devices = devices;
-            this.devicesReady = true;
-          });
-        }
+      this.userApi.getDevices(this.user.id, filter).subscribe((result: any) => {
+        this.devices = result;
+        this.devicesReady = true;
       });
     }
+
+    this.userApi.getParsers(this.user.id).subscribe((result: any) => {
+      this.parsers = result;
+    });
+    this.userApi.getCategories(this.user.id).subscribe((result: any) => {
+      this.categories = result;
+    });
   }
 
   ngOnDestroy(): void {
@@ -252,19 +229,11 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   private cleanSetup() {
-    if (this.organizationRef) this.organizationRef.dispose();
-    if (this.userRef) this.userRef.dispose();
-
-    if (this.deviceRef) this.deviceRef.dispose();
     if (this.deviceSub) this.deviceSub.unsubscribe();
-    if (this.deviceReadRef) this.deviceReadRef.dispose();
     if (this.deviceReadSub) this.deviceReadSub.unsubscribe();
-
-    if (this.parserRef) this.parserRef.dispose();
     if (this.parserSub) this.parserSub.unsubscribe();
-
-    if (this.categoryRef) this.categoryRef.dispose();
     if (this.categorySub) this.categorySub.unsubscribe();
+    this.unsubscribe();
   }
 
   editDevice(device): void {
@@ -274,7 +243,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   updateDevice(): void {
     this.edit = false;
-    this.deviceRef.upsert(this.deviceToEdit).subscribe(value => {
+    this.userApi.updateByIdDevices(this.user.id, this.deviceToEdit.id, this.deviceToEdit).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The device was successfully updated.');
@@ -311,7 +280,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   retrieveMessages(deviceId: string, limit: number, before: number): void {
-
     this.userApi.getConnectors(this.user.id, {where: {type: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
       if (connectors.length > 0) {
         this.loadingFromBackend = true;
@@ -345,7 +313,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
   parseAllMessages(deviceId: string): void {
     this.loadingParseMessages = true;
     // Disconnect real-time to avoid app crashing
-    this.rt.connection.disconnect();
     this.parserApi.parseAllMessages(deviceId, null, null).subscribe(result => {
       this.loadingParseMessages = false;
       if (result.message === 'Success') {
@@ -358,8 +325,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('warning', 'Warning', result.message);
       }
-      this.rt.onReady();
-      //console.log(result);
     });
     this.confirmParseModal.hide();
   }
@@ -389,9 +354,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   remove(): void {
-    // Delete all messages belonging to the device
-    this.deviceRef.remove(this.deviceToRemove).subscribe(value => {
-      console.log(value);
+    this.userApi.destroyByIdDevices(this.user.id, this.deviceToRemove.id).subscribe(value => {
       this.edit = false;
       this.confirmModal.hide();
       if (this.toast)
@@ -468,4 +431,39 @@ export class DevicesComponent implements OnInit, OnDestroy {
   //     console.log(organizations);
   //   });
   // }
+  rtHandler = (payload:any) => {
+    if (payload.action == "CREATE") {
+      this.devices.unshift(payload.content);
+    } else if (payload.action == "DELETE") {
+      this.devices = this.devices.filter(function (device) {
+        return device.id !== payload.content.id;
+      });
+    } else if (payload.action == "UPDATE") {
+      let idx = this.devices.findIndex(x => x.id == payload.content.id);
+      if (idx != -1) {
+        this.devices[idx] = payload.content;
+      }
+    }
+  };
+
+  rtLastMessageHandler = (payload:any) => {
+    if (payload.action == "CREATE" || payload.action == "UPDATE") {
+      let idx = this.devices.findIndex(x => x.id == payload.content.Device.id);
+      if (idx != -1) {
+        let updatedDevice = this.devices[idx];
+        updatedDevice.Messages = [payload.content];
+        this.devices[idx] = updatedDevice;
+      }
+    }
+  };
+
+  subscribe(): void {
+    this.rtHandler = this.rt.addListener("device", this.rtHandler);
+    this.rtLastMessageHandler = this.rt.addListener("message", this.rtLastMessageHandler);
+  }
+
+  unsubscribe(): void {
+    this.rt.removeListener(this.rtHandler);
+    this.rt.removeListener(this.rtLastMessageHandler);
+  }
 }

@@ -24,8 +24,8 @@ export class RealtimeService {
         transformer: 'engine.io',
         reconnect: {
           max: Infinity // Number: The max delay before we try to reconnect.
-          , min: 500 // Number: The minimum delay before we try reconnect.
-          , retries: 5 // Number: How many times we should try to reconnect.
+          , min: 1000 // Number: The minimum delay before we try reconnect.
+          , retries: 10 // Number: How many times we should try to reconnect.
         }
       });
     this.primusClient.on('error', function error(err) {
@@ -42,9 +42,10 @@ export class RealtimeService {
     // });
   }
 
-  public addListener(listener: (data:any)=>void): (data) => void {
+
+  public addListener(event: string, listener: (data:any)=>void): (data) => void {
     const cb = (data) => {
-      if (data)
+      if (data && data.event === event)
         listener(data);
     };
     this.primusClient.on('data', cb);
@@ -52,7 +53,8 @@ export class RealtimeService {
   }
 
   public removeListener(listener: any): void {
-    this.primusClient.off('data', listener);
+    if (this.primusClient)
+      this.primusClient.off('data', listener);
   }
 }
 

@@ -1,8 +1,6 @@
 import {Model} from "@mean-expert/model";
 import {computeCtr, decryptPayload, encryptPayload} from "./utils";
-
-const Primus = require("primus");
-
+import {PrimusClientFn} from "../../server/PrimusClientFn";
 
 /**
  * @module Message
@@ -60,13 +58,7 @@ class Message {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-    let Socket = Primus.createSocket({ transformer: 'engine.io' });
-    const primusURL = process.env.PRIMUS_URL || "http://localhost:2333";
-    this.primusClient = new Socket(primusURL + "?access_token=" + process.env.SERVER_ACCESS_TOKEN);
-
-    this.primusClient.on('close', () => {
-      console.warn('close');
-    });
+    this.primusClient = PrimusClientFn.newClient();
   }
 
   public putSigfox(req: any, data: any, next: Function): void {
@@ -579,12 +571,15 @@ class Message {
 
   public afterDelete(ctx: any, next: Function): void {
     let msg = ctx.instance;
-    const payload = {
-      event: "message",
-      content: msg,
-      action: "DELETE"
-    };
-    this.primusClient.write(payload);
+    if (msg) {
+      // if the message is delete via a cascade, no instance is provided
+      const payload = {
+        event: "message",
+        content: msg,
+        action: "DELETE"
+      };
+      this.primusClient.write(payload);
+    }
     next();
   }
 
