@@ -52,9 +52,7 @@ class Parser {
 
   // Example Operation Hook
   public beforeSave(ctx: any, next: Function): void {
-    if (ctx.instance) {
-      ctx.instance.createdAt = new Date();
-    }
+    if (ctx.instance) ctx.instance.createdAt = new Date();
     next();
   }
 

@@ -36,29 +36,24 @@ class Connector {
   // Example Operation Hook
   public beforeSave(ctx: any, next: Function): void {
     console.log("Connector: Before Save");
-    ctx.instance.createdAt = new Date();
-    const type = ctx.instance.type;
-    const login = ctx.instance.login;
-    const password = ctx.instance.password;
-    // Encrypt the password to be stored
-    if (password) {
-      const encryptedPassword = encrypt(password);
-      ctx.instance.password = encryptedPassword;
-    }
-
-    if (type === "sigfox-api") {
-      this.testConnection(type, login, password, next);
-    } else {
-      next();
-    }
+    if (ctx.instance) {
+      ctx.instance.createdAt = new Date();
+      const type = ctx.instance.type;
+      const login = ctx.instance.login;
+      const password = ctx.instance.password;
+      // Encrypt the password to be stored
+      if (password) {
+        const encryptedPassword = encrypt(password);
+        ctx.instance.password = encryptedPassword;
+      }
+      if (type === "sigfox-api") this.testConnection(type, login, password, next);
+    } else next();
   }
 
   public createSigfoxBackendCallbacks(req: any, devicetypeId: string, next: Function) {
     // Models
     const User = this.model.app.models.user;
-    if (!process.env.BASE_URL) {
-      return next('Please refer the environment variable `BASE_URL` first.');
-    }
+    if (!process.env.BASE_URL) return next('Please refer the environment variable `BASE_URL` first.');
 
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
@@ -192,9 +187,7 @@ class Connector {
       }).catch((err: any) => {
         next(err, null);
       });
-    } else {
-      next(null, "Not implemented yet.");
-    }
+    } else next(null, "Not implemented yet.");
   }
 }
 

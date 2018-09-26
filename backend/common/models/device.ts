@@ -85,6 +85,7 @@ class Device {
     } else if (ctx.instance && ctx.instance.id) {
       console.log("Device: Before Save: " + ctx.instance.id);
       ctx.instance.id = ctx.instance.id.toUpperCase();
+      ctx.instance.createdAt = new Date();
     }
     next();
   }

@@ -175,9 +175,7 @@ class Organization {
 
   public beforeSave(ctx: any, next: Function): void {
     console.log("organization: Before Save");
-    if (ctx.instance) {
-      ctx.instance.createdAt = new Date();
-    }
+    if (ctx.instance) ctx.instance.createdAt = new Date();
     next();
   }
 

@@ -1,10 +1,11 @@
 module.exports = (app: any) => {
+
   const AppSetting = app.models.AppSetting;
   let countAppSettings = 0;
 
   AppSetting.count((err: any, result: any) => {
     countAppSettings = result;
-    if (countAppSettings === 0) {
+    if (countAppSettings == 0) {
       const appSettings = [
         {key: 'canUserRegister', value: true, type: 'boolean'},
         {key: 'canUserCreateOrganization', value: true, type: 'boolean'},
