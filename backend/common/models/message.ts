@@ -124,7 +124,7 @@ class Message {
       (err: any, deviceInstance: any, created: boolean) => { // callback
         if (err) {
           console.error("Error creating device.", err);
-          next(err, data);
+          return next(err, data);
         } else {
           const deviceInstanceFunction = deviceInstance;
           deviceInstance = deviceInstance.toJSON();
@@ -141,7 +141,6 @@ class Message {
               deviceInstanceFunction.updateAttributes({userId}, (err: any, deviceUpdated: any) => {
                 if (err) {
                   console.error(err);
-                  next(err, data);
                 } else {
                   console.log("Updated device userId as: ", deviceUpdated);
                 }
@@ -204,7 +203,7 @@ class Message {
                 deviceInstanceFunction.updateAttributes({parserId}, (err: any, deviceUpdated: any) => {
                   if (err) {
                     console.error(err);
-                    next(err, data);
+                    return next(err, data);
                   } else {
                     console.log("Updated device parser as: ", deviceUpdated);
                     Device.findOne({
@@ -213,7 +212,7 @@ class Message {
                     }, (err: any, deviceInstance: any) => {
                       if (err) {
                         console.error(err);
-                        next(err, data);
+                        return next(err, data);
                       } else if (deviceInstance.Parser.function) {
                         deviceInstance = deviceInstance.toJSON();
 
@@ -321,7 +320,7 @@ class Message {
         (err: any, messageInstance: any) => { // callback
           if (err) {
             console.error(err);
-            next(err, messageInstance);
+            // return next(err, messageInstance);
           } else if (messageInstance) {
             // console.log('Created message as: ', messageInstance);
             if (message.data_parsed) {
@@ -371,7 +370,8 @@ class Message {
                 messageInstance,
                 (err: any, res: any) => {
                   if (err) {
-                    next(err, null);
+                    console.error(err);
+                    // next(err, null);
                   } else {
                     // console.log(res);
                   }
@@ -383,7 +383,8 @@ class Message {
                 req,
                 (err: any, res: any) => {
                   if (err) {
-                    next(err, null);
+                    console.error(err);
+                    // next(err, null);
                   } else {
                     // console.log(res);
                   }
@@ -587,7 +588,6 @@ class Message {
   public afterSave(ctx: any, next: Function): void {
     // Calculate success rate and update device
     this.linkMessageToOrganization(ctx.instance);
-    // Calculate success rate and update device
     this.updateDeviceSuccessRate(ctx.instance.deviceId, (device => {
       // Pub-sub
       let msg = ctx.instance;
@@ -596,7 +596,6 @@ class Message {
         device: device,
         content: msg,
         action: ctx.isNewInstance ? "CREATE" : "UPDATE"
-
       };
       this.primusClient.write(payload);
     }));

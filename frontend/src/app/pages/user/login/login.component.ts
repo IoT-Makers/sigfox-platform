@@ -4,7 +4,7 @@ import {AppSettingApi, UserApi} from '../../../shared/sdk/services';
 import {ActivatedRoute, Router} from '@angular/router';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {RealtimeService} from "../../../shared/realtime/RealtimeService";
+import {RealtimeService} from "../../../shared/realtime/realtime.service";
 
 @Component({
   selector: 'app-login',

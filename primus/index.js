@@ -4,6 +4,8 @@ const Primus = require('primus');
 const MongoClient = require('mongodb').MongoClient;
 const mongodbUrl = process.env.MONGO_URL;
 const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.split(' ');
+const ObjectId = require('mongodb').ObjectId;
+
 let db;
 var connectedClient = 0;
 
@@ -29,8 +31,6 @@ MongoClient.connect(mongodbUrl, { useNewUrlParser: true }, function(err, client)
     db = client.db(dbName);
     console.log("Primus connected to mongo");
 });
-
-
 //
 // Add auth hook on server
 //
@@ -79,13 +79,16 @@ primus.on('connection', function connection(spark) {
             case "device":
                 deviceHandler(payload);
                 break;
+            case "parser":
+                parserHandler(payload);
+                break;
             default:
                 break;
         }
     });
 });
 
-
+// TODO: if action == update, no need to query the db
 function messageHandler(payload) {
     const msg = payload.content;
     const userId = msg.userId.toString();
@@ -140,8 +143,6 @@ function deviceHandler(payload) {
     if (device) {
         // from message.ts
         console.log(payload.action + ' device ' + device.id + ' for user ' + userId);
-
-
         let targetClients = [];
         primus.forEach(function (spark, id, connections) {
             if (spark.userId === userId) {
@@ -158,6 +159,64 @@ function deviceHandler(payload) {
                 event: "device",
                 action: payload.action,
                 content: device
+            };
+            targetClients.forEach(function (spark) {
+                spark.write(outgoingPayload);
+                console.log("delete sent");
+            });
+            return;
+        }
+
+        db.collection("Message").find({deviceId: device.id}).limit(1).sort({"createdAt": -1}).toArray((err, messages) => {
+            device.Messages = messages;
+            db.collection("Category").findOne({_id: ObjectId(device.categoryId)}, (err, category) => {
+                device.Category = category;
+                db.collection("Parser").findOne({_id: ObjectId(device.parserId)}, (err, parser) => {
+                    device.Parser = parser;
+                    db.collection("Organization").find({deviceId: device.id}).toArray((err, organizations) => {
+                        device.Organizations = organizations;
+                        console.log(parser);
+                        const outgoingPayload = {
+                            event: "device",
+                            action: payload.action,
+                            content: device
+                        };
+                        targetClients.forEach(function (spark) {
+                            spark.write(outgoingPayload);
+                            console.log("sent");
+                        });
+                    });
+                });
+            });
+        });
+    }
+}
+
+
+function parserHandler(payload) {
+    const parser = payload.content;
+    const userId = parser.userId.toString();
+    if (parser) {
+        // from message.ts
+        console.log(payload.action + ' device ' + parser.id + ' for user ' + userId);
+
+
+        let targetClients = [];
+        primus.forEach(function (spark, id, connections) {
+            if (spark.userId === userId) {
+                targetClients.push(spark);
+            }
+        });
+        console.log('user ' + userId + ' has ' + targetClients.length + ' client online');
+        // if the message owner is not online, no need to look up
+        if (!targetClients.length)
+            return;
+
+        if (payload.action === "DELETE") {
+            const outgoingPayload = {
+                event: "parser",
+                action: payload.action,
+                content: parser
 
             };
             targetClients.forEach(function (spark) {
@@ -167,24 +226,20 @@ function deviceHandler(payload) {
             return;
         }
 
-        db.collection("Message").find({deviceId:device.id}).limit(1).sort({"createdAt": -1}).toArray((err, messages) => {
-            device.Messages = messages;
-            db.collection("Organization").find({deviceId:device.id}).toArray((err, organizations) => {
-                device.Organizations = organizations;
-                const outgoingPayload = {
-                    event: "device",
-                    action: payload.action,
-                    content: device
-                };
-                targetClients.forEach(function (spark) {
-                    spark.write(outgoingPayload);
-                    console.log("sent");
-                });
+        db.collection("Device").find({parserId:parser.id}).toArray((err, devices) => {
+            parser.Devices = devices;
+            const outgoingPayload = {
+                event: "parser",
+                action: payload.action,
+                content: parser
+            };
+            targetClients.forEach(function (spark) {
+                spark.write(outgoingPayload);
+                console.log("sent");
             });
         });
     }
 }
-
 
 primus.on('disconnection', function end(spark) {
     console.log('disconnection');

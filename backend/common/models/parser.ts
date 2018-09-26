@@ -1,4 +1,5 @@
 import {Model} from "@mean-expert/model";
+import {PrimusClientFn} from "../../server/PrimusClientFn";
 
 /**
  * @module Parser
@@ -10,6 +11,8 @@ import {Model} from "@mean-expert/model";
 @Model({
   hooks: {
     beforeSave: { name: "before save", type: "operation" },
+    afterDelete: { name: "after delete", type: "operation" },
+    afterSave: { name: "after save", type: "operation" },
   },
   remotes: {
     parsePayload: {
@@ -47,8 +50,13 @@ import {Model} from "@mean-expert/model";
 })
 
 class Parser {
+
+  private primusClient: any;
+
   // LoopBack model instance is injected in constructor
-  constructor(public model: any) {}
+  constructor(public model: any) {
+    this.primusClient = PrimusClientFn.newClient();
+  }
 
   // Example Operation Hook
   public beforeSave(ctx: any, next: Function): void {
@@ -59,10 +67,10 @@ class Parser {
   public parsePayload(fn: string, payload: string, req: any, next: Function): void {
     const userId = req.accessToken.userId;
     if (!userId) {
-      next(null, "Please login or use a valid access token.");
+      return next(null, "Please login or use a valid access token.");
     }
     if (payload.length > 24) {
-      next(null, "Sigfox payload cannot be more than 12 bytes.");
+      return next(null, "Sigfox payload cannot be more than 12 bytes.");
     }
 
     // Here we will decode the Sigfox payload and search for geoloc to be extracted and store in the Message
@@ -275,6 +283,33 @@ class Parser {
         next(null, response);
       }
     });
+  }
+
+  public afterDelete(ctx: any, next: Function): void {
+    let parser = ctx.instance;
+    if (parser) {
+      // if the message is delete via a cascade, no instance is provided
+      const payload = {
+        event: "parser",
+        content: parser,
+        action: "DELETE"
+      };
+      this.primusClient.write(payload);
+    }
+    next();
+  }
+
+
+  public afterSave(ctx: any, next: Function): void {
+    // Pub-sub
+    let parser = ctx.instance;
+    const payload = {
+      event: "parser",
+      content: parser,
+      action: ctx.isNewInstance ? "CREATE" : "UPDATE"
+    };
+    this.primusClient.write(payload);
+    next();
   }
 }
 

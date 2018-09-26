@@ -22,7 +22,7 @@ import {LeafletDrawModule} from '@asymmetrik/ngx-leaflet-draw';
 import {AdminGuard} from './_guards/admin.guard';
 import {DashboardGuard} from './_guards/dashboard.guard';
 import {OrganizationGuard} from './_guards/organization.guard';
-import {RealtimeModule} from "./shared/realtime/RealtimeModule";
+import {RealtimeModule} from "./shared/realtime/realtime.module";
 import {environment} from "../../environments/environment";
 
 @NgModule({

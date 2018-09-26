@@ -2,9 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {setTheme} from 'ngx-bootstrap';
 import {UserApi} from './shared/sdk/services/custom';
 import {User} from './shared/sdk/models';
-import {RealtimeModule} from "./shared/realtime/RealtimeModule";
+import {RealtimeModule} from "./shared/realtime/realtime.module";
 import {environment} from "../../environments/environment";
-import {RealtimeService} from "./shared/realtime/RealtimeService";
+import {RealtimeService} from "./shared/realtime/realtime.service";
 
 @Component({
   selector: 'body',
