@@ -107,6 +107,7 @@ class Device {
                 console.log(result);
               });
             });
+            next();
           } else {
             next(err);
           }
@@ -116,7 +117,6 @@ class Device {
       }
 
     });
-    next();
     // console.log(ctx);
   }
 
@@ -139,6 +139,7 @@ class Device {
                 // console.log(result);
               });
             });
+            next();
           } else {
             next(err);
           }
@@ -147,7 +148,6 @@ class Device {
         next(err);
       }
     });
-    next();
     // console.log(ctx);
   }
 
@@ -266,7 +266,7 @@ class Device {
       (err: any, connector: any) => {
         if (err) {
           console.log(err);
-          next(err, null);
+          return next(err, null);
         } else {
           console.log(connector);
           if (connector) {
@@ -324,7 +324,7 @@ class Device {
                   (err: any, messagePostProcess: any, created: boolean) => { // callback
                     if (err) {
                       console.log(err);
-                      // next(err, err);
+                      return next(err, err);
                     } else {
                       if (created) {
                         console.log("Created new message.");
@@ -374,19 +374,18 @@ class Device {
                 // Done
                 if (msgCounter === result.data.length - 1) {
                   this.updateDeviceSuccessRate(messageInstance.device);
-                  next(null, result);
+                  return next(null, result);
                 }
               });
             }).catch((err: any) => {
               if (err.statusCode === "403") {
-                next(err, "Your Sigfox API credentials are not allowed to do so.");
+                return next(err, "Your Sigfox API credentials are not allowed to do so.");
               } else {
-                next(err, null);
+                return next(err, null);
               }
             });
-
           } else {
-            next(err, "Please refer your Sigfox API connector first.");
+            return next(err, "Please refer your Sigfox API connector first.");
           }
         }
       });
@@ -469,6 +468,7 @@ class Device {
         if (err) {
           console.error(err);
           res.send(err);
+          next();
         } else if (messages) {
           const data: any = [];
           let csv: any = [];
@@ -536,7 +536,7 @@ class Device {
           }
           // res.status(200).send({data: csv});
           res.send(csv);
-          // next();
+          next();
         } else {
           next(null, "Error occured - not allowed");
         }
@@ -569,6 +569,7 @@ class Device {
             });
           }
           console.log("Unlinked device from organization");
+          next();
         }
       });
 
@@ -576,8 +577,6 @@ class Device {
       Geoloc.destroyAll({deviceId}, (error: any, result: any) => { if (!error) { console.log("Deleted all geolocs for device: " + deviceId); } });
       Alert.destroyAll({deviceId}, (error: any, result: any) => { if (!error) { console.log("Deleted all alerts for device: " + deviceId); } });
     }
-
-    next();
   }
 
 

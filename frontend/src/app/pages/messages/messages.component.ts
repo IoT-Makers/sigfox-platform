@@ -8,8 +8,7 @@ import {AgmMap} from '@agm/core';
 import {ActivatedRoute} from '@angular/router';
 import {OrganizationApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import { environment } from '../../../../environments/environment';
-import {RealtimeService} from "../../shared/realtime/RealtimeService";
+import {RealtimeService} from "../../shared/realtime/realtime.service";
 
 @Component({
   selector: 'app-messages',
@@ -32,8 +31,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
   public mapZoom = 10;
   public receptions: any[] = [];
   public geolocs: Geoloc[] = [];
-
-  private primusClient: any;
 
   private organizationRouteSub: Subscription;
   public messages: Message[] = [];
