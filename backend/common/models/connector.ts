@@ -25,7 +25,7 @@ const request = require("request");
         verb: "get",
       },
       returns: {type: [], root: true},
-    },
+    }
   },
 })
 

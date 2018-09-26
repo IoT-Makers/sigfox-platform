@@ -11,6 +11,6 @@ if (mongodbUrl) {
       name: 'mongodb',
       connector: 'mongodb',
       disableDefaultSort: true
-    },
+    }
   };
 } else console.error('Env MONGO_URL not set');

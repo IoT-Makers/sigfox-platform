@@ -61,7 +61,7 @@
   },
   "Role": {
     "dataSource": "mongodb",
-    "public": true,
+    "public": false,
     "acls": [
       {
         "accessType": "*",
@@ -84,11 +84,11 @@
   },
   "Parser": {
     "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "Category": {
     "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "Message": {
     "dataSource": "mongodb",
@@ -100,11 +100,11 @@
   },
   "AppSetting": {
     "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "Dashboard": {
     "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "user": {
     "dataSource": "mongodb",
@@ -116,39 +116,39 @@
   },
   "Organization": {
     "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "Alert": {
     "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "AlertValue": {
     "dataSource": null,
-    "public": true
+    "public": false
   },
   "AlertGeofence": {
     "dataSource": null,
-    "public": true
+    "public": false
   },
   "AlertHistory": {
     "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "Reception": {
     "dataSource": null,
-    "public": true
+    "public": false
   },
   "Connector": {
     "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "Widget": {
     "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "Property": {
     "dataSource": null,
-    "public": true
+    "public": false
   },
   "Beacon": {
     "dataSource": "mongodb",
@@ -156,7 +156,7 @@
   },
   "Alexa": {
     "dataSource": null,
-    "public": true
+    "public": false
   },
   "Employee": {
     "dataSource": "mongodb",

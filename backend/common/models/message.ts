@@ -130,6 +130,9 @@ class Message {
           deviceInstance = deviceInstance.toJSON();
           // Store the userId in the message
           message.userId = deviceInstance.userId;
+          // Setting the employeeId here
+          if (deviceInstance.employeeId) message.employeeId = deviceInstance.employeeId;
+
           if (created) {
             console.log("Created new device: " + message.deviceId);
           } else {

@@ -69,6 +69,8 @@ class Geoloc {
     geoloc_beacon.userId = message.userId;
     geoloc_beacon.messageId = message.id;
     geoloc_beacon.deviceId = message.deviceId;
+    // Setting the employeeId here
+    geoloc_beacon.employeeId = message.employeeId;
 
     // Build the WiFi Geoloc object
     const geoloc_wifi = new Geoloc;

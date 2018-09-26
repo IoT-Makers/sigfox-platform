@@ -50,6 +50,11 @@
   },
   "validations": [],
   "relations": {
+    "Employee": {
+      "type": "belongsTo",
+      "model": "Employee",
+      "foreignKey": "employeeId"
+    },
     "Device": {
       "type": "belongsTo",
       "model": "Device",
