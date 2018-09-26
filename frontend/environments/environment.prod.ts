@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
-  envName : 'prod',
-  apiUrl : '',
-  apiVersion : 'api'
+  envName: 'prod',
+  apiUrl: '',
+  apiVersion: 'api',
+  PRIMUS_URL: process.env.PRIMUS_URL
 };
