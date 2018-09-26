@@ -313,7 +313,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
   parseAllMessages(deviceId: string): void {
     this.loadingParseMessages = true;
     // Disconnect real-time to avoid app crashing
-    this.rt.connection.disconnect();
     this.parserApi.parseAllMessages(deviceId, null, null).subscribe(result => {
       this.loadingParseMessages = false;
       if (result.message === 'Success') {
@@ -326,8 +325,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('warning', 'Warning', result.message);
       }
-      this.rt.onReady();
-      //console.log(result);
     });
     this.confirmParseModal.hide();
   }
