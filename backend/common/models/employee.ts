@@ -46,15 +46,22 @@ class Employee {
 
   public linkToDevice(employeeId: string, deviceId: string, next: Function): void {
     // Models
+    const Employee = this.model.app.models.Employee;
     const Device = this.model.app.models.Device;
 
-    Device.findById(deviceId, {}, (err: any, deviceInstance: any) => {
+    Employee.findById(employeeId, {}, (err: any, employeeInstance: any) => {
       if (err) return next(err);
-      else if (!deviceInstance) return next(null, 'No device found for this ID.');
+      else if (!employeeInstance) return next(null, 'No employee found with this ID.');
       else {
-        deviceInstance.patchAttributes({employeeId: employeeId}, (err: any, deviceInstance: any) => {
+        Device.findById(deviceId, {}, (err: any, deviceInstance: any) => {
           if (err) return next(err);
-          else return next(null, deviceInstance);
+          else if (!deviceInstance) return next(null, 'No device found with this ID.');
+          else {
+            deviceInstance.patchAttributes({employeeId: employeeId}, (err: any, deviceInstance: any) => {
+              if (err) return next(err);
+              else return next(null, deviceInstance);
+            });
+          }
         });
       }
     });
