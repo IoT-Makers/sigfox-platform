@@ -300,8 +300,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
     //   this.listDevicesId.push(item);
     // });
 
-    // Messages
-    this.messageApi.stats(this.graphRange, null, null, null).subscribe((stats: any) => {
+    // TODO: rt?
+    this.messageApi.stats(this.graphRange, null, {
+      userId: this.user.id
+    }, null).subscribe((stats: any) => {
 
       this.messageChartLabels = [];
       this.messageChartData = [];
