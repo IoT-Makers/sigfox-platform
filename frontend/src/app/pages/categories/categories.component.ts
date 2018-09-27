@@ -168,9 +168,10 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.edit = true;
     if (category) {
       this.categoryToEdit = category;
+      this.newCategory = false;
     } else {
       this.categoryToEdit = new Category();
-      this.categoryToEdit.new = true;
+      this.newCategory = true;
     }
   }
 
@@ -180,9 +181,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   update(): void {
     this.edit = false;
-    if (this.categoryToEdit.new) {
+    if (this.newCategory) {
       // this operation is actually a create
-      delete this.categoryToEdit.new;
       this.userApi.createCategories(this.user.id, this.categoryToEdit).subscribe((category: Category) => {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
