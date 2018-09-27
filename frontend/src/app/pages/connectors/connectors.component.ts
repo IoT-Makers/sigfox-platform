@@ -3,8 +3,8 @@ import {DOCUMENT} from '@angular/common';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
 import {Subscription} from 'rxjs/Subscription';
-import {RealTime} from '../../shared/sdk/services/core';
 import {Connector, FireLoopRef, User} from '../../shared/sdk/models';
+import {RealtimeService} from "../../shared/realtime/realtime.service";
 
 @Component({
   selector: 'app-profile',
@@ -23,8 +23,6 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   public connectorsReady = false;
 
   private connectorSub: Subscription;
-  private connectorRef: FireLoopRef<Connector>;
-  private userRef: FireLoopRef<User>;
   public connectors: Connector[] = [];
   public connectorToAdd: Connector = new Connector();
   public connectorToRemove: Connector = new Connector();
@@ -58,7 +56,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(DOCUMENT) private document: any,
               private userApi: UserApi,
-              private rt: RealTime,
+              private rt: RealtimeService,
               private connectorApi: ConnectorApi,
               toasterService: ToasterService) {
     this.toasterService = toasterService;
@@ -70,30 +68,15 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     // Get the logged in User object (avatar, email, ...)
     this.user = this.userApi.getCachedCurrent();
 
-    // Real Time
-    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-      this.setup();
-    else
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-    /*if (
-      this.rt.connection.isConnected() &&
-      this.rt.connection.authenticated
-    ) {
-      this.rt.onReady().subscribe(() => this.setup());
-    } else {
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-      this.rt.onReady().subscribe();
-    }*/
+    this.setup();
   }
 
   setup(): void {
     this.cleanSetup();
+    this.subscribe();
 
     // Get and listen connectors
-    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-    this.connectorRef = this.userRef.child<Connector>('Connectors');
-    this.connectorSub = this.connectorRef.on('change',
-      {
+    this.userApi.getConnectors(this.user.id,{
         limit: 1000,
         order: 'updatedAt DESC'
       }
@@ -134,7 +117,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   removeConnector(): void {
-    this.connectorRef.remove(this.connectorToRemove).subscribe(value => {
+    this.userApi.destroyByIdConnectors(this.user.id, this.connectorToRemove.id).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully removed.');
@@ -147,7 +130,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   editConnector(): void {
-    this.connectorRef.upsert(this.connectorToEdit).subscribe(value => {
+    this.userApi.updateByIdConnectors(this.user.id, this.connectorToEdit.id, this.connectorToEdit).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully updated.');
@@ -166,7 +149,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   addConnector(): void {
-    this.connectorRef.create(this.connectorToAdd).subscribe((connector: Connector) => {
+    this.userApi.createConnectors(this.user.id, this.connectorToAdd).subscribe((connector: Connector) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully updated.');
@@ -190,8 +173,24 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   private cleanSetup() {
-    if (this.userRef) this.userRef.dispose();
-    if (this.connectorRef) this.connectorRef.dispose();
     if (this.connectorSub) this.connectorSub.unsubscribe();
+  }
+
+  rtHandler = (payload:any) => {
+    if (payload.action == "CREATE") {
+      this.connectors.unshift(payload.content);
+    } else if (payload.action == "DELETE") {
+      this.connectors = this.connectors.filter(function (obj) {
+        return obj.id !== payload.content.id;
+      });
+    }
+  };
+
+  subscribe(): void {
+    this.rtHandler = this.rt.addListener("connector", this.rtHandler);
+  }
+
+  unsubscribe(): void {
+    this.rt.removeListener(this.rtHandler);
   }
 }

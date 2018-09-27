@@ -1,4 +1,5 @@
 import {Model} from '@mean-expert/model';
+import {PrimusClientFn} from "../../server/PrimusClientFn";
 
 const loopback = require('loopback');
 
@@ -11,7 +12,10 @@ const loopback = require('loopback');
  * Model Decorator
  **/
 @Model({
-  hooks: { },
+  hooks: {
+    afterDelete: { name: "after delete", type: "operation" },
+    afterSave: { name: "after save", type: "operation" },
+  },
   remotes: {
     createFromParsedPayload: {
       returns : { arg: 'result', type: 'array' },
@@ -35,8 +39,16 @@ const loopback = require('loopback');
 })
 
 class Geoloc {
+
+  private primusClient: any;
+  private HERE = {
+    app_id: process.env.HERE_APP_ID,
+    app_code: process.env.HERE_APP_CODE
+  };
+
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
+    this.primusClient = PrimusClientFn.newClient();
   }
 
   private createFromParsedPayload(message: any, req: any): void {
@@ -132,19 +144,19 @@ class Geoloc {
 
     if (hasWifiLocation) {
       geoloc_wifi.type = 'wifi';
-      if (process.env.HERE_APP_ID && process.env.HERE_APP_CODE && !process.env.GOOGLE_API_KEY) {
+      if (this.HERE.app_id && this.HERE.app_code && !process.env.GOOGLE_API_KEY) {
         this.getHereGeolocation(geoloc_wifi).then(value => {
           console.log('[WiFi Geolocation] - Device located successfully with Here.');
         }).catch(reason => {
           console.log('[WiFi Geolocation] - Could not locate device with Here.');
         });
-      } else if ((!process.env.HERE_APP_ID || !process.env.HERE_APP_CODE) && process.env.GOOGLE_API_KEY) {
+      } else if ((!this.HERE.app_id || !this.HERE.app_code) && process.env.GOOGLE_API_KEY) {
         this.getGoogleGeolocation(geoloc_wifi).then(value => {
           console.log('[WiFi Geolocation] - Device located successfully with Google.');
         }).catch(reason => {
           console.log('[WiFi Geolocation] - Could not locate device with Google.');
         });
-      } else if (process.env.HERE_APP_ID && process.env.HERE_APP_CODE && process.env.GOOGLE_API_KEY) {
+      } else if (this.HERE.app_id && this.HERE.app_code && process.env.GOOGLE_API_KEY) {
         this.getHereGeolocation(geoloc_wifi).then(value => {
           console.log('[WiFi Geolocation] - Device located successfully with Here.');
         }).catch(reason => {
@@ -202,7 +214,7 @@ class Geoloc {
     });
 
     return new Promise((resolve: any, reject: any) => {
-      this.model.app.dataSources.here.locate(process.env.HERE_APP_ID, process.env.HERE_APP_CODE, wlans).then((result: any) => {
+      this.model.app.dataSources.here.locate(this.HERE.app_id, this.HERE.app_code, wlans).then((result: any) => {
         //console.error('---------------------------------------------------------------------\n', result);
         geoloc_wifi.source = 'here';
         geoloc_wifi.location.lat = result.location.lat;
@@ -446,15 +458,30 @@ class Geoloc {
     console.log(body);
   }
 
-  afterSave(ctx: any, next: Function): void {
-    // if (process.env.MQTT_HOST && process.env.MQTT_PORT) {
-    //   const client = new Client({host: process.env.MQTT_HOST, port: process.env.MQTT_PORT}, Adapter);
-    //   try {
-    //     client.publish(ctx.instance.deviceId + '/geoloc', ctx.instance, {retain: true});
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // }
+  public afterDelete(ctx: any, next: Function): void {
+    let geoloc = ctx.instance;
+    if (geoloc) {
+      // if the message is delete via a cascade, no instance is provided
+      const payload = {
+        event: "geoloc",
+        content: geoloc,
+        action: "DELETE"
+      };
+      this.primusClient.write(payload);
+    }
+    next();
+  }
+
+
+  public afterSave(ctx: any, next: Function): void {
+    // Pub-sub
+    let geoloc = ctx.instance;
+    const payload = {
+      event: "geoloc",
+      content: geoloc,
+      action: ctx.isNewInstance ? "CREATE" : "UPDATE"
+    };
+    this.primusClient.write(payload);
     next();
   }
 }

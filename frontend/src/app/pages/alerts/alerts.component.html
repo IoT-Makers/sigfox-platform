@@ -57,7 +57,7 @@
               <tr *ngFor="let alert of mf.data; let i = index">
                 <td class="text-center">
                   <label for="{{alert.id + 'active'}}" class="switch switch-sm switch-3d switch-success-outline-alt">
-                    <input id="{{alert.id + 'active'}}" (change)="setAlertActive(alert)" [(ngModel)]="alert.active" type="checkbox"
+                    <input id="{{alert.id + 'active'}}" (change)="editAlert(alert, 'active')" [(ngModel)]="alert.active" type="checkbox"
                            class="switch-input">
                     <span class="switch-label"></span>
                     <span class="switch-handle"></span>
@@ -71,7 +71,7 @@
                 </td>
                 <td class="text-center">
                   <div class="checkbox checkbox-primary">
-                    <input type="checkbox" id="{{alert.id + 'one_shot'}}" name="alert.one_shot" (change)="setAlertOneShot(alert)" [(ngModel)]="alert.one_shot" value="alert.one_shot">
+                    <input type="checkbox" id="{{alert.id + 'one_shot'}}" name="alert.one_shot" (change)="editAlert(alert, 'oneshot')" [(ngModel)]="alert.one_shot" value="alert.one_shot">
                     <label for="{{alert.id + 'one_shot'}}"></label>
                   </div>
                 </td>

@@ -83,6 +83,18 @@ primus.on('connection', function connection(spark) {
             case "parser":
                 parserHandler(payload);
                 break;
+            case "geoloc":
+                geolocHandler(payload);
+                break;
+            case "alert":
+                alertHandler(payload);
+                break;
+            case "beacon":
+                beaconHandler(payload);
+                break;
+            case "connector":
+                connectorHandler(payload);
+                break;
             default:
                 break;
         }
@@ -97,43 +109,19 @@ function messageHandler(payload) {
         // from message.ts
         console.log(payload.action + ' message ' + msg.id + ' for user ' + userId);
 
-        let targetClients = [];
-        primus.forEach(function (spark, id, connections) {
-            if (spark.userId === userId) {
-                targetClients.push(spark);
-            }
-        });
-        console.log('user ' + msg.userId + ' has ' + targetClients.length + ' client online');
-        // if the message owner is not online, no need to look up
+        let targetClients = getTargetClients(userId);
         if (!targetClients.length)
             return;
 
         if (payload.action === "DELETE") {
-            const outgoingPayload = {
-                event: "message",
-                action: payload.action,
-                content: msg
-
-            };
-            targetClients.forEach(function (spark) {
-                spark.write(outgoingPayload);
-                console.log("delete sent");
-            });
+            send(targetClients, payload.event, payload.action, msg);
             return;
         }
 
         db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
             msg.Geolocs = geolocs;
             msg.Device = payload.device;
-            const outgoingPayload = {
-                event: "message",
-                action: payload.action,
-                content: msg
-            };
-            targetClients.forEach(function (spark) {
-                spark.write(outgoingPayload);
-                console.log("sent");
-            });
+            send(targetClients, payload.event, payload.action, msg);
         });
     }
 }
@@ -142,29 +130,14 @@ function deviceHandler(payload) {
     const device = payload.content;
     const userId = device.userId.toString();
     if (device) {
-        // from message.ts
+        // from device.ts
         console.log(payload.action + ' device ' + device.id + ' for user ' + userId);
-        let targetClients = [];
-        primus.forEach(function (spark, id, connections) {
-            if (spark.userId === userId) {
-                targetClients.push(spark);
-            }
-        });
-        console.log('user ' + device.userId + ' has ' + targetClients.length + ' client online');
-        // if the message owner is not online, no need to look up
+        let targetClients = getTargetClients(userId);
         if (!targetClients.length)
             return;
 
         if (payload.action === "DELETE") {
-            const outgoingPayload = {
-                event: "device",
-                action: payload.action,
-                content: device
-            };
-            targetClients.forEach(function (spark) {
-                spark.write(outgoingPayload);
-                console.log("delete sent");
-            });
+            send(targetClients, payload.event, payload.action, device);
             return;
         }
 
@@ -176,15 +149,7 @@ function deviceHandler(payload) {
                     device.Parser = parser;
                     db.collection("Organization").find({deviceId: device.id}).toArray((err, organizations) => {
                         device.Organizations = organizations;
-                        const outgoingPayload = {
-                            event: "device",
-                            action: payload.action,
-                            content: device
-                        };
-                        targetClients.forEach(function (spark) {
-                            spark.write(outgoingPayload);
-                            console.log("sent");
-                        });
+                        send(targetClients, payload.event, payload.action, device);
                     });
                 });
             });
@@ -197,48 +162,110 @@ function parserHandler(payload) {
     const parser = payload.content;
     const userId = parser.userId.toString();
     if (parser) {
-        // from message.ts
-        console.log(payload.action + ' device ' + parser.id + ' for user ' + userId);
+        // from parser.ts
+        console.log(payload.action + ' parser ' + parser.id + ' for user ' + userId);
 
-
-        let targetClients = [];
-        primus.forEach(function (spark, id, connections) {
-            if (spark.userId === userId) {
-                targetClients.push(spark);
-            }
-        });
-        console.log('user ' + userId + ' has ' + targetClients.length + ' client online');
-        // if the message owner is not online, no need to look up
+        let targetClients = getTargetClients(userId);
         if (!targetClients.length)
             return;
 
         if (payload.action === "DELETE") {
-            const outgoingPayload = {
-                event: "parser",
-                action: payload.action,
-                content: parser
-
-            };
-            targetClients.forEach(function (spark) {
-                spark.write(outgoingPayload);
-                console.log("delete sent");
-            });
+            send(targetClients, payload.event, payload.action, parser);
             return;
         }
 
         db.collection("Device").find({parserId:parser.id}).toArray((err, devices) => {
             parser.Devices = devices;
-            const outgoingPayload = {
-                event: "parser",
-                action: payload.action,
-                content: parser
-            };
-            targetClients.forEach(function (spark) {
-                spark.write(outgoingPayload);
-                console.log("sent");
-            });
+            send(targetClients, payload.event, payload.action, parser);
         });
     }
+}
+
+function geolocHandler(payload) {
+    const geoloc = payload.content;
+    const userId = geoloc.userId.toString();
+    if (geoloc) {
+        // from message.ts
+        console.log(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
+
+        let targetClients = getTargetClients(userId);
+        // if the message owner is not online, no need to look up
+        if (!targetClients.length)
+            return;
+
+        return send(targetClients, payload.event, payload.action, geoloc);
+    }
+}
+
+function alertHandler(payload) {
+    const alert = payload.content;
+    const userId = alert.userId.toString();
+    if (alert) {
+        // from alert.ts
+        console.log(payload.action + ' alert ' + alert.id + ' for user ' + userId);
+
+        let targetClients = getTargetClients(userId);
+        // if the message owner is not online, no need to look up
+        if (!targetClients.length)
+            return;
+
+        return send(targetClients, payload.event, payload.action, alert);
+    }
+}
+
+function beaconHandler(payload) {
+    const beacon = payload.content;
+    const userId = beacon.userId.toString();
+    if (beacon) {
+        // from alert.ts
+        console.log(payload.action + ' beacon ' + beacon.id + ' for user ' + userId);
+
+        let targetClients = getTargetClients(userId);
+        // if the message owner is not online, no need to look up
+        if (!targetClients.length)
+            return;
+
+        return send(targetClients, payload.event, payload.action, beacon);
+    }
+}
+
+function connectorHandler(payload) {
+    const connector = payload.content;
+    const userId = connector.userId.toString();
+    if (connector) {
+        // from alert.ts
+        console.log(payload.action + ' connector ' + connector.id + ' for user ' + userId);
+
+        let targetClients = getTargetClients(userId);
+        // if the message owner is not online, no need to look up
+        if (!targetClients.length)
+            return;
+
+        return send(targetClients, payload.event, payload.action, connector);
+    }
+}
+
+function getTargetClients(userId) {
+    let targetClients = [];
+    primus.forEach(function (spark, id, connections) {
+        if (spark.userId === userId) {
+            targetClients.push(spark);
+        }
+    });
+    console.log('user ' + userId + ' has ' + targetClients.length + ' client online');
+    return targetClients;
+}
+
+function send(targetClients, eventName, action, content) {
+    const outgoingPayload = {
+        event: eventName,
+        action: action,
+        content: content
+    };
+    targetClients.forEach(function (spark) {
+        spark.write(outgoingPayload);
+        console.log(action + " sent");
+    });
 }
 
 primus.on('disconnection', function end(spark) {

@@ -1,6 +1,7 @@
 import {Model} from "@mean-expert/model";
 import * as _ from "lodash";
 import {decrypt} from "../utils";
+import {PrimusClientFn} from "../../../server/PrimusClientFn";
 
 const loopback = require("loopback");
 const nodemailer = require("nodemailer");
@@ -15,6 +16,8 @@ const nodemailer = require("nodemailer");
 @Model({
   hooks: {
     beforeSave: { name: "before save", type: "operation" },
+    afterDelete: { name: "after delete", type: "operation" },
+    afterSave: { name: "after save", type: "operation" },
   },
   remotes: {
     triggerByDevice: {
@@ -48,8 +51,13 @@ const nodemailer = require("nodemailer");
 })
 
 class Alert {
+
+  private primusClient: any;
+
   // LoopBack model instance is injected in constructor
-  constructor(public model: any) {}
+  constructor(public model: any) {
+    this.primusClient = PrimusClientFn.newClient();
+  }
 
   public beforeSave(ctx: any, next: Function): void {
     console.log("Alert: Before Save");
@@ -402,6 +410,32 @@ class Alert {
       });
   }
 
+  public afterDelete(ctx: any, next: Function): void {
+    let alert = ctx.instance;
+    if (alert) {
+      // if the message is delete via a cascade, no instance is provided
+      const payload = {
+        event: "alert",
+        content: alert,
+        action: "DELETE"
+      };
+      this.primusClient.write(payload);
+    }
+    next();
+  }
+
+
+  public afterSave(ctx: any, next: Function): void {
+    // Pub-sub
+    let alert = ctx.instance;
+    const payload = {
+      event: "alert",
+      content: alert,
+      action: ctx.isNewInstance ? "CREATE" : "UPDATE"
+    };
+    this.primusClient.write(payload);
+    next();
+  }
 }
 
 module.exports = Alert;

@@ -1,12 +1,12 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AlertApi, DeviceApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Alert, AlertGeofence, AlertValue, Connector, Device, FireLoopRef, Property, User} from '../../shared/sdk/models';
 import * as L from 'leaflet';
 import {icon, LatLng, latLng, tileLayer} from 'leaflet';
 import '../../../../node_modules/leaflet.fullscreen/Control.FullScreen.js';
+import {RealtimeService} from "../../shared/realtime/realtime.service";
 
 @Component({
   selector: 'app-alerts',
@@ -85,15 +85,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
     }
   };
 
-  private alertSub: Subscription;
-
   public alerts: Alert[] = [];
   public addAlertFlag = false;
   private alertToAddOrEdit: Alert = new Alert();
   private alertToRemove: Alert = new Alert();
-
-  private userRef: FireLoopRef<User>;
-  private alertRef: FireLoopRef<Alert>;
 
   private dateOrigin: Date = new Date(0);
 
@@ -133,7 +128,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
       animation: 'fade'
     });
 
-  constructor(private rt: RealTime,
+  constructor(private rt: RealtimeService,
               private userApi: UserApi,
               private deviceApi: DeviceApi,
               private alertApi: AlertApi,
@@ -261,34 +256,19 @@ export class AlertsComponent implements OnInit, OnDestroy {
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     // Real Time
-    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-      this.setup();
-    else
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-    /*if (
-      this.rt.connection.isConnected() &&
-      this.rt.connection.authenticated
-    ) {
-      this.rt.onReady().subscribe(() => this.setup());
-    } else {
-      this.rt.onAuthenticated().subscribe(() => this.setup());
-      this.rt.onReady().subscribe();
-    }*/
+    this.setup();
   }
 
   setup(): void {
     this.cleanSetup();
+    this.subscribe();
 
     // Get and listen alerts
-    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-    this.alertRef = this.userRef.child<Alert>('Alerts');
-    this.alertSub = this.alertRef.on('change',
-      {
-        limit: 1000,
-        order: 'triggeredAt DESC',
-        include: ['Device', 'Connector']
-      }
-    ).subscribe((alerts: Alert[]) => {
+    this.userApi.getAlerts(this.user.id, {
+      limit: 1000,
+      order: 'triggeredAt DESC',
+      include: ['Device', 'Connector']
+    }).subscribe((alerts: Alert[]) => {
       this.alerts = alerts;
       this.alertsReady = true;
     });
@@ -396,7 +376,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   removeAlert(): void {
-    this.alertRef.remove(this.alertToRemove).subscribe(value => {
+    this.userApi.destroyByIdAlerts(this.user.id, this.alertToRemove.id).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully removed.');
@@ -420,12 +400,31 @@ export class AlertsComponent implements OnInit, OnDestroy {
     });
   }
 
-  editAlert(): void {
-    this.alertRef.upsert(this.alertToAddOrEdit).subscribe(value => {
+  editAlert(alert?: Alert, key?: string): void {
+    if (!alert) alert = this.alertToAddOrEdit;
+    this.userApi.updateByIdAlerts(this.user.id, alert.id, alert).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
-      this.addOrEditAlertModal.hide();
+      switch (key) {
+        case 'active':
+          if (alert.active) {
+            this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully activated.');
+          } else {
+            this.toast = this.toasterService.pop('info', 'Success', 'Alert was successfully deactivated.');
+          }
+          break;
+        case 'oneshot':
+          if (alert.one_shot) {
+            this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully set for one shot only.');
+          } else {
+            this.toast = this.toasterService.pop('info', 'Success', 'Alert will always trigger.');
+          }
+          break;
+        default:
+          this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully updated.');
+          this.addOrEditAlertModal.hide();
+          break;
+      }
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
@@ -434,7 +433,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   addAlert(): void {
-    this.alertRef.create(this.alertToAddOrEdit).subscribe((alert: Alert) => {
+    this.userApi.createAlerts(this.user.id, this.alertToAddOrEdit).subscribe((alert: Alert) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully created.');
@@ -504,41 +503,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
     });
   }
 
-  setAlertActive(alert: Alert): void {
-    this.alertRef.upsert(alert).subscribe((alert: Alert) => {
-      if (alert.active) {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully activated.');
-      } else {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('info', 'Success', 'Alert was successfully deactivated.');
-      }
-    }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
-    });
-  }
-
-  setAlertOneShot(alert: Alert): void {
-    this.alertRef.upsert(alert).subscribe((alert: Alert) => {
-      if (alert.one_shot) {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('success', 'Success', 'Alert was successfully set for one shot only.');
-      } else {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('info', 'Success', 'Alert will always trigger.');
-      }
-    }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
-    });
-  }
 
   ngOnDestroy(): void {
     console.log('Alerts: ngOnDestroy');
@@ -546,8 +510,24 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   private cleanSetup() {
-    if (this.userRef) this.userRef.dispose();
-    if (this.alertRef) this.alertRef.dispose();
-    if (this.alertSub) this.alertSub.unsubscribe();
+    this.unsubscribe();
+  }
+
+  rtHandler = (payload:any) => {
+    if (payload.action == "CREATE") {
+      this.alerts.unshift(payload.content);
+    } else if (payload.action == "DELETE") {
+      this.alerts = this.alerts.filter(function (obj) {
+        return obj.id !== payload.content.id;
+      });
+    }
+  };
+
+  subscribe(): void {
+    this.rtHandler = this.rt.addListener("alert", this.rtHandler);
+  }
+
+  unsubscribe(): void {
+    this.rt.removeListener(this.rtHandler);
   }
 }
