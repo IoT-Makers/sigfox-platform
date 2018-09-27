@@ -51,6 +51,9 @@ MongoClient.connect(mongodbUrl, { useNewUrlParser: true }, function(err, client)
 //
 primus.on('connection', function connection(spark) {
     console.log('new connection');
+    connectedClient++;
+    console.info(connectedClient + " clients connected");
+    // TODO: handle the case where connection comes in before db connection
     if (!db) return;
 
     // manual auth hook, attach userId to spark if access token found
@@ -64,8 +67,6 @@ primus.on('connection', function connection(spark) {
                 return;
             }
             spark.userId = token.userId.toString();
-            connectedClient++;
-            console.info(connectedClient + " clients connected");
         });
     }
 
