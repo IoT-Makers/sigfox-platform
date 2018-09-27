@@ -430,6 +430,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   };
   rtDeviceHandler = (payload:any) => {
     payload.action == "CREATE" ? this.countDevices++ : payload.action == "DELETE" ? this.countDevices-- : 0;
+    this.devicesReady = true;
   };
   rtMsgHandler = (payload:any) => {
     payload.action == "CREATE" ? this.countMessages++ : payload.action == "DELETE" ? this.countMessages-- : 0;

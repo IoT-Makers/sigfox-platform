@@ -95,6 +95,9 @@ primus.on('connection', function connection(spark) {
             case "connector":
                 connectorHandler(payload);
                 break;
+            case "category":
+                categoryHandler(payload);
+                break;
             default:
                 break;
         }
@@ -252,6 +255,32 @@ function connectorHandler(payload) {
             return;
 
         return send(targetClients, payload.event, payload.action, connector);
+    }
+}
+
+function categoryHandler(payload) {
+    const category = payload.content;
+    const userId = category.userId.toString();
+    if (category) {
+        // from parser.ts
+        console.log(payload.action + ' category ' + category.id + ' for user ' + userId);
+
+        let targetClients = getTargetClients(userId);
+        if (!targetClients.length)
+            return;
+
+        if (payload.action === "DELETE") {
+            send(targetClients, payload.event, payload.action, category);
+            return;
+        }
+
+        db.collection("Device").find({categoryId:category.id}).toArray((err, devices) => {
+            addAttribute(category, "Devices", devices);
+            db.collection("Organization").find({categoryId:category.id}).toArray((err, organizations) => {
+                addAttribute(category, "Organizations", organizations);
+                send(targetClients, payload.event, payload.action, category);
+            });
+        });
     }
 }
 

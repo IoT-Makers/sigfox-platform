@@ -569,7 +569,6 @@ class Message {
     });
   }
 
-
   public afterDelete(ctx: any, next: Function): void {
     let msg = ctx.instance;
     if (msg) {
@@ -583,7 +582,6 @@ class Message {
     }
     next();
   }
-
 
   public afterSave(ctx: any, next: Function): void {
     // Calculate success rate and update device
