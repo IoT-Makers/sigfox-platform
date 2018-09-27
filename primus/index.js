@@ -3,7 +3,7 @@
 const Primus = require('primus');
 const MongoClient = require('mongodb').MongoClient;
 const mongodbUrl = process.env.MONGO_URL;
-const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.split(' ');
+const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
 const ObjectId = require('mongodb').ObjectId;
 
 let db;

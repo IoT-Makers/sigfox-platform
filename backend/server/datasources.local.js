@@ -1,6 +1,6 @@
 'use strict';
 
-const mongodbUrl = process.env.MONGO_URL || process.env.MONGODB_URI;
+const mongodbUrl = process.env.MONGO_URL;
 
 if (mongodbUrl) {
   console.log('Using MongoDB with: ' + mongodbUrl);
