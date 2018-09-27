@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Alert, Category, Device, FireLoopRef, Message, Organization, User} from '../../shared/sdk/models';
-import {RealTime} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow, LatLngBounds} from '@agm/core';
@@ -9,6 +8,7 @@ import {ConnectorApi, DeviceApi, MessageApi, OrganizationApi, UserApi} from '../
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {RealtimeService} from "../../shared/realtime/realtime.service";
 
 declare var Zone: any;
 declare const google: any;
@@ -144,7 +144,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       animation: 'fade'
     });
 
-  constructor(private rt: RealTime,
+  constructor(private rt: RealtimeService,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private deviceApi: DeviceApi,
@@ -170,7 +170,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Check if organization view
     this.organizationRouteSub = this.route.params.subscribe(params => {
-
       if (params.id) {
         this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
           this.organization = organization;
@@ -179,145 +178,67 @@ export class OverviewComponent implements OnInit, OnDestroy {
             this.countOrganizationMembersReady = true;
             console.log('Members', result.count);
           });
-          // Check if real time and setup
-          if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-            this.setup();
-          else
-            this.rt.onAuthenticated().subscribe(() => this.setup());
+          this.setup();
         });
       } else {
-        // Check if real time and setup
-        if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-          this.setup();
-        else
-          this.rt.onAuthenticated().subscribe(() => this.setup());
+        this.setup();
       }
-      //console.log("Router", params);
     });
   }
 
   setup(): void {
     this.cleanSetup();
+    this.subscribe();
     console.log('Setup Overview');
 
-    if (this.organization) {
+    const api = this.organization ? this.organizationApi : this.userApi;
+    const id = this.organization ? this.organization.id : this.user.id;
+    // Categories
+    api.countCategories(id).subscribe(result => {
+      this.countCategories = result.count;
+      this.countCategoriesReady = true;
+    });
 
-      this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-
-      /**
-       * Count real time methods below
-       */
-      // Categories
-      this.categoryRef = this.organizationRef.child<Category>('Categories');
-      this.categorySub = this.categoryRef.on('change').subscribe((categories: Category[]) => {
-        this.countCategories = categories.length;
-        this.countCategoriesReady = true;
-      });
-
-      // Devices
-      this.deviceRef = this.organizationRef.child<Device>('Devices');
-      this.deviceSub = this.deviceRef.on('change', {
-        limit: 10,
-        order: 'updatedAt DESC',
-        include: ['Category', {
-          relation: 'Messages',
-          scope: {
-            limit: 1,
-            order: 'createdAt DESC',
-            include: [{
-              relation: 'Geolocs',
-              scope: {
-                limit: 5,
-                order: 'createdAt DESC'
-              }
-            }]
-          }
-        }]
-      }).subscribe((devices: Device[]) => {
-        console.log('devices', devices);
-        this.devices = devices;
-        this.devicesReady = true;
-        this.fitMapBounds();
-        this.organizationApi.countDevices(this.organization.id).subscribe(result => {
-          this.countDevices = result.count;
-          this.countDevicesReady = true;
-        });
-      });
-
-      // Messages
-      this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-        this.countMessages = result.count;
-        this.countMessagesReady = true;
-      });
-      /*this.messageRef = this.organizationRef.child<Message>('Messages');
-      this.messageSub = this.messageRef.on('child_changed', {limit: 1}).subscribe((messages: Message[]) => {
-        this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-          this.countMessages = result.count;
-        });
-      });*/
-
-    } else {
-
-      this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-
-      /**
-       * Count real time methods below
-       */
-      // Categories
-      this.categoryRef = this.userRef.child<Category>('Categories');
-      this.categorySub = this.categoryRef.on('change').subscribe((categories: Category[]) => {
-        this.countCategories = categories.length;
-        this.countCategoriesReady = true;
-      });
-
-      // Devices
-      this.deviceRef = this.userRef.child<Device>('Devices');
-      this.deviceSub = this.deviceRef.on('change',
-        {
-          limit: 10,
-          order: 'updatedAt DESC',
-          include: ['Category', {
-            relation: 'Messages',
+    // Devices
+    api.getDevices(id, {
+      limit: 10,
+      order: 'updatedAt DESC',
+      include: ['Category', {
+        relation: 'Messages',
+        scope: {
+          limit: 1,
+          order: 'createdAt DESC',
+          include: [{
+            relation: 'Geolocs',
             scope: {
-              limit: 1,
-              order: 'createdAt DESC',
-              include: [{
-                relation: 'Geolocs',
-                scope: {
-                  limit: 5,
-                  order: 'createdAt DESC'
-                }
-              }]
+              limit: 5,
+              order: 'createdAt DESC'
             }
           }]
-        }).subscribe((devices: Device[]) => {
-        console.log('devices: ', devices);
-        this.devices = devices;
-        this.fitMapBounds();
-        this.devicesReady = true;
-        this.userApi.countDevices(this.user.id).subscribe(result => {
-          this.countDevices = result.count;
-          this.countDevicesReady = true;
-        });
-      });
+        }
+      }]
+    }).subscribe((devices: Device[]) => {
+      console.log('devices', devices);
+      this.devices = devices;
+      this.devicesReady = true;
+      this.fitMapBounds();
+    });
 
-      // Messages
-      this.userApi.countMessages(this.user.id).subscribe(result => {
-        this.countMessages = result.count;
-        this.countMessagesReady = true;
-      });
-      this.messageRef = this.userRef.child<Message>('Messages');
-      this.messageSub = this.messageRef.on('child_changed', {limit: 1}).subscribe((messages: Message[]) => {
-        this.userApi.countMessages(this.user.id).subscribe(result => {
-          this.countMessages = result.count;
-          this.countMessagesReady = true;
-        });
-      });
+    api.countDevices(id).subscribe(result => {
+      this.countDevices = result.count;
+      this.countDevicesReady = true;
+    });
 
+    // Messages
+    api.countMessages(id).subscribe(result => {
+      this.countMessages = result.count;
+      this.countMessagesReady = true;
+    });
+
+    if (!this.organization) {
       // Alerts
-      this.alertRef = this.userRef.child<Alert>('Alerts');
-      this.alertSub = this.alertRef.on('change', {where: {active: true}}).subscribe((alerts: Alert[]) => {
-        this.countAlerts = alerts.length;
+      this.userApi.countAlerts(this.user.id).subscribe(result => {
+        this.countAlerts = result.count;
         this.countAlertsReady = true;
       });
 
@@ -501,4 +422,31 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.mapZoom = 12;
   }
 
+
+  rtCategoryHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countCategories++ : payload.action == "DELETE" ? this.countCategories-- : 0;
+  };
+  rtDeviceHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countDevices++ : payload.action == "DELETE" ? this.countDevices-- : 0;
+  };
+  rtMsgHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countMessages++ : payload.action == "DELETE" ? this.countMessages-- : 0;
+  };
+  rtAlertHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countAlerts++ : payload.action == "DELETE" ? this.countAlerts-- : 0;
+  };
+
+  subscribe(): void {
+    this.rtCategoryHandler = this.rt.addListener("category", this.rtCategoryHandler);
+    this.rtDeviceHandler = this.rt.addListener("device", this.rtDeviceHandler);
+    this.rtMsgHandler = this.rt.addListener("message", this.rtMsgHandler);
+    this.rtAlertHandler = this.rt.addListener("alert", this.rtAlertHandler);
+  }
+
+  unsubscribe(): void {
+    this.rt.removeListener(this.rtCategoryHandler);
+    this.rt.removeListener(this.rtDeviceHandler);
+    this.rt.removeListener(this.rtMsgHandler);
+    this.rt.removeListener(this.rtAlertHandler);
+  }
 }

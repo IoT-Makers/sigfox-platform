@@ -15,6 +15,7 @@ import {
 } from '../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import {BeaconApi, OrganizationApi, ParserApi, UserApi} from '../shared/sdk/services/custom';
+import {RealtimeService} from "../shared/realtime/realtime.service";
 
 @Component({
   templateUrl: './full-layout.component.html'
@@ -45,13 +46,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private organizationToAddOrEdit: Organization = new Organization();
   private organizations: Organization[] = [];
 
-  private subscriptions: Subscription[] = [];
-
-  private deviceSub: Subscription;
-  private messageSub: Subscription;
-
-  private dashboards: Dashboard[] = [];
-
   private countCategories = 0;
   private countDevices = 0;
   private countMessages = 0;
@@ -75,7 +69,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     classes: 'select-organization'
   };
 
-  constructor(private userApi: UserApi,
+  constructor(private rt: RealtimeService,
+              private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private parserApi: ParserApi,
               private beaconApi: BeaconApi,
@@ -129,185 +124,102 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
       // Check if organization view
       this.route.params.subscribe(params => {
-
         this.isInitialized = false;
-
         console.log('params full layout', params);
-        // if (params.id) {
-        //   this.organizationApi.findById(params.id, {include: 'Members'}).subscribe((organization: Organization) => {
-        //     this.organization = organization;
-        //     // Real Time
-        //     if (
-        //       this.rt.connection.isConnected() &&
-        //       this.rt.connection.authenticated
-        //     ) {
-        //       this.rt.onReady().subscribe(() => this.setup());
-        //     } else {
-        //       //this.rt.onAuthenticated().subscribe(() => this.setup());
-        //       this.rt.onReady().subscribe(() => this.setup());
-        //     }
-        //   });
-        // } else {
-        //
-        //   //Check if real time and setup
-        //   // Real Time
-        //   if (
-        //     this.rt.connection.isConnected() &&
-        //     this.rt.connection.authenticated
-        //   ) {
-        //     this.rt.onReady().subscribe(() => this.setup());
-        //   } else {
-        //     //this.rt.onAuthenticated().subscribe(() => this.setup());
-        //     this.rt.onReady().subscribe( () => this.setup());
-        //   }
-        // }
-        //console.log('Router', params);
+        if (params.id) {
+          this.organizationApi.findById(params.id, {include: 'Members'}).subscribe((organization: Organization) => {
+            this.organization = organization;
+            this.setup();
+          });
+        } else {
+          this.setup();
+        }
       });
     });
   }
 
-  // setup(): void {
-  //   if (!this.isInitialized) {
-  //     this.isInitialized = true;
-  //     console.log('Setup Full layout');
-  //     this.cleanSetup();
-  //
-  //     // For organizations menu
-  //     this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-  //     this.userOrganizationRef = this.userRef.child<Organization>('Organizations');
-  //     this.subscriptions.push(this.userOrganizationRef.on('change', {include: 'Members'}).subscribe((organizations: Organization[]) => {
-  //       this.organizations = organizations;
-  //       this.countOrganizationsReady = true;
-  //       console.log(organizations);
-  //     }));
-  //
-  //     if (this.organization) {
-  //
-  //       this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-  //
-  //       // Dashboards
-  //       this.dashboardRef = this.organizationRef.child<Dashboard>('Dashboards');
-  //       this.subscriptions.push(this.dashboardRef.on('change').subscribe((dashboards: Dashboard[]) => {
-  //         this.dashboards = dashboards;
-  //       }));
-  //
-  //       /**
-  //        * Count real time methods below
-  //        */
-  //       // Categories
-  //       this.categoryRef = this.organizationRef.child<Category>('Categories');
-  //       this.subscriptions.push(this.categoryRef.on('change').subscribe((categories: Category[]) => {
-  //         this.countCategories = categories.length;
-  //         this.countCategoriesReady = true;
-  //       }));
-  //
-  //       // Devices
-  //       this.organizationApi.countDevices(this.organization.id).subscribe(result => {
-  //         this.countDevices = result.count;
-  //         this.countDevicesReady = true;
-  //       });
-  //       /*this.deviceRef = this.organizationRef.child<Device>('Devices');
-  //         this.deviceSub = this.deviceRef.on('child_changed', {limit: 1}).subscribe((devices: Device[]) => {
-  //         this.organizationApi.countDevices(this.organization.id).subscribe(result => {
-  //           this.countDevices = result.count;
-  //         });
-  //       });*/
-  //
-  //       // Messages
-  //       this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-  //         this.countMessages = result.count;
-  //         this.countMessagesReady = true;
-  //       });
-  //       /*this.messageRef = this.organizationRef.child<Message>('Messages');
-  //       this.messageSub = this.messageRef.on('child_changed', {limit: 1}).subscribe((messages: Message[]) => {
-  //         this.organizationApi.countMessages(this.organization.id).subscribe(result => {
-  //           this.countMessages = result.count;
-  //         });
-  //       });*/
-  //
-  //     } else {
-  //
-  //       this.dashboardRef = this.userRef.child<Dashboard>('Dashboards');
-  //       this.subscriptions.push(this.dashboardRef.on('change').subscribe((dashboards: Dashboard[]) => {
-  //         this.dashboards = dashboards;
-  //       }));
-  //
-  //       /**
-  //        * Count real time methods below
-  //        */
-  //       // Categories
-  //       this.categoryRef = this.userRef.child<Category>('Categories');
-  //       this.subscriptions.push(this.categoryRef.on('change').subscribe((categories: Category[]) => {
-  //         this.countCategories = categories.length;
-  //         this.countCategoriesReady = true;
-  //       }));
-  //
-  //       // Devices
-  //       this.userApi.countDevices(this.user.id).subscribe(result => {
-  //         this.countDevices = result.count;
-  //         this.countDevicesReady = true;
-  //       });
-  //       /*this.deviceRef = this.userRef.child<Device>('Devices');
-  //       this.deviceSub = this.deviceRef.on('child_changed', {limit: 1}).subscribe((devices: Device[]) => {
-  //           this.userApi.countDevices(this.user.id).subscribe(result => {
-  //             this.countDevices = result.count;
-  //           });
-  //       });*/
-  //
-  //       // Messages
-  //       this.userApi.countMessages(this.user.id).subscribe(result => {
-  //         this.countMessages = result.count;
-  //         this.countMessagesReady = true;
-  //       });
-  //       /*this.messageRef = this.userRef.child<Message>('Messages');
-  //       this.messageSub = this.messageRef.on('child_changed', {limit: 1}).subscribe((messages: Message[]) => {
-  //         this.userApi.countMessages(this.user.id).subscribe(result => {
-  //           this.countMessages = result.count;
-  //         });
-  //       });*/
-  //
-  //       // Alerts
-  //       this.alertRef = this.userRef.child<Alert>('Alerts');
-  //       this.subscriptions.push(this.alertRef.on('change').subscribe((alerts: Alert[]) => {
-  //         this.countAlerts = alerts.length;
-  //         this.countAlertsReady = true;
-  //       }));
-  //
-  //       // Parsers
-  //       this.parserRef = this.userRef.child<Parser>('Parsers');
-  //       this.subscriptions.push(this.parserRef.on('change').subscribe((parsers: Parser[]) => {
-  //         this.parserApi.count().subscribe((result: any) => {
-  //           this.countParsers = result.count;
-  //           this.countParsersReady = true;
-  //         });
-  //       }));
-  //
-  //       // Beacons
-  //       this.beaconRef = this.userRef.child<Beacon>('Beacons');
-  //       this.subscriptions.push(this.beaconRef.on('change').subscribe((beacons: Beacon[]) => {
-  //         if (this.admin) {
-  //           this.beaconApi.count().subscribe((result: any) => {
-  //             this.countBeacons = result.count;
-  //             this.countBeaconsReady = true;
-  //           });
-  //         } else {
-  //           this.countBeacons = beacons.length;
-  //           this.countBeaconsReady = true;
-  //         }
-  //       }));
-  //
-  //       // Connectors
-  //       this.connectorRef = this.userRef.child<Connector>('Connectors');
-  //       this.subscriptions.push(this.connectorRef.on('change').subscribe((connectors: Connector[]) => {
-  //         this.countConnectors = connectors.length;
-  //         this.countConnectorsReady = true;
-  //       }));
-  //     }
-  //   }
-  // }
+  setup(): void {
+    this.cleanSetup();
+    this.subscribe();
+    if (!this.isInitialized) {
+      this.isInitialized = true;
+      console.log('Setup Full layout');
+
+      // For organizations menu
+      this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
+        this.organizations = organizations;
+        this.countOrganizationsReady = true;
+        console.log(organizations);
+      });
+
+      const api = this.organization ? this.organizationApi : this.userApi;
+      const id = this.organization ? this.organization.id : this.user.id;
+      // Categories
+      api.countCategories(id).subscribe(result => {
+        this.countCategories = result.count;
+        this.countCategoriesReady = true;
+      });
+
+      // Devices
+      api.countDevices(id).subscribe(result => {
+        this.countDevices = result.count;
+        this.countDevicesReady = true;
+      });
+
+      // Messages
+      api.countMessages(id).subscribe(result => {
+        this.countMessages = result.count;
+        this.countMessagesReady = true;
+      });
+
+      if (!this.organization) {
+        // Dashboards
+        //TODO
+        // this.dashboardRef = this.organizationRef.child<Dashboard>('Dashboards');
+        // this.subscriptions.push(this.dashboardRef.on('change').subscribe((dashboards: Dashboard[]) => {
+        //   this.dashboards = dashboards;
+        // }));
+      } else {
+        //TODO
+        // this.dashboardRef = this.userRef.child<Dashboard>('Dashboards');
+        // this.subscriptions.push(this.dashboardRef.on('change').subscribe((dashboards: Dashboard[]) => {
+        //   this.dashboards = dashboards;
+        // }));
+
+        // Alerts
+        this.userApi.countAlerts(this.user.id).subscribe(result => {
+          this.countAlerts = result.count;
+          this.countAlertsReady = true;
+        });
+
+        // Parsers
+        this.userApi.countParsers(this.user.id).subscribe(result => {
+          this.countParsers = result.count;
+          this.countParsersReady = true;
+        });
+
+        // Beacons
+        this.userApi.countBeacons(this.user.id).subscribe(result => {
+          this.countBeacons = result.count;
+          this.countBeaconsReady = true;
+        });
+
+        // Connectors
+        this.userApi.countConnectors(this.user.id).subscribe(result => {
+          this.countConnectors = result.count;
+          this.countConnectorsReady = true;
+        });
+      }
+    }
+  }
+
+  private cleanSetup() {
+    this.unsubscribe();
+  }
 
   ngOnDestroy(): void {
     console.log('Full Layout: ngOnDestroy');
+    this.cleanSetup();
   }
 
   public toggled(open: boolean): void {
@@ -425,11 +337,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     //     this.organization = organization;
     //     this.addOrEditOrganizationModal.hide();
     //   });
-      /*this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
-        console.log(organizations);
-        this.organizations = organizations;
-        this.addOrEditOrganizationModal.hide();
-      });*/
+    /*this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
+      console.log(organizations);
+      this.organizations = organizations;
+      this.addOrEditOrganizationModal.hide();
+    });*/
     // });
   }
 
@@ -449,5 +361,45 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   //   localStorage.setItem('adminView', 'true');
   //   this.setup();
   // }
+  rtCategoryHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countCategories++ : payload.action == "DELETE" ? this.countCategories-- : 0;
+  };
+  rtDeviceHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countDevices++ : payload.action == "DELETE" ? this.countDevices-- : 0;
+  };
+  rtMsgHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countMessages++ : payload.action == "DELETE" ? this.countMessages-- : 0;
+  };
+  rtAlertHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countAlerts++ : payload.action == "DELETE" ? this.countAlerts-- : 0;
+  };
+  rtParserHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countParsers++ : payload.action == "DELETE" ? this.countParsers-- : 0;
+  };
+  rtConnectorHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countConnectors++ : payload.action == "DELETE" ? this.countConnectors-- : 0;
+  };
+  rtBeaconHandler = (payload:any) => {
+    payload.action == "CREATE" ? this.countBeacons++ : payload.action == "DELETE" ? this.countBeacons-- : 0;
+  };
 
+  subscribe(): void {
+    this.rtCategoryHandler = this.rt.addListener("category", this.rtCategoryHandler);
+    this.rtDeviceHandler = this.rt.addListener("device", this.rtDeviceHandler);
+    this.rtMsgHandler = this.rt.addListener("message", this.rtMsgHandler);
+    this.rtAlertHandler = this.rt.addListener("alert", this.rtAlertHandler);
+    this.rtParserHandler = this.rt.addListener("parser", this.rtParserHandler);
+    this.rtConnectorHandler = this.rt.addListener("Connector", this.rtConnectorHandler);
+    this.rtBeaconHandler = this.rt.addListener("beacon", this.rtBeaconHandler);
+  }
+
+  unsubscribe(): void {
+    this.rt.removeListener(this.rtCategoryHandler);
+    this.rt.removeListener(this.rtDeviceHandler);
+    this.rt.removeListener(this.rtMsgHandler);
+    this.rt.removeListener(this.rtAlertHandler);
+    this.rt.removeListener(this.rtParserHandler);
+    this.rt.removeListener(this.rtConnectorHandler);
+    this.rt.removeListener(this.rtBeaconHandler);
+  }
 }
