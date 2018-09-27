@@ -209,7 +209,18 @@ function alertHandler(payload) {
         if (!targetClients.length)
             return;
 
-        return send(targetClients, payload.event, payload.action, alert);
+        if (payload.action === "DELETE") {
+            send(targetClients, payload.event, payload.action, alert);
+            return;
+        }
+        console.log(alert);
+        db.collection("Connector").findOne({_id: ObjectId(alert.connectorId)}, (err, connector) => {
+            alert.Connector = connector;
+            db.collection("Device").findOne({_id: alert.deviceId}, (err, device) => {
+                alert.Device = device;
+                send(targetClients, payload.event, payload.action, alert);
+            });
+        });
     }
 }
 
