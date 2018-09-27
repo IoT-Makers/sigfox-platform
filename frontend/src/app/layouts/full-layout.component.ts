@@ -149,7 +149,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
         this.organizations = organizations;
         this.countOrganizationsReady = true;
-        console.log(organizations);
       });
 
       const api = this.organization ? this.organizationApi : this.userApi;

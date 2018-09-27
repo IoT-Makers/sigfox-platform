@@ -1,4 +1,5 @@
 import {Model} from "@mean-expert/model";
+import {PrimusClientFn} from "../../server/PrimusClientFn";
 
 const moment = require("moment");
 const json2csv = require("json2csv").parse;
@@ -14,6 +15,8 @@ const json2csv = require("json2csv").parse;
   hooks: {
     beforeSave: { name: "before save", type: "operation" },
     beforeDelete: { name: "before delete", type: "operation" },
+    afterDelete: { name: "after delete", type: "operation" },
+    afterSave: { name: "after save", type: "operation" },
   },
   remotes: {
     download: {
@@ -47,8 +50,12 @@ const json2csv = require("json2csv").parse;
 })
 
 class Category {
+
+  private primusClient: any;
+
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
+    this.primusClient = PrimusClientFn.newClient();
   }
 
   // Example Operation Hook
@@ -384,6 +391,33 @@ class Category {
           });
         } else next(null, "Error occured - not allowed");
       });
+  }
+
+  public afterDelete(ctx: any, next: Function): void {
+    let category = ctx.instance;
+    if (category) {
+      // if the message is delete via a cascade, no instance is provided
+      const payload = {
+        event: "category",
+        content: category,
+        action: "DELETE"
+      };
+      this.primusClient.write(payload);
+    }
+    next();
+  }
+
+
+  public afterSave(ctx: any, next: Function): void {
+    // Pub-sub
+    let category = ctx.instance;
+    const payload = {
+      event: "category",
+      content: category,
+      action: ctx.isNewInstance ? "CREATE" : "UPDATE"
+    };
+    this.primusClient.write(payload);
+    next();
   }
 }
 

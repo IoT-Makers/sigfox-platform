@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Beacon, FireLoopRef, Role, User} from '../../shared/sdk/models';
-import {RealTime} from '../../shared/sdk/services/core';
+import {Beacon, Role, User} from '../../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import * as L from 'leaflet';
 import {icon, latLng, tileLayer} from 'leaflet';
-import {UserApi} from '../../shared/sdk/services/custom';
+import {UserApi, BeaconApi} from '../../shared/sdk/services/custom';
+import {RealtimeService} from "../../shared/realtime/realtime.service";
 
 @Component({
   selector: 'app-messages',
@@ -19,17 +19,11 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   @ViewChild('addOrEditBeaconModal') addOrEditBeaconModal: any;
   @ViewChild('confirmBeaconModal') confirmBeaconModal: any;
 
-  private userRef: FireLoopRef<User>;
-
-  private beaconSub: Subscription;
-  private beaconRef: FireLoopRef<Beacon>;
-  private beaconAdminRef: FireLoopRef<Beacon>;
-
   public beacons: Beacon[] = [];
   public beaconsReady = false;
 
-  public beaconToAddOrEdit: Beacon = new Beacon();
-  public beaconToRemove: Beacon = new Beacon();
+  public beaconToAddOrEdit: Beacon;
+  public beaconToRemove: Beacon;
 
   public addBeaconFlag = false;
 
@@ -90,7 +84,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
   private admin = false;
 
-  constructor(private rt: RealTime,
+  constructor(private rt: RealtimeService,
               private userApi: UserApi,
               toasterService: ToasterService) {
     this.toasterService = toasterService;
@@ -108,38 +102,20 @@ export class BeaconsComponent implements OnInit, OnDestroy {
           return;
         }
       });
-      // Real Time
-      if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-        this.setup();
-      else
-        this.rt.onAuthenticated().subscribe(() => this.setup());
+      this.setup();
     });
   }
 
   setup(): void {
     this.cleanSetup();
-
-    // Get and listen beacons
-    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
+    this.subscribe();
 
     if (this.admin) {
-      this.beaconRef = this.rt.FireLoop.ref<Beacon>(Beacon);
-      this.beaconSub = this.beaconRef.on('change',
-        {
-          limit: 1000,
-          order: 'updatedAt DESC'
-        }
-      ).subscribe((beacons: Beacon[]) => {
-        this.beacons = beacons;
-        this.beaconsReady = true;
-      });
+      // TODO: admin rt
     } else {
-      this.beaconRef = this.userRef.child<Beacon>('Beacons');
-      this.beaconSub = this.beaconRef.on('change',
-        {
-          limit: 1000,
-          order: 'updatedAt DESC'
-        }
+      this.userApi.getBeacons(this.user.id, {
+        order: 'createdAt DESC',
+        limit: 100}
       ).subscribe((beacons: Beacon[]) => {
         this.beacons = beacons;
         this.beaconsReady = true;
@@ -244,7 +220,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   }
 
   removeBeacon(): void {
-    this.beaconRef.remove(this.beaconToRemove).subscribe(value => {
+    this.userApi.destroyByIdBeacons(this.user.id, this.beaconToRemove.id).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Beacon was successfully removed.');
@@ -257,7 +233,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   }
 
   editBeacon(): void {
-    this.beaconRef.upsert(this.beaconToAddOrEdit).subscribe(value => {
+    this.userApi.updateByIdBeacons(this.user.id, this.beaconToAddOrEdit.id, this.beaconToAddOrEdit).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Beacon was successfully updated.');
@@ -270,7 +246,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   }
 
   addBeacon(): void {
-    this.beaconRef.create(this.beaconToAddOrEdit).subscribe((beacon: Beacon) => {
+    this.userApi.createBeacons(this.user.id, this.beaconToAddOrEdit).subscribe((beacon: Beacon) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Beacon was successfully updated.');
@@ -288,12 +264,26 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   }
 
   private cleanSetup() {
-    if (this.userRef) this.userRef.dispose();
-    if (this.beaconRef) this.beaconRef.dispose();
-    if (this.beaconSub) this.beaconSub.unsubscribe();
+    this.unsubscribe();
   }
 
 
+  rtHandler = (payload:any) => {
+    if (payload.action == "CREATE") {
+      this.beacons.unshift(payload.content);
+    } else if (payload.action == "DELETE") {
+      this.beacons = this.beacons.filter(function (beacon) {
+        return beacon.id !== payload.content.id;
+      });
+    }
+  };
 
+  subscribe(): void {
+    this.rtHandler = this.rt.addListener("beacon", this.rtHandler);
+  }
+
+  unsubscribe(): void {
+    this.rt.removeListener(this.rtHandler);
+  }
 }
 

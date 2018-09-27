@@ -106,18 +106,13 @@ export class MessagesComponent implements OnInit, OnDestroy {
           include: ['Device', 'Geolocs']
         };
       }
+      const api = this.organization ? this.organizationApi : this.userApi;
+      const id = this.organization ? this.organization.id : this.user.id;
 
-      if (this.organization) {
-        this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
-          this.messages = messages;
-          this.messagesReady = true;
-        });
-      } else {
-        this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((result: any) => {
-          this.messages = result;
-          this.messagesReady = true;
-        });
-      }
+      api.getMessages(id, this.messageFilter).subscribe((messages: Message[]) => {
+        this.messages = messages;
+        this.messagesReady = true;
+      });
     });
   }
 

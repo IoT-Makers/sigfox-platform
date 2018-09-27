@@ -1,5 +1,5 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Category, Device, FireLoopRef, Organization, User} from '../../shared/sdk/models';
+import {Category, Device, Message, Organization, User} from '../../shared/sdk/models';
 import {CategoryApi, DeviceApi, OrganizationApi, RealTime, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -8,6 +8,7 @@ import {HttpClient} from '@angular/common/http';
 import {DOCUMENT} from '@angular/common';
 import {saveAs} from 'file-saver';
 import {ActivatedRoute} from '@angular/router';
+import {RealtimeService} from "../../shared/realtime/realtime.service";
 
 @Component({
   selector: 'app-categories',
@@ -42,11 +43,6 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   public selectOrganizations: Array<any> = [];
   public selectedOrganizations: Array<any> = [];
 
-  private userRef: FireLoopRef<User>;
-  private organizationRef: FireLoopRef<Organization>;
-  private categoryRef: FireLoopRef<Category>;
-  private categoryOrgaRef: FireLoopRef<Category>;
-
   public edit = false;
   public categoryToEdit: Category = new Category();
   private newCategory = false;
@@ -74,7 +70,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     classes: 'select-organization'
   };
 
-  constructor(private rt: RealTime,
+  constructor(private rt: RealtimeService,
               private categoryApi: CategoryApi,
               private deviceApi: DeviceApi,
               private userApi: UserApi,
@@ -97,47 +93,30 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       if (parentParams.id) {
         this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
           this.organization = organization;
-          // Check if real time and setup
-          if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-            this.setup();
-          else
-            this.rt.onAuthenticated().subscribe(() => this.setup());
+          this.setup();
         });
       } else {
-        // Check if real time and setup
-        if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-          this.setup();
-        else
-          this.rt.onAuthenticated().subscribe(() => this.setup());
+        this.setup();
       }
     });
   }
 
   setup(): void {
     this.cleanSetup();
-
+    this.subscribe();
     // Get and listen categories
     const filter = {
       order: 'updatedAt DESC',
       include: ['Devices', 'Organizations'],
     };
 
-    this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-    this.categoryRef = this.userRef.child<Category>('Categories');
+    const api = this.organization ? this.organizationApi : this.userApi;
+    const id = this.organization ? this.organization.id : this.user.id;
 
-    if (!this.organization) {
-      this.categorySub = this.categoryRef.on('change', filter).subscribe((categories: Category[]) => {
-        this.categories = categories;
-        this.categoriesReady = true;
-      });
-    } else {
-      this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-      this.categoryOrgaRef = this.organizationRef.child<Category>('Categories');
-      this.categorySub = this.categoryOrgaRef.on('change', filter).subscribe((categories: Category[]) => {
-        this.categories = categories;
-        this.categoriesReady = true;
-      });
-    }
+    api.getCategories(id, filter).subscribe((categories: Category[]) => {
+      this.categories = categories;
+      this.categoriesReady = true;
+    });
   }
 
   downloadFromOrganization(organizationId: string, category: Category, type: string): void {
@@ -191,6 +170,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       this.categoryToEdit = category;
     } else {
       this.categoryToEdit = new Category();
+      this.categoryToEdit.new = true;
     }
   }
 
@@ -200,16 +180,29 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   update(): void {
     this.edit = false;
-
-    this.categoryRef.upsert(this.categoryToEdit).subscribe((category: Category) => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Category was successfully updated.');
-    }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
-    });
+    if (this.categoryToEdit.new) {
+      // this operation is actually a create
+      delete this.categoryToEdit.new;
+      this.userApi.createCategories(this.user.id, this.categoryToEdit).subscribe((category: Category) => {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('success', 'Success', 'Category was successfully updated.');
+      }, err => {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
+      });
+    } else {
+      this.userApi.updateByIdCategories(this.user.id, this.categoryToEdit.id, this.categoryToEdit).subscribe((category: Category) => {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('success', 'Success', 'Category was successfully updated.');
+      }, err => {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
+      });
+    }
   }
 
   addProperty(): void {
@@ -227,7 +220,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   }
 
   remove(): void {
-    this.categoryRef.remove(this.categoryToRemove).subscribe(value => {
+    this.userApi.destroyByIdCategories(this.user.id, this.categoryToRemove.id).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Category was successfully removed.');
@@ -313,11 +306,25 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   }
 
   private cleanSetup() {
-    if (this.organizationRef) this.organizationRef.dispose();
-    if (this.userRef) this.userRef.dispose();
-    if (this.categoryRef) this.categoryRef.dispose();
-    if (this.categoryOrgaRef) this.categoryOrgaRef.dispose();
     if (this.categorySub) this.categorySub.unsubscribe();
+    this.unsubscribe();
   }
 
+  rtHandler = (payload:any) => {
+    if (payload.action == "CREATE") {
+      this.categories.unshift(payload.content);
+    } else if (payload.action == "DELETE") {
+      this.categories = this.categories.filter(function (obj) {
+        return obj.id !== payload.content.id;
+      });
+    }
+  };
+
+  subscribe(): void {
+    this.rtHandler = this.rt.addListener("category", this.rtHandler);
+  }
+
+  unsubscribe(): void {
+    this.rt.removeListener(this.rtHandler);
+  }
 }
