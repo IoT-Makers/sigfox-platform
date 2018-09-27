@@ -119,8 +119,8 @@ function messageHandler(payload) {
         }
 
         db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
-            msg.Geolocs = geolocs;
-            msg.Device = payload.device;
+            addAttribute(msg, "Geolocs", geolocs);
+            addAttribute(msg, "Device", payload.device);
             send(targetClients, payload.event, payload.action, msg);
         });
     }
@@ -142,13 +142,13 @@ function deviceHandler(payload) {
         }
 
         db.collection("Message").find({deviceId: device.id}).limit(1).sort({"createdAt": -1}).toArray((err, messages) => {
-            device.Messages = messages;
+            addAttribute(device, "Messages", messages);
             db.collection("Category").findOne({_id: ObjectId(device.categoryId)}, (err, category) => {
-                device.Category = category;
+                addAttribute(device, "Category", category);
                 db.collection("Parser").findOne({_id: ObjectId(device.parserId)}, (err, parser) => {
-                    device.Parser = parser;
+                    addAttribute(device, "Parser", parser);
                     db.collection("Organization").find({deviceId: device.id}).toArray((err, organizations) => {
-                        device.Organizations = organizations;
+                        addAttribute(device, "Organizations", organizations);
                         send(targetClients, payload.event, payload.action, device);
                     });
                 });
@@ -175,7 +175,7 @@ function parserHandler(payload) {
         }
 
         db.collection("Device").find({parserId:parser.id}).toArray((err, devices) => {
-            parser.Devices = devices;
+            addAttribute(parser, "Devices", devices);
             send(targetClients, payload.event, payload.action, parser);
         });
     }
@@ -213,11 +213,10 @@ function alertHandler(payload) {
             send(targetClients, payload.event, payload.action, alert);
             return;
         }
-        console.log(alert);
         db.collection("Connector").findOne({_id: ObjectId(alert.connectorId)}, (err, connector) => {
-            alert.Connector = connector;
+            addAttribute(alert, "Connector", connector);
             db.collection("Device").findOne({_id: alert.deviceId}, (err, device) => {
-                alert.Device = device;
+                addAttribute(alert, "Device", device);
                 send(targetClients, payload.event, payload.action, alert);
             });
         });
@@ -254,6 +253,15 @@ function connectorHandler(payload) {
 
         return send(targetClients, payload.event, payload.action, connector);
     }
+}
+
+function addAttribute(obj, attName, attValue) {
+    // change _id to id
+    if (attValue._id) {
+        attValue.id = attValue._id;
+        delete attValue._id;
+    }
+    obj[attName] = attValue;
 }
 
 function getTargetClients(userId) {
