@@ -256,12 +256,14 @@ function connectorHandler(payload) {
 }
 
 function addAttribute(obj, attName, attValue) {
-    // change _id to id
-    if (attValue._id) {
-        attValue.id = attValue._id;
-        delete attValue._id;
+    if (attValue) {
+        // change _id to id
+        if (attValue._id) {
+            attValue.id = attValue._id;
+            delete attValue._id;
+        }
+        obj[attName] = attValue;
     }
-    obj[attName] = attValue;
 }
 
 function getTargetClients(userId) {
