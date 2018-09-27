@@ -54,7 +54,8 @@ class Connector {
         const encryptedPassword = encrypt(password);
         ctx.instance.password = encryptedPassword;
       }
-      if (type === "sigfox-api") this.testConnection(type, login, password, next);
+      if (type === "sigfox-api") return this.testConnection(type, login, password, next);
+      next();
     } else next();
   }
 
