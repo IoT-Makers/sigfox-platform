@@ -1,4 +1,5 @@
-FROM node:10-alpine
-COPY . /home/app/primus
-WORKDIR /home/app/primus
-ENTRYPOINT ["npm",  "start"]
+FROM node:10
+WORKDIR /primus
+COPY package*.json /primus/
+RUN npm install
+COPY ./ /primus/

@@ -1,5 +1,5 @@
-FROM node:10-alpine
-COPY . /home/app/backend
-WORKDIR /home/app/backend
+FROM node:10
+WORKDIR /backend
+COPY package*.json /backend/
 RUN npm install
-ENTRYPOINT ["npm",  "start"]
+COPY ./ /backend/
