@@ -1,9 +1,16 @@
 version: '3'
 services:
+#  nginx-proxy:
+#    image: jwilder/nginx-proxy
+#    ports:
+#    - "80:80"
+#    volumes:
+#    - /var/run/docker.sock:/tmp/docker.sock:ro
+    
   mongodb:
     build: mongodb
     ports:
-    - 27017:27017
+    - 27018:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: pwd
@@ -11,13 +18,10 @@ services:
 
   backend:
     # restart: always
-    image: "node:10"
+    build: backend
     ports:
     - 3000:3000
     user: "node"
-    working_dir: /home/node/app/backend
-    volumes:
-    - ../:/home/node/app
     depends_on:
     - mongodb
     environment:
@@ -25,34 +29,26 @@ services:
     - SERVER_ACCESS_TOKEN=ghjmnbv44cdftgy
     - PRIMUS_URL=http://primus:2333
     env_file: dev.env
-    command: "npm start"
 
   frontend:
-    image: "node:10"
+    build: frontend
     ports:
-    - 4200:4200
-    working_dir: /home/node/app/frontend
-    volumes:
-    - ../:/home/node/app
+    - 8001:80
     environment:
     - PORT=4200
     - PRIMUS_URL=http://localhost:2333
+    - API_URL=http://localhost:3001
     env_file: dev.env
-    command: npm start
-#    command: "./node_modules/.bin/ng build"
+#    command: "./node_modules/.bin/ng build --prod"
 
   primus:
     restart: always
-    image: "node:10"
+    build: primus
     ports:
     - 2333:2333
-    working_dir: /home/node/app/primus
-    volumes:
-    - ../:/home/node/app
     depends_on:
     - mongodb
     environment:
     - PORT=2333
     - SERVER_ACCESS_TOKENS="ghjmnbv44cdftgy rtyuh9784b"
     env_file: dev.env
-    command: "npm start"

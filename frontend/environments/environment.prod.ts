@@ -1,9 +1,7 @@
-import * as process from 'process'
-
 export const environment = {
   production: true,
   envName: 'prod',
-  apiUrl: '',
+  apiUrl: 'http://dev.iotagency.com:3000',
   apiVersion: 'api',
-  PRIMUS_URL: process.env.PRIMUS_URL
+  PRIMUS_URL: 'http://dev.iotagency.com:2333'
 };
