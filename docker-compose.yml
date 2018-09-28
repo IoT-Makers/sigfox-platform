@@ -1,25 +1,21 @@
 version: '3'
 services:
-  #  nginx-proxy:
-  #    image: jwilder/nginx-proxy
-  #    ports:
-  #    - "80:80"
-  #    volumes:
-  #    - /var/run/docker.sock:/tmp/docker.sock:ro
-
   mongodb:
     build: mongodb
+    restart: "always"
     ports:
-    - 27017:27017
+    - "27017:27017"
     env_file: env/mongodb.env
 
   backend:
     depends_on:
     - mongodb
     build: backend
-    restart: always
+    restart: "always"
     ports:
-    - 3000:3000
+    - "3000:3000"
+    expose:
+    - "3000"
     env_file: env/backend.env
     command: npm start
 
@@ -27,9 +23,11 @@ services:
     depends_on:
     - mongodb
     build: primus
-    restart: always
+    restart: "always"
     ports:
-    - 2333:2333
+    - "2333:2333"
+    expose:
+    - "2333"
     env_file: env/primus.env
     command: npm start
 
@@ -37,6 +35,15 @@ services:
     depends_on:
     - mongodb
     build: frontend
+    restart: "always"
     ports:
-    - 4200:80
+    - "4200:80"
+    expose:
+    - "80"
+    - "443"
     env_file: env/frontend.env
+
+#networks:
+#  default:
+#    external:
+#      name: nginx-proxy
