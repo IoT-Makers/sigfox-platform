@@ -3,5 +3,6 @@ export const environment = {
   production: false,
   envName: 'dev',
   apiUrl: 'http://localhost:3000',
-  apiVersion: 'api'
+  apiVersion: 'api',
+  primusUrl: 'http://localhost:2333'
 };

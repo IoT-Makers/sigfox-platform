@@ -17,9 +17,10 @@ export const environment = {
   production: ${isProd},
   envName: environment,
   apiUrl: "${process.env.API_URL}",
-  apiVersion: "${process.env.API_VERSION}" 
+  apiVersion: "${process.env.API_VERSION}",
+  primusUrl: "${process.env.PRIMUS_URL}"
 };
-`
+`;
 writeFile(targetPath, envConfigFile, (err: any) => {
     if (err) return console.log(err);
     console.log(`Output generated at ${targetPath}`);
