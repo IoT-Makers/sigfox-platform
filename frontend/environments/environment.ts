@@ -5,7 +5,6 @@
 
 export const environment = {
   production: false,
-  apiUrl : '//127.0.0.1:3000',
-  apiVersion : 'api',
-  PRIMUS_URL: 'http://localhost:2333'
+  apiUrl : 'http://localhost:3000',
+  apiVersion : 'api'
 };

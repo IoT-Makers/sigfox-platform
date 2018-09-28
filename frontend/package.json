@@ -14,10 +14,14 @@
     "npm": ">=6.0.1"
   },
   "scripts": {
+    "preinstall": "npm install",
+    "postinstall": "npm run build",
     "ng": "./node_modules/.bin/ng",
+    "config": "ts-node ./scripts/set-env.ts",
     "start": "node server/server.ts",
     "test": "ng test",
-    "build": "ng build --prod",
+    "build-prod": "npm run config -- --environment=prod && ng build --prod",
+    "build-dev": "npm run config -- --environment=dev && ng build",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -58,6 +62,7 @@
     "chart.js": "2.5.0",
     "codelyzer": "^3.1.1",
     "core-js": "^2.5.7",
+    "dotenv": "^6.0.0",
     "dragula": "^3.7.2",
     "event-source-polyfill": "0.0.12",
     "express": "^4.16.2",

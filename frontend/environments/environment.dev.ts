@@ -1,7 +1,7 @@
+// This file will be overwritten by scripts/set-env.ts during build
 export const environment = {
-  production: true,
-  envName: 'prod',
-  apiUrl: 'http://dev.iotagency.com:3000',
-  apiVersion: 'api',
-  PRIMUS_URL: 'http://dev.iotagency.com:2333'
+  production: false,
+  envName: 'dev',
+  apiUrl: 'http://localhost:3000',
+  apiVersion: 'api'
 };
