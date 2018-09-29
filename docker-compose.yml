@@ -43,8 +43,8 @@ services:
       - default
     env_file: env/backend.env
     command: npm start
-    # ports:
-    #   - "3005:3005"
+    ports:
+      - "3005:3005"
     labels:
       - "traefik.docker.network=web"
       - "traefik.backend=loopback"
@@ -58,10 +58,13 @@ services:
       - mongodb
     build: primus
     restart: "always"
+    networks:
+      - web
+      - default
     env_file: env/primus.env
     command: npm start
-    # ports:
-    #   - "2333:2333"
+    ports:
+      - "2333:2333"
     labels:
       - "traefik.docker.network=web"
       - "traefik.backend=primus"
@@ -75,11 +78,14 @@ services:
       - mongodb
     build: frontend
     restart: "always"
+    networks:
+      - web
+      - default
     env_file: env/frontend.env
-    # ports:
-    #   - "4200:80"
-    volumes:
-      - ./frontend/dist:/usr/share/nginx/html
+    ports:
+      - "4200:4200"
+    # volumes:
+    #   - ./frontend/dist:/usr/share/nginx/html
     labels:
       - "traefik.docker.network=web"
       - "traefik.backend=nginx"
