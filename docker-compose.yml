@@ -1,49 +1,93 @@
 version: '3'
 services:
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: always
+    command: --api --docker # Enables the web UI and tells Træfik to listen to docker
+    ports:
+      - 80:80
+      - 8080:8080 # Port for the web UI
+      - 443:443
+    networks:
+      - web
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/traefik.toml:/traefik.toml
+      - ./traefik/acme.json:/acme.json
+    labels:
+      - "traefik.backend=traefik"
+      - "traefik.frontend.rule=Host:monitor.${HOSTNAME:-localhost}"
+      - "traefik.frontend.entryPoints=http,https"
+
   mongodb:
+    depends_on:
+      - traefik
     build: mongodb
     restart: "always"
     ports:
-    - "27017:27017"
+      - "27017:27017"
     env_file: env/mongodb.env
+    labels:
+      - "traefik.backend=mongodb"
+      - "traefik.port=27017"
+      - "traefik.enable=false"
 
   backend:
     depends_on:
-    - mongodb
+      - mongodb
     build: backend
     restart: "always"
-    ports:
-    - "3000:3000"
-    expose:
-    - "3000"
+    networks:
+      - web
+      - default
     env_file: env/backend.env
     command: npm start
+    # ports:
+    #   - "3005:3005"
+    labels:
+      - "traefik.docker.network=web"
+      - "traefik.backend=loopback"
+      - "traefik.frontend.rule=Host:api.${SUBDOMAIN:-app}.${HOSTNAME:-localhost}"
+      - "traefik.port=3005"
+      - "traefik.protocol=http"
+      - "traefik.enable=true"
 
   primus:
     depends_on:
-    - mongodb
+      - mongodb
     build: primus
     restart: "always"
-    ports:
-    - "2333:2333"
-    expose:
-    - "2333"
     env_file: env/primus.env
     command: npm start
+    # ports:
+    #   - "2333:2333"
+    labels:
+      - "traefik.docker.network=web"
+      - "traefik.backend=primus"
+      - "traefik.frontend.rule=Host:primus.${SUBDOMAIN:-app}.${HOSTNAME:-localhost}"
+      - "traefik.port=2333"
+      - "traefik.protocol=http"
+      - "traefik.enable=true"
 
   frontend:
     depends_on:
-    - mongodb
+      - mongodb
     build: frontend
     restart: "always"
-    ports:
-    - "4200:80"
-    expose:
-    - "80"
-    - "443"
     env_file: env/frontend.env
+    # ports:
+    #   - "4200:80"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+    labels:
+      - "traefik.docker.network=web"
+      - "traefik.backend=nginx"
+      - "traefik.frontend.rule=Host:${SUBDOMAIN:-app}.${HOSTNAME:-localhost}"
+      - "traefik.port=80"
+      - "traefik.protocol=http"
+      - "traefik.enable=true"
 
-#networks:
-#  default:
-#    external:
-#      name: nginx-proxy
+networks:
+  web:
+    external: true
