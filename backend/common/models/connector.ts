@@ -121,7 +121,7 @@ class Connector {
                         { channel: "URL",
                           callbackType: 1,
                           callbackSubtype: 1,
-                          url: "https://app.iotagency.sigfox.com/api/Geolocs/sigfox",
+                          url: process.env.BASE_URL + '/api/Geolocs/sigfox',
                           httpMethod: "POST",
                           enabled: true,
                           sendDuplicate: false,
