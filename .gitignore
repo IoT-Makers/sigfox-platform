@@ -2,4 +2,4 @@
 .DS_store
 **/.idea/
 .env
-env/
+**/env
