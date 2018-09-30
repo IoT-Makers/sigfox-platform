@@ -1,8 +1,6 @@
 version: '3'
 services:
   mongodb:
-    depends_on:
-      - traefik
     build: mongodb
     restart: "always"
     ports:
