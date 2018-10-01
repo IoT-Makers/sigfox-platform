@@ -1,6 +1,5 @@
 const Primus = require('primus');
 
-
 export class PrimusClientFn {
   public static newClient() {
     let Socket = Primus.createSocket({ transformer: 'engine.io' });
@@ -8,9 +7,8 @@ export class PrimusClientFn {
     let primusClient = new Socket(primusURL + '?access_token=' + process.env.SERVER_ACCESS_TOKEN);
 
     primusClient.on('close', () => {
-      console.warn('close');
+      console.warn('Closed Primus connection.');
     });
     return primusClient;
   }
 }
-

@@ -1,6 +1,5 @@
 **/node_modules
-backend/dist
 .DS_store
 **/.idea/
 .env
-
+**/env

@@ -46,7 +46,7 @@ import {environment} from "../../environments/environment";
     }),
     AngularMultiSelectModule,
     RealtimeModule.forRoot({
-      primusURL: environment.PRIMUS_URL || "http://localhost:2333"
+      primusURL: environment.primusUrl || "http://localhost:2333"
     }),
     TooltipModule.forRoot()
   ],
