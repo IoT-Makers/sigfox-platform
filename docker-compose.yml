@@ -1,6 +1,7 @@
 version: '3'
 services:
   mongodb:
+    container_name: ${SUBDOMAIN:-app}.mongodb
     build: mongodb
     restart: "always"
     ports:
@@ -12,6 +13,7 @@ services:
       - "traefik.enable=false"
 
   backend:
+    container_name: ${SUBDOMAIN:-app}.backend
     depends_on:
       - mongodb
     build: backend
@@ -32,6 +34,7 @@ services:
       - "traefik.enable=true"
 
   primus:
+    container_name: ${SUBDOMAIN:-app}.primus
     depends_on:
       - mongodb
     build: primus
@@ -52,6 +55,7 @@ services:
       - "traefik.enable=true"
 
   frontend:
+    container_name: ${SUBDOMAIN:-app}.frontend
     depends_on:
       - mongodb
     build: frontend
