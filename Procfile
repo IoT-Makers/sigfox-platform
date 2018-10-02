@@ -1,1 +1,1 @@
-web: npm run dokku
+web: npm run primus
