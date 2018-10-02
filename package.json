@@ -24,7 +24,5 @@
     "test": "npm run install"
   },
   "devDependencies": {},
-  "dependencies": {
-    "primus": "^7.2.2"
-  }
+  "dependencies": {}
 }
