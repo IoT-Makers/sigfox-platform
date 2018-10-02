@@ -100,7 +100,7 @@
   },
   "AppSetting": {
     "dataSource": "mongodb",
-    "public": false
+    "public": true
   },
   "Dashboard": {
     "dataSource": "mongodb",
