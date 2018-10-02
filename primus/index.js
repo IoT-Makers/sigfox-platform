@@ -3,8 +3,9 @@
 const Primus = require('primus');
 const MongoClient = require('mongodb').MongoClient;
 const mongodbUrl = process.env.MONGO_URL;
-if (!process.env.SERVER_ACCESS_TOKENS) return console.error('/!\ Please set the SERVER_ACCESS_TOKENS env.');
-const serverAccessTokens =  process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
+let serverAccessTokens = '';
+if (!process.env.SERVER_ACCESS_TOKENS) console.error('-----------------> Please set the SERVER_ACCESS_TOKENS env.');
+else serverAccessTokens =  process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
 const ObjectId = require('mongodb').ObjectId;
 
 let db;
@@ -23,14 +24,16 @@ const primus = Primus.createServer(function connection(spark) {
 MongoClient.connect(mongodbUrl, { useNewUrlParser: true }, function(err, client) {
     if (err) {
         console.error("MONGO_URL not set on Primus");
-        throw err;
-    }
-    // get db name
-    let s = mongodbUrl.split("/");
-    let dbName = s[s.length-1];
+        //throw err;
+        console.error(err);
+    } else {
+        // get db name
+        let s = mongodbUrl.split("/");
+        let dbName = s[s.length-1];
 
-    db = client.db(dbName);
-    console.log("Primus connected to Mongo");
+        db = client.db(dbName);
+        console.log("Primus connected to Mongo");
+    }
 });
 //
 // Add auth hook on server
