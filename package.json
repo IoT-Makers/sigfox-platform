@@ -14,7 +14,7 @@
     "npm": ">=6.0.1"
   },
   "scripts": {
-    "preinstall": "cd backend/ && npm install && cd ../primus/ && npm install && ../frontend/ && npm install && cd ..",
+    "preinstall": "cd backend/ && npm install && cd ../primus/ && npm install && cd ../frontend/ && npm install && cd ..",
     "postinstall": "npm run build",
     "build": "cd frontend/ && npm cache verify && npm run build && cd ..",
     "dokku": "npm run primus && npm run backend",
