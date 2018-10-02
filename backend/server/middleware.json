@@ -46,7 +46,7 @@
   },
   "files": {
     "loopback#static": {
-      "params": "$!../../webapp/dist"
+      "params": "$!../../frontend/dist"
     }
   },
   "final": {
