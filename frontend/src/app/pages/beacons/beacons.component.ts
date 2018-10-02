@@ -1,10 +1,9 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Beacon, Role, User} from '../../shared/sdk/models';
-import {Subscription} from 'rxjs/Subscription';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import * as L from 'leaflet';
 import {icon, latLng, tileLayer} from 'leaflet';
-import {UserApi, BeaconApi} from '../../shared/sdk/services/custom';
+import {BeaconApi, UserApi} from '../../shared/sdk/services/custom';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
 
 @Component({
@@ -22,8 +21,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   public beacons: Beacon[] = [];
   public beaconsReady = false;
 
-  public beaconToAddOrEdit: Beacon;
-  public beaconToRemove: Beacon;
+  public beaconToAddOrEdit: Beacon = new Beacon();
+  public beaconToRemove: Beacon = new Beacon();
 
   public addBeaconFlag = false;
 
@@ -81,11 +80,11 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     trackResize: false
   };
 
-
   private admin = false;
 
   constructor(private rt: RealtimeService,
               private userApi: UserApi,
+              private beaconApi: BeaconApi,
               toasterService: ToasterService) {
     this.toasterService = toasterService;
   }
@@ -110,17 +109,18 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     this.cleanSetup();
     this.subscribe();
 
-    if (this.admin) {
-      // TODO: admin rt
-    } else {
-      this.userApi.getBeacons(this.user.id, {
-        order: 'createdAt DESC',
-        limit: 100}
-      ).subscribe((beacons: Beacon[]) => {
-        this.beacons = beacons;
-        this.beaconsReady = true;
-      });
-    }
+    const api = this.admin ? this.beaconApi.find({
+      order: 'createdAt DESC',
+      limit: 100
+    }) : this.userApi.getBeacons(this.user.id, {
+      order: 'createdAt DESC',
+      limit: 100
+    });
+    // TODO: admin rt
+    api.subscribe((beacons: Beacon[]) => {
+      this.beacons = beacons;
+      this.beaconsReady = true;
+    });
   }
 
   /**
@@ -254,7 +254,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      this.toast = this.toasterService.pop('error', 'Error', err.message);
     });
   }
 
@@ -286,4 +286,3 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     this.rt.removeListener(this.rtHandler);
   }
 }
-
