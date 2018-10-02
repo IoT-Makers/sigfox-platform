@@ -17,7 +17,7 @@
     "preinstall": "cd backend/ && npm install && cd ../frontend && npm install && cd ..",
     "postinstall": "npm run build",
     "build": "cd frontend/ && npm cache verify && npm run build && cd ..",
-    "start": "npm run backend && npm run primus",
+    "dokku": "npm run primus && npm run backend",
     "backend": "cd backend/ && node server/server.js && cd ..",
     "frontend": "cd frontend/ && node server/server.ts && cd ..",
     "primus": "cd primus/ && npm start && cd ..",
