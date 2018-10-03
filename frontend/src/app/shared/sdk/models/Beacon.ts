@@ -64,6 +64,10 @@ export class Beacon implements BeaconInterface {
           name: 'id',
           type: 'string'
         },
+        "name": {
+          name: 'name',
+          type: 'string'
+        },
         "type": {
           name: 'type',
           type: 'string'
