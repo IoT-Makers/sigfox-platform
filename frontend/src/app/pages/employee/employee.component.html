@@ -1,0 +1,237 @@
+<div class="animated fadeIn">
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-6">
+              <i class="fa fa-user-circle-o fa-lg"></i><strong> Employees</strong>
+            </div>
+            <div class="col-md-4">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <button class="pull-right btn btn-sm btn-round btn-success" (click)="openAddEmployeeModal()">
+                <i class="fa fa-plus-circle"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-block">
+          <ng-container *ngIf="!employeesReady">
+            Loading employees...
+            <div class="sk-double-bounce">
+              <div class="sk-child sk-double-bounce1"></div>
+              <div class="sk-child sk-double-bounce2"></div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="employeesReady && !employees.length">
+            No employees yet...
+          </ng-container>
+
+          <ng-container *ngIf="employees.length > 0">
+            <!--Table-->
+            <div class="table-responsive">
+              <table class="table table-hover table-outline" [mfData]="employees | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="20">
+                <thead class="thead-inverse">
+                <tr>
+                  <th class="text-center">
+                    <mfDefaultSorter by="firstName"><i class="fa fa-sort"></i> Firstname</mfDefaultSorter>
+                  </th>
+                  <th class="text-center">
+                    <mfDefaultSorter by="lastName"><i class="fa fa-sort"></i> Lastname</mfDefaultSorter>
+                  </th>
+                  <th class="text-center">
+                    <mfDefaultSorter by="email"><i class="fa fa-sort"></i> Email</mfDefaultSorter>
+                  </th>
+                  <th class="text-center">
+                    <mfDefaultSorter by="updatedAt"><i class="fa fa-sort"></i> Last updated</mfDefaultSorter>
+                  </th>
+                  <th class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let employee of  mf.data; let i = index">
+                  <td class="text-center">
+                    <div class="">
+                      {{employee.firstName}}
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <div class="">
+                      {{employee.lastName}}
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <div class="">
+                      {{employee.email}}
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <strong class="">{{employee.updatedAt | amTimeAgo}}</strong>
+                  </td>
+                  <td class="text-center">
+                    <div class="btn-group-sm">
+                      <button class="btn btn-outline-primary btn-round" tooltip="Edit connector"
+                              (click)="openEditEmployeeModal(employee)"><i class="fa fa-pencil fa-lg"></i></button>
+                      <button class="btn btn-outline-danger btn-round" tooltip="Delete connector"
+                              (click)="openConfirmEmployeeModal(employee)"><i class="fa fa-trash fa-lg"></i></button>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                  <td colspan="4">
+                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                  </td>
+                </tr>
+                </tfoot>
+              </table>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div><!--/.row-->
+  </div>
+</div>
+
+<div bsModal #addOrEditEmployeeModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="addOrEditEmployeeModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form *ngIf="addEmployeeFlag" (ngSubmit)="addEmployee()" class="form-horizontal" #addOrEditForm="ngForm">
+        <div class="modal-header">
+          <h4 class="modal-title">Create an employee</h4>
+          <button type="button" class="close" (click)="addOrEditEmployeeModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Add Employee -->
+          <div class="col-md-12">
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">First name
+              </label>
+              <div class="col-md-9">
+                <input type="text" class="form-control"
+                       name="employeeToAddOrEdit.firstName"
+                       placeholder="First name"
+                       [(ngModel)]="employeeToAddOrEdit.firstName"
+                       required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Last name
+              </label>
+              <div class="col-md-9">
+                <input type="text" class="form-control"
+                       name="employeeToAddOrEdit.lastName"
+                       placeholder="Last name"
+                       [(ngModel)]="employeeToAddOrEdit.lastName"
+                       required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Email
+              </label>
+              <div class="col-md-9">
+                <input type="text" class="form-control"
+                       name="employeeToAddOrEdit.email"
+                       placeholder="Email"
+                       [(ngModel)]="employeeToAddOrEdit.email"
+                       required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="addOrEditEmployeeModal.hide()">Close</button>
+          <button type="submit" class="btn btn-success" [disabled]="!addOrEditForm.form.valid"><i class="fa fa-plus-circle"></i> Add</button>
+        </div>
+      </form>
+
+      <form *ngIf="!addEmployeeFlag" (ngSubmit)="editEmployee()" class="form-horizontal" #addOrEditForm="ngForm">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit an employee</h4>
+          <button type="button" class="close" (click)="addOrEditEmployeeModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Add Employee -->
+          <div class="col-md-12">
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">First name
+              </label>
+              <div class="col-md-9">
+                <input type="text" class="form-control"
+                       name="employeeToAddOrEdit.firstName"
+                       placeholder="First name"
+                       [(ngModel)]="employeeToAddOrEdit.firstName"
+                       required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Last name
+              </label>
+              <div class="col-md-9">
+                <input type="text" class="form-control"
+                       name="employeeToAddOrEdit.lastName"
+                       placeholder="Last name"
+                       [(ngModel)]="employeeToAddOrEdit.lastName"
+                       required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Email
+              </label>
+              <div class="col-md-9">
+                <input type="text" class="form-control"
+                       name="employeeToAddOrEdit.email"
+                       placeholder="Email"
+                       [(ngModel)]="employeeToAddOrEdit.email"
+                       required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="addOrEditEmployeeModal.hide()">Close</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!addOrEditForm.form.valid"><i class="fa fa-check"></i> Update</button>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div bsModal #confirmModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm removal of <b></b></h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are your sure you wish to delete this employee?
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-danger" (click)="deleteEmployee()">Delete</button>
+        <button class="btn btn-sm btn-default" (click)="confirmModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

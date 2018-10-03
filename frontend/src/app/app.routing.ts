@@ -36,7 +36,8 @@ export const routes: Routes = [
       {path: 'connectors', loadChildren: './pages/connectors/connectors.module#ConnectorsModule'},
       {path: 'beacons', loadChildren: './pages/beacons/beacons.module#BeaconsModule'},
 
-      {path: 'admin', canActivate: [AdminGuard], loadChildren: './pages/admin/admin.module#AdminModule'}
+      {path: 'admin', canActivate: [AdminGuard], loadChildren: './pages/admin/admin.module#AdminModule'},
+      {path: 'employee', canActivate: [AdminGuard], loadChildren: './pages/employee/employee.module#EmployeeModule'}
     ]
   },
   {
