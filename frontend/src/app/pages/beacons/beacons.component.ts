@@ -66,7 +66,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     shadowAnchor: [4, 62],  // the same for the shadow
     popupAnchor:  [-2, -40] // point from which the popup should open relative to the iconAnchor
   };
-  private mapOptions = {
+  public mapOptions = {
     layers: [
       //tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap contributors' })
       tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
@@ -132,8 +132,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
       maxZoom: 21,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
       attribution: '© OpenStreetMap contributors' });
-    /*this.map.options.zoom = 5;
-    this.map.options.center = latLng(48.856614, 2.352222);
+    /*this.map.options.center = latLng(48.856614, 2.352222);
     this.map.options.trackResize = false;*/
     this.map.locate({setView: true, maxZoom: 16});
     this.map.on('locationfound', (e) => this.onLocationFound(e));
@@ -182,6 +181,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     this.addOrEditBeaconModal.show();
     setTimeout(() => {
       this.map.invalidateSize();
+      this.map.setView([52.496908, 13.453922], 19);
     }, 500);
   }
 
@@ -210,7 +210,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
       this.marker = L.marker(new L.LatLng(beacon.location.lat, beacon.location.lng), {draggable: true, icon: icon(this.blueIconOptions)});
       this.marker.on('dragend', (e) => this.onMarkerDragEnd(e));
       this.map.addLayer(this.marker);
-      this.marker.bindPopup('Beacon position - ' + this.beaconToAddOrEdit.id);
+      if (beacon.name) this.marker.bindTooltip(beacon.name).openTooltip();
     }, 500);
   }
 
