@@ -34,7 +34,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation Device.
+   * Extrait la relation belongsTo Device.
    *
    * @param {any} id Geoloc id
    *
@@ -64,7 +64,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation Message.
+   * Extrait la relation belongsTo Message.
    *
    * @param {any} id Geoloc id
    *
@@ -94,7 +94,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation user.
+   * Extrait la relation belongsTo user.
    *
    * @param {any} id Geoloc id
    *
@@ -124,7 +124,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation Organization.
+   * Extrait la relation belongsTo Organization.
    *
    * @param {any} id Geoloc id
    *

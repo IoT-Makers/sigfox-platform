@@ -13,10 +13,11 @@ export interface GeolocInterface {
   "location": GeoPoint;
   "level"?: number;
   "accuracy"?: number;
+  "source"?: string;
   "createdAt"?: Date;
   "id"?: any;
   "deviceId"?: string;
-  "messageId"?: any;
+  "messageId"?: string;
   "updatedAt"?: Date;
   "userId"?: any;
   "organizationId"?: any;
@@ -31,10 +32,11 @@ export class Geoloc implements GeolocInterface {
   "location": GeoPoint = <any>null;
   "level": number = 0;
   "accuracy": number = 0;
+  "source": string = '';
   "createdAt": Date = new Date(0);
   "id": any = <any>null;
   "deviceId": string = '';
-  "messageId": any = <any>null;
+  "messageId": string = '';
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
   "organizationId": any = <any>null;
@@ -91,6 +93,10 @@ export class Geoloc implements GeolocInterface {
           name: 'accuracy',
           type: 'number'
         },
+        "source": {
+          name: 'source',
+          type: 'string'
+        },
         "createdAt": {
           name: 'createdAt',
           type: 'Date'
@@ -105,7 +111,7 @@ export class Geoloc implements GeolocInterface {
         },
         "messageId": {
           name: 'messageId',
-          type: 'any'
+          type: 'string'
         },
         "updatedAt": {
           name: 'updatedAt',

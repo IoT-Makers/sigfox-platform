@@ -32,7 +32,7 @@ export class WidgetApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation user.
+   * Extrait la relation belongsTo user.
    *
    * @param {any} id Widget id
    *
@@ -62,7 +62,7 @@ export class WidgetApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation Dashboard.
+   * Extrait la relation belongsTo Dashboard.
    *
    * @param {any} id Widget id
    *
