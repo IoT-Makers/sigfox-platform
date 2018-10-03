@@ -7,6 +7,7 @@ import {
 declare var Object: any;
 export interface BeaconInterface {
   "id": string;
+  "name"?: string;
   "type": string;
   "level": number;
   "location": GeoPoint;
@@ -18,6 +19,7 @@ export interface BeaconInterface {
 
 export class Beacon implements BeaconInterface {
   "id": string = '';
+  "name": string = '';
   "type": string = '';
   "level": number = 0;
   "location": GeoPoint = <any>null;
