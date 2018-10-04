@@ -31,7 +31,7 @@ export class ConnectorApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation user.
+   * Extrait la relation belongsTo user.
    *
    * @param {any} id Connector id
    *

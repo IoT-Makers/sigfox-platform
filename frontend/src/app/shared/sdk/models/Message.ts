@@ -8,6 +8,7 @@ import {
 
 declare var Object: any;
 export interface MessageInterface {
+  "id": string;
   "deviceId": string;
   "time": number;
   "seqNumber": number;
@@ -18,7 +19,6 @@ export interface MessageInterface {
   "deviceAck"?: boolean;
   "ack"?: boolean;
   "reception"?: Array<any>;
-  "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: any;
@@ -29,6 +29,7 @@ export interface MessageInterface {
 }
 
 export class Message implements MessageInterface {
+  "id": string = '';
   "deviceId": string = '';
   "time": number = 0;
   "seqNumber": number = 0;
@@ -39,7 +40,6 @@ export class Message implements MessageInterface {
   "deviceAck": boolean = false;
   "ack": boolean = false;
   "reception": Array<any> = <any>[];
-  "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
@@ -80,6 +80,10 @@ export class Message implements MessageInterface {
       path: 'Messages',
       idName: 'id',
       properties: {
+        "id": {
+          name: 'id',
+          type: 'string'
+        },
         "deviceId": {
           name: 'deviceId',
           type: 'string'
@@ -119,10 +123,6 @@ export class Message implements MessageInterface {
         "reception": {
           name: 'reception',
           type: 'Array&lt;any&gt;'
-        },
-        "id": {
-          name: 'id',
-          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',

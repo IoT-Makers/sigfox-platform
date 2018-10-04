@@ -14,6 +14,7 @@
     "npm": ">=6.0.1"
   },
   "scripts": {
+    "build-angular-sdk": "./node_modules/.bin/lb-sdk server/server.js ../frontend/src/app/shared/sdk -w enabled -v enabled",
     "lint": "eslint .",
     "start": "node server/server.js",
     "compile": "tsc && copyfiles \"server/**/*.json\" build/server -u 1",

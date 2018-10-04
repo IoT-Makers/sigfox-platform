@@ -6,7 +6,7 @@
         <div class="card-header">
           <div class="row">
             <div class="col-10">
-              <i class="fa fa-circle-thin fa-lg text-beacon"></i><strong> Beacons</strong>
+              <i class="fa fa-wifi fa-lg text-beacon"></i><strong> Beacons</strong>
             </div>
             <div class="col-2">
               <button class="pull-right btn btn-sm btn-round btn-success" (click)="openAddBeaconModal()">
@@ -36,6 +36,9 @@
                   <mfDefaultSorter by="ID"><i class="fa fa-sort"></i> ID</mfDefaultSorter>
                 </th>
                 <th class="text-center">
+                  <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                </th>
+                <th class="text-center">
                   <mfDefaultSorter by="type"><i class="fa fa-sort"></i> Type</mfDefaultSorter>
                 </th>
                 <th class="text-center">
@@ -51,6 +54,10 @@
               <tr *ngFor="let beacon of mf.data; let i = index">
                 <td class="text-center text-beacon">
                   <strong>{{beacon.id}}</strong>
+                </td>
+                <td class="text-center">
+                  <strong *ngIf="beacon.name">{{beacon.name}}</strong>
+                  <small *ngIf="!beacon.name">n/a</small>
                 </td>
                 <td class="text-center">
                   <span>{{beacon.type}}</span>
@@ -115,6 +122,17 @@
                        placeholder="Beacon ID"
                        [(ngModel)]="beaconToAddOrEdit.id"
                        required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Name
+                <small class="text-muted">(optional)</small>
+              </label>
+              <div class="col-md-9">
+                <input type="text" class="form-control"
+                       name="beaconToAddOrEdit.name"
+                       placeholder="Beacon name"
+                       [(ngModel)]="beaconToAddOrEdit.name">
               </div>
             </div>
             <div class="form-group row">
@@ -196,6 +214,17 @@
                        [(ngModel)]="beaconToAddOrEdit.id"
                        disabled
                        required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Name
+                <small class="text-muted">(optional)</small>
+              </label>
+              <div class="col-md-9">
+                <input type="text" class="form-control"
+                       name="beaconToAddOrEdit.name"
+                       placeholder="Beacon name"
+                       [(ngModel)]="beaconToAddOrEdit.name">
               </div>
             </div>
             <div class="form-group row">

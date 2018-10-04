@@ -4,13 +4,6 @@ import { AccessToken, AccessTokenInterface } from './AccessToken';
 export * from './AccessToken';
 
 
-import { Action } from '@ngrx/store';
-
-export interface LoopbackAction extends Action {
-  payload?: any;
-  meta?: any;
-}
-
 
 declare var Object: any;
 export interface LoopBackFilter {
