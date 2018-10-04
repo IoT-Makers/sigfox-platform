@@ -3,6 +3,7 @@ import {AccessToken, AppSetting, User} from '../../../shared/sdk/models';
 import {UserApi, AppSettingApi} from '../../../shared/sdk/services';
 import {Router} from '@angular/router';
 import * as _ from 'lodash';
+import {RealtimeService} from "../../../shared/realtime/realtime.service";
 
 @Component({
   selector: 'app-register',
@@ -20,7 +21,8 @@ export class RegisterComponent {
 
   private canUserRegister: any = false;
 
-  constructor(private userApi: UserApi,
+  constructor(private rt: RealtimeService,
+              private userApi: UserApi,
               private appSettingApi: AppSettingApi,
               private router: Router) {
     this.getAppSettings();
@@ -69,6 +71,7 @@ export class RegisterComponent {
             'loggedAt': new Date()
           }
         ).subscribe();
+        this.rt.connect(token.id);
         // Redirect to the /dashboard
         this.router.navigate(['/']);
       }, err => {
