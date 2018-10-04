@@ -16,7 +16,7 @@
   "scripts": {
     "ng": "./node_modules/.bin/ng",
     "config": "ts-node ./scripts/set-env.ts",
-    "set-env": "npm run config -- --environment=prod",
+    "set-env": "npm run config",
     "build": "ng build --prod",
     "start": "node server/server.ts",
     "test": "ng test",

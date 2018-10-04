@@ -1,83 +1,50 @@
 version: '3'
 services:
   mongodb:
-    container_name: ${SUBDOMAIN:-app}.mongodb
+    container_name: mongodb
     build: mongodb
     image: ${REGISTRY_URL}mongodb
     restart: "always"
     ports:
-      - "27017"
+      - "27017:27017"
     env_file: env/mongodb.env
-    labels:
-      - "traefik.backend=mongodb"
-      - "traefik.port=27017"
-      - "traefik.enable=false"
 
   backend:
-    container_name: ${SUBDOMAIN:-app}.backend
+    container_name: backend
     depends_on:
       - mongodb
     build: backend
     image: ${REGISTRY_URL}backend
     restart: "always"
-    networks:
-      - web
-      - default
     env_file: env/backend.env
     command: npm start
     ports:
-      - "3005"
-    labels:
-      - "traefik.docker.network=web"
-      - "traefik.backend=loopback"
-      - "traefik.frontend.rule=Host:api.${SUBDOMAIN:-app}.${DOMAIN:-localhost}"
-      - "traefik.port=3005"
-      - "traefik.protocol=http"
-      - "traefik.enable=true"
+      - "3000:3000"
 
   primus:
-    container_name: ${SUBDOMAIN:-app}.primus
+    container_name: primus
     depends_on:
       - mongodb
     build: primus
     image: ${REGISTRY_URL}primus
     restart: "always"
-    networks:
-      - web
-      - default
     env_file: env/primus.env
     command: npm start
     ports:
-      - "2333"
-    labels:
-      - "traefik.docker.network=web"
-      - "traefik.backend=primus"
-      - "traefik.frontend.rule=Host:primus.${SUBDOMAIN:-app}.${DOMAIN:-localhost}"
-      - "traefik.port=2333"
-      - "traefik.protocol=http"
-      - "traefik.enable=true"
+      - "2333:2333"
 
   frontend:
-    container_name: ${SUBDOMAIN:-app}.frontend
+    container_name: frontend
     depends_on:
       - mongodb
-    build: frontend
+    build:
+      context: frontend
+      args:
+      - BUILD_ENV=${BUILD_ENV:-}
+      - API_URL=${API_URL:-http://localhost:3000}
+      - API_VERSION=${API_VERSION:-api}
+      - PRIMUS_URL=${PRIMUS_URL:-http://localhost:2333}
     image: ${REGISTRY_URL}frontend
     restart: "always"
-    networks:
-      - web
-      - default
-    env_file: env/frontend.env
     ports:
-      - "4200"
-    labels:
-      - "traefik.docker.network=web"
-      - "traefik.backend=nginx"
-      - "traefik.frontend.rule=Host:${SUBDOMAIN:-app}.${DOMAIN:-localhost}"
-      - "traefik.port=80"
-      - "traefik.protocol=http"
-      - "traefik.enable=true"
-
-networks:
-  web:
-    external: true
+      - "80:80"
