@@ -3,6 +3,7 @@ services:
   mongodb:
     container_name: ${SUBDOMAIN:-app}.mongodb
     build: mongodb
+    image: ${REGISTRY_URL}mongodb
     restart: "always"
     ports:
       - "27017"
@@ -17,6 +18,7 @@ services:
     depends_on:
       - mongodb
     build: backend
+    image: ${REGISTRY_URL}backend
     restart: "always"
     networks:
       - web
@@ -38,6 +40,7 @@ services:
     depends_on:
       - mongodb
     build: primus
+    image: ${REGISTRY_URL}primus
     restart: "always"
     networks:
       - web
@@ -59,6 +62,7 @@ services:
     depends_on:
       - mongodb
     build: frontend
+    image: ${REGISTRY_URL}frontend
     restart: "always"
     networks:
       - web
