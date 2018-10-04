@@ -4,5 +4,5 @@ export const environment = {
   envName: "prod",
   apiUrl: "https://connect.iotagency.sigfox.com",
   apiVersion: "api",
-  primusUrl: "https://primus.connect.iotagency.sigfox.com"
+  primusUrl: "https://primus.iotagency.sigfox.com"
 };
