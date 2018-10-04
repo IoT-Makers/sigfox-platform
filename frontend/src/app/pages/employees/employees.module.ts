@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
-import {EmployeeComponent} from './employee.component';
-import {EmployeeRoutingModule} from './employee-routing.module';
+import {EmployeesComponent} from './employees.component';
+import {EmployeesRoutingModule} from './employees-routing.module';
 import {CommonModule} from '@angular/common';
 import {ToasterModule} from 'angular2-toaster';
 import {AccordionModule, ModalModule, TooltipModule} from 'ngx-bootstrap';
@@ -8,10 +8,11 @@ import {MomentModule} from 'angular2-moment';
 import {FormsModule} from '@angular/forms';
 import {DataTableModule} from 'angular2-datatable';
 import {DataFilterPipe} from "./datafilterpipe";
+import {AngularMultiSelectModule} from "angular2-multiselect-dropdown";
 
 @NgModule({
   imports: [
-    EmployeeRoutingModule,
+    EmployeesRoutingModule,
     CommonModule,
     MomentModule,
     FormsModule,
@@ -19,12 +20,13 @@ import {DataFilterPipe} from "./datafilterpipe";
     AccordionModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
-    DataTableModule
+    DataTableModule,
+    AngularMultiSelectModule
   ],
   declarations: [
-    EmployeeComponent,
+    EmployeesComponent,
     DataFilterPipe
   ]
 })
-export class EmployeeModule {
+export class EmployeesModule {
 }

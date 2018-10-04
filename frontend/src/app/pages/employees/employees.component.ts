@@ -1,14 +1,14 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {EmployeeApi, UserApi} from '../../shared/sdk/services/custom';
-import {Employee} from '../../shared/sdk/models';
+import {DeviceApi, EmployeeApi, UserApi} from '../../shared/sdk/services/custom';
+import {Device, Employee} from '../../shared/sdk/models';
 
 
 @Component({
   selector: 'app-employees',
-  templateUrl: './employee.component.html'
+  templateUrl: './employees.component.html'
 })
-export class EmployeeComponent implements OnInit, OnDestroy {
+export class EmployeesComponent implements OnInit, OnDestroy {
 
   @ViewChild('addOrEditEmployeeModal') addOrEditEmployeeModal: any;
   @ViewChild('updateEmployeeModal') updateEmployeeModal: any;
@@ -24,6 +24,16 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   public employeeToAddOrEdit: Employee = new Employee();
   public employeeToRemove: Employee;
 
+  // Select
+  public selectDevices: Array<Object> = [];
+  public selectedDevices = [];
+  public selectOneDeviceSettings = {
+    singleSelection: true,
+    text: 'Select one device',
+    enableSearchFilter: true,
+    classes: 'select-one-device'
+  };
+
   // Notifications
   private toast;
   public toasterconfig: ToasterConfig =
@@ -35,6 +45,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
 
 
   constructor(private userApi: UserApi,
+              private deviceApi: DeviceApi,
               private employeeApi: EmployeeApi,
               private toasterService: ToasterService) {
 
@@ -47,19 +58,35 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
+    this.getDevices();
     this.getEmployees();
   }
 
+  getDevices(): void {
+    this.deviceApi.find().subscribe((devices: Device[]) => {
+      this.selectDevices = [];
+      devices.forEach((device: Device) => {
+        const item = {
+          id: device.id,
+          itemName: device.name ? device.name + ' (' + device.id + ')' : device.id
+        };
+        this.selectDevices.push(item);
+      });
+    });
+  }
+
   getEmployees(): void {
-    this.employeeApi.find().subscribe((employees: Employee[]) => {
+    this.employeeApi.find({include: ['Device'], order: 'createdAt DESC'}).subscribe((employees: Employee[]) => {
       this.employees = employees;
       this.employeesReady = true;
     });
   }
 
   openEditEmployeeModal(employee: Employee): void {
+    this.selectedDevices = [];
     this.addEmployeeFlag = false;
     this.employeeToAddOrEdit = employee;
+    if (employee.Device) this.selectedDevices[0] = {id: employee.Device.id, itemName: employee.Device.name ? employee.Device.name + ' (' + employee.Device.id + ')' : employee.Device.id};
     this.addOrEditEmployeeModal.show();
   }
 
@@ -68,12 +95,29 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     this.confirmModal.show();
   }
 
+  linkDeviceToEmployee(): void {
+    if (this.selectedDevices[0]) {
+      this.employeeApi.linkToDevice(this.employeeToAddOrEdit.id, this.selectedDevices[0].id).subscribe(value => {
+        this.toast = this.toasterService.pop('success', 'Success', 'Employee was successfully linked to device.');
+        // TODO: enable real-time
+        this.getEmployees();
+      }, err => {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      });
+    }
+  }
+
   editEmployee(): void {
     this.employeeApi.updateAttributes(this.employeeToAddOrEdit.id, this.employeeToAddOrEdit).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Employee was successfully updated.');
+      this.linkDeviceToEmployee();
       this.addOrEditEmployeeModal.hide();
+      // TODO: enable real-time
+      this.getEmployees();
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
@@ -92,7 +136,12 @@ export class EmployeeComponent implements OnInit, OnDestroy {
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Employee was deleted successfully.');
       this.confirmModal.hide();
+      // TODO: enable real-time
       this.getEmployees();
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
     });
   }
 
@@ -106,10 +155,14 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   addEmployee(): void {
     this.employeeApi.create(this.employeeToAddOrEdit).subscribe(value => {
       console.log(value);
+      this.employeeToAddOrEdit.id = value.id;
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Employee was successfully updated.');
+      this.linkDeviceToEmployee();
       this.addOrEditEmployeeModal.hide();
+      // TODO: enable real-time
+      this.getEmployees();
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);

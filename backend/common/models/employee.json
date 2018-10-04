@@ -37,11 +37,6 @@
       "type": "hasOne",
       "model": "Device",
       "foreignKey": "employeeId"
-    },
-    "Geolocs": {
-      "type": "hasMany",
-      "model": "Geoloc",
-      "foreignKey": "employeeId"
     }
   },
   "acls": [
@@ -56,6 +51,12 @@
       "principalType": "ROLE",
       "principalId": "$unauthenticated",
       "permission": "DENY"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "ALLOW"
     },
     {
       "accessType": "*",

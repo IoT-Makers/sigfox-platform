@@ -14,13 +14,12 @@ import { Organization } from '../../models/Organization';
 import { Alert } from '../../models/Alert';
 import { AlertValue } from '../../models/AlertValue';
 import { AlertGeofence } from '../../models/AlertGeofence';
-import { AlertHistory } from '../../models/AlertHistory';
 import { Reception } from '../../models/Reception';
 import { Connector } from '../../models/Connector';
 import { Widget } from '../../models/Widget';
 import { Property } from '../../models/Property';
 import { Beacon } from '../../models/Beacon';
-import { Alexa } from '../../models/Alexa';
+import { Employee } from '../../models/Employee';
 
 export interface Models { [name: string]: any }
 
@@ -42,13 +41,12 @@ export class SDKModels {
     Alert: Alert,
     AlertValue: AlertValue,
     AlertGeofence: AlertGeofence,
-    AlertHistory: AlertHistory,
     Reception: Reception,
     Connector: Connector,
     Widget: Widget,
     Property: Property,
     Beacon: Beacon,
-    Alexa: Alexa,
+    Employee: Employee,
     
   };
 

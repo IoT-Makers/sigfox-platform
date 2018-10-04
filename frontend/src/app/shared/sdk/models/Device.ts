@@ -6,7 +6,8 @@ import {
   Geoloc,
   User,
   Organization,
-  Alert
+  Alert,
+  Employee
 } from '../index';
 
 declare var Object: any;
@@ -23,6 +24,7 @@ export interface DeviceInterface {
   "parserId"?: any;
   "categoryId"?: any;
   "userId"?: any;
+  "employeeId"?: any;
   Parser?: Parser;
   Category?: Category;
   Messages?: Message[];
@@ -30,6 +32,7 @@ export interface DeviceInterface {
   user?: User;
   Organizations?: Organization[];
   Alerts?: Alert[];
+  Employee?: Employee;
 }
 
 export class Device implements DeviceInterface {
@@ -45,6 +48,7 @@ export class Device implements DeviceInterface {
   "parserId": any = <any>null;
   "categoryId": any = <any>null;
   "userId": any = <any>null;
+  "employeeId": any = <any>null;
   Parser: Parser = null;
   Category: Category = null;
   Messages: Message[] = null;
@@ -52,6 +56,7 @@ export class Device implements DeviceInterface {
   user: User = null;
   Organizations: Organization[] = null;
   Alerts: Alert[] = null;
+  Employee: Employee = null;
   constructor(data?: DeviceInterface) {
     Object.assign(this, data);
   }
@@ -133,6 +138,10 @@ export class Device implements DeviceInterface {
           name: 'userId',
           type: 'any'
         },
+        "employeeId": {
+          name: 'employeeId',
+          type: 'any'
+        },
       },
       relations: {
         Parser: {
@@ -192,6 +201,14 @@ export class Device implements DeviceInterface {
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'deviceId'
+        },
+        Employee: {
+          name: 'Employee',
+          type: 'Employee',
+          model: 'Employee',
+          relationType: 'belongsTo',
+                  keyFrom: 'employeeId',
+          keyTo: 'id'
         },
       }
     }

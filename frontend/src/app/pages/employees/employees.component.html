@@ -49,6 +49,9 @@
                     <mfDefaultSorter by="email"><i class="fa fa-sort"></i> Email</mfDefaultSorter>
                   </th>
                   <th class="text-center">
+                    Device ID
+                  </th>
+                  <th class="text-center">
                     <mfDefaultSorter by="updatedAt"><i class="fa fa-sort"></i> Last updated</mfDefaultSorter>
                   </th>
                   <th class="text-center">Action</th>
@@ -67,9 +70,17 @@
                     </div>
                   </td>
                   <td class="text-center">
-                    <div class="">
+                    <div class="text-user">
                       {{employee.email}}
                     </div>
+                  </td>
+                  <td class="text-center">
+                    <div *ngIf="employee.Device" class="text-device">
+                      {{employee.Device.id}}
+                    </div>
+                    <small *ngIf="!employee.Device">
+                      No device linked
+                    </small>
                   </td>
                   <td class="text-center">
                     <strong class="">{{employee.updatedAt | amTimeAgo}}</strong>
@@ -148,6 +159,18 @@
                        required>
               </div>
             </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Device</label>
+              <div class="col-md-9">
+                <angular2-multiselect #selectOneDevice
+                                      name="selectDevices"
+                                      [data]="selectDevices"
+                                      [(ngModel)]="selectedDevices"
+                                      [settings]="selectOneDeviceSettings"
+                                      (onSelect)="selectOneDevice.isActive = false;">
+                </angular2-multiselect>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -166,7 +189,7 @@
         </div>
 
         <div class="modal-body">
-          <!-- Add Employee -->
+          <!-- Edit Employee -->
           <div class="col-md-12">
             <div class="form-group row">
               <label class="col-md-3 form-control-label">First name
@@ -199,6 +222,18 @@
                        placeholder="Email"
                        [(ngModel)]="employeeToAddOrEdit.email"
                        required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Device</label>
+              <div class="col-md-9">
+                <angular2-multiselect #selectOneDevice
+                                      name="selectDevices"
+                                      [data]="selectDevices"
+                                      [(ngModel)]="selectedDevices"
+                                      [settings]="selectOneDeviceSettings"
+                                      (onSelect)="selectOneDevice.isActive = false;">
+                </angular2-multiselect>
               </div>
             </div>
           </div>

@@ -62,13 +62,12 @@ import { OrganizationApi } from './services/custom/Organization';
 import { AlertApi } from './services/custom/Alert';
 import { AlertValueApi } from './services/custom/AlertValue';
 import { AlertGeofenceApi } from './services/custom/AlertGeofence';
-import { AlertHistoryApi } from './services/custom/AlertHistory';
 import { ReceptionApi } from './services/custom/Reception';
 import { ConnectorApi } from './services/custom/Connector';
 import { WidgetApi } from './services/custom/Widget';
 import { PropertyApi } from './services/custom/Property';
 import { BeaconApi } from './services/custom/Beacon';
-import { AlexaApi } from './services/custom/Alexa';
+import { EmployeeApi } from './services/custom/Employee';
 /**
 * @module SDKBrowserModule
 * @description
@@ -113,13 +112,12 @@ export class SDKBrowserModule {
         AlertApi,
         AlertValueApi,
         AlertGeofenceApi,
-        AlertHistoryApi,
         ReceptionApi,
         ConnectorApi,
         WidgetApi,
         PropertyApi,
         BeaconApi,
-        AlexaApi,
+        EmployeeApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }
