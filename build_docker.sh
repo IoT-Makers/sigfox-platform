@@ -7,7 +7,7 @@
  export API_VERSION=api; \
  export PRIMUS_URL=https://primus.subdomain.domain; \
  export REGISTRY_URL=domain:5000/; \
- sudo -E bash build_for_deploy.sh)
+ sudo -E bash build_docker.sh)
 COMMENT
 
 
