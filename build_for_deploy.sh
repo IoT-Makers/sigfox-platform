@@ -20,7 +20,7 @@ export BUILD_ENV=prod
 
 docker-compose build
 
-echo "Building images is done."
+echo "----------> Done building images."
 read -r -p "Are you sure you wish to push new images to the docker registry? [Y/n] " input
 case $input in
     [yY][eE][sS]|[yY])
