@@ -26,10 +26,10 @@ case $input in
     [yY][eE][sS]|[yY])
         echo "Let's do it!"
         docker login ${REGISTRY_URL}
-        docker push ${REGISTRY_URL}primus
-        docker push ${REGISTRY_URL}backend
-        docker push ${REGISTRY_URL}frontend
-        docker push ${REGISTRY_URL}mongodb
+        docker push ${REGISTRY_URL}primus-${SUBDOMAIN}
+        docker push ${REGISTRY_URL}backend-${SUBDOMAIN}
+        docker push ${REGISTRY_URL}frontend-${SUBDOMAIN}
+        docker push ${REGISTRY_URL}mongodb-${SUBDOMAIN}
         ;;
     [nN][oO]|[nN])
         echo "Maybe next time then...!"
