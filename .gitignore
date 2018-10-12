@@ -1,5 +1,3 @@
 **/node_modules
 .DS_store
 **/.idea/
-
-frontend/environments/environment\.prod\.ts
