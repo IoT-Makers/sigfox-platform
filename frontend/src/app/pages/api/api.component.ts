@@ -2,7 +2,6 @@ import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AccessToken, User} from '../../shared/sdk/models';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
-import {RealTime} from '../../shared/sdk/services/core';
 import {DOCUMENT} from '@angular/common';
 
 @Component({
@@ -30,10 +29,9 @@ export class ApiComponent implements OnInit, OnDestroy {
     });
 
   constructor(@Inject(DOCUMENT) private document: any,
-             private userApi: UserApi,
-             private rt: RealTime,
-             private connectorApi: ConnectorApi,
-             toasterService: ToasterService) {
+              private userApi: UserApi,
+              private connectorApi: ConnectorApi,
+              toasterService: ToasterService) {
     this.toasterService = toasterService;
   }
 
@@ -41,6 +39,8 @@ export class ApiComponent implements OnInit, OnDestroy {
     console.log('Api: ngOnInit');
     // Get the logged in User object (avatar, email, ...)
     this.user = this.userApi.getCachedCurrent();
+    // Fix
+    if (!this.user.devAccessTokens) this.user.devAccessTokens = [];
     this.callbackURL = this.document.location.origin + '/api';
   }
 

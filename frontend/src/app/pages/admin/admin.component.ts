@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AppSetting, FireLoopRef, Organization, Role, User} from '../../shared/sdk/models';
-import {AppSettingApi, OrganizationApi, RealTime, RoleApi, UserApi} from '../../shared/sdk/services';
+import {AppSettingApi, OrganizationApi, RoleApi, UserApi} from '../../shared/sdk/services';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Subscription} from 'rxjs/Subscription';
 import {
@@ -21,7 +21,7 @@ import {
 })
 export class AdminComponent implements OnInit, OnDestroy {
 
-  @ViewChild('addOrEditUserModal') addOrEditUserModal: any
+  @ViewChild('addOrEditUserModal') addOrEditUserModal: any;
 
   private myUser: User;
   private userToRemove: User;
@@ -72,8 +72,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
 
 
-  constructor(private rt: RealTime,
-              private dashboardApi: DashboardApi,
+  constructor(private dashboardApi: DashboardApi,
               private widgetApi: WidgetApi,
               private categoryApi: CategoryApi,
               private deviceApi: DeviceApi,
@@ -94,11 +93,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log('Admin: ngOnInit');
 
-    // Real Time
-    if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-      this.setup();
-    else
-      this.rt.onAuthenticated().subscribe(() => this.setup());
+    this.setup();
   }
 
   setup(): void {
@@ -110,8 +105,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   getUsers(): void {
     this.myUser = this.userApi.getCachedCurrent();
-    this.userRef = this.rt.FireLoop.ref<User>(User);
-    this.userSub = this.userRef.on('change', {
+    this.userApi.find({
       include: [
         {
           relation: 'roles'
@@ -217,7 +211,11 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.roleApi.findOne({where: {name: 'admin'}}).subscribe((admin: any) => {
       console.log('admin: ', admin);
 
-      this.userApi.linkRoles(user.id, admin.id, {'principalType': 'USER', 'roleId': admin.id, 'principalId': user.id}).subscribe(result => {
+      this.userApi.linkRoles(user.id, admin.id, {
+        'principalType': 'USER',
+        'roleId': admin.id,
+        'principalId': user.id
+      }).subscribe(result => {
         console.log(result);
         this.getUsers();
       });
