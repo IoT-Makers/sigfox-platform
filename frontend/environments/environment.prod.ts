@@ -2,7 +2,7 @@
 export const environment = {
   production: false,
   envName: 'prod',
-  apiUrl: 'http://localhost:3000',
+  apiUrl: 'http://localhost:5000',
   apiVersion: 'api',
   primusUrl: 'http://localhost:2333'
 };
