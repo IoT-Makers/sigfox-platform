@@ -4,7 +4,8 @@ const Primus = require('primus');
 const MongoClient = require('mongodb').MongoClient;
 const mongodbUrl = process.env.MONGO_URL;
 if (!process.env.SERVER_ACCESS_TOKENS) return console.error('/!\ Please set the SERVER_ACCESS_TOKENS env.');
-const serverAccessTokens =  process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
+
+const serverAccessTokens =  process.env.SERVER_ACCESS_TOKENS.split(' ');
 const ObjectId = require('mongodb').ObjectId;
 
 let db;
