@@ -11,6 +11,8 @@ export interface BeaconInterface {
   "type": string;
   "level": number;
   "location": GeoPoint;
+  "x": number;
+  "y": number;
   "userId"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
@@ -23,6 +25,8 @@ export class Beacon implements BeaconInterface {
   "type": string = '';
   "level": number = 0;
   "location": GeoPoint = <any>null;
+  "x": number = 0;
+  "y": number = 0;
   "userId": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
@@ -80,6 +84,16 @@ export class Beacon implements BeaconInterface {
         "location": {
           name: 'location',
           type: 'GeoPoint'
+        },
+        "x": {
+          name: 'x',
+          type: 'number',
+          default: 0
+        },
+        "y": {
+          name: 'y',
+          type: 'number',
+          default: 0
         },
         "userId": {
           name: 'userId',

@@ -46,6 +46,16 @@
     "location": {
       "type": "geopoint",
       "required": true
+    },
+    "x": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "y": {
+      "type": "number",
+      "required": true,
+      "default": 0
     }
   },
   "validations": [],

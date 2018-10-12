@@ -1,7 +1,6 @@
 /* tslint:disable */
 import {
-  Device,
-  Geoloc
+  Device
 } from '../index';
 
 declare var Object: any;
@@ -16,7 +15,6 @@ export interface EmployeeInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   Device?: Device;
-  Geolocs?: Geoloc[];
 }
 
 export class Employee implements EmployeeInterface {
@@ -30,7 +28,6 @@ export class Employee implements EmployeeInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   Device: Device = null;
-  Geolocs: Geoloc[] = null;
   constructor(data?: EmployeeInterface) {
     Object.assign(this, data);
   }
@@ -107,14 +104,6 @@ export class Employee implements EmployeeInterface {
           type: 'Device',
           model: 'Device',
           relationType: 'hasOne',
-                  keyFrom: 'id',
-          keyTo: 'employeeId'
-        },
-        Geolocs: {
-          name: 'Geolocs',
-          type: 'Geoloc[]',
-          model: 'Geoloc',
-          relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'employeeId'
         },
