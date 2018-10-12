@@ -4,8 +4,7 @@ const Primus = require('primus');
 const MongoClient = require('mongodb').MongoClient;
 const mongodbUrl = process.env.MONGO_URL;
 if (!process.env.SERVER_ACCESS_TOKENS) return console.error('/!\ Please set the SERVER_ACCESS_TOKENS env.');
-
-const serverAccessTokens =  process.env.SERVER_ACCESS_TOKENS.split(' ');
+const serverAccessTokens =  process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
 const ObjectId = require('mongodb').ObjectId;
 
 let db;
@@ -327,7 +326,7 @@ primus.on('disconnection', function end(spark) {
 });
 
 
-primus.library();
+// primus.library();
 primus.save(__dirname +'/primus.js', function save(err) {
     if (err) throw "primus.js can not be saved";
 });
