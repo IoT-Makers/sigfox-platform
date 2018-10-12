@@ -146,7 +146,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.receptions = [];
     this.mapZoom = 10;
 
-// Message geoloc
+    // Message geoloc
     if (message.Geolocs && message.Geolocs.length > 0) {
       this.geolocs = message.Geolocs;
       this.mapLat = message.Geolocs[0].location.lat;
@@ -222,6 +222,14 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   rtHandler = (payload:any) => {
     if (payload.action == "CREATE") {
+      for (const geoloc of this.geolocBuffer) {
+        if (geoloc.content.messageId === payload.content.id) {
+          payload.content.Geolocs.push(geoloc.content);
+          let index = this.geolocBuffer.indexOf(geoloc);
+          if (index > -1) this.geolocBuffer.splice(index, 1);
+          break;
+        }
+      }
       this.messages.unshift(payload.content);
     } else if (payload.action == "DELETE") {
       this.messages = this.messages.filter(function (msg) {
@@ -230,11 +238,26 @@ export class MessagesComponent implements OnInit, OnDestroy {
     }
   };
 
+  private geolocBuffer  = [];
+  geolocHandler = (payload:any) => {
+    if (payload.action === "CREATE") {
+      for (let msg of this.messages) {
+        if (msg.id === payload.content.messageId) {
+          msg.Geolocs = payload.content;
+          return;
+        }
+      }
+      this.geolocBuffer.push(payload);
+    }
+  };
+
   subscribe(): void {
-    this.rtHandler = this.rt.addListener("message", this.rtHandler);
+    this.rtHandler = this.rt.addListener('message', this.rtHandler);
+    this.geolocHandler = this.rt.addListener('geoloc', this.geolocHandler)
   }
 
   unsubscribe(): void {
     this.rt.removeListener(this.rtHandler);
+    this.rt.removeListener(this.geolocHandler);
   }
 }
