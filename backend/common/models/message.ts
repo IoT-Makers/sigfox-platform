@@ -16,25 +16,25 @@ import {PrimusClientFn} from "../../server/PrimusClientFn";
     afterSave: { name: "after save", type: "operation" },
   },
   remotes: {
-    putSigfox: {
+    postSigfox: {
       accepts: [
         {arg: "req", type: "object", http: {source: "req"}},
         {arg: "data", type: "object", required: true, http: { source: "body" }},
       ],
       http: {
         path: "/sigfox",
-        verb: "put",
+        verb: "post",
       },
       returns: {type: "Message", root: true},
     },
-    putSigfoxAcknowledge: {
+    postSigfoxAcknowledge: {
       accepts: [
         {arg: "req", type: "object", http: {source: "req"}},
         {arg: "data", type: "object", required: true, http: { source: "body" }},
       ],
       http: {
         path: "/sigfox/acknowledge",
-        verb: "put",
+        verb: "post",
       },
       returns: {type: "Message", root: true},
     },
@@ -61,7 +61,7 @@ class Message {
     this.primusClient = PrimusClientFn.newClient();
   }
 
-  public putSigfox(req: any, data: any, next: Function): void {
+  public postSigfox(req: any, data: any, next: Function): void {
     // Models
     const Message = this.model;
     const Device = this.model.app.models.Device;
@@ -449,7 +449,7 @@ class Message {
     });
   }
 
-  public putSigfoxAcknowledge(req: any, data: any, next: Function): void {
+  public postSigfoxAcknowledge(req: any, data: any, next: Function): void {
     // Models
     const Message = this.model;
 

@@ -41,7 +41,7 @@ export class ApiComponent implements OnInit, OnDestroy {
     this.user = this.userApi.getCachedCurrent();
     // Fix
     if (!this.user.devAccessTokens) this.user.devAccessTokens = [];
-    this.callbackURL = this.document.location.origin + '/api';
+    this.callbackURL = 'https://api.' + this.document.location.hostname + '/api';
   }
 
   createDevAccessToken(): void {

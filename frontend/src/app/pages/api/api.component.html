@@ -70,7 +70,7 @@
             <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see
               all the base stations that received the message)</i></p>
             <p>Url pattern: <strong tooltip="Click to copy" click-copy (click)="toastClick()">{{ callbackURL + '/Messages/sigfox' }}</strong></p>
-            <p>Use HTTP Method: <strong>PUT</strong></p>
+            <p>Use HTTP Method: <strong>POST</strong></p>
             <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span class="text-danger"tooltip="Click to copy" click-copy (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
             </p>
             <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong></p>
@@ -121,7 +121,7 @@
             <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see
               all the base stations that received the message)</i></p>
             <p>Url pattern: <strong tooltip="Click to copy" click-copy (click)="toastClick()">{{ callbackURL + '/Messages/sigfox' }}</strong></p>
-            <p>Use HTTP Method: <strong>PUT</strong></p>
+            <p>Use HTTP Method: <strong>POST</strong></p>
             <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span class="text-danger" tooltip="Click to copy" click-copy (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
             </p>
             <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong></p>
@@ -202,7 +202,7 @@
           <div class="card-block">
             <p>Type: <strong>SERVICE</strong> | <strong>ACKNOWLEDGE</strong></p>
             <p>Url pattern: <strong tooltip="Click to copy" click-copy (click)="toastClick()">{{ callbackURL + '/Messages/sigfox/acknowledge' }}</strong></p>
-            <p>Use HTTP Method: <strong>PUT</strong></p>
+            <p>Use HTTP Method: <strong>POST</strong></p>
             <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span class="text-danger" tooltip="Click to copy" click-copy (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
             </p>
             <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong></p>

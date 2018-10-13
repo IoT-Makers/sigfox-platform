@@ -110,8 +110,8 @@ class Connector {
                       [ { channel: "URL",
                         callbackType: 0,
                         callbackSubtype: 3,
-                        url: process.env.BASE_URL + '/api/Messages/sigfox',
-                        httpMethod: "PUT",
+                        url: 'api.' + process.env.BASE_URL + '/api/Messages/sigfox',
+                        httpMethod: "POST",
                         enabled: true,
                         sendDuplicate: true,
                         sendSni: false,
@@ -121,7 +121,7 @@ class Connector {
                         { channel: "URL",
                           callbackType: 1,
                           callbackSubtype: 1,
-                          url: process.env.BASE_URL + '/api/Geolocs/sigfox',
+                          url: 'api.' +process.env.BASE_URL + '/api/Geolocs/sigfox',
                           httpMethod: "POST",
                           enabled: true,
                           sendDuplicate: false,
@@ -137,46 +137,6 @@ class Connector {
                     // console.log(body);
                   });
 
-                  /*const body = [
-                    {
-                      channel: 'URL',
-                      callbackType: 0,
-                      callbackSubtype: 3,
-                      url: 'https://app.iotagency.sigfox.com/api/Messages/sigfox',
-                      httpMethod: 'PUT',
-                      enabled: true,
-                      sendDuplicate: true,
-                      sendSni: false,
-                      bodyTemplate: '{\n\t"deviceId": "{device}",\n\t"time": {time},\n\t"seqNumber": {seqNumber},\n\t"geoloc": {\n\t\t"location": {\n\t\t\t"lat": {lat},\n\t\t\t"lng": {lng}\n\t\t},\n\t\t"accuracy": {radius} \n\t}\n}',
-                      //bodyTemplate: JSON.stringify({deviceId: '{device}', time: {'time'}, seqNumber: {seqNumber}, data: '{data}', reception: [{ id: '{station}', RSSI: {rssi}, SNR: {snr} }], duplicate: {duplicate}, ack: {ack} }),
-                      //bodyTemplate: '{\n\t\"deviceId\": \"{device}\",\n\t\"time\": {time},\n\t\"seqNumber\": {seqNumber},\n\t\"data\": \"{data}\",\n\t\"reception\": [{ \"id\": \"{station}\", \"RSSI\": {rssi}, \"SNR\": {snr} }],\n\t\"duplicate\": {duplicate},\n\t\"ack\": {ack}\n}',
-                      headers: {
-                        Authorization: devAccessTokens[0].id
-                      },
-                      contentType: 'application/json'
-                    }/!*,
-                    {
-                      channel: 'URL',
-                      callbackType: 1,
-                      callbackSubtype: 1,
-                      url: process.env.BASE_URL + '/api/Geolocs/sigfox',
-                      httpMethod: 'POST',
-                      enabled: true,
-                      sendDuplicate: false,
-                      sendSni: false,
-                      bodyTemplate: '\n\t\"deviceId\": \"{device}\",\n\t\"time\": {time}, \"seqNumber\": {seqNumber},\n\t\"geoloc\": {\n\t\t\"location\": {\n\t\t\t\"lat\": {lat},\n\t\t\t\"lng\": {lng}\n\t\t},\n\t\t\"accuracy\": {radius} \n\t}\n',
-                      headers: {
-                        Authorization: devAccessTokens[0].id
-                      },
-                      contentType: 'application/json'
-                    }*!/
-                  ];
-
-                  this.model.app.dataSources.sigfox.createCallbacks(credentials, devicetypeId, body).then((result: any) => {
-                    next(null, 'Success');
-                  }).catch((err: any) => {
-                    next(err, null);
-                  });*/
                 } else {
                   next(err, "Please refer your Sigfox API connector first");
                 }
