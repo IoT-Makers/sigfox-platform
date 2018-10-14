@@ -7,38 +7,36 @@ const request = require("request");
 const sigfoxApiLogin = '';
 const sigfoxApiPassword = '';
 const credentials = Buffer.from(sigfoxApiLogin + ":" + sigfoxApiPassword).toString("base64");
+const upgradeApp = false;
 
 module.exports = (app: any) => {
-
-  const upgradeApp = false;
-
   if (upgradeApp) {
     getDevicetypes().then((devicetypes: any) => {
       devicetypes.forEach((devicetype: any) => {
-        if (devicetype.name === 'Miscellaneous') {
-          getCallbacks(devicetype.id).then((callbacks: any) => {
-            callbacks.data.forEach((cb: any) => {
-              if (cb.urlPattern.includes('iotagency')) {
-                deleteCallback(devicetype.id, cb.id);
-                delete cb.id;
-                cb.httpMethod = 'POST';
-                cb.url = cb.urlPattern.replace("https://", "https://api.");
-                delete cb.urlPattern;
-                createCallback(devicetype.id, cb);
-              }
-            });
-            callbacks.service.forEach((cb: any) => {
-              if (cb.urlPattern.includes('iotagency')) {
-                deleteCallback(devicetype.id, cb.id);
-                delete cb.id;
-                cb.httpMethod = 'POST';
-                cb.url = cb.urlPattern.replace("https://", "https://api.");
-                delete cb.urlPattern;
-                createCallback(devicetype.id, cb);
-              }
-            });
+        getCallbacks(devicetype.id).then((callbacks: any) => {
+          callbacks.data.forEach((cb: any) => {
+            if (cb.urlPattern.includes('iotagency')) {
+              deleteCallback(devicetype.id, cb.id);
+              delete cb.id;
+              cb.contentType = 'application/json';
+              cb.httpMethod = 'POST';
+              cb.url = cb.urlPattern.replace("https://", "https://api.");
+              delete cb.urlPattern;
+              createCallback(devicetype.id, cb);
+            }
           });
-        }
+          callbacks.service.forEach((cb: any) => {
+            if (cb.urlPattern.includes('iotagency')) {
+              deleteCallback(devicetype.id, cb.id);
+              delete cb.id;
+              cb.contentType = 'application/json';
+              cb.httpMethod = 'POST';
+              cb.url = cb.urlPattern.replace("https://", "https://api.");
+              delete cb.urlPattern;
+              createCallback(devicetype.id, cb);
+            }
+          });
+        });
       });
     });
   }
