@@ -402,11 +402,11 @@ class Geoloc {
                 console.log('Created message as: ', messageInstance);
                 // Update device in order to trigger a real time upsert event
                 this.updateDeviceLocatedAt(messageInstance.deviceId);
+                next(null, messageInstance);
               } else {
                 next(null, 'This message for device (' + message.deviceId + ') has already been created.');
               }
             });
-          next(err, null);
         }
       }
     });
