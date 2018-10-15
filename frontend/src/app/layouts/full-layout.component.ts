@@ -45,6 +45,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   public addOrganizationFlag = true;
   private organizationToAddOrEdit: Organization = new Organization();
   private organizations: Organization[] = [];
+  private dashboards: Dashboard[] = [];
 
   private countCategories = 0;
   private countDevices = 0;
@@ -145,6 +146,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       this.isInitialized = true;
       console.log('Setup Full layout');
 
+      // TODO: exec order
       // For organizations menu
       this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
         this.organizations = organizations;
@@ -171,20 +173,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.countMessagesReady = true;
       });
 
-      if (!this.organization) {
-        // Dashboards
-        //TODO
-        // this.dashboardRef = this.organizationRef.child<Dashboard>('Dashboards');
-        // this.subscriptions.push(this.dashboardRef.on('change').subscribe((dashboards: Dashboard[]) => {
-        //   this.dashboards = dashboards;
-        // }));
-      } else {
-        //TODO
-        // this.dashboardRef = this.userRef.child<Dashboard>('Dashboards');
-        // this.subscriptions.push(this.dashboardRef.on('change').subscribe((dashboards: Dashboard[]) => {
-        //   this.dashboards = dashboards;
-        // }));
+      api.getDashboards(id).subscribe((dashboards: Dashboard[]) => {
+        this.dashboards = dashboards;
+      });
 
+      // TODO: exec order
+      if (!this.organization) {
+
+      } else {
         // Alerts
         this.userApi.countAlerts(this.user.id).subscribe(result => {
           this.countAlerts = result.count;
