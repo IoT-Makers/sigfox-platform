@@ -23,6 +23,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   public employees: Employee[] = [];
   public employeeToAddOrEdit: Employee = new Employee();
   public employeeToRemove: Employee;
+  public countEmployees;
 
   // Select
   public selectDevices: Array<Object> = [];
@@ -78,6 +79,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   getEmployees(): void {
     this.employeeApi.find({include: ['Device'], order: 'createdAt DESC'}).subscribe((employees: Employee[]) => {
       this.employees = employees;
+      this.countEmployees = employees.length;
       this.employeesReady = true;
     });
   }
@@ -98,7 +100,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   linkDeviceToEmployee(): void {
     if (this.selectedDevices[0]) {
       this.employeeApi.linkToDevice(this.employeeToAddOrEdit.id, this.selectedDevices[0].id).subscribe(value => {
-        this.toast = this.toasterService.pop('success', 'Success', 'Employee was successfully linked to device.');
+        //this.toast = this.toasterService.pop('success', 'Success', 'Employee was successfully linked to device.');
         // TODO: enable real-time
         this.getEmployees();
       }, err => {
