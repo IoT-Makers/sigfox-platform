@@ -103,7 +103,7 @@ class Geoloc {
         // Check if there is Beacon geoloc in parsed data
         else if (p.key === 'beaconId') {
           hasBeaconLocation = true;
-          geoloc_beacon.id = p.value.toString().toUpperCase();
+          geoloc_beacon.beaconId = p.value.toString().toUpperCase();
         }
         // Check if there is accuracy in parsed data
         else if (p.key === 'accuracy' || p.key === 'precision') {
@@ -129,11 +129,10 @@ class Geoloc {
 
     if (hasBeaconLocation) {
       geoloc_beacon.type = 'beacon';
-      Beacon.findOne({where: {id: geoloc_beacon.id}}, (err: any, beacon: any) => {
+      Beacon.findOne({where: {id: geoloc_beacon.beaconId}}, (err: any, beacon: any) => {
         if (err) {
           console.error(err);
         } else if (beacon) {
-          geoloc_beacon.id = null;
           geoloc_beacon.location.lat = beacon.location.lat;
           geoloc_beacon.location.lng = beacon.location.lng;
           geoloc_beacon.level = beacon.level;
