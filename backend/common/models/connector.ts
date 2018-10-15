@@ -13,9 +13,9 @@ const request = require("request");
  **/
 @Model({
   hooks: {
-    beforeSave: { name: "before save", type: "operation" },
-    afterDelete: { name: "after delete", type: "operation" },
-    afterSave: { name: "after save", type: "operation" },
+    beforeSave: {name: "before save", type: "operation"},
+    afterDelete: {name: "after delete", type: "operation"},
+    afterSave: {name: "after save", type: "operation"},
   },
   remotes: {
     createSigfoxBackendCallbacks: {
@@ -100,39 +100,58 @@ class Connector {
 
                   const credentials = Buffer.from(sigfoxApiLogin + ":" + sigfoxApiPassword).toString("base64");
 
-                  const options = { method: "POST",
+                  let baseUrl = 'localhost';
+                  try {
+                    baseUrl = process.env.BASE_URL.replace(/(^\w+:|^)\/\//, '');
+                  } catch (e) {
+                    console.error(e);
+                  }
+                  const messageUrl = 'https://api.' + baseUrl + '/api/Messages/sigfox';
+                  const geolocUrl = 'https://api.' + baseUrl + '/api/Geolocs/sigfox';
+
+                  const options = {
+                    method: "POST",
                     url: 'https://backend.sigfox.com/api/devicetypes/' + devicetypeId + '/callbacks/new',
                     headers:
-                      { "cache-control": "no-cache",
+                      {
+                        "cache-control": "no-cache",
                         "authorization": "Basic " + credentials,
-                        "content-type": "application/json" },
+                        "content-type": "application/json"
+                      },
                     body:
-                      [ { channel: "URL",
+                      [{
+                        channel: "URL",
                         callbackType: 0,
                         callbackSubtype: 3,
-                        url: 'api.' + process.env.BASE_URL + '/api/Messages/sigfox',
+                        url: messageUrl,
                         httpMethod: "POST",
                         enabled: true,
                         sendDuplicate: true,
                         sendSni: false,
                         bodyTemplate: '{\n\t"deviceId": "{device}",\n\t"time": {time},\n\t"seqNumber": {seqNumber},\n\t"data": "{data}",\n\t"reception": [{ "id": "{station}", "RSSI": {rssi}, "SNR": {snr} }],\n\t"duplicate": {duplicate},\n\t"ack": {ack}\n}',
-                        headers: { Authorization: devAccessTokens[0].id },
-                        contentType: "application/json" },
-                        { channel: "URL",
+                        headers: {Authorization: devAccessTokens[0].id},
+                        contentType: "application/json"
+                      },
+                        {
+                          channel: "URL",
                           callbackType: 1,
                           callbackSubtype: 1,
-                          url: 'api.' +process.env.BASE_URL + '/api/Geolocs/sigfox',
+                          url: geolocUrl,
                           httpMethod: "POST",
                           enabled: true,
                           sendDuplicate: false,
                           sendSni: false,
                           bodyTemplate: '{\n\t"deviceId": "{device}",\n\t"time": {time},\n\t"seqNumber": {seqNumber},\n\t"geoloc": {\n\t\t"location": {\n\t\t\t"lat": {lat},\n\t\t\t"lng": {lng}\n\t\t},\n\t\t"accuracy": {radius} \n\t}\n}',
-                          headers: { Authorization: devAccessTokens[0].id },
-                          contentType: "application/json" } ],
-                    json: true };
+                          headers: {Authorization: devAccessTokens[0].id},
+                          contentType: "application/json"
+                        }],
+                    json: true
+                  };
 
                   request(options, (error: any, response: any, body: any) => {
-                    if (error) { throw next(error, null); }
+                    if (error) {
+                      throw next(error, null);
+                    }
                     next(null, response);
                     // console.log(body);
                   });
