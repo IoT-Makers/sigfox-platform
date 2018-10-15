@@ -386,24 +386,19 @@ class Geoloc {
           message.createdAt = new Date(data.time * 1000);
           message.deviceAck = true;
 
-          Message.findOrCreate(
-            {
-              where: {
-                id: message.deviceId + message.time + message.seqNumber
-              }
-            }, // find
-            message, // create
-            (err: any, messageInstance: any, created: boolean) => { // callback
+          message.id = message.deviceId + message.time + message.seqNumber;
+
+          Message.create(
+            message,
+            (err: any, messageInstance: any) => { // callback
               if (err) {
                 console.error(err);
                 next(err, messageInstance);
-              } else if (created) {
+              } else {
                 console.log('Created message as: ', messageInstance);
                 // Update device in order to trigger a real time upsert event
                 this.updateDeviceLocatedAt(messageInstance.deviceId);
                 next(null, messageInstance);
-              } else {
-                next(null, 'This message for device (' + message.deviceId + ') has already been created.');
               }
             });
         }
