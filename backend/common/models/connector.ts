@@ -28,7 +28,7 @@ const request = require("request");
         verb: "get",
       },
       returns: {type: [], root: true},
-    },
+    }
   },
 })
 
@@ -127,7 +127,7 @@ class Connector {
                         httpMethod: "POST",
                         enabled: true,
                         sendDuplicate: true,
-                        sendSni: false,
+                        sendSni: true,
                         bodyTemplate: '{\n\t"deviceId": "{device}",\n\t"time": {time},\n\t"seqNumber": {seqNumber},\n\t"data": "{data}",\n\t"reception": [{ "id": "{station}", "RSSI": {rssi}, "SNR": {snr} }],\n\t"duplicate": {duplicate},\n\t"ack": {ack}\n}',
                         headers: {Authorization: devAccessTokens[0].id},
                         contentType: "application/json"
@@ -140,7 +140,7 @@ class Connector {
                           httpMethod: "POST",
                           enabled: true,
                           sendDuplicate: false,
-                          sendSni: false,
+                          sendSni: true,
                           bodyTemplate: '{\n\t"deviceId": "{device}",\n\t"time": {time},\n\t"seqNumber": {seqNumber},\n\t"geoloc": {\n\t\t"location": {\n\t\t\t"lat": {lat},\n\t\t\t"lng": {lng}\n\t\t},\n\t\t"accuracy": {radius} \n\t}\n}',
                           headers: {Authorization: devAccessTokens[0].id},
                           contentType: "application/json"
