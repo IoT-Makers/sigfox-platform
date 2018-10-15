@@ -17,6 +17,7 @@ fi
 export PRIMUS_URL=https://primus.${SUBDOMAIN}.${DOMAIN}
 export API_URL=https://api.${SUBDOMAIN}.${DOMAIN}
 export BUILD_ENV=prod
+export SERVER_NAME=${SUBDOMAIN}${DOMAIN:+.}${DOMAIN:-localhost}
 
 docker-compose build
 

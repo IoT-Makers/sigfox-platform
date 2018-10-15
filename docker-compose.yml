@@ -41,6 +41,7 @@ services:
       context: frontend
       args:
       - BUILD_ENV=${BUILD_ENV}
+      - SERVER_NAME=${SERVER_NAME}
       - API_URL=${API_URL:-http://localhost:3000}
       - API_VERSION=${API_VERSION:-api}
       - PRIMUS_URL=${PRIMUS_URL:-http://localhost:2333}

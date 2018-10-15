@@ -13,13 +13,13 @@ const loopback = require('loopback');
  **/
 @Model({
   hooks: {
-    afterDelete: { name: "after delete", type: "operation" },
-    afterSave: { name: "after save", type: "operation" },
+    afterDelete: {name: "after delete", type: "operation"},
+    afterSave: {name: "after save", type: "operation"},
   },
   remotes: {
     createFromParsedPayload: {
-      returns : { arg: 'result', type: 'array' },
-      http    : { path: '/from-payload', verb: 'post' },
+      returns: {arg: 'result', type: 'array'},
+      http: {path: '/from-payload', verb: 'post'},
       accepts: [
         {arg: 'message', type: 'Message', required: true, description: 'The message object'}
       ],
@@ -27,7 +27,7 @@ const loopback = require('loopback');
     postSigfox: {
       accepts: [
         {arg: 'req', type: 'object', http: {source: 'req'}},
-        {arg: 'data', type: 'object', required: true, http: { source: 'body' }}
+        {arg: 'data', type: 'object', required: true, http: {source: 'body'}}
       ],
       http: {
         path: '/sigfox',
@@ -233,7 +233,10 @@ class Geoloc {
 
   getGoogleGeolocation(geoloc_wifi: any): Promise<boolean> {
     return new Promise((resolve: any, reject: any) => {
-      this.model.app.dataSources.google.locate(process.env.GOOGLE_API_KEY, {considerIp: false, wifiAccessPoints: geoloc_wifi.wifiAccessPoints}).then((result: any) => {
+      this.model.app.dataSources.google.locate(process.env.GOOGLE_API_KEY, {
+        considerIp: false,
+        wifiAccessPoints: geoloc_wifi.wifiAccessPoints
+      }).then((result: any) => {
         //console.error('---------------------------------------------------------------------\n', result);
         geoloc_wifi.source = 'google';
         geoloc_wifi.location.lat = result.location.lat;
@@ -273,9 +276,7 @@ class Geoloc {
       where: {
         and: [
           {userId: userId},
-          {deviceId: data.deviceId},
-          {time: data.time},
-          {seqNumber: data.seqNumber}
+          {id: data.deviceId + data.time + data.seqNumber},
         ]
       }
     }, (err: any, messageInstance: any) => {
@@ -345,7 +346,8 @@ class Geoloc {
 
           // Creating a new Geoloc
           Geoloc.findOrCreate(
-            {where: {
+            {
+              where: {
                 and: [
                   {location: geoloc.location},
                   {type: geoloc.type},
@@ -387,12 +389,9 @@ class Geoloc {
           message.deviceAck = true;
 
           Message.findOrCreate(
-            {where: {
-                and: [
-                  {deviceId: message.deviceId},
-                  {time: message.time},
-                  {seqNumber: message.seqNumber}
-                ]
+            {
+              where: {
+                id: message.deviceId + message.time + message.seqNumber
               }
             }, // find
             message, // create
@@ -404,11 +403,11 @@ class Geoloc {
                 console.log('Created message as: ', messageInstance);
                 // Update device in order to trigger a real time upsert event
                 this.updateDeviceLocatedAt(messageInstance.deviceId);
+                next(null, messageInstance);
               } else {
                 next(null, 'This message for device (' + message.deviceId + ') has already been created.');
               }
             });
-          next(err, null);
         }
       }
     });
