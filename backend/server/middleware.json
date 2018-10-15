@@ -1,13 +1,9 @@
 {
   "initial:before": {
-    "loopback#favicon": {
-      "params": "$!../../frontend/src/favicon.ico"
-    }
+    "loopback#favicon": {}
   },
   "initial": {
-    "compression": {
-      "enabled": false
-    },
+    "compression": {},
     "cors": {
       "params": {
         "origin": true,
@@ -44,11 +40,7 @@
       ]
     }
   },
-  "files": {
-    "loopback#static": {
-      "params": "$!../../frontend/dist"
-    }
-  },
+  "files": {},
   "final": {
     "./middleware/log-error": {},
     "loopback#urlNotFound": {}
