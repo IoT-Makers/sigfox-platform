@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DashboardApi, RealTime, UserApi} from '../../shared/sdk/services/index';
+import {DashboardApi, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {FireLoopRef, Geoloc, Message, Organization, Property} from '../../shared/sdk/models';
@@ -10,6 +10,7 @@ import {MessageApi, OrganizationApi} from '../../shared/sdk/services/custom';
 import {Observable} from 'rxjs/Rx';
 import {AgmMap, LatLngBounds} from '@agm/core';
 import {Subscription} from 'rxjs/Subscription';
+import {RealtimeService} from "../../shared/realtime/realtime.service";
 
 declare let d3: any;
 declare const google: any;
@@ -181,10 +182,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  private organizationRef: FireLoopRef<Organization>;
-  private userRef: FireLoopRef<User>;
-  private dashboardRef: FireLoopRef<Dashboard>;
-
   private dashboard: Dashboard;
   public dashboardReady = false;
   private dashboardId = '';
@@ -232,7 +229,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private api;
   private id;
 
-  constructor(private rt: RealTime,
+  constructor(private rt: RealtimeService,
               private userApi: UserApi,
               private messageApi: MessageApi,
               private dashboardApi: DashboardApi,
@@ -275,6 +272,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.cleanSetup();
+    this.subscribe();
 
     this.subscriptions.push(this.route.params.subscribe(params => {
 
@@ -323,6 +321,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
+    this.unsubscribe();
   }
 
   cancel(): void {
@@ -367,7 +366,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   deleteDashboard(): void {
-    this.dashboardApi.deleteById(this.dashboard.id).subscribe(result => {
+    this.api.destroyByIdDashboards(this.id, this.dashboard.id).subscribe(result => {
       this.router.navigate(['/']);
     });
   }
@@ -966,6 +965,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   loadWidgets(): void {
     this.dashboardApi.getWidgets(this.dashboard.id, {order: 'createdAt ASC'}).subscribe((widgets: any[]) => {
       this.widgets = widgets;
+      console.log(this.widgets);
       if (this.widgets) {
         this.dashboardReady = false;
         // Build widgets
@@ -1513,5 +1513,21 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
+  rtWidgetHandler = (payload: any) => {
+    if (payload.action == "CREATE" || payload.action == "UPDATE") {
+      this.loadWidgets();
+    } else if (payload.action == "DELETE") {
+      this.widgets = this.widgets.filter(function (obj) {
+        return obj.id !== payload.content.id;
+      });
+    }
+  };
 
+  subscribe(): void {
+    this.rtWidgetHandler = this.rt.addListener("widget", this.rtWidgetHandler);
+  }
+
+  unsubscribe(): void {
+    this.rt.removeListener(this.rtWidgetHandler);
+  }
 }
