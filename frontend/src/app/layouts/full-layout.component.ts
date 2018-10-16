@@ -146,7 +146,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       this.isInitialized = true;
       console.log('Setup Full layout');
 
-      // TODO: exec order
       // For organizations menu
       this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
         this.organizations = organizations;
@@ -177,10 +176,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.dashboards = dashboards;
       });
 
-      // TODO: exec order
       if (!this.organization) {
-
-      } else {
         // Alerts
         this.userApi.countAlerts(this.user.id).subscribe(result => {
           this.countAlerts = result.count;
