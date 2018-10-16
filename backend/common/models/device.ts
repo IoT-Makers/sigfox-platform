@@ -8,7 +8,7 @@ const loopback = require("loopback");
 const json2csv = require("json2csv").parse;
 
 /**
- * @module Device
+ * @module Devicex
  * @description
  * Write a useful Device Model description.
  * Register hooks and remote methods within the
@@ -17,9 +17,9 @@ const json2csv = require("json2csv").parse;
 @Model({
   hooks: {
     beforeSave: {name: "before save", type: "operation"},
-    afterSave: { name: "after save", type: "operation" },
-    beforeDelete: { name: "before delete", type: "operation" },
-    afterDelete: { name: "after delete", type: "operation" },
+    afterSave: {name: "after save", type: "operation"},
+    beforeDelete: {name: "before delete", type: "operation"},
+    afterDelete: {name: "after delete", type: "operation"},
     afterRemoteLinkOrganizations: {name: "prototype.__link__Organizations", type: "afterRemote"},
     afterRemoteUnlinkOrganizations: {name: "prototype.__unlink__Organizations", type: "afterRemote"},
   },
@@ -273,8 +273,6 @@ class Device {
             const sigfoxApiLogin = connector.login;
             const sigfoxApiPassword = decrypt(connector.password);
 
-            // let messages: any[] = [];
-            let message: any;
             let reception: any[] = [];
 
             const credentials = new Buffer(sigfoxApiLogin + ":" + sigfoxApiPassword).toString("base64");
@@ -294,49 +292,37 @@ class Device {
                     id: o.tap,
                     lat: o.lat,
                     lng: o.lng,
-                    RSSI: o.rssi,
-                    SNR: o.snr,
+                    // RSSI: o.rssi,
+                    linkQuality: messageInstance.linkQuality,
+                    SNR: messageInstance.snr
                   };
                   reception.push(rinfo);
                 });
 
-                message = {
-                  userId,
-                  deviceId: messageInstance.device,
-                  time: messageInstance.time,
-                  seqNumber: messageInstance.seqNumber,
-                  data: messageInstance.data,
-                  reception,
-                  createdAt: new Date(messageInstance.time * 1000),
-                  updatedAt: new Date(messageInstance.time * 1000),
-                };
-                Message.findOrCreate(
-                  {
-                    where: {
-                      and: [
-                        {deviceId: message.deviceId},
-                        {time: message.time},
-                        {seqNumber: message.seqNumber},
-                      ],
-                    },
-                  },
+                let message = new Message;
+                message.id = messageInstance.device + messageInstance.time + messageInstance.seqNumber;
+                message.userId = userId;
+                message.deviceId = messageInstance.device;
+                message.time = messageInstance.time;
+                message.seqNumber = messageInstance.seqNumber;
+                message.data = messageInstance.data;
+                message.reception = reception;
+                message.createdAt = new Date(messageInstance.time * 1000);
+                message.updatedAt = new Date(messageInstance.time * 1000);
+                Message.create(
                   message,
-                  (err: any, messagePostProcess: any, created: boolean) => { // callback
+                  (err: any, messagePostProcess: any) => { // callback
                     if (err) {
                       console.log(err);
-                      return next(err, err);
                     } else {
-                      if (created) {
-                        console.log("Created new message.");
-                      } else {
-                        console.log("Found an existing message.");
-                      }
-
                       if (messageInstance.computedLocation) {
                         // Build the Geoloc object
                         const geoloc = new Geoloc;
                         geoloc.type = "sigfox";
-                        geoloc.location = new loopback.GeoPoint({lat: messageInstance.computedLocation.lat, lng: messageInstance.computedLocation.lng});
+                        geoloc.location = new loopback.GeoPoint({
+                          lat: messageInstance.computedLocation.lat,
+                          lng: messageInstance.computedLocation.lng
+                        });
                         geoloc.accuracy = messageInstance.computedLocation.radius;
                         geoloc.createdAt = messagePostProcess.createdAt;
                         geoloc.userId = messagePostProcess.userId;
@@ -406,7 +392,7 @@ class Device {
           },
         }],
       },
-      function(err: any, device: any) {
+      function (err: any, device: any) {
         if (err) {
           console.error(err);
         } else {
@@ -420,7 +406,7 @@ class Device {
 
           Device.upsert(
             device,
-            function(err: any, deviceUpdated: any) {
+            function (err: any, deviceUpdated: any) {
               if (err) {
                 console.error(err);
               } else {
@@ -464,7 +450,7 @@ class Device {
         },
         include: ["Geolocs"],
         order: "createdAt DESC",
-      }, function(err: any, messages: any) {
+      }, function (err: any, messages: any) {
         if (err) {
           console.error(err);
           res.send(err);
@@ -573,9 +559,21 @@ class Device {
         }
       });
 
-      Message.destroyAll({deviceId}, (error: any, result: any) => { if (!error) { console.log("Deleted all messages for device: " + deviceId); } });
-      Geoloc.destroyAll({deviceId}, (error: any, result: any) => { if (!error) { console.log("Deleted all geolocs for device: " + deviceId); } });
-      Alert.destroyAll({deviceId}, (error: any, result: any) => { if (!error) { console.log("Deleted all alerts for device: " + deviceId); } });
+      Message.destroyAll({deviceId}, (error: any, result: any) => {
+        if (!error) {
+          console.log("Deleted all messages for device: " + deviceId);
+        }
+      });
+      Geoloc.destroyAll({deviceId}, (error: any, result: any) => {
+        if (!error) {
+          console.log("Deleted all geolocs for device: " + deviceId);
+        }
+      });
+      Alert.destroyAll({deviceId}, (error: any, result: any) => {
+        if (!error) {
+          console.log("Deleted all alerts for device: " + deviceId);
+        }
+      });
     }
   }
 
@@ -592,15 +590,15 @@ class Device {
   }
 
   public afterSave(ctx: any, next: Function): void {
-      // Pub-sub
-      let device = ctx.instance;
-      const payload = {
-        event: "device",
-        content: device,
-        action: ctx.isNewInstance ? "CREATE" : "UPDATE"
+    // Pub-sub
+    let device = ctx.instance;
+    const payload = {
+      event: "device",
+      content: device,
+      action: ctx.isNewInstance ? "CREATE" : "UPDATE"
 
-      };
-      this.primusClient.write(payload);
+    };
+    this.primusClient.write(payload);
     next();
   }
 }

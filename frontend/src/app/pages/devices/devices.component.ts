@@ -1,18 +1,14 @@
-import {
-  AppSetting,
-  Category,
-  Connector,
-  Device,
-  FireLoopRef,
-  Geoloc,
-  Message,
-  Organization,
-  Parser,
-  User
-} from '../../shared/sdk/models';
+import {AppSetting, Category, Connector, Device, Geoloc, Organization, Parser, User} from '../../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import {AgmInfoWindow} from '@agm/core';
-import {AppSettingApi, DeviceApi, MessageApi, OrganizationApi, ParserApi, UserApi} from '../../shared/sdk/services/custom';
+import {
+  AppSettingApi,
+  DeviceApi,
+  MessageApi,
+  OrganizationApi,
+  ParserApi,
+  UserApi
+} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
@@ -52,10 +48,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
   private appSettings: AppSetting[] = [];
 
   private organizationRouteSub: Subscription;
-  private categorySub: Subscription;
-  private deviceSub: Subscription;
-  private deviceReadSub: Subscription;
-  private parserSub: Subscription;
 
   private categories: Category[] = [];
   public devices: Device[] = [];
@@ -144,7 +136,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   download(type: string) {
     this.loadingDownload = true;
-    const url = this.document.location.origin + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    const url = 'https://api.' + this.document.location.hostname + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
     //const url = 'http://localhost:3000/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
 
     this.http.get(url, {responseType: 'blob'}).subscribe(res => {
@@ -223,16 +215,11 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Devices: ngOnDestroy');
-    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
-
     this.cleanSetup();
   }
 
   private cleanSetup() {
-    if (this.deviceSub) this.deviceSub.unsubscribe();
-    if (this.deviceReadSub) this.deviceReadSub.unsubscribe();
-    if (this.parserSub) this.parserSub.unsubscribe();
-    if (this.categorySub) this.categorySub.unsubscribe();
+    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
     this.unsubscribe();
   }
 
@@ -367,7 +354,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     });
   }
 
-  showShareDeviceWithOrganizationModal(): void{
+  showShareDeviceWithOrganizationModal(): void {
     this.selectOrganizations = [];
     this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
       this.organizations = organizations;
@@ -431,7 +418,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   //     console.log(organizations);
   //   });
   // }
-  rtHandler = (payload:any) => {
+  rtHandler = (payload: any) => {
     if (payload.action == "CREATE") {
       this.devices.unshift(payload.content);
     } else if (payload.action == "DELETE") {
@@ -446,7 +433,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     }
   };
 
-  rtLastMessageHandler = (payload:any) => {
+  rtLastMessageHandler = (payload: any) => {
     if (payload.action == "CREATE" || payload.action == "UPDATE") {
       let idx = this.devices.findIndex(x => x.id == payload.content.Device.id);
       if (idx != -1) {
