@@ -229,6 +229,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       animation: 'fade'
     });
 
+  private api;
+  private id;
+
   constructor(private rt: RealTime,
               private userApi: UserApi,
               private messageApi: MessageApi,
@@ -252,19 +255,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       if (parentParams.id) {
         this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
           this.organization = organization;
-
-          // Check if real time and setup
-          if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-            this.setup();
-          else
-            this.rt.onAuthenticated().subscribe(() => this.setup());
+          this.setup();
         });
       } else {
-        // Check if real time and setup
-        if (this.rt.connection.isConnected() && this.rt.connection.authenticated)
-          this.setup();
-        else
-          this.rt.onAuthenticated().subscribe(() => this.setup());
+        this.setup();
       }
     }));
 
@@ -284,80 +278,39 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(this.route.params.subscribe(params => {
 
-      if (this.organization) {
-        // Load dashboard
-        this.organizationApi.findByIdDashboards(this.organization.id, params.id).subscribe((dashboard: Dashboard) => {
-          this.dashboard = dashboard;
-          this.loadWidgets();
+      this.api = this.organization ? this.organizationApi : this.userApi;
+      this.id = this.organization ? this.organization.id : this.user.id;
+
+      // Load dashboard
+      this.api.findByIdDashboards(this.id, params.id).subscribe((dashboard: Dashboard) => {
+        this.dashboard = dashboard;
+        this.loadWidgets();
+      });
+
+      // Categories
+      this.api.getCategories(this.id).subscribe((categories: Category[]) => {
+        this.selectCategories = [];
+        this.categories = categories;
+        this.categories.forEach((category: Category) => {
+          const item = {
+            id: category.id,
+            itemName: category.name
+          };
+          this.selectCategories.push(item);
         });
-
-        this.organizationRef = this.rt.FireLoop.ref<Organization>(Organization).make(this.organization);
-
-        // Dashboards
-        this.dashboardRef = this.organizationRef.child<Dashboard>('Dashboards');
-
-        // Categories
-        this.organizationApi.getCategories(this.organization.id).subscribe((categories: Category[]) => {
-          this.selectCategories = [];
-          this.categories = categories;
-          this.categories.forEach((category: Category) => {
-            const item = {
-              id: category.id,
-              itemName: category.name
-            };
-            this.selectCategories.push(item);
-          });
+      });
+      // Devices
+      this.api.getDevices(this.id).subscribe((devices: Device[]) => {
+        this.selectDevices = [];
+        this.devices = devices;
+        this.devices.forEach((device: Device) => {
+          const item = {
+            id: device.id,
+            itemName: device.name ? device.name + ' (' + device.id + ')' : device.id
+          };
+          this.selectDevices.push(item);
         });
-        // Devices
-        this.organizationApi.getDevices(this.organization.id).subscribe((devices: Device[]) => {
-          this.selectDevices = [];
-          this.devices = devices;
-          this.devices.forEach((device: Device) => {
-            const item = {
-              id: device.id,
-              itemName: device.name ? device.name + ' (' + device.id + ')' : device.id
-            };
-            this.selectDevices.push(item);
-          });
-        });
-
-      } else {
-        // Load dashboard
-        this.userApi.findByIdDashboards(this.user.id, params.id).subscribe((dashboard: Dashboard) => {
-          this.dashboard = dashboard;
-          this.loadWidgets();
-        });
-
-        this.userRef = this.rt.FireLoop.ref<User>(User).make(this.user);
-
-        // Dashboards
-        this.dashboardRef = this.userRef.child<Dashboard>('Dashboards');
-
-        // Categories
-        this.userApi.getCategories(this.user.id).subscribe((categories: Category[]) => {
-          this.selectCategories = [];
-          this.categories = categories;
-          this.categories.forEach((category: Category) => {
-            const item = {
-              id: category.id,
-              itemName: category.name
-            };
-            this.selectCategories.push(item);
-          });
-        });
-        // Devices
-        this.userApi.getDevices(this.user.id).subscribe((devices: Device[]) => {
-          this.selectDevices = [];
-          this.devices = devices;
-          this.devices.forEach((device: Device) => {
-            const item = {
-              id: device.id,
-              itemName: device.name ? device.name + ' (' + device.id + ')' : device.id
-            };
-            this.selectDevices.push(item);
-          });
-        });
-      }
+      });
     }));
   }
 
@@ -370,9 +323,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
-    if (this.organizationRef) this.organizationRef.dispose();
-    if (this.userRef) this.userRef.dispose();
-    if (this.dashboardRef) this.dashboardRef.dispose();
   }
 
   cancel(): void {
@@ -380,15 +330,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.newWidgetFlag = false;
     this.editWidgetFlag = false;
 
-// Reset widget
+    // Reset widget
     this.newWidget = {
       name: '',
       icon: '',
       description: '',
       type: '',
       width: '6',
-      options: {
-      },
+      options: {},
       filter: {
         where: {
           or: []
@@ -400,40 +349,26 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   editDashboard(): void {
     this.editFlag = true;
-// Retrieve selected icon
+    // Retrieve selected icon
     this.selectedDashboardIcon[0] = {id: this.dashboard.icon, itemName: this.dashboard.icon.substr(3)};
   }
 
   saveDashboard(): void {
-    if (!this.organization) {
-      this.dashboardRef.upsert(this.dashboard).subscribe(result => {
-        this.editFlag = false;
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toasterService.pop('success', 'Success', 'Successfully saved dashboard.');
-      }, err => {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.error);
-      });
-
-    } else {
-
-      this.dashboardRef.upsert(this.dashboard).subscribe(result => {
-        this.editFlag = false;
-        this.toasterService.pop('success', 'Success', 'Successfully saved dashboard.');
-      }, err => {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.error);
-      });
-    }
+    this.api.updateByIdDashboards(this.id, this.dashboard.id, this.dashboard).subscribe(result => {
+      this.editFlag = false;
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toasterService.pop('success', 'Success', 'Successfully saved dashboard.');
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error);
+    });
   }
 
   deleteDashboard(): void {
-    this.dashboardRef.remove(this.dashboard).subscribe(result => {
+    this.dashboardApi.deleteById(this.dashboard.id).subscribe(result => {
       this.router.navigate(['/']);
-      //this.rt.onReady().subscribe();
     });
   }
 
@@ -449,8 +384,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           or: []
         }
       },
-      options: {
-      },
+      options: {},
       dashboardId: this.dashboard.id
     };
 
@@ -490,18 +424,34 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         type: 'string',
         as: 'Parser name'
       });
-      if (!this.organization) {
-        this.userApi.getDevices(this.user.id, this.newWidget.filter).subscribe(devices => {
-          // console.log(devices);
-          if (devices[0].properties) {
-            devices[0].properties.forEach(o => {
+
+      this.api.getDevices(this.id, this.newWidget.filter).subscribe(devices => {
+        // console.log(devices);
+        if (devices[0].properties) {
+          devices[0].properties.forEach(o => {
+            const object: any = {
+              model: 'device.properties',
+              key: o.key,
+              type: o.type,
+              as: o.key + ' (category)'
+            };
+
+            // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
+            if (!_.find(this.newWidget.options.tableColumnOptions, object)) {
+              this.newWidget.options.tableColumnOptions.push(object);
+            }
+          });
+        }
+
+        devices.forEach(device => {
+          if (device.Messages[0].data_parsed) {
+            device.Messages[0].data_parsed.forEach(o => {
               const object: any = {
-                model: 'device.properties',
+                model: 'device.Messages[0].data_parsed',
                 key: o.key,
                 type: o.type,
-                as: o.key + ' (category)'
+                as: o.key + ' (' + device.id + ')'
               };
-
               // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
               if (!_.find(this.newWidget.options.tableColumnOptions, object)) {
                 this.newWidget.options.tableColumnOptions.push(object);
@@ -509,76 +459,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             });
           }
 
-          devices.forEach(device => {
-            if (device.Messages[0].data_parsed) {
-              device.Messages[0].data_parsed.forEach(o => {
-                const object: any = {
-                  model: 'device.Messages[0].data_parsed',
-                  key: o.key,
-                  type: o.type,
-                  as: o.key + ' (' + device.id + ')'
-                };
-                // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
-                if (!_.find(this.newWidget.options.tableColumnOptions, object)) {
-                  this.newWidget.options.tableColumnOptions.push(object);
-                }
-              });
-            }
-
-          });
-          //console.log(this.newWidget.options.tableColumnOptions);
-          if (!this.newWidget.options.columns) {
-            this.newWidget.options.columns = new Array(1);
-          }
-          //console.log(this.newWidget.options.columns);
-          this.loadingTableOptions = false;
         });
-      } else {
-        this.organizationApi.getDevices(this.organization.id, this.newWidget.filter).subscribe(devices => {
-          // console.log(devices);
-          if (devices[0].properties) {
-            devices[0].properties.forEach(o => {
-              const object: any = {
-                model: 'device.properties',
-                key: o.key,
-                type: o.type,
-                as: o.key + ' (category)'
-              };
-
-              // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
-              if (!_.find(this.newWidget.options.tableColumnOptions, object)) {
-                this.newWidget.options.tableColumnOptions.push(object);
-              }
-            });
-          }
-
-          devices.forEach(device => {
-            if (device.Messages[0].data_parsed) {
-              device.Messages[0].data_parsed.forEach(o => {
-                const object: any = {
-                  model: 'device.Messages[0].data_parsed',
-                  key: o.key,
-                  type: o.type,
-                  as: o.key + ' (' + device.id + ')'
-                };
-                // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
-                if (!_.find(this.newWidget.options.tableColumnOptions, object)) {
-                  this.newWidget.options.tableColumnOptions.push(object);
-                }
-              });
-            }
-
-          });
-          //console.log(this.newWidget.options.tableColumnOptions);
-          if (!this.newWidget.options.columns) {
-            this.newWidget.options.columns = new Array(1);
-          }
-          //console.log(this.newWidget.options.columns);
-          this.loadingTableOptions = false;
-        });
-      }
-
-
+        //console.log(this.newWidget.options.tableColumnOptions);
+        if (!this.newWidget.options.columns) {
+          this.newWidget.options.columns = new Array(1);
+        }
+        //console.log(this.newWidget.options.columns);
+        this.loadingTableOptions = false;
+      });
     }
   }
 
@@ -1134,7 +1022,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                 widget.value = lastData_parsed.value;
                 widget.unit = lastData_parsed.unit;
                 widget.label = this.capitalizeFirstLetter(lastData_parsed.key);
-                widget.gaugeThresholdConfig = {[widget.options.min]: {color: '#13b22b'}, [(widget.options.min + widget.options.max) / 2]: {color: '#fc7d28'}, [widget.options.max]: {color: '#db2b2a'}};
+                widget.gaugeThresholdConfig = {
+                  [widget.options.min]: {color: '#13b22b'},
+                  [(widget.options.min + widget.options.max) / 2]: {color: '#fc7d28'},
+                  [widget.options.max]: {color: '#db2b2a'}
+                };
 
                 widget.ready = true;
               }
@@ -1413,14 +1305,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                     },
                     scales: {
                       xAxes: [{
-                        gridLines: {
-                        },
-                        ticks: {
-                        }
+                        gridLines: {},
+                        ticks: {}
                       }],
                       yAxes: [{
-                        gridLines: {
-                        },
+                        gridLines: {},
                         ticks: {
                           max: 1,
                         }
@@ -1602,11 +1491,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   private getDevicesWithFilter(filter: any): Observable<any[]> {
-    if (!this.organization) {
-      return this.userApi.getDevices(this.user.id, filter);
-    } else {
-      return this.organizationApi.getDevices(this.organization.id, filter);
-    }
+    return this.api.getDevices(this.id, filter);
   }
 
   // Map functions
