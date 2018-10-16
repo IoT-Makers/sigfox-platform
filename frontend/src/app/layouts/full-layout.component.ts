@@ -1,20 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {
-  Alert,
-  Beacon,
-  Category,
-  Connector,
-  Dashboard,
-  Device,
-  Message,
-  Organization,
-  Parser,
-  Role,
-  User
-} from '../shared/sdk/models';
-import {Subscription} from 'rxjs/Subscription';
-import {BeaconApi, OrganizationApi, ParserApi, UserApi} from '../shared/sdk/services/custom';
+import {Dashboard, Organization, Role, User} from '../shared/sdk/models';
+import {BeaconApi, DashboardApi, OrganizationApi, ParserApi, UserApi} from '../shared/sdk/services/custom';
 import {RealtimeService} from "../shared/realtime/realtime.service";
 
 @Component({
@@ -45,6 +32,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   public addOrganizationFlag = true;
   private organizationToAddOrEdit: Organization = new Organization();
   private organizations: Organization[] = [];
+  private dashboards: Dashboard[] = [];
 
   private countCategories = 0;
   private countDevices = 0;
@@ -74,6 +62,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
               private organizationApi: OrganizationApi,
               private parserApi: ParserApi,
               private beaconApi: BeaconApi,
+              private dashboardApi: DashboardApi,
               private route: ActivatedRoute,
               private router: Router) {
 
@@ -171,20 +160,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.countMessagesReady = true;
       });
 
-      if (!this.organization) {
-        // Dashboards
-        //TODO
-        // this.dashboardRef = this.organizationRef.child<Dashboard>('Dashboards');
-        // this.subscriptions.push(this.dashboardRef.on('change').subscribe((dashboards: Dashboard[]) => {
-        //   this.dashboards = dashboards;
-        // }));
-      } else {
-        //TODO
-        // this.dashboardRef = this.userRef.child<Dashboard>('Dashboards');
-        // this.subscriptions.push(this.dashboardRef.on('change').subscribe((dashboards: Dashboard[]) => {
-        //   this.dashboards = dashboards;
-        // }));
+      api.getDashboards(id, {order: 'createdAt DESC'}).subscribe((dashboards: Dashboard[]) => {
+        this.dashboards = dashboards;
+      });
 
+      if (!this.organization) {
         // Alerts
         this.userApi.countAlerts(this.user.id).subscribe(result => {
           this.countAlerts = result.count;
@@ -251,13 +231,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       dashboard.name = 'Shared dashboard';
     }
 
-    // this.dashboardRef.create(dashboard).subscribe(dashboard => {
-    //   if (!this.organization) {
-    //     this.router.navigate(['/dashboard/' + dashboard.id]);
-    //   } else {
-    //     this.router.navigate(['/organization/' + this.organization.id + '/dashboard/' + dashboard.id]);
-    //   }
-    // });
+    // TODO: real-time
+    this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard => {
+      if (!this.organization) {
+        this.router.navigate(['/dashboard/' + dashboard.id]);
+      } else {
+        this.router.navigate(['/organization/' + this.organization.id + '/dashboard/' + dashboard.id]);
+      }
+    });
   }
 
   openAddOrganizationModal(): void {
@@ -320,28 +301,23 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   addOrganization(): void {
     this.organizationToAddOrEdit.userId = this.user.id;
 
-    // this.userOrganizationRef.create(this.organizationToAddOrEdit).subscribe((organization: Organization) => {
-    //   console.log('Organization created', organization);
-    //   this.organizationApi.findById(organization.id, {include: 'Members'}).subscribe((organization: Organization) => {
-    //     this.organization = organization;
-    //     this.addOrEditOrganizationModal.hide();
-    //   });
-    // });
+    this.userApi.createOrganizations(this.user.id, this.organizationToAddOrEdit).subscribe((organization: Organization) => {
+      console.log('Organization created', organization);
+      this.organizationApi.findById(organization.id, {include: 'Members'}).subscribe((organization: Organization) => {
+        this.organization = organization;
+        this.addOrEditOrganizationModal.hide();
+      });
+    });
   }
 
   editOrganization(): void {
-    // this.userOrganizationRef.upsert(this.organizationToAddOrEdit).subscribe((organization: Organization) => {
-    //   console.log('Organization edited', organization);
-    //   this.organizationApi.findById(organization.id, {include: 'Members'}).subscribe((organization: Organization) => {
-    //     this.organization = organization;
-    //     this.addOrEditOrganizationModal.hide();
-    //   });
-    /*this.userApi.getOrganizations(this.user.id, {include: ['Members']}).subscribe((organizations: Organization[]) => {
-      console.log(organizations);
-      this.organizations = organizations;
-      this.addOrEditOrganizationModal.hide();
-    });*/
-    // });
+    this.userApi.updateByIdOrganizations(this.user.id, this.organizationToAddOrEdit.id, this.organizationToAddOrEdit).subscribe((organization: Organization) => {
+      console.log('Organization edited', organization);
+      this.organizationApi.findById(organization.id, {include: 'Members'}).subscribe((organization: Organization) => {
+        this.organization = organization;
+        this.addOrEditOrganizationModal.hide();
+      });
+    });
   }
 
   linkMember(user: any): void {
@@ -360,25 +336,25 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   //   localStorage.setItem('adminView', 'true');
   //   this.setup();
   // }
-  rtCategoryHandler = (payload:any) => {
+  rtCategoryHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countCategories++ : payload.action == "DELETE" ? this.countCategories-- : 0;
   };
-  rtDeviceHandler = (payload:any) => {
+  rtDeviceHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countDevices++ : payload.action == "DELETE" ? this.countDevices-- : 0;
   };
-  rtMsgHandler = (payload:any) => {
+  rtMsgHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countMessages++ : payload.action == "DELETE" ? this.countMessages-- : 0;
   };
-  rtAlertHandler = (payload:any) => {
+  rtAlertHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countAlerts++ : payload.action == "DELETE" ? this.countAlerts-- : 0;
   };
-  rtParserHandler = (payload:any) => {
+  rtParserHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countParsers++ : payload.action == "DELETE" ? this.countParsers-- : 0;
   };
-  rtConnectorHandler = (payload:any) => {
+  rtConnectorHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countConnectors++ : payload.action == "DELETE" ? this.countConnectors-- : 0;
   };
-  rtBeaconHandler = (payload:any) => {
+  rtBeaconHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countBeacons++ : payload.action == "DELETE" ? this.countBeacons-- : 0;
   };
 
