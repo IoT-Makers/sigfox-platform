@@ -162,6 +162,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
       api.getDashboards(id, {order: 'createdAt DESC'}).subscribe((dashboards: Dashboard[]) => {
         this.dashboards = dashboards;
+        console.log(this.dashboards);
       });
 
       if (!this.organization) {
@@ -231,7 +232,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       dashboard.name = 'Shared dashboard';
     }
 
-    // TODO: real-time
     this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard => {
       if (!this.organization) {
         this.router.navigate(['/dashboard/' + dashboard.id]);
@@ -357,6 +357,18 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   rtBeaconHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countBeacons++ : payload.action == "DELETE" ? this.countBeacons-- : 0;
   };
+  rtDashboardHandler = (payload: any) => {
+    if (payload.action == "CREATE") {
+      this.dashboards.unshift(payload.content);
+    } else if (payload.action == "UPDATE") {
+      let idx = this.dashboards.findIndex(x => x.id == payload.content.id);
+      if (idx != -1) this.dashboards[idx] = payload.content;
+    } else if (payload.action == "DELETE") {
+      this.dashboards = this.dashboards.filter(function (obj) {
+        return obj.id !== payload.content.id;
+      });
+    }
+  };
 
   subscribe(): void {
     this.rtCategoryHandler = this.rt.addListener("category", this.rtCategoryHandler);
@@ -366,6 +378,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.rtParserHandler = this.rt.addListener("parser", this.rtParserHandler);
     this.rtConnectorHandler = this.rt.addListener("Connector", this.rtConnectorHandler);
     this.rtBeaconHandler = this.rt.addListener("beacon", this.rtBeaconHandler);
+    this.rtDashboardHandler = this.rt.addListener("dashboard", this.rtDashboardHandler);
   }
 
   unsubscribe(): void {
@@ -376,5 +389,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.rt.removeListener(this.rtParserHandler);
     this.rt.removeListener(this.rtConnectorHandler);
     this.rt.removeListener(this.rtBeaconHandler);
+    this.rt.removeListener(this.rtDashboardHandler);
   }
 }

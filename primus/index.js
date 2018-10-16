@@ -75,6 +75,7 @@ primus.on('connection', function connection(spark) {
     spark.on('data', function data(payload) {
         if (!payload) return;
         console.log('incoming data');
+        console.log(payload);
         switch(payload.event) {
             case "message":
                 messageHandler(payload);
@@ -99,6 +100,12 @@ primus.on('connection', function connection(spark) {
                 break;
             case "category":
                 categoryHandler(payload);
+                break;
+            case "dashboard":
+                dashboardHandler(payload);
+                break;
+            case "widget":
+                widgetHandler(payload);
                 break;
             default:
                 break;
@@ -190,7 +197,6 @@ function geolocHandler(payload) {
     const geoloc = payload.content;
     const userId = geoloc.userId.toString();
     if (geoloc) {
-        // from message.ts
         console.log(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
@@ -232,7 +238,6 @@ function beaconHandler(payload) {
     const beacon = payload.content;
     const userId = beacon.userId.toString();
     if (beacon) {
-        // from alert.ts
         console.log(payload.action + ' beacon ' + beacon.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
@@ -248,7 +253,6 @@ function connectorHandler(payload) {
     const connector = payload.content;
     const userId = connector.userId.toString();
     if (connector) {
-        // from alert.ts
         console.log(payload.action + ' connector ' + connector.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
@@ -264,7 +268,6 @@ function categoryHandler(payload) {
     const category = payload.content;
     const userId = category.userId.toString();
     if (category) {
-        // from parser.ts
         console.log(payload.action + ' category ' + category.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
@@ -283,6 +286,35 @@ function categoryHandler(payload) {
                 send(targetClients, payload.event, payload.action, category);
             });
         });
+    }
+}
+
+function dashboardHandler(payload) {
+    console.log(payload);
+    const dashboard = payload.content;
+    const userId = dashboard.userId.toString();
+    if (dashboard) {
+        // from dashboard.ts
+        console.log(payload.action + ' dashboard ' + dashboard.id + ' for user ' + userId);
+
+        let targetClients = getTargetClients(userId);
+        if (!targetClients.length)
+            return;
+        send(targetClients, payload.event, payload.action, dashboard);
+    }
+}
+
+function widgetHandler(payload) {
+    const widget = payload.content;
+    const userId = widget.userId.toString();
+    if (widget) {
+        // from widget.ts
+        console.log(payload.action + ' widget ' + widget.id + ' for user ' + userId);
+
+        let targetClients = getTargetClients(userId);
+        if (!targetClients.length)
+            return;
+        send(targetClients, payload.event, payload.action, widget);
     }
 }
 
