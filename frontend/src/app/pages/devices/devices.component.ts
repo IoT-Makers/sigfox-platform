@@ -87,6 +87,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
     classes: 'select-organization'
   };
 
+  private api;
+  private id;
+
   constructor(private rt: RealtimeService,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
@@ -193,22 +196,18 @@ export class DevicesComponent implements OnInit, OnDestroy {
       }]
     };
 
-    if (this.organization) {
-      this.organizationApi.getDevices(this.organization.id, filter).subscribe((devices: Device[]) => {
-        this.devices = devices;
-        this.devicesReady = true;
-      });
-    } else {
-      this.userApi.getDevices(this.user.id, filter).subscribe((result: any) => {
-        this.devices = result;
-        this.devicesReady = true;
-      });
-    }
+    this.api = this.organization ? this.organizationApi : this.userApi;
+    this.id = this.organization ? this.organization.id : this.user.id;
 
-    this.userApi.getParsers(this.user.id).subscribe((result: any) => {
+    this.api.getDevices(this.id, filter).subscribe((devices: Device[]) => {
+      this.devices = devices;
+      this.devicesReady = true;
+    });
+
+    this.parserApi.find().subscribe((result: any) => {
       this.parsers = result;
     });
-    this.userApi.getCategories(this.user.id).subscribe((result: any) => {
+    this.api.getCategories(this.id).subscribe((result: any) => {
       this.categories = result;
     });
   }
@@ -230,7 +229,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   updateDevice(): void {
     this.edit = false;
-    this.userApi.updateByIdDevices(this.user.id, this.deviceToEdit.id, this.deviceToEdit).subscribe(value => {
+    this.api.updateByIdDevices(this.id, this.deviceToEdit.id, this.deviceToEdit).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The device was successfully updated.');
@@ -244,7 +243,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   updateDeviceCategory(): void {
     console.log(this.deviceToEdit.categoryId);
     if (this.deviceToEdit.categoryId) {
-      this.userApi.findByIdCategories(this.user.id, this.deviceToEdit.categoryId).subscribe((category: Category) => {
+      this.api.findByIdCategories(this.id, this.deviceToEdit.categoryId).subscribe((category: Category) => {
         console.log(category);
         this.deviceToEdit.properties = category.properties;
       }, err => {

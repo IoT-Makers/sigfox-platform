@@ -1,6 +1,6 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Category, Device, Message, Organization, User} from '../../shared/sdk/models';
-import {CategoryApi, DeviceApi, OrganizationApi, RealTime, UserApi} from '../../shared/sdk/services';
+import {Category, Device, Organization, User} from '../../shared/sdk/models';
+import {CategoryApi, DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import * as moment from 'moment';
@@ -310,7 +310,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
-  rtHandler = (payload:any) => {
+  rtHandler = (payload: any) => {
     if (payload.action == "CREATE") {
       this.categories.unshift(payload.content);
     } else if (payload.action == "DELETE") {

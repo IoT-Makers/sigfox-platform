@@ -56,6 +56,9 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   private filterQuery = '';
 
+  private api;
+  private id;
+
   constructor(private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private receptionApi: ReceptionApi,
@@ -106,10 +109,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
           include: ['Device', 'Geolocs']
         };
       }
-      const api = this.organization ? this.organizationApi : this.userApi;
-      const id = this.organization ? this.organization.id : this.user.id;
+      this.api = this.organization ? this.organizationApi : this.userApi;
+      this.id = this.organization ? this.organization.id : this.user.id;
 
-      api.getMessages(id, this.messageFilter).subscribe((messages: Message[]) => {
+      this.api.getMessages(this.id, this.messageFilter).subscribe((messages: Message[]) => {
         this.messages = messages;
         this.messagesReady = true;
       });
@@ -118,13 +121,11 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Messages: ngOnDestroy');
-// Unsubscribe from query parameters
-    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
-
     this.cleanSetup();
   }
 
   private cleanSetup() {
+    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
     if (this.deviceSub) this.deviceSub.unsubscribe();
     this.unsubscribe();
   }
@@ -158,7 +159,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       });
     }
 
-// Coverage
+    // Coverage
     this.userApi.getConnectors(this.user.id, {where: {type: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
       if (connectors.length > 0) {
         // Show map
@@ -203,24 +204,17 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
     console.log(this.messageFilter);
 
-    if (this.organization) {
-      this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
-        this.messages = messages;
-        this.messagesReady = true;
-      });
-    } else {
-      this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
-        this.messages = messages;
-        this.messagesReady = true;
-      });
-    }
+    this.api.getMessages(this.id, this.messageFilter).subscribe((messages: Message[]) => {
+      this.messages = messages;
+      this.messagesReady = true;
+    });
   }
 
   download(): void {
 
   }
 
-  rtHandler = (payload:any) => {
+  rtHandler = (payload: any) => {
     if (payload.action == "CREATE") {
       for (const geoloc of this.geolocBuffer) {
         if (geoloc.content.messageId === payload.content.id) {
@@ -232,14 +226,14 @@ export class MessagesComponent implements OnInit, OnDestroy {
       }
       this.messages.unshift(payload.content);
     } else if (payload.action == "DELETE") {
-      this.messages = this.messages.filter(function (msg) {
+      this.messages = this.messages.filter( (msg) => {
         return msg.id !== payload.content.id;
       });
     }
   };
 
-  private geolocBuffer  = [];
-  geolocHandler = (payload:any) => {
+  private geolocBuffer = [];
+  geolocHandler = (payload: any) => {
     if (payload.action === "CREATE") {
       for (let msg of this.messages) {
         if (msg.id === payload.content.messageId) {
@@ -253,7 +247,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   subscribe(): void {
     this.rtHandler = this.rt.addListener('message', this.rtHandler);
-    this.geolocHandler = this.rt.addListener('geoloc', this.geolocHandler)
+    this.geolocHandler = this.rt.addListener('geoloc', this.geolocHandler);
   }
 
   unsubscribe(): void {

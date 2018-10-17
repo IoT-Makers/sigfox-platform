@@ -5,7 +5,7 @@ const Primus = require('primus');
 const MongoClient = require('mongodb').MongoClient;
 const mongodbUrl = process.env.MONGO_URL;
 if (!process.env.SERVER_ACCESS_TOKENS) return console.error('/!\ Please set the SERVER_ACCESS_TOKENS env.');
-const serverAccessTokens =  process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
+const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
 const ObjectId = require('mongodb').ObjectId;
 
 let db;
@@ -15,20 +15,21 @@ var connectedClient = 0;
 // var server = http.createServer(/* request handler */);
 const primus = Primus.createServer(function connection(spark) {
 
-}, { port: process.env.PORT || 2333,
+}, {
+    port: process.env.PORT || 2333,
     transformer: 'engine.io'
 });
 
 
 // Connect to the db
-MongoClient.connect(mongodbUrl, { useNewUrlParser: true }, function(err, client) {
+MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) {
     if (err) {
         console.error("MONGO_URL not set on Primus");
         throw err;
     }
     // get db name
     let s = mongodbUrl.split("/");
-    let dbName = s[s.length-1];
+    let dbName = s[s.length - 1];
 
     db = client.db(dbName);
     console.log("Primus connected to Mongo");
@@ -75,7 +76,8 @@ primus.on('connection', function connection(spark) {
     spark.on('data', function data(payload) {
         if (!payload) return;
         console.log('incoming data');
-        switch(payload.event) {
+        console.log(payload);
+        switch (payload.event) {
             case "message":
                 messageHandler(payload);
                 break;
@@ -100,6 +102,12 @@ primus.on('connection', function connection(spark) {
             case "category":
                 categoryHandler(payload);
                 break;
+            case "dashboard":
+                dashboardHandler(payload);
+                break;
+            case "widget":
+                widgetHandler(payload);
+                break;
             default:
                 break;
         }
@@ -109,8 +117,8 @@ primus.on('connection', function connection(spark) {
 // TODO: if action == update, sometimes there's no need to query the db
 function messageHandler(payload) {
     const msg = payload.content;
-    const userId = msg.userId.toString();
-    if (msg) {
+    const userId = msg.userId;
+    if (msg && userId) {
         // from message.ts
         console.log(payload.action + ' message ' + msg.id + ' for user ' + userId);
 
@@ -133,8 +141,8 @@ function messageHandler(payload) {
 
 function deviceHandler(payload) {
     const device = payload.content;
-    const userId = device.userId.toString();
-    if (device) {
+    const userId = device.userId;
+    if (device && userId) {
         // from device.ts
         console.log(payload.action + ' device ' + device.id + ' for user ' + userId);
         let targetClients = getTargetClients(userId);
@@ -165,8 +173,8 @@ function deviceHandler(payload) {
 
 function parserHandler(payload) {
     const parser = payload.content;
-    const userId = parser.userId.toString();
-    if (parser) {
+    const userId = parser.userId;
+    if (parser && userId) {
         // from parser.ts
         console.log(payload.action + ' parser ' + parser.id + ' for user ' + userId);
 
@@ -179,7 +187,7 @@ function parserHandler(payload) {
             return;
         }
 
-        db.collection("Device").find({parserId:parser.id}).toArray((err, devices) => {
+        db.collection("Device").find({parserId: parser.id}).toArray((err, devices) => {
             addAttribute(parser, "Devices", devices);
             send(targetClients, payload.event, payload.action, parser);
         });
@@ -188,9 +196,8 @@ function parserHandler(payload) {
 
 function geolocHandler(payload) {
     const geoloc = payload.content;
-    const userId = geoloc.userId.toString();
-    if (geoloc) {
-        // from message.ts
+    const userId = geoloc.userId;
+    if (geoloc && userId) {
         console.log(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
@@ -204,8 +211,8 @@ function geolocHandler(payload) {
 
 function alertHandler(payload) {
     const alert = payload.content;
-    const userId = alert.userId.toString();
-    if (alert) {
+    const userId = alert.userId;
+    if (alert && userId) {
         // from alert.ts
         console.log(payload.action + ' alert ' + alert.id + ' for user ' + userId);
 
@@ -230,9 +237,8 @@ function alertHandler(payload) {
 
 function beaconHandler(payload) {
     const beacon = payload.content;
-    const userId = beacon.userId.toString();
-    if (beacon) {
-        // from alert.ts
+    const userId = beacon.userId;
+    if (beacon && userId) {
         console.log(payload.action + ' beacon ' + beacon.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
@@ -246,9 +252,8 @@ function beaconHandler(payload) {
 
 function connectorHandler(payload) {
     const connector = payload.content;
-    const userId = connector.userId.toString();
-    if (connector) {
-        // from alert.ts
+    const userId = connector.userId;
+    if (connector && userId) {
         console.log(payload.action + ' connector ' + connector.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
@@ -262,9 +267,8 @@ function connectorHandler(payload) {
 
 function categoryHandler(payload) {
     const category = payload.content;
-    const userId = category.userId.toString();
-    if (category) {
-        // from parser.ts
+    const userId = category.userId;
+    if (category && userId) {
         console.log(payload.action + ' category ' + category.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
@@ -276,13 +280,43 @@ function categoryHandler(payload) {
             return;
         }
 
-        db.collection("Device").find({categoryId:category.id}).toArray((err, devices) => {
+        db.collection("Device").find({categoryId: category.id}).toArray((err, devices) => {
             addAttribute(category, "Devices", devices);
-            db.collection("Organization").find({categoryId:category.id}).toArray((err, organizations) => {
+            db.collection("Organization").find({categoryId: category.id}).toArray((err, organizations) => {
                 addAttribute(category, "Organizations", organizations);
                 send(targetClients, payload.event, payload.action, category);
             });
         });
+    }
+}
+
+function dashboardHandler(payload) {
+    console.log(payload);
+    const dashboard = payload.content;
+    // Dashboards created in organizations do not contain the userId => TODO
+    const userId = dashboard.userId;
+    if (dashboard && userId) {
+        // from dashboard.ts
+        console.log(payload.action + ' dashboard ' + dashboard.id + ' for user ' + userId);
+
+        let targetClients = getTargetClients(userId);
+        if (!targetClients.length)
+            return;
+        send(targetClients, payload.event, payload.action, dashboard);
+    }
+}
+
+function widgetHandler(payload) {
+    const widget = payload.content;
+    const userId = widget.userId;
+    if (widget && userId) {
+        // from widget.ts
+        console.log(payload.action + ' widget ' + widget.id + ' for user ' + userId);
+
+        let targetClients = getTargetClients(userId);
+        if (!targetClients.length)
+            return;
+        send(targetClients, payload.event, payload.action, widget);
     }
 }
 
@@ -300,9 +334,7 @@ function addAttribute(obj, attName, attValue) {
 function getTargetClients(userId) {
     let targetClients = [];
     primus.forEach(function (spark, id, connections) {
-        if (spark.userId === userId) {
-            targetClients.push(spark);
-        }
+        if (spark.userId === userId) targetClients.push(spark);
     });
     console.log('user ' + userId + ' has ' + targetClients.length + ' client online');
     return targetClients;
@@ -328,7 +360,7 @@ primus.on('disconnection', function end(spark) {
 
 
 // primus.library();
-primus.save(__dirname +'/primus.js', function save(err) {
+primus.save(__dirname + '/primus.js', function save(err) {
     if (err) throw "primus.js can not be saved";
 });
 

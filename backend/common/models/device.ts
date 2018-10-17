@@ -103,7 +103,7 @@ class Device {
           if (!err) {
             console.log(orga);
             messages.forEach((message: any) => {
-              orga.Messages.add(message.id, (err: any, result: any) => {
+              orga.Messages.add(message.id, {deviceId: data.deviceId, createdAt: message.createdAt}, (err: any, result: any) => {
                 console.log(result);
               });
             });
@@ -577,7 +577,6 @@ class Device {
     }
   }
 
-
   public afterDelete(ctx: any, next: Function): void {
     let device = ctx.instance;
     const payload = {
@@ -590,15 +589,14 @@ class Device {
   }
 
   public afterSave(ctx: any, next: Function): void {
-    // Pub-sub
-    let device = ctx.instance;
-    const payload = {
-      event: "device",
-      content: device,
-      action: ctx.isNewInstance ? "CREATE" : "UPDATE"
-
-    };
-    this.primusClient.write(payload);
+      // Pub-sub
+      let device = ctx.instance;
+      const payload = {
+        event: "device",
+        content: device,
+        action: ctx.isNewInstance ? "CREATE" : "UPDATE"
+      };
+      this.primusClient.write(payload);
     next();
   }
 }

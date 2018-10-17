@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {RealtimeService} from "../../shared/realtime/realtime.service";
 
 @Component({
   selector: 'app-demo',
@@ -9,7 +10,7 @@ export class DemoComponent implements OnInit, OnDestroy {
 
   private filterQuery = '';
 
-  constructor() {
+  constructor(private rt: RealtimeService) {
   }
 
   ngOnInit(): void {

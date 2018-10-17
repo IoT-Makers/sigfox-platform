@@ -24,9 +24,15 @@
             <div class="input-group">
               <span class="input-group-addon" (click)="searchFilter(100)">Show</span>
               <div class="btn-group" role="group" aria-label="Quantity">
-                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_500}" (click)="searchFilter(500)">500</button>
-                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_1000}" (click)="searchFilter(1000)">1000</button>
-                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_0}" (click)="searchFilter(10000)">All</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_500}"
+                        (click)="searchFilter(500)">500
+                </button>
+                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_1000}"
+                        (click)="searchFilter(1000)">1000
+                </button>
+                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_0}"
+                        (click)="searchFilter(10000)">All
+                </button>
               </div>
             </div>
 
@@ -40,7 +46,8 @@
           </div>
         </div>
         <div class="table-responsive">
-          <table class="table table-hover" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+          <table class="table table-hover" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable"
+                 [mfRowsOnPage]="10">
             <thead class="thead-inverse">
             <tr>
               <th class="text-center">
@@ -146,9 +153,12 @@
               <td class="text-center">{{message.seqNumber}}</td>
               <td class="text-center" (click)="showMarkers(message)">
                 <p *ngFor="let reception of message.reception">
-                  <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success" aria-hidden="true"></i>
-                  <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI" class="fa fa-signal text-warning" aria-hidden="true"></i>
-                  <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger" aria-hidden="true"></i>
+                  <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success"
+                     aria-hidden="true"></i>
+                  <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI"
+                     class="fa fa-signal text-warning" aria-hidden="true"></i>
+                  <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger"
+                     aria-hidden="true"></i>
                   {{reception.RSSI}}
                   <span>&nbsp;</span>
                   <i title="Base Station" class="fa fa-podcast text-primary" aria-hidden="true"></i>
@@ -170,7 +180,6 @@
               <td colspan="4">
                 <mfBootstrapPaginator [rowsOnPageSet]="[10, 25, 50, 100]"></mfBootstrapPaginator>
               </td>
-              <td colspan="4">Total: {{messages.length}}</td>
             </tr>
             </tfoot>
           </table>
@@ -181,7 +190,8 @@
 </div>
 
 
-<div bsModal #mapModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mapModal" aria-hidden="true">
+<div bsModal #mapModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mapModal"
+     aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">

@@ -57,6 +57,9 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     classes: 'select-organization'
   };
 
+  private api;
+  private id;
+
   constructor(private rt: RealtimeService,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
@@ -140,28 +143,30 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.countOrganizationsReady = true;
       });
 
-      const api = this.organization ? this.organizationApi : this.userApi;
-      const id = this.organization ? this.organization.id : this.user.id;
+      this.api = this.organization ? this.organizationApi : this.userApi;
+      this.id = this.organization ? this.organization.id : this.user.id;
+
       // Categories
-      api.countCategories(id).subscribe(result => {
+      this.api.countCategories(this.id).subscribe(result => {
         this.countCategories = result.count;
         this.countCategoriesReady = true;
       });
 
       // Devices
-      api.countDevices(id).subscribe(result => {
+      this.api.countDevices(this.id).subscribe(result => {
         this.countDevices = result.count;
         this.countDevicesReady = true;
       });
 
       // Messages
-      api.countMessages(id).subscribe(result => {
+      this.api.countMessages(this.id).subscribe(result => {
         this.countMessages = result.count;
         this.countMessagesReady = true;
       });
 
-      api.getDashboards(id, {order: 'createdAt DESC'}).subscribe((dashboards: Dashboard[]) => {
+      this.api.getDashboards(this.id, {order: 'createdAt DESC'}).subscribe((dashboards: Dashboard[]) => {
         this.dashboards = dashboards;
+        console.log(this.dashboards);
       });
 
       if (!this.organization) {
@@ -226,17 +231,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   newDashboard(): void {
     const dashboard: Dashboard = new Dashboard();
     dashboard.name = 'New dashboard';
+    if (this.organization) dashboard.name = 'Shared dashboard';
 
-    if (this.organization) {
-      dashboard.name = 'Shared dashboard';
-    }
-
-    // TODO: real-time
-    this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard => {
+    this.api.createDashboards(this.id, dashboard).subscribe(dashboard => {
       if (!this.organization) {
         this.router.navigate(['/dashboard/' + dashboard.id]);
       } else {
         this.router.navigate(['/organization/' + this.organization.id + '/dashboard/' + dashboard.id]);
+        this.dashboards.unshift(dashboard);
       }
     });
   }
@@ -357,6 +359,18 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   rtBeaconHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countBeacons++ : payload.action == "DELETE" ? this.countBeacons-- : 0;
   };
+  rtDashboardHandler = (payload: any) => {
+    if (payload.action == "CREATE") {
+      this.dashboards.unshift(payload.content);
+    } else if (payload.action == "UPDATE") {
+      let idx = this.dashboards.findIndex(x => x.id == payload.content.id);
+      if (idx != -1) this.dashboards[idx] = payload.content;
+    } else if (payload.action == "DELETE") {
+      this.dashboards = this.dashboards.filter(function (obj) {
+        return obj.id !== payload.content.id;
+      });
+    }
+  };
 
   subscribe(): void {
     this.rtCategoryHandler = this.rt.addListener("category", this.rtCategoryHandler);
@@ -366,6 +380,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.rtParserHandler = this.rt.addListener("parser", this.rtParserHandler);
     this.rtConnectorHandler = this.rt.addListener("Connector", this.rtConnectorHandler);
     this.rtBeaconHandler = this.rt.addListener("beacon", this.rtBeaconHandler);
+    this.rtDashboardHandler = this.rt.addListener("dashboard", this.rtDashboardHandler);
   }
 
   unsubscribe(): void {
@@ -376,5 +391,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.rt.removeListener(this.rtParserHandler);
     this.rt.removeListener(this.rtConnectorHandler);
     this.rt.removeListener(this.rtBeaconHandler);
+    this.rt.removeListener(this.rtDashboardHandler);
   }
 }

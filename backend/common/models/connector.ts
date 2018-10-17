@@ -100,14 +100,8 @@ class Connector {
 
                   const credentials = Buffer.from(sigfoxApiLogin + ":" + sigfoxApiPassword).toString("base64");
 
-                  let baseUrl = 'localhost';
-                  try {
-                    baseUrl = process.env.BASE_URL.replace(/(^\w+:|^)\/\//, '');
-                  } catch (e) {
-                    console.error(e);
-                  }
-                  const messageUrl = 'https://api.' + baseUrl + '/api/Messages/sigfox';
-                  const geolocUrl = 'https://api.' + baseUrl + '/api/Geolocs/sigfox';
+                  const messageUrl = process.env.BASE_URL + '/api/Messages/sigfox';
+                  const geolocUrl = process.env.BASE_URL + '/api/Geolocs/sigfox';
 
                   const options = {
                     method: "POST",
