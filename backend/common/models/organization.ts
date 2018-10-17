@@ -10,9 +10,8 @@ import {Model} from "@mean-expert/model";
 @Model({
   hooks: {
     beforeSave: { name: "before save", type: "operation" },
-    beforeDelete: { name: "before delete", type: "operation" },
-    beforeRemoteGetMessages: {name: "prototype.__get__Messages", type: "beforeRemote"},
-  },
+    beforeDelete: { name: "before delete", type: "operation" }
+    },
   remotes: {},
 })
 

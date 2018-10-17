@@ -441,8 +441,8 @@ class Message {
     Device.findOne({where: {id: message.deviceId}, include: "Organizations"}, (err: any, deviceInstance: any) => {
       if (deviceInstance && deviceInstance.Organizations) {
         deviceInstance.toJSON().Organizations.forEach((orga: any) => {
-          message.Organizations.add(orga.id, (err: any, result: any) => {
-            // console.log("Linked message with organization", result);
+          message.Organizations.add(orga.id, {deviceId: deviceInstance.id, createdAt: message.createdAt}, (err: any, result: any) => {
+            console.log("Linked message with organization", result);
           });
         });
       }
