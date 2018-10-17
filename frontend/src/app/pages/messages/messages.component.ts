@@ -56,6 +56,9 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   private filterQuery = '';
 
+  private api;
+  private id;
+
   constructor(private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private receptionApi: ReceptionApi,
@@ -106,10 +109,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
           include: ['Device', 'Geolocs']
         };
       }
-      const api = this.organization ? this.organizationApi : this.userApi;
-      const id = this.organization ? this.organization.id : this.user.id;
+      this.api = this.organization ? this.organizationApi : this.userApi;
+      this.id = this.organization ? this.organization.id : this.user.id;
 
-      api.getMessages(id, this.messageFilter).subscribe((messages: Message[]) => {
+      this.api.getMessages(this.id, this.messageFilter).subscribe((messages: Message[]) => {
         this.messages = messages;
         this.messagesReady = true;
       });
@@ -158,7 +161,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       });
     }
 
-// Coverage
+    // Coverage
     this.userApi.getConnectors(this.user.id, {where: {type: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
       if (connectors.length > 0) {
         // Show map
@@ -203,17 +206,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
     console.log(this.messageFilter);
 
-    if (this.organization) {
-      this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
-        this.messages = messages;
-        this.messagesReady = true;
-      });
-    } else {
-      this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
-        this.messages = messages;
-        this.messagesReady = true;
-      });
-    }
+    this.api.getMessages(this.id, this.messageFilter).subscribe((messages: Message[]) => {
+      this.messages = messages;
+      this.messagesReady = true;
+    });
   }
 
   download(): void {

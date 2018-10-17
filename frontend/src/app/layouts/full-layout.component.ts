@@ -57,6 +57,9 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     classes: 'select-organization'
   };
 
+  private api;
+  private id;
+
   constructor(private rt: RealtimeService,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
@@ -140,27 +143,27 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.countOrganizationsReady = true;
       });
 
-      const api = this.organization ? this.organizationApi : this.userApi;
-      const id = this.organization ? this.organization.id : this.user.id;
+      this.api = this.organization ? this.organizationApi : this.userApi;
+      this.id = this.organization ? this.organization.id : this.user.id;
       // Categories
-      api.countCategories(id).subscribe(result => {
+      this.api.countCategories(this.id).subscribe(result => {
         this.countCategories = result.count;
         this.countCategoriesReady = true;
       });
 
       // Devices
-      api.countDevices(id).subscribe(result => {
+      this.api.countDevices(this.id).subscribe(result => {
         this.countDevices = result.count;
         this.countDevicesReady = true;
       });
 
       // Messages
-      api.countMessages(id).subscribe(result => {
+      this.api.countMessages(this.id).subscribe(result => {
         this.countMessages = result.count;
         this.countMessagesReady = true;
       });
 
-      api.getDashboards(id, {order: 'createdAt DESC'}).subscribe((dashboards: Dashboard[]) => {
+      this.api.getDashboards(this.id, {order: 'createdAt DESC'}).subscribe((dashboards: Dashboard[]) => {
         this.dashboards = dashboards;
         console.log(this.dashboards);
       });
@@ -232,7 +235,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       dashboard.name = 'Shared dashboard';
     }
 
-    this.userApi.createDashboards(this.user.id, dashboard).subscribe(dashboard => {
+    this.api.createDashboards(this.id, dashboard).subscribe(dashboard => {
       if (!this.organization) {
         this.router.navigate(['/dashboard/' + dashboard.id]);
       } else {
