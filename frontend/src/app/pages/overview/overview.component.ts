@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Alert, Category, Device, FireLoopRef, Message, Organization, User} from '../../shared/sdk/models';
+import {Alert, Category, Device, Message, Organization, User} from '../../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow, LatLngBounds} from '@agm/core';
@@ -40,11 +40,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private mobile = false;
 
   private organizationRouteSub: Subscription;
-  private messageSub: Subscription;
-  private deviceSub: Subscription;
-  private deviceReadSub: Subscription;
-  private alertSub: Subscription;
-  private categorySub: Subscription;
 
   private messages: Message[] = [];
   public devices: Device[] = [];
@@ -62,14 +57,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private countAlerts = 0;
   private countCategories = 0;
   private countOrganizationMembers = 0;
-
-  private messageRef: FireLoopRef<Message>;
-  private deviceRef: FireLoopRef<Device>;
-  private deviceReadRef: FireLoopRef<Device>;
-  private organizationRef: FireLoopRef<Organization>;
-  private userRef: FireLoopRef<User>;
-  private alertRef: FireLoopRef<Alert>;
-  private categoryRef: FireLoopRef<Category>;
 
   private isCircleVisible: boolean[] = [];
 
@@ -151,11 +138,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
               private messageApi: MessageApi,
               private connectorApi: ConnectorApi,
               private route: ActivatedRoute) {
-
-    /*this.eventStreamService.createMessagesChangeStream().addEventListener('data', (msg: any) => {
-      const data = JSON.parse(msg.data);
-      console.log(data);
-    });*/
   }
 
   ngOnInit(): void {
@@ -291,15 +273,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.messageChartData = [];
     this.messagesReady = false;
 
-    // this.data = [];
-
-    // this.devices.forEach(device => {
-    //   const item: any = {
-    //     "deviceId": device.id
-    //   };
-    //   this.listDevicesId.push(item);
-    // });
-
     // TODO: rt?
     this.messageApi.stats(this.graphRange, null, {
       userId: this.user.id
@@ -338,29 +311,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Overview: ngOnDestroy');
-    // Dispose and unsubscribe to clean the real time connection
-    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
-
     this.cleanSetup();
   }
 
   private cleanSetup() {
-    if (this.organizationRef) this.organizationRef.dispose();
-    if (this.userRef) this.userRef.dispose();
-
-    if (this.categoryRef) this.categoryRef.dispose();
-    if (this.categorySub) this.categorySub.unsubscribe();
-
-    if (this.deviceRef) this.deviceRef.dispose();
-    if (this.deviceReadRef) this.deviceReadRef.dispose();
-    if (this.deviceSub) this.deviceSub.unsubscribe();
-    if (this.deviceReadSub) this.deviceReadSub.unsubscribe();
-
-    if (this.messageRef) this.messageRef.dispose();
-    if (this.messageSub) this.messageSub.unsubscribe();
-
-    if (this.alertRef) this.alertRef.dispose();
-    if (this.alertSub) this.alertSub.unsubscribe();
+    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
+    this.unsubscribe();
   }
 
   cancelSee(): void {
@@ -425,17 +381,17 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
 
-  rtCategoryHandler = (payload:any) => {
+  rtCategoryHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countCategories++ : payload.action == "DELETE" ? this.countCategories-- : 0;
   };
-  rtDeviceHandler = (payload:any) => {
+  rtDeviceHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countDevices++ : payload.action == "DELETE" ? this.countDevices-- : 0;
     this.devicesReady = true;
   };
-  rtMsgHandler = (payload:any) => {
+  rtMsgHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countMessages++ : payload.action == "DELETE" ? this.countMessages-- : 0;
   };
-  rtAlertHandler = (payload:any) => {
+  rtAlertHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countAlerts++ : payload.action == "DELETE" ? this.countAlerts-- : 0;
   };
 

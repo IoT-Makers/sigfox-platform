@@ -43,7 +43,7 @@ export class RealtimeService {
   }
 
 
-  public addListener(event: string, listener: (data:any)=>void): (data) => void {
+  public addListener(event: string, listener: (data:any) => void): (data) => void {
     const cb = (data) => {
       if (data && data.event === event)
         listener(data);

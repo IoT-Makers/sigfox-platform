@@ -121,13 +121,11 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Messages: ngOnDestroy');
-// Unsubscribe from query parameters
-    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
-
     this.cleanSetup();
   }
 
   private cleanSetup() {
+    if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
     if (this.deviceSub) this.deviceSub.unsubscribe();
     this.unsubscribe();
   }
@@ -216,7 +214,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   }
 
-  rtHandler = (payload:any) => {
+  rtHandler = (payload: any) => {
     if (payload.action == "CREATE") {
       for (const geoloc of this.geolocBuffer) {
         if (geoloc.content.messageId === payload.content.id) {
@@ -228,14 +226,14 @@ export class MessagesComponent implements OnInit, OnDestroy {
       }
       this.messages.unshift(payload.content);
     } else if (payload.action == "DELETE") {
-      this.messages = this.messages.filter(function (msg) {
+      this.messages = this.messages.filter( (msg) => {
         return msg.id !== payload.content.id;
       });
     }
   };
 
-  private geolocBuffer  = [];
-  geolocHandler = (payload:any) => {
+  private geolocBuffer = [];
+  geolocHandler = (payload: any) => {
     if (payload.action === "CREATE") {
       for (let msg of this.messages) {
         if (msg.id === payload.content.messageId) {
@@ -249,7 +247,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   subscribe(): void {
     this.rtHandler = this.rt.addListener('message', this.rtHandler);
-    this.geolocHandler = this.rt.addListener('geoloc', this.geolocHandler)
+    this.geolocHandler = this.rt.addListener('geoloc', this.geolocHandler);
   }
 
   unsubscribe(): void {

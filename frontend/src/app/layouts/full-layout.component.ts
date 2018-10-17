@@ -145,6 +145,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
       this.api = this.organization ? this.organizationApi : this.userApi;
       this.id = this.organization ? this.organization.id : this.user.id;
+
       // Categories
       this.api.countCategories(this.id).subscribe(result => {
         this.countCategories = result.count;
@@ -230,16 +231,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   newDashboard(): void {
     const dashboard: Dashboard = new Dashboard();
     dashboard.name = 'New dashboard';
-
-    if (this.organization) {
-      dashboard.name = 'Shared dashboard';
-    }
+    if (this.organization) dashboard.name = 'Shared dashboard';
 
     this.api.createDashboards(this.id, dashboard).subscribe(dashboard => {
       if (!this.organization) {
         this.router.navigate(['/dashboard/' + dashboard.id]);
       } else {
         this.router.navigate(['/organization/' + this.organization.id + '/dashboard/' + dashboard.id]);
+        this.dashboards.unshift(dashboard);
       }
     });
   }

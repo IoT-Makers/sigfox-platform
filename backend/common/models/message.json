@@ -117,8 +117,8 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
-        "putSigfox",
-        "putSigfoxAcknowledge",
+        "postSigfox",
+        "postSigfoxAcknowledge",
         "postSigfoxStatus",
         "stats"
       ]

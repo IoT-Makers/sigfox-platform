@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DashboardApi, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {FireLoopRef, Geoloc, Message, Organization, Property} from '../../shared/sdk/models';
+import {Geoloc, Message, Organization, Property} from '../../shared/sdk/models';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import {MessageApi, OrganizationApi} from '../../shared/sdk/services/custom';
@@ -353,7 +353,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   saveDashboard(): void {
-    this.api.updateByIdDashboards(this.id, this.dashboard.id, this.dashboard).subscribe(result => {
+    this.api.updateByIdDashboards(this.id, this.dashboard.id, this.dashboard).subscribe((dashboard: Dashboard) => {
       this.editFlag = false;
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
@@ -366,8 +366,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   deleteDashboard(): void {
-    this.api.destroyByIdDashboards(this.id, this.dashboard.id).subscribe(result => {
-      this.router.navigate(['/']);
+    this.api.destroyByIdDashboards(this.id, this.dashboard.id).subscribe((dashboard: Dashboard) => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toasterService.pop('success', 'Success', 'Successfully deleted dashboard.');
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.error);
     });
   }
 
