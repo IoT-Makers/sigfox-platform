@@ -103,7 +103,7 @@ class Device {
           if (!err) {
             console.log(orga);
             messages.forEach((message: any) => {
-              orga.Messages.add(message.id, (err: any, result: any) => {
+              orga.Messages.add(message.id, {deviceId: data.deviceId, createdAt: message.createdAt}, (err: any, result: any) => {
                 console.log(result);
               });
             });
