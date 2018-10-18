@@ -18,6 +18,7 @@ export PRIMUS_URL=https://primus.${SUBDOMAIN}.${DOMAIN}
 export API_URL=https://api.${SUBDOMAIN}.${DOMAIN}
 export BUILD_ENV=prod
 export SERVER_NAME=${SUBDOMAIN}${DOMAIN:+.}${DOMAIN:-localhost}
+export GIT_HASH=${GIT_HASH}
 
 docker-compose build
 
@@ -27,10 +28,10 @@ case $input in
     [yY][eE][sS]|[yY])
         echo "Let's do it!"
         docker login ${REGISTRY_URL}
-        docker push ${REGISTRY_URL}primus-${SUBDOMAIN}
-        docker push ${REGISTRY_URL}backend-${SUBDOMAIN}
-        docker push ${REGISTRY_URL}frontend-${SUBDOMAIN}
-        docker push ${REGISTRY_URL}mongodb-${SUBDOMAIN}
+        docker push ${REGISTRY_URL}primus-${SUBDOMAIN}:${GIT_HASH:-latest}
+        docker push ${REGISTRY_URL}backend-${SUBDOMAIN}:${GIT_HASH:-latest}
+        docker push ${REGISTRY_URL}frontend-${SUBDOMAIN}:${GIT_HASH:-latest}
+        docker push ${REGISTRY_URL}mongodb-${SUBDOMAIN}:${GIT_HASH:-latest}
         ;;
     [nN][oO]|[nN])
         echo "Maybe next time then...!"
