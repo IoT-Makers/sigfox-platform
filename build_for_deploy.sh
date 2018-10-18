@@ -36,7 +36,7 @@ while true; do
         fi
         break
     fi
-    printf "${GREEN}----------> SUBDOMAIN = $SUBDOMAIN\n${NC}"
+    printf "${GREEN}===============> SUBDOMAIN = $SUBDOMAIN\n${NC}"
     export PRIMUS_URL=https://primus.${SUBDOMAIN}.${DOMAIN}
     export API_URL=https://api.${SUBDOMAIN}.${DOMAIN}
     export BUILD_ENV=prod
@@ -44,7 +44,7 @@ while true; do
     export GIT_HASH=`git log --pretty=format:'%h' -n 1`
 
     docker-compose build
-    printf "${GREEN}============Building completed for $SUBDOMAIN\n${NC}"
+    printf "${GREEN}===============> Building completed for $SUBDOMAIN\n${NC}"
 
     push_img=$push_img_arg
     if [ -z "$push_img" ]; then
