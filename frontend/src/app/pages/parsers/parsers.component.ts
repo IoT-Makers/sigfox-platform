@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Parser, User} from '../../shared/sdk/models';
-import {Subscription} from 'rxjs/Subscription';
 import {ParserApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
@@ -72,10 +71,9 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
     // Parsers
     this.parserApi.find({
-      include: ['Devices']
+      order: 'createdAt DESC'
     }).subscribe((parsers: Parser[]) => {
       this.parsers = parsers;
-      console.log(this.parsers);
     });
   }
 
@@ -119,16 +117,16 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   update(parser: Parser): void {
-    //this.parserRef.upsert(parser)
     this.parserApi.updateAttributes(parser.id, parser).subscribe((updatedParser: Parser) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully updated.');
-
-      if (parser.Devices.length > 0) {
-        this.parserToEdit = parser;
-        this.confirmParseModal.show();
-      }
+      this.parserApi.countDevices(parser.id).subscribe(result => {
+        if (result.count > 0) {
+          this.parserToEdit = parser;
+          this.confirmParseModal.show();
+        }
+      });
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
@@ -170,7 +168,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
     this.confirmModal.hide();
   }
 
-  rtHandler = (payload:any) => {
+  rtHandler = (payload: any) => {
     if (payload.action == "CREATE") {
       this.parsers.unshift(payload.content);
     } else if (payload.action == "DELETE") {

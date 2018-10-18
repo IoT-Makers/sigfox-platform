@@ -177,7 +177,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         });
 
         // Parsers
-        this.userApi.countParsers(this.user.id).subscribe(result => {
+        this.parserApi.count().subscribe(result => {
           this.countParsers = result.count;
           this.countParsersReady = true;
         });
