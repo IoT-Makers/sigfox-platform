@@ -271,7 +271,7 @@ class Geoloc {
 
     // Saving a message anyway
     const message = new Message;
-    message.id = message.deviceId + message.time + message.seqNumber;
+    message.id = data.deviceId + data.time + data.seqNumber;
     message.userId = userId;
     message.deviceId = data.deviceId;
     message.time = data.time;
