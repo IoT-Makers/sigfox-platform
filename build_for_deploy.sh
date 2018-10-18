@@ -18,7 +18,8 @@ export PRIMUS_URL=https://primus.${SUBDOMAIN}.${DOMAIN}
 export API_URL=https://api.${SUBDOMAIN}.${DOMAIN}
 export BUILD_ENV=prod
 export SERVER_NAME=${SUBDOMAIN}${DOMAIN:+.}${DOMAIN:-localhost}
-export GIT_HASH=${GIT_HASH}
+export GIT_HASH=`git log --pretty=format:'%h' -n 1`
+
 
 docker-compose build
 
@@ -32,6 +33,10 @@ case $input in
         docker push ${REGISTRY_URL}backend-${SUBDOMAIN}:${GIT_HASH:-latest}
         docker push ${REGISTRY_URL}frontend-${SUBDOMAIN}:${GIT_HASH:-latest}
         docker push ${REGISTRY_URL}mongodb-${SUBDOMAIN}:${GIT_HASH:-latest}
+        docker push ${REGISTRY_URL}primus-${SUBDOMAIN}:latest
+        docker push ${REGISTRY_URL}backend-${SUBDOMAIN}:latest
+        docker push ${REGISTRY_URL}frontend-${SUBDOMAIN}:latest
+        docker push ${REGISTRY_URL}mongodb-${SUBDOMAIN}:latest
         ;;
     [nN][oO]|[nN])
         echo "Maybe next time then...!"
