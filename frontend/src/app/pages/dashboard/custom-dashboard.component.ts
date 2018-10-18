@@ -920,7 +920,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  onMapLocationReady(event: any, devices: any) {
+  onMapLocationReady(event: any, devices: any, zoom: any) {
     this.map = event;
     if (!this.mobile) {
       const input = this.searchBoxInput.nativeElement;
@@ -934,6 +934,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
       }
     });
+    const zoomChangeBoundsListener =
+      google.maps.event.addListenerOnce(this.map, 'bounds_changed', function(event) {
+        this.setZoom(zoom);
+      });
+    setTimeout(function(){google.maps.event.removeListener(zoomChangeBoundsListener)}, 2000);
     this.map.fitBounds(bounds);
   }
 
@@ -952,13 +957,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     if (places.length === 0) {
       return;
     }
-    const bounds = new google.maps.LatLngBounds();
+    const bounds: LatLngBounds = new google.maps.LatLngBounds();
     places.forEach((place) => {
-      if (place.geometry.viewport) {
-        bounds.union(place.geometry.viewport);
-      } else {
-        bounds.extend(place.geometry.location);
-      }
+      if (place.geometry.viewport) bounds.union(place.geometry.viewport);
+      else bounds.extend(place.geometry.location);
     });
     this.map.fitBounds(bounds);
   }

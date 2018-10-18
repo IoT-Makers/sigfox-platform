@@ -159,7 +159,7 @@
               <ng-container *ngIf="widget.type === 'map'">
                 <agm-map id="{{widget.id}}"
                          #agmMap
-                         (mapReady)="onMapLocationReady($event, widget.data)"
+                         (mapReady)="onMapLocationReady($event, widget.data, widget.options.zoom)"
                          [latitude]="widget.options.lat"
                          [longitude]="widget.options.lng"
                          [zoom]="widget.options.zoom"
