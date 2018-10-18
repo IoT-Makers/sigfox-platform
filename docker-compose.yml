@@ -13,7 +13,10 @@ services:
     container_name: backend
     depends_on:
       - mongodb
-    build: backend
+    build:
+      context: backend
+      args:
+      - GIT_REV=${GIT_HASH}
     image: ${REGISTRY_URL}backend-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
     restart: "always"
     env_file: env/backend.env
