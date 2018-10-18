@@ -44,7 +44,7 @@ while true; do
     export GIT_HASH=`git log --pretty=format:'%h' -n 1`
 
     docker-compose build
-    echo "Building completed for $SUBDOMAIN."
+    printf "${GREEN}============Building completed for $SUBDOMAIN\n${NC}"
 
     push_img=$push_img_arg
     if [ -z "$push_img" ]; then
