@@ -31,8 +31,8 @@ subdomain_ctr=0
 while true; do
     export SUBDOMAIN=${@:$OPTIND+subdomain_ctr:1};
     if [ -z "$SUBDOMAIN" ]; then
-        if [[ -z "${subdomain_ctr}" ]]; then
-        printf "${RED}No subdomain found${NC}"
+        if [ "${subdomain_ctr}" -eq 0 ]; then
+        printf "${RED}No subdomain found\n${NC}"
         fi
         break
     fi
