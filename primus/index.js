@@ -68,13 +68,13 @@ primus.on('connection', function connection(spark) {
                 return;
             }
             spark.userId = token.userId.toString();
+            console.log(spark.userId);
         });
     }
 
     spark.on('data', function data(payload) {
         if (!payload) return;
-        console.log('incoming data');
-        console.log(payload);
+        // console.log(payload);
         switch (payload.event) {
             case "message":
                 messageHandler(payload);
@@ -116,7 +116,7 @@ primus.on('connection', function connection(spark) {
 function messageHandler(payload) {
     const msg = payload.content;
     const userId = msg.userId;
-    if (msg && userId) {
+    if (msg) {
         // from message.ts
         console.log(payload.action + ' message ' + msg.id + ' for user ' + userId);
 
@@ -140,7 +140,7 @@ function messageHandler(payload) {
 function deviceHandler(payload) {
     const device = payload.content;
     const userId = device.userId;
-    if (device && userId) {
+    if (device) {
         // from device.ts
         console.log(payload.action + ' device ' + device.id + ' for user ' + userId);
         let targetClients = getTargetClients(userId);
@@ -172,7 +172,7 @@ function deviceHandler(payload) {
 function parserHandler(payload) {
     const parser = payload.content;
     const userId = parser.userId;
-    if (parser && userId) {
+    if (parser) {
         // from parser.ts
         console.log(payload.action + ' parser ' + parser.id + ' for user ' + userId);
 
@@ -195,7 +195,7 @@ function parserHandler(payload) {
 function geolocHandler(payload) {
     const geoloc = payload.content;
     const userId = geoloc.userId;
-    if (geoloc && userId) {
+    if (geoloc) {
         console.log(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
@@ -210,7 +210,7 @@ function geolocHandler(payload) {
 function alertHandler(payload) {
     const alert = payload.content;
     const userId = alert.userId;
-    if (alert && userId) {
+    if (alert) {
         // from alert.ts
         console.log(payload.action + ' alert ' + alert.id + ' for user ' + userId);
 
@@ -236,7 +236,7 @@ function alertHandler(payload) {
 function beaconHandler(payload) {
     const beacon = payload.content;
     const userId = beacon.userId;
-    if (beacon && userId) {
+    if (beacon) {
         console.log(payload.action + ' beacon ' + beacon.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
@@ -251,7 +251,7 @@ function beaconHandler(payload) {
 function connectorHandler(payload) {
     const connector = payload.content;
     const userId = connector.userId;
-    if (connector && userId) {
+    if (connector) {
         console.log(payload.action + ' connector ' + connector.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
@@ -266,7 +266,7 @@ function connectorHandler(payload) {
 function categoryHandler(payload) {
     const category = payload.content;
     const userId = category.userId;
-    if (category && userId) {
+    if (category) {
         console.log(payload.action + ' category ' + category.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
@@ -292,21 +292,23 @@ function dashboardHandler(payload) {
     const dashboard = payload.content;
     // Dashboards created in organizations do not contain the userId => TODO
     const userId = dashboard.userId;
-    if (dashboard && userId) {
+    if (dashboard) {
         // from dashboard.ts
         console.log(payload.action + ' dashboard ' + dashboard.id + ' for user ' + userId);
+        (async () => {
+            let targetClients = userId ? getTargetClients(userId) : await getOrgClients(dashboard.organizationId);
+            if (!targetClients.length)
+                return;
+            send(targetClients, payload.event, payload.action, dashboard);
+        })();
 
-        let targetClients = getTargetClients(userId);
-        if (!targetClients.length)
-            return;
-        send(targetClients, payload.event, payload.action, dashboard);
     }
 }
 
 function widgetHandler(payload) {
     const widget = payload.content;
     const userId = widget.userId;
-    if (widget && userId) {
+    if (widget) {
         // from widget.ts
         console.log(payload.action + ' widget ' + widget.id + ' for user ' + userId);
 
@@ -333,7 +335,32 @@ function getTargetClients(userId) {
     primus.forEach(function (spark, id, connections) {
         if (spark.userId === userId) targetClients.push(spark);
     });
-    console.log('user ' + userId + ' has ' + targetClients.length + ' client online');
+    console.log('user ' + userId + ' has ' + targetClients.length + ' clients online');
+    return targetClients;
+}
+
+async function getOrgClients(orgId) {
+    let targetClients = [];
+
+    const getOrgUserPromise = () => {
+        return new Promise((resolve, reject) => {
+            db.collection("Organization").findOne({_id: ObjectId(orgId)}, (err, org) => {
+                db.collection("Organizationuser").find({organizationId: org._id}).toArray((err, orgUsersIdObj) => {
+                    err ? console.error(err) : resolve(orgUsersIdObj);
+                });
+            });
+        });
+    };
+
+    let orgUsers = await getOrgUserPromise();
+    const orgUsersId = orgUsers.map(x => x.userId.toString());
+    primus.forEach(function (spark, id, connections) {
+        for (const userId of orgUsersId) {
+            console.log(userId);
+            if (spark.userId === userId) targetClients.push(spark);
+        }
+    });
+    console.log('org ' + orgId + ' has ' + targetClients.length + ' clients online');
     return targetClients;
 }
 

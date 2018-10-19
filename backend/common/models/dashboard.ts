@@ -41,7 +41,6 @@ class Dashboard {
   public beforeDelete(ctx: any, next: Function): void {
     // Get the dashboardId from instance
     const dashboardId = ctx.where.id;
-
     if (dashboardId) {
       this.model.app.models.Widget.destroyAll({dashboardId}, (err: any, result: any) => {  if (err) { console.error(err); } });
     }

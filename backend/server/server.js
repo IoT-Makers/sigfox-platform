@@ -24,14 +24,14 @@ app.start = function() {
 // Sub-apps like REST API are mounted via boot scripts.
 boot(app, __dirname, function(err) {
   if (err) throw err;
-  app.dataSources.mongodb.isActual(null, function(err, actual) {
-    if (!actual) {
-      app.dataSources.mongodb.autoupdate(null, function(err, result) {
-        if (err) throw err;
-        console.log("auto update complete")
-      });
-    }
-  });
+  // app.dataSources.mongodb.isActual(null, function(err, actual) {
+  //   if (!actual) {
+  //     app.dataSources.mongodb.autoupdate(null, function(err, result) {
+  //       if (err) throw err;
+  //       console.log("auto update complete")
+  //     });
+  //   }
+  // });
 
   // start the server if `$ node server.js`
   if (require.main === module)

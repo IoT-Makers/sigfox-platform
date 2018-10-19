@@ -41,7 +41,7 @@
       "foreignKey": "dashboardId"
     },
     "Organizations": {
-      "type": "hasAndBelongsToMany",
+      "type": "belongsTo",
       "model": "Organization",
       "foreignKey": "organizationId"
     }

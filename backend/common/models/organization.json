@@ -64,9 +64,9 @@
       "foreignKey": "categoryId"
     },
     "Dashboards": {
-      "type": "hasAndBelongsToMany",
+      "type": "hasMany",
       "model": "Dashboard",
-      "foreignKey": "dashboardId"
+      "foreignKey": "organizationId"
     }
   },
   "acls": [
