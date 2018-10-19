@@ -83,6 +83,16 @@
       "permission": "DENY"
     },
     {
+      "accessType": "WRITE",
+      "principalType": "ROLE",
+      "principalId": "organizationMember",
+      "permission": "ALLOW",
+      "property": [
+        "__create__Dashboards",
+        "__updateById__Devices"
+      ]
+    },
+    {
       "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "organizationMember",
