@@ -180,6 +180,9 @@ class Alert {
   }
 
   private triggerByDevice(data_parsed: any, device: any, req: any, next: Function): void {
+    // Models
+    const Beacon = this.model.app.models.Beacon;
+
     // Get userId
     const userId = req.accessToken.userId;
     if (!userId) {
@@ -233,57 +236,120 @@ class Alert {
             }
           });
         } else if (alert.value) {
-          /**
-           *  Triggering alerts from keys in "data_parsed"
-           *  If the key being read is set for an alert and if it is activated
-           */
-            // Build the custom message
-          let alertMessage = "";
-          let strToMatch = "";
-          const regex = /\[(.*?)\]/;
-          if (alert.message) {
-            try {
-              strToMatch = JSON.stringify(alert.message);
-            } catch (e) {
-              strToMatch = alert.message;
-            }
-          }
-          data_parsed.forEach((p: any) => {
+
+          if (alert.key === 'beaconId') {
+            const beaconId: any = _.filter(data_parsed, {key: "beaconId"})[0];
+            Beacon.findById(beaconId.value.toString(), (err: any, beacon: any) => {
+              if (err) {
+                console.error(err);
+              } else if (beacon) {
+                /**
+                 *  Triggering alerts from keys in "data_parsed"
+                 *  If the key being read is set for an alert and if it is activated
+                 */
+                  // Build the custom message
+                let alertMessage = "";
+                let strToMatch = "";
+                const regex = /\[(.*?)\]/;
+                if (alert.message) {
+                  try {
+                    strToMatch = JSON.stringify(alert.message);
+                  } catch (e) {
+                    strToMatch = alert.message;
+                  }
+                }
+                data_parsed.forEach((p: any) => {
+                  if (alert.message) {
+                    try {
+                      const matched = regex.exec(strToMatch)[1];
+                      if (matched && matched === p.key) {
+                        strToMatch = strToMatch.replace("[" + matched + "]", beacon.name);
+                        alertMessage = JSON.parse(strToMatch);
+                      }
+                    } catch (e) {
+                      // console.log('No need to search for a custom message formatting.');
+                    }
+                    if (alertMessage === "") {
+                      alertMessage = alert.message;
+                    }
+                  }
+                });
+
+                // Process conditions
+                data_parsed.forEach((p: any) => {
+                  if (alert.key === p.key) {
+                    // Verify conditions for the alert to be triggered
+                    if (
+                      (alert.value.exact && p.value === alert.value.exact)
+                      || (alert.value.min && alert.value.max && p.value >= alert.value.min && p.value <= alert.value.max)
+                      || (alert.value.less && p.value < alert.value.less)
+                      || (alert.value.more && p.value > alert.value.more)
+                    ) {
+                      if (!alert.message) {
+                        alertMessage = p.key.charAt(0).toUpperCase() + p.key.slice(1) + ": " + p.value + " " + p.unit;
+                      }
+                      // Trigger alert
+                      this.triggerAlert(alert, device, alertMessage);
+                    }
+                    return;
+                  }
+                });
+              }
+            });
+          } else {
+
+            /**
+             *  Triggering alerts from keys in "data_parsed"
+             *  If the key being read is set for an alert and if it is activated
+             */
+              // Build the custom message
+            let alertMessage = "";
+            let strToMatch = "";
+            const regex = /\[(.*?)\]/;
             if (alert.message) {
               try {
-                const matched = regex.exec(strToMatch)[1];
-                if (matched && matched === p.key) {
-                  strToMatch = strToMatch.replace("[" + matched + "]", p.value.toString());
-                  alertMessage = JSON.parse(strToMatch);
-                }
+                strToMatch = JSON.stringify(alert.message);
               } catch (e) {
-                // console.log('No need to search for a custom message formatting.');
-              }
-              if (alertMessage === "") {
-                alertMessage = alert.message;
+                strToMatch = alert.message;
               }
             }
-          });
-
-          // Process conditions
-          data_parsed.forEach((p: any) => {
-            if (alert.key === p.key) {
-              // Verify conditions for the alert to be triggered
-              if (
-                (alert.value.exact && p.value === alert.value.exact)
-                || (alert.value.min && alert.value.max && p.value >= alert.value.min && p.value <= alert.value.max)
-                || (alert.value.less && p.value < alert.value.less)
-                || (alert.value.more && p.value > alert.value.more)
-              ) {
-                if (!alert.message) {
-                  alertMessage = p.key.charAt(0).toUpperCase() + p.key.slice(1) + ": " + p.value + " " + p.unit;
+            data_parsed.forEach((p: any) => {
+              if (alert.message) {
+                try {
+                  const matched = regex.exec(strToMatch)[1];
+                  if (matched && matched === p.key) {
+                    strToMatch = strToMatch.replace("[" + matched + "]", p.value.toString());
+                    alertMessage = JSON.parse(strToMatch);
+                  }
+                } catch (e) {
+                  // console.log('No need to search for a custom message formatting.');
                 }
-                // Trigger alert
-                this.triggerAlert(alert, device, alertMessage);
+                if (alertMessage === "") {
+                  alertMessage = alert.message;
+                }
               }
-              return;
-            }
-          });
+            });
+
+            // Process conditions
+            data_parsed.forEach((p: any) => {
+              if (alert.key === p.key) {
+                // Verify conditions for the alert to be triggered
+                if (
+                  (alert.value.exact && p.value === alert.value.exact)
+                  || (alert.value.min && alert.value.max && p.value >= alert.value.min && p.value <= alert.value.max)
+                  || (alert.value.less && p.value < alert.value.less)
+                  || (alert.value.more && p.value > alert.value.more)
+                ) {
+                  if (!alert.message) {
+                    alertMessage = p.key.charAt(0).toUpperCase() + p.key.slice(1) + ": " + p.value + " " + p.unit;
+                  }
+                  // Trigger alert
+                  this.triggerAlert(alert, device, alertMessage);
+                }
+                return;
+              }
+            });
+          }
         }
       }
     });
