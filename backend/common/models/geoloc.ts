@@ -303,11 +303,9 @@ class Geoloc {
           geoloc.type = 'sigfox';
           geoloc.location = new loopback.GeoPoint(data.geoloc.location);
           // TODO: below is retro-compatibility
-          if (data.geoloc.accuracy) {
-            geoloc.accuracy = data.geoloc.accuracy;
-          } else {
-            geoloc.accuracy = data.geoloc.precision;
-          }
+          if (data.geoloc.accuracy) geoloc.accuracy = data.geoloc.accuracy;
+          else geoloc.accuracy = data.geoloc.precision;
+
           geoloc.createdAt = messageInstance.createdAt;
           geoloc.userId = userId;
           geoloc.messageId = messageInstance.id;
