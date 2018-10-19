@@ -87,6 +87,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
     classes: 'select-organization'
   };
 
+  // Pagination
+  public numberOfDevicesToSee = 10;
+  private pageOfDevicesToSee = 0;
+
   private api;
   private id;
 

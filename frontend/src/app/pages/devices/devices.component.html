@@ -32,8 +32,10 @@
 
           <!-- Table -->
           <div *ngIf="devices.length > 0" class="table-responsive">
-            <table class="table table-hover table-outline" [mfData]="devices | dataFilter : filterQuery"
-                   #mf="mfDataTable" [mfRowsOnPage]="20">
+            <table class="table table-hover table-outline"
+                   [mfData]="devices | dataFilter : filterQuery"
+                   #mf="mfDataTable"
+                   [mfRowsOnPage]="numberOfDevicesToSee">
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">
