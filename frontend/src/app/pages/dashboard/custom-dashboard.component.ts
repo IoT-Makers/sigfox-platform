@@ -11,6 +11,7 @@ import {Observable} from 'rxjs/Rx';
 import {AgmMap, LatLngBounds} from '@agm/core';
 import {Subscription} from 'rxjs/Subscription';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
+import {Location} from '@angular/common';
 
 declare let d3: any;
 declare const google: any;
@@ -236,7 +237,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               private organizationApi: OrganizationApi,
               private route: ActivatedRoute,
               private router: Router,
-              toasterService: ToasterService) {
+              toasterService: ToasterService,
+              private _location: Location) {
     this.toasterService = toasterService;
   }
 
@@ -370,6 +372,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toasterService.pop('success', 'Success', 'Successfully deleted dashboard.');
+      this._location.back();
     }, err => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
