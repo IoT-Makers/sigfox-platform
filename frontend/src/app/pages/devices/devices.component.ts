@@ -204,7 +204,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
       this.devicesReady = true;
     });
 
-    this.parserApi.find().subscribe((result: any) => {
+    this.parserApi.find({order: 'createdAt DESC'}).subscribe((result: any) => {
       this.parsers = result;
     });
     this.api.getCategories(this.id).subscribe((result: any) => {
