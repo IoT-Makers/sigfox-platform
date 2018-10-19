@@ -120,7 +120,7 @@ function messageHandler(payload) {
         // from message.ts
         console.log(payload.action + ' message ' + msg.id + ' for user ' + userId);
 
-        let targetClients = getTargetClients(userId);
+        let targetClients = getUserClients(userId);
         if (!targetClients.length)
             return;
 
@@ -143,7 +143,7 @@ function deviceHandler(payload) {
     if (device) {
         // from device.ts
         console.log(payload.action + ' device ' + device.id + ' for user ' + userId);
-        let targetClients = getTargetClients(userId);
+        let targetClients = getUserClients(userId);
         if (!targetClients.length)
             return;
 
@@ -176,7 +176,7 @@ function parserHandler(payload) {
         // from parser.ts
         console.log(payload.action + ' parser ' + parser.id + ' for user ' + userId);
 
-        let targetClients = getTargetClients(userId);
+        let targetClients = getUserClients(userId);
         if (!targetClients.length)
             return;
 
@@ -198,7 +198,7 @@ function geolocHandler(payload) {
     if (geoloc) {
         console.log(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
-        let targetClients = getTargetClients(userId);
+        let targetClients = getUserClients(userId);
         // if the message owner is not online, no need to look up
         if (!targetClients.length)
             return;
@@ -214,7 +214,7 @@ function alertHandler(payload) {
         // from alert.ts
         console.log(payload.action + ' alert ' + alert.id + ' for user ' + userId);
 
-        let targetClients = getTargetClients(userId);
+        let targetClients = getUserClients(userId);
         // if the message owner is not online, no need to look up
         if (!targetClients.length)
             return;
@@ -239,7 +239,7 @@ function beaconHandler(payload) {
     if (beacon) {
         console.log(payload.action + ' beacon ' + beacon.id + ' for user ' + userId);
 
-        let targetClients = getTargetClients(userId);
+        let targetClients = getUserClients(userId);
         // if the message owner is not online, no need to look up
         if (!targetClients.length)
             return;
@@ -254,7 +254,7 @@ function connectorHandler(payload) {
     if (connector) {
         console.log(payload.action + ' connector ' + connector.id + ' for user ' + userId);
 
-        let targetClients = getTargetClients(userId);
+        let targetClients = getUserClients(userId);
         // if the message owner is not online, no need to look up
         if (!targetClients.length)
             return;
@@ -269,7 +269,7 @@ function categoryHandler(payload) {
     if (category) {
         console.log(payload.action + ' category ' + category.id + ' for user ' + userId);
 
-        let targetClients = getTargetClients(userId);
+        let targetClients = getUserClients(userId);
         if (!targetClients.length)
             return;
 
@@ -296,7 +296,7 @@ function dashboardHandler(payload) {
         // from dashboard.ts
         console.log(payload.action + ' dashboard ' + dashboard.id + ' for user ' + userId);
         (async () => {
-            let targetClients = userId ? getTargetClients(userId) : await getOrgClients(dashboard.organizationId);
+            let targetClients = userId ? getUserClients(userId) : await getOrgClients(dashboard.organizationId);
             if (!targetClients.length)
                 return;
             send(targetClients, payload.event, payload.action, dashboard);
@@ -312,7 +312,7 @@ function widgetHandler(payload) {
         // from widget.ts
         console.log(payload.action + ' widget ' + widget.id + ' for user ' + userId);
 
-        let targetClients = getTargetClients(userId);
+        let targetClients = getUserClients(userId);
         if (!targetClients.length)
             return;
         send(targetClients, payload.event, payload.action, widget);
@@ -330,7 +330,7 @@ function addAttribute(obj, attName, attValue) {
     }
 }
 
-function getTargetClients(userId) {
+function getUserClients(userId) {
     let targetClients = [];
     primus.forEach(function (spark, id, connections) {
         if (spark.userId === userId) targetClients.push(spark);
@@ -345,6 +345,7 @@ async function getOrgClients(orgId) {
     const getOrgUserPromise = () => {
         return new Promise((resolve, reject) => {
             db.collection("Organization").findOne({_id: ObjectId(orgId)}, (err, org) => {
+                if (!org || err) return reject(err);
                 db.collection("Organizationuser").find({organizationId: org._id}).toArray((err, orgUsersIdObj) => {
                     err ? console.error(err) : resolve(orgUsersIdObj);
                 });

@@ -359,9 +359,9 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     payload.action == "CREATE" ? this.countBeacons++ : payload.action == "DELETE" ? this.countBeacons-- : 0;
   };
   rtDashboardHandler = (payload: any) => {
-    console.log(payload);
     const dashboard = payload.content;
     if (payload.action == "CREATE") {
+      // ensure data for the user and any org don't mix up
       if ((dashboard.userId && !this.organization ) || (dashboard.organizationId === this.organization.id))
         this.dashboards.unshift(dashboard);
     } else if (payload.action == "UPDATE") {

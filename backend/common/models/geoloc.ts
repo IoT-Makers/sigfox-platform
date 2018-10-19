@@ -291,7 +291,7 @@ class Geoloc {
           next(err, data);
         } else if (messageInstance) {
           if (!created) console.log('Found the corresponding message.');
-          if (created) {
+          else {
             /**
              * TODO: Check below - OOB frame device acknowledge ?
              */
