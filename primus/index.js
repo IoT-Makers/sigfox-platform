@@ -9,7 +9,6 @@ const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split('
 const ObjectId = require('mongodb').ObjectId;
 
 let db;
-var connectedClient = 0;
 
 // var http = require('http');
 // var server = http.createServer(/* request handler */);
@@ -54,8 +53,7 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 //
 primus.on('connection', function connection(spark) {
     console.log('new connection');
-    connectedClient++;
-    console.info(connectedClient + " clients connected");
+    console.info(primus.connected + " clients connected");
     // TODO: handle the case where connection comes in before db connection
     if (!db) return;
 
@@ -291,7 +289,6 @@ function categoryHandler(payload) {
 }
 
 function dashboardHandler(payload) {
-    console.log(payload);
     const dashboard = payload.content;
     // Dashboards created in organizations do not contain the userId => TODO
     const userId = dashboard.userId;
@@ -354,8 +351,7 @@ function send(targetClients, eventName, action, content) {
 
 primus.on('disconnection', function end(spark) {
     console.log('disconnection');
-    connectedClient--;
-    console.info(connectedClient + " clients connected");
+    console.info(primus.connected + " clients connected");
 });
 
 
