@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {DeviceApi, EmployeeApi, UserApi} from '../../shared/sdk/services/custom';
-import {Device, Employee} from '../../shared/sdk/models';
+import {Alert, Connector, Device, Employee} from '../../shared/sdk/models';
 
 
 @Component({
@@ -44,6 +44,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
       animation: 'fade'
     });
 
+  private user;
 
   constructor(private userApi: UserApi,
               private deviceApi: DeviceApi,
@@ -55,6 +56,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Employee: ngOnInit');
+    this.user = this.userApi.getCachedCurrent();
     this.setup();
   }
 
@@ -88,7 +90,10 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     this.selectedDevices = [];
     this.addEmployeeFlag = false;
     this.employeeToAddOrEdit = employee;
-    if (employee.Device) this.selectedDevices[0] = {id: employee.Device.id, itemName: employee.Device.name ? employee.Device.name + ' (' + employee.Device.id + ')' : employee.Device.id};
+    if (employee.Device) this.selectedDevices[0] = {
+      id: employee.Device.id,
+      itemName: employee.Device.name ? employee.Device.name + ' (' + employee.Device.id + ')' : employee.Device.id
+    };
     this.addOrEditEmployeeModal.show();
   }
 

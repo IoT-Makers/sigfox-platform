@@ -75,7 +75,7 @@
                     </div>
                   </td>
                   <td class="text-center">
-                    <div *ngIf="employee.Device" class="text-device">
+                    <div *ngIf="employee.Device" class="text-device font-weight-bold">
                       {{employee.Device.id}}
                     </div>
                     <small *ngIf="!employee.Device">
@@ -253,7 +253,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Confirm removal of <b></b></h4>
+        <h4 class="modal-title">Confirm removal of <b>{{employeeToRemove.firstName}} {{employeeToRemove.lastName}}</b></h4>
         <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
