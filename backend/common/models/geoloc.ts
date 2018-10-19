@@ -271,21 +271,35 @@ class Geoloc {
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
+    // Saving a message anyway
+    const message = new Message;
+    message.id = data.deviceId + data.time + data.seqNumber;
+    message.userId = userId;
+    message.deviceId = data.deviceId;
+    message.time = data.time;
+    message.seqNumber = data.seqNumber;
+    message.createdAt = new Date(data.time * 1000);
+    message.deviceAck = true;
+
     // Find the corresponding message in order to retrieve its message ID
-    Message.findOne({
-      where: {
-        and: [
-          {userId: userId},
-          {id: data.deviceId + data.time + data.seqNumber},
-        ]
-      }
-    }, (err: any, messageInstance: any) => {
-      if (err) {
-        console.error(err);
-        next(err, data);
-      } else {
-        if (messageInstance) {
-          console.log('Found the corresponding message.');
+    Message.findOrCreate(
+      {
+        where: {id: data.deviceId + data.time + data.seqNumber}
+      },
+      message,
+      (err: any, messageInstance: any, created: boolean) => {
+        if (err) {
+          console.error(err);
+          next(err, data);
+        } else if (messageInstance) {
+          if (!created) console.log('Found the corresponding message.');
+          if (created) {
+            /**
+             * TODO: Check below - OOB frame device acknowledge ?
+             */
+            console.log('??? OOB for deviceId: ' + data.deviceId);
+          }
+
           // Build the Geoloc object
           const geoloc = new Geoloc;
           geoloc.type = 'sigfox';
@@ -373,39 +387,8 @@ class Geoloc {
                 next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
               }
             });
-        } else {
-          const err = 'No corresponding message found, check if UPLINK or BIDIR callbacks have been set too (on the Sigfox Backend)!';
-          /**
-           * TODO: Check below - OOB frame device acknowledge ?
-           */
-            // Saving a message anyway
-          const message = new Message;
-
-          message.userId = userId;
-          message.deviceId = data.deviceId;
-          message.time = data.time;
-          message.seqNumber = data.seqNumber;
-          message.createdAt = new Date(data.time * 1000);
-          message.deviceAck = true;
-
-          message.id = message.deviceId + message.time + message.seqNumber;
-
-          Message.create(
-            message,
-            (err: any, messageInstance: any) => { // callback
-              if (err) {
-                console.error(err);
-                next(err, messageInstance);
-              } else {
-                console.log('Created message as: ', messageInstance);
-                // Update device in order to trigger a real time upsert event
-                this.updateDeviceLocatedAt(messageInstance.deviceId);
-                next(null, messageInstance);
-              }
-            });
         }
-      }
-    });
+      });
   }
 
   updateDeviceLocatedAt(deviceId: string) {

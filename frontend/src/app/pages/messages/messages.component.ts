@@ -112,10 +112,17 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.api = this.organization ? this.organizationApi : this.userApi;
       this.id = this.organization ? this.organization.id : this.user.id;
 
-      this.api.getMessages(this.id, this.messageFilter).subscribe((messages: Message[]) => {
-        this.messages = messages;
-        this.messagesReady = true;
-      });
+      if (this.organization) {
+        this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
+          this.messages = messages;
+          this.messagesReady = true;
+        });
+      } else {
+        this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
+          this.messages = messages;
+          this.messagesReady = true;
+        });
+      }
     });
   }
 

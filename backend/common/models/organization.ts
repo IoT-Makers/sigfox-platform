@@ -12,7 +12,20 @@ import {Model} from "@mean-expert/model";
     beforeSave: { name: "before save", type: "operation" },
     beforeDelete: { name: "before delete", type: "operation" }
     },
-  remotes: {},
+  remotes: {
+    getFilteredMessages: {
+      accepts: [
+        {arg: "id", type: "string", required: true, description: "Organization id"},
+        {arg: "filter", type: "object", required: true, description: "Message filter"},
+        {arg: "req", type: "object", http: {source: "req"}},
+      ],
+      http: {
+        path: "/:id/FilteredMessages",
+        verb: "get",
+      },
+      returns: {type: ["Message"], root: true},
+    },
+  },
 })
 
 class Organization {
@@ -67,6 +80,103 @@ class Organization {
       }
     });
     next();
+  }
+
+  public getFilteredMessages(organizationId: string, filter: any, req: any, next: Function): void {
+    // Models
+    const Organization = this.model;
+    const Message = this.model.app.models.Message;
+
+    const userId = req.accessToken.userId;
+    if (!userId) {
+      next(null, "Please login or use a valid access token.");
+    }
+
+    Organization.findOne(
+      {
+        where: {
+          id: organizationId,
+        },
+        include: ["Devices"],
+      }, (err: any, organization: any) => {
+        if (!err && organization) {
+
+          if (filter.where && filter.where.deviceId) {
+
+            organization.toJSON().Devices.forEach((device: any) => {
+              if (device.id === filter.where.deviceId) {
+                Message.find(filter, (err: any, messages: any) => {
+                  if (!err) {
+                    // console.log(messages);
+                    next(null, messages);
+                  } else {
+                    next(err);
+                  }
+                });
+                return;
+              }
+            });
+            /*organization.Devices.findOne({where: filter.where}, (err: any, organizationDevice: any) => {
+              console.error(organizationDevice);
+              if (!err && organizationDevice) {
+                Message.find(filter, (err: any, messages: any) => {
+                  if (!err) {
+                    //console.log(messages);
+                    next(null, messages);
+                  } else {
+                    next(err);
+                  }
+                });
+              } else {
+                next(err);
+              }
+            });*/
+
+          } else {
+
+            const devicesIds: any[] = [];
+            organization.toJSON().Devices.forEach((device: any) => {
+              devicesIds.push(device.id);
+            });
+
+            filter.where = {deviceId: {inq: devicesIds}};
+            console.log(filter);
+            Message.find(filter, (err: any, messages: any) => {
+              if (!err) {
+                // console.log(messages);
+                next(null, messages);
+              } else {
+                next(err);
+              }
+            });
+
+            /*organization.Messages.find(filter, (err: any, organizationMessages: any) => {
+              if (!err) {
+                console.log(organizationMessages);
+                next(null, organizationMessages);
+                /!* const messagesIds: any[] = [];
+                 organizationMessages.forEach((orgMsg: any) => {
+                   messagesIds.push(orgMsg.id);
+                 });
+                 console.log(messagesIds);
+                 Message.find({where: {id: {inq: messagesIds}}, order: 'createdAt DESC', include: ['Device', 'Geolocs']}, (err: any, messages: any) => {
+                   if (!err) {
+                     console.log(messages);
+                     next(null, messages);
+                   } else {
+                     console.error(err);
+                     next(err);
+                   }
+                 });*!/
+              } else {
+                next(err);
+              }
+            });*/
+          }
+        } else {
+          next(err);
+        }
+      });
   }
 }
 
