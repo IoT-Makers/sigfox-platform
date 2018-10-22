@@ -37,6 +37,34 @@ class user {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
+    //send password reset link when password reset requested
+    model.on('resetPasswordRequest', function(info: any) {
+      const baseUrl = process.env.BASE_URL;
+      const resetUrl = baseUrl + '/#/reset-password?access_token=' + info.accessToken.id;
+      // Prepare a loopback template renderer
+      const renderer = loopback.template(path.resolve(__dirname, "../../server/views/resetPassword.ejs"));
+      const html_body = renderer({resetUrl});
+      const options = {
+        type: "email",
+        to: info.email,
+        from: "Sigfox Platform <sigfox-platform@iotageny.sigfox.com>",
+        subject: "Reset your password on sigfox platform",
+        html: html_body,
+        redirect: "",
+      };
+      if (!process.env.MAILGUN_API_KEY) {
+        console.log("MAILGUN_API_KEY not set");
+        return;
+      }
+      const mailgun = require("mailgun-js")({host: "api." + process.env.MAILGUN_REGION + ".mailgun.net", apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN});
+      mailgun.messages().send(options, (error: any, body: any) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log("> Reset password email sent:", body);
+        }
+      });
+    });
   }
 
   public loginQr(redirect: string, res: any, next: Function) {
@@ -185,14 +213,13 @@ class user {
       });
 
     // Send mail
-    if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN && process.env.MAILGUN_REGION) {
+    if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN && process.env.MAILGUN_REGION && process.env.BASE_URL) {
 
       const verificationToken = generateVerificationToken();
       userInstance.updateAttributes({ verificationToken });
 
       // Create a custom object your want to pass to the email template. You can create as many key-value pairs as you want
-      const baseUrl = process.env.BASE_URL || this.model.app.get("url").replace(/\/$/, "");
-      const verificationUrl = baseUrl + "/api/users/confirm?uid=" + userInstance.id + "&token=" + verificationToken + "&redirect=" + baseUrl.substr(0, baseUrl.split(":", 2).join(":").length);
+      const verificationUrl = process.env.API_URL + "/api/users/confirm?uid=" + userInstance.id + "&token=" + verificationToken + "&redirect=" + process.env.BASE_URL;
       const customMessage = {verificationUrl};
 
       // Prepare a loopback template renderer

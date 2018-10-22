@@ -2,7 +2,8 @@ import * as _ from 'lodash';
 import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
-  name: 'dataFilter'
+  name: 'dataFilter',
+  pure: false
 })
 export class DataFilterPipe implements PipeTransform {
 

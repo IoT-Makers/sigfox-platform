@@ -72,7 +72,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.cleanSetup();
+    this.unsubscribe();
     this.subscribe();
 
     // Get and listen connectors

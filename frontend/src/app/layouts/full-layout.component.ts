@@ -131,7 +131,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.cleanSetup();
+    this.unsubscribe();
     this.subscribe();
     if (!this.isInitialized) {
       this.isInitialized = true;
