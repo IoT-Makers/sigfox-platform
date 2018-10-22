@@ -260,7 +260,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.cleanSetup();
+    this.unsubscribe();
     this.subscribe();
 
     // Get and listen alerts

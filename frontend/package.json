@@ -18,7 +18,7 @@
     "config": "ts-node ./scripts/set-env.ts",
     "set-env": "npm run config",
     "build": "ng build --prod",
-    "start": "node server/server.ts",
+    "start": "ng serve",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

@@ -9,6 +9,7 @@ import {OrganizationGuard} from './_guards/organization.guard';
 export const routes: Routes = [
   {path: 'login', loadChildren: './pages/user/login/login.module#LoginModule'},
   {path: 'register', loadChildren: './pages/user/register/register.module#RegisterModule'},
+  {path: 'reset-password', loadChildren: './pages/user/reset-password/reset-password.module#ResetPasswordModule'},
   {
     path: '',
     canActivate: [AuthGuard],

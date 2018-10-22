@@ -37,6 +37,34 @@ class user {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
+    //send password reset link when password reset requested
+    model.on('resetPasswordRequest', function(info: any) {
+      const baseUrl = process.env.BASE_URL;
+      const resetUrl = baseUrl + '/#/reset-password?access_token=' + info.accessToken.id;
+      // Prepare a loopback template renderer
+      const renderer = loopback.template(path.resolve(__dirname, "../../server/views/resetPassword.ejs"));
+      const html_body = renderer({resetUrl});
+      const options = {
+        type: "email",
+        to: info.email,
+        from: "Sigfox Platform <sigfox-platform@iotageny.sigfox.com>",
+        subject: "Reset your password on sigfox platform",
+        html: html_body,
+        redirect: "",
+      };
+      if (!process.env.MAILGUN_API_KEY) {
+        console.log("MAILGUN_API_KEY not set");
+        return;
+      }
+      const mailgun = require("mailgun-js")({host: "api." + process.env.MAILGUN_REGION + ".mailgun.net", apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN});
+      mailgun.messages().send(options, (error: any, body: any) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log("> Reset password email sent:", body);
+        }
+      });
+    });
   }
 
   public loginQr(redirect: string, res: any, next: Function) {
