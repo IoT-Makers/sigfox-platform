@@ -185,14 +185,13 @@ class user {
       });
 
     // Send mail
-    if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN && process.env.MAILGUN_REGION) {
+    if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN && process.env.MAILGUN_REGION && process.env.BASE_URL) {
 
       const verificationToken = generateVerificationToken();
       userInstance.updateAttributes({ verificationToken });
 
       // Create a custom object your want to pass to the email template. You can create as many key-value pairs as you want
-      const baseUrl = process.env.BASE_URL || this.model.app.get("url").replace(/\/$/, "");
-      const verificationUrl = baseUrl + "/api/users/confirm?uid=" + userInstance.id + "&token=" + verificationToken + "&redirect=" + baseUrl.substr(0, baseUrl.split(":", 2).join(":").length);
+      const verificationUrl = process.env.API_URL + "/api/users/confirm?uid=" + userInstance.id + "&token=" + verificationToken + "&redirect=" + process.env.BASE_URL;
       const customMessage = {verificationUrl};
 
       // Prepare a loopback template renderer

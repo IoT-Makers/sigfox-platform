@@ -25,6 +25,13 @@
             </b> {{user.email}}
           </div>
           <hr>
+          <div>
+            <b>
+              <i class="fa fa-check-circle" aria-hidden="true"></i>
+              <span class="mr-1"></span> Verified:
+            </b> <span [ngClass]="user.emailVerified ? 'text-success' : 'text-danger'">{{user.emailVerified}}</span>
+          </div>
+          <hr>
           <div class="embed-responsive">
             <b>
               <i class="fa fa-camera" aria-hidden="true"></i>
