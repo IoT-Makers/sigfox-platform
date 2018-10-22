@@ -15,14 +15,14 @@ const nodemailer = require("nodemailer");
  **/
 @Model({
   hooks: {
-    beforeSave: { name: "before save", type: "operation" },
-    afterDelete: { name: "after delete", type: "operation" },
-    afterSave: { name: "after save", type: "operation" },
+    beforeSave: {name: "before save", type: "operation"},
+    afterDelete: {name: "after delete", type: "operation"},
+    afterSave: {name: "after save", type: "operation"},
   },
   remotes: {
     triggerByDevice: {
-      returns : { arg: "result", type: "array" },
-      http    : { path: "/trigger-by-device", verb: "post" },
+      returns: {arg: "result", type: "array"},
+      http: {path: "/trigger-by-device", verb: "post"},
       accepts: [
         {arg: "data_parsed", type: "array", required: true, description: "The parsed data"},
         {arg: "device", type: "object", required: true, description: "The device object"},
@@ -30,8 +30,8 @@ const nodemailer = require("nodemailer");
       ],
     },
     triggerBySigfoxGeoloc: {
-      returns : { arg: "result", type: "array" },
-      http    : { path: "/trigger-by-sigfox-geoloc", verb: "post" },
+      returns: {arg: "result", type: "array"},
+      http: {path: "/trigger-by-sigfox-geoloc", verb: "post"},
       accepts: [
         {arg: "lat", type: "number", required: true, description: "The lat of the device"},
         {arg: "lng", type: "number", required: true, description: "The lng of the device"},
@@ -40,8 +40,8 @@ const nodemailer = require("nodemailer");
       ],
     },
     test: {
-      returns : { arg: "result", type: "array" },
-      http    : { path: "/test", verb: "post" },
+      returns: {arg: "result", type: "array"},
+      http: {path: "/test", verb: "post"},
       accepts: [
         {arg: "alertId", type: "string", required: true, description: "The alert ID"},
         {arg: "req", type: "object", http: {source: "req"}},
@@ -68,7 +68,9 @@ class Alert {
     let inside = false;
     const location_geofence = new loopback.GeoPoint(alertGeofence.location[0]);
     const distanceToGeofence = marker.distanceTo(location_geofence, {type: "meters"});
-    if (distanceToGeofence <= alertGeofence.radius) { inside = !inside; }
+    if (distanceToGeofence <= alertGeofence.radius) {
+      inside = !inside;
+    }
     return inside;
   }
 
@@ -80,7 +82,9 @@ class Alert {
       const xj = polygon[j].lat, yj = polygon[j].lng;
       const intersect = ((yi > y) !== (yj > y))
         && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-      if (intersect) { inside = !inside; }
+      if (intersect) {
+        inside = !inside;
+      }
     }
     return inside;
   }
@@ -206,7 +210,10 @@ class Alert {
             const lat_device: any = _.filter(data_parsed, {key: "lat"})[0];
             const lng_device: any = _.filter(data_parsed, {key: "lng"})[0];
             if (lat_device && lat_device.value && lng_device && lng_device.value) {
-              const location_device = new loopback.GeoPoint({lat: Number(lat_device.value), lng: Number(lng_device.value)});
+              const location_device = new loopback.GeoPoint({
+                lat: Number(lat_device.value),
+                lng: Number(lng_device.value)
+              });
               // If geofence is a circle
               if (alertGeofence.radius) {
                 // Check trigger conditions
@@ -415,7 +422,11 @@ class Alert {
               };
             }
             transporter.sendMail(options, (err: any, mail: any) => {
-              if (err) { console.error(err); } else { console.log("EmailOutlook sent!"); }
+              if (err) {
+                console.error(err);
+              } else {
+                console.log("EmailOutlook sent!");
+              }
             });
           } else if (connector.type === "webhook") {
             console.log("Webhook alert!");
@@ -431,13 +442,19 @@ class Alert {
             this.model.app.dataSources.webhook.send(connector.url, connector.method, decrypt(connector.password), alertMessage).then((result: any) => {
               console.log("Webhook request sent!");
             }).catch((err: any) => {
-              if (err) { console.error(err); }
+              if (err) {
+                console.error(err);
+              }
             });
           } else if (connector.type === "free-mobile") {
             console.log("Free Mobile SMS alert!");
             this.model.app.dataSources.freeMobile.sendSMS(connector.login, decrypt(connector.password), alertMessage).then((result: any) => {
             }).catch((err: any) => {
-              if (err) { console.error("Free Mobile error"); } else { console.log("Free Mobile sent!"); }
+              if (err) {
+                console.error("Free Mobile error");
+              } else {
+                console.log("Free Mobile sent!");
+              }
             });
           } else if (connector.type === "twilio") {
             console.log("Twilio SMS alert!");
@@ -454,7 +471,9 @@ class Alert {
 
           if (!test) {
             // Check if alert is one shot only, if yes: deactivate it
-            if (alert.one_shot) { alert.active = false; }
+            if (alert.one_shot) {
+              alert.active = false;
+            }
             // Update the alert last trigger time
             alert.triggeredAt = new Date();
             Alert.upsert(

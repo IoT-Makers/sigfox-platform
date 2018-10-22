@@ -238,7 +238,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.router.navigate(['/dashboard/' + dashboard.id]);
       } else {
         this.router.navigate(['/organization/' + this.organization.id + '/dashboard/' + dashboard.id]);
-        this.dashboards.unshift(dashboard);
       }
     });
   }
@@ -360,14 +359,17 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     payload.action == "CREATE" ? this.countBeacons++ : payload.action == "DELETE" ? this.countBeacons-- : 0;
   };
   rtDashboardHandler = (payload: any) => {
+    const dashboard = payload.content;
     if (payload.action == "CREATE") {
-      this.dashboards.unshift(payload.content);
+      // ensure data for the user and any org don't mix up
+      if ((dashboard.userId && !this.organization ) || (dashboard.organizationId === this.organization.id))
+        this.dashboards.unshift(dashboard);
     } else if (payload.action == "UPDATE") {
-      let idx = this.dashboards.findIndex(x => x.id == payload.content.id);
-      if (idx != -1) this.dashboards[idx] = payload.content;
+      let idx = this.dashboards.findIndex(x => x.id == dashboard.id);
+      if (idx != -1) this.dashboards[idx] = dashboard;
     } else if (payload.action == "DELETE") {
       this.dashboards = this.dashboards.filter(function (obj) {
-        return obj.id !== payload.content.id;
+        return obj.id !== dashboard.id;
       });
     }
   };

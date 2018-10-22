@@ -64,9 +64,9 @@
       "foreignKey": "categoryId"
     },
     "Dashboards": {
-      "type": "hasAndBelongsToMany",
+      "type": "hasMany",
       "model": "Dashboard",
-      "foreignKey": "dashboardId"
+      "foreignKey": "organizationId"
     }
   },
   "acls": [
@@ -81,6 +81,16 @@
       "principalType": "ROLE",
       "principalId": "$unauthenticated",
       "permission": "DENY"
+    },
+    {
+      "accessType": "WRITE",
+      "principalType": "ROLE",
+      "principalId": "organizationMember",
+      "permission": "ALLOW",
+      "property": [
+        "__create__Dashboards",
+        "__updateById__Devices"
+      ]
     },
     {
       "accessType": "READ",
