@@ -10,13 +10,13 @@ import {HttpHeaders} from "@angular/common/http";
 })
 export class ResetPasswordComponent implements OnInit {
 
-  public email = '';
-  public errorMessage = '';
-  public successMessage = '';
+  public email: string = '';
+  public errorMessage: string = '';
+  public successMessage: string = '';
 
-  private access_token = '';
-  public newPassword = '';
-  public verifyPassword = '';
+  public access_token: string = '';
+  public newPassword: string = '';
+  public verifyPassword: string = '';
 
   constructor(private router: Router,
               private userApi: UserApi,
