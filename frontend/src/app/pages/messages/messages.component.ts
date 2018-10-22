@@ -54,7 +54,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       animation: 'fade'
     });
 
-  private filterQuery = '';
+  public filterQuery = '';
 
   private api;
   private id;
@@ -98,9 +98,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
           order: 'createdAt DESC',
           limit: 100,
           include: ['Device', 'Geolocs'],
-          where: {
-            and: [{deviceId: this.filterQuery}]
-          }
+          where: {deviceId: this.filterQuery}
         };
       } else {
         this.messageFilter = {
