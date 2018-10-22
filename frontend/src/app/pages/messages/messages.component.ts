@@ -87,7 +87,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.cleanSetup();
+    this.unsubscribe();
     this.subscribe();
 
     // Get and listen messages

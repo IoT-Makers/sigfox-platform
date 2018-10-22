@@ -273,7 +273,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.cleanSetup();
+    this.unsubscribe();
     this.subscribe();
 
     this.subscriptions.push(this.route.params.subscribe(params => {

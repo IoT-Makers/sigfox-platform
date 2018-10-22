@@ -63,7 +63,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.cleanSetup();
+    this.unsubscribe();
     this.subscribe();
 
     // Get the logged in User object
@@ -83,7 +83,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   private cleanSetup() {
-
+    this.unsubscribe();
   }
 
   decodePayload(i: number, parser: Parser, payload: string): void {

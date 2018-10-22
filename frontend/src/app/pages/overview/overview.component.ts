@@ -169,7 +169,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.cleanSetup();
+    this.unsubscribe();
     this.subscribe();
     console.log('Setup Overview');
 
