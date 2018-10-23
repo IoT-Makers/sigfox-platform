@@ -273,7 +273,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.messageChartData = [];
     this.messagesReady = false;
 
-    // TODO: rt?
     this.messageApi.stats(this.graphRange, null, {
       userId: this.user.id
     }, null).subscribe((stats: any) => {
@@ -389,7 +388,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.devicesReady = true;
   };
   rtMsgHandler = (payload: any) => {
-    payload.action == "CREATE" ? this.countMessages++ : payload.action == "DELETE" ? this.countMessages-- : 0;
+    const msg = payload.content;
+    if ((msg.userId && !this.organization ) || msg.Device.Organizations.map(x=>x.id).includes(this.organization.id))
+      payload.action == "CREATE" ? this.countMessages++ : payload.action == "DELETE" ? this.countMessages-- : 0;
   };
   rtAlertHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countAlerts++ : payload.action == "DELETE" ? this.countAlerts-- : 0;
