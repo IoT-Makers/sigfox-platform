@@ -36,6 +36,9 @@
     "loggedAt": {
       "type": "date"
     },
+    "seenAt": {
+      "type": "date"
+    },
     "connected": {
       "type": "boolean"
     },

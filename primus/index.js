@@ -4,10 +4,10 @@
 const Primus = require('primus');
 const mongolib = require('mongodb');
 const MongoClient = mongolib.MongoClient;
+const ObjectId = mongolib.ObjectId;
 const mongodbUrl = process.env.MONGO_URL;
 if (!process.env.SERVER_ACCESS_TOKENS) return console.error('/!\ Please set the SERVER_ACCESS_TOKENS env.');
 const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
-const ObjectId = mongolib.ObjectId;
 
 let db;
 
@@ -52,8 +52,9 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 //
 // Listen for new connections and send data
 //
+
+// Handle connections
 primus.on('connection', function connection(spark) {
-    console.log('new connection');
     console.info(primus.connected + " clients connected");
     // TODO: handle the case where connection comes in before db connection
     if (!db) return;
@@ -69,8 +70,8 @@ primus.on('connection', function connection(spark) {
                 return;
             }
             spark.userId = token.userId.toString();
-            console.log(spark.userId);
 
+            // Check if user belongs to an organization
             const orguser = db.collection("Organizationuser");
             orguser.find({userId: token.userId}, {organizationId: true}).toArray((err, orgUsersIdObj) => {
                 err ?
@@ -79,6 +80,13 @@ primus.on('connection', function connection(spark) {
                 console.log(spark.organizationIds);
             });
 
+            // Update user properties: connected
+            let user = db.collection("user");
+            user.update({_id: ObjectId(spark.userId)}, {$set: {connected: true, seenAt: new Date()}}, (err, user) => {
+                if (err || !user) {
+                    console.info("User not found");
+                } else console.info('[' + spark.userId + '] Updated fields connected and seenAt');
+            });
         });
     }
 
@@ -119,6 +127,17 @@ primus.on('connection', function connection(spark) {
             default:
                 break;
         }
+    });
+});
+
+// Handle disconnections
+primus.on('disconnection', function (spark) {
+    if (!db) return;
+    let user = db.collection("user");
+    user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, seenAt: new Date()}}, (err, user) => {
+        if (err || !user) {
+            console.info("User not found");
+        } else console.info('[' + spark.userId + '] Updated fields connected and seenAt');
     });
 });
 

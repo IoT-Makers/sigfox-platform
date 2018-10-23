@@ -686,8 +686,8 @@ export class MessageApi extends BaseLoopBackApi {
    * This usually means the response is a `Message` object.)
    * </em>
    */
-  public putSigfox(req: any = {}, data: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "PUT";
+  public postSigfox(req: any = {}, data: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Messages/sigfox";
     let _routeParams: any = {};
@@ -719,8 +719,8 @@ export class MessageApi extends BaseLoopBackApi {
    * This usually means the response is a `Message` object.)
    * </em>
    */
-  public putSigfoxAcknowledge(req: any = {}, data: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "PUT";
+  public postSigfoxAcknowledge(req: any = {}, data: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Messages/sigfox/acknowledge";
     let _routeParams: any = {};

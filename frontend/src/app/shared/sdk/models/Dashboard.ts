@@ -15,8 +15,9 @@ export interface DashboardInterface {
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "userId"?: any;
+  "organizationId"?: any;
   user?: User;
-  Organizations?: Organization[];
+  Organizations?: Organization;
   Widgets?: Widget[];
 }
 
@@ -29,8 +30,9 @@ export class Dashboard implements DashboardInterface {
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
+  "organizationId": any = <any>null;
   user: User = null;
-  Organizations: Organization[] = null;
+  Organizations: Organization = null;
   Widgets: Widget[] = null;
   constructor(data?: DashboardInterface) {
     Object.assign(this, data);
@@ -97,6 +99,10 @@ export class Dashboard implements DashboardInterface {
           name: 'userId',
           type: 'any'
         },
+        "organizationId": {
+          name: 'organizationId',
+          type: 'any'
+        },
       },
       relations: {
         user: {
@@ -109,13 +115,11 @@ export class Dashboard implements DashboardInterface {
         },
         Organizations: {
           name: 'Organizations',
-          type: 'Organization[]',
+          type: 'Organization',
           model: 'Organization',
-          relationType: 'hasMany',
-          modelThrough: 'OrganizationDashboard',
-          keyThrough: 'organizationId',
-          keyFrom: 'id',
-          keyTo: 'dashboardId'
+          relationType: 'belongsTo',
+                  keyFrom: 'organizationId',
+          keyTo: 'id'
         },
         Widgets: {
           name: 'Widgets',

@@ -150,9 +150,7 @@ export class Organization implements OrganizationInterface {
           type: 'Dashboard[]',
           model: 'Dashboard',
           relationType: 'hasMany',
-          modelThrough: 'OrganizationDashboard',
-          keyThrough: 'dashboardId',
-          keyFrom: 'id',
+                  keyFrom: 'id',
           keyTo: 'organizationId'
         },
       }
