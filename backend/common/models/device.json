@@ -56,6 +56,10 @@
     },
     "locatedAt": {
       "type": "date"
+    },
+    "locked": {
+      "type": "boolean",
+      "default": false
     }
   },
   "validations": [],

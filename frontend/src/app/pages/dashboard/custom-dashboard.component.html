@@ -134,13 +134,13 @@
               <!-- Value -->
               <ng-container *ngIf="widget.type === 'value'">
                 <div *ngIf="widget.data" class="text-center mx-auto font-weight-bold font-lg">
-                  <ng-container *ngIf="!widget.data.value">
+                  <ng-container *ngIf="widget.data.value == null">
                     No data
                   </ng-container>
-                  <ng-container *ngIf="widget.data.value && widget.data.unit">
+                  <ng-container *ngIf="widget.data.value != null && widget.data.unit">
                     {{widget.data.value + ' ' + widget.data.unit}}
                   </ng-container>
-                  <ng-container *ngIf="widget.data.value && !widget.data.unit">
+                  <ng-container *ngIf="widget.data.value != null && !widget.data.unit">
                     {{widget.data.value}}
                   </ng-container>
                 </div>

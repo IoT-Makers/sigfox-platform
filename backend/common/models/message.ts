@@ -11,15 +11,15 @@ import {PrimusClientFn} from "../../server/PrimusClientFn";
  **/
 @Model({
   hooks: {
-    beforeDelete: { name: "before delete", type: "operation" },
-    afterDelete: { name: "after delete", type: "operation" },
-    afterSave: { name: "after save", type: "operation" },
+    beforeDelete: {name: "before delete", type: "operation"},
+    afterDelete: {name: "after delete", type: "operation"},
+    afterSave: {name: "after save", type: "operation"},
   },
   remotes: {
     postSigfox: {
       accepts: [
         {arg: "req", type: "object", http: {source: "req"}},
-        {arg: "data", type: "object", required: true, http: { source: "body" }},
+        {arg: "data", type: "object", required: true, http: {source: "body"}},
       ],
       http: {
         path: "/sigfox",
@@ -30,7 +30,7 @@ import {PrimusClientFn} from "../../server/PrimusClientFn";
     postSigfoxAcknowledge: {
       accepts: [
         {arg: "req", type: "object", http: {source: "req"}},
-        {arg: "data", type: "object", required: true, http: { source: "body" }},
+        {arg: "data", type: "object", required: true, http: {source: "body"}},
       ],
       http: {
         path: "/sigfox/acknowledge",
@@ -41,7 +41,7 @@ import {PrimusClientFn} from "../../server/PrimusClientFn";
     postSigfoxStatus: {
       accepts: [
         {arg: "req", type: "object", http: {source: "req"}},
-        {arg: "data", type: "object", required: true, http: { source: "body" }},
+        {arg: "data", type: "object", required: true, http: {source: "body"}},
       ],
       http: {
         path: "/sigfox/status",
@@ -67,8 +67,8 @@ class Message {
     const Device = this.model.app.models.Device;
     const Parser = this.model.app.models.Parser;
 
-    if (typeof data.deviceId  === "undefined"
-      || typeof data.time  === "undefined"
+    if (typeof data.deviceId === "undefined"
+      || typeof data.time === "undefined"
       || typeof data.seqNumber === "undefined") {
       return next('Missing "deviceId", "time" and "seqNumber"', data);
     }
@@ -138,7 +138,7 @@ class Message {
               // Store the userId in the message
               message.userId = userId;
 
-              deviceInstanceFunction.updateAttributes({userId}, (err: any, deviceUpdated: any) => {
+              deviceInstanceFunction.updateAttributes({userId: userId}, (err: any, deviceUpdated: any) => {
                 if (err) {
                   console.error(err);
                 } else {
@@ -426,7 +426,7 @@ class Message {
           }
           device.successRate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
 
-          deviceInstance.updateAttributes({ successRate: device.successRate });
+          deviceInstance.updateAttributes({successRate: device.successRate});
           cb(deviceInstance);
         } else {
           console.error("Could not update the success rate of an unknown device");
@@ -441,7 +441,10 @@ class Message {
     Device.findOne({where: {id: message.deviceId}, include: "Organizations"}, (err: any, deviceInstance: any) => {
       if (deviceInstance && deviceInstance.Organizations) {
         deviceInstance.toJSON().Organizations.forEach((orga: any) => {
-          message.Organizations.add(orga.id, {deviceId: deviceInstance.id, createdAt: message.createdAt}, (err: any, result: any) => {
+          message.Organizations.add(orga.id, {
+            deviceId: deviceInstance.id,
+            createdAt: message.createdAt
+          }, (err: any, result: any) => {
             console.log("Linked message with organization", result);
           });
         });
@@ -453,8 +456,8 @@ class Message {
     // Models
     const Message = this.model;
 
-    if (typeof data.deviceId  === "undefined"
-      || typeof data.time  === "undefined"
+    if (typeof data.deviceId === "undefined"
+      || typeof data.time === "undefined"
       || typeof data.downlinkAck === "undefined") {
       return next('Missing "deviceId", "time" and "downlinkAck"', data);
     }
@@ -505,8 +508,8 @@ class Message {
     // Models
     const Message = this.model;
 
-    if (typeof data.deviceId  === "undefined"
-      || typeof data.time  === "undefined"
+    if (typeof data.deviceId === "undefined"
+      || typeof data.time === "undefined"
       || typeof data.seqNumber === "undefined") {
       return next('Missing "deviceId", "time" and "seqNumber"', data);
     }
@@ -547,7 +550,9 @@ class Message {
 
     // Destroy geolocs corresponding to the messageId
     if (ctx.where.id) {
-      Geoloc.destroyAll({messageId: ctx.where.id}, (error: any, result: any) => { console.log("Removed geoloc for messageId: " + ctx.where.id); });
+      Geoloc.destroyAll({messageId: ctx.where.id}, (error: any, result: any) => {
+        console.log("Removed geoloc for messageId: " + ctx.where.id);
+      });
     }
     // Destroy organization link
     Message.findOne({where: {id: ctx.where.id}, include: "Organizations"}, (err: any, message: any) => {
