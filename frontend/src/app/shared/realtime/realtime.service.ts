@@ -17,8 +17,7 @@ export class RealtimeService {
   }
 
   public connect(accessToken: string) {
-    if (this.primusClient)
-      this.primusClient.end();
+    if (this.primusClient) this.primusClient.end();
     this.primusClient = new Primus(this.primusURL + "?access_token=" + accessToken,
       {
         transformer: 'engine.io',
@@ -42,8 +41,7 @@ export class RealtimeService {
     // });
   }
 
-
-  public addListener(event: string, listener: (data:any) => void): (data) => void {
+  public addListener(event: string, listener: (data: any) => void): (data) => void {
     const cb = (data) => {
       if (data && data.event === event)
         listener(data);

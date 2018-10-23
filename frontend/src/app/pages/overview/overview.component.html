@@ -17,7 +17,8 @@
   </alert>-->
 
   <div class="card-group">
-    <div class="card" [routerLink]="[!organization ? '/categories' : '/organization/' + organization.id + '/categories']">
+    <div class="card"
+         [routerLink]="[!organization ? '/categories' : '/organization/' + organization.id + '/categories']">
       <div class="card-block">
         <div class="h1 text-category text-right mb-2">
           <i class="fa fa-tag"></i>
@@ -113,7 +114,8 @@
     <div *ngIf="!see" class="col-md-6">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-map-marker fa-lg text-tracking"></i><strong> Map </strong><small>(10 latest)</small>
+          <i class="fa fa-map-marker fa-lg text-tracking"></i><strong> Map </strong>
+          <small>(10 latest)</small>
         </div>
         <div class="card-block">
           <ng-container *ngIf="!devicesReady">
@@ -296,7 +298,7 @@
                 <p class="lead">{{message.createdAt | date:"yyyy/MM/dd - HH:mm:ss"}}</p>
                 <div class="text-justify" *ngIf="message.data_parsed">
                   <div *ngFor="let o of message.data_parsed">
-                    <small *ngIf="o.value || o.value === 0">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
+                    <small *ngIf="o.value != null">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
                   </div>
                 </div>
               </div>
@@ -381,7 +383,8 @@
                       <h4 class="font-weight-bold mt-2 text-center">{{battery.value}} %</h4>
                     </span>
                       <div *ngIf="battery.value > 50" class="fill-green" [style.width]="battery.value + '%'"></div>
-                      <div *ngIf="battery.value <= 50 && battery.value > 25" class="fill-orange" [style.width]="battery.value + '%'"></div>
+                      <div *ngIf="battery.value <= 50 && battery.value > 25" class="fill-orange"
+                           [style.width]="battery.value + '%'"></div>
                       <div *ngIf="battery.value <= 25" class="fill-red" [style.width]="battery.value + '%'"></div>
                     </div>
                     <div class="top-b"></div>
@@ -393,7 +396,8 @@
                       <h4 class="font-weight-bold mt-2 text-center">{{battery.value}} %</h4>
                     </span>
                       <div *ngIf="battery.value > 50" class="fill-green" [style.width]="battery.value + '%'"></div>
-                      <div *ngIf="battery.value <= 50 && battery.value > 25" class="fill-orange" [style.width]="battery.value + '%'"></div>
+                      <div *ngIf="battery.value <= 50 && battery.value > 25" class="fill-orange"
+                           [style.width]="battery.value + '%'"></div>
                       <div *ngIf="battery.value <= 25" class="fill-red" [style.width]="battery.value + '%'"></div>
                     </div>
                     <div class="top-b"></div>
@@ -601,7 +605,8 @@
     <div class="col-sm-12 col-md-6">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-microchip fa-lg text-device"></i><strong> Devices </strong><small>(10 latest)</small>
+          <i class="fa fa-microchip fa-lg text-device"></i><strong> Devices </strong>
+          <small>(10 latest)</small>
         </div>
         <div class="card-block">
           <ng-container *ngIf="!devicesReady">
@@ -635,7 +640,9 @@
                 </td>
                 <td class="text-center">
                   <div class="col-md-12">
-                    <a [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]"><strong class="text-device">{{device.id}}</strong></a>
+                    <a
+                      [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]"><strong
+                      class="text-device">{{device.id}}</strong></a>
                     <div class="small" *ngIf="device.name">
                       <span class="text-gray-dark">Name: </span>
                       <span class="text-device">{{device.name ? device.name : "None"}}</span>
@@ -656,7 +663,8 @@
                               <span class="text-info"><i class="fa fa-battery-half"></i> {{p.value}} {{p.unit}}</span>
                             </ng-container>
                             <ng-container *ngIf="p.value < 40 && p.value >= 20">
-                              <span class="text-warning"><i class="fa fa-battery-quarter"></i> {{p.value}} {{p.unit}}</span>
+                              <span class="text-warning"><i
+                                class="fa fa-battery-quarter"></i> {{p.value}} {{p.unit}}</span>
                             </ng-container>
                             <ng-container *ngIf="p.value < 20">
                               <span class="text-alert"><i class="fa fa-battery-empty"></i> {{p.value}} {{p.unit}}</span>
@@ -754,11 +762,14 @@
 
                 </td>
                 <td class="text-center">
-                  <strong>{{device.Messages[0] ? (device.Messages[0].createdAt | amTimeAgo) : 'No messages yet'}}</strong>
+                  <strong>{{device.Messages[0] ? (device.Messages[0].createdAt | amTimeAgo) : 'No messages
+                    yet'}}</strong>
                 </td>
                 <td>
                   <div *ngIf="!device.properties" class="small text-muted text-center">No properties</div>
-                  <div *ngIf="device.properties && device.properties.length === 0" class="small text-muted text-center">No properties yet</div>
+                  <div *ngIf="device.properties && device.properties.length === 0" class="small text-muted text-center">
+                    No properties yet
+                  </div>
                   <div *ngIf="device.properties && device.properties.length > 0">
                     <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
                       <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>
@@ -797,23 +808,43 @@
         <div class="row">
           <div *ngIf="mobile" class="col-md-12">
             <div class="btn-group btn-group-sm" data-toggle="buttons" aria-label="Filter graph">
-              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_hourly}" (click)="getMessagesGraph('hourly')">Hour</button>
-              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_daily}" (click)="getMessagesGraph('daily')">Day</button>
-              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_weekly}" (click)="getMessagesGraph('weekly')">Week</button>
+              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_hourly}"
+                      (click)="getMessagesGraph('hourly')">Hour
+              </button>
+              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_daily}"
+                      (click)="getMessagesGraph('daily')">Day
+              </button>
+              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_weekly}"
+                      (click)="getMessagesGraph('weekly')">Week
+              </button>
             </div>
             <div class="btn-group btn-group-sm" data-toggle="buttons" aria-label="Filter graph">
-              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_monthly}" (click)="getMessagesGraph('monthly')">Month</button>
-              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_yearly}" (click)="getMessagesGraph('yearly')">Year</button>
+              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_monthly}"
+                      (click)="getMessagesGraph('monthly')">Month
+              </button>
+              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_yearly}"
+                      (click)="getMessagesGraph('yearly')">Year
+              </button>
             </div>
             <button type="button" class="btn btn-sm btn-primary pull-right"><i class="fa fa-download"></i></button>
           </div>
           <div *ngIf="!mobile" class="col-md-12">
             <div class="btn-group pull-left" data-toggle="buttons" aria-label="Filter graph">
-              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_hourly}" (click)="getMessagesGraph('hourly')">Hour</button>
-              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_daily}" (click)="getMessagesGraph('daily')">Day</button>
-              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_weekly}" (click)="getMessagesGraph('weekly')">Week</button>
-              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_monthly}" (click)="getMessagesGraph('monthly')">Month</button>
-              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_yearly}" (click)="getMessagesGraph('yearly')">Year</button>
+              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_hourly}"
+                      (click)="getMessagesGraph('hourly')">Hour
+              </button>
+              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_daily}"
+                      (click)="getMessagesGraph('daily')">Day
+              </button>
+              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_weekly}"
+                      (click)="getMessagesGraph('weekly')">Week
+              </button>
+              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_monthly}"
+                      (click)="getMessagesGraph('monthly')">Month
+              </button>
+              <button class="btn btn-outline-secondary" [ngClass]="{active : isLimit_yearly}"
+                      (click)="getMessagesGraph('yearly')">Year
+              </button>
             </div>
             <button type="button" class="btn btn-primary pull-right"><i class="fa fa-download"></i></button>
           </div><!--/.col-->

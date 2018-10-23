@@ -196,7 +196,7 @@ class Alert {
     }
 
     const alerts = device.Alerts;
-
+    if (!alerts) return next('No alerts');
     // Loop in all the alerts
     alerts.forEach((alert: any, index: any) => {
       // Only check active alerts

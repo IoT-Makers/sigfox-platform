@@ -3,6 +3,7 @@
 
 const Primus = require('primus');
 const MongoClient = require('mongodb').MongoClient;
+const ObjectID = require('mongodb').ObjectID;
 const mongodbUrl = process.env.MONGO_URL;
 if (!process.env.SERVER_ACCESS_TOKENS) return console.error('/!\ Please set the SERVER_ACCESS_TOKENS env.');
 const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
@@ -51,8 +52,9 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 //
 // Listen for new connections and send data
 //
+
+// Handle connections
 primus.on('connection', function connection(spark) {
-    console.log('new connection');
     console.info(primus.connected + " clients connected");
     // TODO: handle the case where connection comes in before db connection
     if (!db) return;
@@ -68,7 +70,23 @@ primus.on('connection', function connection(spark) {
                 return;
             }
             spark.userId = token.userId.toString();
-            console.log(spark.userId);
+
+            // Check if user belongs to an organization
+            const orguser = db.collection("Organizationuser");
+            orguser.find({userId: token.userId}, {organizationId: true}).toArray((err, orgUsersIdObj) => {
+                err ?
+                    console.error(err) :
+                    spark.organizationIds = orgUsersIdObj.map(x => x.organizationId.toString());
+                console.log(spark.organizationIds);
+            });
+
+            // Update user properties: connected
+            let user = db.collection("user");
+            user.update({_id: ObjectID(spark.userId)}, {$set: {connected: true, seenAt: new Date()}}, (err, user) => {
+                if (err || !user) {
+                    console.info("User not found");
+                } else console.info('[' + spark.userId + '] Updated fields connected and seenAt');
+            });
         });
     }
 
@@ -109,6 +127,17 @@ primus.on('connection', function connection(spark) {
             default:
                 break;
         }
+    });
+});
+
+// Handle disconnections
+primus.on('disconnection', function (spark) {
+    if (!db) return;
+    let user = db.collection("user");
+    user.update({_id: ObjectID(spark.userId)}, {$set: {connected: false, seenAt: new Date()}}, (err, user) => {
+        if (err || !user) {
+            console.info("User not found");
+        } else console.info('[' + spark.userId + '] Updated fields connected and seenAt');
     });
 });
 
@@ -290,18 +319,15 @@ function categoryHandler(payload) {
 
 function dashboardHandler(payload) {
     const dashboard = payload.content;
-    // Dashboards created in organizations do not contain the userId => TODO
     const userId = dashboard.userId;
+    console.log(payload);
     if (dashboard) {
         // from dashboard.ts
         console.log(payload.action + ' dashboard ' + dashboard.id + ' for user ' + userId);
-        (async () => {
-            let targetClients = userId ? getUserClients(userId) : await getOrgClients(dashboard.organizationId);
-            if (!targetClients.length)
-                return;
-            send(targetClients, payload.event, payload.action, dashboard);
-        })();
-
+        let targetClients = userId ? getUserClients(userId) : getOrgClients(dashboard.organizationId);
+        if (!targetClients.length)
+            return;
+        send(targetClients, payload.event, payload.action, dashboard);
     }
 }
 
@@ -339,27 +365,11 @@ function getUserClients(userId) {
     return targetClients;
 }
 
-async function getOrgClients(orgId) {
+function getOrgClients(orgId) {
     let targetClients = [];
-
-    const getOrgUserPromise = () => {
-        return new Promise((resolve, reject) => {
-            db.collection("Organization").findOne({_id: ObjectId(orgId)}, (err, org) => {
-                if (!org || err) return reject(err);
-                db.collection("Organizationuser").find({organizationId: org._id}).toArray((err, orgUsersIdObj) => {
-                    err ? console.error(err) : resolve(orgUsersIdObj);
-                });
-            });
-        });
-    };
-
-    let orgUsers = await getOrgUserPromise();
-    const orgUsersId = orgUsers.map(x => x.userId.toString());
     primus.forEach(function (spark, id, connections) {
-        for (const userId of orgUsersId) {
-            console.log(userId);
-            if (spark.userId === userId) targetClients.push(spark);
-        }
+        if (spark.organizationIds && spark.organizationIds.includes(orgId))
+            targetClients.push(spark);
     });
     console.log('org ' + orgId + ' has ' + targetClients.length + ' clients online');
     return targetClients;

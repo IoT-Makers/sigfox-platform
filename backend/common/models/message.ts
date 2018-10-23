@@ -11,15 +11,15 @@ import {PrimusClientFn} from "../../server/PrimusClientFn";
  **/
 @Model({
   hooks: {
-    beforeDelete: { name: "before delete", type: "operation" },
-    afterDelete: { name: "after delete", type: "operation" },
-    afterSave: { name: "after save", type: "operation" },
+    beforeDelete: {name: "before delete", type: "operation"},
+    afterDelete: {name: "after delete", type: "operation"},
+    afterSave: {name: "after save", type: "operation"},
   },
   remotes: {
     postSigfox: {
       accepts: [
         {arg: "req", type: "object", http: {source: "req"}},
-        {arg: "data", type: "object", required: true, http: { source: "body" }},
+        {arg: "data", type: "object", required: true, http: {source: "body"}},
       ],
       http: {
         path: "/sigfox",
@@ -30,7 +30,7 @@ import {PrimusClientFn} from "../../server/PrimusClientFn";
     postSigfoxAcknowledge: {
       accepts: [
         {arg: "req", type: "object", http: {source: "req"}},
-        {arg: "data", type: "object", required: true, http: { source: "body" }},
+        {arg: "data", type: "object", required: true, http: {source: "body"}},
       ],
       http: {
         path: "/sigfox/acknowledge",
@@ -41,7 +41,7 @@ import {PrimusClientFn} from "../../server/PrimusClientFn";
     postSigfoxStatus: {
       accepts: [
         {arg: "req", type: "object", http: {source: "req"}},
-        {arg: "data", type: "object", required: true, http: { source: "body" }},
+        {arg: "data", type: "object", required: true, http: {source: "body"}},
       ],
       http: {
         path: "/sigfox/status",
@@ -67,8 +67,8 @@ class Message {
     const Device = this.model.app.models.Device;
     const Parser = this.model.app.models.Parser;
 
-    if (typeof data.deviceId  === "undefined"
-      || typeof data.time  === "undefined"
+    if (typeof data.deviceId === "undefined"
+      || typeof data.time === "undefined"
       || typeof data.seqNumber === "undefined") {
       return next('Missing "deviceId", "time" and "seqNumber"', data);
     }
@@ -141,7 +141,7 @@ class Message {
               // Store the userId in the message
               message.userId = userId;
 
-              deviceInstanceFunction.updateAttributes({userId}, (err: any, deviceUpdated: any) => {
+              deviceInstanceFunction.updateAttribute('userId', userId, (err: any, deviceUpdated: any) => {
                 if (err) {
                   console.error(err);
                 } else {
@@ -158,20 +158,13 @@ class Message {
 
           // If message is a duplicate
           if (duplicate) {
-            Message.findOne({
-              where: {
-                and: [
-                  {deviceId: data.deviceId},
-                  {time: data.time},
-                  {seqNumber: data.seqNumber},
-                ],
-              },
-            }, (err: any, messageInstance: any) => {
-              if (err) {
-                console.error(err);
-                next(err, data);
-              } else {
-                if (messageInstance) {
+            Message.findById(
+              message.id,
+              (err: any, messageInstance: any) => {
+                if (err) {
+                  console.error(err);
+                  next(err, data);
+                } else if (messageInstance) {
                   // console.log('Found the corresponding message and storing reception in it.');
                   if (!messageInstance.reception) {
                     messageInstance.reception = [];
@@ -188,40 +181,36 @@ class Message {
                         next(null, messageInstance);
                       }
                     });
-
                 } else {
                   // No corresponding message found
                   const err = "Error - No corresponding message found, did you first receive a message containing duplicate = false?";
                   console.error(err);
-                  next(err, data);
+                  next(null, 'Trashing message');
                 }
-              }
-            });
+              });
           } else {
             if ((deviceInstance.Parser || parserId) && message.data) {
               // If the device is not linked to a parser
               if (!deviceInstance.Parser && parserId) {
                 // Save a parser in the device and parse the message
-                // console.log('Associating parser to device.');
-                deviceInstanceFunction.updateAttributes({parserId}, (err: any, deviceUpdated: any) => {
+                console.log('Associating parser to device.');
+                deviceInstanceFunction.updateAttribute('parserId', parserId, (err: any, deviceUpdated: any) => {
                   if (err) {
                     console.error(err);
                     return next(err, data);
                   } else {
                     console.log("Updated device parser as: ", deviceUpdated);
-                    Device.findOne({
-                      where: {id: deviceInstance.id},
-                      include: ["Alerts", "Parser"],
-                    }, (err: any, deviceInstance: any) => {
+                    Parser.findById(parserId, (err: any, parserInstance: any) => {
                       if (err) {
                         console.error(err);
                         return next(err, data);
-                      } else if (deviceInstance.Parser.function) {
-                        deviceInstance = deviceInstance.toJSON();
+                      } else if (parserInstance.function) {
+                        deviceUpdated = deviceUpdated.toJSON();
+                        deviceUpdated.Parser = parserInstance.toJSON();
 
                         // Decode the payload
                         Parser.parsePayload(
-                          deviceInstance.Parser.function,
+                          deviceUpdated.Parser.function,
                           message.data,
                           req,
                           (err: any, data_parsed: any) => {
@@ -229,17 +218,17 @@ class Message {
                               // console.error(err);
                             } else {
                               message.data_parsed = data_parsed;
-                              message.data_parsed.forEach((p: any) => {
+                              for (let p of message.data_parsed) {
                                 if (p.key === "time" && p.type === "date") {
                                   if (p.value instanceof Date) {
                                     message.createdAt = p.value;
                                   }
-                                  return;
+                                  break;
                                 }
-                              });
+                              }
                             }
                             // Create message
-                            this.createMessageAndSendResponse(deviceInstance, message, req, next);
+                            this.createMessageAndSendResponse(deviceUpdated, message, req, next);
                           });
                       } else {
                         // Create message with no parsed data because of wrong parser id
@@ -344,7 +333,7 @@ class Message {
                 req,
                 (err: any, res: any) => {
                   if (err) {
-                    console.error(err);
+                    // console.error(err);
                   } else {
                     // console.log(res);
                   }
@@ -386,8 +375,7 @@ class Message {
                 req,
                 (err: any, res: any) => {
                   if (err) {
-                    console.error(err);
-                    // next(err, null);
+                    // console.error(err);
                   } else {
                     // console.log(res);
                   }
@@ -429,7 +417,7 @@ class Message {
           }
           device.successRate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
 
-          deviceInstance.updateAttributes({ successRate: device.successRate });
+          deviceInstance.updateAttributes({successRate: device.successRate});
           cb(deviceInstance);
         } else {
           console.error("Could not update the success rate of an unknown device");
@@ -444,7 +432,10 @@ class Message {
     Device.findOne({where: {id: message.deviceId}, include: "Organizations"}, (err: any, deviceInstance: any) => {
       if (deviceInstance && deviceInstance.Organizations) {
         deviceInstance.toJSON().Organizations.forEach((orga: any) => {
-          message.Organizations.add(orga.id, {deviceId: deviceInstance.id, createdAt: message.createdAt}, (err: any, result: any) => {
+          message.Organizations.add(orga.id, {
+            deviceId: deviceInstance.id,
+            createdAt: message.createdAt
+          }, (err: any, result: any) => {
             console.log("Linked message with organization", result);
           });
         });
@@ -456,8 +447,8 @@ class Message {
     // Models
     const Message = this.model;
 
-    if (typeof data.deviceId  === "undefined"
-      || typeof data.time  === "undefined"
+    if (typeof data.deviceId === "undefined"
+      || typeof data.time === "undefined"
       || typeof data.downlinkAck === "undefined") {
       return next('Missing "deviceId", "time" and "downlinkAck"', data);
     }
@@ -466,7 +457,7 @@ class Message {
     const userId = req.accessToken.userId;
 
     // Find the message containing the ack request
-    Message.findOne({
+    Message.findByOne({
       where: {
         and: [
           {deviceId: data.deviceId},
@@ -508,8 +499,8 @@ class Message {
     // Models
     const Message = this.model;
 
-    if (typeof data.deviceId  === "undefined"
-      || typeof data.time  === "undefined"
+    if (typeof data.deviceId === "undefined"
+      || typeof data.time === "undefined"
       || typeof data.seqNumber === "undefined") {
       return next('Missing "deviceId", "time" and "seqNumber"', data);
     }
@@ -550,7 +541,9 @@ class Message {
 
     // Destroy geolocs corresponding to the messageId
     if (ctx.where.id) {
-      Geoloc.destroyAll({messageId: ctx.where.id}, (error: any, result: any) => { console.log("Removed geoloc for messageId: " + ctx.where.id); });
+      Geoloc.destroyAll({messageId: ctx.where.id}, (error: any, result: any) => {
+        console.log("Removed geoloc for messageId: " + ctx.where.id);
+      });
     }
     // Destroy organization link
     Message.findOne({where: {id: ctx.where.id}, include: "Organizations"}, (err: any, message: any) => {
