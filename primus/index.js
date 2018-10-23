@@ -70,6 +70,16 @@ primus.on('connection', function connection(spark) {
                 return;
             }
             spark.userId = token.userId.toString();
+
+            // Check if user belongs to an organization
+            const orguser = db.collection("Organizationuser");
+            orguser.find({userId: token.userId}, {organizationId: true}).toArray((err, orgUsersIdObj) => {
+                err ?
+                    console.error(err) :
+                    spark.organizationIds = orgUsersIdObj.map(x => x.organizationId.toString());
+                console.log(spark.organizationIds);
+            });
+
             // Update user properties: connected
             let user = db.collection("user");
             user.update({_id: ObjectID(spark.userId)}, {$set: {connected: true, seenAt: new Date()}}, (err, user) => {
@@ -309,18 +319,15 @@ function categoryHandler(payload) {
 
 function dashboardHandler(payload) {
     const dashboard = payload.content;
-    // Dashboards created in organizations do not contain the userId => TODO
     const userId = dashboard.userId;
+    console.log(payload);
     if (dashboard) {
         // from dashboard.ts
         console.log(payload.action + ' dashboard ' + dashboard.id + ' for user ' + userId);
-        (async () => {
-            let targetClients = userId ? getUserClients(userId) : await getOrgClients(dashboard.organizationId);
-            if (!targetClients.length)
-                return;
-            send(targetClients, payload.event, payload.action, dashboard);
-        })();
-
+        let targetClients = userId ? getUserClients(userId) : getOrgClients(dashboard.organizationId);
+        if (!targetClients.length)
+            return;
+        send(targetClients, payload.event, payload.action, dashboard);
     }
 }
 
@@ -358,27 +365,11 @@ function getUserClients(userId) {
     return targetClients;
 }
 
-async function getOrgClients(orgId) {
+function getOrgClients(orgId) {
     let targetClients = [];
-
-    const getOrgUserPromise = () => {
-        return new Promise((resolve, reject) => {
-            db.collection("Organization").findOne({_id: ObjectId(orgId)}, (err, org) => {
-                if (!org || err) return reject(err);
-                db.collection("Organizationuser").find({organizationId: org._id}).toArray((err, orgUsersIdObj) => {
-                    err ? console.error(err) : resolve(orgUsersIdObj);
-                });
-            });
-        });
-    };
-
-    let orgUsers = await getOrgUserPromise();
-    const orgUsersId = orgUsers.map(x => x.userId.toString());
     primus.forEach(function (spark, id, connections) {
-        for (const userId of orgUsersId) {
-            console.log(userId);
-            if (spark.userId === userId) targetClients.push(spark);
-        }
+        if (spark.organizationIds && spark.organizationIds.includes(orgId))
+            targetClients.push(spark);
     });
     console.log('org ' + orgId + ' has ' + targetClients.length + ' clients online');
     return targetClients;
