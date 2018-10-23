@@ -182,7 +182,7 @@ class Message {
                   // No corresponding message found
                   const err = "Error - No corresponding message found, did you first receive a message containing duplicate = false?";
                   console.error(err);
-                  next(err, data);
+                  next(null, 'Trashing message');
                 }
               });
           } else {
@@ -454,7 +454,7 @@ class Message {
     const userId = req.accessToken.userId;
 
     // Find the message containing the ack request
-    Message.findOne({
+    Message.findByOne({
       where: {
         and: [
           {deviceId: data.deviceId},
