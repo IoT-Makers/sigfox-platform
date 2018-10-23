@@ -439,14 +439,17 @@ class Message {
     const Device = this.model.app.models.Device;
 
     Device.findOne({where: {id: message.deviceId}, include: "Organizations"}, (err: any, deviceInstance: any) => {
-      if (deviceInstance && deviceInstance.Organizations) {
-        deviceInstance.toJSON().Organizations.forEach((orga: any) => {
-          message.Organizations.add(orga.id, {
-            deviceId: deviceInstance.id,
-            createdAt: message.createdAt
-          }, (err: any, result: any) => {
-            console.log("Linked message with organization", result);
-          });
+      if (deviceInstance && deviceInstance.toJSON().Organizations.length > 0) {
+        console.log(deviceInstance.toJSON());
+        const db = Device.dataSource.connector.db;
+        const OrganizationMessage = db.collection('OrganizationMessage');
+        OrganizationMessage.insertMany(deviceInstance.toJSON().Organizations.map((x: any) => ({
+          messageId: message.id,
+          deviceId: message.deviceId,
+          createdAt: message.createdAt,
+          organizationId: x.id
+        })), (err: any, result: any) => {
+          if(err) console.error(err);
         });
       }
     });

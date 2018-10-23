@@ -2,11 +2,12 @@
 // MONGO_URL=mongodb://usr:pwd@localhost:27017/testdb SERVER_ACCESS_TOKENS='"ghjmnbv44cdftgy rtyuh9784b"' npm start
 
 const Primus = require('primus');
-const MongoClient = require('mongodb').MongoClient;
+const mongolib = require('mongodb');
+const MongoClient = mongolib.MongoClient;
 const mongodbUrl = process.env.MONGO_URL;
 if (!process.env.SERVER_ACCESS_TOKENS) return console.error('/!\ Please set the SERVER_ACCESS_TOKENS env.');
 const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
-const ObjectId = require('mongodb').ObjectId;
+const ObjectId = mongolib.ObjectId;
 
 let db;
 

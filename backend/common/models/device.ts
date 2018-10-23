@@ -94,18 +94,19 @@ class Device {
     const Message = this.model.app.models.Message;
     const Organization = this.model.app.models.Organization;
 
-    // console.log(Organization.prototype.__link__Messages);
-    // console.log(ctx);
-    Message.find({where: {deviceId: data.deviceId}, fields: {id: true}}, (err: any, messages: any) => {
-      if (!err) {
-        // console.log(messages);
+    Message.find({where: {deviceId: data.deviceId}, fields: {id: true, createdAt: true}}, (err: any, messages: any) => {
+      if (!err && messages.length > 0) {
         Organization.findById(data.organizationId, (err: any, orga: any) => {
           if (!err) {
-            console.log(orga);
-            messages.forEach((message: any) => {
-              orga.Messages.add(message.id, {deviceId: data.deviceId, createdAt: message.createdAt}, (err: any, result: any) => {
-                console.log(result);
-              });
+            const db = Message.dataSource.connector.db;
+            const OrganizationMessage = db.collection('OrganizationMessage');
+            OrganizationMessage.insertMany(messages.map((x: any) => ({
+              messageId: x.id,
+              deviceId: data.deviceId,
+              createdAt: x.createdAt,
+              organizationId: orga.id
+            })), (err: any, result: any) => {
+              if (err) console.error(err);
             });
             next();
           } else {
@@ -115,39 +116,49 @@ class Device {
       } else {
         next(err);
       }
-
     });
-    // console.log(ctx);
   }
 
   public afterRemoteUnlinkOrganizations(ctx: any, data: any, next: Function): void {
     const Message = this.model.app.models.Message;
     const Organization = this.model.app.models.Organization;
-
     // console.log(Organization.prototype.__link__Messages);
-    Message.find({where: {deviceId: ctx.instance.id}, fields: {id: true}}, (err: any, messages: any) => {
-      if (!err) {
-        // console.log(messages);
-        Organization.findById(ctx.args.fk, (err: any, orga: any) => {
-          // console.log(orga);
-          if (!err) {
-            messages.forEach((message: any) => {
-              /**
-               * TODO: check if its not better to use: orga.Messages.remove(message, function...)
-               */
-              orga.Messages.remove(message.id, (err: any, result: any) => {
-                // console.log(result);
-              });
-            });
-            next();
-          } else {
-            next(err);
-          }
+    Organization.findById(ctx.args.fk, (err: any, org: any) => {
+      console.log(ctx.instance.id);
+      console.log(org.id);
+      const db = Message.dataSource.connector.db;
+      const OrganizationMessage = db.collection('OrganizationMessage');
+      OrganizationMessage.deleteMany({deviceId: ctx.instance.id, organizationId: org.id},
+        (err: Error, info: Object) => {
+          console.error(err);
+          next();
         });
-      } else {
-        next(err);
-      }
     });
+
+    // Message.find({where: {deviceId: ctx.instance.id}, fields: {id: true}}, (err: any, messages: any) => {
+    //   if (!err) {
+    //     // console.log(messages);
+    //     Organization.findById(ctx.args.fk, (err: any, orga: any) => {
+    //       // console.log(orga);
+    //       if (!err) {
+    //         // orga.Messages.remove(messages.map())
+    //         messages.forEach((message: any) => {
+    //           /**
+    //            * TODO: check if its not better to use: orga.Messages.remove(message, function...)
+    //            */
+    //           orga.Messages.remove(message.id, (err: any, result: any) => {
+    //             // console.log(result);
+    //           });
+    //         });
+    //         next();
+    //       } else {
+    //         next(err);
+    //       }
+    //     });
+    //   } else {
+    //     next(err);
+    //   }
+    // });
     // console.log(ctx);
   }
 
