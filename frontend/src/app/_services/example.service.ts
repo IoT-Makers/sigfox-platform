@@ -14,7 +14,7 @@ export class ExampleService {
     public http: HttpClient,
     public cookieBrowser: CookieBrowser,
   ) {
-    this.apiUrl = this.document.location.origin + '/api';
+    this.apiUrl = 'https://api.' + this.document.location.hostname + '/api';
     if (this.apiUrl.startsWith('http://localhost', 0) === true) {
       this.apiUrl = 'http://localhost:3000/api';
     }

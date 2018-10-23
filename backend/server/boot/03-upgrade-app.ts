@@ -3,4 +3,6 @@
  * @param app
  */
 
-module.exports = (app: any) => {};
+module.exports = (app: any) => {
+  app.models.user.updateAll(null, {connected: false});
+};

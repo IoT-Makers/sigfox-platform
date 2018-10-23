@@ -18,6 +18,7 @@ export interface DeviceInterface {
   "data_downlink"?: string;
   "properties"?: Array<any>;
   "locatedAt"?: Date;
+  "locked"?: boolean;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "parserId"?: any;
@@ -40,6 +41,7 @@ export class Device implements DeviceInterface {
   "data_downlink": string = '';
   "properties": Array<any> = <any>[];
   "locatedAt": Date = new Date(0);
+  "locked": boolean = false;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "parserId": any = <any>null;
@@ -112,6 +114,11 @@ export class Device implements DeviceInterface {
         "locatedAt": {
           name: 'locatedAt',
           type: 'Date'
+        },
+        "locked": {
+          name: 'locked',
+          type: 'boolean',
+          default: false
         },
         "createdAt": {
           name: 'createdAt',
