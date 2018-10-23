@@ -220,16 +220,19 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   rtHandler = (payload: any) => {
+    const msg = payload.content;
     if (payload.action == "CREATE") {
       for (const geoloc of this.geolocBuffer) {
-        if (geoloc.content.messageId === payload.content.id) {
-          payload.content.Geolocs.push(geoloc.content);
+        if (geoloc.content.messageId === msg.id) {
+          msg.Geolocs.push(geoloc.content);
           let index = this.geolocBuffer.indexOf(geoloc);
           if (index > -1) this.geolocBuffer.splice(index, 1);
           break;
         }
       }
-      this.messages.unshift(payload.content);
+      console.log(msg);
+      if ((msg.userId && !this.organization ) || msg.Device.Organizations.map(x=>x.id).includes(this.organization.id))
+        this.messages.unshift(msg);
     } else if (payload.action == "DELETE") {
       this.messages = this.messages.filter( (msg) => {
         return msg.id !== payload.content.id;

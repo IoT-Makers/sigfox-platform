@@ -149,15 +149,18 @@ function messageHandler(payload) {
         // from message.ts
         console.log(payload.action + ' message ' + msg.id + ' for user ' + userId);
 
-        let targetClients = getUserClients(userId);
-        if (!targetClients.length)
+        let targetClients = getTargetClients(userId, payload.device.Organizations);
+        if (!targetClients.size)
             return;
 
         if (payload.action === "DELETE") {
             send(targetClients, payload.event, payload.action, msg);
             return;
-        }
-
+        };
+        db.collection("Geolocs").find({messageId: msg.id}, (err, res) => {
+            console.log(res);
+            console.log(typeof res);
+        });
         db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
             addAttribute(msg, "Geolocs", geolocs);
             addAttribute(msg, "Device", payload.device);
@@ -172,8 +175,8 @@ function deviceHandler(payload) {
     if (device) {
         // from device.ts
         console.log(payload.action + ' device ' + device.id + ' for user ' + userId);
-        let targetClients = getUserClients(userId);
-        if (!targetClients.length)
+        let targetClients = getTargetClients(userId);
+        if (!targetClients.size)
             return;
 
         if (payload.action === "DELETE") {
@@ -205,8 +208,8 @@ function parserHandler(payload) {
         // from parser.ts
         console.log(payload.action + ' parser ' + parser.id + ' for user ' + userId);
 
-        let targetClients = getUserClients(userId);
-        if (!targetClients.length)
+        let targetClients = getTargetClients(userId);
+        if (!targetClients.size)
             return;
 
         if (payload.action === "DELETE") {
@@ -227,9 +230,9 @@ function geolocHandler(payload) {
     if (geoloc) {
         console.log(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
-        let targetClients = getUserClients(userId);
+        let targetClients = getTargetClients(userId);
         // if the message owner is not online, no need to look up
-        if (!targetClients.length)
+        if (!targetClients.size)
             return;
 
         return send(targetClients, payload.event, payload.action, geoloc);
@@ -243,9 +246,9 @@ function alertHandler(payload) {
         // from alert.ts
         console.log(payload.action + ' alert ' + alert.id + ' for user ' + userId);
 
-        let targetClients = getUserClients(userId);
+        let targetClients = getTargetClients(userId);
         // if the message owner is not online, no need to look up
-        if (!targetClients.length)
+        if (!targetClients.size)
             return;
 
         if (payload.action === "DELETE") {
@@ -268,9 +271,9 @@ function beaconHandler(payload) {
     if (beacon) {
         console.log(payload.action + ' beacon ' + beacon.id + ' for user ' + userId);
 
-        let targetClients = getUserClients(userId);
+        let targetClients = getTargetClients(userId);
         // if the message owner is not online, no need to look up
-        if (!targetClients.length)
+        if (!targetClients.size)
             return;
 
         return send(targetClients, payload.event, payload.action, beacon);
@@ -283,9 +286,9 @@ function connectorHandler(payload) {
     if (connector) {
         console.log(payload.action + ' connector ' + connector.id + ' for user ' + userId);
 
-        let targetClients = getUserClients(userId);
+        let targetClients = getTargetClients(userId);
         // if the message owner is not online, no need to look up
-        if (!targetClients.length)
+        if (!targetClients.size)
             return;
 
         return send(targetClients, payload.event, payload.action, connector);
@@ -298,8 +301,8 @@ function categoryHandler(payload) {
     if (category) {
         console.log(payload.action + ' category ' + category.id + ' for user ' + userId);
 
-        let targetClients = getUserClients(userId);
-        if (!targetClients.length)
+        let targetClients = getTargetClients(userId);
+        if (!targetClients.size)
             return;
 
         if (payload.action === "DELETE") {
@@ -324,8 +327,8 @@ function dashboardHandler(payload) {
     if (dashboard) {
         // from dashboard.ts
         console.log(payload.action + ' dashboard ' + dashboard.id + ' for user ' + userId);
-        let targetClients = userId ? getUserClients(userId) : getOrgClients(dashboard.organizationId);
-        if (!targetClients.length)
+        let targetClients = getTargetClients(userId, [dashboard.organizationId]);
+        if (!targetClients.size)
             return;
         send(targetClients, payload.event, payload.action, dashboard);
     }
@@ -338,8 +341,8 @@ function widgetHandler(payload) {
         // from widget.ts
         console.log(payload.action + ' widget ' + widget.id + ' for user ' + userId);
 
-        let targetClients = getUserClients(userId);
-        if (!targetClients.length)
+        let targetClients = getTargetClients(userId);
+        if (!targetClients.size)
             return;
         send(targetClients, payload.event, payload.action, widget);
     }
@@ -356,22 +359,24 @@ function addAttribute(obj, attName, attValue) {
     }
 }
 
-function getUserClients(userId) {
-    let targetClients = [];
-    primus.forEach(function (spark, id, connections) {
-        if (spark.userId === userId) targetClients.push(spark);
-    });
-    console.log('user ' + userId + ' has ' + targetClients.length + ' clients online');
-    return targetClients;
-}
-
-function getOrgClients(orgId) {
-    let targetClients = [];
-    primus.forEach(function (spark, id, connections) {
-        if (spark.organizationIds && spark.organizationIds.includes(orgId))
-            targetClients.push(spark);
-    });
-    console.log('org ' + orgId + ' has ' + targetClients.length + ' clients online');
+function getTargetClients(userId, orgIds=null) {
+    let targetClients = new Set();
+    if (userId) {
+        primus.forEach(function (spark, id, connections) {
+            if (spark.userId === userId) targetClients.add(spark);
+        });
+    }
+    if (orgIds) {
+        primus.forEach(function (spark, id, connections) {
+            if (spark.organizationIds) {
+                orgIds.forEach(orgId => {
+                    if (spark.organizationIds.includes(orgId))
+                        targetClients.add(spark);
+                });
+            }
+        });
+    }
+    console.log(targetClients.size + ' clients online');
     return targetClients;
 }
 

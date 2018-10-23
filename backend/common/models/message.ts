@@ -386,12 +386,10 @@ class Message {
     }
   }
 
-  public updateDeviceSuccessRate(deviceId: string, cb?: (device: any) => void) {
-
+  public updateDeviceSuccessRate(deviceId: string) {
     // Model
     const Device = this.model.app.models.Device;
-    Device.findOne(
-      {
+    Device.findOne({
         where: {id: deviceId},
         limit: 1,
         include: [{
@@ -413,32 +411,32 @@ class Message {
             attendedNbMessages += 4095;
           }
           device.successRate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
-
           deviceInstance.updateAttributes({successRate: device.successRate});
-          cb(deviceInstance);
         } else {
           console.error("Could not update the success rate of an unknown device");
         }
       });
   }
 
-  public linkMessageToOrganization(message: any) {
+  public linkMessageToOrganization(message: any, cb?: (device: any) => void) {
     // Model
     const Device = this.model.app.models.Device;
 
     Device.findOne({where: {id: message.deviceId}, include: "Organizations"}, (err: any, deviceInstance: any) => {
-      if (deviceInstance && deviceInstance.toJSON().Organizations.length > 0) {
-        console.log(deviceInstance.toJSON());
-        const db = Device.dataSource.connector.db;
-        const OrganizationMessage = db.collection('OrganizationMessage');
-        OrganizationMessage.insertMany(deviceInstance.toJSON().Organizations.map((x: any) => ({
-          messageId: message.id,
-          deviceId: message.deviceId,
-          createdAt: message.createdAt,
-          organizationId: x.id
-        })), (err: any, result: any) => {
-          if(err) console.error(err);
-        });
+      if (deviceInstance) {
+        if (deviceInstance.toJSON().Organizations.length > 0) {
+          const db = Device.dataSource.connector.db;
+          const OrganizationMessage = db.collection('OrganizationMessage');
+          OrganizationMessage.insertMany(deviceInstance.toJSON().Organizations.map((x: any) => ({
+            messageId: message.id,
+            deviceId: message.deviceId,
+            createdAt: message.createdAt,
+            organizationId: x.id
+          })), (err: any, result: any) => {
+            if (err) console.error(err);
+          })
+        }
+        cb(deviceInstance);
       }
     });
   }
@@ -580,9 +578,10 @@ class Message {
   }
 
   public afterSave(ctx: any, next: Function): void {
+    // TODO: merge these 2 functions
     // Calculate success rate and update device
-    this.linkMessageToOrganization(ctx.instance);
-    this.updateDeviceSuccessRate(ctx.instance.deviceId, (device => {
+    this.updateDeviceSuccessRate(ctx.instance.deviceId);
+    this.linkMessageToOrganization(ctx.instance, (device => {
       // Pub-sub
       let msg = ctx.instance;
       const payload = {
