@@ -15,6 +15,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
   private user: User;
 
+  public filterQuery = '';
+
   @ViewChild('addOrEditBeaconModal') addOrEditBeaconModal: any;
   @ViewChild('confirmBeaconModal') confirmBeaconModal: any;
 
@@ -60,11 +62,11 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   private blueIconOptions: L.IconOptions = {
     iconUrl: 'assets/img/markers/marker-icon.png',
     shadowUrl: 'assets/img/markers/marker-shadow.png',
-    iconSize:     [25, 41], // size of the icon
-    iconAnchor:   [13, 41], // point of the icon which will correspond to marker's location
-    shadowSize:   [50, 64], // size of the shadow
+    iconSize: [25, 41], // size of the icon
+    iconAnchor: [13, 41], // point of the icon which will correspond to marker's location
+    shadowSize: [50, 64], // size of the shadow
     shadowAnchor: [4, 62],  // the same for the shadow
-    popupAnchor:  [-2, -40] // point from which the popup should open relative to the iconAnchor
+    popupAnchor: [-2, -40] // point from which the popup should open relative to the iconAnchor
   };
   public mapOptions = {
     layers: [
@@ -72,7 +74,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
       tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
         maxZoom: 21,
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-        attribution: '© OpenStreetMap contributors' })
+        attribution: '© OpenStreetMap contributors'
+      })
     ],
     zoom: 5,
     center: latLng(48.856614, 2.352222),
@@ -131,7 +134,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     this.map.options.layers[0] = tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
       maxZoom: 21,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-      attribution: '© OpenStreetMap contributors' });
+      attribution: '© OpenStreetMap contributors'
+    });
     /*this.map.options.center = latLng(48.856614, 2.352222);
     this.map.options.trackResize = false;*/
     this.map.locate({setView: true, maxZoom: 16});
@@ -207,7 +211,10 @@ export class BeaconsComponent implements OnInit, OnDestroy {
         this.map.removeLayer(this.marker);
       }
       this.map.setView(new L.LatLng(beacon.location.lat, beacon.location.lng), 20);
-      this.marker = L.marker(new L.LatLng(beacon.location.lat, beacon.location.lng), {draggable: true, icon: icon(this.blueIconOptions)});
+      this.marker = L.marker(new L.LatLng(beacon.location.lat, beacon.location.lng), {
+        draggable: true,
+        icon: icon(this.blueIconOptions)
+      });
       this.marker.on('dragend', (e) => this.onMarkerDragEnd(e));
       this.map.addLayer(this.marker);
       if (beacon.name) this.marker.bindTooltip(beacon.name).openTooltip();
@@ -220,7 +227,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   }
 
   removeBeacon(): void {
-    this.userApi.destroyByIdBeacons(this.user.id, this.beaconToRemove.id).subscribe(value => {
+    const apiFn = this.admin ? this.beaconApi.deleteById(this.beaconToRemove.id) : this.userApi.destroyByIdBeacons(this.user.id, this.beaconToRemove.id);
+    apiFn.subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Beacon was successfully removed.');
@@ -233,7 +241,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   }
 
   editBeacon(): void {
-    this.userApi.updateByIdBeacons(this.user.id, this.beaconToAddOrEdit.id, this.beaconToAddOrEdit).subscribe(value => {
+    const apiFn = this.admin ? this.beaconApi.updateAttributes(this.beaconToAddOrEdit.id, this.beaconToAddOrEdit) : this.userApi.updateByIdBeacons(this.user.id, this.beaconToAddOrEdit.id, this.beaconToAddOrEdit);
+    apiFn.subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Beacon was successfully updated.');
@@ -268,7 +277,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   }
 
 
-  rtHandler = (payload:any) => {
+  rtHandler = (payload: any) => {
     if (payload.action == "CREATE") {
       this.beacons.unshift(payload.content);
     } else if (payload.action == "DELETE") {

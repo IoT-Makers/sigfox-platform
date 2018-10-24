@@ -5,8 +5,14 @@
       <div class="card">
         <div class="card-header">
           <div class="row">
-            <div class="col-10">
+            <div class="col-6">
               <i class="fa fa-wifi fa-lg text-beacon"></i><strong> Beacons</strong>
+            </div>
+            <div class="col-md-4">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
+              </div>
             </div>
             <div class="col-2">
               <button class="pull-right btn btn-sm btn-round btn-success" (click)="openAddBeaconModal()">
@@ -29,7 +35,7 @@
 
           <!-- Table -->
           <div *ngIf="beacons.length > 0" class="table-responsive">
-            <table class="table table-hover table-outline" [mfData]="beacons" #mf="mfDataTable" [mfRowsOnPage]="10">
+            <table class="table table-hover table-outline" [mfData]="beacons | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">
