@@ -5,4 +5,5 @@
 
 module.exports = (app: any) => {
   // app.models.user.updateAll(null, {connected: false});
+  // app.models.Device.updateAll(null, {seenAt: new Date(0)});
 };
