@@ -15,6 +15,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
   private user: User;
 
+  public filterQuery = '';
+
   @ViewChild('addOrEditBeaconModal') addOrEditBeaconModal: any;
   @ViewChild('confirmBeaconModal') confirmBeaconModal: any;
 
@@ -225,7 +227,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   }
 
   removeBeacon(): void {
-    this.userApi.destroyByIdBeacons(this.user.id, this.beaconToRemove.id).subscribe(value => {
+    const apiFn = this.admin ? this.beaconApi.deleteById(this.beaconToRemove.id) : this.userApi.destroyByIdBeacons(this.user.id, this.beaconToRemove.id);
+    apiFn.subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Beacon was successfully removed.');
@@ -238,7 +241,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   }
 
   editBeacon(): void {
-    this.userApi.updateByIdBeacons(this.user.id, this.beaconToAddOrEdit.id, this.beaconToAddOrEdit).subscribe(value => {
+    const apiFn = this.admin ? this.beaconApi.updateAttributes(this.beaconToAddOrEdit.id, this.beaconToAddOrEdit) : this.userApi.updateByIdBeacons(this.user.id, this.beaconToAddOrEdit.id, this.beaconToAddOrEdit);
+    apiFn.subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'Beacon was successfully updated.');
