@@ -282,25 +282,11 @@ class Alert {
                   }
                 });
 
-                // Process conditions
-                data_parsed.forEach((p: any) => {
-                  if (alert.key === p.key) {
-                    // Verify conditions for the alert to be triggered
-                    if (
-                      (alert.value.exact && p.value === alert.value.exact)
-                      || (alert.value.min && alert.value.max && p.value >= alert.value.min && p.value <= alert.value.max)
-                      || (alert.value.less && p.value < alert.value.less)
-                      || (alert.value.more && p.value > alert.value.more)
-                    ) {
-                      if (!alert.message) {
-                        alertMessage = p.key.charAt(0).toUpperCase() + p.key.slice(1) + ": " + p.value + " " + p.unit;
-                      }
-                      // Trigger alert
-                      this.triggerAlert(alert, device, alertMessage);
-                    }
-                    return;
-                  }
-                });
+                if (!alert.message) {
+                  alertMessage = beaconId.key.charAt(0).toUpperCase() + beaconId.key.slice(1) + ": " + beaconId.value + " " + beaconId.unit;
+                }
+                // Trigger alert
+                this.triggerAlert(alert, device, alertMessage);
               }
             });
           } else {
