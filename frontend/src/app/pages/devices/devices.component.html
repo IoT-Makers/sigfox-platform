@@ -48,13 +48,13 @@
                   Geoloc
                 </th>
                 <th class="text-center">
-                  <mfDefaultSorter by="updatedAt"><i class="fa fa-sort"></i> Last message</mfDefaultSorter>
+                  <mfDefaultSorter by="seenAt"><i class="fa fa-sort"></i> Last seen</mfDefaultSorter>
                 </th>
                 <th *ngIf="!edit" class="text-center">
                   <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>
                 </th>
                 <th *ngIf="!edit && appSettings[0].value === true" class="text-center">
-                  <mfDefaultSorter by="successRate"><i class="fa fa-sort"></i> Success Rate</mfDefaultSorter>
+                  <mfDefaultSorter by="successRate"><i class="fa fa-sort"></i> Success rate</mfDefaultSorter>
                 </th>
                 <th class="text-center">Action</th>
               </tr>
@@ -126,10 +126,8 @@
 
                 </td>
                 <td class="text-center">
-                  <div class="small text-gray-dark">{{device.Messages[0] ? (device.Messages[0].createdAt |
-                    date:"yyyy/MM/dd HH:mm:ss") : 'No messages yet'}}
-                  </div>
-                  <strong>{{device.Messages[0] ? (device.Messages[0].createdAt | amTimeAgo) : ''}}</strong>
+                  <div class="small text-gray-dark">{{device.seenAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
+                  <strong>{{device.seenAt | amTimeAgo}}</strong>
                 </td>
                 <td *ngIf="!edit">
                   <div *ngIf="!device.properties" class="small text-muted text-center">No properties</div>
@@ -144,8 +142,7 @@
                   </div>
                 </td>
                 <td *ngIf="!edit && appSettings[0].value === true" class="text-center">
-                  <strong *ngIf="device.successRate" tooltip="Based on the last 100 received">{{device.successRate + '
-                    %'}}</strong>
+                  <strong *ngIf="device.successRate" tooltip="Based on the last 100 received">{{device.successRate + ' %'}}</strong>
                   <span *ngIf="!device.successRate">N/A</span>
                 </td>
                 <td class="text-center">
