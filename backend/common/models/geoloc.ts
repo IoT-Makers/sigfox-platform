@@ -377,7 +377,7 @@ class Geoloc {
                 console.log('Created geoloc as: ', geolocInstance);
 
                 // Update device in order to trigger a real time upsert event
-                this.updateDeviceLocatedAt(geolocInstance.deviceId);
+                this.updateDeviceLocatedAt(geolocInstance.deviceId, geolocInstance.createdAt);
                 next(null, geolocInstance);
               } else {
                 next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
@@ -387,7 +387,7 @@ class Geoloc {
       });
   }
 
-  updateDeviceLocatedAt(deviceId: string) {
+  updateDeviceLocatedAt(deviceId: string, createdAt: Date) {
     // Models
     const Device = this.model.app.models.Device;
 
@@ -398,15 +398,8 @@ class Geoloc {
     }, (err: any, deviceInstance: any) => {
       if (err) {
         console.error(err);
-      } else {
-        if (deviceInstance) {
-          deviceInstance.locatedAt = new Date();
-          Device.upsert(deviceInstance, (err: any, deviceUpdated: any) => {
-            if (!err) {
-              console.log('Updated device locatedAt date');
-            }
-          });
-        }
+      } else if (deviceInstance) {
+        deviceInstance.updateAttribute('locatedAt', createdAt);
       }
     });
   }
@@ -421,7 +414,7 @@ class Geoloc {
         } else {
           console.log('Created geoloc as: ', geolocInstance);
           // Update device in order to trigger a real time upsert event
-          this.updateDeviceLocatedAt(geolocInstance.deviceId);
+          this.updateDeviceLocatedAt(geolocInstance.deviceId, geolocInstance.createdAt);
         }
       });
   }

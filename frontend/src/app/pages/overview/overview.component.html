@@ -628,7 +628,7 @@
                 <th class="text-center">See</th>
                 <th class="text-center">Info</th>
                 <th class="text-center">Geoloc</th>
-                <th class="text-center">Last message</th>
+                <th class="text-center">Last seen</th>
                 <th class="text-center">Properties</th>
               </tr>
               </thead>
@@ -762,8 +762,7 @@
 
                 </td>
                 <td class="text-center">
-                  <strong>{{device.Messages[0] ? (device.Messages[0].createdAt | amTimeAgo) : 'No messages
-                    yet'}}</strong>
+                  <strong>{{device.seenAt | amTimeAgo}}</strong>
                 </td>
                 <td>
                   <div *ngIf="!device.properties" class="small text-muted text-center">No properties</div>
