@@ -4,12 +4,12 @@ const sigfoxApiPassword = '';
 
 const credentials = Buffer.from(sigfoxApiLogin + ":" + sigfoxApiPassword).toString("base64");
 
-getDevicetypes().then((devicetypes: any) => {
+getDevicetypes().then((devicetypes) => {
     console.log('------------ Got devicetypes ------------');
-    devicetypes.forEach((devicetype: any) => {
-        getCallbacks(devicetype.id).then((callbacks: any) => {
+    devicetypes.forEach((devicetype) => {
+        getCallbacks(devicetype.id).then((callbacks) => {
             console.log('------------ Got callbacks ------------');
-            callbacks.data.forEach((cb: any) => {
+            callbacks.data.forEach((cb) => {
                 if (cb.urlPattern.includes('iotagency')) {
                     deleteCallback(devicetype.id, cb.id);
                     delete cb.id;
@@ -24,7 +24,7 @@ getDevicetypes().then((devicetypes: any) => {
                     });
                 }
             });
-            callbacks.service.forEach((cb: any) => {
+            callbacks.service.forEach((cb) => {
                 if (cb.urlPattern.includes('iotagency')) {
                     deleteCallback(devicetype.id, cb.id);
                     delete cb.id;
@@ -42,7 +42,7 @@ getDevicetypes().then((devicetypes: any) => {
     });
 });
 
-function getDevicetypes(): Promise<any> {
+function getDevicetypes() {
     // console.log('------------ getDevicetypes ------------');
     const options = {
         method: "GET",
@@ -56,7 +56,7 @@ function getDevicetypes(): Promise<any> {
         json: true
     };
     return new Promise(resolve => {
-        request(options, (error: any, response: any, body: any) => {
+        request(options, (error, response, body) => {
             if (error) throw console.error(error);
             else resolve(response.body.data);
             // console.log('------------ END getDevicetypes ------------');
@@ -64,7 +64,7 @@ function getDevicetypes(): Promise<any> {
     });
 }
 
-function getCallbacks(devicetypeId: string): Promise<any> {
+function getCallbacks(devicetypeId) {
     // console.log('------------ getCallbacks ------------');
     const options = {
         method: "POST",
@@ -78,7 +78,7 @@ function getCallbacks(devicetypeId: string): Promise<any> {
         json: true
     };
     return new Promise(resolve => {
-        request(options, (error: any, response: any, body: any) => {
+        request(options, (error, response, body) => {
             if (error) throw console.error(error);
             else resolve(response.body);
             // console.log('------------ END getCallbacks ------------');
@@ -86,7 +86,7 @@ function getCallbacks(devicetypeId: string): Promise<any> {
     });
 }
 
-function deleteCallback(devicetypeId: string, callbackId: string): Promise<any> {
+function deleteCallback(devicetypeId, callbackId) {
     // console.log('------------ deleteCallback ------------');
     const options = {
         method: "POST",
@@ -100,7 +100,7 @@ function deleteCallback(devicetypeId: string, callbackId: string): Promise<any> 
         json: true
     };
     return new Promise(resolve => {
-        request(options, (error: any, response: any, body: any) => {
+        request(options, (error, response, body) => {
             if (error) throw console.error(error);
             else resolve(response.body);
             // console.log('------------ END deleteCallback ------------');
@@ -108,7 +108,7 @@ function deleteCallback(devicetypeId: string, callbackId: string): Promise<any> 
     });
 }
 
-function createCallback(devicetypeId: string, callback: any): Promise<any> {
+function createCallback(devicetypeId, callback) {
     // console.log('------------ createCallback ------------');
     const options = {
         method: "POST",
@@ -123,7 +123,7 @@ function createCallback(devicetypeId: string, callback: any): Promise<any> {
         json: true
     };
     return new Promise(resolve => {
-        request(options, (error: any, response: any, body: any) => {
+        request(options, (error, response, body) => {
             if (error) throw console.error(error);
             else resolve(response.body);
             // console.log('------------ END createCallback ------------');
@@ -131,7 +131,7 @@ function createCallback(devicetypeId: string, callback: any): Promise<any> {
     });
 }
 
-function selectDownlinkCallback(devicetypeId: string, callbackId: string): Promise<any> {
+function selectDownlinkCallback(devicetypeId, callbackId) {
     // console.log('------------ selectDownlinkCallback ------------');
     const options = {
         method: "POST",
@@ -145,7 +145,7 @@ function selectDownlinkCallback(devicetypeId: string, callbackId: string): Promi
         json: true
     };
     return new Promise(resolve => {
-        request(options, (error: any, response: any, body: any) => {
+        request(options, (error, response, body) => {
             if (error) throw console.error(error);
             else resolve(response.body);
             // console.log('------------ END selectDownlinkCallback ------------');
