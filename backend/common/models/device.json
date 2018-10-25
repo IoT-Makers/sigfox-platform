@@ -57,6 +57,9 @@
     "locatedAt": {
       "type": "date"
     },
+    "seenAt": {
+      "type": "date"
+    },
     "locked": {
       "type": "boolean",
       "default": false

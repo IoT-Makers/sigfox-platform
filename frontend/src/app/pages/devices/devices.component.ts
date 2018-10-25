@@ -183,7 +183,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     const filter = {
       where: {},
       limit: 1000,
-      order: 'updatedAt DESC',
+      order: 'seenAt DESC',
       include: ['Parser', 'Category', 'Organizations', {
         relation: 'Messages',
         scope: {
