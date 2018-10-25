@@ -5,7 +5,6 @@ export interface AppSettingInterface {
   "key": string;
   "value": any;
   "type": string;
-  "id"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
 }
@@ -14,7 +13,6 @@ export class AppSetting implements AppSettingInterface {
   "key": string = '';
   "value": any = <any>null;
   "type": string = '';
-  "id": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   constructor(data?: AppSettingInterface) {
@@ -48,7 +46,7 @@ export class AppSetting implements AppSettingInterface {
       name: 'AppSetting',
       plural: 'AppSettings',
       path: 'AppSettings',
-      idName: 'id',
+      idName: 'key',
       properties: {
         "key": {
           name: 'key',
@@ -61,10 +59,6 @@ export class AppSetting implements AppSettingInterface {
         "type": {
           name: 'type',
           type: 'string'
-        },
-        "id": {
-          name: 'id',
-          type: 'any'
         },
         "createdAt": {
           name: 'createdAt',

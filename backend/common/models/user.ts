@@ -38,7 +38,7 @@ class user {
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
     //send password reset link when password reset requested
-    model.on('resetPasswordRequest', function(info: any) {
+    model.on('resetPasswordRequest', function (info: any) {
       const baseUrl = process.env.BASE_URL;
       const resetUrl = baseUrl + '/#/reset-password?access_token=' + info.accessToken.id;
       // Prepare a loopback template renderer
@@ -56,7 +56,11 @@ class user {
         console.log("MAILGUN_API_KEY not set");
         return;
       }
-      const mailgun = require("mailgun-js")({host: "api." + process.env.MAILGUN_REGION + ".mailgun.net", apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN});
+      const mailgun = require("mailgun-js")({
+        host: "api." + process.env.MAILGUN_REGION + ".mailgun.net",
+        apiKey: process.env.MAILGUN_API_KEY,
+        domain: process.env.MAILGUN_DOMAIN
+      });
       mailgun.messages().send(options, (error: any, body: any) => {
         if (error) {
           console.error(error);
@@ -110,6 +114,12 @@ class user {
   }
 
   public afterRemoteLogin(ctx: any, loggedUser: any, next: any) {
+    // Update the last login date
+    this.model.findById(loggedUser.userId, (err: any, user: any) => {
+      if (err) console.error(err);
+      else user.updateAttribute('loggedAt', new Date(), (err: any, user: any) => {
+      });
+    });
     next();
   }
 
@@ -216,7 +226,7 @@ class user {
     if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN && process.env.MAILGUN_REGION && process.env.BASE_URL) {
 
       const verificationToken = generateVerificationToken();
-      userInstance.updateAttributes({ verificationToken });
+      userInstance.updateAttributes({verificationToken});
 
       // Create a custom object your want to pass to the email template. You can create as many key-value pairs as you want
       const verificationUrl = process.env.API_URL + "/api/users/confirm?uid=" + userInstance.id + "&token=" + verificationToken + "&redirect=" + process.env.BASE_URL;
@@ -236,7 +246,11 @@ class user {
         user: userInstance,
       };
 
-      const mailgun = require("mailgun-js")({host: "api." + process.env.MAILGUN_REGION + ".mailgun.net", apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN});
+      const mailgun = require("mailgun-js")({
+        host: "api." + process.env.MAILGUN_REGION + ".mailgun.net",
+        apiKey: process.env.MAILGUN_API_KEY,
+        domain: process.env.MAILGUN_DOMAIN
+      });
       mailgun.messages().send(options, (error: any, body: any) => {
         if (error) {
           console.error(error);
@@ -304,15 +318,24 @@ class user {
 
     const userId = ctx.args.id;
 
-    RoleMapping.destroyAll({principalId: userId}, (error: any, result: any) => { });
-    Category.destroyAll({userId}, (error: any, result: any) => { });
-    Device.destroyAll({userId}, (error: any, result: any) => { });
-    Message.destroyAll({userId}, (error: any, result: any) => { });
-    Alert.destroyAll({userId}, (error: any, result: any) => { });
-    AlertHistory.destroyAll({userId}, (error: any, result: any) => { });
-    Geoloc.destroyAll({userId}, (error: any, result: any) => { });
-    Connector.destroyAll({userId}, (error: any, result: any) => { });
-    AccessToken.destroyAll({userId}, (error: any, result: any) => { });
+    RoleMapping.destroyAll({principalId: userId}, (error: any, result: any) => {
+    });
+    Category.destroyAll({userId}, (error: any, result: any) => {
+    });
+    Device.destroyAll({userId}, (error: any, result: any) => {
+    });
+    Message.destroyAll({userId}, (error: any, result: any) => {
+    });
+    Alert.destroyAll({userId}, (error: any, result: any) => {
+    });
+    AlertHistory.destroyAll({userId}, (error: any, result: any) => {
+    });
+    Geoloc.destroyAll({userId}, (error: any, result: any) => {
+    });
+    Connector.destroyAll({userId}, (error: any, result: any) => {
+    });
+    AccessToken.destroyAll({userId}, (error: any, result: any) => {
+    });
     // this.model.app.models.Dashboard.destroyAll({userId: userId}, (error: any, result: any) => { });
     // this.model.app.models.Widget.destroyAll({userId: userId}, (error: any, result: any) => { });
 

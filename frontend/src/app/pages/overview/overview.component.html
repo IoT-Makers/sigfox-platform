@@ -5,16 +5,9 @@
     <p>Don't forget you can set your username by clicking on your email on the top right corner.</p>
   </alert>
 
-  <alert *ngIf="!organization" type="warning" [dismissible]="true">
-    <p><i class="fa fa-warning"></i> Please keep in mind this platform is under active development.</p>
-    <!--<p><li>Please <a (click)="upgrade();" href>upgrade</a> your application.</li></p>-->
+  <alert *ngIf="!organization && bannerMessage" type="warning" [dismissible]="true">
+    <p><i class="fa fa-warning"></i> {{bannerMessage}}</p>
   </alert>
-
-  <!--<alert *ngIf="!organization" type="danger" [dismissible]="true">
-    <ul>
-      <li>Organizations have evolved! Please be gentle with organization functions as it can break the platform at any moment...</li>
-    </ul>
-  </alert>-->
 
   <div class="card-group">
     <div class="card"

@@ -7,10 +7,10 @@ export class PrimusClientFn {
     let primusClient = new Socket(primusURL + '?access_token=' + process.env.SERVER_ACCESS_TOKEN);
 
     primusClient.on('open', () => {
-      console.info('Primus connection opened.');
+      console.info('Primus backend connection opened.');
     });
     primusClient.on('close', () => {
-      console.warn('Primus connection closed.');
+      console.warn('Primus backend connection closed.');
     });
     return primusClient;
   }

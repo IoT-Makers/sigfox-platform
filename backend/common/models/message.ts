@@ -139,11 +139,8 @@ class Message {
               message.userId = userId;
 
               deviceInstanceFunction.updateAttribute('userId', userId, (err: any, deviceUpdated: any) => {
-                if (err) {
-                  console.error(err);
-                } else {
-                  console.log("Updated device userId as: ", deviceUpdated);
-                }
+                if (err) console.error(err);
+                else console.log("Updated device userId as: ", deviceUpdated);
               });
             }
           }

@@ -2,7 +2,7 @@
   "name": "AppSetting",
   "plural": "AppSettings",
   "base": "PersistedModel",
-  "idInjection": true,
+  "idInjection": false,
   "options": {
     "validateUpsert": true
   },
@@ -27,6 +27,7 @@
   },
   "properties": {
     "key": {
+      "id": true,
       "type": "string",
       "required": true
     },
