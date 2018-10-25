@@ -192,7 +192,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
           include: [{
             relation: 'Geolocs',
             scope: {
-              limit: 5,
               order: 'createdAt DESC'
             }
           }]
