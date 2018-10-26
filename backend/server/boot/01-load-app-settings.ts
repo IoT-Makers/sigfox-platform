@@ -1,6 +1,7 @@
 module.exports = (app: any) => {
   // This is an important env
-  process.env.API_URL = 'https://api.' + process.env.BASE_URL.replace(/(^\w+:|^)\/\//, '');
+  if (process.env.BASE_URL)
+    process.env.API_URL = 'https://api.' + process.env.BASE_URL.replace(/(^\w+:|^)\/\//, '');
 
   const AppSetting = app.models.AppSetting;
   let countAppSettings = 0;
