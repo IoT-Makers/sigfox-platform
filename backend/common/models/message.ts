@@ -457,13 +457,13 @@ class Message {
     const userId = req.accessToken.userId;
 
     // Find the message containing the ack request
-    Message.findByOne({
+    Message.findOne({
       where: {
         and: [
           {deviceId: data.deviceId},
           {time: data.time},
           {ack: true},
-        ],
+        ]
       },
     }, (err: any, messageInstance: any) => {
       if (err) {
