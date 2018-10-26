@@ -37,8 +37,7 @@
     },
     "time": {
       "type": "number",
-      "required": true,
-      "index": true
+      "required": true
     },
     "seqNumber": {
       "type": "number",

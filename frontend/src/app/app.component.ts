@@ -19,14 +19,9 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
-
-    if (this.user) {
-      this.setUserPosition();
-      this.setUserConnected();
-    }
+    if (this.user) this.setUserPosition();
     const accessToken = this.userApi.getCurrentToken().id;
-    if (accessToken)
-      this.rt.connect(accessToken);
+    if (accessToken) this.rt.connect(accessToken);
 
   }
 
@@ -45,9 +40,5 @@ export class AppComponent implements OnInit {
     } else {
       console.log('Geolocation is not supported by this browser.');
     }
-  }
-
-  setUserConnected(): void {
-    this.userApi.updateAttributes(this.user.id, {connected: true});
   }
 }

@@ -45,7 +45,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   private connectors: Connector[] = [];
 
-  private appSettings: AppSetting[] = [];
+  private showDeviceSuccessRate: AppSetting;
 
   private organizationRouteSub: Subscription;
 
@@ -120,9 +120,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
     });
 
     // Get app settings
-    this.appSettingApi.find({where: {key: 'showDeviceSuccessRate'}}).subscribe((appSettings: AppSetting[]) => {
-      this.appSettings = appSettings;
-      console.log(this.appSettings);
+    this.appSettingApi.findById('showDeviceSuccessRate').subscribe((appSetting: AppSetting) => {
+      this.showDeviceSuccessRate = appSetting;
     });
 
     // Hide all circles by default
@@ -192,7 +191,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
           include: [{
             relation: 'Geolocs',
             scope: {
-              limit: 5,
               order: 'createdAt DESC'
             }
           }]

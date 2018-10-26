@@ -30,6 +30,7 @@
                 <span class="switch-label"></span>
                 <span class="switch-handle"></span>
               </label>
+              <span *ngIf="appSetting.type === 'string'" class="text-success">{{appSetting.value}}</span>
             </p>
           </div>
         </accordion-group>

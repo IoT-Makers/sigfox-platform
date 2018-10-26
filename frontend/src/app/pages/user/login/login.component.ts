@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AccessToken, AppSetting, User} from '../../../shared/sdk/models';
 import {AppSettingApi, UserApi} from '../../../shared/sdk/services';
 import {ActivatedRoute, Router} from '@angular/router';
-import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {RealtimeService} from "../../../shared/realtime/realtime.service";
 
@@ -35,7 +34,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
 
   constructor(
-    private rt:RealtimeService,
+    private rt: RealtimeService,
     private userApi: UserApi,
     private appSettingApi: AppSettingApi,
     private route: ActivatedRoute,
@@ -51,13 +50,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         // console.log('New token: ', token);
         this.rt.connect(token.id);
 
-        // Update the last login date
-        this.userApi.patchAttributes(
-          token.userId,
-          {
-            'loggedAt': new Date()
-          }
-        ).subscribe();
         // Redirect to the /dashboard
         this.router.navigateByUrl(this.returnUrl);
       }, err => {
@@ -84,12 +76,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   getAppSettings(): void {
-    this.appSettingApi.find().subscribe((settings: AppSetting[]) => {
-      this.settings = settings;
-      const temp = _.filter(settings, {key: 'canUserRegister'});
-      this.canUserRegister = temp[0].value;
-
-      //console.log(this.canUserRegister);
+    this.appSettingApi.findById('canUserRegister').subscribe((appSetting: AppSetting) => {
+      this.canUserRegister = appSetting.value;
     });
   }
 
