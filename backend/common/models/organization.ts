@@ -9,9 +9,9 @@ import {Model} from "@mean-expert/model";
  **/
 @Model({
   hooks: {
-    beforeSave: { name: "before save", type: "operation" },
-    beforeDelete: { name: "before delete", type: "operation" }
-    },
+    beforeSave: {name: "before save", type: "operation"},
+    beforeDelete: {name: "before delete", type: "operation"}
+  },
   remotes: {
     getFilteredMessages: {
       accepts: [
@@ -30,7 +30,8 @@ import {Model} from "@mean-expert/model";
 
 class Organization {
   // LoopBack model instance is injected in constructor
-  constructor(public model: any) {}
+  constructor(public model: any) {
+  }
 
   public beforeSave(ctx: any, next: Function): void {
     console.log("organization: Before Save");
@@ -92,90 +93,32 @@ class Organization {
       next(null, "Please login or use a valid access token.");
     }
 
-    Organization.findOne(
-      {
-        where: {
-          id: organizationId,
-        },
-        include: ["Devices"],
-      }, (err: any, organization: any) => {
+    Organization.findById(
+      organizationId,
+      {include: ["Devices"]}, (err: any, organization: any) => {
         if (!err && organization) {
-
           if (filter.where && filter.where.deviceId) {
-
-            organization.toJSON().Devices.forEach((device: any) => {
-              if (device.id === filter.where.deviceId) {
+            for (let device of organization.toJSON().Devices) {
+              if (filter.where.deviceId === device.id) {
                 Message.find(filter, (err: any, messages: any) => {
-                  if (!err) {
-                    // console.log(messages);
-                    next(null, messages);
-                  } else {
-                    next(err);
-                  }
+                  if (!err) next(null, messages);
+                  else next(err);
                 });
-                return;
+                break;
               }
-            });
-            /*organization.Devices.findOne({where: filter.where}, (err: any, organizationDevice: any) => {
-              console.error(organizationDevice);
-              if (!err && organizationDevice) {
-                Message.find(filter, (err: any, messages: any) => {
-                  if (!err) {
-                    //console.log(messages);
-                    next(null, messages);
-                  } else {
-                    next(err);
-                  }
-                });
-              } else {
-                next(err);
-              }
-            });*/
-
+            }
           } else {
-
             const devicesIds: any[] = [];
             organization.toJSON().Devices.forEach((device: any) => {
               devicesIds.push(device.id);
             });
-
             filter.where = {deviceId: {inq: devicesIds}};
-            console.log(filter);
             Message.find(filter, (err: any, messages: any) => {
-              if (!err) {
-                // console.log(messages);
-                next(null, messages);
-              } else {
-                next(err);
-              }
+              if (!err) next(null, messages);
+              else next(err);
             });
-
-            /*organization.Messages.find(filter, (err: any, organizationMessages: any) => {
-              if (!err) {
-                console.log(organizationMessages);
-                next(null, organizationMessages);
-                /!* const messagesIds: any[] = [];
-                 organizationMessages.forEach((orgMsg: any) => {
-                   messagesIds.push(orgMsg.id);
-                 });
-                 console.log(messagesIds);
-                 Message.find({where: {id: {inq: messagesIds}}, order: 'createdAt DESC', include: ['Device', 'Geolocs']}, (err: any, messages: any) => {
-                   if (!err) {
-                     console.log(messages);
-                     next(null, messages);
-                   } else {
-                     console.error(err);
-                     next(err);
-                   }
-                 });*!/
-              } else {
-                next(err);
-              }
-            });*/
           }
-        } else {
-          next(err);
-        }
+        } else next(err);
       });
   }
 }

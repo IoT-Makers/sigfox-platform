@@ -111,7 +111,7 @@ export class AdminComponent implements OnInit, OnDestroy {
           relation: 'roles'
         }
       ],
-      order: 'updatedAt DESC'
+      order: 'connectedAt DESC'
     }).subscribe((users: User[]) => {
       users.forEach((user: any) => {
         user.isAdmin = false;

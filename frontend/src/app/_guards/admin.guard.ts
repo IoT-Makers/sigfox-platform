@@ -17,9 +17,8 @@ export class AdminGuard implements CanActivate {
 
   checkAdmin(): Observable<boolean> {
     return this.userApi.getRoles(this.userApi.getCurrentId()).map((roles: Role[]) => {
-      if (_.filter(roles, {name: 'admin'}).length !== 0) {
-        return true;
-      } else {
+      if (_.filter(roles, {name: 'admin'}).length !== 0) return true;
+      else {
         // Not admin in so redirect to overview page
         this.router.navigate(['/']);
         return false;

@@ -57,7 +57,7 @@
     "locatedAt": {
       "type": "date"
     },
-    "seenAt": {
+    "messagedAt": {
       "type": "date"
     },
     "locked": {

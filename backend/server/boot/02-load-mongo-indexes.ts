@@ -71,7 +71,7 @@ module.exports = (app: any) => {
           {key: {name: 1}, name: 'name'},
           {key: {successRate: 1}, name: 'successRate'},
           {key: {locatedAt: -1}, name: 'locatedAt'},
-          {key: {seenAt: -1}, name: 'seenAt'},
+          {key: {messagedAt: -1}, name: 'messagedAt'},
           {key: {createdAt: -1}, name: 'createdAt'},
           {key: {updatedAt: -1}, name: 'updatedAt'},
           {key: {parserId: 1}, name: 'parserId'},
@@ -176,6 +176,8 @@ module.exports = (app: any) => {
           {key: {email: 1}, name: 'email'},
           {key: {username: 1}, name: 'username'},
           {key: {connected: 1}, name: 'connected'},
+          {key: {loggedAt: -1}, name: 'loggedAt'},
+          {key: {connectedAt: -1}, name: 'connectedAt'},
           {key: {createdAt: -1}, name: 'createdAt'},
           {key: {updatedAt: -1}, name: 'updatedAt'}
         ]);

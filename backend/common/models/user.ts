@@ -92,17 +92,11 @@ class user {
           const devAccessTokens = userInstance.devAccessTokens;
           if (devAccessTokens) {
             this.model.app.models.AccessToken.create(devAccessTokens, (error: any, result: any) => {
-              if (err) {
-                next(error, result);
-              }
-              else {
-                next();
-              }
+              if (err) next(error, result);
+              else next();
               console.log("Successfully restored devAccessTokens in AccessToken model.");
             });
-          } else {
-            next();
-          }
+          } else next();
         }
       });
   }
@@ -126,6 +120,11 @@ class user {
   public afterRemoteCreate(ctx: any, userInstance: any, next: any) {
 
     userInstance.email = userInstance.email.toLocaleLowerCase();
+    // userInstance.username = userInstance.email.toLocaleLowerCase();
+    // userInstance.updateAttribute('username', userInstance.username, (err: any, userUpdated: any) => {
+    //   if (err) console.error(err);
+    //   else console.log("Updated user username as: ", userUpdated);
+    // });
 
     const adminRole = {
       name: "admin"

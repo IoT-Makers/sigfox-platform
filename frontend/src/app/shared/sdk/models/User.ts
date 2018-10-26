@@ -19,7 +19,8 @@ declare var Object: any;
 export interface UserInterface {
   "avatar"?: string;
   "loggedAt"?: Date;
-  "seenAt"?: Date;
+  "connectedAt"?: Date;
+  "disconnectedAt"?: Date;
   "connected"?: boolean;
   "position"?: any;
   "devAccessTokens"?: Array<any>;
@@ -49,7 +50,8 @@ export interface UserInterface {
 export class User implements UserInterface {
   "avatar": string = 'https://www.shareicon.net/data/128x128/2016/08/04/806683_man_512x512.png';
   "loggedAt": Date = new Date(0);
-  "seenAt": Date = new Date(0);
+  "connectedAt": Date = new Date(0);
+  "disconnectedAt": Date = new Date(0);
   "connected": boolean = false;
   "position": any = <any>null;
   "devAccessTokens": Array<any> = <any>[];
@@ -116,8 +118,12 @@ export class User implements UserInterface {
           name: 'loggedAt',
           type: 'Date'
         },
-        "seenAt": {
-          name: 'seenAt',
+        "connectedAt": {
+          name: 'connectedAt',
+          type: 'Date'
+        },
+        "disconnectedAt": {
+          name: 'disconnectedAt',
           type: 'Date'
         },
         "connected": {

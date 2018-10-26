@@ -16,9 +16,8 @@ export class OrganizationGuard implements CanActivate {
 
   checkOrganizationMember(route: ActivatedRouteSnapshot): Observable<boolean> {
     return this.userApi.findByIdOrganizations(this.userApi.getCurrentId(), route.params.id).map((organizations: Organization[]) => {
-      if (organizations) {
-        return true;
-      } else {
+      if (organizations) return true;
+      else {
         // Not organization member so redirect to overview page
         this.router.navigate(['/']);
         return false;

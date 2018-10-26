@@ -82,10 +82,10 @@ primus.on('connection', function connection(spark) {
 
             // Update user properties: connected
             let user = db.collection("user");
-            user.update({_id: ObjectId(spark.userId)}, {$set: {connected: true, seenAt: new Date()}}, (err, user) => {
+            user.update({_id: ObjectId(spark.userId)}, {$set: {connected: true, connectedAt: new Date()}}, (err, user) => {
                 if (err || !user) {
                     console.info("User not found");
-                } else console.info('[' + spark.userId + '] Updated fields connected and seenAt');
+                } else console.info('[' + spark.userId + '] Updated fields connected and connectedAt');
             });
         });
     }
@@ -134,10 +134,10 @@ primus.on('connection', function connection(spark) {
 primus.on('disconnection', function (spark) {
     if (!db) return;
     let user = db.collection("user");
-    user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, seenAt: new Date()}}, (err, user) => {
+    user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, disconnectedAt: new Date()}}, (err, user) => {
         if (err || !user) {
             console.info("User not found");
-        } else console.info('[' + spark.userId + '] Updated fields connected and seenAt');
+        } else console.info('[' + spark.userId + '] Updated fields connected and disconnectedAt');
     });
 });
 

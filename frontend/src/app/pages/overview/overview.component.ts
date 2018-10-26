@@ -199,7 +199,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     // Devices
     api.getDevices(id, {
       limit: 10,
-      order: 'seenAt DESC',
+      order: 'messagedAt DESC',
       include: ['Category', {
         relation: 'Messages',
         scope: {

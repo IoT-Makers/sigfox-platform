@@ -36,7 +36,10 @@
     "loggedAt": {
       "type": "date"
     },
-    "seenAt": {
+    "connectedAt": {
+      "type": "date"
+    },
+    "disconnectedAt": {
       "type": "date"
     },
     "connected": {

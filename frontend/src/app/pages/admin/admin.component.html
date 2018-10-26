@@ -228,10 +228,10 @@
                       <mfDefaultSorter by="Messages"><i class="fa fa-sort"></i> Messages</mfDefaultSorter>
                     </th>
                     <th class="text-center">
-                      <mfDefaultSorter by="loggedAt"><i class="fa fa-sort"></i> Last logged</mfDefaultSorter>
+                      <mfDefaultSorter by="loggedAt"><i class="fa fa-sort"></i> Last login</mfDefaultSorter>
                     </th>
                     <th class="text-center">
-                      <mfDefaultSorter by="updatedAt"><i class="fa fa-sort"></i> Last seen</mfDefaultSorter>
+                      <mfDefaultSorter by="connectedAt"><i class="fa fa-sort"></i> Last connect (RT)</mfDefaultSorter>
                     </th>
                     <th class="text-center">Roles</th>
                     <th class="text-center">Action</th>
@@ -268,7 +268,7 @@
                       </div>
                     </td>
                     <td class="text-center">
-                      <strong class="">{{user.seenAt | amTimeAgo}}</strong>
+                      <strong class="">{{user.connectedAt | amTimeAgo}}</strong>
                     </td>
                     <td class="text-center">
                       <p *ngFor="let role of user.roles;" class="text-user">{{role.name}}</p>

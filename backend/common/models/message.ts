@@ -383,7 +383,7 @@ class Message {
     }
   }
 
-  public updateDevice(deviceId: string) {
+  public updateDevice(deviceId: string, createdAt: Date) {
     // Model
     const Device = this.model.app.models.Device;
     Device.findOne({
@@ -413,7 +413,7 @@ class Message {
             deviceInstance.updateAttribute('successRate', device.successRate);
           }
           // Update the date when the device was last seen
-          deviceInstance.updateAttribute('seenAt', new Date());
+          deviceInstance.updateAttribute('messagedAt', createdAt);
         } else {
           console.error("Could not update the success rate of an unknown device");
         }
@@ -582,7 +582,7 @@ class Message {
   public afterSave(ctx: any, next: Function): void {
     // TODO: merge these 2 functions
     // Calculate success rate and update device
-    this.updateDevice(ctx.instance.deviceId);
+    this.updateDevice(ctx.instance.deviceId, ctx.instance.createdAt);
     this.linkMessageToOrganization(ctx.instance, (device => {
       // Pub-sub
       let msg = ctx.instance;
