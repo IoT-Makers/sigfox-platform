@@ -120,9 +120,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
     });
 
     // Get app settings
-    this.appSettingApi.find({where: {key: 'showDeviceSuccessRate'}}).subscribe((appSettings: AppSetting[]) => {
+    this.appSettingApi.findById('showDeviceSuccessRate').subscribe((appSettings: AppSetting[]) => {
       this.appSettings = appSettings;
-      console.log(this.appSettings);
     });
 
     // Hide all circles by default

@@ -77,11 +77,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   getAppSettings(): void {
-    this.appSettingApi.find().subscribe((settings: AppSetting[]) => {
-      this.settings = settings;
-      const temp = _.filter(settings, {key: 'canUserRegister'});
-      this.canUserRegister = temp[0].value;
-
+    this.appSettingApi.findById('canUserRegister').subscribe((appSetting: AppSetting) => {
+      this.canUserRegister = appSetting.value;
       //console.log(this.canUserRegister);
     });
   }
