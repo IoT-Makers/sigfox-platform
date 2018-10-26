@@ -128,19 +128,18 @@ class user {
     userInstance.email = userInstance.email.toLocaleLowerCase();
 
     const adminRole = {
-      name: "admin",
+      name: "admin"
     };
 
     const userRole = {
-      name: "user",
+      name: "user"
     };
 
     // Check if any user exists
     this.model.count(
       (err: any, countUser: any) => {
-        if (err) {
-          console.log(err);
-        } else {
+        if (err) console.log(err);
+        else {
           console.log(countUser);
           if (countUser === 1) {
 
@@ -149,31 +148,27 @@ class user {
               {where: {name: "admin"}}, // Find
               adminRole, // Create
               (err: any, instance: any, created: boolean) => { // Callback
-                if (err) {
-                  console.error("error creating device", err);
-                } else if (created) {
-                  console.log("created role", instance);
+                if (err) console.error("Error creating role", err);
+                else if (created) {
+                  console.log("Created role", instance);
                   instance.principals.create({
                     principalType: this.model.app.models.RoleMapping.USER,
                     principalId: userInstance.id,
                   }, (err: any, principalInstance: any) => {
-                    if (err) {
-                      console.log(err);
-                    } else {
+                    if (err) console.log(err);
+                    else {
                       console.log(principalInstance);
                       next();
                     }
                   });
-
                 } else {
-                  console.log("found role", instance);
+                  console.log("Found role", instance);
                   instance.principals.create({
                     principalType: this.model.app.models.RoleMapping.USER,
                     principalId: userInstance.id,
                   }, (err: any, principalInstance: any) => {
-                    if (err) {
-                      console.log(err);
-                    } else {
+                    if (err) console.log(err);
+                    else {
                       console.log(principalInstance);
                       next();
                     }
@@ -181,37 +176,33 @@ class user {
                 }
               });
           } else {
-
             // Create user
             this.model.app.models.Role.findOrCreate(
               {where: {name: "user"}}, // Find
               userRole, // Create
               (err: any, instance: any, created: boolean) => { // Callback
-                if (err) {
-                  console.error("error creating device", err);
-                } else if (created) {
-                  console.log("created role", instance);
+                if (err) console.error("Error creating role", err);
+                else if (created) {
+                  console.log("Created role", instance);
                   instance.principals.create({
                     principalType: this.model.app.models.RoleMapping.USER,
                     principalId: userInstance.id,
                   }, (err: any, principalInstance: any) => {
-                    if (err) {
-                      console.log(err);
-                    } else {
+                    if (err) console.log(err);
+                    else {
                       console.log(principalInstance);
                       next();
                     }
                   });
 
                 } else {
-                  console.log("found role", instance);
+                  console.log("Found role", instance);
                   instance.principals.create({
                     principalType: this.model.app.models.RoleMapping.USER,
                     principalId: userInstance.id,
                   }, (err: any, principalInstance: any) => {
-                    if (err) {
-                      console.log(err);
-                    } else {
+                    if (err) console.log(err);
+                    else {
                       console.log(principalInstance);
                       next();
                     }

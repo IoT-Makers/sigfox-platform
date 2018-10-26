@@ -149,6 +149,20 @@ module.exports = (app: any) => {
         ]);
         console.log('Updated index for Parser');
 
+        db.collection('Role').createIndexes([
+          {key: {name: 1}, name: 'name'},
+          {key: {created: -1}, name: 'created'},
+          {key: {modified: -1}, name: 'modified'}
+        ]);
+        console.log('Updated index for Role');
+
+        db.collection('RoleMapping').createIndexes([
+          {key: {principalType: 1}, name: 'principalType'},
+          {key: {principalId: 1}, name: 'principalId'},
+          {key: {roleId: 1}, name: 'roleId'}
+        ]);
+        console.log('Updated index for RoleMapping');
+
         db.collection('Widget').createIndexes([
           {key: {name: 1}, name: 'name'},
           {key: {createdAt: -1}, name: 'createdAt'},
@@ -157,6 +171,15 @@ module.exports = (app: any) => {
           {key: {userId: 1}, name: 'userId'}
         ]);
         console.log('Updated index for Widget');
+
+        db.collection('user').createIndexes([
+          {key: {email: 1}, name: 'email'},
+          {key: {username: 1}, name: 'username'},
+          {key: {connected: 1}, name: 'connected'},
+          {key: {createdAt: -1}, name: 'createdAt'},
+          {key: {updatedAt: -1}, name: 'updatedAt'}
+        ]);
+        console.log('Updated index for user');
 
         // Disconnect from datasource
         ds.connector.disconnect();

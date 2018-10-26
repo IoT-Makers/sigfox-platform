@@ -44,7 +44,7 @@
       "default": 0
     },
     "location": {
-      "type": "geopoint",
+      "type": "GeoPoint",
       "required": true
     }
   },
