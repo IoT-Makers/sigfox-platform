@@ -51,13 +51,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         // console.log('New token: ', token);
         this.rt.connect(token.id);
 
-        // Update the last login date
-        this.userApi.patchAttributes(
-          token.userId,
-          {
-            'loggedAt': new Date()
-          }
-        ).subscribe();
         // Redirect to the /dashboard
         this.router.navigateByUrl(this.returnUrl);
       }, err => {

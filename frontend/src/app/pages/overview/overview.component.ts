@@ -1,10 +1,17 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Alert, Category, Device, Message, Organization, User} from '../../shared/sdk/models';
+import {Alert, AppSetting, Category, Device, Message, Organization, User} from '../../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
 import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow, LatLngBounds} from '@agm/core';
-import {ConnectorApi, DeviceApi, MessageApi, OrganizationApi, UserApi} from '../../shared/sdk/services/custom';
+import {
+  AppSettingApi,
+  ConnectorApi,
+  DeviceApi,
+  MessageApi,
+  OrganizationApi,
+  UserApi
+} from '../../shared/sdk/services/custom';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
@@ -131,11 +138,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
       animation: 'fade'
     });
 
+  public bannerMessage;
+
   constructor(private rt: RealtimeService,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private deviceApi: DeviceApi,
               private messageApi: MessageApi,
+              private appSettingApi: AppSettingApi,
               private connectorApi: ConnectorApi,
               private route: ActivatedRoute) {
   }
@@ -149,6 +159,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
+
+    // App settings (for banner)
+    this.appSettingApi.findById('bannerMessage').subscribe((appSetting: AppSetting) => {
+      this.bannerMessage = appSetting.value;
+    });
 
     // Check if organization view
     this.organizationRouteSub = this.route.params.subscribe(params => {
