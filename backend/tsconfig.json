@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "experimentalDecorators": true,
+    "outDir": "build/server"
+  },
+  "include": [
+    "server/**/*.ts"
+  ]
+}

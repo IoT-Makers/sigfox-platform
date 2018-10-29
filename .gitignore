@@ -1,6 +1,5 @@
 **/node_modules
-api/dist
 .DS_store
 **/.idea/
-.env
 
+frontend/environments/environment\.prod\.ts

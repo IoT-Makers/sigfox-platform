@@ -1,7 +1,7 @@
 {
   "name": "sigfox-platform",
   "version": "1.0.0",
-  "description": "",
+  "description": "A real time platform to manage different devices and analytics.",
   "keywords": [
     "Platform",
     "IoT",
@@ -14,14 +14,17 @@
     "npm": ">=6.0.1"
   },
   "scripts": {
-    "preinstall": "cd api/ && npm install && cd ../webapp && npm install && cd ..",
+    "preinstall": "cd backend/ && npm install && cd ../frontend && npm install && cd ..",
     "postinstall": "npm run build",
-    "build": "cd webapp/ && npm cache verify && npm run build && cd ..",
+    "build": "cd frontend/ && npm cache verify && npm run build && cd ..",
     "start": "npm run serve",
-    "api": "cd api/ && node server/server.js && cd ..",
-    "webapp": "cd webapp/ && node server/server.ts && cd ..",
+    "backend": "cd backend/ && node server/server.js && cd ..",
+    "frontend": "cd frontend/ && node server/server.ts && cd ..",
+    "primus": "cd primus/ && npm start && cd ..",
     "test": "npm run install"
   },
   "devDependencies": {},
-  "dependencies": {}
+  "dependencies": {
+    "primus": "^7.2.2"
+  }
 }

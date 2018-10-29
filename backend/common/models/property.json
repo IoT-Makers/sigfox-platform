@@ -1,0 +1,47 @@
+{
+  "name": "Property",
+  "plural": "Properties",
+  "base": "Model",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "replaceOnPUT": false,
+  "mixins": {
+    "TimeStamp": {
+      "required": false
+    },
+    "Stats": [
+      {
+        "method": "stats",
+        "endpoint": "/stats",
+        "description": "Statistical information for Property registers.",
+        "type": "model",
+        "count": {
+          "on": "createdAt",
+          "by": "index"
+        }
+      }
+    ]
+  },
+  "properties": {
+    "key": {
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "type": "any"
+    },
+    "type": {
+      "type": "string",
+      "required": true
+    },
+    "unit": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

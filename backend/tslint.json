@@ -1,0 +1,14 @@
+{
+    "defaultSeverity": "war",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {},
+    "rules": {
+      "no-console": false,
+      "experimentalDecorators": false,
+      "max-line-length": false,
+      "object-literal-sort-keys": false
+    },
+    "rulesDirectory": []
+}

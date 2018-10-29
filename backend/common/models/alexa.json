@@ -1,0 +1,15 @@
+{
+  "name": "Alexa",
+  "plural": "Alexa",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {},
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
