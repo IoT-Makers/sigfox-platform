@@ -24,7 +24,8 @@
             </div>
             <p *ngFor="let appSetting of appSettings">
               <label>{{appSetting.key}}:&nbsp;</label>
-              <label *ngIf="appSetting.type === 'boolean'" class="switch switch-sm switch-3d switch-success-outline-alt">
+              <label *ngIf="appSetting.type === 'boolean'"
+                     class="switch switch-sm switch-3d switch-success-outline-alt">
                 <input (change)="changeSetting(appSetting)" [(ngModel)]="appSetting.value" type="checkbox"
                        class="switch-input">
                 <span class="switch-label"></span>
@@ -195,7 +196,8 @@
           </div>
           <div class="card-block">
 
-            <button class="mb-1 btn btn-success" (click)="openAddUserModal()"><i class="fa fa-plus-circle"></i> Add a new user
+            <button class="mb-1 btn btn-success" (click)="openAddUserModal()"><i class="fa fa-plus-circle"></i> Add a
+              new user
             </button>
 
             <ng-container *ngIf="!usersReady">
@@ -280,9 +282,11 @@
                                 (click)="editUser(user)"><i class="fa fa-pencil fa-lg"></i></button>
                         <button *ngIf="user.id !== myUser.id" class="btn btn-danger btn-round" tooltip="Delete user"
                                 (click)="showRemoveModal(user)"><i class="fa fa-trash fa-lg"></i></button>
-                        <button *ngIf="!user.isAdmin && user.id !== myUser.id" class="btn btn-success btn-round" tooltip="Grant admin access"
+                        <button *ngIf="!user.isAdmin && user.id !== myUser.id" class="btn btn-success btn-round"
+                                tooltip="Grant admin access"
                                 (click)="grantAdminAccess(user)"><i class="fa fa-star fa-lg"></i></button>
-                        <button *ngIf="user.isAdmin && user.id !== myUser.id" class="btn btn-outline-success btn-round" tooltip="Revoke admin access"
+                        <button *ngIf="user.isAdmin && user.id !== myUser.id" class="btn btn-outline-success btn-round"
+                                tooltip="Revoke admin access"
                                 (click)="revokeAdminAccess(user)"><i class="fa fa-star fa-lg"></i></button>
                       </div>
                     </td>
@@ -326,6 +330,9 @@
                       <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
                     </th>
                     <th class="text-center">
+                      <mfDefaultSorter by="createdAt"><i class="fa fa-sort"></i> Created</mfDefaultSorter>
+                    </th>
+                    <th class="text-center">
                       <mfDefaultSorter by="Members.length"><i class="fa fa-sort"></i> Users</mfDefaultSorter>
                     </th>
 
@@ -345,6 +352,9 @@
                       </a>
                     </td>
                     <td class="text-center">
+                      <strong class="">{{orga.createdAt | amTimeAgo}}</strong>
+                    </td>
+                    <td class="text-center">
                       <p *ngFor="let member of orga.Members;">
                         {{member.email}}
                       </p>
@@ -352,7 +362,8 @@
 
                     <td class="text-center">
                       <div class="btn-group-sm">
-                        <button class="btn btn-outline-danger btn-round" tooltip="Delete organization" (click)="deleteOrganization(orga)"><i class="fa fa-trash fa-lg"></i></button>
+                        <button class="btn btn-outline-danger btn-round" tooltip="Delete organization"
+                                (click)="deleteOrganization(orga)"><i class="fa fa-trash fa-lg"></i></button>
                       </div>
                     </td>
                   </tr>
@@ -367,12 +378,6 @@
         </accordion-group>
       </accordion>
     </div>
-
-
-
-
-
-
 
 
   </div>
@@ -395,19 +400,20 @@
         <div class="modal-body">
           <div class="input-group mb-1">
             <span class="input-group-addon">@</span>
-            <input [(ngModel)]="userToAddOrEdit.email" type="text" class="form-control" name="username" placeholder="Email">
+            <input [(ngModel)]="userToAddOrEdit.email" type="text" class="form-control" name="username"
+                   placeholder="Email">
           </div>
 
           <div class="input-group mb-1">
             <span class="input-group-addon"><i class="icon-lock"></i></span>
             <input [(ngModel)]="userToAddOrEdit.password" type="password" class="form-control" name="password"
-                    placeholder="Password">
+                   placeholder="Password">
           </div>
 
           <div class="input-group mb-2">
             <span class="input-group-addon"><i class="icon-lock"></i></span>
             <input [(ngModel)]="verifyPassword" type="password" class="form-control" name="verifyPassword"
-                    (ngModelChange)="verify()" placeholder="Repeat password">
+                   (ngModelChange)="verify()" placeholder="Repeat password">
           </div>
 
           <div *ngIf="errorMessage != ''">

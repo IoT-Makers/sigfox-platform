@@ -176,8 +176,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   getOrganizations(): void {
-    console.log('getOrga');
-    this.organizationApi.find({include: 'Members'}).subscribe((organizations: Organization[]) => {
+    this.organizationApi.find({order: 'createdAt DESC', include: 'Members'}).subscribe((organizations: Organization[]) => {
       this.organizations = organizations;
       this.organizationsReady = true;
       console.log(organizations);
@@ -252,14 +251,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   addUser(): void {
-    console.log('Admin | Try to create user...', this.userToAddOrEdit);
-
-    this.userToAddOrEdit.email = this.userToAddOrEdit.email.toLocaleLowerCase();
-    this.userToAddOrEdit.id = null;
-    this.userToAddOrEdit.createdAt = new Date();
-
-    this.userRef.create(this.userToAddOrEdit).subscribe((user: User) => {
-      console.log('Admin | User created', user);
+    this.userApi.create(this.userToAddOrEdit).subscribe((user: User) => {
       this.getUsers();
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);

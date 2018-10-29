@@ -256,9 +256,6 @@ class Geoloc {
     const Message = this.model.app.models.Message;
     const Alert = this.model.app.models.Alert;
 
-    // Auto set uppercase for deviceId
-    data.deviceId = data.deviceId.toUpperCase();
-
     if (typeof data.geoloc === 'undefined'
       || typeof data.geoloc.location === 'undefined'
       || typeof data.deviceId === 'undefined'
@@ -266,6 +263,10 @@ class Geoloc {
       || typeof data.seqNumber === 'undefined') {
       return next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
     }
+
+    // Force set uppercase for deviceId
+    data.deviceId = data.deviceId.toUpperCase();
+
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 

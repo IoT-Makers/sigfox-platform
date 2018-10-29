@@ -46,10 +46,6 @@
     "@ngrx/effects": "^5.2.0",
     "@ngrx/entity": "^5.2.0",
     "@ngrx/store": "^5.2.0",
-    "@types/jasmine": "^2.8.9",
-    "@types/jasminewd2": "^2.0.5",
-    "@types/lodash": "^4.14.117",
-    "@types/node": "^6.14.0",
     "angular-calendar": "^0.11.0",
     "angular2-datatable": "^0.6.0",
     "angular2-ladda": "^1.2.3",
@@ -68,7 +64,7 @@
     "jasmine-core": "^2.6.2",
     "jasmine-spec-reporter": "^4.1.0",
     "js-marker-clusterer": "^1.0.0",
-    "karma": "^2.0.4",
+    "karma": "^3.1.1",
     "karma-chrome-launcher": "^2.1.1",
     "karma-cli": "^1.0.1",
     "karma-coverage-istanbul-reporter": "^1.4.3",
@@ -102,6 +98,10 @@
     "zone.js": "^0.8.20"
   },
   "devDependencies": {
+    "@types/jasmine": "^2.8.9",
+    "@types/jasminewd2": "^2.0.5",
+    "@types/lodash": "^4.14.117",
+    "@types/node": "^6.14.0",
     "@types/leaflet": "^1.2.6",
     "@types/leaflet-draw": "^0.4.11"
   }
