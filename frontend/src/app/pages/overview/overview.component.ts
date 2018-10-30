@@ -399,15 +399,18 @@ export class OverviewComponent implements OnInit, OnDestroy {
     payload.action == "CREATE" ? this.countCategories++ : payload.action == "DELETE" ? this.countCategories-- : 0;
   };
   rtDeviceHandler = (payload: any) => {
-    if (payload.action == "CREATE") {
-      this.devices.unshift(payload.content);
-    } else if (payload.action == "DELETE") {
-      this.devices = this.devices.filter(function (device) {
-        return device.id !== payload.content.id;
-      });
+    const device = payload.content;
+    if ((device.userId && !this.organization ) || device.Organizations.map(x=>x.id).includes(this.organization.id)) {
+      if (payload.action == "CREATE") {
+        this.devices.unshift(payload.content);
+      } else if (payload.action == "DELETE") {
+        this.devices = this.devices.filter(function (device) {
+          return device.id !== payload.content.id;
+        });
+      }
+      // no need to listen to update, and it does not have geoloc
+      this.devicesReady = true;
     }
-    // no need to listen to update, and it does not have geoloc
-    this.devicesReady = true;
   };
   rtMsgHandler = (payload: any) => {
     const msg = payload.content;
