@@ -31,10 +31,24 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
 **Manage devices, share with others in organization**
 ![device](doc/img/device.png)
 
+## Technologies
+
+### Application
+
+ * **Backend:** [Loopback 3+](https://loopback.io/)
+ * **Frontend:** [Angular 6+](https://angular.io/)
+ * **Real-time:** [Primus](https://github.com/primus/primus)
+ * **Database:** [MongoDB](https://www.mongodb.com/en)
+ * **Pub-sub:** [Redis](https://redis.io/)
+ 
+ ### Deploy
+ 
+ * **Reverse proxy:** [Traefik](https://traefik.io/)
+ * **Containerization:** [Docker](https://www.docker.com/)
+ * **Orchestrator:** [Docker Swarm](https://docs.docker.com/engine/swarm/)
+ * **Management UI:** [Portainer](https://portainer.io/)
 
 ## Development
-
-This project uses Loopback 3, Angular 6, primus.io and MongoDB.
 
 ### Requirements
 
@@ -44,7 +58,7 @@ Below is the functional/sequential diagram representing the message journey.
 
 ![message_journey](doc/img/message-journey.png)
 
-### Webapp
+### Frontend
 
 #### Color code
 
