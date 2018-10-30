@@ -160,12 +160,11 @@ class Message {
                   next(err, data);
                 } else if (messageInstance) {
                   // console.log('Found the corresponding message and storing reception in it.');
-                  if (!messageInstance.reception) {
-                    messageInstance.reception = [];
-                  }
-                  messageInstance.reception.push(data.reception[0]);
-                  Message.upsert(
-                    messageInstance,
+                  if (!messageInstance.reception) messageInstance.reception = [];
+                  const reception = messageInstance.reception.push(data.reception[0]);
+                  messageInstance.updateAttribute(
+                    'reception',
+                    [reception],
                     (err: any, messageInstance: any) => {
                       if (err) {
                         console.error(err);

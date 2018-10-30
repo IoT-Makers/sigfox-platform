@@ -10,7 +10,9 @@ module.exports = (app: any) => {
       // Update indexes for all models
       ds.connector.connect((err: any, db: any) => {
         db.collection('AccessToken').createIndexes([
-          {key: {ttl: -1}, name: 'ttl'}
+          {key: {ttl: -1}, name: 'ttl'},
+          {key: {created: -1}, name: 'created'},
+          {key: {userId: 1}, name: 'userId'}
         ]);
         console.log('Updated index for AccessToken');
 
