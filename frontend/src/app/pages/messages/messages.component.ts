@@ -221,22 +221,23 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   rtHandler = (payload: any) => {
     const msg = payload.content;
-    if (payload.action == "CREATE") {
-      for (const geoloc of this.geolocBuffer) {
-        if (geoloc.content.messageId === msg.id) {
-          msg.Geolocs.push(geoloc.content);
-          let index = this.geolocBuffer.indexOf(geoloc);
-          if (index > -1) this.geolocBuffer.splice(index, 1);
-          break;
+    if ((msg.userId && !this.organization ) || msg.Device.Organizations.map(x=>x.id).includes(this.organization.id)) {
+      if (payload.action == "CREATE") {
+        for (const geoloc of this.geolocBuffer) {
+          if (geoloc.content.messageId === msg.id) {
+            msg.Geolocs.push(geoloc.content);
+            let index = this.geolocBuffer.indexOf(geoloc);
+            if (index > -1) this.geolocBuffer.splice(index, 1);
+            break;
+          }
         }
-      }
-      console.log(msg);
-      if ((msg.userId && !this.organization ) || msg.Device.Organizations.map(x=>x.id).includes(this.organization.id))
+        console.log(msg);
         this.messages.unshift(msg);
-    } else if (payload.action == "DELETE") {
-      this.messages = this.messages.filter( (msg) => {
-        return msg.id !== payload.content.id;
-      });
+      } else if (payload.action == "DELETE") {
+        this.messages = this.messages.filter((msg) => {
+          return msg.id !== payload.content.id;
+        });
+      }
     }
   };
 
@@ -245,7 +246,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     if (payload.action === "CREATE") {
       for (let msg of this.messages) {
         if (msg.id === payload.content.messageId) {
-          msg.Geolocs = payload.content;
+          msg.Geolocs ? msg.Geolocs.push(payload.content) : msg.Geolocs = [payload.content];
           return;
         }
       }

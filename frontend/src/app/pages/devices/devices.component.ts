@@ -420,16 +420,19 @@ export class DevicesComponent implements OnInit, OnDestroy {
   //   });
   // }
   rtHandler = (payload: any) => {
-    if (payload.action == "CREATE") {
-      this.devices.unshift(payload.content);
-    } else if (payload.action == "DELETE") {
-      this.devices = this.devices.filter(function (device) {
-        return device.id !== payload.content.id;
-      });
-    } else if (payload.action == "UPDATE") {
-      let idx = this.devices.findIndex(x => x.id == payload.content.id);
-      if (idx != -1) {
-        this.devices[idx] = payload.content;
+    const device = payload.content;
+    if ((device.userId && !this.organization ) || device.Organizations.map(x=>x.id).includes(this.organization.id)) {
+      if (payload.action == "CREATE") {
+        this.devices.unshift(payload.content);
+      } else if (payload.action == "DELETE") {
+        this.devices = this.devices.filter(function (device) {
+          return device.id !== payload.content.id;
+        });
+      } else if (payload.action == "UPDATE") {
+        let idx = this.devices.findIndex(x => x.id == payload.content.id);
+        if (idx != -1) {
+          this.devices[idx] = payload.content;
+        }
       }
     }
   };
@@ -441,6 +444,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
         let updatedDevice = this.devices[idx];
         updatedDevice.Messages = [payload.content];
         this.devices[idx] = updatedDevice;
+        console.log(this.devices[idx]);
       }
     }
   };

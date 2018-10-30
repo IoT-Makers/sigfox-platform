@@ -156,11 +156,7 @@ function messageHandler(payload) {
         if (payload.action === "DELETE") {
             send(targetClients, payload.event, payload.action, msg);
             return;
-        };
-        db.collection("Geolocs").find({messageId: msg.id}, (err, res) => {
-            console.log(res);
-            console.log(typeof res);
-        });
+        }
         db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
             addAttribute(msg, "Geolocs", geolocs);
             addAttribute(msg, "Device", payload.device);
@@ -231,7 +227,6 @@ function geolocHandler(payload) {
         console.log(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
-        // if the message owner is not online, no need to look up
         if (!targetClients.size)
             return;
 

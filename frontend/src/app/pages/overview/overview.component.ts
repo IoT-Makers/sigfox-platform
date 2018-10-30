@@ -399,16 +399,65 @@ export class OverviewComponent implements OnInit, OnDestroy {
     payload.action == "CREATE" ? this.countCategories++ : payload.action == "DELETE" ? this.countCategories-- : 0;
   };
   rtDeviceHandler = (payload: any) => {
-    payload.action == "CREATE" ? this.countDevices++ : payload.action == "DELETE" ? this.countDevices-- : 0;
-    this.devicesReady = true;
+    const device = payload.content;
+    if ((device.userId && !this.organization ) || device.Organizations.map(x=>x.id).includes(this.organization.id)) {
+      if (payload.action == "CREATE") {
+        this.devices.unshift(payload.content);
+      } else if (payload.action == "DELETE") {
+        this.devices = this.devices.filter(function (device) {
+          return device.id !== payload.content.id;
+        });
+      }
+      // no need to listen to update, and it does not have geoloc
+      this.devicesReady = true;
+    }
   };
   rtMsgHandler = (payload: any) => {
     const msg = payload.content;
-    if ((msg.userId && !this.organization ) || msg.Device.Organizations.map(x=>x.id).includes(this.organization.id))
-      payload.action == "CREATE" ? this.countMessages++ : payload.action == "DELETE" ? this.countMessages-- : 0;
+    if ((msg.userId && !this.organization ) || msg.Device.Organizations.map(x=>x.id).includes(this.organization.id)) {
+      let idx = this.devices.findIndex(x => x.id == msg.Device.id);
+      if (payload.action == "CREATE") {
+        this.countMessages++;
+
+        // for rare case where geoloc arrives first
+        if (idx != -1) {
+          for (const geoloc of this.geolocBuffer) {
+            if (geoloc.content.messageId === msg.id) {
+              msg.Geolocs.push(geoloc.content);
+              console.log("geoloc msg linked!");
+              // remove from buffer
+              let index = this.geolocBuffer.indexOf(geoloc);
+              if (index > -1) this.geolocBuffer.splice(index, 1);
+              break;
+            }
+          }
+          this.devices[idx].Messages ? this.devices[idx].Messages.unshift(msg) : this.devices[idx].Messages = [msg];
+        }
+      } else if (payload.action == "DELETE") {
+        this.countMessages--;
+        this.devices[idx].Messages = this.devices[idx].Messages.filter( (msg) => {
+          return msg.id !== payload.content.id;
+        });
+      }
+    }
   };
   rtAlertHandler = (payload: any) => {
     payload.action == "CREATE" ? this.countAlerts++ : payload.action == "DELETE" ? this.countAlerts-- : 0;
+  };
+
+  private geolocBuffer = [];
+  geolocHandler = (payload: any) => {
+    if (payload.action == "CREATE") {
+      for (let device of this.devices) {
+        let lastMsg = device.Messages[0];
+        if (!lastMsg) continue;
+        if (lastMsg.id == payload.content.messageId) {
+          lastMsg.Geolocs ? lastMsg.Geolocs.push(payload.content) : lastMsg.Geolocs = [payload.content];
+          return;
+        }
+      }
+      this.geolocBuffer.push(payload);
+    }
   };
 
   subscribe(): void {
@@ -416,6 +465,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.rtDeviceHandler = this.rt.addListener("device", this.rtDeviceHandler);
     this.rtMsgHandler = this.rt.addListener("message", this.rtMsgHandler);
     this.rtAlertHandler = this.rt.addListener("alert", this.rtAlertHandler);
+    this.geolocHandler = this.rt.addListener('geoloc', this.geolocHandler);
   }
 
   unsubscribe(): void {
@@ -423,5 +473,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.rt.removeListener(this.rtDeviceHandler);
     this.rt.removeListener(this.rtMsgHandler);
     this.rt.removeListener(this.rtAlertHandler);
+    this.rt.removeListener(this.geolocHandler);
   }
 }

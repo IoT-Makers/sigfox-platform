@@ -341,8 +341,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     payload.action == "CREATE" ? this.countCategories++ : payload.action == "DELETE" ? this.countCategories-- : 0;
   };
   rtDeviceHandler = (payload: any) => {
-    // const device = payload.content;
-    // if ((device.userId && !this.organization ) || msg.Device.Organizations.map(x=>x.id).includes(this.organization.id))
+    const device = payload.content;
+    if ((device.userId && !this.organization ) || device.Organizations.map(x=>x.id).includes(this.organization.id))
       payload.action == "CREATE" ? this.countDevices++ : payload.action == "DELETE" ? this.countDevices-- : 0;
   };
   rtMsgHandler = (payload: any) => {
