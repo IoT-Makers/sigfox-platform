@@ -245,7 +245,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     if (payload.action === "CREATE") {
       for (let msg of this.messages) {
         if (msg.id === payload.content.messageId) {
-          msg.Geolocs = payload.content;
+          msg.Geolocs ? msg.Geolocs.push(payload.content) : msg.Geolocs = [payload.content];
           return;
         }
       }

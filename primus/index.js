@@ -156,7 +156,7 @@ function messageHandler(payload) {
         if (payload.action === "DELETE") {
             send(targetClients, payload.event, payload.action, msg);
             return;
-        };
+        }
         db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
             addAttribute(msg, "Geolocs", geolocs);
             addAttribute(msg, "Device", payload.device);
