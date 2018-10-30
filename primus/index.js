@@ -350,6 +350,14 @@ function addAttribute(obj, attName, attValue) {
             attValue.id = attValue._id;
             delete attValue._id;
         }
+        if (Array.isArray(attValue))
+            attValue = attValue.map((v, i, arr) => {
+                if (v._id) {
+                    v.id = v._id;
+                    delete v._id;
+                }
+                return v;
+            });
         obj[attName] = attValue;
     }
 }
