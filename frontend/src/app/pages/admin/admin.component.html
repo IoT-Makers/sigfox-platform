@@ -195,11 +195,7 @@
             <h4 class="text-center">Users</h4>
           </div>
           <div class="card-block">
-
-            <button class="mb-1 btn btn-success" (click)="openAddUserModal()"><i class="fa fa-plus-circle"></i> Add a
-              new user
-            </button>
-
+            <button class="mb-1 btn btn-user" (click)="openAddUserModal()"><i class="fa fa-plus-circle"></i> Add a new user</button>
             <ng-container *ngIf="!usersReady">
               Loading users...
               <div class="sk-double-bounce">

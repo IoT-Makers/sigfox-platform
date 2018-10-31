@@ -50,6 +50,11 @@
   },
   "validations": [],
   "relations": {
+    "Geolocs": {
+      "type": "hasMany",
+      "model": "Geoloc",
+      "foreignKey": "beaconId"
+    },
     "user": {
       "type": "belongsTo",
       "model": "user",

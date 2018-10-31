@@ -138,7 +138,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       console.log('Setup Full layout');
 
       // For organizations menu
-      this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
+      this.userApi.getOrganizations(this.user.id, {order: 'createdAt DESC'}).subscribe((organizations: Organization[]) => {
         this.organizations = organizations;
         this.countOrganizationsReady = true;
       });

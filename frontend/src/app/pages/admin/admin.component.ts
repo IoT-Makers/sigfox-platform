@@ -106,11 +106,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   getUsers(): void {
     this.myUser = this.userApi.getCachedCurrent();
     this.userApi.find({
-      include: [
-        {
-          relation: 'roles'
-        }
-      ],
+      include: 'roles',
+      limit: 100,
       order: 'connectedAt DESC'
     }).subscribe((users: User[]) => {
       users.forEach((user: any) => {
@@ -205,8 +202,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   grantAdminAccess(user): void {
-    console.log('user: ', user);
-
     this.roleApi.findOne({where: {name: 'admin'}}).subscribe((admin: any) => {
       console.log('admin: ', admin);
 
@@ -222,8 +217,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   revokeAdminAccess(user): void {
-    console.log('user: ', user);
-
     this.roleApi.findOne({where: {name: 'admin'}}).subscribe((admin: any) => {
       console.log('admin: ', admin);
 

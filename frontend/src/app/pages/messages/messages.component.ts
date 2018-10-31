@@ -17,7 +17,7 @@ import {RealtimeService} from "../../shared/realtime/realtime.service";
 })
 export class MessagesComponent implements OnInit, OnDestroy {
 
-  private deviceSub: any;
+  private deviceIdSub: any;
   public user: User;
 
   @ViewChild('mapModal') mapModal: any;
@@ -91,7 +91,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.subscribe();
 
     // Get and listen messages
-    this.deviceSub = this.route.params.subscribe(params => {
+    this.deviceIdSub = this.route.params.subscribe(params => {
       this.filterQuery = params['id'];
       if (this.filterQuery) {
         this.messageFilter = {
@@ -131,7 +131,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   private cleanSetup() {
     if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
-    if (this.deviceSub) this.deviceSub.unsubscribe();
+    if (this.deviceIdSub) this.deviceIdSub.unsubscribe();
     this.unsubscribe();
   }
 

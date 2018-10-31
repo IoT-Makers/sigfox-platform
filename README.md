@@ -41,12 +41,13 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
  * **Database:** [MongoDB](https://www.mongodb.com/en)
  * **Pub-sub:** [Redis](https://redis.io/)
  
- ### Deploy
+ ### Deployment
  
  * **Reverse proxy:** [Traefik](https://traefik.io/)
  * **Containerization:** [Docker](https://www.docker.com/)
  * **Orchestrator:** [Docker Swarm](https://docs.docker.com/engine/swarm/)
  * **Management UI:** [Portainer](https://portainer.io/)
+ * **Supervision:** [Prometheus](https://prometheus.io/)
 
 ## Development
 
