@@ -26,7 +26,6 @@ export const routes: Routes = [
 
       {path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule'},
       {path: 'devices', loadChildren: './pages/devices/devices.module#DevicesModule'},
-      {path: 'devices/:id/tracking', loadChildren: './pages/tracking/tracking.module#TrackingModule'},
       {path: 'alerts', loadChildren: './pages/alerts/alerts.module#AlertsModule'},
       {path: 'messages', loadChildren: './pages/messages/messages.module#MessagesModule'},
       {path: 'messages/:id', loadChildren: './pages/messages/messages.module#MessagesModule'},
@@ -54,7 +53,7 @@ export const routes: Routes = [
       {path: 'dashboard/:id', loadChildren: './pages/dashboard/custom-dashboard.module#CustomDashboardModule'},
 
       {path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule'},
-      {path: 'devices', loadChildren: './pages/devices/devices.module#TrackingModule'},
+      {path: 'devices', loadChildren: './pages/devices/devices.module#DevicesModule'},
       {path: 'messages', loadChildren: './pages/messages/messages.module#MessagesModule'},
       {path: 'messages/:id', loadChildren: './pages/messages/messages.module#MessagesModule'}
     ]
