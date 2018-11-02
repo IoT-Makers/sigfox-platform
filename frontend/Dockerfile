@@ -14,8 +14,12 @@ RUN npm run set-env && ./node_modules/.bin/ng build --$BUILD_ENV
 
 
 FROM nginx:alpine
+RUN apk add --no-cache curl
 
 ARG SERVER_NAME
+
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
+  CMD curl --silent --fail localhost/nginx-health || exit 1
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder /frontend/dist/ /usr/share/nginx/html

@@ -8,6 +8,7 @@ const ObjectId = mongolib.ObjectId;
 const mongodbUrl = process.env.MONGO_URL;
 if (!process.env.SERVER_ACCESS_TOKENS) return console.error('/!\ Please set the SERVER_ACCESS_TOKENS env.');
 const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
+const healthcheckToken = 'healthcheck';
 
 let db;
 
@@ -55,12 +56,13 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 
 // Handle connections
 primus.on('connection', function connection(spark) {
-    console.info(primus.connected + " clients connected");
-    // TODO: handle the case where connection comes in before db connection
     if (!db) return;
 
+    console.info(primus.connected + " clients connected");
     // manual auth hook, attach userId to spark if access token found
     const access_token = spark.request.query.access_token;
+    if (!access_token || access_token === healthcheckToken) return spark.end();
+
     if (!serverAccessTokens.includes(access_token)) {
         let AccessToken = db.collection("AccessToken");
         AccessToken.findOne({_id: access_token}, (err, token) => {
@@ -137,7 +139,7 @@ primus.on('connection', function connection(spark) {
 
 // Handle disconnections
 primus.on('disconnection', function (spark) {
-    if (!db) return;
+    if (!db || !spark.userId) return;
     let user = db.collection("user");
     user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, disconnectedAt: new Date()}}, (err, user) => {
         if (err || !user) {
