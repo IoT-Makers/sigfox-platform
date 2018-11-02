@@ -19,7 +19,7 @@ ARG SERVER_NAME
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder /frontend/dist/ /usr/share/nginx/html
-RUN sed -i "s#localhost#${SERVER_NAME}#" /etc/nginx/nginx.conf
+RUN sed -i "s#localhost#${SERVER_NAME:-localhost}#" /etc/nginx/nginx.conf
 
 #FROM nginx:alpine
 ## COPY nginx.conf /etc/nginx/nginx.conf
