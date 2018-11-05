@@ -80,9 +80,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
           this.organization = organization;
           this.setup();
         });
-      } else {
-        this.setup();
-      }
+      } else this.setup();
     });
   }
 
