@@ -21,7 +21,7 @@ ARG SERVER_NAME
 HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
   CMD curl --silent --fail localhost/nginx-health || exit 1
 
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY server/nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder /frontend/dist/ /usr/share/nginx/html
 RUN sed -i "s#localhost#${SERVER_NAME:-localhost}#" /etc/nginx/nginx.conf
 

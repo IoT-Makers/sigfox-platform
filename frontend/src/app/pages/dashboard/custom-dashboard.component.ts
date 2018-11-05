@@ -103,6 +103,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     classes: 'select-one'
   };
   private selectWidgetType = [
+    {id: 'text', itemName: 'Text'},
     {id: 'value', itemName: 'Value'},
     {id: 'image', itemName: 'Image'},
     {id: 'divider', itemName: 'Divider'},
@@ -797,7 +798,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   addWidget(): void {
-    if (this.newWidget.type !== 'image' && this.newWidget.type !== 'divider' && this.newWidget.filter.where.or.length === 0) {
+    if (this.newWidget.type !== 'text' && this.newWidget.type !== 'image' && this.newWidget.type !== 'divider' && this.newWidget.filter.where.or.length === 0) {
       this.toasterService.pop('error', 'Error', 'Please select at least one category or device.');
       return;
     }
@@ -820,7 +821,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   updateWidget(): void {
-    if (this.newWidget.type !== 'image' && this.newWidget.type !== 'divider' && this.newWidget.filter.where.or.length === 0) {
+    if (this.newWidget.type !== 'text' && this.newWidget.type !== 'image' && this.newWidget.type !== 'divider' && this.newWidget.filter.where.or.length === 0) {
       this.toasterService.pop('error', 'Error', 'Please select at least one category or device.');
       return;
     }
@@ -982,12 +983,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         // Build widgets
         this.widgets.forEach((widget: any, countWidgets: number) => {
           widget.ready = false;
-          // Devices
-          /*this.deviceRef = this.rt.FireLoop.ref<Device>(Device);
-          this.deviceRef.on('change', widget.filter).subscribe((devices: any[]) => {*/
-          if (widget.type === 'image' || widget.type === 'divider') {
-            widget.ready = true;
-          } else {
+         // Load widgets
+          if (widget.type === 'text' || widget.type === 'image' || widget.type === 'divider') widget.ready = true;
+          else {
+            // Get devices data
             this.getDevicesWithFilter(widget.filter).subscribe((devices: any[]) => {
               // Value
               if (widget.type === 'value') {
