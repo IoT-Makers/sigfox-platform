@@ -56,6 +56,8 @@
     "codelyzer": "^4.5.0",
     "core-js": "^2.5.7",
     "d3": "^5.7.0",
+    "d3-geo": "^1.11.1",
+    "d3-geo-projection": "^2.4.1",
     "dotenv": "^6.1.0",
     "dragula": "^3.7.2",
     "event-source-polyfill": "0.0.12",

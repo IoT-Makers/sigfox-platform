@@ -1,5 +1,6 @@
 /* tslint:disable */
 import {
+  Geoloc,
   User,
   GeoPoint
 } from '../index';
@@ -14,6 +15,7 @@ export interface BeaconInterface {
   "userId"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
+  Geolocs?: Geoloc[];
   user?: User;
 }
 
@@ -26,6 +28,7 @@ export class Beacon implements BeaconInterface {
   "userId": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
+  Geolocs: Geoloc[] = null;
   user: User = null;
   constructor(data?: BeaconInterface) {
     Object.assign(this, data);
@@ -95,6 +98,14 @@ export class Beacon implements BeaconInterface {
         },
       },
       relations: {
+        Geolocs: {
+          name: 'Geolocs',
+          type: 'Geoloc[]',
+          model: 'Geoloc',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'beaconId'
+        },
         user: {
           name: 'user',
           type: 'User',
