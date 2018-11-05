@@ -907,10 +907,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
     this.newWidget.filter.where.or.forEach((item: any, index: number) => {
       if (item.categoryId) {
-        const foundCategory = _.find(this.categories, {id: item.categoryId});
+        const foundCategory: any = _.find(this.categories, {id: item.categoryId});
         this.selectedCategories.push({id: item.categoryId, itemName: foundCategory.name});
       } else if (item.id) {
-        const foundDevice = _.find(this.devices, {id: item.id});
+        const foundDevice: any = _.find(this.devices, {id: item.id});
         this.selectedDevices.push({
           id: item.id,
           itemName: foundDevice.name ? foundDevice.id + ' - ' + foundDevice.name : foundDevice.id
