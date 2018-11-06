@@ -25,7 +25,7 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
 **Create and share parsers**
 ![parser](doc/img/parser.png)
 
-**Connected to other services with alerts**
+**Connect to other services with alerts**
 ![alert](doc/img/alert.png)
 
 **Manage devices, share with others in organization**
