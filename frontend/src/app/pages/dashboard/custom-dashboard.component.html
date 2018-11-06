@@ -1905,12 +1905,10 @@
                   <small class="text-danger">(required)</small>
                 </label>
                 <div class="col-md-9">
-                  <angular2-date-picker name="dateTime"
-                                        [(ngModel)]="selectedDateTimeBegin"
-                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter();"
-                                        [settings]="dateTimeSettings"
-                                        required>
-                  </angular2-date-picker>
+                  <label>
+                    <input class="form-control" [(ngModel)]="selectedDateTimeBegin" [ngModelOptions]="{standalone: true}" type="text" [owlDateTimeTrigger]="dt" [owlDateTime]="dt" placeholder="{{selectedDateTimeBegin}}" required>
+                    <owl-date-time (afterPickerClosed)="setFilter();" [pickerMode]="'dialog'" #dt></owl-date-time>
+                  </label>
                 </div>
               </div>
 
@@ -2105,12 +2103,10 @@
                 <label class="col-md-3 form-control-label">Beginning at
                 </label>
                 <div class="col-md-9">
-                  <angular2-date-picker name="dateTime"
-                                        [(ngModel)]="selectedDateTimeBegin"
-                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter();"
-                                        [settings]="dateTimeSettings"
-                                        required>
-                  </angular2-date-picker>
+                  <label>
+                    <input class="form-control" [(ngModel)]="selectedDateTimeBegin" [ngModelOptions]="{standalone: true}" type="text" [owlDateTimeTrigger]="dt" [owlDateTime]="dt" placeholder="{{selectedDateTimeBegin}}" required>
+                    <owl-date-time (afterPickerClosed)="setFilter();" [pickerMode]="'dialog'" #dt></owl-date-time>
+                  </label>
                 </div>
               </div>
 
@@ -2180,12 +2176,10 @@
                 <label class="col-md-3 form-control-label">Beginning at
                 </label>
                 <div class="col-md-9">
-                  <angular2-date-picker name="dateTime"
-                                        [(ngModel)]="selectedDateTimeBegin"
-                                        (onDateSelect)="selectedDateTimeBegin = $event; setFilter();"
-                                        [settings]="dateTimeSettings"
-                                        required>
-                  </angular2-date-picker>
+                  <label>
+                    <input class="form-control" [(ngModel)]="selectedDateTimeBegin" [ngModelOptions]="{standalone: true}" type="text" [owlDateTimeTrigger]="dt" [owlDateTime]="dt" placeholder="{{selectedDateTimeBegin}}" required>
+                    <owl-date-time (afterPickerClosed)="setFilter();" [pickerMode]="'dialog'" #dt></owl-date-time>
+                  </label>
                 </div>
               </div>
 
