@@ -10,8 +10,8 @@
   "author": "Antoine de Chassey & Louis Moreau",
   "license": "AGPL-3.0-only",
   "engines": {
-    "node": ">=10.8.0",
-    "npm": ">=6.0.1"
+    "node": ">=10.13.0",
+    "npm": ">=6.4.1"
   },
   "scripts": {
     "build-angular-sdk": "./node_modules/.bin/lb-sdk server/server.js ../frontend/src/app/shared/sdk -w enabled -v enabled",

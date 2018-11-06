@@ -10,8 +10,8 @@
   "author": "Antoine de Chassey & Louis Moreau",
   "license": "AGPL-3.0-only",
   "engines": {
-    "node": ">=10.1.0",
-    "npm": ">=6.0.1"
+    "node": ">=10.13.0",
+    "npm": ">=6.4.1"
   },
   "scripts": {
     "ng": "./node_modules/.bin/ng",
