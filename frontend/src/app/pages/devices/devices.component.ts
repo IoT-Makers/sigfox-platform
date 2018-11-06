@@ -420,16 +420,26 @@ export class DevicesComponent implements OnInit, OnDestroy {
   //   });
   // }
   rtHandler = (payload: any) => {
-    if (payload.action == "CREATE") {
-      this.devices.unshift(payload.content);
-    } else if (payload.action == "DELETE") {
-      this.devices = this.devices.filter(function (device) {
-        return device.id !== payload.content.id;
-      });
-    } else if (payload.action == "UPDATE") {
-      let idx = this.devices.findIndex(x => x.id == payload.content.id);
-      if (idx != -1) {
-        this.devices[idx] = payload.content;
+    const device = payload.content;
+    if ((device.userId && !this.organization) || device.Organizations.map(x => x.id).includes(this.organization.id)) {
+      if (payload.action == "CREATE") {
+        this.devices.unshift(payload.content);
+      } else if (payload.action == "DELETE") {
+        this.devices = this.devices.filter(function (device) {
+          return device.id !== payload.content.id;
+        });
+      } else if (payload.action == "UPDATE") {
+        let idx = this.devices.findIndex(x => x.id == payload.content.id);
+        if (idx != -1) {
+          // keep geolocs, payload does not have geoloc inside message
+          if (this.devices[idx].Messages[0]) {
+            const lastMsg = this.devices[idx].Messages[0];
+            if (device && device.Messages[0] && device.Messages[0].id == lastMsg.id) {
+              device.Messages[0] = lastMsg;
+            }
+          }
+          this.devices[idx] = payload.content;
+        }
       }
     }
   };
@@ -445,13 +455,29 @@ export class DevicesComponent implements OnInit, OnDestroy {
     }
   };
 
+  geolocHandler = (payload: any) => {
+    if (payload.action == "CREATE") {
+      for (let device of this.devices) {
+        let lastMsg = device.Messages[0];
+        if (!lastMsg) continue;
+        if (lastMsg.id == payload.content.messageId) {
+          lastMsg.Geolocs ? lastMsg.Geolocs.push(payload.content) : lastMsg.Geolocs = [payload.content];
+          return;
+        }
+      }
+    }
+  };
+
+
   subscribe(): void {
     this.rtHandler = this.rt.addListener("device", this.rtHandler);
     this.rtLastMessageHandler = this.rt.addListener("message", this.rtLastMessageHandler);
+    this.geolocHandler = this.rt.addListener("geoloc", this.geolocHandler);
   }
 
   unsubscribe(): void {
     this.rt.removeListener(this.rtHandler);
     this.rt.removeListener(this.rtLastMessageHandler);
+    this.rt.removeListener(this.geolocHandler);
   }
 }

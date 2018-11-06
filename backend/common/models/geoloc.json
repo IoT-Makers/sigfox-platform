@@ -50,6 +50,11 @@
   },
   "validations": [],
   "relations": {
+    "Beacon": {
+      "type": "belongsTo",
+      "model": "Beacon",
+      "foreignKey": "beaconId"
+    },
     "Device": {
       "type": "belongsTo",
       "model": "Device",

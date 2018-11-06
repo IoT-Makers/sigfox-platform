@@ -6,7 +6,7 @@
 This is a cloud platform to manage Sigfox devices and visualize messages.
 ![overview](doc/img/overview.png)
 
-## Try it
+## [Try it](https://try.iotagency.sigfox.com)
 You can deploy it yourself, but we encourage you to try it out [here](https://try.iotagency.sigfox.com).
 
 ## Features  
@@ -35,18 +35,19 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
 
 ### Application
 
- * **Backend:** [Loopback 3+](https://loopback.io/)
- * **Frontend:** [Angular 6+](https://angular.io/)
- * **Real-time:** [Primus](https://github.com/primus/primus)
- * **Database:** [MongoDB](https://www.mongodb.com/en)
- * **Pub-sub:** [Redis](https://redis.io/)
+ * Backend: [Loopback 3+](https://loopback.io/)
+ * Frontend: [Angular 6+](https://angular.io/)
+ * Real-time: [Primus](https://github.com/primus/primus)
+ * Database: [MongoDB](https://www.mongodb.com/en)
+ * Pub-sub: [Redis](https://redis.io/)
  
- ### Deploy
+ ### Deployment
  
- * **Reverse proxy:** [Traefik](https://traefik.io/)
- * **Containerization:** [Docker](https://www.docker.com/)
- * **Orchestrator:** [Docker Swarm](https://docs.docker.com/engine/swarm/)
- * **Management UI:** [Portainer](https://portainer.io/)
+ * Reverse proxy: [Traefik](https://traefik.io/)
+ * Containerization: [Docker](https://www.docker.com/)
+ * Orchestrator: [Docker Swarm](https://docs.docker.com/engine/swarm/)
+ * Management UI: [Portainer](https://portainer.io/)
+ * Supervision: [Prometheus](https://prometheus.io/)
 
 ## Development
 

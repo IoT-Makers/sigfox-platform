@@ -644,7 +644,7 @@
                       <span class="text-gray-dark">Category: </span>
                       <span class="text-category">{{device.Category ? device.Category.name : "None"}}</span>
                     </div>
-                    <ng-container class="text-left">
+                    <ng-container *ngIf="device.Messages[0]" class="text-left">
                       <ng-container *ngFor="let p of device.Messages[0].data_parsed">
                         <!-- Battery -->
                         <ng-container *ngIf="p.key === 'battery' && (p.value != null) && (p.unit === '%')">
@@ -793,7 +793,7 @@
         </div>
       </ng-container>
       <ng-container *ngIf="messagesReady && hasNoMessageChartData">
-        No messages yet...
+        Nothing to show yet...
       </ng-container>
 
       <ng-container *ngIf="messagesReady && !hasNoMessageChartData">

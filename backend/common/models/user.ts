@@ -102,7 +102,10 @@ class user {
   }
 
   public beforeSave(ctx: any, next: Function): void {
-    if (ctx.instance) ctx.instance.createdAt = new Date();
+    if (ctx.instance) {
+      ctx.instance.createdAt = new Date();
+      ctx.instance.email = ctx.instance.email.toLocaleLowerCase();
+    }
     console.log("user: Before Save");
     next();
   }
@@ -119,12 +122,7 @@ class user {
 
   public afterRemoteCreate(ctx: any, userInstance: any, next: any) {
 
-    userInstance.email = userInstance.email.toLocaleLowerCase();
-    // userInstance.username = userInstance.email.toLocaleLowerCase();
-    // userInstance.updateAttribute('username', userInstance.username, (err: any, userUpdated: any) => {
-    //   if (err) console.error(err);
-    //   else console.log("Updated user username as: ", userUpdated);
-    // });
+    console.log('afterRemoteCreate');
 
     const adminRole = {
       name: "admin"
