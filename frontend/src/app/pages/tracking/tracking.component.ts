@@ -16,6 +16,7 @@ import {ActivatedRoute} from '@angular/router';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
 import * as d3 from "d3";
 import * as d3Geo from "d3-geo";
+// import * as geoJson from './FRA.geo.json';
 
 @Component({
   selector: 'app-devices',
@@ -53,10 +54,6 @@ export class TrackingComponent implements OnInit, OnDestroy {
   private api;
   private id;
 
-  // D3
-  private d3Circles: any;
-  private projection;
-
   constructor(private rt: RealtimeService,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
@@ -69,7 +66,6 @@ export class TrackingComponent implements OnInit, OnDestroy {
               private messageApi: MessageApi,
               private route: ActivatedRoute) {
     this.toasterService = toasterService;
-    this.projection = d3Geo.geoMercator();
   }
 
   ngOnInit(): void {
@@ -112,6 +108,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
           this.mapLng = geolocs[0].location.lng;
           this.mapZoom = 15;
           this.setBubbles(this.geolocs[0]);
+          // this.geolocs[1].location.lng = -75;
           this.setBubbles(this.geolocs[1]);
         }
         this.geolocsReady = true;
@@ -172,21 +169,52 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   setBubbles(geoloc: Geoloc) {
+    // Create a unit projection.
+    const projection = d3Geo.geoMercator();
+    // Create a path generator.
+    const path = d3Geo.geoPath().projection(projection);
     // Make an SVG Container
     const svg = d3.select("#tag");
 
     // Set zoom
-    const w = document.getElementById("tag").clientWidth;
-    const h = document.getElementById("tag").clientHeight;
-    this.projection
-      .translate([w / 2, h / 2]);
+    // const w = document.getElementById("tag").clientWidth;
+    // const h = document.getElementById("tag").clientHeight;
+    // const offset = [w / 2, h / 2];
+    // const scale = 150000;
+    // const center = d3Geo.geoCentroid(geoJson);
+    // projection.scale(scale).translate(offset);
+
+
+    // // Compute the bounds of a feature of interest, then derive scale & translate.
+    // const b = path.bounds(geoJson),
+    //   s = .95 / Math.max((b[1][0] - b[0][0]) / w, (b[1][1] - b[0][1]) / h),
+    //   t = [(w - s * (b[1][0] + b[0][0])) / 2, (h - s * (b[1][1] + b[0][1])) / 2];
+    // // Update the projection to use computed scale & translate.
+    // projection.scale(s).translate(t);
+
+    // Make country
+    // svg.selectAll("path").data(geoJson.features).enter().append("path")
+    //   .attr("d", path)
+    //   .style("fill", "#89c0eb")
+    //   .style("fill-opacity", "0.5")
+    //   .style("stroke-width", "1")
+    //   .style("stroke", "black");
+
+
+    // // Zoom and pan
+    // const zoom = d3.zoom()
+    //   .scaleExtent([0.1, 10]) //zoom limit
+    //   .on('zoom', () => {
+    //     svg.style('stroke-width', `${1.5 / d3.event.transform.k}px`);
+    //     svg.attr('transform', d3.event.transform) // updated for d3 v4
+    //   });
+    // svg.call(zoom)
+    //   .append('svg:g')
+    //   .attr('transform', 'translate(100,50) scale(.5,.5)');
 
     // Make circles
-    this.d3Circles = svg.selectAll("circle");
-    // this.d3Circles
-    //   .exit()
-    //   .remove();
-    this.d3Circles
+    const d3Circles = svg.selectAll("circles.points");
+    d3Circles
       .data([geoloc], (g: Geoloc) => {
         return g.id;
       })
@@ -196,7 +224,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
         return g.id;
       })
       .attr("transform", (g: Geoloc) => {
-        return "translate(" + this.projection([g.location.lng, g.location.lat]) + ")scale(1)";
+        return "translate(" + projection([g.location.lng, g.location.lat]) + ")scale(1)";
       })
       // .attr("cx", 6371 * Math.cos(geoloc.location.lat) * Math.cos(geoloc.location.lat))
       // .attr("cy", 6371 * Math.cos(geoloc.location.lng) * Math.sin(geoloc.location.lng))
@@ -229,7 +257,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
       .enter()
       .append("text")
       .attr("transform", (g: Geoloc) => {
-        return "translate(" + this.projection([g.location.lng, g.location.lat]) + ")scale(1)";
+        return "translate(" + projection([g.location.lng, g.location.lat]) + ")scale(1)";
       })
       .style("text-anchor", "middle")
       .style("font-weight", "bold")
