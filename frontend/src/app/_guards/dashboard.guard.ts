@@ -15,14 +15,17 @@ export class DashboardGuard implements CanActivate {
   }
 
   checkDashboardOwner(route: ActivatedRouteSnapshot): Observable<boolean> {
-    return this.userApi.getDashboards(this.userApi.getCurrentId(), {where: {id: route.params.id}}).map((dashboards: Dashboard[]) => {
-      if (dashboards.length > 0) {
-        return true;
-      } else {
-        // Not dashboard owner in so redirect to overview page
+    return this.userApi.findByIdDashboards(this.userApi.getCurrentId(), route.params.id).map((dashboards: Dashboard[]) => {
+      if (dashboards) return true;
+      else {
+        // Not dashboard owner so redirect to overview page
         this.router.navigate(['/']);
         return false;
       }
+    }).catch(res => {
+      // Not dashboard owner so redirect to overview page
+      this.router.navigate(['/']);
+      return Observable.of(false);
     });
   }
 }

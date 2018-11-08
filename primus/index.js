@@ -8,6 +8,7 @@ const ObjectId = mongolib.ObjectId;
 const mongodbUrl = process.env.MONGO_URL;
 if (!process.env.SERVER_ACCESS_TOKENS) return console.error('/!\ Please set the SERVER_ACCESS_TOKENS env.');
 const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
+const healthcheckToken = 'healthcheck';
 
 let db;
 
@@ -55,12 +56,13 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 
 // Handle connections
 primus.on('connection', function connection(spark) {
-    console.info(primus.connected + " clients connected");
-    // TODO: handle the case where connection comes in before db connection
     if (!db) return;
 
+    console.info(primus.connected + " clients connected");
     // manual auth hook, attach userId to spark if access token found
     const access_token = spark.request.query.access_token;
+    if (!access_token || access_token === healthcheckToken) return spark.end();
+
     if (!serverAccessTokens.includes(access_token)) {
         let AccessToken = db.collection("AccessToken");
         AccessToken.findOne({_id: access_token}, (err, token) => {
@@ -82,10 +84,15 @@ primus.on('connection', function connection(spark) {
 
             // Update user properties: connected
             let user = db.collection("user");
-            user.update({_id: ObjectId(spark.userId)}, {$set: {connected: true, seenAt: new Date()}}, (err, user) => {
+            user.update({_id: ObjectId(spark.userId)}, {
+                $set: {
+                    connected: true,
+                    connectedAt: new Date()
+                }
+            }, (err, user) => {
                 if (err || !user) {
                     console.info("User not found");
-                } else console.info('[' + spark.userId + '] Updated fields connected and seenAt');
+                } else console.info('[' + spark.userId + '] Updated fields connected and connectedAt');
             });
         });
     }
@@ -132,12 +139,12 @@ primus.on('connection', function connection(spark) {
 
 // Handle disconnections
 primus.on('disconnection', function (spark) {
-    if (!db) return;
+    if (!db || !spark.userId) return;
     let user = db.collection("user");
-    user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, seenAt: new Date()}}, (err, user) => {
+    user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, disconnectedAt: new Date()}}, (err, user) => {
         if (err || !user) {
             console.info("User not found");
-        } else console.info('[' + spark.userId + '] Updated fields connected and seenAt');
+        } else console.info('[' + spark.userId + '] Updated fields connected and disconnectedAt');
     });
 });
 
@@ -153,18 +160,12 @@ function messageHandler(payload) {
         if (!targetClients.size)
             return;
 
-        if (payload.action === "DELETE") {
-            send(targetClients, payload.event, payload.action, msg);
-            return;
-        };
-        db.collection("Geolocs").find({messageId: msg.id}, (err, res) => {
-            console.log(res);
-            console.log(typeof res);
-        });
+        if (payload.action === "DELETE") return send(targetClients, payload.event, payload.action, msg);
+
         db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
             addAttribute(msg, "Geolocs", geolocs);
             addAttribute(msg, "Device", payload.device);
-            send(targetClients, payload.event, payload.action, msg);
+            return send(targetClients, payload.event, payload.action, msg);
         });
     }
 }
@@ -179,10 +180,7 @@ function deviceHandler(payload) {
         if (!targetClients.size)
             return;
 
-        if (payload.action === "DELETE") {
-            send(targetClients, payload.event, payload.action, device);
-            return;
-        }
+        if (payload.action === "DELETE") return send(targetClients, payload.event, payload.action, device);
 
         db.collection("Message").find({deviceId: device.id}).limit(1).sort({"createdAt": -1}).toArray((err, messages) => {
             addAttribute(device, "Messages", messages);
@@ -192,7 +190,7 @@ function deviceHandler(payload) {
                     addAttribute(device, "Parser", parser);
                     db.collection("Organization").find({deviceId: device.id}).toArray((err, organizations) => {
                         addAttribute(device, "Organizations", organizations);
-                        send(targetClients, payload.event, payload.action, device);
+                        return send(targetClients, payload.event, payload.action, device);
                     });
                 });
             });
@@ -212,14 +210,11 @@ function parserHandler(payload) {
         if (!targetClients.size)
             return;
 
-        if (payload.action === "DELETE") {
-            send(targetClients, payload.event, payload.action, parser);
-            return;
-        }
+        if (payload.action === "DELETE") return send(targetClients, payload.event, payload.action, parser);
 
         db.collection("Device").find({parserId: parser.id}).toArray((err, devices) => {
             addAttribute(parser, "Devices", devices);
-            send(targetClients, payload.event, payload.action, parser);
+            return send(targetClients, payload.event, payload.action, parser);
         });
     }
 }
@@ -231,11 +226,18 @@ function geolocHandler(payload) {
         console.log(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
-        // if the message owner is not online, no need to look up
         if (!targetClients.size)
             return;
 
-        return send(targetClients, payload.event, payload.action, geoloc);
+        db.collection("Device").findOne({_id: geoloc.deviceId}, (err, device) => {
+            addAttribute(geoloc, "Device", device);
+            if (geoloc.beaconId) {
+                db.collection("Beacon").findOne({_id: geoloc.beaconId}, (err, beacon) => {
+                    addAttribute(geoloc, "Beacon", beacon);
+                    return send(targetClients, payload.event, payload.action, geoloc);
+                });
+            } else return send(targetClients, payload.event, payload.action, geoloc);
+        });
     }
 }
 
@@ -251,15 +253,13 @@ function alertHandler(payload) {
         if (!targetClients.size)
             return;
 
-        if (payload.action === "DELETE") {
-            send(targetClients, payload.event, payload.action, alert);
-            return;
-        }
+        if (payload.action === "DELETE") return send(targetClients, payload.event, payload.action, alert);
+
         db.collection("Connector").findOne({_id: ObjectId(alert.connectorId)}, (err, connector) => {
             addAttribute(alert, "Connector", connector);
             db.collection("Device").findOne({_id: alert.deviceId}, (err, device) => {
                 addAttribute(alert, "Device", device);
-                send(targetClients, payload.event, payload.action, alert);
+                return send(targetClients, payload.event, payload.action, alert);
             });
         });
     }
@@ -314,7 +314,7 @@ function categoryHandler(payload) {
             addAttribute(category, "Devices", devices);
             db.collection("Organization").find({categoryId: category.id}).toArray((err, organizations) => {
                 addAttribute(category, "Organizations", organizations);
-                send(targetClients, payload.event, payload.action, category);
+                return send(targetClients, payload.event, payload.action, category);
             });
         });
     }
@@ -330,7 +330,7 @@ function dashboardHandler(payload) {
         let targetClients = getTargetClients(userId, [dashboard.organizationId]);
         if (!targetClients.size)
             return;
-        send(targetClients, payload.event, payload.action, dashboard);
+        return send(targetClients, payload.event, payload.action, dashboard);
     }
 }
 
@@ -344,7 +344,7 @@ function widgetHandler(payload) {
         let targetClients = getTargetClients(userId);
         if (!targetClients.size)
             return;
-        send(targetClients, payload.event, payload.action, widget);
+        return send(targetClients, payload.event, payload.action, widget);
     }
 }
 
@@ -355,11 +355,19 @@ function addAttribute(obj, attName, attValue) {
             attValue.id = attValue._id;
             delete attValue._id;
         }
+        if (Array.isArray(attValue))
+            attValue = attValue.map((v, i, arr) => {
+                if (v._id) {
+                    v.id = v._id;
+                    delete v._id;
+                }
+                return v;
+            });
         obj[attName] = attValue;
     }
 }
 
-function getTargetClients(userId, orgIds=null) {
+function getTargetClients(userId, orgIds = null) {
     let targetClients = new Set();
     if (userId) {
         primus.forEach(function (spark, id, connections) {

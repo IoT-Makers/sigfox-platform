@@ -57,7 +57,7 @@
     "locatedAt": {
       "type": "date"
     },
-    "seenAt": {
+    "messagedAt": {
       "type": "date"
     },
     "locked": {
@@ -67,11 +67,6 @@
   },
   "validations": [],
   "relations": {
-    "Employee": {
-      "type": "belongsTo",
-      "model": "Employee",
-      "foreignKey": "employeeId"
-    },
     "user": {
       "type": "belongsTo",
       "model": "user",
@@ -120,21 +115,6 @@
       "principalType": "ROLE",
       "principalId": "$unauthenticated",
       "permission": "DENY"
-    },
-    {
-      "accessType": "READ",
-      "principalType": "ROLE",
-      "principalId": "$unauthenticated",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$authenticated",
-      "permission": "ALLOW",
-      "property": [
-        "find"
-      ]
     },
     {
       "accessType": "*",

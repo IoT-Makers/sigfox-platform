@@ -9,11 +9,7 @@ export class AuthGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.userApi.isAuthenticated()) {
-      this.userApi.patchAttributes(this.userApi.getCurrentId(), { connected: true }).subscribe();
-      return true;
-    }
-
+    if (this.userApi.isAuthenticated()) return true;
     // Not logged in so redirect to login page with the return url
     this.router.navigate(['/login'], {queryParams: {returnUrl: state.url}});
     return false;

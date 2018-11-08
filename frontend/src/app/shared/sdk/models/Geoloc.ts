@@ -5,6 +5,7 @@ import {
   User,
   Organization,
   Employee,
+  Beacon,
   GeoPoint
 } from '../index';
 
@@ -23,11 +24,13 @@ export interface GeolocInterface {
   "userId"?: any;
   "organizationId"?: any;
   "employeeId"?: any;
+  "beaconId"?: string;
   Device?: Device;
   Message?: Message;
   user?: User;
   Organization?: Organization;
   Employee?: Employee;
+  Beacon?: Beacon;
 }
 
 export class Geoloc implements GeolocInterface {
@@ -44,11 +47,13 @@ export class Geoloc implements GeolocInterface {
   "userId": any = <any>null;
   "organizationId": any = <any>null;
   "employeeId": any = <any>null;
+  "beaconId": string = '';
   Device: Device = null;
   Message: Message = null;
   user: User = null;
   Organization: Organization = null;
   Employee: Employee = null;
+  Beacon: Beacon = null;
   constructor(data?: GeolocInterface) {
     Object.assign(this, data);
   }
@@ -134,6 +139,10 @@ export class Geoloc implements GeolocInterface {
           name: 'employeeId',
           type: 'any'
         },
+        "beaconId": {
+          name: 'beaconId',
+          type: 'string'
+        },
       },
       relations: {
         Device: {
@@ -174,6 +183,14 @@ export class Geoloc implements GeolocInterface {
           model: 'Employee',
           relationType: 'belongsTo',
                   keyFrom: 'employeeId',
+          keyTo: 'id'
+        },
+        Beacon: {
+          name: 'Beacon',
+          type: 'Beacon',
+          model: 'Beacon',
+          relationType: 'belongsTo',
+                  keyFrom: 'beaconId',
           keyTo: 'id'
         },
       }

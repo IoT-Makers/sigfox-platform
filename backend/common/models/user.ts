@@ -92,23 +92,20 @@ class user {
           const devAccessTokens = userInstance.devAccessTokens;
           if (devAccessTokens) {
             this.model.app.models.AccessToken.create(devAccessTokens, (error: any, result: any) => {
-              if (err) {
-                next(error, result);
-              }
-              else {
-                next();
-              }
+              if (err) next(error, result);
+              else next();
               console.log("Successfully restored devAccessTokens in AccessToken model.");
             });
-          } else {
-            next();
-          }
+          } else next();
         }
       });
   }
 
   public beforeSave(ctx: any, next: Function): void {
-    if (ctx.instance) ctx.instance.createdAt = new Date();
+    if (ctx.instance) {
+      ctx.instance.createdAt = new Date();
+      ctx.instance.email = ctx.instance.email.toLocaleLowerCase();
+    }
     console.log("user: Before Save");
     next();
   }
@@ -125,7 +122,7 @@ class user {
 
   public afterRemoteCreate(ctx: any, userInstance: any, next: any) {
 
-    userInstance.email = userInstance.email.toLocaleLowerCase();
+    console.log('afterRemoteCreate');
 
     const adminRole = {
       name: "admin"

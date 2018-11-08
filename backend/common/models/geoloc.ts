@@ -131,10 +131,9 @@ class Geoloc {
 
     if (hasBeaconLocation) {
       geoloc_beacon.type = 'beacon';
-      Beacon.findOne({where: {id: geoloc_beacon.beaconId}}, (err: any, beacon: any) => {
-        if (err) {
-          console.error(err);
-        } else if (beacon) {
+      Beacon.findById(geoloc_beacon.beaconId, (err: any, beacon: any) => {
+        if (err) console.error(err);
+        else if (beacon) {
           geoloc_beacon.location.lat = beacon.location.lat;
           geoloc_beacon.location.lng = beacon.location.lng;
           geoloc_beacon.level = beacon.level;
@@ -258,9 +257,6 @@ class Geoloc {
     const Message = this.model.app.models.Message;
     const Alert = this.model.app.models.Alert;
 
-    // Auto set uppercase for deviceId
-    data.deviceId = data.deviceId.toUpperCase();
-
     if (typeof data.geoloc === 'undefined'
       || typeof data.geoloc.location === 'undefined'
       || typeof data.deviceId === 'undefined'
@@ -268,6 +264,10 @@ class Geoloc {
       || typeof data.seqNumber === 'undefined') {
       return next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
     }
+
+    // Force set uppercase for deviceId
+    data.deviceId = data.deviceId.toUpperCase();
+
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
@@ -304,27 +304,24 @@ class Geoloc {
           const geoloc = new Geoloc;
           geoloc.type = 'sigfox';
           geoloc.location = new loopback.GeoPoint(data.geoloc.location);
-          // TODO: below is retro-compatibility
-          if (data.geoloc.accuracy) geoloc.accuracy = data.geoloc.accuracy;
-          else geoloc.accuracy = data.geoloc.precision;
-
+          geoloc.accuracy = data.geoloc.accuracy;
           geoloc.createdAt = messageInstance.createdAt;
           geoloc.userId = userId;
           geoloc.messageId = messageInstance.id;
           geoloc.deviceId = messageInstance.deviceId;
 
-          /**
-           * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
-           */
-            // Build the GPS Geoloc object
-          const geoloc_gps = new Geoloc;
-          geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
-          geoloc_gps.createdAt = messageInstance.createdAt;
-          geoloc_gps.userId = messageInstance.userId;
-          geoloc_gps.messageId = messageInstance.id;
-          geoloc_gps.deviceId = messageInstance.deviceId;
-
           if (messageInstance.data_parsed) {
+            /**
+             * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
+             */
+              // Build the GPS Geoloc object
+            const geoloc_gps = new Geoloc;
+            geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
+            geoloc_gps.createdAt = messageInstance.createdAt;
+            geoloc_gps.userId = messageInstance.userId;
+            geoloc_gps.messageId = messageInstance.id;
+            geoloc_gps.deviceId = messageInstance.deviceId;
+
             messageInstance.data_parsed.forEach((p: any) => {
               if (p.value !== null && typeof p.value !== 'undefined') {
                 // Check if there is Ubiscale geoloc in parsed data
@@ -349,11 +346,7 @@ class Geoloc {
             geoloc.deviceId,
             req,
             (err: any, res: any) => {
-              if (err) {
-                next(err, null);
-              } else {
-                //console.log(res);
-              }
+              if (err) console.error(err);
             });
 
           // Creating a new Geoloc
@@ -361,29 +354,19 @@ class Geoloc {
             {
               where: {
                 and: [
-                  {location: geoloc.location},
                   {type: geoloc.type},
-                  {createdAt: geoloc.createdAt},
-                  {userId: geoloc.userId},
-                  {messageId: geoloc.messageId},
-                  {deviceId: geoloc.deviceId}
+                  {messageId: geoloc.messageId}
                 ]
               }
             }, // find
             geoloc, // create
             (err: any, geolocInstance: any, created: boolean) => { // callback
-              if (err) {
-                console.error(err);
-                next(err, geolocInstance);
-              } else if (created) {
+              if (err) next(err, geolocInstance);
+              else if (created) {
                 console.log('Created geoloc as: ', geolocInstance);
-
-                // Update device in order to trigger a real time upsert event
                 this.updateDeviceLocatedAt(geolocInstance.deviceId, geolocInstance.createdAt);
                 next(null, geolocInstance);
-              } else {
-                next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
-              }
+              } else next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
             });
         }
       });
@@ -393,14 +376,9 @@ class Geoloc {
     // Models
     const Device = this.model.app.models.Device;
 
-    Device.findOne({
-      where: {
-        id: deviceId
-      }
-    }, (err: any, deviceInstance: any) => {
-      if (err) {
-        console.error(err);
-      } else if (deviceInstance) {
+    Device.findById(deviceId, (err: any, deviceInstance: any) => {
+      if (err) console.error(err);
+      else if (deviceInstance) {
         deviceInstance.updateAttribute('locatedAt', createdAt);
       }
     });
@@ -411,11 +389,9 @@ class Geoloc {
     Geoloc.create(
       geoloc,
       (err: any, geolocInstance: any) => {
-        if (err) {
-          console.error(err);
-        } else {
+        if (err) console.error(err);
+        else {
           console.log('Created geoloc as: ', geolocInstance);
-          // Update device in order to trigger a real time upsert event
           this.updateDeviceLocatedAt(geolocInstance.deviceId, geolocInstance.createdAt);
         }
       });

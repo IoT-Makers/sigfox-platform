@@ -9,12 +9,14 @@
 COMMENT
 
 # Constants
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m' # No Color
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+YELLOW="\033[38;5;11m"
+BOLD="\033[1m"
+RESET="\033[0m"
 
 if [[ -z "${REGISTRY_URL}" ]]; then
-    echo "REGISTRY_URL not set. If you are using sudo, try sudo -E"
+    printf "${RED}REGISTRY_URL not set. If you are using sudo, try sudo -E\n${RESET}"
     exit 1
 fi
 
@@ -32,11 +34,11 @@ while true; do
     export SUBDOMAIN=${@:$OPTIND+$subdomain_ctr:1};
     if [ -z "$SUBDOMAIN" ]; then
         if [[ "${subdomain_ctr}" -eq 0 ]]; then
-            printf "${RED}No subdomain found\n${NC}"
+            printf "${RED}No subdomain found\n${RESET}"
         fi
         break
     fi
-    printf "${GREEN}===============> SUBDOMAIN = $SUBDOMAIN\n${NC}"
+    printf "${GREEN}===============> SUBDOMAIN = $SUBDOMAIN\n${RESET}"
     export PRIMUS_URL=https://primus.${SUBDOMAIN}.${DOMAIN}
     export API_URL=https://api.${SUBDOMAIN}.${DOMAIN}
     export BUILD_ENV=prod
@@ -44,11 +46,11 @@ while true; do
     export GIT_HASH=`git log --pretty=format:'%h' -n 1`
 
     docker-compose build
-    printf "${GREEN}===============> Building completed for $SUBDOMAIN\n${NC}"
+    printf "${GREEN}===============> Building completed for $SUBDOMAIN\n${RESET}"
 
     push_img=$push_img_arg
     if [ -z "$push_img" ]; then
-        read -r -p "Are you sure you wish to push new images to the docker registry $REGISTRY_URL? [Y/n] " push_img
+        read -r -p "$(echo -e ${YELLOW}"Are you sure you wish to push new images to the docker registry $REGISTRY_URL?"${RESET}" [y/n] ")" push_img
     fi
 
     case $push_img in

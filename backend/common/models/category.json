@@ -88,6 +88,7 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
+        "download",
         "downloadFromOrganization"
       ]
     }

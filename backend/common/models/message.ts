@@ -163,12 +163,11 @@ class Message {
                   next(err, data);
                 } else if (messageInstance) {
                   // console.log('Found the corresponding message and storing reception in it.');
-                  if (!messageInstance.reception) {
-                    messageInstance.reception = [];
-                  }
-                  messageInstance.reception.push(data.reception[0]);
-                  Message.upsert(
-                    messageInstance,
+                  if (!messageInstance.reception) messageInstance.reception = [];
+                  const reception = messageInstance.reception.push(data.reception[0]);
+                  messageInstance.updateAttribute(
+                    'reception',
+                    [reception],
                     (err: any, messageInstance: any) => {
                       if (err) {
                         console.error(err);
@@ -386,7 +385,7 @@ class Message {
     }
   }
 
-  public updateDevice(deviceId: string) {
+  public updateDevice(deviceId: string, createdAt: Date) {
     // Model
     const Device = this.model.app.models.Device;
     Device.findOne({
@@ -416,7 +415,7 @@ class Message {
             deviceInstance.updateAttribute('successRate', device.successRate);
           }
           // Update the date when the device was last seen
-          deviceInstance.updateAttribute('seenAt', new Date());
+          deviceInstance.updateAttribute('messagedAt', createdAt);
         } else {
           console.error("Could not update the success rate of an unknown device");
         }
@@ -460,13 +459,13 @@ class Message {
     const userId = req.accessToken.userId;
 
     // Find the message containing the ack request
-    Message.findByOne({
+    Message.findOne({
       where: {
         and: [
           {deviceId: data.deviceId},
           {time: data.time},
           {ack: true},
-        ],
+        ]
       },
     }, (err: any, messageInstance: any) => {
       if (err) {
@@ -585,7 +584,7 @@ class Message {
   public afterSave(ctx: any, next: Function): void {
     // TODO: merge these 2 functions
     // Calculate success rate and update device
-    this.updateDevice(ctx.instance.deviceId);
+    this.updateDevice(ctx.instance.deviceId, ctx.instance.createdAt);
     this.linkMessageToOrganization(ctx.instance, (device => {
       // Pub-sub
       let msg = ctx.instance;
