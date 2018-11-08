@@ -101,6 +101,11 @@
       "type": "belongsTo",
       "model": "Parser",
       "foreignKey": "parserId"
+    },
+    "Employee": {
+      "type": "belongsTo",
+      "model": "Employee",
+      "foreignKey": "employeeId"
     }
   },
   "acls": [
@@ -112,6 +117,12 @@
     },
     {
       "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "$unauthenticated",
       "permission": "ALLOW",
