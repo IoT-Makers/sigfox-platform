@@ -184,14 +184,16 @@ function deviceHandler(payload) {
 
         db.collection("Message").find({deviceId: device.id}).limit(1).sort({"createdAt": -1}).toArray((err, messages) => {
             addAttribute(device, "Messages", messages);
-            db.collection("Category").findOne({_id: ObjectId(device.categoryId)}, (err, category) => {
-                addAttribute(device, "Category", category);
-                db.collection("Parser").findOne({_id: ObjectId(device.parserId)}, (err, parser) => {
-                    addAttribute(device, "Parser", parser);
-                    db.collection("Organization").find({deviceId: device.id}).toArray((err, organizations) => {
-                        addAttribute(device, "Organizations", organizations);
-                        return send(targetClients, payload.event, payload.action, device);
-                    });
+            db.collection("Parser").findOne({_id: ObjectId(device.parserId)}, (err, parser) => {
+                addAttribute(device, "Parser", parser);
+                db.collection("Organization").find({deviceId: device.id}).toArray((err, organizations) => {
+                    addAttribute(device, "Organizations", organizations);
+                    if (device.categoryId)
+                        db.collection("Category").findOne({_id: ObjectId(device.categoryId)}, (err, category) => {
+                            addAttribute(device, "Category", category);
+                            return send(targetClients, payload.event, payload.action, device);
+                        });
+                    return send(targetClients, payload.event, payload.action, device);
                 });
             });
         });
