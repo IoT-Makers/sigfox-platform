@@ -5,6 +5,7 @@ WORKDIR /backend
 COPY package*.json /backend/
 RUN npm install
 
+EXPOSE $PORT
 HEALTHCHECK --interval=15s --timeout=15s --retries=3 \
   CMD curl --silent --fail localhost:$PORT/ || exit 1
 
