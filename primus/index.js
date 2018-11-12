@@ -8,8 +8,6 @@ const MongoClient = mongolib.MongoClient;
 const ObjectId = mongolib.ObjectId;
 const mongodbUrl = process.env.MONGO_URL;
 const rabbitUrl = process.env.RABBIT_URL || 'amqp://localhost';
-if (!process.env.SERVER_ACCESS_TOKENS) return console.error('/!\ Please set the SERVER_ACCESS_TOKENS env.');
-const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
 const healthcheckToken = 'healthcheck';
 
 let db;
@@ -117,7 +115,6 @@ primus.on('connection', function connection(spark) {
     const access_token = spark.request.query.access_token;
     if (!access_token || access_token === healthcheckToken) return spark.end();
 
-    if (!serverAccessTokens.includes(access_token)) {
         let AccessToken = db.collection("AccessToken");
         AccessToken.findOne({_id: access_token}, (err, token) => {
             if (err || !token) {
@@ -149,7 +146,6 @@ primus.on('connection', function connection(spark) {
                 } else console.info('[' + spark.userId + '] Updated fields connected and connectedAt');
             });
         });
-    }
 });
 
 
@@ -402,7 +398,7 @@ function getTargetClients(userId, orgIds = null) {
             }
         });
     }
-    console.log(targetClients.size + ' clients online');
+    console.log(targetClients.size + ' targets online');
     return targetClients;
 }
 

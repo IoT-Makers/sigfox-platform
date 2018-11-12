@@ -2,8 +2,8 @@ import * as amqp from 'amqplib/callback_api'
 
 export class RabbitPub {
 
-  private ch: amqp.Channel;
-  private ex = 'realtime_exchange';
+  private _ch: amqp.Channel;
+  private _ex = 'realtime_exchange';
 
   private static _instance: RabbitPub = new RabbitPub();
 
@@ -24,9 +24,9 @@ export class RabbitPub {
     amqp.connect(rabbitURL, (err, conn) => {
       conn.createChannel((err, ch) => {
         if (err) console.error(err);
-        ch.assertExchange(this.ex, 'fanout', {durable: true}, (err, ok) => {
+        ch.assertExchange(this._ex, 'fanout', {durable: true}, (err, ok) => {
           if (err) console.error(err);
-          this.ch = ch;
+          this._ch = ch;
         });
       });
     });
@@ -37,9 +37,8 @@ export class RabbitPub {
   }
 
   public publish(msg: string) {
-    if (!this.ch) return;
-    this.ch.publish(this.ex, 'rt', Buffer.from(msg, 'utf8'));
-    console.log(" [x] Sent %s", msg);
+    if (!this._ch) return;
+    this._ch.publish(this._ex, 'rt', Buffer.from(msg, 'utf8'));
   }
 }
 
