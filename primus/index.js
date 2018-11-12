@@ -2,16 +2,17 @@
 // MONGO_URL=mongodb://usr:pwd@localhost:27017/testdb SERVER_ACCESS_TOKENS='"ghjmnbv44cdftgy rtyuh9784b"' npm start
 
 const Primus = require('primus');
+const amqp = require('amqplib/callback_api');
 const mongolib = require('mongodb');
 const MongoClient = mongolib.MongoClient;
 const ObjectId = mongolib.ObjectId;
 const mongodbUrl = process.env.MONGO_URL;
+const rabbitUrl = process.env.RABBIT_URL || 'amqp://localhost';
 if (!process.env.SERVER_ACCESS_TOKENS) return console.error('/!\ Please set the SERVER_ACCESS_TOKENS env.');
 const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
 const healthcheckToken = 'healthcheck';
 
 let db;
-
 // var http = require('http');
 // var server = http.createServer(/* request handler */);
 const primus = Primus.createServer(function connection(spark) {
@@ -35,6 +36,59 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
     db = client.db(dbName);
     console.log("Primus connected to Mongo");
 });
+
+
+const ex = 'realtime_exchange';
+amqp.connect(rabbitUrl, function(err, conn) {
+    conn.createChannel(function(err, ch) {
+        ch.assertExchange(ex, 'fanout', {durable: true});
+        ch.assertQueue('', {exclusive: true}, function(err, q) {
+            if (err) {
+                console.error("RABBIT_URL not set on Primus");
+                throw err;
+            }
+            ch.bindQueue(q.queue, ex, '');
+            ch.consume(q.queue, function(msg) {
+                let payload = JSON.parse(msg.content.toString());
+                if (!payload) return;
+                // console.log(payload);
+                switch (payload.event) {
+                    case "message":
+                        messageHandler(payload);
+                        break;
+                    case "device":
+                        deviceHandler(payload);
+                        break;
+                    case "parser":
+                        parserHandler(payload);
+                        break;
+                    case "geoloc":
+                        geolocHandler(payload);
+                        break;
+                    case "alert":
+                        alertHandler(payload);
+                        break;
+                    case "beacon":
+                        beaconHandler(payload);
+                        break;
+                    case "connector":
+                        connectorHandler(payload);
+                        break;
+                    case "category":
+                        categoryHandler(payload);
+                        break;
+                    case "dashboard":
+                        dashboardHandler(payload);
+                        break;
+                    case "widget":
+                        widgetHandler(payload);
+                        break;
+                    default:
+                        break;
+                }}, {noAck: true});
+        });
+    });
+});
 //
 // Add auth hook on server
 //
@@ -54,7 +108,7 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 // Listen for new connections and send data
 //
 
-// Handle connections
+// Handle connections to user client
 primus.on('connection', function connection(spark) {
     if (!db) return;
 
@@ -96,46 +150,8 @@ primus.on('connection', function connection(spark) {
             });
         });
     }
-
-    spark.on('data', function data(payload) {
-        if (!payload) return;
-        // console.log(payload);
-        switch (payload.event) {
-            case "message":
-                messageHandler(payload);
-                break;
-            case "device":
-                deviceHandler(payload);
-                break;
-            case "parser":
-                parserHandler(payload);
-                break;
-            case "geoloc":
-                geolocHandler(payload);
-                break;
-            case "alert":
-                alertHandler(payload);
-                break;
-            case "beacon":
-                beaconHandler(payload);
-                break;
-            case "connector":
-                connectorHandler(payload);
-                break;
-            case "category":
-                categoryHandler(payload);
-                break;
-            case "dashboard":
-                dashboardHandler(payload);
-                break;
-            case "widget":
-                widgetHandler(payload);
-                break;
-            default:
-                break;
-        }
-    });
 });
+
 
 // Handle disconnections
 primus.on('disconnection', function (spark) {

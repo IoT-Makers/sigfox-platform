@@ -1,5 +1,5 @@
 import {Model} from "@mean-expert/model";
-import {PrimusClientFn} from "../../server/PrimusClientFn";
+import {RabbitPub} from '../../server/RabbitPub';
 
 const moment = require("moment");
 const json2csv = require("json2csv").parse;
@@ -55,7 +55,6 @@ class Category {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-    this.primusClient = PrimusClientFn.newClient();
   }
 
   // Example Operation Hook
@@ -402,7 +401,7 @@ class Category {
         content: category,
         action: "DELETE"
       };
-      this.primusClient.write(payload);
+      RabbitPub.getInstance().pub(payload);
     }
     next();
   }
@@ -416,7 +415,7 @@ class Category {
       content: category,
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
-    this.primusClient.write(payload);
+    RabbitPub.getInstance().pub(payload);
     next();
   }
 }

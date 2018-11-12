@@ -9,3 +9,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: pwd
       MONGO_INITDB_DATABASE: testdb
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+    - 15672:15672
+    - 5672:5672
