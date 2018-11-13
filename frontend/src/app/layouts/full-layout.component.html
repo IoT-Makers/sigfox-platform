@@ -28,11 +28,11 @@
 
         <div class="dropdown-header text-center"><strong>Organizations</strong></div>
 
-        <ng-container *ngIf="organizations.length > 0">
+        <div *ngIf="organizations.length > 0" style="overflow-y: scroll; height:400px;">
           <button href="#" class="dropdown-item" *ngFor="let orga of organizations" (click)="redirectToOgranizationView(orga.id)">
             <img src="{{orga.logo}}" height="30px" class="img-avatar"> {{orga.name}}
           </button>
-        </ng-container>
+        </div>
 
         <button href="#" class="dropdown-item text-center" (click)="openAddOrganizationModal()">
           <i class="fa fa-plus text-organization"></i> New organization
