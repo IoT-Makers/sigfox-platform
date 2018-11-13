@@ -961,15 +961,15 @@
                                       [longitude]="geoloc.location.lng"
                                       [iconUrl]="'assets/img/markers/marker-start.png'">
                                       <agm-info-window>
-                                        <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                                        <strong><b>Type: </b><span class="text-geoloc-sigfox">Sigfox</span></strong>
                                         <br>
-                                        <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                        <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                         <br>
-                                        <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                        <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                         <br>
-                                        <strong><b>Accuracy:</b> {{geoloc.accuracy}} m</strong>
+                                        <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position:</b> n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->

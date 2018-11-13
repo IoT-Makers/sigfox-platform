@@ -152,7 +152,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     {id: 'three-days', itemName: 'Last three day'},
     {id: 'one-week', itemName: 'Last week'},
     {id: 'two-weeks', itemName: 'Last two weeks'},
-    {id: 'three-weeks', itemName: 'Last two weeks'},
+    {id: 'three-weeks', itemName: 'Last three weeks'},
     {id: 'month', itemName: 'Last month'},
     {id: 'year', itemName: 'Last year'}
   ];
@@ -758,8 +758,16 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
 
     // Set time span
-    if (this.newWidget.type === 'stats' || !this.newWidget.filter.include[0].scope.where.and[0].createdAt) delete this.newWidget.options.timeSpan;
-    else if (this.selectedTimeSpan[0]) this.newWidget.options.timeSpan = this.selectedTimeSpan[0].id;
+    delete this.newWidget.options.timeSpan;
+    if (this.newWidget.filter &&
+      this.newWidget.filter.include &&
+      this.newWidget.filter.include[0] &&
+      this.newWidget.filter.include[0].scope &&
+      this.newWidget.filter.include[0].scope.where &&
+      this.newWidget.filter.include[0].scope.where.and &&
+      this.newWidget.filter.include[0].scope.where.and[0] &&
+      this.newWidget.filter.include[0].scope.where.and[0].createdAt &&
+      this.selectedTimeSpan[0]) this.newWidget.options.timeSpan = this.selectedTimeSpan[0].id;
 
     if (this.newWidget.options.timeSpan) {
       switch (this.newWidget.options.timeSpan) {
@@ -1075,7 +1083,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           if (widget.type === 'text' || widget.type === 'image' || widget.type === 'divider') widget.ready = true;
           else {
             // Get devices data
-            this.getDevicesWithFilter(widget).subscribe((devices: any[]) => {
+            this.getDevicesWithFilter(widget.filter).subscribe((devices: any[]) => {
                 // Value
                 if (widget.type === 'value') {
                   widget.data = _.filter(devices[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
@@ -1713,7 +1721,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       widgetFilter.where = {id: device.id};
       widgetFilter.include[0].scope.limit = 5000;
 
-      this.getDevicesWithFilter(widget).subscribe((devices: any[]) => {
+      this.getDevicesWithFilter(widgetFilter).subscribe((devices: any[]) => {
         device.Messages = devices[0].Messages;
         const bounds: LatLngBounds = new google.maps.LatLngBounds();
 
@@ -1797,8 +1805,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     return returnedArray;
   }
 
-  private getDevicesWithFilter(widget: any): Observable<any[]> {
-    return this.api.getDevices(this.id, widget.filter);
+  private getDevicesWithFilter(filter: any): Observable<any[]> {
+    return this.api.getDevices(this.id, filter);
   }
 
   // Map functions
