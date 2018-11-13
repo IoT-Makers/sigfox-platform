@@ -93,18 +93,11 @@ class Message {
     const device = new Message.app.models.Device;
     device.id = message.deviceId;
     device.userId = userId;
-    if (message.deviceNamePrefix) {
-      device.name = message.deviceNamePrefix + "_" + message.deviceId;
-    }
-    if (message.parserId) {
-      device.parserId = message.parserId;
-    }
-    if (message.categoryId) {
-      device.categoryId = message.categoryId;
-    }
-    if (message.data_downlink) {
-      device.data_downlink = message.data_downlink;
-    }
+
+    if (message.deviceNamePrefix) device.name = message.deviceNamePrefix + "_" + message.deviceId;
+    if (message.parserId) device.parserId = message.parserId;
+    if (message.categoryId) device.categoryId = message.categoryId;
+    if (message.data_downlink) device.data_downlink = message.data_downlink;
 
     // Store the message duplicate flag and parserId
     const duplicate = message.duplicate;
@@ -132,17 +125,16 @@ class Message {
           message.userId = deviceInstance.userId;
           if (created) {
             console.log("Created new device: " + message.deviceId);
-          } else {
-            // console.log('Found an existing device.');
-            if (deviceInstance.locked === false && deviceInstance.userId.toString() !== userId.toString()) {
-              // Store the userId in the message
-              message.userId = userId;
+          }
 
-              deviceInstanceFunction.updateAttribute('userId', userId, (err: any, deviceUpdated: any) => {
-                if (err) console.error(err);
-                else console.log("Updated device userId as: ", deviceUpdated);
-              });
-            }
+          if (deviceInstance.locked === false && deviceInstance.userId.toString() !== userId.toString()) {
+            // Store the userId in the message
+            message.userId = userId;
+
+            deviceInstanceFunction.updateAttribute('userId', userId, (err: any, deviceUpdated: any) => {
+              if (err) console.error(err);
+              else console.log("Updated device userId as: ", deviceUpdated);
+            });
           }
 
           if (deviceInstance.pek) {

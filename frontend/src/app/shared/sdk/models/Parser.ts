@@ -10,6 +10,7 @@ export interface ParserInterface {
   "name": string;
   "description"?: string;
   "function"?: string;
+  "hidden"?: boolean;
   "properties"?: Array<any>;
   "id"?: any;
   "createdAt"?: Date;
@@ -25,6 +26,7 @@ export class Parser implements ParserInterface {
   "name": string = '';
   "description": string = '';
   "function": string = '';
+  "hidden": boolean = false;
   "properties": Array<any> = <any>[];
   "id": any = <any>null;
   "createdAt": Date = new Date(0);
@@ -78,6 +80,11 @@ export class Parser implements ParserInterface {
         "function": {
           name: 'function',
           type: 'string'
+        },
+        "hidden": {
+          name: 'hidden',
+          type: 'boolean',
+          default: false
         },
         "properties": {
           name: 'properties',

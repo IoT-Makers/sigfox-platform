@@ -3,6 +3,22 @@
   width: 100%;
 }
 
+.widget-mobile {
+  min-height: 200px;
+}
+
+.widget-400 {
+  min-height: 400px;
+}
+
+.widget-200 {
+  min-height: 200px;
+}
+
+.widget-horizontal-small {
+  min-height: 20px;
+}
+
 .floating-panel {
   position: absolute;
   overflow-y: scroll;

@@ -37,6 +37,10 @@
     "function": {
       "type": "string"
     },
+    "hidden": {
+      "type": "boolean",
+      "default": false
+    },
     "properties": {
       "type": [
         "Property"

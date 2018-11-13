@@ -10,14 +10,15 @@ import {PrimusClientFn} from "../../server/PrimusClientFn";
  **/
 @Model({
   hooks: {
-    beforeSave: { name: "before save", type: "operation" },
-    afterDelete: { name: "after delete", type: "operation" },
-    afterSave: { name: "after save", type: "operation" },
+    loaded: {name: "loaded", type: "operation"},
+    beforeSave: {name: "before save", type: "operation"},
+    afterDelete: {name: "after delete", type: "operation"},
+    afterSave: {name: "after save", type: "operation"},
   },
   remotes: {
     parsePayload: {
-      returns : { arg: "result", type: "array" },
-      http    : { path: "/parse-payload", verb: "post" },
+      returns: {arg: "result", type: "array"},
+      http: {path: "/parse-payload", verb: "post"},
       accepts: [
         {arg: "fn", type: "string", required: true, description: "Parser function"},
         {arg: "payload", type: "string", required: true, description: "Sigfox payload (12 bytes max)"},
@@ -58,7 +59,16 @@ class Parser {
     this.primusClient = PrimusClientFn.newClient();
   }
 
-  // Example Operation Hook
+  // Hide hidden parsers
+  public loaded(ctx: any, next: Function): void {
+    if (!ctx.isNewInstance) {
+      if (ctx.data.hidden && ctx.options.accessToken && ctx.options.accessToken.userId.toString() !== ctx.data.userId.toString()) {
+        delete ctx.data;
+        return next();
+      } else return next();
+    } else return next();
+  }
+
   public beforeSave(ctx: any, next: Function): void {
     if (ctx.instance) ctx.instance.createdAt = new Date();
     next();
@@ -66,12 +76,8 @@ class Parser {
 
   public parsePayload(fn: string, payload: string, req: any, next: Function): void {
     const userId = req.accessToken.userId;
-    if (!userId) {
-      return next(null, "Please login or use a valid access token.");
-    }
-    if (payload.length > 24) {
-      return next(null, "Sigfox payload cannot be more than 12 bytes.");
-    }
+    if (!userId) return next(null, "Please login or use a valid access token.");
+    if (payload.length > 24) return next(null, "Sigfox payload cannot be more than 12 bytes.");
 
     // Here we will decode the Sigfox payload and search for geoloc to be extracted and store in the Message
     // @TODO: run it in another container because it can crash the app if something goes wrong...
@@ -237,7 +243,11 @@ class Parser {
             /**
              * Destroy all geolocs different than Sigfox
              */
-            Geoloc.destroyAll({deviceId, type: {neq: "sigfox"}}, (error: any, result: any) => { if (!error) { console.log("Deleted all geolocs for device, except for Sigfox type: " + deviceId); } });
+            Geoloc.destroyAll({deviceId, type: {neq: "sigfox"}}, (error: any, result: any) => {
+              if (!error) {
+                console.log("Deleted all geolocs for device, except for Sigfox type: " + deviceId);
+              }
+            });
             device.Messages.forEach((message: any, msgCount: number) => {
               if (message.data) {
                 Parser.parsePayload(fn, message.data, req, (err: any, data_parsed: any) => {

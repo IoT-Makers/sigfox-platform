@@ -73,7 +73,9 @@ export class ParsersComponent implements OnInit, OnDestroy {
     this.parserApi.find({
       order: 'updatedAt DESC'
     }).subscribe((parsers: Parser[]) => {
-      this.parsers = parsers;
+      parsers.forEach((parser: Parser) => {
+        if (parser.id) this.parsers.push(parser);
+      });
     });
   }
 
