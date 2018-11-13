@@ -62,8 +62,9 @@ class Parser {
   // Hide hidden parsers
   public loaded(ctx: any, next: Function): void {
     if (!ctx.isNewInstance) {
-      if (ctx.data.hidden && ctx.options.accessToken && ctx.options.accessToken.userId.toString() !== ctx.data.userId.toString()) {
-        delete ctx.data;
+      if (ctx.data.hidden && ctx.options.accessToken && ctx.options.accessToken.userId && ctx.data.userId && ctx.options.accessToken.userId.toString() !== ctx.data.userId.toString()) {
+        delete ctx.data.function;
+        delete ctx.data.name;
         return next();
       } else return next();
     } else return next();

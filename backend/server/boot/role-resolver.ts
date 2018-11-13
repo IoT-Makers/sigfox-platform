@@ -78,17 +78,12 @@ module.exports = (app: any) => {
             // Check if user is a member of the organization
             const members = organization.toJSON().Members;
             let authorized = false;
-            members.forEach((member: any, index: any, array: any) => {
-
-              if (member.id.toString() === userId.toString()) {
-                //console.log('callback 3: Authorize');
+            for (let i = 0; i < members.length; i++) {
+              if (members[i].id.toString() === userId.toString()) {
                 authorized = true;
                 return authorize();
-              } else if (index === array.length - 1 && authorized === false) {
-                //console.log('callback 4: Member not in organization');
-                if (!cb) return reject();
-              }
-            });
+              } else if (i === members.length - 1 && authorized === false) if (!cb) return reject();
+            }
           }
         });
       }
