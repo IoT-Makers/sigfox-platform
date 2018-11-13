@@ -2,15 +2,18 @@ version: '3'
 services:
   mongo:
     build: mongodb
-    ports:
-      - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: pwd
       MONGO_INITDB_DATABASE: testdb
+    ports:
+      - 27017:27017
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: usr
+      RABBITMQ_DEFAULT_PASS: pwd
     ports:
     - 15672:15672
     - 5672:5672

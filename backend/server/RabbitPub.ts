@@ -22,6 +22,7 @@ export class RabbitPub {
   public connect(): void {
     let rabbitURL = process.env.RABBIT_URL || 'amqp://localhost';
     amqp.connect(rabbitURL, (err, conn) => {
+      if (err) console.error(err);
       conn.createChannel((err, ch) => {
         if (err) console.error(err);
         ch.assertExchange(this._ex, 'fanout', {durable: true}, (err, ok) => {

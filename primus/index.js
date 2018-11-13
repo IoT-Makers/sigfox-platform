@@ -7,7 +7,7 @@ const mongolib = require('mongodb');
 const MongoClient = mongolib.MongoClient;
 const ObjectId = mongolib.ObjectId;
 const mongodbUrl = process.env.MONGO_URL;
-const rabbitUrl = process.env.RABBIT_URL || 'amqp://localhost';
+const rabbitUrl = process.env.RABBIT_URL || 'amqp://usr:pwd@localhost';
 const healthcheckToken = 'healthcheck';
 
 let db;
@@ -37,16 +37,21 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 
 
 const ex = 'realtime_exchange';
-amqp.connect(rabbitUrl, function(err, conn) {
-    conn.createChannel(function(err, ch) {
+amqp.connect(rabbitUrl, function (err, conn) {
+    conn.createChannel(function (err, ch) {
+        if (err) {
+            console.error("RABBIT_URL not set on Primus");
+            throw err;
+        }
         ch.assertExchange(ex, 'fanout', {durable: true});
-        ch.assertQueue('', {exclusive: true}, function(err, q) {
+        ch.assertQueue('', {exclusive: true}, function (err, q) {
             if (err) {
                 console.error("RABBIT_URL not set on Primus");
                 throw err;
             }
-            ch.bindQueue(q.queue, ex, '');
-            ch.consume(q.queue, function(msg) {
+            ch.bindQueue(q.queue, ex, '')
+            console.log("Primus connected to RabbitMQ");
+            ch.consume(q.queue, function (msg) {
                 let payload = JSON.parse(msg.content.toString());
                 if (!payload) return;
                 // console.log(payload);
@@ -83,7 +88,8 @@ amqp.connect(rabbitUrl, function(err, conn) {
                         break;
                     default:
                         break;
-                }}, {noAck: true});
+                }
+            }, {noAck: true});
         });
     });
 });
@@ -110,42 +116,42 @@ amqp.connect(rabbitUrl, function(err, conn) {
 primus.on('connection', function connection(spark) {
     if (!db) return;
 
-    console.info(primus.connected + " clients connected");
     // manual auth hook, attach userId to spark if access token found
     const access_token = spark.request.query.access_token;
     if (!access_token || access_token === healthcheckToken) return spark.end();
+    console.info(primus.connected + " clients connected");
 
-        let AccessToken = db.collection("AccessToken");
-        AccessToken.findOne({_id: access_token}, (err, token) => {
-            if (err || !token) {
-                console.info("Access token not found");
-                spark.end();
-                return;
-            }
-            spark.userId = token.userId.toString();
+    let AccessToken = db.collection("AccessToken");
+    AccessToken.findOne({_id: access_token}, (err, token) => {
+        if (err || !token) {
+            console.info("Access token not found");
+            spark.end();
+            return;
+        }
+        spark.userId = token.userId.toString();
 
-            // Check if user belongs to an organization
-            const orguser = db.collection("Organizationuser");
-            orguser.find({userId: token.userId}, {organizationId: true}).toArray((err, orgUsersIdObj) => {
-                err ?
-                    console.error(err) :
-                    spark.organizationIds = orgUsersIdObj.map(x => x.organizationId.toString());
-                console.log(spark.organizationIds);
-            });
-
-            // Update user properties: connected
-            let user = db.collection("user");
-            user.update({_id: ObjectId(spark.userId)}, {
-                $set: {
-                    connected: true,
-                    connectedAt: new Date()
-                }
-            }, (err, user) => {
-                if (err || !user) {
-                    console.info("User not found");
-                } else console.info('[' + spark.userId + '] Updated fields connected and connectedAt');
-            });
+        // Check if user belongs to an organization
+        const orguser = db.collection("Organizationuser");
+        orguser.find({userId: token.userId}, {organizationId: true}).toArray((err, orgUsersIdObj) => {
+            err ?
+                console.error(err) :
+                spark.organizationIds = orgUsersIdObj.map(x => x.organizationId.toString());
+            console.log(spark.organizationIds);
         });
+
+        // Update user properties: connected
+        let user = db.collection("user");
+        user.update({_id: ObjectId(spark.userId)}, {
+            $set: {
+                connected: true,
+                connectedAt: new Date()
+            }
+        }, (err, user) => {
+            if (err || !user) {
+                console.info("User not found");
+            } else console.info('[' + spark.userId + '] Updated fields connected and connectedAt');
+        });
+    });
 });
 
 
@@ -416,7 +422,8 @@ function send(targetClients, eventName, action, content) {
 
 primus.on('disconnection', function end(spark) {
     console.log('disconnection');
-    console.info(primus.connected + " clients connected");
+    // don't log health check
+    if (spark.userId) console.info(primus.connected + " clients connected");
 });
 
 

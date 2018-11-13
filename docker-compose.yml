@@ -1,18 +1,9 @@
 version: '3'
 services:
-  mongodb:
-    container_name: mongodb
-    build: mongodb
-    image: ${REGISTRY_URL}mongodb-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
-    restart: "always"
-    ports:
-      - "27017:27017"
-    env_file: env/mongodb.env
-
   backend:
-    container_name: backend
+#    container_name: backend
     depends_on:
-      - mongodb
+    - mongodb
     build:
       context: backend
       args:
@@ -22,10 +13,10 @@ services:
     env_file: env/backend.env
     command: npm start
     ports:
-      - "3000:3000"
+    - "3000:3000"
 
   primus:
-    container_name: primus
+#    container_name: primus
     depends_on:
       - mongodb
     build: primus
@@ -34,12 +25,12 @@ services:
     env_file: env/primus.env
     command: npm start
     ports:
-      - "2333:2333"
+    - "2333:2333"
 
   frontend:
-    container_name: frontend
+#    container_name: frontend
     depends_on:
-      - mongodb
+    - mongodb
     build:
       context: frontend
       args:
@@ -51,4 +42,22 @@ services:
     image: ${REGISTRY_URL}frontend-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
     restart: "always"
     ports:
-      - "80:80"
+    - "80:80"
+
+  mongodb:
+#    container_name: mongodb
+    build: mongodb
+    image: ${REGISTRY_URL}mongodb-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
+    restart: "always"
+    ports:
+    - "27017:27017"
+    env_file: env/mongodb.env
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: usr
+      RABBITMQ_DEFAULT_PASS: pwd
+    ports:
+    - "15672:15672"
+    - "5672:5672"
