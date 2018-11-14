@@ -41,7 +41,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   public organization: Organization;
   private mapLat = 48.858093;
   private mapLng = 2.294694;
-  private mapZoom = 5;
+  private mapZoom = 10;
   public isDefaultView = true;
   // Notifications
   private toast;
@@ -97,14 +97,14 @@ export class TrackingComponent implements OnInit, OnDestroy {
       if (this.deviceId) {
         this.geolocFilter = {
           order: 'createdAt DESC',
-          limit: 2,
+          limit: 1,
           where: {deviceId: this.deviceId},
           include: ['Device', 'Beacon']
         };
       }
       this.api = this.organization ? this.organizationApi : this.userApi;
       this.id = this.organization ? this.organization.id : this.user.id;
-      this.api.getGeolocs(this.user.id, this.geolocFilter).subscribe((geolocs: Geoloc[]) => {
+      this.api.getGeolocs(this.id, this.geolocFilter).subscribe((geolocs: Geoloc[]) => {
         this.geolocs = geolocs;
         /*if (geolocs[0]) {
           this.mapLat = geolocs[0].location.lat;
@@ -150,7 +150,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     if ((geoloc.userId && !this.organization) || geoloc.Organizations.map(x => x.id).includes(this.organization.id)) {
       if (payload.content.deviceId === this.deviceId) {
         if (payload.action == "CREATE") {
-          this.geolocs.unshift(payload.content);
+          this.geolocs.push(payload.content);
         } else if (payload.action == "DELETE") {
           this.geolocs = this.geolocs.filter(function (device) {
             return device.id !== payload.content.id;
