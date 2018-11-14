@@ -10,7 +10,7 @@ import {PrimusClientFn} from "../../server/PrimusClientFn";
  **/
 @Model({
   hooks: {
-    loaded: {name: "loaded", type: "operation"},
+    access: {name: "access", type: "operation"},
     beforeSave: {name: "before save", type: "operation"},
     afterDelete: {name: "after delete", type: "operation"},
     afterSave: {name: "after save", type: "operation"},
@@ -59,15 +59,17 @@ class Parser {
     this.primusClient = PrimusClientFn.newClient();
   }
 
-  // Hide hidden parsers
-  public loaded(ctx: any, next: Function): void {
-    if (!ctx.isNewInstance) {
-      if (ctx.data.hidden && ctx.options.accessToken && ctx.options.accessToken.userId && ctx.data.userId && ctx.options.accessToken.userId.toString() !== ctx.data.userId.toString()) {
-        delete ctx.data.function;
-        delete ctx.data.name;
-        return next();
-      } else return next();
-    } else return next();
+  public access(ctx: any, next: Function): void {
+    // The below code hides the "hidden" parsers to other users
+    if (ctx.options && ctx.options.authorizedRoles && ctx.options.authorizedRoles.admin) next();
+    else {
+      const notHidden = {hidden: {neq: true}};
+      const userId = {userId: ctx.options.accessToken.userId};
+      if (ctx.query.where) ctx.query.where = {or: [{and: [ctx.query.where, notHidden]}, userId]};
+      // if (ctx.query.where && ctx.query.where.or) ctx.query.where.or = {or: [{and: [ctx.query.where, hidden]}, userId, ctx.query.where.or]};
+      else ctx.query.where = {or: [notHidden, userId]};
+      next();
+    }
   }
 
   public beforeSave(ctx: any, next: Function): void {

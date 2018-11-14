@@ -274,21 +274,21 @@ class Message {
           result = {
             [message.deviceId]: {
               downlinkData: message.data_downlink,
-            },
+            }
           };
         } else {
           message.data_downlink = device.data_downlink;
           result = {
             [message.deviceId]: {
               downlinkData: device.data_downlink,
-            },
+            }
           };
         }
       } else {
         result = {
           [message.deviceId]: {
-            noData: true,
-          },
+            noData: true
+          }
         };
       }
       // Creating new message with its downlink data

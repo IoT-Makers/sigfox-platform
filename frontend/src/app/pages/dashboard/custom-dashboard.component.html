@@ -4,36 +4,28 @@
     Loading dashboard...
   </div>
   <div class="row" *ngIf="dashboardReady">
-    <!-- Title -->
     <div class="col-md-8">
-      <h2 class=""><i class="fa {{dashboard.icon}}"></i> {{dashboard.name}}</h2>
-      <p class="blockquote" *ngIf="dashboard.description">{{dashboard.description}}</p>
+      <!-- Title -->
+      <h2><i class="fa {{dashboard.icon}}"></i> {{dashboard.name}}</h2>
+      <p class="blockquote mb-0" *ngIf="dashboard.description">{{dashboard.description}}</p>
+      <!-- End Title -->
     </div>
-    <!-- End Title -->
-
-    <!-- Buttons -->
     <div class="col-md-4">
-      <button *ngIf="!editFlag" class="btn btn-info pull-right" (click)="editDashboard()"><i class="fa fa-pencil"></i>
-        Edit dashboard
-      </button>
-      <button *ngIf="!editFlag" class="btn btn-success pull-right" (click)="addNewWidget()"><i
-        class="fa fa-plus-circle"></i> Add widget
-      </button>
-      <button *ngIf="editFlag" class="btn btn-danger pull-right" (click)="cancel()"><i class="fa fa-ban"></i> Cancel
-      </button>
+      <!-- Buttons -->
+      <div class="btn-group pull-right">
+        <button *ngIf="!editFlag" class="btn btn-outline-info" (click)="editDashboard()"><i class="fa fa-pencil"></i> Edit dashboard</button>
+        <button *ngIf="!editFlag" class="btn btn-outline-success" (click)="addNewWidget()"><i class="fa fa-plus-circle"></i> Add widget</button>
+        <button *ngIf="editFlag" class="btn btn-outline-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel</button>
+      </div>
+      <!-- End Buttons -->
     </div>
-    <!-- End Buttons -->
-
     <!-- Edit Dashboard -->
-    <div class="col-md-12" *ngIf="editFlag">
+    <div class="mt-1 col-md-12" *ngIf="editFlag">
       <div class="card">
         <div class="card-header">
           <strong>Edit dashboard</strong>
         </div>
         <div class="card-block">
-          <h4 class="text-center">Dashboard Information</h4>
-          <hr>
-
           <!-- Form Begin -->
           <form class="form-horizontal" #editDashboardForm="ngForm">
             <div class="form-group row">
@@ -70,13 +62,10 @@
               </div>
             </div>
 
-            <button class="btn btn-sm btn-primary" [disabled]="!editDashboardForm.form.valid" (click)="saveDashboard()">
-              <i
-                class="fa fa-check"></i> Save dashboard
-            </button>
-            <button class="btn btn-sm btn-danger" (click)="deleteDashboard()"><i class="fa fa-trash"></i> Delete
-              dashboard
-            </button>
+            <div class="btn-group-sm pull-right">
+              <button class="btn btn-primary" [disabled]="!editDashboardForm.form.valid" (click)="saveDashboard()"><i class="fa fa-check"></i> Save dashboard</button>
+              <button class="btn btn-danger" (click)="deleteDashboard()"><i class="fa fa-trash"></i> Delete dashboard</button>
+            </div>
           </form>
         </div>
       </div>
@@ -126,10 +115,10 @@
           <!-- Card body -->
           <div class="card-block">
             <ng-container *ngIf="!widget.ready">
-                <div class="sk-chasing-dots">
-                  <div class="sk-child sk-dot1"></div>
-                  <div class="sk-child sk-dot2"></div>
-                </div>
+              <div class="sk-chasing-dots">
+                <div class="sk-child sk-dot1"></div>
+                <div class="sk-child sk-dot2"></div>
+              </div>
             </ng-container>
 
             <ng-container *ngIf="widget.ready">
@@ -552,7 +541,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -585,7 +575,8 @@
                                         <br>
                                         <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                   </ng-container>
@@ -606,7 +597,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -641,7 +633,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -680,7 +673,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -713,7 +707,8 @@
                                         <br>
                                         <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                   </ng-container>
@@ -734,7 +729,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -769,7 +765,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -969,7 +966,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -1002,7 +1000,8 @@
                                         <br>
                                         <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                   </ng-container>
@@ -1023,7 +1022,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -1058,7 +1058,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -1097,7 +1098,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -1130,7 +1132,8 @@
                                         <br>
                                         <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                   </ng-container>
@@ -1151,7 +1154,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -1186,7 +1190,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -1404,8 +1409,10 @@
               <!-- End Chart -->
 
               <!-- Bar -->
-              <ng-container *ngIf="widget.type === 'bar' || widget.type === 'bar-exact' || widget.type === 'bar-custom' || widget.type === 'stats'">
-                <p *ngIf="widget.data && widget.data.length === 0" class="text-center font-weight-bold">No data to show</p>
+              <ng-container
+                *ngIf="widget.type === 'bar' || widget.type === 'bar-exact' || widget.type === 'bar-custom' || widget.type === 'stats'">
+                <p *ngIf="widget.data && widget.data.length === 0" class="text-center font-weight-bold">No data to
+                  show</p>
                 <div *ngIf="mobile && widget.data && widget.data.length > 0" class="widget-mobile col-md-12">
                   <iframe class="chartjs-hidden-iframe" tabindex="-1"
                           style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
@@ -1433,7 +1440,8 @@
 
               <!-- Bar custom stats -->
               <ng-container *ngIf="widget.type === 'bar-custom-stats'">
-                <p *ngIf="widget.data && widget.data.length === 0" class="text-center font-weight-bold">No data to show</p>
+                <p *ngIf="widget.data && widget.data.length === 0" class="text-center font-weight-bold">No data to
+                  show</p>
                 <div *ngIf="mobile && widget.data && widget.data.length > 0" class="widget-mobile col-md-12">
                   <iframe class="chartjs-hidden-iframe" tabindex="-1"
                           style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>

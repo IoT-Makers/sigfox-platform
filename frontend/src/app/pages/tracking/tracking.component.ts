@@ -16,6 +16,7 @@ import {ActivatedRoute} from '@angular/router';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
 import * as d3 from "d3";
 import * as d3Geo from "d3-geo";
+
 // import * as geoJson from './FRA.geo.json';
 
 @Component({
@@ -40,7 +41,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   public organization: Organization;
   private mapLat = 48.858093;
   private mapLng = 2.294694;
-  private mapZoom = 2;
+  private mapZoom = 5;
   public isDefaultView = true;
   // Notifications
   private toast;
@@ -53,6 +54,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     });
   private api;
   private id;
+  private deviceId;
 
   constructor(private rt: RealtimeService,
               private userApi: UserApi,
@@ -91,11 +93,12 @@ export class TrackingComponent implements OnInit, OnDestroy {
     console.log('Setup Tracking');
     // Get and listen messages
     this.deviceIdSub = this.route.params.subscribe(params => {
-      if (params['id']) {
+      this.deviceId = params['id'];
+      if (this.deviceId) {
         this.geolocFilter = {
           order: 'createdAt DESC',
           limit: 2,
-          where: {deviceId: params['id']},
+          where: {deviceId: this.deviceId},
           include: ['Device', 'Beacon']
         };
       }
@@ -103,14 +106,14 @@ export class TrackingComponent implements OnInit, OnDestroy {
       this.id = this.organization ? this.organization.id : this.user.id;
       this.api.getGeolocs(this.user.id, this.geolocFilter).subscribe((geolocs: Geoloc[]) => {
         this.geolocs = geolocs;
-        if (geolocs[0]) {
+        /*if (geolocs[0]) {
           this.mapLat = geolocs[0].location.lat;
           this.mapLng = geolocs[0].location.lng;
           this.mapZoom = 15;
           this.setBubbles(this.geolocs[0]);
           // this.geolocs[1].location.lng = -75;
           this.setBubbles(this.geolocs[1]);
-        }
+        }*/
         this.geolocsReady = true;
       });
     });
@@ -142,19 +145,21 @@ export class TrackingComponent implements OnInit, OnDestroy {
     this.mapLng = geoloc.location.lng;
     this.mapZoom = 15;
     // D3
-    if (geoloc.type === 'beacon') this.setBubbles(geoloc);
+    // if (geoloc.type === 'beacon') this.setBubbles(geoloc);
 
     if ((geoloc.userId && !this.organization) || geoloc.Organizations.map(x => x.id).includes(this.organization.id)) {
-      if (payload.action == "CREATE") {
-        this.geolocs.unshift(payload.content);
-      } else if (payload.action == "DELETE") {
-        this.geolocs = this.geolocs.filter(function (device) {
-          return device.id !== payload.content.id;
-        });
-      } else if (payload.action == "UPDATE") {
-        let idx = this.geolocs.findIndex(x => x.id == payload.content.id);
-        if (idx != -1) {
-          this.geolocs[idx] = payload.content;
+      if (payload.content.deviceId === this.deviceId) {
+        if (payload.action == "CREATE") {
+          this.geolocs.unshift(payload.content);
+        } else if (payload.action == "DELETE") {
+          this.geolocs = this.geolocs.filter(function (device) {
+            return device.id !== payload.content.id;
+          });
+        } else if (payload.action == "UPDATE") {
+          let idx = this.geolocs.findIndex(x => x.id == payload.content.id);
+          if (idx != -1) {
+            this.geolocs[idx] = payload.content;
+          }
         }
       }
     }

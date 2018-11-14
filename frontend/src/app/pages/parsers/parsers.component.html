@@ -23,6 +23,14 @@
                 <input type="text" required id="description" [(ngModel)]="parserToAdd.description" name="parser"
                        class="form-control" placeholder="Parser description">
               </div>
+              <!--<div class="form-group">
+                <label for="description">Hidden:&nbsp;</label>
+                <label class="switch switch-sm switch-3d switch-parser-outline-alt">
+                  <input [(ngModel)]="parserToAdd.hidden" type="checkbox" class="switch-input">
+                  <span class="switch-label"></span>
+                  <span class="switch-handle"></span>
+                </label>
+              </div>-->
 
               <button type="button" class="btn btn-secondary btn-parser mb-1" (click)="create()">
                 Add Parser
@@ -41,12 +49,20 @@
         </div>
 
         <div class="card-block" *ngFor="let parser of parsers; let i = index">
-          <strong class="text-uppercase">{{parser.name}}</strong> - parserId: <span
-          class="text-parser" tooltip="Click to copy" click-copy>{{parser.id}}</span>
+          <strong class="text-uppercase">{{parser.name}}</strong>
           <div class="row">
             <div class="col-sm-12 col-md-4">
-              <p>{{parser.description}}</p>
-              <div class="input-group mb-1">
+              <p *ngIf="parser.description">{{parser.description}}</p>
+              <p *ngIf="admin">
+                <label for="description">Hidden:&nbsp;</label>
+                <label class="switch switch-sm switch-3d switch-parser-outline-alt">
+                  <input (change)="setHidden(parser)" [(ngModel)]="parser.hidden" type="checkbox" class="switch-input">
+                  <span class="switch-label"></span>
+                  <span class="switch-handle"></span>
+                </label>
+              </p>
+              <p class="text-parser" tooltip="Click to copy" click-copy>"parserId": "{{parser.id}}"</p>
+              <div class="input-group">
                 <input type="text" [(ngModel)]="payload" #payloadInput id="{{parser.id}}" name="{{parser.name}}"
                        class="form-control" placeholder="Sigfox payload in hexadecimal" maxlength="24"
                        pattern="([a-fA-F0-9])$">
@@ -81,7 +97,7 @@
                   Save code
                 </button>
                 <button type="button" class="btn btn-danger" data-toggle="modal" (click)="showRemoveModal(parser)">
-                  Delete Parser
+                  Delete parser
                 </button>
               </div>
             </div>
