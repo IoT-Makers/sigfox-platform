@@ -62,14 +62,14 @@ class Parser {
   public access(ctx: any, next: Function): void {
     // The below code hides the "hidden" parsers to other users
     if (ctx.options && ctx.options.authorizedRoles && ctx.options.authorizedRoles.admin) next();
-    else {
+    else if (ctx.options && ctx.options.accessToken && ctx.options.accessToken.userId) {
       const notHidden = {hidden: {neq: true}};
       const userId = {userId: ctx.options.accessToken.userId};
       if (ctx.query.where) ctx.query.where = {or: [{and: [ctx.query.where, notHidden]}, userId]};
       // if (ctx.query.where && ctx.query.where.or) ctx.query.where.or = {or: [{and: [ctx.query.where, hidden]}, userId, ctx.query.where.or]};
       else ctx.query.where = {or: [notHidden, userId]};
       next();
-    }
+    } else next();
   }
 
   public beforeSave(ctx: any, next: Function): void {
