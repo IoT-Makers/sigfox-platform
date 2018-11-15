@@ -2,8 +2,7 @@
   <div class="row">
     <div class="btn-group mb-1">
       <button class="{{isDefaultView ? 'btn btn-success' : 'btn btn-default'}}" (click)="setView()">Default view</button>
-      <!--<button class="{{!isDefaultView ? 'btn btn-success' : 'btn btn-default'}}" (click)="setView()">Beacon view</button>-->
-      <button class="disabled">Beacon view</button>
+      <button disabled class="{{!isDefaultView ? 'btn btn-success' : 'btn btn-default'}}" (click)="setView()">Beacon view</button>
     </div>
   </div>
   <div *ngIf="isDefaultView" class="row">

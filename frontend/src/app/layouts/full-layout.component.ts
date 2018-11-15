@@ -5,8 +5,10 @@ import {BeaconApi, DashboardApi, OrganizationApi, ParserApi, UserApi} from '../s
 import {RealtimeService} from "../shared/realtime/realtime.service";
 
 @Component({
-  templateUrl: './full-layout.component.html'
+  templateUrl: './full-layout.component.html',
+  styleUrls: ['./full-layout.component.scss']
 })
+
 export class FullLayoutComponent implements OnInit, OnDestroy {
 
   @ViewChild('addOrEditOrganizationModal') addOrEditOrganizationModal: any;
@@ -140,6 +142,12 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       // For organizations menu
       this.userApi.getOrganizations(this.user.id, {order: 'createdAt DESC'}).subscribe((organizations: Organization[]) => {
         this.organizations = organizations;
+        // Count organization members
+        this.organizations.forEach((organization: any) => {
+          this.organizationApi.countMembers(organization.id).subscribe(result => {
+            organization.countMembers = result.count;
+          });
+        });
         this.countOrganizationsReady = true;
       });
 

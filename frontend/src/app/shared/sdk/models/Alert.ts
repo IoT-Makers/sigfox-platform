@@ -1,8 +1,8 @@
 /* tslint:disable */
 import {
-  Device,
   User,
   Organization,
+  Device,
   Connector
 } from '../index';
 
@@ -18,13 +18,12 @@ export interface AlertInterface {
   "message"?: string;
   "id"?: any;
   "userId"?: any;
-  "organizationId"?: any;
   "createdAt"?: Date;
   "updatedAt"?: Date;
   "connectorId"?: any;
-  Device?: Device;
   user?: User;
-  Organization?: Organization;
+  Organizations?: Organization[];
+  Device?: Device;
   Connector?: Connector;
 }
 
@@ -39,13 +38,12 @@ export class Alert implements AlertInterface {
   "message": string = '';
   "id": any = <any>null;
   "userId": any = <any>null;
-  "organizationId": any = <any>null;
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
   "connectorId": any = <any>null;
-  Device: Device = null;
   user: User = null;
-  Organization: Organization = null;
+  Organizations: Organization[] = null;
+  Device: Device = null;
   Connector: Connector = null;
   constructor(data?: AlertInterface) {
     Object.assign(this, data);
@@ -122,10 +120,6 @@ export class Alert implements AlertInterface {
           name: 'userId',
           type: 'any'
         },
-        "organizationId": {
-          name: 'organizationId',
-          type: 'any'
-        },
         "createdAt": {
           name: 'createdAt',
           type: 'Date'
@@ -140,14 +134,6 @@ export class Alert implements AlertInterface {
         },
       },
       relations: {
-        Device: {
-          name: 'Device',
-          type: 'Device',
-          model: 'Device',
-          relationType: 'belongsTo',
-                  keyFrom: 'deviceId',
-          keyTo: 'id'
-        },
         user: {
           name: 'user',
           type: 'User',
@@ -156,12 +142,22 @@ export class Alert implements AlertInterface {
                   keyFrom: 'userId',
           keyTo: 'id'
         },
-        Organization: {
-          name: 'Organization',
-          type: 'Organization',
+        Organizations: {
+          name: 'Organizations',
+          type: 'Organization[]',
           model: 'Organization',
+          relationType: 'hasMany',
+          modelThrough: 'AlertOrganization',
+          keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'alertId'
+        },
+        Device: {
+          name: 'Device',
+          type: 'Device',
+          model: 'Device',
           relationType: 'belongsTo',
-                  keyFrom: 'organizationId',
+                  keyFrom: 'deviceId',
           keyTo: 'id'
         },
         Connector: {

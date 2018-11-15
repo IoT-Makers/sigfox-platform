@@ -76,6 +76,16 @@ class Organization {
             console.log("Unlinked messages from organization");
           });
         });
+        organization.toJSON().Geolocs.forEach((geoloc: any) => {
+          organization.Geolocs.remove(geoloc.id, (err: any) => {
+            console.log("Unlinked geolocs from organization");
+          });
+        });
+        organization.toJSON().Alerts.forEach((alert: any) => {
+          organization.Alerts.remove(alert.id, (err: any) => {
+            console.log("Unlinked alerts from organization");
+          });
+        });
       } else {
         console.error(err);
       }

@@ -48,25 +48,35 @@
       "model": "user",
       "foreignKey": "userId"
     },
-    "Messages": {
-      "type": "hasAndBelongsToMany",
-      "model": "Message",
-      "foreignKey": "messageId"
-    },
-    "Devices": {
-      "type": "hasAndBelongsToMany",
-      "model": "Device",
-      "foreignKey": "deviceId"
+    "Dashboards": {
+      "type": "hasMany",
+      "model": "Dashboard",
+      "foreignKey": "organizationId"
     },
     "Categories": {
       "type": "hasAndBelongsToMany",
       "model": "Category",
       "foreignKey": "categoryId"
     },
-    "Dashboards": {
-      "type": "hasMany",
-      "model": "Dashboard",
-      "foreignKey": "organizationId"
+    "Devices": {
+      "type": "hasAndBelongsToMany",
+      "model": "Device",
+      "foreignKey": "deviceId"
+    },
+    "Messages": {
+      "type": "hasAndBelongsToMany",
+      "model": "Message",
+      "foreignKey": "messageId"
+    },
+    "Geolocs": {
+      "type": "hasAndBelongsToMany",
+      "model": "Geoloc",
+      "foreignKey": "geolocId"
+    },
+    "Alerts": {
+      "type": "hasAndBelongsToMany",
+      "model": "Alert",
+      "foreignKey": "alertId"
     }
   },
   "acls": [
@@ -89,6 +99,8 @@
       "permission": "ALLOW",
       "property": [
         "__create__Dashboards",
+        "__destroyById__Dashboards",
+        "__updateById__Dashboards",
         "__updateById__Devices"
       ]
     },
@@ -102,8 +114,18 @@
         "findById",
         "findOne",
         "count",
+        "__count__Dashboards",
+        "__get__Dashboards",
+        "__find__Dashboards",
+        "__findOne__Dashboards",
+        "__findOne__Dashboards",
+        "__findById__Dashboards",
         "__count__Members",
         "__find__Members",
+        "__count__Categories",
+        "__get__Categories",
+        "__find__Categories",
+        "__findOne__Categories",
         "__count__Devices",
         "__get__Devices",
         "__find__Devices",
@@ -112,16 +134,14 @@
         "__get__Messages",
         "__find__Messages",
         "__findOne__Messages",
-        "__count__Categories",
-        "__get__Categories",
-        "__find__Categories",
-        "__findOne__Categories",
-        "__count__Dashboards",
-        "__get__Dashboards",
-        "__find__Dashboards",
-        "__findOne__Dashboards",
-        "__findOne__Dashboards",
-        "__findById__Dashboards"
+        "__count__Geolocs",
+        "__get__Geolocs",
+        "__find__Geolocs",
+        "__findOne__Geolocs",
+        "__count__Alerts",
+        "__get__Alerts",
+        "__find__Alerts",
+        "__findOne__Alerts"
       ]
     },
     {

@@ -20,7 +20,7 @@ import * as d3Geo from "d3-geo";
 // import * as geoJson from './FRA.geo.json';
 
 @Component({
-  selector: 'app-devices',
+  selector: 'app-tracking',
   templateUrl: './tracking.component.html',
   styleUrls: ['./tracking.component.scss']
 })
@@ -106,6 +106,9 @@ export class TrackingComponent implements OnInit, OnDestroy {
       this.id = this.organization ? this.organization.id : this.user.id;
       this.api.getGeolocs(this.id, this.geolocFilter).subscribe((geolocs: Geoloc[]) => {
         this.geolocs = geolocs;
+        // Set map
+        this.mapLat = geolocs[0].location.lat;
+        this.mapLng = geolocs[0].location.lng;
         /*if (geolocs[0]) {
           this.mapLat = geolocs[0].location.lat;
           this.mapLng = geolocs[0].location.lng;

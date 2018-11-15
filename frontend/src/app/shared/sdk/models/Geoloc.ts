@@ -21,12 +21,11 @@ export interface GeolocInterface {
   "messageId"?: string;
   "updatedAt"?: Date;
   "userId"?: any;
-  "organizationId"?: any;
   "beaconId"?: string;
   Device?: Device;
   Message?: Message;
   user?: User;
-  Organization?: Organization;
+  Organizations?: Organization[];
   Beacon?: Beacon;
 }
 
@@ -42,12 +41,11 @@ export class Geoloc implements GeolocInterface {
   "messageId": string = '';
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
-  "organizationId": any = <any>null;
   "beaconId": string = '';
   Device: Device = null;
   Message: Message = null;
   user: User = null;
-  Organization: Organization = null;
+  Organizations: Organization[] = null;
   Beacon: Beacon = null;
   constructor(data?: GeolocInterface) {
     Object.assign(this, data);
@@ -126,10 +124,6 @@ export class Geoloc implements GeolocInterface {
           name: 'userId',
           type: 'any'
         },
-        "organizationId": {
-          name: 'organizationId',
-          type: 'any'
-        },
         "beaconId": {
           name: 'beaconId',
           type: 'string'
@@ -160,13 +154,15 @@ export class Geoloc implements GeolocInterface {
                   keyFrom: 'userId',
           keyTo: 'id'
         },
-        Organization: {
-          name: 'Organization',
-          type: 'Organization',
+        Organizations: {
+          name: 'Organizations',
+          type: 'Organization[]',
           model: 'Organization',
-          relationType: 'belongsTo',
-                  keyFrom: 'organizationId',
-          keyTo: 'id'
+          relationType: 'hasMany',
+          modelThrough: 'OrganizationGeoloc',
+          keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'geolocId'
         },
         Beacon: {
           name: 'Beacon',

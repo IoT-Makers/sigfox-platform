@@ -1,8 +1,7 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AlertApi, DeviceApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {Subscription} from 'rxjs/Subscription';
-import {Alert, AlertGeofence, AlertValue, Connector, Device, FireLoopRef, Property, User} from '../../shared/sdk/models';
+import {Alert, AlertGeofence, AlertValue, Connector, Device, Property, User} from '../../shared/sdk/models';
 import * as L from 'leaflet';
 import {icon, LatLng, latLng, tileLayer} from 'leaflet';
 import '../../../../node_modules/leaflet.fullscreen/Control.FullScreen.js';
@@ -43,18 +42,19 @@ export class AlertsComponent implements OnInit, OnDestroy {
   private blueIconOptions: L.IconOptions = {
     iconUrl: 'assets/img/markers/marker-icon.png',
     shadowUrl: 'assets/img/markers/marker-shadow.png',
-    iconSize:     [25, 41], // size of the icon
-    iconAnchor:   [13, 41], // point of the icon which will correspond to marker's location
-    shadowSize:   [50, 64], // size of the shadow
+    iconSize: [25, 41], // size of the icon
+    iconAnchor: [13, 41], // point of the icon which will correspond to marker's location
+    shadowSize: [50, 64], // size of the shadow
     shadowAnchor: [4, 62],  // the same for the shadow
-    popupAnchor:  [-2, -40] // point from which the popup should open relative to the iconAnchor
+    popupAnchor: [-2, -40] // point from which the popup should open relative to the iconAnchor
   };
   private mapOptions = {
     layers: [
       tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
         maxZoom: 21,
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-        attribution: '© OpenStreetMap contributors' }),
+        attribution: '© OpenStreetMap contributors'
+      }),
       this.drawnItems
     ],
     zoom: 5,
@@ -145,7 +145,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.map.options.layers[0] = tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
       maxZoom: 21,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-      attribution: '© OpenStreetMap contributors' });
+      attribution: '© OpenStreetMap contributors'
+    });
     /*this.map.options.zoom = 5;
     this.map.options.center = latLng(48.856614, 2.352222);
     this.map.options.trackResize = false;*/
@@ -196,7 +197,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     if (type === 'circle') {
       const alertGeofence = new AlertGeofence();
       alertGeofence.location[0] = layer.getLatLng();
-      alertGeofence.radius =  layer.getRadius();
+      alertGeofence.radius = layer.getRadius();
       alertGeofence.in = true;
       this.alertToAddOrEdit.geofence.push(alertGeofence);
       // Add circle to the map layer
@@ -218,7 +219,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
       const alertGeofence = new AlertGeofence();
       if (layer instanceof L.Circle) {
         alertGeofence.location[0] = layer.getLatLng();
-        alertGeofence.radius =  layer.getRadius();
+        alertGeofence.radius = layer.getRadius();
         alertGeofence.in = true;
         this.alertToAddOrEdit.geofence.push(alertGeofence);
       } else if (layer instanceof L.Polygon) {
@@ -238,7 +239,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
       const alertGeofence = new AlertGeofence();
       if (layer instanceof L.Circle) {
         alertGeofence.location[0] = layer.getLatLng();
-        alertGeofence.radius =  layer.getRadius();
+        alertGeofence.radius = layer.getRadius();
         alertGeofence.in = true;
         this.alertToAddOrEdit.geofence.push(alertGeofence);
       } else if (layer instanceof L.Polygon) {
@@ -350,7 +351,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
     // Check if connector has not been removed
     if (alert.Connector) {
-      this.selectedConnectors = [{id: alert.Connector.id, itemName: alert.Connector.name + ' (' + alert.Connector.type + ')'}];
+      this.selectedConnectors = [{
+        id: alert.Connector.id,
+        itemName: alert.Connector.name + ' (' + alert.Connector.type + ')'
+      }];
     }
     // Open modal
     this.addOrEditAlertModal.show();
@@ -513,7 +517,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
-  rtHandler = (payload:any) => {
+  rtHandler = (payload: any) => {
     if (payload.action == "CREATE") {
       this.alerts.unshift(payload.content);
     } else if (payload.action == "DELETE") {

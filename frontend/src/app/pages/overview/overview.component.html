@@ -65,7 +65,7 @@
         </ng-container>
       </div>
     </div>
-    <div *ngIf="!organization" class="card" [routerLink]="['/alerts']">
+    <div class="card" [routerLink]="[!organization ? '/alerts' : '/organization/' + organization.id + '/alerts']">
       <div class="card-block">
         <div class="h1 text-alert text-right mb-2">
           <i class="fa fa-bell"></i>
@@ -83,7 +83,7 @@
         </ng-container>
       </div>
     </div>
-    <div *ngIf="organization" class="card">
+    <!--<div *ngIf="organization" class="card">
       <div class="card-block">
         <div class="h1 text-organization text-right mb-2">
           <i class="fa fa-users"></i>
@@ -100,7 +100,7 @@
           </div>
         </ng-container>
       </div>
-    </div>
+    </div>-->
   </div>
 
   <div class="row">

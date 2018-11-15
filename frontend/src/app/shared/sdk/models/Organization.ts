@@ -1,10 +1,12 @@
 /* tslint:disable */
 import {
   User,
-  Message,
-  Device,
+  Dashboard,
   Category,
-  Dashboard
+  Device,
+  Message,
+  Geoloc,
+  Alert
 } from '../index';
 
 declare var Object: any;
@@ -17,10 +19,12 @@ export interface OrganizationInterface {
   "updatedAt"?: Date;
   Members?: User[];
   user?: User;
-  Messages?: Message[];
-  Devices?: Device[];
-  Categories?: Category[];
   Dashboards?: Dashboard[];
+  Categories?: Category[];
+  Devices?: Device[];
+  Messages?: Message[];
+  Geolocs?: Geoloc[];
+  Alerts?: Alert[];
 }
 
 export class Organization implements OrganizationInterface {
@@ -32,10 +36,12 @@ export class Organization implements OrganizationInterface {
   "updatedAt": Date = new Date(0);
   Members: User[] = null;
   user: User = null;
-  Messages: Message[] = null;
-  Devices: Device[] = null;
-  Categories: Category[] = null;
   Dashboards: Dashboard[] = null;
+  Categories: Category[] = null;
+  Devices: Device[] = null;
+  Messages: Message[] = null;
+  Geolocs: Geoloc[] = null;
+  Alerts: Alert[] = null;
   constructor(data?: OrganizationInterface) {
     Object.assign(this, data);
   }
@@ -115,13 +121,21 @@ export class Organization implements OrganizationInterface {
                   keyFrom: 'userId',
           keyTo: 'id'
         },
-        Messages: {
-          name: 'Messages',
-          type: 'Message[]',
-          model: 'Message',
+        Dashboards: {
+          name: 'Dashboards',
+          type: 'Dashboard[]',
+          model: 'Dashboard',
           relationType: 'hasMany',
-          modelThrough: 'OrganizationMessage',
-          keyThrough: 'messageId',
+                  keyFrom: 'id',
+          keyTo: 'organizationId'
+        },
+        Categories: {
+          name: 'Categories',
+          type: 'Category[]',
+          model: 'Category',
+          relationType: 'hasMany',
+          modelThrough: 'OrganizationCategory',
+          keyThrough: 'categoryId',
           keyFrom: 'id',
           keyTo: 'organizationId'
         },
@@ -135,22 +149,34 @@ export class Organization implements OrganizationInterface {
           keyFrom: 'id',
           keyTo: 'organizationId'
         },
-        Categories: {
-          name: 'Categories',
-          type: 'Category[]',
-          model: 'Category',
+        Messages: {
+          name: 'Messages',
+          type: 'Message[]',
+          model: 'Message',
           relationType: 'hasMany',
-          modelThrough: 'OrganizationCategory',
-          keyThrough: 'categoryId',
+          modelThrough: 'OrganizationMessage',
+          keyThrough: 'messageId',
           keyFrom: 'id',
           keyTo: 'organizationId'
         },
-        Dashboards: {
-          name: 'Dashboards',
-          type: 'Dashboard[]',
-          model: 'Dashboard',
+        Geolocs: {
+          name: 'Geolocs',
+          type: 'Geoloc[]',
+          model: 'Geoloc',
           relationType: 'hasMany',
-                  keyFrom: 'id',
+          modelThrough: 'OrganizationGeoloc',
+          keyThrough: 'geolocId',
+          keyFrom: 'id',
+          keyTo: 'organizationId'
+        },
+        Alerts: {
+          name: 'Alerts',
+          type: 'Alert[]',
+          model: 'Alert',
+          relationType: 'hasMany',
+          modelThrough: 'AlertOrganization',
+          keyThrough: 'alertId',
+          keyFrom: 'id',
           keyTo: 'organizationId'
         },
       }

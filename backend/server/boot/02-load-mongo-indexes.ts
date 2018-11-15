@@ -114,13 +114,12 @@ module.exports = (app: any) => {
         ]);
         console.log('Updated index for Organization');
 
-        db.collection('OrganizationMessage').createIndexes([
-          {key: {messageId: 1}, name: 'messageId'},
-          {key: {deviceId: 1}, name: 'deviceId'},
+        db.collection('OrganizationCategory').createIndexes([
+          {key: {categoryId: 1}, name: 'categoryId'},
           {key: {organizationId: 1}, name: 'organizationId'},
-          {key: {createdAt: -1}, name: 'createdAt'}
+          {key: {createdAt: -1}, name: 'createdAt'},
         ]);
-        console.log('Updated index for OrganizationMessage');
+        console.log('Updated index for OrganizationCategory');
 
         db.collection('OrganizationDevice').createIndexes([
           {key: {deviceId: 1}, name: 'deviceId'},
@@ -129,12 +128,27 @@ module.exports = (app: any) => {
         ]);
         console.log('Updated index for OrganizationDevice');
 
-        db.collection('OrganizationCategory').createIndexes([
-          {key: {categoryId: 1}, name: 'categoryId'},
+        db.collection('OrganizationMessage').createIndexes([
+          {key: {messageId: 1}, name: 'messageId'},
+          {key: {deviceId: 1}, name: 'deviceId'},
+          {key: {organizationId: 1}, name: 'organizationId'},
+          {key: {createdAt: -1}, name: 'createdAt'}
+        ]);
+        console.log('Updated index for OrganizationMessage');
+
+        db.collection('OrganizationGeoloc').createIndexes([
+          {key: {geolocId: 1}, name: 'geolocId'},
           {key: {organizationId: 1}, name: 'organizationId'},
           {key: {createdAt: -1}, name: 'createdAt'},
         ]);
-        console.log('Updated index for OrganizationCategory');
+        console.log('Updated index for OrganizationGeoloc');
+
+        db.collection('OrganizationAlert').createIndexes([
+          {key: {alertId: 1}, name: 'alertId'},
+          {key: {organizationId: 1}, name: 'organizationId'},
+          {key: {createdAt: -1}, name: 'createdAt'},
+        ]);
+        console.log('Updated index for OrganizationAlert');
 
         db.collection('Organizationuser').createIndexes([
           {key: {organizationId: 1}, name: 'organizationId'},

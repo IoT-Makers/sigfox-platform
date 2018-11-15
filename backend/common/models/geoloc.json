@@ -50,6 +50,16 @@
   },
   "validations": [],
   "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    },
+    "Organizations": {
+      "type": "hasAndBelongsToMany",
+      "model": "Organization",
+      "foreignKey": "organizationId"
+    },
     "Beacon": {
       "type": "belongsTo",
       "model": "Beacon",
@@ -64,16 +74,6 @@
       "type": "belongsTo",
       "model": "Message",
       "foreignKey": "messageId"
-    },
-    "user": {
-      "type": "belongsTo",
-      "model": "user",
-      "foreignKey": "userId"
-    },
-    "Organization": {
-      "type": "belongsTo",
-      "model": "Organization",
-      "foreignKey": "organizationId"
     }
   },
   "acls": [
