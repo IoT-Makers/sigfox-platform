@@ -26,7 +26,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   public countBeaconsReady = false;
   public countOrganizationsReady = false;
 
-  private user: User;
+  public user: User;
   private selectedUsers: Array<Object> = [];
   private selectUsers: Array<Object> = [];
   public organization: Organization;
@@ -45,7 +45,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private countBeacons = 0;
   private countOrganizationUsers = 0;
 
-  private admin = false;
+  public admin = false;
 
   public disabled = false;
   public status: { isopen: boolean } = {isopen: false};
