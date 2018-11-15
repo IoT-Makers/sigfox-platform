@@ -20,7 +20,7 @@ export class RabbitPub {
   }
 
   public connect(): void {
-    let rabbitURL = process.env.RABBIT_URL || 'amqp://localhost';
+    let rabbitURL = process.env.RABBIT_URL || 'amqp://usr:pwd@localhost';
     amqp.connect(rabbitURL, (err, conn) => {
       if (err) console.error(err);
       conn.createChannel((err, ch) => {
