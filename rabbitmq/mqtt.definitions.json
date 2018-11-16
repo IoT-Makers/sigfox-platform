@@ -1,0 +1,37 @@
+{
+  "vhosts": [
+    {
+      "name": "/mqtt"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "mqtt",
+      "vhost": "/mqtt",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "mqtt",
+      "vhost": "/mqtt",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "mqtt",
+      "vhost": "/mqtt",
+      "destination": "mqtt",
+      "destination_type": "queue",
+      "routing_key": "*",
+      "arguments": {}
+    }
+  ]
+}

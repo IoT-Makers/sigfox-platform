@@ -57,9 +57,10 @@ services:
 
   rabbitmq:
     container_name: rabbitmq
-    environment:
-      RABBITMQ_DEFAULT_USER: usr
-      RABBITMQ_DEFAULT_PASS: pwd
+    build: rabbitmq
+    image: ${REGISTRY_URL}rabbitmq-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
+    env_file: env/rabbitmq.env
     ports:
     - "15672:15672"
     - "5672:5672"
+    - "1883:1883"
