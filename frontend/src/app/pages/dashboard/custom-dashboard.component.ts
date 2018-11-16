@@ -1070,6 +1070,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     return '#' + ('000000' + color).slice(-6);
   }
 
+  lineBreakText(text: string): string {
+    return text.replace(/(?:\r\n|\r|\n)/g, '<br>')
+  }
+
   loadWidgets(): void {
     this.dashboardApi.getWidgets(this.dashboard.id, {order: 'createdAt ASC'}).subscribe((widgets: any[]) => {
       this.widgets = widgets;
