@@ -1,9 +1,10 @@
 version: '3'
 services:
   backend:
-#    container_name: backend
+    container_name: backend
     depends_on:
     - mongodb
+    - rabbitmq
     build:
       context: backend
       args:
@@ -16,9 +17,10 @@ services:
     - "3000:3000"
 
   primus:
-#    container_name: primus
+    container_name: primus
     depends_on:
       - mongodb
+      - rabbitmq
     build: primus
     image: ${REGISTRY_URL}primus-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
     restart: "always"
@@ -28,7 +30,7 @@ services:
     - "2333:2333"
 
   frontend:
-#    container_name: frontend
+    container_name: frontend
     depends_on:
     - mongodb
     build:
@@ -45,7 +47,7 @@ services:
     - "80:80"
 
   mongodb:
-#    container_name: mongodb
+    container_name: mongodb
     build: mongodb
     image: ${REGISTRY_URL}mongodb-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
     restart: "always"
@@ -54,7 +56,7 @@ services:
     env_file: env/mongodb.env
 
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: usr
       RABBITMQ_DEFAULT_PASS: pwd
