@@ -43,7 +43,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private countParsers = 0;
   private countConnectors = 0;
   private countBeacons = 0;
-  private countOrganizationUsers = 0;
 
   public admin = false;
 
@@ -142,12 +141,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       // For organizations menu
       this.userApi.getOrganizations(this.user.id, {order: 'createdAt DESC'}).subscribe((organizations: Organization[]) => {
         this.organizations = organizations;
-        // Count organization members
-        this.organizations.forEach((organization: any) => {
-          this.organizationApi.countMembers(organization.id).subscribe(result => {
-            organization.countMembers = result.count;
-          });
-        });
         this.countOrganizationsReady = true;
       });
 
@@ -213,8 +206,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.cleanSetup();
   }
 
-  public toggled(open: boolean): void {
-    console.log('Dropdown is now: ', open);
+  public countOrganizationsMembers(): void {
+    // console.log('Dropdown is now: ', open);
+    // Count organization members
+    this.organizations.forEach((organization: any) => {
+      this.organizationApi.countMembers(organization.id).subscribe(result => {
+        organization.countMembers = result.count;
+      });
+    });
   }
 
   public toggleDropdown($event: MouseEvent): void {
@@ -241,11 +240,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     if (this.organization) dashboard.name = 'Shared dashboard';
 
     this.api.createDashboards(this.id, dashboard).subscribe(dashboard => {
-      if (!this.organization) {
-        this.router.navigate(['/dashboard/' + dashboard.id]);
-      } else {
-        this.router.navigate(['/organization/' + this.organization.id + '/dashboard/' + dashboard.id]);
-      }
+      if (!this.organization) this.router.navigate(['/dashboard/' + dashboard.id]);
+      else this.router.navigate(['/organization/' + this.organization.id + '/dashboard/' + dashboard.id]);
     });
   }
 
@@ -263,9 +259,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
             id: user.id,
             itemName: user.email
           };
-          if (user.id !== this.user.id) {
-            this.selectUsers.push(item);
-          }
+          if (user.id !== this.user.id) this.selectUsers.push(item);
         });
 
       });
@@ -283,9 +277,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         id: member.id,
         itemName: member.email
       };
-      if (user.id !== this.user.id) {
-        this.selectedUsers.push(user);
-      }
+      if (user.id !== this.user.id) this.selectedUsers.push(user);
     });
 
     if (this.admin) {
@@ -296,9 +288,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
             id: user.id,
             itemName: user.email
           };
-          if (user.id !== this.user.id) {
-            this.selectUsers.push(item);
-          }
+          if (user.id !== this.user.id) this.selectUsers.push(item);
         });
 
       });
