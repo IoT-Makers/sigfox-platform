@@ -770,49 +770,53 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.selectedTimeSpan[0]) this.newWidget.options.timeSpan = this.selectedTimeSpan[0].id;
 
     if (this.newWidget.options.timeSpan) {
-      switch (this.newWidget.options.timeSpan) {
-        case 'ten-minutes':
-          const TEN_MINUTES = 10 * 60 * 1000;  // Hour in milliseconds
-          this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - TEN_MINUTES;
-          break;
-        case 'hour':
-          const ONE_HOUR = 60 * 60 * 1000;  // Hour in milliseconds
-          this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_HOUR;
-          break;
-        case 'day':
-          const ONE_DAY = 24 * 60 * 60 * 1000;  // Day in milliseconds
-          this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_DAY;
-          break;
-        case 'three-days':
-          const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;  // Day in milliseconds
-          this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - THREE_DAYS;
-          break;
-        case 'one-week':
-          const ONE_WEEK = 7 * 24 * 60 * 60 * 1000;  // Week in milliseconds
-          this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_WEEK;
-          break;
-        case 'two-weeks':
-          const TWO_WEEK = 2 * 7 * 24 * 60 * 60 * 1000;  // Week in milliseconds
-          this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - TWO_WEEK;
-          break;
-        case 'three-weeks':
-          const THREE_WEEK = 3 * 7 * 24 * 60 * 60 * 1000;  // Week in milliseconds
-          this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - THREE_WEEK;
-          break;
-        case 'month':
-          const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;  // Month in milliseconds
-          this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_MONTH;
-          break;
-        case 'year':
-          const ONE_YEAR = 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
-          this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_YEAR;
-          break;
-      }
+      this.setTimeSpan(this.newWidget);
     } else if (this.newWidget.options.timeWindow) {
       // widget.filter.include[0].scope.where.and[0].createdAt.lte = widget.options.timeWindow.lte;
       // widget.filter.include[0].scope.where.and[0].createdAt.gte = widget.options.timeWindow.gte;
     }
     console.log('Set filter: END', this.newWidget);
+  }
+
+  setTimeSpan(widget): void {
+    switch (widget.options.timeSpan) {
+      case 'ten-minutes':
+        const TEN_MINUTES = 10 * 60 * 1000;  // Hour in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - TEN_MINUTES;
+        break;
+      case 'hour':
+        const ONE_HOUR = 60 * 60 * 1000;  // Hour in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_HOUR;
+        break;
+      case 'day':
+        const ONE_DAY = 24 * 60 * 60 * 1000;  // Day in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_DAY;
+        break;
+      case 'three-days':
+        const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;  // Day in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - THREE_DAYS;
+        break;
+      case 'one-week':
+        const ONE_WEEK = 7 * 24 * 60 * 60 * 1000;  // Week in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_WEEK;
+        break;
+      case 'two-weeks':
+        const TWO_WEEK = 2 * 7 * 24 * 60 * 60 * 1000;  // Week in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - TWO_WEEK;
+        break;
+      case 'three-weeks':
+        const THREE_WEEK = 3 * 7 * 24 * 60 * 60 * 1000;  // Week in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - THREE_WEEK;
+        break;
+      case 'month':
+        const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;  // Month in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_MONTH;
+        break;
+      case 'year':
+        const ONE_YEAR = 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_YEAR;
+        break;
+    }
   }
 
   setWidgetType($event): void {
@@ -1110,7 +1114,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     if (widget.type === 'text' || widget.type === 'image' || widget.type === 'divider') widget.ready = true;
     else {
       // Get devices data
-      this.getDevicesWithFilter(widget.filter).subscribe((devices: any[]) => {
+      this.getDevicesWithFilter(widget).subscribe((devices: any[]) => {
         // Value
         if (widget.type === 'value') {
           widget.data = _.filter(devices[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
@@ -1627,7 +1631,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       widgetFilter.where = {id: device.id};
       widgetFilter.include[0].scope.limit = 5000;
 
-      this.getDevicesWithFilter(widgetFilter).subscribe((devices: any[]) => {
+      this.getDevicesWithFilter(widget, widgetFilter).subscribe((devices: any[]) => {
         device.Messages = devices[0].Messages;
         const bounds: LatLngBounds = new google.maps.LatLngBounds();
 
@@ -1711,8 +1715,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     return returnedArray;
   }
 
-  private getDevicesWithFilter(filter: any): Observable<any[]> {
-    return this.api.getDevices(this.id, filter);
+  private getDevicesWithFilter(widget: any, newFilter?: any): Observable<any[]> {
+    if (widget.options.timeSpan) {
+      this.setTimeSpan(widget);
+    }
+    if (newFilter) return this.api.getDevices(this.id, newFilter);
+    else return this.api.getDevices(this.id, widget.filter);
   }
 
   // Map functions
