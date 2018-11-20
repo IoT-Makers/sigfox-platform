@@ -5,6 +5,7 @@ import {PrimusClientFn} from "../../../server/PrimusClientFn";
 
 const loopback = require("loopback");
 const nodemailer = require("nodemailer");
+const Nexmo = require('nexmo');
 
 /**
  * @module Alert
@@ -401,6 +402,15 @@ class Alert {
             // } catch (e) {
             //   console.error(e);
             // }
+          } else if (connector.type === "nexmo-sms") {
+            const nexmo = new Nexmo({
+              apiKey: connector.login,
+              apiSecret: decrypt(connector.password)
+            });
+            const from = 'Sigfox Platform';
+            const to = connector.recipient;
+            const text = alertMessage;
+            nexmo.message.sendSms(from, to, text);
           }
 
           if (!test) {

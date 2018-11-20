@@ -31,6 +31,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   // Select
   public selectTypes: Array<Object> = [
     {id: 'sigfox-api', itemName: 'Sigfox API'},
+    {id: 'nexmo-sms', itemName: 'Nexmo SMS'},
     {id: 'webhook', itemName: 'Webhook'},
     {id: 'free-mobile', itemName: 'Free Mobile'},
     {id: 'office-365', itemName: 'Outlook (Office 365)'},
