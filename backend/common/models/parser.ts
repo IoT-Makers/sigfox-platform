@@ -1,5 +1,5 @@
 import {Model} from "@mean-expert/model";
-import {PrimusClientFn} from "../../server/PrimusClientFn";
+import {RabbitPub} from '../../server/RabbitPub';
 
 /**
  * @module Parser
@@ -56,7 +56,7 @@ class Parser {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-    this.primusClient = PrimusClientFn.newClient();
+
   }
 
   public access(ctx: any, next: Function): void {
@@ -307,7 +307,7 @@ class Parser {
         content: parser,
         action: "DELETE"
       };
-      this.primusClient.write(payload);
+      RabbitPub.getInstance().pub(payload);
     }
     next();
   }
@@ -321,7 +321,7 @@ class Parser {
       content: parser,
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
-    this.primusClient.write(payload);
+    RabbitPub.getInstance().pub(payload);
     next();
   }
 }

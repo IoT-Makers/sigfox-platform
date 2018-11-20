@@ -1,6 +1,6 @@
 import {Model} from "@mean-expert/model";
 import {computeCtr, decryptPayload, encryptPayload} from "./utils";
-import {PrimusClientFn} from "../../server/PrimusClientFn";
+import {RabbitPub} from '../../server/RabbitPub';
 
 /**
  * @module Message
@@ -58,7 +58,6 @@ class Message {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-    this.primusClient = PrimusClientFn.newClient();
   }
 
   public postSigfox(req: any, data: any, next: Function): void {
@@ -565,7 +564,7 @@ class Message {
         content: msg,
         action: "DELETE"
       };
-      this.primusClient.write(payload);
+      RabbitPub.getInstance().pub(payload);
     }
     next();
   }
@@ -583,7 +582,7 @@ class Message {
         content: msg,
         action: ctx.isNewInstance ? "CREATE" : "UPDATE"
       };
-      this.primusClient.write(payload);
+      RabbitPub.getInstance().pub(payload);
     }));
     next();
   }
