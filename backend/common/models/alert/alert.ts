@@ -1,7 +1,7 @@
 import {Model} from "@mean-expert/model";
 import * as _ from "lodash";
 import {decrypt} from "../utils";
-import {PrimusClientFn} from "../../../server/PrimusClientFn";
+import {RabbitPub} from '../../../server/RabbitPub';
 
 const loopback = require("loopback");
 const nodemailer = require("nodemailer");
@@ -57,7 +57,7 @@ class Alert {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-    this.primusClient = PrimusClientFn.newClient();
+
   }
 
   public beforeSave(ctx: any, next: Function): void {
@@ -448,7 +448,7 @@ class Alert {
         content: alert,
         action: "DELETE"
       };
-      this.primusClient.write(payload);
+      RabbitPub.getInstance().pub(payload);
     }
     next();
   }
@@ -462,7 +462,7 @@ class Alert {
       content: alert,
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
-    this.primusClient.write(payload);
+    RabbitPub.getInstance().pub(payload);
     next();
   }
 }

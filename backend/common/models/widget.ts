@@ -1,5 +1,5 @@
 import {Model} from "@mean-expert/model";
-import {PrimusClientFn} from "../../server/PrimusClientFn";
+import {RabbitPub} from '../../server/RabbitPub';
 
 /**
  * @module Widget
@@ -23,7 +23,7 @@ class Widget {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-    this.primusClient = PrimusClientFn.newClient();
+
   }
 
   // Example Operation Hook
@@ -41,7 +41,7 @@ class Widget {
         content: widget,
         action: "DELETE"
       };
-      this.primusClient.write(payload);
+      RabbitPub.getInstance().pub(payload);
     }
     next();
   }
@@ -54,7 +54,7 @@ class Widget {
       content: widget,
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
-    this.primusClient.write(payload);
+    RabbitPub.getInstance().pub(payload);
     next();
   }
 }

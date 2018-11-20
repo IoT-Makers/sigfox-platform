@@ -23,6 +23,8 @@
   "dependencies": {
     "@mean-expert/boot-script": "^1.0.0",
     "@mean-expert/model": "^1.0.9",
+    "@types/amqplib": "^0.5.9",
+    "amqplib": "^0.5.2",
     "ask-sdk": "^2.1.0",
     "compression": "^1.0.3",
     "cookie-parser": "^1.4.3",

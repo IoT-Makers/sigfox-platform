@@ -1,7 +1,7 @@
 import {Model} from "@mean-expert/model";
 import * as _ from "lodash";
 import {decrypt} from "./utils";
-import {PrimusClientFn} from "../../server/PrimusClientFn";
+import {RabbitPub} from '../../server/RabbitPub';
 
 const moment = require("moment");
 const loopback = require("loopback");
@@ -74,7 +74,6 @@ class Device {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-    this.primusClient = PrimusClientFn.newClient();
   }
 
   // Example Operation Hook
@@ -595,7 +594,7 @@ class Device {
       content: device,
       action: "DELETE"
     };
-    this.primusClient.write(payload);
+    RabbitPub.getInstance().pub(payload);
     next();
   }
 
@@ -607,7 +606,7 @@ class Device {
         content: device,
         action: ctx.isNewInstance ? "CREATE" : "UPDATE"
       };
-      this.primusClient.write(payload);
+      RabbitPub.getInstance().pub(payload);
     next();
   }
 }

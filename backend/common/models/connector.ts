@@ -1,6 +1,6 @@
 import {Model} from "@mean-expert/model";
 import {decrypt, encrypt} from "./utils";
-import {PrimusClientFn} from "../../server/PrimusClientFn";
+import {RabbitPub} from '../../server/RabbitPub';
 
 const request = require("request");
 
@@ -38,7 +38,7 @@ class Connector {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-    this.primusClient = PrimusClientFn.newClient();
+
   }
 
   // Example Operation Hook
@@ -188,7 +188,7 @@ class Connector {
         content: connector,
         action: "DELETE"
       };
-      this.primusClient.write(payload);
+      RabbitPub.getInstance().pub(payload);
     }
     next();
   }
@@ -201,7 +201,7 @@ class Connector {
       content: connector,
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
-    this.primusClient.write(payload);
+    RabbitPub.getInstance().pub(payload);
     next();
   }
 }
