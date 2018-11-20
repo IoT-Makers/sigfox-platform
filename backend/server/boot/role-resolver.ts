@@ -49,17 +49,14 @@ module.exports = (app: any) => {
 
     // Do not allow anonymous users
     const userId = context.accessToken.userId;
-    if (!userId) {
-      //console.log('callback 1: !userId');
-      return reject();
-    }
+    if (!userId) return reject();
 
     // If the target model is Organization
     else if (context.modelName === 'Organization') {
 
       if (!context.modelId) {
         //Is admin?
-        User.findById(userId, {include : 'roles'}, (err: any, object: any) => {
+        User.findById(userId, {include: 'roles'}, (err: any, object: any) => {
           const roles = object.toJSON().roles;
           let authorized = false;
           roles.forEach((role: any, index: any, array: any) => {
@@ -74,38 +71,23 @@ module.exports = (app: any) => {
 
       } else {
 
-        context.model.findById(context.modelId, {include: 'Members'}, (err: any, object: any) => {
-          if (err || !object) {
-            return reject();
-          } else if (!object.Members) {
-            //console.log('callback 2: No members');
-            return reject();
-          } else {
-
+        context.model.findById(context.modelId, {include: 'Members'}, (err: any, organization: any) => {
+          if (err || !organization) return reject();
+          else if (!organization.Members) return reject();
+          else {
             // Check if user is a member of the organization
-            //console.log(object);
-            const members = object.toJSON().Members;
+            const members = organization.toJSON().Members;
             let authorized = false;
-            members.forEach((member: any, index: any, array: any) => {
-
-              if (member.id.toString() === userId.toString()) {
-                //console.log('callback 3: Authorize');
+            for (let i = 0; i < members.length; i++) {
+              if (members[i].id.toString() === userId.toString()) {
                 authorized = true;
                 return authorize();
-              } else if (index === array.length - 1 && authorized === false) {
-                //console.log('callback 4: Member not in organization');
-                if (!cb) return reject();
-              }
-            });
+              } else if (i === members.length - 1 && authorized === false) if (!cb) return reject();
+            }
           }
         });
       }
     }
-
-    else {
-      //console.log('callback 5: else');
-      return reject();
-    }
+    else return reject();
   });
-
 };

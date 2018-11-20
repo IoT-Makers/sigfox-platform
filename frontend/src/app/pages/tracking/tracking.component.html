@@ -1,23 +1,15 @@
 <div class="animated fadeIn">
   <div class="row">
     <div class="btn-group mb-1">
-      <button class="{{isDefaultView ? 'btn btn-success' : 'btn btn-default'}}" (click)="setView()">Default
-        view
-      </button>
-      <button class="{{!isDefaultView ? 'btn btn-success' : 'btn btn-default'}}" (click)="setView()">Beacon
-        view
-      </button>
+      <button class="{{isDefaultView ? 'btn btn-success' : 'btn btn-default'}}" (click)="setView()">Default view</button>
+      <button disabled class="{{!isDefaultView ? 'btn btn-success' : 'btn btn-default'}}" (click)="setView()">Beacon view</button>
     </div>
-  </div>
-  <div class="row">
-    <svg id="tag" #tag>
-    </svg>
   </div>
   <div *ngIf="isDefaultView" class="row">
     <agm-map [latitude]="mapLat"
              [longitude]="mapLng"
              [zoom]="mapZoom"
-             [mapTypeControl]="true"
+             [mapTypeControl]="false"
              [fullscreenControl]="true">
       <ng-container *ngFor="let geoloc of geolocs">
         <!-- Sigfox -->

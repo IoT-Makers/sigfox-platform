@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Parser, User} from '../../shared/sdk/models';
+import {Parser, Role, User} from '../../shared/sdk/models';
 import {ParserApi, UserApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
@@ -31,6 +31,8 @@ export class ParsersComponent implements OnInit, OnDestroy {
       timeout: 5000,
       animation: 'fade'
     });
+
+  private admin = false;
 
   constructor(private rt: RealtimeService,
               private userApi: UserApi,
@@ -68,12 +70,22 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
+    this.userApi.getRoles(this.user.id).subscribe((roles: Role[]) => {
+      this.user.roles = roles;
+      roles.forEach((role: Role) => {
+        if (role.name === 'admin') {
+          this.admin = true;
+          return;
+        }
+      });
+    });
 
     // Parsers
     this.parserApi.find({
       order: 'updatedAt DESC'
     }).subscribe((parsers: Parser[]) => {
       this.parsers = parsers;
+      console.log(parsers);
     });
   }
 
@@ -101,6 +113,25 @@ export class ParsersComponent implements OnInit, OnDestroy {
 
   closeDecodedPayload(i: number) {
     this.testPayload[i] = false;
+  }
+
+  setHidden(parser: Parser) {
+    this.parserApi.patchAttributes(parser.id, {hidden: parser.hidden}).subscribe((updatedParser: Parser) => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      if (updatedParser.hidden) this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully hidden.');
+      else this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully unhidden.');
+      this.parserApi.countDevices(parser.id).subscribe(result => {
+        if (result.count > 0) {
+          this.parserToEdit = parser;
+          this.confirmParseModal.show();
+        }
+      });
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
+    });
   }
 
   create(): void {

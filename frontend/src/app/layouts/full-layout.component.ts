@@ -1,12 +1,21 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Dashboard, Organization, Role, User} from '../shared/sdk/models';
-import {BeaconApi, DashboardApi, OrganizationApi, ParserApi, UserApi} from '../shared/sdk/services/custom';
+import {
+  AppSettingApi,
+  BeaconApi,
+  DashboardApi,
+  OrganizationApi,
+  ParserApi,
+  UserApi
+} from '../shared/sdk/services/custom';
 import {RealtimeService} from "../shared/realtime/realtime.service";
 
 @Component({
-  templateUrl: './full-layout.component.html'
+  templateUrl: './full-layout.component.html',
+  styleUrls: ['./full-layout.component.scss']
 })
+
 export class FullLayoutComponent implements OnInit, OnDestroy {
 
   @ViewChild('addOrEditOrganizationModal') addOrEditOrganizationModal: any;
@@ -24,7 +33,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   public countBeaconsReady = false;
   public countOrganizationsReady = false;
 
-  private user: User;
+  public user: User;
   private selectedUsers: Array<Object> = [];
   private selectUsers: Array<Object> = [];
   public organization: Organization;
@@ -41,9 +50,9 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private countParsers = 0;
   private countConnectors = 0;
   private countBeacons = 0;
-  private countOrganizationUsers = 0;
 
-  private admin = false;
+  public admin = false;
+  public appVersion: any;
 
   public disabled = false;
   public status: { isopen: boolean } = {isopen: false};
@@ -61,6 +70,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private id;
 
   constructor(private rt: RealtimeService,
+              private appSettingApi: AppSettingApi,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private parserApi: ParserApi,
@@ -133,6 +143,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   setup(): void {
     this.unsubscribe();
     this.subscribe();
+    this.getAppVersion();
     if (!this.isInitialized) {
       this.isInitialized = true;
       console.log('Setup Full layout');
@@ -205,11 +216,24 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.cleanSetup();
   }
 
-  public toggled(open: boolean): void {
-    console.log('Dropdown is now: ', open);
+  countOrganizationsMembers(open: boolean): void {
+    if (open) {
+      // Count organization members
+      this.organizations.forEach((organization: any) => {
+        this.organizationApi.countMembers(organization.id).subscribe(result => {
+          organization.countMembers = result.count;
+        });
+      });
+    }
   }
 
-  public toggleDropdown($event: MouseEvent): void {
+  getAppVersion(): void {
+    this.appSettingApi.getVersion().subscribe((result: any) => {
+      this.appVersion = result;
+    });
+  }
+
+  toggleDropdown($event: MouseEvent): void {
     $event.preventDefault();
     $event.stopPropagation();
     this.status.isopen = !this.status.isopen;
@@ -233,11 +257,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     if (this.organization) dashboard.name = 'Shared dashboard';
 
     this.api.createDashboards(this.id, dashboard).subscribe(dashboard => {
-      if (!this.organization) {
-        this.router.navigate(['/dashboard/' + dashboard.id]);
-      } else {
-        this.router.navigate(['/organization/' + this.organization.id + '/dashboard/' + dashboard.id]);
-      }
+      if (!this.organization) this.router.navigate(['/dashboard/' + dashboard.id]);
+      else this.router.navigate(['/organization/' + this.organization.id + '/dashboard/' + dashboard.id]);
     });
   }
 
@@ -255,9 +276,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
             id: user.id,
             itemName: user.email
           };
-          if (user.id !== this.user.id) {
-            this.selectUsers.push(item);
-          }
+          if (user.id !== this.user.id) this.selectUsers.push(item);
         });
 
       });
@@ -275,9 +294,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         id: member.id,
         itemName: member.email
       };
-      if (user.id !== this.user.id) {
-        this.selectedUsers.push(user);
-      }
+      if (user.id !== this.user.id) this.selectedUsers.push(user);
     });
 
     if (this.admin) {
@@ -288,9 +305,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
             id: user.id,
             itemName: user.email
           };
-          if (user.id !== this.user.id) {
-            this.selectUsers.push(item);
-          }
+          if (user.id !== this.user.id) this.selectUsers.push(item);
         });
 
       });

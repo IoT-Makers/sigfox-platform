@@ -4,36 +4,33 @@
     Loading dashboard...
   </div>
   <div class="row" *ngIf="dashboardReady">
-    <!-- Title -->
     <div class="col-md-8">
-      <h2 class=""><i class="fa {{dashboard.icon}}"></i> {{dashboard.name}}</h2>
-      <p class="blockquote" *ngIf="dashboard.description">{{dashboard.description}}</p>
+      <!-- Title -->
+      <h2><i class="fa {{dashboard.icon}}"></i> {{dashboard.name}}</h2>
+      <p class="blockquote mb-0" *ngIf="dashboard.description">{{dashboard.description}}</p>
+      <!-- End Title -->
     </div>
-    <!-- End Title -->
-
-    <!-- Buttons -->
     <div class="col-md-4">
-      <button *ngIf="!editFlag" class="btn btn-info pull-right" (click)="editDashboard()"><i class="fa fa-pencil"></i>
-        Edit dashboard
-      </button>
-      <button *ngIf="!editFlag" class="btn btn-success pull-right" (click)="addNewWidget()"><i
-        class="fa fa-plus-circle"></i> Add widget
-      </button>
-      <button *ngIf="editFlag" class="btn btn-danger pull-right" (click)="cancel()"><i class="fa fa-ban"></i> Cancel
-      </button>
+      <!-- Buttons -->
+      <div class="btn-group pull-right">
+        <button *ngIf="!editFlag" class="btn btn-outline-info" (click)="editDashboard()"><i class="fa fa-pencil"></i>
+          Edit dashboard
+        </button>
+        <button *ngIf="!editFlag" class="btn btn-outline-success" (click)="addNewWidget()"><i
+          class="fa fa-plus-circle"></i> Add widget
+        </button>
+        <button *ngIf="editFlag" class="btn btn-outline-danger" (click)="cancel()"><i class="fa fa-ban"></i> Cancel
+        </button>
+      </div>
+      <!-- End Buttons -->
     </div>
-    <!-- End Buttons -->
-
     <!-- Edit Dashboard -->
-    <div class="col-md-12" *ngIf="editFlag">
+    <div class="mt-1 col-md-12" *ngIf="editFlag">
       <div class="card">
         <div class="card-header">
           <strong>Edit dashboard</strong>
         </div>
         <div class="card-block">
-          <h4 class="text-center">Dashboard Information</h4>
-          <hr>
-
           <!-- Form Begin -->
           <form class="form-horizontal" #editDashboardForm="ngForm">
             <div class="form-group row">
@@ -70,13 +67,13 @@
               </div>
             </div>
 
-            <button class="btn btn-sm btn-primary" [disabled]="!editDashboardForm.form.valid" (click)="saveDashboard()">
-              <i
+            <div class="btn-group-sm pull-right">
+              <button class="btn btn-primary" [disabled]="!editDashboardForm.form.valid" (click)="saveDashboard()"><i
                 class="fa fa-check"></i> Save dashboard
-            </button>
-            <button class="btn btn-sm btn-danger" (click)="deleteDashboard()"><i class="fa fa-trash"></i> Delete
-              dashboard
-            </button>
+              </button>
+              <button class="btn btn-danger" (click)="deleteDashboard()"><i class="fa fa-trash"></i> Delete dashboard
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -126,11 +123,9 @@
           <!-- Card body -->
           <div class="card-block">
             <ng-container *ngIf="!widget.ready">
-              <div class="card-block">
-                <div class="sk-chasing-dots">
-                  <div class="sk-child sk-dot1"></div>
-                  <div class="sk-child sk-dot2"></div>
-                </div>
+              <div class="sk-chasing-dots">
+                <div class="sk-child sk-dot1"></div>
+                <div class="sk-child sk-dot2"></div>
               </div>
             </ng-container>
 
@@ -142,15 +137,14 @@
 
               <!-- Text -->
               <ng-container *ngIf="widget.type === 'text'">
-                <div *ngIf="widget.data" class="text-center mx-auto font-lg">
-                  {{widget.data}}
+                <div *ngIf="widget.options.text" [innerHTML]="lineBreakText(widget.options.text)" class="widget-200-small text-center mx-auto font-lg">
                 </div>
               </ng-container>
               <!-- End Value -->
 
               <!-- Value -->
               <ng-container *ngIf="widget.type === 'value'">
-                <div *ngIf="widget.data" class="text-center mx-auto font-weight-bold font-lg">
+                <div *ngIf="widget.data" class="widget-200-small text-center mx-auto font-weight-bold font-lg">
                   <ng-container *ngIf="widget.data.value == null">
                     No data
                   </ng-container>
@@ -204,7 +198,8 @@
                               <br>
                               <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
                               <br>
-                              <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                              <strong><b>Time: </b>{{geoloc.createdAt | date:"Hve" +
+                                "H:mm:ss"}}</strong>
                               <br>
                               <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                             </agm-info-window>
@@ -554,7 +549,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -587,7 +583,8 @@
                                         <br>
                                         <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                   </ng-container>
@@ -608,7 +605,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -643,7 +641,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -682,7 +681,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -715,7 +715,8 @@
                                         <br>
                                         <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                   </ng-container>
@@ -736,7 +737,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -771,7 +773,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -963,15 +966,16 @@
                                       [longitude]="geoloc.location.lng"
                                       [iconUrl]="'assets/img/markers/marker-start.png'">
                                       <agm-info-window>
-                                        <strong><b>Type:</b> <span class="text-geoloc-sigfox">Sigfox</span></strong>
+                                        <strong><b>Type: </b><span class="text-geoloc-sigfox">Sigfox</span></strong>
                                         <br>
-                                        <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
+                                        <strong><b>Date: </b>{{geoloc.createdAt | date: 'dd/MM/yyyy'}}</strong>
                                         <br>
-                                        <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
+                                        <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                         <br>
-                                        <strong><b>Accuracy:</b> {{geoloc.accuracy}} m</strong>
+                                        <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position:</b> n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -1004,7 +1008,8 @@
                                         <br>
                                         <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                   </ng-container>
@@ -1025,7 +1030,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -1060,7 +1066,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-success">START</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-success">START</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -1099,7 +1106,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -1132,7 +1140,8 @@
                                         <br>
                                         <strong><b>Time: </b>{{geoloc.createdAt | date: 'HH:mm:ss'}}</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                   </ng-container>
@@ -1153,7 +1162,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -1188,7 +1198,8 @@
                                         <br>
                                         <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
                                         <br>
-                                        <strong><b>Position: </b>n°{{i}} <span class="text-danger">FINISH</span></strong>
+                                        <strong><b>Position: </b>n°{{i}} <span
+                                          class="text-danger">FINISH</span></strong>
                                       </agm-info-window>
                                     </agm-marker>
                                     <!-- Circle -->
@@ -1379,7 +1390,7 @@
 
               <!-- Gauge -->
               <ng-container *ngIf="widget.type === 'gauge'">
-                <div *ngIf="widget.data" class="text-center">
+                <div *ngIf="widget.data" class="widget-200 text-center">
                   <div class="text-center">{{widget.data[0].Messages[0].createdAt | date:"yyyy/MM/dd - HH:mm:ss"}}</div>
                   <ngx-gauge #gauge
                              [min]="widget.options.min"
@@ -1398,20 +1409,22 @@
               <!-- End Gauge -->
 
               <!-- Chart -->
-              <ng-container *ngIf="widget.type === 'line' || widget.type === 'bar'">
+              <ng-container *ngIf="widget.type === 'line'">
                 <div *ngIf="widget.data">
                   <nvd3 [options]="widget.options.chartOptions" [data]="widget.data"></nvd3>
                 </div>
               </ng-container>
               <!-- End Chart -->
 
-              <!-- Bar custom -->
-              <ng-container *ngIf="widget.type === 'bar-custom'">
-                <div *ngIf="mobile" class="col-md-12" style="min-height: 200px;">
+              <!-- Bar -->
+              <ng-container
+                *ngIf="widget.type === 'bar' || widget.type === 'bar-exact' || widget.type === 'bar-custom' || widget.type === 'stats'">
+                <p *ngIf="widget.data && widget.data.length === 0" class="text-center font-weight-bold">No data to
+                  show</p>
+                <div *ngIf="mobile && widget.data && widget.data.length > 0" class="widget-mobile col-md-12">
                   <iframe class="chartjs-hidden-iframe" tabindex="-1"
                           style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
-                  <canvas *ngIf="widget.data"
-                          baseChart
+                  <canvas baseChart
                           [datasets]="widget.data"
                           [labels]="widget.options.chartLabels"
                           [options]="widget.options.chartOptions"
@@ -1419,11 +1432,10 @@
                           [legend]="true"
                           [chartType]="'bar'"></canvas>
                 </div>
-                <div *ngIf="!mobile" class="col-md-12" style="min-height: 400px;">
+                <div *ngIf="!mobile && widget.data && widget.data.length > 0" class="widget-400 col-md-12">
                   <iframe class="chartjs-hidden-iframe" tabindex="-1"
                           style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
-                  <canvas *ngIf="widget.data"
-                          baseChart
+                  <canvas baseChart
                           [datasets]="widget.data"
                           [labels]="widget.options.chartLabels"
                           [options]="widget.options.chartOptions"
@@ -1432,36 +1444,36 @@
                           [chartType]="'bar'"></canvas>
                 </div>
               </ng-container>
-              <!-- End Bar custom -->
+              <!-- End Bar -->
 
-              <!-- Stats custom -->
-              <ng-container *ngIf="widget.type === 'stats'">
-                <div *ngIf="mobile" class="col-md-12" style="min-height: 200px;">
+              <!-- Bar custom stats -->
+              <ng-container *ngIf="widget.type === 'bar-custom-stats'">
+                <p *ngIf="widget.data && widget.data.length === 0" class="text-center font-weight-bold">No data to
+                  show</p>
+                <div *ngIf="mobile && widget.data && widget.data.length > 0" class="widget-mobile col-md-12">
                   <iframe class="chartjs-hidden-iframe" tabindex="-1"
                           style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
-                  <canvas *ngIf="widget.data"
-                          baseChart
+                  <canvas baseChart
                           [datasets]="widget.data"
                           [labels]="widget.options.chartLabels"
                           [options]="widget.options.chartOptions"
                           [colors]="widget.options.chartColor"
                           [legend]="true"
-                          [chartType]="'bar'"></canvas>
+                          [chartType]="'horizontalBar'"></canvas>
                 </div>
-                <div *ngIf="!mobile" class="col-md-12" style="min-height: 400px;">
+                <div *ngIf="!mobile && widget.data && widget.data.length > 0" class="widget-200 col-md-12">
                   <iframe class="chartjs-hidden-iframe" tabindex="-1"
                           style="display: block; overflow: hidden; border: 0px; margin: 0px; top: 0px; left: 0px; bottom: 0px; right: 0px; height: 100%; width: 100%; position: absolute; pointer-events: none; z-index: -1;"></iframe>
-                  <canvas *ngIf="widget.data"
-                          baseChart
+                  <canvas baseChart
                           [datasets]="widget.data"
                           [labels]="widget.options.chartLabels"
                           [options]="widget.options.chartOptions"
                           [colors]="widget.options.chartColor"
                           [legend]="true"
-                          [chartType]="'bar'"></canvas>
+                          [chartType]="'horizontalBar'"></canvas>
                 </div>
               </ng-container>
-              <!-- End Stats custom -->
+              <!-- End Bar custom stats -->
 
             </ng-container>
           </div>
@@ -1546,7 +1558,7 @@
                                       name="selectWidgetType"
                                       [data]="selectWidgetType"
                                       [(ngModel)]="selectedWidgetType"
-                                      (onSelect)="newWidget.type = $event.id; selectOne.isActive = false;"
+                                      (onSelect)="setWidgetType($event); selectOne.isActive = false;"
                                       (onDeSelect)="newWidget.type = ''"
                                       [settings]="selectOneSettings"
                                       required>
@@ -1575,12 +1587,12 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Text</label>
                 <div class="col-md-9">
-                  <input type="text"
-                         class="form-control"
-                         placeholder="Enter some text here"
-                         name="newWidget.data"
-                         [(ngModel)]="newWidget.data"
-                         required>
+                  <textarea class="form-control"
+                            rows="5"
+                            placeholder="Enter some text here"
+                            name="newWidget.options.text"
+                            [(ngModel)]="newWidget.options.text"
+                            required></textarea>
                 </div>
               </div>
             </ng-container>
@@ -1597,8 +1609,10 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(); loadKeys(); selectOneDevice.isActive = false;"
-                                        (onDeSelect)="setFilter();"
+                                        (onSelect)="loadSelectableKeys(); selectOneDevice.isActive = false;"
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];"
                                         required>
                   </angular2-multiselect>
                 </div>
@@ -1611,8 +1625,7 @@
                                         [data]="selectKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelect)="setFilter(); selectOneKey.isActive = false;"
+                                        (onSelect)="selectOneKey.isActive = false;"
                                         required>
                   </angular2-multiselect>
                 </div>
@@ -1630,10 +1643,10 @@
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();">
+                                        (onSelect)="loadSelectableKeys();"
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
 
@@ -1642,10 +1655,10 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();">
+                                        (onSelect)="loadSelectableKeys();"
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1712,10 +1725,10 @@
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();">
+                                        (onSelect)="loadSelectableKeys();"
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
 
@@ -1724,10 +1737,10 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();">
+                                        (onSelect)="loadSelectableKeys();"
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1782,22 +1795,6 @@
                     </thead>
                   </table>
                 </div>
-                <!--<div class="form-group row" *ngIf="selectedCategories.length > 0 || selectedDevices.length > 0">
-                  <label class="col-md-3 form-control-label">Keys</label>
-                  <div class="col-md-9">
-                    <angular2-multiselect name="selectKeys"
-                                          (onOpen)="loadKeys()"
-                                          [data]="selectKeys"
-                                          [(ngModel)]="selectedKeys"
-                                          [settings]="selectKeysSettings"
-                                          (onSelect)="setFilter();"
-                                          (onDeSelect)="setFilter();"
-                                          (onSelectAll)="setFilter();"
-                                          (onDeSelectAll)="setFilter();"
-                                          required>
-                    </angular2-multiselect>
-                  </div>
-                </div>-->
               </ng-container>
             </ng-container>
             <!-- End Table widget -->
@@ -1812,10 +1809,10 @@
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();">
+                                        (onDeSelect)="setWidgetFilter();"
+                                        (onDeSelectAll)="setWidgetFilter();"
+                                        (onSelect)="setWidgetFilter();"
+                                        (onSelectAll)="setWidgetFilter();">
                   </angular2-multiselect>
                 </div>
 
@@ -1824,10 +1821,10 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();">
+                                        (onDeSelect)="setWidgetFilter();"
+                                        (onDeSelectAll)="setWidgetFilter();"
+                                        (onSelect)="setWidgetFilter();"
+                                        (onSelectAll)="setWidgetFilter();">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1900,31 +1897,32 @@
                 </div>
               </div>
 
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Beginning at
+              <!--<div class="form-group row">
+                <label class="col-md-3 form-control-label">Time span
                   <small class="text-danger">(required)</small>
                 </label>
                 <div class="col-md-9">
                   <label>
                     <input class="form-control" [(ngModel)]="selectedDateTimeBegin" [ngModelOptions]="{standalone: true}" type="text" [owlDateTimeTrigger]="dt" [owlDateTime]="dt" placeholder="{{selectedDateTimeBegin}}" required>
-                    <owl-date-time (afterPickerClosed)="setFilter();" [pickerMode]="'dialog'" #dt></owl-date-time>
+                    <owl-date-time [pickerMode]="'dialog'" #dt></owl-date-time>
                   </label>
                 </div>
-              </div>
-
-              <!--<div class="form-group row">
-                <label class="col-md-3 form-control-label">Or:
+              </div>-->
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Time span
+                  <small class="text-danger">(required)</small>
                 </label>
                 <div class="col-md-9">
-                  <angular2-multiselect #selectOneTrackingDuration
-                                        name="trackingDuration"
-                                        [data]="selectTrackingDuration"
-                                        [(ngModel)]="selectedTrackingDuration"
-                                        (onSelect)="newWidget.options.trackingDuration = $event.id; selectOne.isActive = false;"
+                  <angular2-multiselect #selectOneKey
+                                        name="selectTimeSpan"
+                                        [data]="selectTimeSpan"
+                                        [(ngModel)]="selectedTimeSpan"
                                         [settings]="selectOneSettings"
+                                        (onSelect)="selectOneKey.isActive = false;"
                                         required>
+                  </angular2-multiselect>
                 </div>
-              </div>-->
+              </div>
 
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Geoloc type
@@ -1935,7 +1933,7 @@
                                         name="geolocType"
                                         [data]="selectGeolocType"
                                         [(ngModel)]="selectedGeolocType"
-                                        (onSelect)="newWidget.options.geolocType = $event.id; selectOneGeolocType.isActive = false; setFilter();"
+                                        (onSelect)="newWidget.options.geolocType = $event.id; selectOneGeolocType.isActive = false; "
                                         [settings]="selectOneSettings"
                                         required>
                   </angular2-multiselect>
@@ -1968,39 +1966,6 @@
             </ng-container>
             <!-- End Tracking widget -->
 
-            <!-- Alert widget -->
-            <!--<ng-container *ngIf="newWidget.type === 'alert'">
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Device
-                </label>
-                <div class="col-md-9">
-                  <angular2-multiselect #selectOneDevice
-                                        name="selectDevices"
-                                        [data]="selectDevices"
-                                        [(ngModel)]="selectedDevices"
-                                        [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(); loadKeys(); selectOneDevice.isActive = false;"
-                                        (onDeSelect)="setFilter();">
-                  </angular2-multiselect>
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="selectedDevices.length > 0">
-                <label class="col-md-3 form-control-label">Key</label>
-                <div class="col-md-9">
-                  <angular2-multiselect #selectOneKey
-                                        name="selectKeys"
-                                        [data]="selectKeys"
-                                        [(ngModel)]="selectedKeys"
-                                        [settings]="selectOneSettings"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelect)="setFilter(); selectOneKey.isActive = false;"
-                                        required>
-                  </angular2-multiselect>
-                </div>
-              </div>
-            </ng-container>-->
-            <!-- End Alert widget -->
-
             <!-- Gauge widget -->
             <ng-container *ngIf="newWidget.type === 'gauge'">
               <div class="form-group row">
@@ -2012,8 +1977,7 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(); loadKeys(); selectOneDevice.isActive = false;"
-                                        (onDeSelect)="setFilter();"
+                                        (onSelect)="loadSelectableKeys(); selectOneDevice.isActive = false;"
                                         required>
                   </angular2-multiselect>
                 </div>
@@ -2026,8 +1990,7 @@
                                         [data]="selectKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelect)="setFilter(); selectOneKey.isActive = false;"
+                                        (onSelect)="selectOneKey.isActive = false;"
                                         required>
                   </angular2-multiselect>
                 </div>
@@ -2062,10 +2025,8 @@
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();">
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
 
@@ -2074,10 +2035,8 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();">
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -2086,35 +2045,46 @@
                 <label class="col-md-3 form-control-label">Keys</label>
                 <div class="col-md-9">
                   <angular2-multiselect name="selectKeys"
-                                        (onOpen)="loadKeys()"
+                                        (onOpen)="loadSelectableKeys();"
                                         [data]="selectKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectKeysSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();"
                                         required>
                   </angular2-multiselect>
                 </div>
               </div>
 
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Beginning at
+              <!--<div class="form-group row">
+                <label class="col-md-3 form-control-label">Time span
+                  <small class="text-danger">(required)</small>
                 </label>
                 <div class="col-md-9">
                   <label>
                     <input class="form-control" [(ngModel)]="selectedDateTimeBegin" [ngModelOptions]="{standalone: true}" type="text" [owlDateTimeTrigger]="dt" [owlDateTime]="dt" placeholder="{{selectedDateTimeBegin}}" required>
-                    <owl-date-time (afterPickerClosed)="setFilter();" [pickerMode]="'dialog'" #dt></owl-date-time>
+                    <owl-date-time [pickerMode]="'dialog'" #dt></owl-date-time>
                   </label>
+                </div>
+              </div>-->
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Time span
+                </label>
+                <div class="col-md-9">
+                  <angular2-multiselect #selectOneKey
+                                        name="selectTimeSpan"
+                                        [data]="selectTimeSpan"
+                                        [(ngModel)]="selectedTimeSpan"
+                                        [settings]="selectOneSettings"
+                                        (onSelect)="selectOneKey.isActive = false;"
+                                        required>
+                  </angular2-multiselect>
                 </div>
               </div>
 
             </ng-container>
             <!-- End Line & Bar widget -->
 
-            <!-- Bar custom widget -->
-            <ng-container *ngIf="newWidget.type === 'bar-custom'">
+            <!-- Bar exact widget -->
+            <ng-container *ngIf="newWidget.type === 'bar-exact'">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Categories / Devices
                 </label>
@@ -2123,10 +2093,10 @@
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();">
+                                        (onSelect)="loadSelectableKeys();"
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
 
@@ -2135,10 +2105,10 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();">
+                                        (onSelect)="loadSelectableKeys();"
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -2147,13 +2117,11 @@
                 <label class="col-md-3 form-control-label">Key</label>
                 <div class="col-md-9">
                   <angular2-multiselect #selectOneKey
-                                        (onOpen)="loadKeys()"
-                                        name="selectKeys"
+                                        [ngModelOptions]="{standalone: true}"
                                         [data]="selectKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelect)="setFilter(); selectOneKey.isActive = false;"
+                                        (onSelect)="selectOneKey.isActive = false;"
                                         required>
                   </angular2-multiselect>
                 </div>
@@ -2172,19 +2140,158 @@
                 </div>
               </div>
 
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label">Beginning at
+              <!--<div class="form-group row">
+                <label class="col-md-3 form-control-label">Time span
+                  <small class="text-danger">(required)</small>
                 </label>
                 <div class="col-md-9">
                   <label>
                     <input class="form-control" [(ngModel)]="selectedDateTimeBegin" [ngModelOptions]="{standalone: true}" type="text" [owlDateTimeTrigger]="dt" [owlDateTime]="dt" placeholder="{{selectedDateTimeBegin}}" required>
-                    <owl-date-time (afterPickerClosed)="setFilter();" [pickerMode]="'dialog'" #dt></owl-date-time>
+                    <owl-date-time [pickerMode]="'dialog'" #dt></owl-date-time>
                   </label>
+                </div>
+              </div>-->
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Time span
+                </label>
+                <div class="col-md-9">
+                  <angular2-multiselect #selectOneKey
+                                        name="selectTimeSpan"
+                                        [data]="selectTimeSpan"
+                                        [(ngModel)]="selectedTimeSpan"
+                                        [settings]="selectOneSettings"
+                                        (onSelect)="selectOneKey.isActive = false;"
+                                        required>
+                  </angular2-multiselect>
                 </div>
               </div>
 
             </ng-container>
             <!-- End Bar custom widget -->
+
+            <!-- Bar custom widget -->
+            <ng-container *ngIf="newWidget.type === 'bar-custom'">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Categories / Devices
+                </label>
+                <div class="col-md-4">
+                  <angular2-multiselect name="selectCategories"
+                                        [data]="selectCategories"
+                                        [(ngModel)]="selectedCategories"
+                                        [settings]="selectCategoriesSettings"
+                                        (onSelect)="loadSelectableKeys();"
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                  </angular2-multiselect>
+                </div>
+
+                <div class="col-md-5">
+                  <angular2-multiselect name="selectDevices"
+                                        [data]="selectDevices"
+                                        [(ngModel)]="selectedDevices"
+                                        [settings]="selectDevicesSettings"
+                                        (onSelect)="loadSelectableKeys();"
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                  </angular2-multiselect>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="selectedCategories.length > 0 || selectedDevices.length > 0">
+                <label class="col-md-3 form-control-label">Key</label>
+                <div class="col-md-9">
+                  <angular2-multiselect #selectOneKey
+                                        [ngModelOptions]="{standalone: true}"
+                                        [data]="selectKeys"
+                                        [(ngModel)]="selectedKeys"
+                                        [settings]="selectOneSettings"
+                                        (onSelect)="selectOneKey.isActive = false;"
+                                        required>
+                  </angular2-multiselect>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="selectedKeys.length > 0">
+                <label class="col-md-3 form-control-label">Time span
+                </label>
+                <div class="col-md-9">
+                  <angular2-multiselect #selectOneKey
+                                        [ngModelOptions]="{standalone: true}"
+                                        [data]="selectTimeSpan"
+                                        [(ngModel)]="selectedTimeSpan"
+                                        [settings]="selectOneSettings"
+                                        (onSelect)="selectOneKey.isActive = false;"
+                                        required>
+                  </angular2-multiselect>
+                </div>
+              </div>
+
+            </ng-container>
+            <!-- End Bar custom widget -->
+
+            <!-- Bar custom stats widget -->
+            <ng-container *ngIf="newWidget.type === 'bar-custom-stats'">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Categories / Devices
+                </label>
+                <div class="col-md-4">
+                  <angular2-multiselect name="selectCategories"
+                                        [data]="selectCategories"
+                                        [(ngModel)]="selectedCategories"
+                                        [settings]="selectCategoriesSettings"
+                                        (onSelect)="loadSelectableKeys();"
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                  </angular2-multiselect>
+                </div>
+
+                <div class="col-md-5">
+                  <angular2-multiselect name="selectDevices"
+                                        [data]="selectDevices"
+                                        [(ngModel)]="selectedDevices"
+                                        [settings]="selectDevicesSettings"
+                                        (onSelect)="loadSelectableKeys();"
+                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                  </angular2-multiselect>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="selectedCategories.length > 0 || selectedDevices.length > 0">
+                <label class="col-md-3 form-control-label">Key</label>
+                <div class="col-md-9">
+                  <angular2-multiselect #selectOneKey
+                                        [ngModelOptions]="{standalone: true}"
+                                        [data]="selectKeys"
+                                        [(ngModel)]="selectedKeys"
+                                        [settings]="selectOneSettings"
+                                        (onSelect)="selectOneKey.isActive = false;"
+                                        required>
+                  </angular2-multiselect>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="selectedKeys.length > 0">
+                <label class="col-md-3 form-control-label">Time span
+                </label>
+                <div class="col-md-9">
+                  <angular2-multiselect #selectOneKey
+                                        [ngModelOptions]="{standalone: true}"
+                                        [data]="selectTimeSpan"
+                                        [(ngModel)]="selectedTimeSpan"
+                                        [settings]="selectOneSettings"
+                                        (onSelect)="selectOneKey.isActive = false;"
+                                        required>
+                  </angular2-multiselect>
+                </div>
+              </div>
+
+            </ng-container>
+            <!-- End Bar custom stats widget -->
 
             <!-- Stats widget -->
             <ng-container *ngIf="newWidget.type === 'stats'">
@@ -2197,40 +2304,11 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
-                                        (onSelect)="setFilter(); loadKeys(); selectOneDevice.isActive = false;"
-                                        (onDeSelect)="setFilter();"
+                                        (onSelect)="loadSelectableKeys(); selectOneDevice.isActive = false;"
                                         required>
                   </angular2-multiselect>
                 </div>
               </div>
-
-              <!--<div class="form-group row">
-                <label class="col-md-3 form-control-label">Categories / Devices
-                </label>
-                <div class="col-md-4">
-                  <angular2-multiselect name="selectCategories"
-                                        [data]="selectCategories"
-                                        [(ngModel)]="selectedCategories"
-                                        [settings]="selectCategoriesSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();">
-                  </angular2-multiselect>
-                </div>
-
-                <div class="col-md-5">
-                  <angular2-multiselect name="selectDevices"
-                                        [data]="selectDevices"
-                                        [(ngModel)]="selectedDevices"
-                                        [settings]="selectDevicesSettings"
-                                        (onSelect)="setFilter();"
-                                        (onDeSelect)="setFilter();"
-                                        (onSelectAll)="setFilter();"
-                                        (onDeSelectAll)="setFilter();">
-                  </angular2-multiselect>
-                </div>
-              </div>-->
 
               <div class="form-group row" *ngIf="selectedDevices.length > 0">
                 <label class="col-md-3 form-control-label">Period</label>

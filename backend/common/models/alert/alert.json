@@ -57,6 +57,16 @@
   },
   "validations": [],
   "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    },
+    "Organizations": {
+      "type": "hasAndBelongsToMany",
+      "model": "Organization",
+      "foreignKey": "organizationId"
+    },
     "Connector": {
       "type": "belongsTo",
       "model": "Connector",
@@ -66,16 +76,6 @@
       "type": "belongsTo",
       "model": "Device",
       "foreignKey": "deviceId"
-    },
-    "user": {
-      "type": "belongsTo",
-      "model": "user",
-      "foreignKey": "userId"
-    },
-    "Organization": {
-      "type": "belongsTo",
-      "model": "Organization",
-      "foreignKey": "organizationId"
     }
   },
   "acls": [

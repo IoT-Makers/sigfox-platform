@@ -86,6 +86,7 @@
                 </td>
                 <td *ngIf="!edit" class="text-center">
                   <div *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
+                    <a *ngIf="device.Messages[0].Geolocs[0]" class="small" [routerLink]="[!organization ? '/devices' : '/organization/' + organization.id + '/devices', device.id, 'tracking']">Live</a>
                     <div *ngFor="let geoloc of device.Messages[0].Geolocs">
                       <div class="row">
                         <div class="col col-12">

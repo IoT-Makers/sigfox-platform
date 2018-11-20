@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DashboardApi, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {Geoloc, Message, Organization, Property} from '../../shared/sdk/models';
+import {Geoloc, Message, Organization} from '../../shared/sdk/models';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import {MessageApi, OrganizationApi} from '../../shared/sdk/services/custom';
@@ -88,6 +88,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private selectedCategories = [];
   private selectedDevices = [];
   private selectedDateTimeBegin: Date = new Date();
+  private selectedTimeSpan = [];
   private selectedGeolocType = [];
   private selectedKeys = [];
   private selectedBarMsgCounterPeriod = [];
@@ -113,7 +114,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     {id: 'gauge', itemName: 'Gauge'},
     {id: 'line', itemName: 'Line graph'},
     {id: 'bar', itemName: 'Bar graph'},
-    {id: 'bar-custom', itemName: 'Bar graph with value assertion'},
+    {id: 'bar-custom', itemName: 'Bar custom graph'},
+    {id: 'bar-custom-stats', itemName: 'Bar custom stats'},
+    {id: 'bar-exact', itemName: 'Bar graph with value assertion'},
     {id: 'stats', itemName: 'Message counter'}
   ];
   private selectMapType = [
@@ -141,6 +144,17 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     {id: 'weekly', itemName: 'Weekly'},
     {id: 'monthly', itemName: 'Monthly'},
     {id: 'yearly', itemName: 'Yearly'}
+  ];
+  private selectTimeSpan = [
+    {id: 'ten-minutes', itemName: 'Last ten minutes'},
+    {id: 'hour', itemName: 'Last hour'},
+    {id: 'day', itemName: 'Last day'},
+    {id: 'three-days', itemName: 'Last three day'},
+    {id: 'one-week', itemName: 'Last week'},
+    {id: 'two-weeks', itemName: 'Last two weeks'},
+    {id: 'three-weeks', itemName: 'Last three weeks'},
+    {id: 'month', itemName: 'Last month'},
+    {id: 'year', itemName: 'Last year'}
   ];
 
   private selectOneSettings = {
@@ -301,7 +315,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         });
       });
       // Devices
-      this.api.getDevices(this.id).subscribe((devices: Device[]) => {
+      this.api.getDevices(this.id, {order: 'messagedAt DESC'}).subscribe((devices: Device[]) => {
         this.selectDevices = [];
         this.devices = devices;
         this.devices.forEach((device: Device) => {
@@ -397,14 +411,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       dashboardId: this.dashboard.id
     };
 
-    this.loadSelectFilters();
+    this.loadSelects();
 
     this.newWidgetFlag = true;
     this.addOrEditWidgetModal.show();
   }
 
   addTableType($event): void {
-    if ($event === 'custom') {
+    if ($event === 'exact') {
       this.loadingTableOptions = true;
       this.newWidget.options.tableColumnOptions = [];
       this.newWidget.options.tableColumnOptions.push({model: 'device', key: 'id', type: 'string', as: 'ID'});
@@ -499,13 +513,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     console.log(this.newWidget.options.columns);
   }
 
-  setFilter(): void {
+  setWidgetFilter(): void {
     console.log('setFilter: START', this.newWidget);
     // Value
     if (this.newWidget.type === 'value') {
       this.newWidget.filter = {
         limit: 1,
-        order: 'updatedAt DESC',
+        order: 'messagedAt DESC',
         include: [{
           relation: 'Messages',
           scope: {
@@ -524,23 +538,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         }
       };
     }
-    // Image
-    if (this.newWidget.type === 'image') {
-      this.newWidget.filter = {};
-    }
-    // Divider
-    if (this.newWidget.type === 'divider') {
-      this.newWidget.filter = {};
-    }
+    // Image and divider
+    if (this.newWidget.type === 'image' || this.newWidget.type === 'divider') this.newWidget.filter = {};
+
     // Map
     else if (this.newWidget.type === 'map') {
-      this.newWidget.options.zoom = 6;
-      this.newWidget.options.lat = 48.864716;
-      this.newWidget.options.lng = 2.349014;
-
       this.newWidget.filter = {
         limit: 100,
-        order: 'updatedAt DESC',
+        order: 'messagedAt DESC',
         include: [
           {
             relation: 'Messages',
@@ -561,12 +566,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         }
       };
     }
-
     // Table
     else if (this.newWidget.type === 'table') {
       this.newWidget.filter = {
         limit: 100,
-        order: 'updatedAt DESC',
+        order: 'messagedAt DESC',
         include: ['Parser', 'Category', 'Geolocs', {
           relation: 'Messages',
           scope: {
@@ -579,12 +583,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         }
       };
     }
-
     // Alert & Gauge
     else if (this.newWidget.type === 'gauge') {
       this.newWidget.filter = {
         limit: 1,
-        order: 'updatedAt DESC',
+        order: 'messagedAt DESC',
         include: [{
           relation: 'Messages',
           scope: {
@@ -603,26 +606,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         }
       };
     }
-
     // Tracking
     else if (this.newWidget.type === 'tracking') {
-      this.newWidget.options.zoom = 6;
-      this.newWidget.options.lat = 48.864716;
-      this.newWidget.options.lng = 2.349014;
-      /*****
-       *
-       * TODO: periode glissante
-       *
-       */
-        // Month in milliseconds
-      const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;
-
       if (this.newWidget.options.geolocType === 'preferBestAccuracy') {
         this.newWidget.filter = {
           where: {
             or: []
           },
-          order: 'updatedAt DESC',
+          order: 'messagedAt DESC',
           limit: 300,
           include: [{
             relation: 'Messages',
@@ -651,7 +642,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             or: []
           },
           limit: 300,
-          order: 'updatedAt DESC',
+          order: 'messagedAt DESC',
           include: [{
             relation: 'Geolocs',
             scope: {
@@ -671,7 +662,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             or: []
           },
           limit: 300,
-          order: 'updatedAt DESC',
+          order: 'messagedAt DESC',
           include: [{
             order: 'createdAt ASC',
             relation: 'Geolocs',
@@ -686,37 +677,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         };
       }
     }
-
     // Line & Bar
     else if (this.newWidget.type === 'line' || this.newWidget.type === 'bar') {
       this.newWidget.filter = {
         limit: 20,
-        order: 'updatedAt DESC',
-        include: [{
-          relation: 'Messages',
-          scope: {
-            fields: ['data_parsed', 'createdAt'],
-            limit: 1000,
-            order: 'createdAt DESC',
-            where: {
-              and: [
-                {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}},
-                {data_parsed: {neq: null}}
-              ]
-            }
-          }
-        }],
-        where: {
-          or: []
-        }
-      };
-    }
-
-    // Bar custom
-    else if (this.newWidget.type === 'bar-custom') {
-      this.newWidget.filter = {
-        limit: 20,
-        order: 'updatedAt DESC',
+        order: 'messagedAt DESC',
         include: [{
           relation: 'Messages',
           scope: {
@@ -736,12 +701,35 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         }
       };
     }
-
+    // Bar
+    else if (this.newWidget.type === 'bar-exact' || this.newWidget.type === 'bar-custom' || this.newWidget.type === 'bar-custom-stats') {
+      this.newWidget.filter = {
+        limit: 20,
+        order: 'messagedAt DESC',
+        include: [{
+          relation: 'Messages',
+          scope: {
+            fields: ['data_parsed', 'createdAt'],
+            limit: 1000,
+            order: 'createdAt ASC',
+            where: {
+              and: [
+                {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}},
+                {data_parsed: {neq: null}}
+              ]
+            }
+          }
+        }],
+        where: {
+          or: []
+        }
+      };
+    }
     // Bar message counter
     else if (this.newWidget.type === 'stats') {
       this.newWidget.filter = {
         limit: 20,
-        order: 'updatedAt DESC',
+        order: 'messagedAt DESC',
         fields: ['id'],
         where: {
           or: []
@@ -750,23 +738,116 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
 
     // Reset filters arrays
-    this.newWidget.options.keys = [];
-    this.newWidget.filter.where.or = [];
-    // Set filter arrays by looping on selected data
-    this.selectedKeys.forEach((item: any) => {
-      this.newWidget.options.keys.push(item.id);
-    });
-    this.selectedDevices.forEach((item: any) => {
-      this.newWidget.filter.where.or.push({id: item.id});
-    });
-    this.selectedCategories.forEach((item: any) => {
-      this.newWidget.filter.where.or.push({categoryId: item.id});
-    });
+    if (this.newWidget.options.keys) {
+      this.newWidget.options.keys = [];
+      // Set keys
+      this.selectedKeys.forEach((item: any) => {
+        this.newWidget.options.keys.push(item.id);
+      });
+    }
+    if (this.newWidget.filter.where && this.newWidget.filter.where.or) {
+      this.newWidget.filter.where.or = [];
+      // Set devices
+      this.selectedDevices.forEach((item: any) => {
+        this.newWidget.filter.where.or.push({id: item.id});
+      });
+      // Set categories
+      this.selectedCategories.forEach((item: any) => {
+        this.newWidget.filter.where.or.push({categoryId: item.id});
+      });
+    }
+
+    // Set time span
+    delete this.newWidget.options.timeSpan;
+    if (this.newWidget.filter &&
+      this.newWidget.filter.include &&
+      this.newWidget.filter.include[0] &&
+      this.newWidget.filter.include[0].scope &&
+      this.newWidget.filter.include[0].scope.where &&
+      this.newWidget.filter.include[0].scope.where.and &&
+      this.newWidget.filter.include[0].scope.where.and[0] &&
+      this.newWidget.filter.include[0].scope.where.and[0].createdAt &&
+      this.selectedTimeSpan[0]) this.newWidget.options.timeSpan = this.selectedTimeSpan[0].id;
+
+    if (this.newWidget.options.timeSpan) {
+      this.setTimeSpan(this.newWidget);
+    } else if (this.newWidget.options.timeWindow) {
+      // widget.filter.include[0].scope.where.and[0].createdAt.lte = widget.options.timeWindow.lte;
+      // widget.filter.include[0].scope.where.and[0].createdAt.gte = widget.options.timeWindow.gte;
+    }
     console.log('Set filter: END', this.newWidget);
-    console.log(this.selectedKeys.length, this.selectedKeys);
   }
 
-  loadKeys(): void {
+  setTimeSpan(widget): void {
+    switch (widget.options.timeSpan) {
+      case 'ten-minutes':
+        const TEN_MINUTES = 10 * 60 * 1000;  // Hour in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - TEN_MINUTES;
+        break;
+      case 'hour':
+        const ONE_HOUR = 60 * 60 * 1000;  // Hour in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_HOUR;
+        break;
+      case 'day':
+        const ONE_DAY = 24 * 60 * 60 * 1000;  // Day in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_DAY;
+        break;
+      case 'three-days':
+        const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;  // Day in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - THREE_DAYS;
+        break;
+      case 'one-week':
+        const ONE_WEEK = 7 * 24 * 60 * 60 * 1000;  // Week in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_WEEK;
+        break;
+      case 'two-weeks':
+        const TWO_WEEK = 2 * 7 * 24 * 60 * 60 * 1000;  // Week in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - TWO_WEEK;
+        break;
+      case 'three-weeks':
+        const THREE_WEEK = 3 * 7 * 24 * 60 * 60 * 1000;  // Week in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - THREE_WEEK;
+        break;
+      case 'month':
+        const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;  // Month in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_MONTH;
+        break;
+      case 'year':
+        const ONE_YEAR = 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_YEAR;
+        break;
+    }
+  }
+
+  setWidgetType($event): void {
+    this.newWidget.type = $event.id;
+    delete this.newWidget.data;
+
+    this.loadSelects();
+
+    switch (this.newWidget.type) {
+      case 'map':
+        delete this.newWidget.options.timeSpan;
+        this.newWidget.options.zoom = 6;
+        this.newWidget.options.lat = 48.864716;
+        this.newWidget.options.lng = 2.349014;
+        break;
+      case 'tracking':
+        this.newWidget.options.zoom = 6;
+        this.newWidget.options.lat = 48.864716;
+        this.newWidget.options.lng = 2.349014;
+        break;
+      default:
+        delete this.newWidget.options.timeSpan;
+        delete this.newWidget.options.zoom;
+        delete this.newWidget.options.lat;
+        delete this.newWidget.options.lng;
+        break;
+    }
+  }
+
+  loadSelectableKeys(): void {
+    this.setWidgetFilter();
     // Reset the selected keys
     this.selectedKeys = [];
     // Reset the selectable keys
@@ -775,11 +856,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.newWidget.options.keys = [];
     // Fetch all the keys belonging to selected devices
     const filter = this.newWidget.filter;
-    if (this.newWidget.filter.include[0].scope.where.and[0].createdAt && this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte) {
-      filter.include[0].scope.where.and[0] = {};
+    if (this.newWidget.filter.include[0].scope.where) {
       filter.include[0].scope.limit = 1;
+      if (this.newWidget.filter.include[0].scope.where.and[0].createdAt && this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte) {
+        filter.include[0].scope.where.and[0] = {};
+      }
     }
-    this.getDevicesWithFilter(filter).subscribe((devices: any[]) => {
+    this.api.getDevices(this.id, filter).subscribe((devices: any[]) => {
       devices.forEach((device: Device) => {
         if (device.Messages[0].data_parsed) {
           device.Messages[0].data_parsed.forEach(o => {
@@ -802,6 +885,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.toasterService.pop('error', 'Error', 'Please select at least one category or device.');
       return;
     }
+
+    this.setWidgetFilter();
+    // Sanitize
+    delete this.newWidget.ready;
+    delete this.newWidget.data;
+    delete this.newWidget.options.chartLabels;
+    delete this.newWidget.gaugeThresholdConfig;
+
     this.newWidget.userId = this.user.id;
     this.dashboardApi.createWidgets(this.dashboard.id, this.newWidget).subscribe(widget => {
       this.loadWidgets();
@@ -816,7 +907,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   editWidget(widget): void {
     this.newWidgetFlag = false;
     this.newWidget = widget;
-    this.loadSelectFilters();
+    this.loadSelects();
     this.editWidgetFlag = true;
   }
 
@@ -825,10 +916,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.toasterService.pop('error', 'Error', 'Please select at least one category or device.');
       return;
     }
-
+    this.setWidgetFilter();
     // Sanitize
     delete this.newWidget.ready;
     delete this.newWidget.data;
+    delete this.newWidget.options.chartLabels;
     delete this.newWidget.gaugeThresholdConfig;
 
     if (this.newWidget.options.style) {
@@ -837,8 +929,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
 
     this.dashboardApi.updateByIdWidgets(this.dashboard.id, this.newWidget.id, this.newWidget).subscribe(widget => {
-      console.log(widget);
-      this.loadWidgets();
+      this.loadWidget(widget);
       this.toasterService.pop('success', 'Success', 'The widget was successfully updated.');
       this.editWidgetFlag = false;
       this.addOrEditWidgetModal.hide();
@@ -853,7 +944,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadSelectFilters(): void {
+  loadSelects(): void {
     // Reset all selects
     this.selectedWidgetIcon = [];
     this.selectedWidgetType = [];
@@ -865,6 +956,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.selectedDateTimeBegin = new Date();
     this.selectedKeys = [];
     this.selectedBarMsgCounterPeriod = [];
+    this.selectedTimeSpan = [];
 
     if (this.newWidget.icon) {
       this.selectedWidgetIcon = [{id: this.newWidget.icon, itemName: this.newWidget.icon.substr(3)}];
@@ -904,24 +996,29 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         itemName: this.capitalizeFirstLetter(this.newWidget.options.period)
       }];
     }
-
-    this.newWidget.filter.where.or.forEach((item: any, index: number) => {
-      if (item.categoryId) {
-        const foundCategory: any = _.find(this.categories, {id: item.categoryId});
-        this.selectedCategories.push({id: item.categoryId, itemName: foundCategory.name});
-      } else if (item.id) {
-        const foundDevice: any = _.find(this.devices, {id: item.id});
-        this.selectedDevices.push({
-          id: item.id,
-          itemName: foundDevice.name ? foundDevice.id + ' - ' + foundDevice.name : foundDevice.id
-        });
-      }
-    });
-
-    if (this.newWidget.type === 'tracking' || this.newWidget.type === 'line' || this.newWidget.type === 'bar' || this.newWidget.type === 'bar-custom') {
-      this.selectedDateTimeBegin = new Date(this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte);
-      this.dateTimeSettings.placeholder = moment(this.selectedDateTimeBegin).format('MMM-DD-YYYY hh:mm A');
+    if (this.newWidget.options.timeSpan) {
+      this.selectedTimeSpan = [{
+        id: this.newWidget.options.timeSpan,
+        itemName: this.capitalizeFirstLetter(this.newWidget.options.timeSpan)
+      }];
     }
+    if (this.newWidget.filter.where && this.newWidget.filter.where.or) {
+      this.newWidget.filter.where.or.forEach((item: any, index: number) => {
+        if (item.categoryId) {
+          const foundCategory: any = _.find(this.categories, {id: item.categoryId});
+          this.selectedCategories.push({id: item.categoryId, itemName: foundCategory.name});
+        } else if (item.id) {
+          const foundDevice: any = _.find(this.devices, {id: item.id});
+          this.selectedDevices.push({
+            id: item.id,
+            itemName: foundDevice.name ? foundDevice.id + ' - ' + foundDevice.name : foundDevice.id
+          });
+        }
+      });
+    }
+
+    if (this.newWidget.type === 'tracking' || this.newWidget.type === 'bar-exact') this.dateTimeSettings.placeholder = moment(this.selectedDateTimeBegin).format('MMM-DD-YYYY hh:mm A');
+    else if (this.newWidget.type === 'line') this.dateTimeSettings.placeholder = moment(this.selectedDateTimeBegin).format('MMM-DD-YYYY hh:mm A');
   }
 
   onMapLocationReady(event: any, devices: any, zoom: any) {
@@ -933,16 +1030,20 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.searchBox.addListener('places_changed', () => this.goToSearchedPlace());
     }
     const bounds: LatLngBounds = new google.maps.LatLngBounds();
-    devices.forEach((device: any) => {
-      if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
-        bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
-      }
-    });
+    if (devices) {
+      devices.forEach((device: any) => {
+        if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
+          bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
+        }
+      });
+    }
     const zoomChangeBoundsListener =
-      google.maps.event.addListenerOnce(this.map, 'bounds_changed', function(event) {
+      google.maps.event.addListenerOnce(this.map, 'bounds_changed', function (event) {
         this.setZoom(zoom);
       });
-    setTimeout(function(){google.maps.event.removeListener(zoomChangeBoundsListener)}, 2000);
+    setTimeout(function () {
+      google.maps.event.removeListener(zoomChangeBoundsListener)
+    }, 2000);
     this.map.fitBounds(bounds);
   }
 
@@ -974,6 +1075,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     return '#' + ('000000' + color).slice(-6);
   }
 
+  lineBreakText(text: string): string {
+    return text.replace(/(?:\r\n|\r|\n)/g, '<br>')
+  }
+
   loadWidgets(): void {
     this.dashboardApi.getWidgets(this.dashboard.id, {order: 'createdAt ASC'}).subscribe((widgets: any[]) => {
       this.widgets = widgets;
@@ -983,426 +1088,536 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         // Build widgets
         this.widgets.forEach((widget: any, countWidgets: number) => {
           widget.ready = false;
-         // Load widgets
-          if (widget.type === 'text' || widget.type === 'image' || widget.type === 'divider') widget.ready = true;
-          else {
-            // Get devices data
-            this.getDevicesWithFilter(widget.filter).subscribe((devices: any[]) => {
-              // Value
-              if (widget.type === 'value') {
-                widget.data = _.filter(devices[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
-
-                widget.ready = true;
-              }
-
-              // Table
-              else if (widget.type === 'table') {
-                widget.data = devices;
-                if (widget.options.tableType === 'custom') {
-                  widget.data = this.buildCustomTable(widget);
-                  widget.extraData = devices;
-                }
-
-                widget.ready = true;
-              }
-
-              // Map
-              else if (widget.type === 'map') {
-                widget.data = devices;
-                widget.ready = true;
-              }
-
-              // Tracking
-              else if (widget.type === 'tracking') {
-                widget.data = devices;
-                // Default parameters
-                widget.data.forEach(device => {
-                  device.visibility = false;
-                  device.directionsDisplayStore = [];
-                  device.color = this.getRandomColor();
-                });
-
-                widget.ready = true;
-              }
-
-              // Gauge
-              else if (widget.type === 'gauge') {
-                widget.data = devices;
-                const lastData_parsed: any = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
-                widget.value = lastData_parsed.value;
-                widget.unit = lastData_parsed.unit;
-                widget.label = this.capitalizeFirstLetter(lastData_parsed.key);
-                widget.gaugeThresholdConfig = {
-                  [widget.options.min]: {color: '#13b22b'},
-                  [(widget.options.min + widget.options.max) / 2]: {color: '#fc7d28'},
-                  [widget.options.max]: {color: '#db2b2a'}
-                };
-
-                widget.ready = true;
-              }
-
-              // Line
-              else if (widget.type === 'line') {
-                const chartData = [];
-                const keys_units = [];
-
-                let w = 0;
-
-                // Loop each device for this widget
-                devices.forEach((device: Device) => {
-                  if (device.Messages[0]) {
-                    const data_parsed: any = device.Messages[0].data_parsed;
-                    // Loop each keys chosen for this widget
-                    widget.options.keys.forEach((key: any) => {
-                      const o: any = _.filter(device.Messages[0].data_parsed, {key: key})[0];
-                      //console.log(device.id, o);
-                      if (o) {
-                        keys_units.push(o);
-                        // Check if the device has this key and set the format to display
-                        data_parsed.forEach((line: any, k) => {
-                          if (line.key === key) {
-                            chartData[w] = {};
-                            // Set key
-                            if (widget.options.keys.length > 1) {
-                              if (line.unit !== '') {
-                                chartData[w].key = (line.key + ' (' + line.unit + ')' + ' - ' + device.id) + (device.name ? ' - ' + device.name : '');
-                              } else {
-                                chartData[w].key = (line.key + ' - ' + device.id) + (device.name ? ' - ' + device.name : '');
-                              }
-                            } else {
-                              chartData[w].key = device.id + (device.name ? ' - ' + device.name : '');
-                            }
-                            // Set values
-                            chartData[w].values = [];
-                            device.Messages.forEach((message: Message) => {
-                              const item: any = {
-                                label: new Date(message.createdAt),
-                                value: Number(_.filter(message.data_parsed,
-                                  {key: key})[0].value)
-                              };
-                              chartData[w].values.push(item);
-                            });
-                          }
-                        });
-                        w++;
-                      }
-                    });
-                  }
-                });
-                // Replace data with chart data
-                widget.data = chartData;
-
-                widget.options.chartOptions = {
-                  chart: {
-                    type: 'lineWithFocusChart',
-                    height: 450,
-                    margin: {
-                      top: 20,
-                      right: 20,
-                      bottom: 50,
-                      left: 55
-                    },
-                    x: function (d) {
-                      return d.label;
-                    },
-                    y: function (d) {
-                      return d.value;
-                    },
-                    color: [],
-                    useVoronoi: true,
-                    isArea: true,
-                    noData: 'There is no data to display yet',
-                    xAxis: {
-                      axisLabel: 'Date',
-                      tickFormat: function (d) {
-                        return d3.time.format('%d %b %y')(new Date(d));
-                      }
-                    },
-                    x2Axis: {
-                      tickFormat: function (d) {
-                        return d3.time.format('%d %b %y')(new Date(d));
-                      }
-                    }
-                  }
-                };
-                // Dynamically add Y axis to chart
-                keys_units.forEach((key_unit: any) => {
-                  widget.options.chartOptions.chart.color.push(this.getRandomColor());
-                  if (keys_units.length === 1) {
-                    widget.options.chartOptions.chart['yAxis'] = {
-                      axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
-                      axisLabelDistance: -10
-                    };
-                  }
-                  /*if (i === 0) {
-                    widget.options.chartOptions.chart['yAxis'] = {
-                      axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
-                      axisLabelDistance: -10
-                    };
-                  } else {
-                    widget.options.chartOptions.chart['y' + i + 'Axis'] = {
-                      axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
-                      axisLabelDistance: -10
-                    };
-                  }*/
-                  widget.options.chartOptions.chart.tooltip = {
-                    contentGenerator: function (e) {
-                      const series = e.series[0];
-                      if (series.value === null) return;
-
-                      const rows =
-                        '<tr>' +
-                        '<td class="key">' + 'Date: ' + '</td>' +
-                        '<td class="x-value">' + d3.time.format('%d %b %y - %I:%M %p')(new Date(e.value)) + '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td class="key">' + 'Value: ' + '</td>' +
-                        '<td class="x-value"><strong>' + (series.value ? series.value.toFixed(2) : 0) + '</strong></td>' +
-                        '</tr>';
-
-                      const header =
-                        '<thead>' +
-                        '<tr>' +
-                        '<td class="legend-color-guide"><div style="background-color: ' + series.color + ';"></div></td>' +
-                        '<td class="key"><strong>' + series.key + '</strong></td>' +
-                        '</tr>' +
-                        '</thead>';
-
-                      return '<table>' +
-                        header +
-                        '<tbody>' +
-                        rows +
-                        '</tbody>' +
-                        '</table>';
-                    }
-                  };
-                });
-
-                widget.ready = true;
-              }
-
-              // Bar
-              else if (widget.type === 'bar') {
-                const chartData = [];
-                const keys_units = [];
-
-                let w = 0;
-
-                // Loop each device for this widget
-                devices.forEach((device: Device) => {
-                  if (device.Messages[0]) {
-                    const data_parsed = device.Messages[0].data_parsed;
-                    // Loop each keys chosen for this widget
-                    widget.options.keys.forEach((key) => {
-                      const o = _.filter(device.Messages[0].data_parsed, {key: key})[0];
-                      console.log(device.id, o);
-                      if (o) {
-                        keys_units.push(o);
-                        // Check if the device has this key and set the format to display
-                        data_parsed.forEach((line, k) => {
-                          if (line.key === key) {
-                            chartData[w] = {};
-                            if (widget.options.keys.length > 1) {
-                              if (line.unit !== '') {
-                                chartData[w].key = (line.key + ' (' + line.unit + ')' + ' - ' + device.id) + (device.name ? ' - ' + device.name : '');
-                              } else {
-                                chartData[w].key = (line.key + ' - ' + device.id) + (device.name ? ' - ' + device.name : '');
-                              }
-                            } else {
-                              chartData[w].key = device.id + (device.name ? ' - ' + device.name : '');
-                            }
-
-                            // Set values
-                            chartData[w].values = [];
-                            device.Messages.forEach((message: Message) => {
-                              const item: any = {
-                                label: new Date(message.createdAt),
-                                value: Number(_.filter(message.data_parsed,
-                                  {key: key})[0].value)
-                              };
-                              chartData[w].values.push(item);
-                            });
-                          }
-                        });
-                        w++;
-                      }
-                    });
-                  }
-                });
-                // Replace data with chart data
-                widget.data = chartData;
-
-                widget.options.chartOptions = {
-                  chart: {
-                    type: 'discreteBarChart',
-                    height: 450,
-                    margin: {
-                      top: 20,
-                      right: 20,
-                      bottom: 50,
-                      left: 55
-                    },
-                    x: function (d) {
-                      return d.label;
-                    },
-                    y: function (d) {
-                      return d.value;
-                    },
-                    color: [],
-                    useVoronoi: true,
-                    showXAxis: false,
-                    noData: 'There is no data to display yet',
-                  }
-                };
-                // Dynamically add Y axis to chart
-                keys_units.forEach((key_unit: any) => {
-                  widget.options.chartOptions.chart.color.push(this.getRandomColor());
-                  if (keys_units.length === 1) {
-                    widget.options.chartOptions.chart['yAxis'] = {
-                      ticks: 5,
-                      axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
-                      axisLabelDistance: -10
-                    };
-                  }
-                  widget.options.chartOptions.chart.tooltip = {
-                    contentGenerator: function (e) {
-                      const series = e.series[0];
-                      if (series.value === null) return;
-
-                      const rows =
-                        '<tr>' +
-                        '<td class="key">' + 'Date: ' + '</td>' +
-                        '<td class="x-value">' + d3.time.format('%d %b %y - %I:%M %p')(new Date(e.value)) + '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td class="key">' + 'Value: ' + '</td>' +
-                        '<td class="x-value"><strong>' + (series.value ? series.value.toFixed(2) : 0) + '</strong></td>' +
-                        '</tr>';
-
-                      const header =
-                        '<thead>' +
-                        '<tr>' +
-                        '<td class="legend-color-guide"><div style="background-color: ' + series.color + ';"></div></td>' +
-                        '<td class="key"><strong>' + series.key + '</strong></td>' +
-                        '</tr>' +
-                        '</thead>';
-
-                      return '<table>' +
-                        header +
-                        '<tbody>' +
-                        rows +
-                        '</tbody>' +
-                        '</table>';
-                    }
-                  };
-                });
-
-                widget.ready = true;
-              }
-
-              // Custom bar graph with exact key value
-              else if (widget.type === 'bar-custom') {
-
-                // Loop each device for this widget
-                devices.forEach((device: Device) => {
-                  widget.options.chartLabels = [];
-                  widget.options.chartOptions = {
-                    responsive: true,
-                    scaleShowVerticalLines: false,
-                    maintainAspectRatio: false,
-                    legend: {
-                      display: true,
-                    },
-                    scales: {
-                      xAxes: [{
-                        gridLines: {},
-                        ticks: {}
-                      }],
-                      yAxes: [{
-                        gridLines: {},
-                        ticks: {
-                          max: 1,
-                        }
-                      }]
-                    }
-                  };
-                  widget.options.chartColor = [{backgroundColor: this.getRandomColor()}];
-                  widget.data = [];
-                  const data = [];
-                  device.Messages.forEach((message: Message) => {
-                    message.data_parsed.forEach((p: Property, index: number) => {
-                      //const p = _.filter(message.data_parsed, {key: widget.options.keys[0]})[0]; //, value: widget.options.exact_value
-                      if (p.key === widget.options.keys[0] && p.value.toString() === widget.options.exact_value.toString()) {
-                        data.push(1);
-                        widget.options.chartLabels.push(moment(message.createdAt).format('MMM-DD h:mm a'));
-                        return;
-                      } else if (index === message.data_parsed.length) {
-                        data.push(0);
-                        widget.options.chartLabels.push(moment(message.createdAt).format('MMM-DD h:mm a'));
-                      }
-                    });
-                  });
-                  console.log('Data:', data);
-                  console.log('Labels:', widget.options.chartLabels);
-                  widget.data.push({data: data, label: this.capitalizeFirstLetter(widget.options.keys[0])});
-                });
-                widget.ready = true;
-              }
-
-              // Stats
-              else if (widget.type === 'stats') {
-                devices.forEach((device: any) => {
-
-                  widget.options.chartLabels = [];
-
-                  // Messages
-                  this.messageApi.stats(widget.options.period, null, {deviceId: device.id}, null, null).subscribe((stats: any) => {
-                    widget.options.chartLabels = [];
-                    widget.options.chartOptions = {
-                      responsive: true,
-                      scaleShowVerticalLines: false,
-                      maintainAspectRatio: false,
-                      legend: {
-                        display: true,
-                      }
-                    };
-                    widget.options.chartColor = [{backgroundColor: '#5b9bd3'}];
-                    widget.data = [];
-                    const data = [];
-
-                    console.log('Stats: ', stats);
-
-                    stats.forEach((stat: any) => {
-                      data.push(stat.count);
-                      if (widget.options.period === 'hourly')
-                        widget.options.chartLabels.push(moment(stat.universal).format('h:mm a'));
-                      if (widget.options.period === 'daily')
-                        widget.options.chartLabels.push(moment(stat.universal).format('ddd MMM YY'));
-                      if (widget.options.period === 'weekly')
-                        widget.options.chartLabels.push(moment(stat.universal).format('DD MMM YY'));
-                      if (widget.options.period === 'monthly')
-                        widget.options.chartLabels.push(moment(stat.universal).format('DD MMM YY'));
-                      if (widget.options.period === 'yearly')
-                        widget.options.chartLabels.push(moment(stat.universal).format('MMM YYYY'));
-                    });
-                    // console.log('Data:', this.data);
-                    // console.log('Labels:', widget.options.chartLabels);
-                    widget.data.push({data: data, label: 'Messages'});
-
-                    /*widget.options.hasNoMessageChartData = data.every(value => {
-                      return value === 0;
-                    });*/
-                  });
-                  widget.ready = true;
-                });
-              }
-
-            });
-          }
+          // Load widgets
+          this.setWidgetData(widget);
         });
         this.dashboardReady = true;
       }
     });
+  }
+
+  loadWidget(widget: any): void {
+    this.dashboardApi.findByIdWidgets(this.dashboard.id, widget.id).subscribe((widget: any) => {
+      this.widgets.forEach((w: any, i: any) => {
+        if (w.id === widget.id) {
+          this.widgets[i] = widget;
+          this.widgets[i].ready = false;
+          // Load widgets
+          this.setWidgetData(widget);
+        }
+      });
+    });
+  }
+
+  setWidgetData(widget: any): void {
+    // Load widgets
+    if (widget.type === 'text' || widget.type === 'image' || widget.type === 'divider') widget.ready = true;
+    else {
+      // Get devices data
+      this.getDevicesWithFilter(widget).subscribe((devices: any[]) => {
+        // Value
+        if (widget.type === 'value') {
+          widget.data = _.filter(devices[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
+
+          widget.ready = true;
+        }
+
+        // Table
+        else if (widget.type === 'table') {
+          widget.data = devices;
+          if (widget.options.tableType === 'custom') {
+            widget.data = this.buildCustomTable(widget);
+            widget.extraData = devices;
+          }
+
+          widget.ready = true;
+        }
+
+        // Map
+        else if (widget.type === 'map') {
+          widget.data = devices;
+          widget.ready = true;
+        }
+
+        // Tracking
+        else if (widget.type === 'tracking') {
+          widget.data = devices;
+          // Default parameters
+          widget.data.forEach(device => {
+            device.visibility = false;
+            device.directionsDisplayStore = [];
+            device.color = this.getRandomColor();
+          });
+
+          widget.ready = true;
+        }
+
+        // Gauge
+        else if (widget.type === 'gauge') {
+          widget.data = devices;
+          const lastData_parsed: any = _.filter(widget.data[0].Messages[0].data_parsed, {key: widget.options.keys[0]})[0];
+          widget.value = lastData_parsed.value;
+          widget.unit = lastData_parsed.unit;
+          widget.label = this.capitalizeFirstLetter(lastData_parsed.key);
+          widget.gaugeThresholdConfig = {
+            [widget.options.min]: {color: '#13b22b'},
+            [(widget.options.min + widget.options.max) / 2]: {color: '#fc7d28'},
+            [widget.options.max]: {color: '#db2b2a'}
+          };
+
+          widget.ready = true;
+        }
+
+        // Line
+        else if (widget.type === 'line') {
+          const chartData = [];
+          const keys_units = [];
+
+          let w = 0;
+
+          // Loop each device for this widget
+          devices.forEach((device: Device) => {
+            if (device.Messages[0]) {
+              const data_parsed: any = device.Messages[0].data_parsed;
+              // Loop each keys chosen for this widget
+              widget.options.keys.forEach((key: any) => {
+                const o: any = _.filter(device.Messages[0].data_parsed, {key: key})[0];
+                //console.log(device.id, o);
+                if (o) {
+                  keys_units.push(o);
+                  // Check if the device has this key and set the format to display
+                  data_parsed.forEach((line: any, k) => {
+                    if (line.key === key) {
+                      chartData[w] = {};
+                      // Set key
+                      if (widget.options.keys.length > 1) {
+                        if (line.unit !== '') {
+                          chartData[w].key = (line.key + ' (' + line.unit + ')' + ' - ' + device.id) + (device.name ? ' - ' + device.name : '');
+                        } else {
+                          chartData[w].key = (line.key + ' - ' + device.id) + (device.name ? ' - ' + device.name : '');
+                        }
+                      } else {
+                        chartData[w].key = device.id + (device.name ? ' - ' + device.name : '');
+                      }
+                      // Set values
+                      chartData[w].values = [];
+                      device.Messages.forEach((message: Message) => {
+                        const item: any = {
+                          label: new Date(message.createdAt),
+                          value: Number(_.filter(message.data_parsed,
+                            {key: key})[0].value)
+                        };
+                        chartData[w].values.push(item);
+                      });
+                    }
+                  });
+                  w++;
+                }
+              });
+            }
+          });
+          // Replace data with chart data
+          widget.data = chartData;
+
+          widget.options.chartOptions = {
+            chart: {
+              type: 'lineWithFocusChart',
+              height: 450,
+              margin: {
+                top: 20,
+                right: 20,
+                bottom: 50,
+                left: 55
+              },
+              x: function (d) {
+                return d.label;
+              },
+              y: function (d) {
+                return d.value;
+              },
+              color: [],
+              useVoronoi: true,
+              isArea: true,
+              noData: 'There is no data to display yet',
+              xAxis: {
+                axisLabel: 'Date',
+                tickFormat: function (d) {
+                  return d3.time.format('%d %b %y')(new Date(d));
+                }
+              },
+              x2Axis: {
+                tickFormat: function (d) {
+                  return d3.time.format('%d %b %y')(new Date(d));
+                }
+              }
+            }
+          };
+          // Dynamically add Y axis to chart
+          keys_units.forEach((key_unit: any) => {
+            widget.options.chartOptions.chart.color.push(this.getRandomColor());
+            if (keys_units.length === 1) {
+              widget.options.chartOptions.chart['yAxis'] = {
+                axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
+                axisLabelDistance: -10
+              };
+            }
+            /*if (i === 0) {
+              widget.options.chartOptions.chart['yAxis'] = {
+                axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
+                axisLabelDistance: -10
+              };
+            } else {
+              widget.options.chartOptions.chart['y' + i + 'Axis'] = {
+                axisLabel: this.formatTableColumn(key_unit.key) + ' (' + key_unit.unit + ')',
+                axisLabelDistance: -10
+              };
+            }*/
+            widget.options.chartOptions.chart.tooltip = {
+              contentGenerator: function (e) {
+                const series = e.series[0];
+                if (series.value === null) return;
+
+                const rows =
+                  '<tr>' +
+                  '<td class="key">' + 'Date: ' + '</td>' +
+                  '<td class="x-value">' + d3.time.format('%d %b %y - %I:%M %p')(new Date(e.value)) + '</td>' +
+                  '</tr>' +
+                  '<tr>' +
+                  '<td class="key">' + 'Value: ' + '</td>' +
+                  '<td class="x-value"><strong>' + (series.value ? series.value.toFixed(2) : 0) + '</strong></td>' +
+                  '</tr>';
+
+                const header =
+                  '<thead>' +
+                  '<tr>' +
+                  '<td class="legend-color-guide"><div style="background-color: ' + series.color + ';"></div></td>' +
+                  '<td class="key"><strong>' + series.key + '</strong></td>' +
+                  '</tr>' +
+                  '</thead>';
+
+                return '<table>' +
+                  header +
+                  '<tbody>' +
+                  rows +
+                  '</tbody>' +
+                  '</table>';
+              }
+            };
+          });
+
+          widget.ready = true;
+        }
+
+        // Bar
+        else if (widget.type === 'bar') {
+          // Loop each device for this widget
+          widget.data = [];
+          devices.forEach((device: Device) => {
+            widget.options.chartLabels = [];
+            widget.options.chartOptions = {
+              responsive: true,
+              scaleShowVerticalLines: false,
+              maintainAspectRatio: false,
+              legend: {
+                display: true,
+              },
+              scales: {
+                xAxes: [{
+                  gridLines: {},
+                  ticks: {}
+                }],
+                yAxes: [{
+                  gridLines: {},
+                  ticks: {}
+                }]
+              }
+            };
+            // for (const [keyIndex, key] of widget.options.keys) {
+            widget.options.keys.forEach((key: any) => {
+              const values = [];
+              device.Messages.forEach((message: Message) => {
+                const p = _.filter(message.data_parsed, {key: key})[0];
+                if (p && p.value) values.push(p.value);
+                widget.options.chartLabels.push(moment(message.createdAt).format('MMM-DD h:mm a'));
+              });
+              const label = this.capitalizeFirstLetter(key) + ' - ' + (device.name ? device.name : device.id);
+              if (values.length > 0) widget.data.push({
+                data: values,
+                label: label,
+                borderWidth: 1,
+                backgroundColor: this.getRandomColor()
+              });
+            });
+          });
+          widget.options.chartLabels.sort((a: any, b: any) => {
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+          });
+          widget.options.chartLabels = widget.options.chartLabels.filter((item: any, pos: any) => {
+            return widget.options.chartLabels.indexOf(item) == pos;
+          });
+          widget.ready = true;
+        }
+
+        // Bar graph with exact key value
+        else if (widget.type === 'bar-exact') {
+          // Loop each device for this widget
+          widget.data = [];
+          devices.forEach((device: Device) => {
+            widget.options.chartLabels = [];
+            widget.options.chartOptions = {
+              responsive: true,
+              scaleShowVerticalLines: false,
+              maintainAspectRatio: false,
+              legend: {
+                display: true,
+              },
+              scales: {
+                xAxes: [{
+                  gridLines: {},
+                  ticks: {}
+                }],
+                yAxes: [{
+                  gridLines: {},
+                  ticks: {
+                    max: 1,
+                    stepSize: 1
+                  }
+                }]
+              }
+            };
+
+            widget.options.keys.forEach((key: any) => {
+              const values = [];
+              device.Messages.forEach((message: Message) => {
+                const p = _.filter(message.data_parsed, {key: widget.options.keys[0]})[0];
+                if (p && p.key === key && p.value.toString() === widget.options.exact_value.toString()) {
+                  values.push(1);
+                  return;
+                }
+                widget.options.chartLabels.push(moment(message.createdAt).format('MMM-DD h:mm a'));
+              });
+              const label = this.capitalizeFirstLetter(key) + ' - ' + (device.name ? device.name : device.id);
+              if (values.length > 0) widget.data.push({
+                data: values,
+                label: label,
+                borderWidth: 1,
+                backgroundColor: this.getRandomColor()
+              });
+            });
+          });
+          widget.options.chartLabels.sort((a: any, b: any) => {
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+          });
+          widget.options.chartLabels = widget.options.chartLabels.filter((item: any, pos: any) => {
+            return widget.options.chartLabels.indexOf(item) == pos;
+          });
+          widget.ready = true;
+        }
+
+        // Bar graph with custom array
+        else if (widget.type === 'bar-custom') {
+          // Loop each device for this widget
+          widget.data = [];
+          widget.options.chartColor = [];
+          const dynamicColors = function () {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            return ["rgb(" + r + "," + g + "," + b + ")", "rgb(" + r + "," + g + "," + b + ", .5)", "rgb(" + r + "," + g + "," + b + ", .8)", "rgb(" + r + "," + g + "," + b + ", .4)"];
+          };
+          devices.forEach((device: Device) => {
+            const rColor = dynamicColors();
+            widget.options.chartColor.push({
+              backgroundColor: rColor[1],
+              hoverBackgroundColor: rColor[3],
+              borderColor: rColor[0],
+              pointBackgroundColor: rColor[0],
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: rColor[2]
+            });
+            widget.options.chartLabels = [];
+            widget.options.chartOptions = {
+              responsive: true,
+              scaleShowVerticalLines: false,
+              maintainAspectRatio: false,
+              legend: {
+                display: true,
+              },
+              scales: {
+                xAxes: [{
+                  gridLines: {},
+                  ticks: {}
+                }],
+                yAxes: [{
+                  gridLines: {},
+                  ticks: {
+                    max: 1,
+                    stepSize: 1
+                  }
+                }]
+              }
+            };
+
+            widget.options.keys.forEach((key: any) => {
+              const values = [];
+              device.Messages.forEach((message: Message) => {
+                const p = _.filter(message.data_parsed, {key: key})[0];
+                if (p && p.key === key && p.value && typeof p.value === 'string') {
+                  p.value.replace(/\s/g, '');
+                  for (let i = p.value.length; i--;) {
+                    const bit = p.value.charAt(i);
+                    if (bit === "0") {
+                      values.push(0);
+                      widget.options.chartLabels.push(moment(message.createdAt).subtract(i * 7.5, 'seconds').format('MMM-DD h:mm:ss a'));
+                    } else {
+                      values.push(1);
+                      widget.options.chartLabels.push(moment(message.createdAt).subtract(i * 7.5, 'seconds').format('MMM-DD h:mm:ss a'));
+                    }
+                  }
+                }
+              });
+              const label = this.capitalizeFirstLetter(key) + ' - ' + (device.name ? device.name : device.id);
+              if (values.length > 0) widget.data.push({
+                data: values,
+                label: label,
+                borderWidth: 1
+              });
+            });
+          });
+          widget.options.chartLabels.sort((a: any, b: any) => {
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+          });
+          widget.options.chartLabels = widget.options.chartLabels.filter((item: any, pos: any) => {
+            return widget.options.chartLabels.indexOf(item) == pos;
+          });
+          widget.ready = true;
+        }
+
+        // Bar graph with custom array
+        else if (widget.type === 'bar-custom-stats') {
+          // Loop each device for this widget
+          widget.data = [];
+          devices.forEach((device: Device) => {
+            widget.options.chartColor = [
+              {
+                backgroundColor: 'rgba(103, 58, 183, .1)',
+                hoverBackgroundColor: 'rgba(103, 58, 183, 0.4)',
+                borderColor: 'rgb(103, 58, 183)',
+                pointBackgroundColor: 'rgb(103, 58, 183)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(103, 58, 183, 0.8)'
+              }];
+            widget.options.chartLabels = [];
+            widget.options.chartOptions = {
+              responsive: true,
+              scaleShowVerticalLines: false,
+              maintainAspectRatio: false,
+              legend: {
+                display: true,
+              },
+              scales: {
+                xAxes: [{
+                  gridLines: {},
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }],
+                yAxes: [{
+                  gridLines: {},
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }]
+              }
+            };
+
+            widget.options.keys.forEach((key: any) => {
+              const bits_0 = [];
+              const bits_1 = [];
+              device.Messages.forEach((message: Message) => {
+                const p = _.filter(message.data_parsed, {key: key})[0];
+                if (p && p.key === key && p.value && typeof p.value === 'string') {
+                  p.value.replace(/\s/g, '');
+                  for (let i = p.value.length; i--;) {
+                    const bit = p.value.charAt(i);
+                    if (bit === "0") {
+                      bits_0.push(0);
+                      widget.options.chartLabels.push('No detections (%)');
+                    } else {
+                      bits_1.push(1);
+                      widget.options.chartLabels.push('Detections (%)');
+                    }
+                  }
+                }
+              });
+              const label = this.capitalizeFirstLetter(key) + ' - ' + (device.name ? device.name : device.id);
+              widget.data.push({
+                data: [(bits_0.length / (bits_0.length + bits_1.length) * 100).toFixed(2), (bits_1.length / (bits_0.length + bits_1.length) * 100).toFixed(2)],
+                label: label,
+                borderWidth: 1
+              });
+            });
+          });
+          widget.options.chartLabels.sort((a: any, b: any) => {
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+          });
+          widget.options.chartLabels = widget.options.chartLabels.filter((item: any, pos: any) => {
+            return widget.options.chartLabels.indexOf(item) == pos;
+          });
+          widget.ready = true;
+        }
+
+        // Stats
+        else if (widget.type === 'stats') {
+          devices.forEach((device: any) => {
+
+            widget.options.chartLabels = [];
+
+            // Messages
+            this.messageApi.stats(widget.options.period, null, {deviceId: device.id}, null, null).subscribe((stats: any) => {
+              widget.options.chartLabels = [];
+              widget.options.chartOptions = {
+                responsive: true,
+                scaleShowVerticalLines: false,
+                maintainAspectRatio: false,
+                legend: {
+                  display: true,
+                }
+              };
+              widget.options.chartColor = [{backgroundColor: '#5b9bd3'}];
+              widget.data = [];
+              const data = [];
+
+              console.log('Stats: ', stats);
+
+              stats.forEach((stat: any) => {
+                data.push(stat.count);
+                if (widget.options.period === 'hourly')
+                  widget.options.chartLabels.push(moment(stat.universal).format('h:mm a'));
+                if (widget.options.period === 'daily')
+                  widget.options.chartLabels.push(moment(stat.universal).format('ddd MMM YY'));
+                if (widget.options.period === 'weekly')
+                  widget.options.chartLabels.push(moment(stat.universal).format('DD MMM YY'));
+                if (widget.options.period === 'monthly')
+                  widget.options.chartLabels.push(moment(stat.universal).format('DD MMM YY'));
+                if (widget.options.period === 'yearly')
+                  widget.options.chartLabels.push(moment(stat.universal).format('MMM YYYY'));
+              });
+              // console.log('Data:', this.data);
+              // console.log('Labels:', widget.options.chartLabels);
+              widget.data.push({data: data, label: 'Messages'});
+
+              /*widget.options.hasNoMessageChartData = data.every(value => {
+                return value === 0;
+              });*/
+            });
+            widget.ready = true;
+          });
+        }
+      });
+    }
   }
 
   onDeviceVisibility(devicePosition: number, widgetPosition: number): any {
@@ -1416,7 +1631,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       widgetFilter.where = {id: device.id};
       widgetFilter.include[0].scope.limit = 5000;
 
-      this.getDevicesWithFilter(widgetFilter).subscribe((devices: any[]) => {
+      this.getDevicesWithFilter(widget, widgetFilter).subscribe((devices: any[]) => {
         device.Messages = devices[0].Messages;
         const bounds: LatLngBounds = new google.maps.LatLngBounds();
 
@@ -1500,8 +1715,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     return returnedArray;
   }
 
-  private getDevicesWithFilter(filter: any): Observable<any[]> {
-    return this.api.getDevices(this.id, filter);
+  private getDevicesWithFilter(widget: any, newFilter?: any): Observable<any[]> {
+    if (widget.options.timeSpan) {
+      this.setTimeSpan(widget);
+    }
+    if (newFilter) return this.api.getDevices(this.id, newFilter);
+    else return this.api.getDevices(this.id, widget.filter);
   }
 
   // Map functions

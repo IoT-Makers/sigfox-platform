@@ -30,8 +30,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   private setting: AppSetting;
   public appSettings: AppSetting[] = [];
 
-  public version: any;
-
   // Application statistics
   public countDashboards = 0;
   public countWidgets = 0;
@@ -167,16 +165,12 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.appSettingApi.find().subscribe((appSettings: AppSetting[]) => {
       this.appSettings = appSettings;
     });
-    this.appSettingApi.getVersion().subscribe((result: any) => {
-      this.version = result;
-    });
   }
 
   getOrganizations(): void {
     this.organizationApi.find({order: 'createdAt DESC', include: 'Members'}).subscribe((organizations: Organization[]) => {
       this.organizations = organizations;
       this.organizationsReady = true;
-      console.log(organizations);
     });
   }
 
@@ -197,7 +191,6 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   changeSetting(setting: AppSetting): void {
     this.appSettingApi.upsert(setting).subscribe((setting: any) => {
-      console.log(setting);
     });
   }
 
@@ -210,7 +203,6 @@ export class AdminComponent implements OnInit, OnDestroy {
         'roleId': admin.id,
         'principalId': user.id
       }).subscribe(result => {
-        console.log(result);
         this.getUsers();
       });
     });

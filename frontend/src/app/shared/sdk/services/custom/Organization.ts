@@ -12,10 +12,12 @@ import { map } from 'rxjs/operators';
 import { Organization } from '../../models/Organization';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { User } from '../../models/User';
-import { Message } from '../../models/Message';
-import { Device } from '../../models/Device';
-import { Category } from '../../models/Category';
 import { Dashboard } from '../../models/Dashboard';
+import { Category } from '../../models/Category';
+import { Device } from '../../models/Device';
+import { Message } from '../../models/Message';
+import { Geoloc } from '../../models/Geoloc';
+import { Alert } from '../../models/Alert';
 
 
 /**
@@ -251,11 +253,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Recherchez un élément lié par id pour Messages.
+   * Recherchez un élément lié par id pour Dashboards.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Messages
+   * @param {any} fk Clé externe pour Dashboards
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -266,10 +268,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public findByIdMessages(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public findByIdDashboards(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Messages/:fk";
+    "/Organizations/:id/Dashboards/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -281,11 +283,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez un élément lié par id pour Messages.
+   * Supprimez un élément lié par id pour Dashboards.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Messages
+   * @param {any} fk Clé externe pour Dashboards
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -293,10 +295,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * This method returns no data.
    */
-  public destroyByIdMessages(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public destroyByIdDashboards(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Messages/:fk";
+    "/Organizations/:id/Dashboards/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -308,11 +310,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Mettez à jour un élément lié par id pour Messages.
+   * Mettez à jour un élément lié par id pour Dashboards.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Messages
+   * @param {any} fk Clé externe pour Dashboards
    *
    * @param {object} data Request data.
    *
@@ -327,10 +329,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public updateByIdMessages(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
+  public updateByIdDashboards(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Messages/:fk";
+    "/Organizations/:id/Dashboards/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -344,11 +346,68 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Ajoutez un élément lié par id pour Messages.
+   * Recherchez un élément lié par id pour Categories.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Messages
+   * @param {any} fk Clé externe pour Categories
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public findByIdCategories(id: any, fk: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Categories/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Supprimez un élément lié par id pour Categories.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {any} fk Clé externe pour Categories
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * This method returns no data.
+   */
+  public destroyByIdCategories(id: any, fk: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "DELETE";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Categories/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Mettez à jour un élément lié par id pour Categories.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {any} fk Clé externe pour Categories
    *
    * @param {object} data Request data.
    *
@@ -363,10 +422,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public linkMessages(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
+  public updateByIdCategories(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Messages/rel/:fk";
+    "/Organizations/:id/Categories/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -380,11 +439,47 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez la relation Messages à un élément par id.
+   * Ajoutez un élément lié par id pour Categories.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Messages
+   * @param {any} fk Clé externe pour Categories
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public linkCategories(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Categories/rel/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Supprimez la relation Categories à un élément par id.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {any} fk Clé externe pour Categories
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -392,10 +487,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * This method returns no data.
    */
-  public unlinkMessages(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public unlinkCategories(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Messages/rel/:fk";
+    "/Organizations/:id/Categories/rel/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -407,11 +502,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Vérifiez l'existence de la relation Messages à un élément par id.
+   * Vérifiez l'existence de la relation Categories à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Messages
+   * @param {any} fk Clé externe pour Categories
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -422,10 +517,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public existsMessages(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public existsCategories(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "HEAD";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Messages/rel/:fk";
+    "/Organizations/:id/Categories/rel/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -623,11 +718,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Recherchez un élément lié par id pour Categories.
+   * Recherchez un élément lié par id pour Messages.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Categories
+   * @param {any} fk Clé externe pour Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -638,10 +733,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public findByIdCategories(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public findByIdMessages(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Categories/:fk";
+    "/Organizations/:id/Messages/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -653,11 +748,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez un élément lié par id pour Categories.
+   * Supprimez un élément lié par id pour Messages.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Categories
+   * @param {any} fk Clé externe pour Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -665,10 +760,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * This method returns no data.
    */
-  public destroyByIdCategories(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public destroyByIdMessages(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Categories/:fk";
+    "/Organizations/:id/Messages/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -680,11 +775,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Mettez à jour un élément lié par id pour Categories.
+   * Mettez à jour un élément lié par id pour Messages.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Categories
+   * @param {any} fk Clé externe pour Messages
    *
    * @param {object} data Request data.
    *
@@ -699,10 +794,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public updateByIdCategories(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
+  public updateByIdMessages(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Categories/:fk";
+    "/Organizations/:id/Messages/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -716,11 +811,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Ajoutez un élément lié par id pour Categories.
+   * Ajoutez un élément lié par id pour Messages.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Categories
+   * @param {any} fk Clé externe pour Messages
    *
    * @param {object} data Request data.
    *
@@ -735,10 +830,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public linkCategories(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
+  public linkMessages(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Categories/rel/:fk";
+    "/Organizations/:id/Messages/rel/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -752,11 +847,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez la relation Categories à un élément par id.
+   * Supprimez la relation Messages à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Categories
+   * @param {any} fk Clé externe pour Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -764,10 +859,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * This method returns no data.
    */
-  public unlinkCategories(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public unlinkMessages(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Categories/rel/:fk";
+    "/Organizations/:id/Messages/rel/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -779,11 +874,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Vérifiez l'existence de la relation Categories à un élément par id.
+   * Vérifiez l'existence de la relation Messages à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Categories
+   * @param {any} fk Clé externe pour Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -794,10 +889,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public existsCategories(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public existsMessages(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "HEAD";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Categories/rel/:fk";
+    "/Organizations/:id/Messages/rel/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -809,11 +904,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Recherchez un élément lié par id pour Dashboards.
+   * Recherchez un élément lié par id pour Geolocs.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Dashboards
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -824,10 +919,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public findByIdDashboards(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public findByIdGeolocs(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Dashboards/:fk";
+    "/Organizations/:id/Geolocs/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -839,11 +934,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez un élément lié par id pour Dashboards.
+   * Supprimez un élément lié par id pour Geolocs.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Dashboards
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -851,10 +946,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * This method returns no data.
    */
-  public destroyByIdDashboards(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public destroyByIdGeolocs(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Dashboards/:fk";
+    "/Organizations/:id/Geolocs/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -866,11 +961,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Mettez à jour un élément lié par id pour Dashboards.
+   * Mettez à jour un élément lié par id pour Geolocs.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Clé externe pour Dashboards
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @param {object} data Request data.
    *
@@ -885,10 +980,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public updateByIdDashboards(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
+  public updateByIdGeolocs(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Dashboards/:fk";
+    "/Organizations/:id/Geolocs/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -896,6 +991,285 @@ export class OrganizationApi extends BaseLoopBackApi {
     let _postBody: any = {
       data: data
     };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Ajoutez un élément lié par id pour Geolocs.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {any} fk Clé externe pour Geolocs
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public linkGeolocs(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Geolocs/rel/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Supprimez la relation Geolocs à un élément par id.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {any} fk Clé externe pour Geolocs
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * This method returns no data.
+   */
+  public unlinkGeolocs(id: any, fk: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "DELETE";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Geolocs/rel/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Vérifiez l'existence de la relation Geolocs à un élément par id.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {any} fk Clé externe pour Geolocs
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public existsGeolocs(id: any, fk: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "HEAD";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Geolocs/rel/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Recherchez un élément lié par id pour Alerts.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {any} fk Clé externe pour Alerts
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public findByIdAlerts(id: any, fk: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Alerts/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Supprimez un élément lié par id pour Alerts.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {any} fk Clé externe pour Alerts
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * This method returns no data.
+   */
+  public destroyByIdAlerts(id: any, fk: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "DELETE";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Alerts/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Mettez à jour un élément lié par id pour Alerts.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {any} fk Clé externe pour Alerts
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public updateByIdAlerts(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Alerts/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Ajoutez un élément lié par id pour Alerts.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {any} fk Clé externe pour Alerts
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public linkAlerts(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Alerts/rel/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Supprimez la relation Alerts à un élément par id.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {any} fk Clé externe pour Alerts
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * This method returns no data.
+   */
+  public unlinkAlerts(id: any, fk: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "DELETE";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Alerts/rel/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Vérifiez l'existence de la relation Alerts à un élément par id.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {any} fk Clé externe pour Alerts
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public existsAlerts(id: any, fk: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "HEAD";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Alerts/rel/:fk";
+    let _routeParams: any = {
+      id: id,
+      fk: fk
+    };
+    let _postBody: any = {};
     let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
@@ -1018,7 +1392,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Demandes Messages de Organization.
+   * Demandes Dashboards de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1033,10 +1407,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public getMessages(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
+  public getDashboards(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Messages";
+    "/Organizations/:id/Dashboards";
     let _routeParams: any = {
       id: id
     };
@@ -1048,7 +1422,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Messages de ce modèle.
+   * Crée une instance dans Dashboards de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1065,10 +1439,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public createMessages(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
+  public createDashboards(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Messages";
+    "/Organizations/:id/Dashboards";
     let _routeParams: any = {
       id: id
     };
@@ -1081,7 +1455,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprime tous les Messages de ce modèle.
+   * Supprime tous les Dashboards de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1091,10 +1465,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * This method returns no data.
    */
-  public deleteMessages(id: any, customHeaders?: Function): Observable<any> {
+  public deleteDashboards(id: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Messages";
+    "/Organizations/:id/Dashboards";
     let _routeParams: any = {
       id: id
     };
@@ -1105,7 +1479,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Compte Messages de Organization.
+   * Compte Dashboards de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1119,126 +1493,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    *  - `count` – `{number}` - 
    */
-  public countMessages(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
+  public countDashboards(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Messages/count";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof where !== 'undefined' && where !== null) _urlParams.where = where;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Demandes Devices de Organization.
-   *
-   * @param {any} id Organization id
-   *
-   * @param {object} filter 
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Organization` object.)
-   * </em>
-   */
-  public getDevices(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Devices";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof filter !== 'undefined' && filter !== null) _urlParams.filter = filter;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Crée une instance dans Devices de ce modèle.
-   *
-   * @param {any} id Organization id
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Organization` object.)
-   * </em>
-   */
-  public createDevices(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Devices";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Supprime tous les Devices de ce modèle.
-   *
-   * @param {any} id Organization id
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * This method returns no data.
-   */
-  public deleteDevices(id: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "DELETE";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Devices";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Compte Devices de Organization.
-   *
-   * @param {any} id Organization id
-   *
-   * @param {object} where Criteria to match model instances
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * Data properties:
-   *
-   *  - `count` – `{number}` - 
-   */
-  public countDevices(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Devices/count";
+    "/Organizations/:id/Dashboards/count";
     let _routeParams: any = {
       id: id
     };
@@ -1366,7 +1624,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Demandes Dashboards de Organization.
+   * Demandes Devices de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1381,10 +1639,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public getDashboards(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
+  public getDevices(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Dashboards";
+    "/Organizations/:id/Devices";
     let _routeParams: any = {
       id: id
     };
@@ -1396,7 +1654,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Dashboards de ce modèle.
+   * Crée une instance dans Devices de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1413,10 +1671,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public createDashboards(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
+  public createDevices(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Dashboards";
+    "/Organizations/:id/Devices";
     let _routeParams: any = {
       id: id
     };
@@ -1429,7 +1687,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprime tous les Dashboards de ce modèle.
+   * Supprime tous les Devices de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1439,10 +1697,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    * This method returns no data.
    */
-  public deleteDashboards(id: any, customHeaders?: Function): Observable<any> {
+  public deleteDevices(id: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Dashboards";
+    "/Organizations/:id/Devices";
     let _routeParams: any = {
       id: id
     };
@@ -1453,7 +1711,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Compte Dashboards de Organization.
+   * Compte Devices de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1467,10 +1725,358 @@ export class OrganizationApi extends BaseLoopBackApi {
    *
    *  - `count` – `{number}` - 
    */
-  public countDashboards(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
+  public countDevices(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Dashboards/count";
+    "/Organizations/:id/Devices/count";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof where !== 'undefined' && where !== null) _urlParams.where = where;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Demandes Messages de Organization.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {object} filter 
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public getMessages(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Messages";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof filter !== 'undefined' && filter !== null) _urlParams.filter = filter;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Crée une instance dans Messages de ce modèle.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public createMessages(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Messages";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Supprime tous les Messages de ce modèle.
+   *
+   * @param {any} id Organization id
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * This method returns no data.
+   */
+  public deleteMessages(id: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "DELETE";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Messages";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Compte Messages de Organization.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {object} where Criteria to match model instances
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `count` – `{number}` - 
+   */
+  public countMessages(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Messages/count";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof where !== 'undefined' && where !== null) _urlParams.where = where;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Demandes Geolocs de Organization.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {object} filter 
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public getGeolocs(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Geolocs";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof filter !== 'undefined' && filter !== null) _urlParams.filter = filter;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Crée une instance dans Geolocs de ce modèle.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public createGeolocs(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Geolocs";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Supprime tous les Geolocs de ce modèle.
+   *
+   * @param {any} id Organization id
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * This method returns no data.
+   */
+  public deleteGeolocs(id: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "DELETE";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Geolocs";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Compte Geolocs de Organization.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {object} where Criteria to match model instances
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `count` – `{number}` - 
+   */
+  public countGeolocs(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Geolocs/count";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof where !== 'undefined' && where !== null) _urlParams.where = where;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Demandes Alerts de Organization.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {object} filter 
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public getAlerts(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Alerts";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof filter !== 'undefined' && filter !== null) _urlParams.filter = filter;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Crée une instance dans Alerts de ce modèle.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public createAlerts(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Alerts";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Supprime tous les Alerts de ce modèle.
+   *
+   * @param {any} id Organization id
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * This method returns no data.
+   */
+  public deleteAlerts(id: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "DELETE";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Alerts";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Compte Alerts de Organization.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {object} where Criteria to match model instances
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `count` – `{number}` - 
+   */
+  public countAlerts(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Alerts/count";
     let _routeParams: any = {
       id: id
     };
@@ -1646,7 +2252,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Messages de ce modèle.
+   * Crée une instance dans Dashboards de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1663,43 +2269,10 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public createManyMessages(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
+  public createManyDashboards(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Messages";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Crée une instance dans Devices de ce modèle.
-   *
-   * @param {any} id Organization id
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Organization` object.)
-   * </em>
-   */
-  public createManyDevices(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Devices";
+    "/Organizations/:id/Dashboards";
     let _routeParams: any = {
       id: id
     };
@@ -1745,7 +2318,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Dashboards de ce modèle.
+   * Crée une instance dans Devices de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1762,10 +2335,109 @@ export class OrganizationApi extends BaseLoopBackApi {
    * This usually means the response is a `Organization` object.)
    * </em>
    */
-  public createManyDashboards(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
+  public createManyDevices(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/Dashboards";
+    "/Organizations/:id/Devices";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Crée une instance dans Messages de ce modèle.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public createManyMessages(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Messages";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Crée une instance dans Geolocs de ce modèle.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public createManyGeolocs(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Geolocs";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Crée une instance dans Alerts de ce modèle.
+   *
+   * @param {any} id Organization id
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Organization` object.)
+   * </em>
+   */
+  public createManyAlerts(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Organizations/:id/Alerts";
     let _routeParams: any = {
       id: id
     };

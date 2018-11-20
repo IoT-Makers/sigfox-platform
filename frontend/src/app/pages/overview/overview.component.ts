@@ -232,15 +232,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.countMessagesReady = true;
     });
 
-    if (!this.organization) {
-      // Alerts
-      this.userApi.countAlerts(this.user.id).subscribe(result => {
-        this.countAlerts = result.count;
-        this.countAlertsReady = true;
-      });
+    // Alerts
+    api.countAlerts(id).subscribe(result => {
+      this.countAlerts = result.count;
+      this.countAlertsReady = true;
+    });
 
-      this.getMessagesGraph(this.graphRange);
-    }
+    if (!this.organization) this.getMessagesGraph(this.graphRange);
   }
 
   upgrade() {

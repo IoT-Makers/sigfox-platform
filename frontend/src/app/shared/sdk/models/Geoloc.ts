@@ -28,6 +28,7 @@ export interface GeolocInterface {
   Device?: Device;
   Message?: Message;
   user?: User;
+  Organizations?: Organization[];
   Organization?: Organization;
   Employee?: Employee;
   Beacon?: Beacon;
@@ -51,6 +52,7 @@ export class Geoloc implements GeolocInterface {
   Device: Device = null;
   Message: Message = null;
   user: User = null;
+  Organizations: Organization[] = null;
   Organization: Organization = null;
   Employee: Employee = null;
   Beacon: Beacon = null;
@@ -169,9 +171,9 @@ export class Geoloc implements GeolocInterface {
                   keyFrom: 'userId',
           keyTo: 'id'
         },
-        Organization: {
-          name: 'Organization',
-          type: 'Organization',
+        Organizations: {
+          name: 'Organizations',
+          type: 'Organization[]',
           model: 'Organization',
           relationType: 'belongsTo',
                   keyFrom: 'organizationId',
@@ -184,6 +186,11 @@ export class Geoloc implements GeolocInterface {
           relationType: 'belongsTo',
                   keyFrom: 'employeeId',
           keyTo: 'id'
+          relationType: 'hasMany',
+          modelThrough: 'OrganizationGeoloc',
+          keyThrough: 'organizationId',
+          keyFrom: 'id',
+          keyTo: 'geolocId'
         },
         Beacon: {
           name: 'Beacon',

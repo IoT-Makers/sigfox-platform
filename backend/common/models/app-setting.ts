@@ -9,19 +9,20 @@ import {Model} from "@mean-expert/model";
  **/
 @Model({
   hooks: {
-    beforeSave: { name: "before save", type: "operation" },
+    beforeSave: {name: "before save", type: "operation"},
   },
   remotes: {
     getVersion: {
-      returns : { root: true, type: "object" },
-      http    : { path: "/version", verb: "get" },
+      returns: {root: true, type: "object"},
+      http: {path: "/version", verb: "get"},
     },
   },
 })
 
 class AppSetting {
   // LoopBack model instance is injected in constructor
-  constructor(public model: any) {}
+  constructor(public model: any) {
+  }
 
   // Example Operation Hook
   public beforeSave(ctx: any, next: Function): void {
@@ -31,8 +32,6 @@ class AppSetting {
   }
 
   public getVersion(next: Function): void {
-    /*const getRepoInfo = require('git-repo-info');
-    const info = getRepoInfo();*/
     next(null, process.env.GIT_REV);
   }
 }

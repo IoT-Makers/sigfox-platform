@@ -10,18 +10,6 @@
             <h4 class="text-center">Application settings</h4>
           </div>
           <div class="card-block">
-            <div *ngIf="version" class="card">
-              <div class="card-header">
-                <div class="row">
-                  <div class="col-12">
-                    <i class="fa fa-code fa-lg"></i><strong> Version</strong>
-                  </div>
-                </div>
-              </div>
-              <div class="card-block">
-                <p *ngIf="version"><strong>SHA:</strong> {{version}}</p>
-              </div>
-            </div>
             <p *ngFor="let appSetting of appSettings">
               <label>{{appSetting.key}}:&nbsp;</label>
               <label *ngIf="appSetting.type === 'boolean'"
@@ -195,7 +183,9 @@
             <h4 class="text-center">Users</h4>
           </div>
           <div class="card-block">
-            <button class="mb-1 btn btn-user" (click)="openAddUserModal()"><i class="fa fa-plus-circle"></i> Add a new user</button>
+            <button class="mb-1 btn btn-user" (click)="openAddUserModal()"><i class="fa fa-plus-circle"></i> Add a new
+              user
+            </button>
             <ng-container *ngIf="!usersReady">
               Loading users...
               <div class="sk-double-bounce">
