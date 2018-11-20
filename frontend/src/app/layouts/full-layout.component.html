@@ -45,7 +45,7 @@
 
 
     <!-- Organizations -->
-    <li (click)="countOrganizationsMembers();" class="nav-item dropdown" dropdown placement="bottom right">
+    <li class="nav-item dropdown" dropdown placement="bottom right" (isOpenChange)="countOrganizationsMembers($event);">
       <a class="nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
          dropdownToggle>
         <i class="fa fa-building text-organization"></i>
@@ -193,7 +193,9 @@
                 class="fa fa-key"></i> Admin </a>
             </li>
           </ng-container>
-
+          <li class="nav-item mt-auto">
+            <a class="nav-link"><i class="fa fa-code-fork"></i> {{appVersion}}</a>
+          </li>
         </ng-container>
       </ul>
     </nav>
@@ -253,9 +255,12 @@
               class="fa fa-key"></i> Admin </a>
           </li>
         </ng-container>
-
+        <li class="nav-item mt-auto">
+          <a class="nav-link"><i class="fa fa-code-fork"></i> {{appVersion}}</a>
+        </li>
       </ul>
     </nav>
+
   </div>
 
   <!-- Main content -->

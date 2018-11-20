@@ -1,7 +1,14 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Dashboard, Organization, Role, User} from '../shared/sdk/models';
-import {BeaconApi, DashboardApi, OrganizationApi, ParserApi, UserApi} from '../shared/sdk/services/custom';
+import {
+  AppSettingApi,
+  BeaconApi,
+  DashboardApi,
+  OrganizationApi,
+  ParserApi,
+  UserApi
+} from '../shared/sdk/services/custom';
 import {RealtimeService} from "../shared/realtime/realtime.service";
 
 @Component({
@@ -45,6 +52,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private countBeacons = 0;
 
   public admin = false;
+  public appVersion: any;
 
   public disabled = false;
   public status: { isopen: boolean } = {isopen: false};
@@ -62,6 +70,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   private id;
 
   constructor(private rt: RealtimeService,
+              private appSettingApi: AppSettingApi,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               private parserApi: ParserApi,
@@ -134,6 +143,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   setup(): void {
     this.unsubscribe();
     this.subscribe();
+    this.getAppVersion();
     if (!this.isInitialized) {
       this.isInitialized = true;
       console.log('Setup Full layout');
@@ -206,17 +216,24 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     this.cleanSetup();
   }
 
-  public countOrganizationsMembers(): void {
-    // console.log('Dropdown is now: ', open);
-    // Count organization members
-    this.organizations.forEach((organization: any) => {
-      this.organizationApi.countMembers(organization.id).subscribe(result => {
-        organization.countMembers = result.count;
+  countOrganizationsMembers(open: boolean): void {
+    if (open) {
+      // Count organization members
+      this.organizations.forEach((organization: any) => {
+        this.organizationApi.countMembers(organization.id).subscribe(result => {
+          organization.countMembers = result.count;
+        });
       });
+    }
+  }
+
+  getAppVersion(): void {
+    this.appSettingApi.getVersion().subscribe((result: any) => {
+      this.appVersion = result;
     });
   }
 
-  public toggleDropdown($event: MouseEvent): void {
+  toggleDropdown($event: MouseEvent): void {
     $event.preventDefault();
     $event.stopPropagation();
     this.status.isopen = !this.status.isopen;

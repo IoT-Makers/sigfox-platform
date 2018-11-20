@@ -1,4 +1,8 @@
 // Here you can add other styles
+.card {
+  border-radius: 2px;
+}
+
 .navbar {
 
   .form-inline {
@@ -14,10 +18,18 @@
         color: $navbar-color;
       }
     }
-    .form-control::-webkit-input-placeholder { color: $navbar-color; }
-    .form-control:-moz-placeholder { color: $navbar-color; }
-    .form-control::-moz-placeholder { color: $navbar-color; }
-    .form-control:-ms-input-placeholder { color: $navbar-color; }
+    .form-control::-webkit-input-placeholder {
+      color: $navbar-color;
+    }
+    .form-control:-moz-placeholder {
+      color: $navbar-color;
+    }
+    .form-control::-moz-placeholder {
+      color: $navbar-color;
+    }
+    .form-control:-ms-input-placeholder {
+      color: $navbar-color;
+    }
   }
 }
 
@@ -129,15 +141,19 @@ agm-map {
 
   // Text
   .text-#{$variant} {
-    color: $color !important; }
+    color: $color !important;
+  }
   a.text-#{$variant}:focus, a.text-#{$variant}:hover {
-    color: darken($color, 20%) !important; }
+    color: darken($color, 20%) !important;
+  }
 
   // Badge
   .badge-#{$variant} {
-    background-color: $color; }
+    background-color: $color;
+  }
   .badge-#{$variant}[href]:focus, .badge-#{$variant}[href]:hover {
-    background-color: darken($color, 20%); }
+    background-color: darken($color, 20%);
+  }
 
   // Background
   .bg-#{$variant} {
@@ -152,49 +168,59 @@ agm-map {
   .btn-#{$variant}, .fc button {
     color: #fff;
     background-color: $color;
-    border-color: $color; }
+    border-color: $color;
+  }
   .btn-#{$variant}:hover, .fc button:hover {
     color: #fff;
     background-color: darken($color, 10%);
-    border-color: darken($color, 10%); }
+    border-color: darken($color, 10%);
+  }
   .btn-#{$variant}:focus, .fc button:focus, .btn-#{$variant}.focus, .fc button.focus {
-    box-shadow: 0 0 0 2px darken($color, 10%); }
+    box-shadow: 0 0 0 2px darken($color, 10%);
+  }
   .btn-#{$variant}.disabled, .fc button.disabled, .btn-#{$variant}:disabled, .fc button:disabled {
     background-color: $color;
-    border-color: $color; }
+    border-color: $color;
+  }
   .btn-#{$variant}:active, .fc button:active, .btn-#{$variant}.active, .fc button.active,
   .show > .btn-#{$variant}.dropdown-toggle, .fc
   .show > button.dropdown-toggle {
     color: #2a2c36;
     background-color: darken($color, 10%);
     background-image: none;
-    border-color: darken($color, 10%); }
+    border-color: darken($color, 10%);
+  }
 
   .btn-outline-#{$variant} {
     color: $color;
     background-image: none;
     background-color: transparent;
-    border-color: $color; }
+    border-color: $color;
+  }
   .btn-outline-#{$variant}:hover {
     color: #fff;
     background-color: $color;
-    border-color: $color; }
+    border-color: $color;
+  }
   .btn-outline-#{$variant}:focus, .btn-outline-#{$variant}.focus {
-    box-shadow: 0 0 0 1px darken($color, 5%); }
+    box-shadow: 0 0 0 1px darken($color, 5%);
+  }
   .btn-outline-#{$variant}.disabled, .btn-outline-#{$variant}:disabled {
     color: $color;
-    background-color: transparent; }
+    background-color: transparent;
+  }
   .btn-outline-#{$variant}:active, .btn-outline-#{$variant}.active,
   .show > .btn-outline-#{$variant}.dropdown-toggle {
     color: #fff;
     background-color: $color;
-    border-color: $color; }
+    border-color: $color;
+  }
 
   // Select
   .select-#{$variant} {
     color: #ccc;
   }
-  .select-#{$variant} .c-token{
+  .select-#{$variant} .c-token {
     background: $color !important;
   }
   .select-#{$variant} .pure-checkbox label::before {
@@ -208,7 +234,7 @@ agm-map {
   .select-one-#{$variant} {
     color: #ccc;
   }
-  .select-one-#{$variant} .c-token{
+  .select-one-#{$variant} .c-token {
     background: $color !important;
   }
   .select-one-#{$variant} .pure-checkbox label::before {
@@ -234,11 +260,14 @@ agm-map {
 // Custom selects
 .select-one {
 }
-.select-one .c-token{
+
+.select-one .c-token {
 }
+
 .select-one .pure-checkbox label::before {
   border-radius: 100% !important;
 }
+
 .select-one .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
 }
 
