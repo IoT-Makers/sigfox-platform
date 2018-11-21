@@ -8,7 +8,7 @@ export class RabbitPub {
   private static _instance: RabbitPub = new RabbitPub();
 
   constructor() {
-    if(RabbitPub._instance){
+    if (RabbitPub._instance) {
       throw new Error("Error: Instantiation failed: Use SingletonDemo.getInstance() instead of new.");
     }
     this.connect();
@@ -22,14 +22,18 @@ export class RabbitPub {
   public connect(): void {
     let rabbitURL = process.env.RABBIT_URL || 'amqp://usr:pwd@localhost';
     amqp.connect(rabbitURL, (err, conn) => {
-      if (err) console.error(err);
-      conn.createChannel((err, ch) => {
-        if (err) console.error(err);
-        ch.assertExchange(this._ex, 'fanout', {durable: true}, (err, ok) => {
+      if (err) {
+        console.error(err);
+        console.error('=> Rabittmq could not start');
+      } else if (conn) {
+        conn.createChannel((err, ch) => {
           if (err) console.error(err);
-          this._ch = ch;
+          ch.assertExchange(this._ex, 'fanout', {durable: true}, (err, ok) => {
+            if (err) console.error(err);
+            this._ch = ch;
+          });
         });
-      });
+      }
     });
   }
 

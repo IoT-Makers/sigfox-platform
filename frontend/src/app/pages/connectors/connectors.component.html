@@ -164,6 +164,50 @@
               </div>
             </ng-container>
             <!-- End Sigfox API -->
+            <!-- Nexmo SMS -->
+            <ng-container *ngIf="connectorToAdd.type === 'nexmo-sms'">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">API Key
+                  <small class="text-danger">(required)</small>
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control"
+                         name="connectorToAdd.login"
+                         placeholder="Nexmo API key"
+                         [(ngModel)]="connectorToAdd.login"
+                         required>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">API Secret
+                  <small class="text-danger">(required)</small>
+                </label>
+                <div class="col-md-9">
+                  <input type="password" class="form-control"
+                         name="connectorToAdd.password"
+                         placeholder="Nexmo API secret"
+                         [(ngModel)]="connectorToAdd.password"
+                         required>
+                </div>
+              </div>
+              <!--<div class="form-group row">
+                <label class="col-md-3 form-control-label">Source number
+                  <small class="text-danger">(required)</small>
+                </label>
+                <div class="col-md-9">
+                  <int-phone-prefix name="connectorToAdd.host" [(ngModel)]="connectorToAdd.host" required></int-phone-prefix>
+                </div>
+              </div>-->
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Destination number
+                  <small class="text-danger">(required)</small>
+                </label>
+                <div class="col-md-9">
+                  <int-phone-prefix name="connectorToAdd.recipient" [(ngModel)]="connectorToAdd.recipient" required></int-phone-prefix>
+                </div>
+              </div>
+            </ng-container>
+            <!-- End Nexmo SMS -->
             <!-- Webhook -->
             <ng-container *ngIf="connectorToAdd.type === 'webhook'">
               <div class="form-group row">
@@ -441,6 +485,50 @@
               </div>
             </ng-container>
             <!-- End Sigfox API -->
+            <!-- Nexmo SMS -->
+            <ng-container *ngIf="connectorToEdit.type === 'nexmo-sms'">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">API Key
+                  <small class="text-danger">(required)</small>
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control"
+                         name="connectorToEdit.login"
+                         placeholder="Nexmo API key"
+                         [(ngModel)]="connectorToEdit.login"
+                         required>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">API Secret
+                  <small class="text-danger">(required)</small>
+                </label>
+                <div class="col-md-9">
+                  <input type="password" class="form-control"
+                         name="connectorToEdit.password"
+                         placeholder="Nexmo API secret"
+                         [(ngModel)]="connectorToEdit.password"
+                         required>
+                </div>
+              </div>
+              <!--<div class="form-group row">
+                <label class="col-md-3 form-control-label">Source number
+                  <small class="text-danger">(required)</small>
+                </label>
+                <div class="col-md-9">
+                  <int-phone-prefix name="connectorToEdit.host" [(ngModel)]="connectorToEdit.host" required></int-phone-prefix>
+                </div>
+              </div>-->
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Destination number
+                  <small class="text-danger">(required)</small>
+                </label>
+                <div class="col-md-9">
+                  <int-phone-prefix name="connectorToEdit.recipient" [(ngModel)]="connectorToEdit.recipient" required></int-phone-prefix>
+                </div>
+              </div>
+            </ng-container>
+            <!-- End Nexmo SMS -->
             <!-- Webhook -->
             <ng-container *ngIf="connectorToEdit.type === 'webhook'">
               <div class="form-group row">
@@ -637,7 +725,8 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<div bsModal #confirmConnectorModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmConnectorModal"
+<div bsModal #confirmConnectorModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="confirmConnectorModal"
      aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
