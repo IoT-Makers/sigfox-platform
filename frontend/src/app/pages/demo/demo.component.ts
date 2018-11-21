@@ -209,14 +209,15 @@ export class DemoComponent implements OnInit, OnDestroy {
       where: {
         location: {
           near: arenaLocation,
-          maxDistance: 2,
+          maxDistance: 1,
           unit: 'kilometers'
         }
       },
       order: 'createdAt DESC',
-      limit: 50000,
       include: ['Device', 'Beacon']
     }).subscribe((geolocs: Geoloc[]) => {
+
+      console.log(geolocs);
 
       // setup the viewport
       //this.map.jumpTo({'center': [geolocs[0].location.lng, geolocs[0].location.lat], 'zoom': 18});
