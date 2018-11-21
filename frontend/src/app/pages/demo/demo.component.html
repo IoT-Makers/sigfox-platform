@@ -1,3 +1,20 @@
 <div class="animated fadeIn">
-  <h3>Demo !</h3>
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="mb-1">Moving tags heatmap</h3>
+    </div>
+    <div class="col-md-12">
+      <mgl-map
+        [style]="'mapbox://styles/mapbox/streets-v9'"
+        [zoom]="[18]"
+        [center]="[13.453919, 52.496915]"
+        (load)="onMapLoad($event)">
+        <!--<mgl-layer
+          id="geolocs-layer"
+          type="heatmap"
+          [source]="geolocsGeoJson">
+        </mgl-layer>-->
+      </mgl-map>
+    </div>
+  </div>
 </div>

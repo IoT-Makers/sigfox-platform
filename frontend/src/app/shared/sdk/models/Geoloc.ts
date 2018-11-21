@@ -4,8 +4,8 @@ import {
   Message,
   User,
   Organization,
-  Employee,
   Beacon,
+  Employee,
   GeoPoint
 } from '../index';
 
@@ -22,16 +22,14 @@ export interface GeolocInterface {
   "messageId"?: string;
   "updatedAt"?: Date;
   "userId"?: any;
-  "organizationId"?: any;
-  "employeeId"?: any;
   "beaconId"?: string;
+  "employeeId"?: any;
   Device?: Device;
   Message?: Message;
   user?: User;
   Organizations?: Organization[];
-  Organization?: Organization;
-  Employee?: Employee;
   Beacon?: Beacon;
+  Employee?: Employee;
 }
 
 export class Geoloc implements GeolocInterface {
@@ -46,16 +44,14 @@ export class Geoloc implements GeolocInterface {
   "messageId": string = '';
   "updatedAt": Date = new Date(0);
   "userId": any = <any>null;
-  "organizationId": any = <any>null;
-  "employeeId": any = <any>null;
   "beaconId": string = '';
+  "employeeId": any = <any>null;
   Device: Device = null;
   Message: Message = null;
   user: User = null;
   Organizations: Organization[] = null;
-  Organization: Organization = null;
-  Employee: Employee = null;
   Beacon: Beacon = null;
+  Employee: Employee = null;
   constructor(data?: GeolocInterface) {
     Object.assign(this, data);
   }
@@ -133,17 +129,13 @@ export class Geoloc implements GeolocInterface {
           name: 'userId',
           type: 'any'
         },
-        "organizationId": {
-          name: 'organizationId',
-          type: 'any'
+        "beaconId": {
+          name: 'beaconId',
+          type: 'string'
         },
         "employeeId": {
           name: 'employeeId',
           type: 'any'
-        },
-        "beaconId": {
-          name: 'beaconId',
-          type: 'string'
         },
       },
       relations: {
@@ -175,17 +167,6 @@ export class Geoloc implements GeolocInterface {
           name: 'Organizations',
           type: 'Organization[]',
           model: 'Organization',
-          relationType: 'belongsTo',
-                  keyFrom: 'organizationId',
-          keyTo: 'id'
-        },
-        Employee: {
-          name: 'Employee',
-          type: 'Employee',
-          model: 'Employee',
-          relationType: 'belongsTo',
-                  keyFrom: 'employeeId',
-          keyTo: 'id'
           relationType: 'hasMany',
           modelThrough: 'OrganizationGeoloc',
           keyThrough: 'organizationId',
@@ -198,6 +179,14 @@ export class Geoloc implements GeolocInterface {
           model: 'Beacon',
           relationType: 'belongsTo',
                   keyFrom: 'beaconId',
+          keyTo: 'id'
+        },
+        Employee: {
+          name: 'Employee',
+          type: 'Employee',
+          model: 'Employee',
+          relationType: 'belongsTo',
+                  keyFrom: 'employeeId',
           keyTo: 'id'
         },
       }

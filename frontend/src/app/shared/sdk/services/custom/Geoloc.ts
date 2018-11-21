@@ -15,8 +15,8 @@ import { Device } from '../../models/Device';
 import { Message } from '../../models/Message';
 import { User } from '../../models/User';
 import { Organization } from '../../models/Organization';
-import { Employee } from '../../models/Employee';
 import { Beacon } from '../../models/Beacon';
+import { Employee } from '../../models/Employee';
 
 
 /**
@@ -312,41 +312,11 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo Employee.
-   *
-   * @param {any} id Geoloc id
-   *
-   * @param {boolean} refresh
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Geoloc` object.)
-   * </em>
-   */
-  public getEmployee(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Geolocs/:id/Employee";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
    * Extrait la relation belongsTo Beacon.
    *
    * @param {any} id Geoloc id
    *
-   * @param {boolean} refresh
+   * @param {boolean} refresh 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -361,6 +331,36 @@ export class GeolocApi extends BaseLoopBackApi {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Geolocs/:id/Beacon";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Extrait la relation belongsTo Employee.
+   *
+   * @param {any} id Geoloc id
+   *
+   * @param {boolean} refresh 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Geoloc` object.)
+   * </em>
+   */
+  public getEmployee(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Geolocs/:id/Employee";
     let _routeParams: any = {
       id: id
     };
