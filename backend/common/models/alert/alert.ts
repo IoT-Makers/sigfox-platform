@@ -248,7 +248,6 @@ class Alert {
             // Build the custom message
           let alertMessage = "";
           let strToMatch = "";
-          const regex = /\[(.*?)\]/;
           if (alert.message) {
             try {
               strToMatch = JSON.stringify(alert.message);
@@ -256,13 +255,20 @@ class Alert {
               strToMatch = alert.message;
             }
           }
+          const regex = /\[(.*?)\]/g;
+          let matched: any[] = [];
+          let match;
+          while ((match = regex.exec(strToMatch)) != null) {
+            matched.push(match[1]);
+          }
           data_parsed.forEach((p: any) => {
             if (alert.message) {
               try {
-                const matched = regex.exec(strToMatch)[1];
-                if (matched && matched === p.key) {
-                  strToMatch = strToMatch.replace("[" + matched + "]", p.value.toString());
-                  alertMessage = JSON.parse(strToMatch);
+                for (let match of matched) {
+                  if (match === p.key) {
+                    strToMatch = strToMatch.replace("[" + match + "]", p.value.toString());
+                    alertMessage = JSON.parse(strToMatch);
+                  }
                 }
               } catch (e) {
                 // console.log('No need to search for a custom message formatting.');
@@ -272,14 +278,14 @@ class Alert {
               }
             }
           });
-
+          console.log(alertMessage);
           // Process conditions
           data_parsed.forEach((p: any) => {
             if (alert.key === p.key) {
               // Verify conditions for the alert to be triggered
               if (
                 (alert.value.exact != null && p.value == alert.value.exact)
-                || (alert.value.min != null && alert.value.max != null  && p.value >= alert.value.min && p.value <= alert.value.max)
+                || (alert.value.min != null && alert.value.max != null && p.value >= alert.value.min && p.value <= alert.value.max)
                 || (alert.value.less != null && p.value < alert.value.less)
                 || (alert.value.more != null && p.value > alert.value.more)
               ) {
