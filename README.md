@@ -39,15 +39,16 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
  * Frontend: [Angular 6+](https://angular.io/)
  * Real-time: [Primus](https://github.com/primus/primus)
  * Database: [MongoDB](https://www.mongodb.com/en)
- * Pub-sub: [Redis](https://redis.io/)
+ * Pub-sub & queuing: [RabbitMQ](https://www.rabbitmq.com/)
  
  ### Deployment
  
  * Reverse proxy: [Traefik](https://traefik.io/)
  * Containerization: [Docker](https://www.docker.com/)
  * Orchestrator: [Docker Swarm](https://docs.docker.com/engine/swarm/)
- * Management UI: [Portainer](https://portainer.io/)
+ * Environment management UI: [Portainer](https://portainer.io/)
  * Supervision: [Prometheus](https://prometheus.io/)
+ * DB backups (private cloud storage): [Minio](https://www.minio.io/)
 
 ## Development
 
