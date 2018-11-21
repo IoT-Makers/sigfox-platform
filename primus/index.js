@@ -49,7 +49,7 @@ amqp.connect(rabbitUrl, function (err, conn) {
                 console.error("RABBIT_URL not set on Primus");
                 throw err;
             }
-            ch.bindQueue(q.queue, ex, '')
+            ch.bindQueue(q.queue, ex, '');
             console.log("Primus connected to RabbitMQ");
             ch.consume(q.queue, function (msg) {
                 let payload = JSON.parse(msg.content.toString());
