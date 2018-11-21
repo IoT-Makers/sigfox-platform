@@ -278,10 +278,10 @@ class Alert {
             if (alert.key === p.key) {
               // Verify conditions for the alert to be triggered
               if (
-                (alert.value.exact && p.value === alert.value.exact)
-                || (alert.value.min && alert.value.max && p.value >= alert.value.min && p.value <= alert.value.max)
-                || (alert.value.less && p.value < alert.value.less)
-                || (alert.value.more && p.value > alert.value.more)
+                (alert.value.exact != null && p.value == alert.value.exact)
+                || (alert.value.min != null && alert.value.max != null  && p.value >= alert.value.min && p.value <= alert.value.max)
+                || (alert.value.less != null && p.value < alert.value.less)
+                || (alert.value.more != null && p.value > alert.value.more)
               ) {
                 if (!alert.message) {
                   alertMessage = p.key.charAt(0).toUpperCase() + p.key.slice(1) + ": " + p.value + " " + p.unit;
