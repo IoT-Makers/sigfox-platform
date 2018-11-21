@@ -10,6 +10,7 @@ import {ToasterModule} from 'angular2-toaster';
 import {SelectModule} from 'ng2-select';
 import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 import {MomentModule} from 'angular2-moment';
+import {InternationalPhoneModule} from "ng4-intl-phone";
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import {MomentModule} from 'angular2-moment';
     SelectModule,
     TooltipModule.forRoot(),
     AngularMultiSelectModule,
-    MomentModule
+    MomentModule,
+    InternationalPhoneModule
   ],
   declarations: [
     ConnectorsComponent,

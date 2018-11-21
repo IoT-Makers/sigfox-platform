@@ -19,6 +19,8 @@
   },
   "devDependencies": {},
   "dependencies": {
+    "@types/amqplib": "^0.5.9",
+    "amqplib": "^0.5.2",
     "engine.io": "^3.2.0",
     "mongodb": "^3.1.6",
     "primus": "^7.2.3",

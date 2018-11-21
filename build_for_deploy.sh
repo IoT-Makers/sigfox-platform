@@ -62,16 +62,19 @@ while true; do
             docker tag ${REGISTRY_URL}backend-${SUBDOMAIN}:$GIT_HASH ${REGISTRY_URL}backend-${SUBDOMAIN}:latest
             docker tag ${REGISTRY_URL}frontend-${SUBDOMAIN}:$GIT_HASH ${REGISTRY_URL}frontend-${SUBDOMAIN}:latest
             docker tag ${REGISTRY_URL}mongodb-${SUBDOMAIN}:$GIT_HASH ${REGISTRY_URL}mongodb-${SUBDOMAIN}:latest
+            docker tag ${REGISTRY_URL}rabbitmq-${SUBDOMAIN}:$GIT_HASH ${REGISTRY_URL}rabbitmq-${SUBDOMAIN}:latest
 
             docker push ${REGISTRY_URL}primus-${SUBDOMAIN}:$GIT_HASH
             docker push ${REGISTRY_URL}backend-${SUBDOMAIN}:$GIT_HASH}
             docker push ${REGISTRY_URL}frontend-${SUBDOMAIN}:$GIT_HASH
             docker push ${REGISTRY_URL}mongodb-${SUBDOMAIN}:$GIT_HASH
+            docker push ${REGISTRY_URL}rabbitmq-${SUBDOMAIN}:$GIT_HASH
 
             docker push ${REGISTRY_URL}primus-${SUBDOMAIN}:latest
             docker push ${REGISTRY_URL}backend-${SUBDOMAIN}:latest
             docker push ${REGISTRY_URL}frontend-${SUBDOMAIN}:latest
             docker push ${REGISTRY_URL}mongodb-${SUBDOMAIN}:latest
+            docker push ${REGISTRY_URL}rabbitmq-${SUBDOMAIN}:latest
             ;;
         [nN][oO]|[nN])
             echo "Maybe next time then...!"

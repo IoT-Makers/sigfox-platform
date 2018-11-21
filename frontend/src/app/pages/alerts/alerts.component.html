@@ -80,19 +80,19 @@
                     <strong>Key:</strong> {{alert.key}}
                   </div>
                   <ng-container *ngIf="alert.value">
-                    <div class="small text-gray-dark" *ngIf="alert.value.min">
+                    <div class="small text-gray-dark" *ngIf="alert.value.min != null">
                       <strong>Min value:</strong> {{alert.value.min}}
                     </div>
-                    <div class="small text-gray-dark" *ngIf="alert.value.max">
+                    <div class="small text-gray-dark" *ngIf="alert.value.max != null">
                       <strong>Max value:</strong> {{alert.value.max}}
                     </div>
-                    <div class="small text-gray-dark" *ngIf="alert.value.less">
+                    <div class="small text-gray-dark" *ngIf="alert.value.less != null">
                       <strong>Less than value:</strong> {{alert.value.less}}
                     </div>
-                    <div class="small text-gray-dark" *ngIf="alert.value.more">
+                    <div class="small text-gray-dark" *ngIf="alert.value.more != null">
                       <strong>More than value:</strong> {{alert.value.more}}
                     </div>
-                    <div class="small text-gray-dark" *ngIf="alert.value.exact">
+                    <div class="small text-gray-dark" *ngIf="alert.value.exact != null">
                       <strong>Exact value:</strong> {{alert.value.exact}}
                     </div>
                   </ng-container>

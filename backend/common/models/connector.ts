@@ -1,6 +1,6 @@
 import {Model} from "@mean-expert/model";
 import {decrypt, encrypt} from "./utils";
-import {PrimusClientFn} from "../../server/PrimusClientFn";
+import {RabbitPub} from '../../server/RabbitPub';
 
 const request = require("request");
 
@@ -38,22 +38,28 @@ class Connector {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-    this.primusClient = PrimusClientFn.newClient();
+
   }
 
   // Example Operation Hook
   public beforeSave(ctx: any, next: Function): void {
     console.log("Connector: Before Save");
-    if (ctx.instance) {
+
+    if (ctx.instance) { // Create
       ctx.instance.createdAt = new Date();
       const type = ctx.instance.type;
       const login = ctx.instance.login;
       const password = ctx.instance.password;
       // Encrypt the password to be stored
-      if (password) {
-        const encryptedPassword = encrypt(password);
-        ctx.instance.password = encryptedPassword;
-      }
+      if (password) ctx.instance.password = encrypt(password);
+      if (type === "sigfox-api") return this.testConnection(type, login, password, next);
+      next();
+    } else if (ctx.data) { // Update
+      const type = ctx.data.type;
+      const login = ctx.data.login;
+      const password = ctx.data.password;
+      // Encrypt the password to be stored
+      if (password) ctx.data.password = encrypt(password);
       if (type === "sigfox-api") return this.testConnection(type, login, password, next);
       next();
     } else next();
@@ -182,7 +188,7 @@ class Connector {
         content: connector,
         action: "DELETE"
       };
-      this.primusClient.write(payload);
+      RabbitPub.getInstance().pub(payload);
     }
     next();
   }
@@ -195,7 +201,7 @@ class Connector {
       content: connector,
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
-    this.primusClient.write(payload);
+    RabbitPub.getInstance().pub(payload);
     next();
   }
 }

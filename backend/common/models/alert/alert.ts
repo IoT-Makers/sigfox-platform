@@ -1,10 +1,11 @@
 import {Model} from "@mean-expert/model";
 import * as _ from "lodash";
 import {decrypt} from "../utils";
-import {PrimusClientFn} from "../../../server/PrimusClientFn";
+import {RabbitPub} from '../../../server/RabbitPub';
 
 const loopback = require("loopback");
 const nodemailer = require("nodemailer");
+const Nexmo = require('nexmo');
 
 /**
  * @module Alert
@@ -56,7 +57,7 @@ class Alert {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-    this.primusClient = PrimusClientFn.newClient();
+
   }
 
   public beforeSave(ctx: any, next: Function): void {
@@ -184,9 +185,6 @@ class Alert {
   }
 
   private triggerByDevice(data_parsed: any, device: any, req: any, next: Function): void {
-    // Models
-    const Beacon = this.model.app.models.Beacon;
-
     // Get userId
     const userId = req.accessToken.userId;
     if (!userId) {
@@ -243,106 +241,63 @@ class Alert {
             }
           });
         } else if (alert.value) {
-
-          if (alert.key === 'beaconId') {
-            const beaconId: any = _.filter(data_parsed, {key: "beaconId"})[0];
-            Beacon.findById(beaconId.value.toString(), (err: any, beacon: any) => {
-              if (err) {
-                console.error(err);
-              } else if (beacon) {
-                /**
-                 *  Triggering alerts from keys in "data_parsed"
-                 *  If the key being read is set for an alert and if it is activated
-                 */
-                  // Build the custom message
-                let alertMessage = "";
-                let strToMatch = "";
-                const regex = /\[(.*?)\]/;
-                if (alert.message) {
-                  try {
-                    strToMatch = JSON.stringify(alert.message);
-                  } catch (e) {
-                    strToMatch = alert.message;
+          /**
+           *  Triggering alerts from keys in "data_parsed"
+           *  If the key being read is set for an alert and if it is activated
+           */
+            // Build the custom message
+          let alertMessage = "";
+          let strToMatch = "";
+          if (alert.message) {
+            try {
+              strToMatch = JSON.stringify(alert.message);
+            } catch (e) {
+              strToMatch = alert.message;
+            }
+          }
+          const regex = /\[(.*?)\]/g;
+          let matched: any[] = [];
+          let match;
+          while ((match = regex.exec(strToMatch)) != null) {
+            matched.push(match[1]);
+          }
+          data_parsed.forEach((p: any) => {
+            if (alert.message) {
+              try {
+                for (let match of matched) {
+                  if (match === p.key) {
+                    strToMatch = strToMatch.replace("[" + match + "]", p.value.toString());
+                    alertMessage = JSON.parse(strToMatch);
                   }
                 }
-                data_parsed.forEach((p: any) => {
-                  if (alert.message) {
-                    try {
-                      const matched = regex.exec(strToMatch)[1];
-                      if (matched && matched === p.key) {
-                        strToMatch = strToMatch.replace("[" + matched + "]", beacon.name);
-                        alertMessage = JSON.parse(strToMatch);
-                      }
-                    } catch (e) {
-                      // console.log('No need to search for a custom message formatting.');
-                    }
-                    if (alertMessage === "") {
-                      alertMessage = alert.message;
-                    }
-                  }
-                });
-
+              } catch (e) {
+                // console.log('No need to search for a custom message formatting.');
+              }
+              if (alertMessage === "") {
+                alertMessage = alert.message;
+              }
+            }
+          });
+          console.log(alertMessage);
+          // Process conditions
+          data_parsed.forEach((p: any) => {
+            if (alert.key === p.key) {
+              // Verify conditions for the alert to be triggered
+              if (
+                (alert.value.exact != null && p.value == alert.value.exact)
+                || (alert.value.min != null && alert.value.max != null && p.value >= alert.value.min && p.value <= alert.value.max)
+                || (alert.value.less != null && p.value < alert.value.less)
+                || (alert.value.more != null && p.value > alert.value.more)
+              ) {
                 if (!alert.message) {
-                  alertMessage = beaconId.key.charAt(0).toUpperCase() + beaconId.key.slice(1) + ": " + beaconId.value + " " + beaconId.unit;
+                  alertMessage = p.key.charAt(0).toUpperCase() + p.key.slice(1) + ": " + p.value + " " + p.unit;
                 }
                 // Trigger alert
                 this.triggerAlert(alert, device, alertMessage);
               }
-            });
-          } else {
-
-            /**
-             *  Triggering alerts from keys in "data_parsed"
-             *  If the key being read is set for an alert and if it is activated
-             */
-              // Build the custom message
-            let alertMessage = "";
-            let strToMatch = "";
-            const regex = /\[(.*?)\]/;
-            if (alert.message) {
-              try {
-                strToMatch = JSON.stringify(alert.message);
-              } catch (e) {
-                strToMatch = alert.message;
-              }
+              return;
             }
-            data_parsed.forEach((p: any) => {
-              if (alert.message) {
-                try {
-                  const matched = regex.exec(strToMatch)[1];
-                  if (matched && matched === p.key) {
-                    strToMatch = strToMatch.replace("[" + matched + "]", p.value.toString());
-                    alertMessage = JSON.parse(strToMatch);
-                  }
-                } catch (e) {
-                  // console.log('No need to search for a custom message formatting.');
-                }
-                if (alertMessage === "") {
-                  alertMessage = alert.message;
-                }
-              }
-            });
-
-            // Process conditions
-            data_parsed.forEach((p: any) => {
-              if (alert.key === p.key) {
-                // Verify conditions for the alert to be triggered
-                if (
-                  (alert.value.exact && p.value === alert.value.exact)
-                  || (alert.value.min && alert.value.max && p.value >= alert.value.min && p.value <= alert.value.max)
-                  || (alert.value.less && p.value < alert.value.less)
-                  || (alert.value.more && p.value > alert.value.more)
-                ) {
-                  if (!alert.message) {
-                    alertMessage = p.key.charAt(0).toUpperCase() + p.key.slice(1) + ": " + p.value + " " + p.unit;
-                  }
-                  // Trigger alert
-                  this.triggerAlert(alert, device, alertMessage);
-                }
-                return;
-              }
-            });
-          }
+          });
         }
       }
     });
@@ -453,6 +408,15 @@ class Alert {
             // } catch (e) {
             //   console.error(e);
             // }
+          } else if (connector.type === "nexmo-sms") {
+            const nexmo = new Nexmo({
+              apiKey: connector.login,
+              apiSecret: decrypt(connector.password)
+            });
+            const from = 'Sigfox Platform';
+            const to = connector.recipient;
+            const text = alertMessage;
+            nexmo.message.sendSms(from, to, text);
           }
 
           if (!test) {
@@ -490,7 +454,7 @@ class Alert {
         content: alert,
         action: "DELETE"
       };
-      this.primusClient.write(payload);
+      RabbitPub.getInstance().pub(payload);
     }
     next();
   }
@@ -504,7 +468,7 @@ class Alert {
       content: alert,
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
-    this.primusClient.write(payload);
+    RabbitPub.getInstance().pub(payload);
     next();
   }
 }

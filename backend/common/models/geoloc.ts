@@ -1,5 +1,5 @@
 import {Model} from '@mean-expert/model';
-import {PrimusClientFn} from "../../server/PrimusClientFn";
+import {RabbitPub} from '../../server/RabbitPub';
 
 const loopback = require('loopback');
 
@@ -48,7 +48,7 @@ class Geoloc {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-    this.primusClient = PrimusClientFn.newClient();
+
   }
 
   private createFromParsedPayload(message: any, req: any): void {
@@ -412,7 +412,7 @@ class Geoloc {
         content: geoloc,
         action: "DELETE"
       };
-      this.primusClient.write(payload);
+      RabbitPub.getInstance().pub(payload);
     }
     next();
   }
@@ -426,7 +426,7 @@ class Geoloc {
       content: geoloc,
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
-    this.primusClient.write(payload);
+    RabbitPub.getInstance().pub(payload);
     next();
   }
 }

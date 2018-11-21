@@ -2,16 +2,15 @@
 // MONGO_URL=mongodb://usr:pwd@localhost:27017/testdb SERVER_ACCESS_TOKENS='"ghjmnbv44cdftgy rtyuh9784b"' npm start
 
 const Primus = require('primus');
+const amqp = require('amqplib/callback_api');
 const mongolib = require('mongodb');
 const MongoClient = mongolib.MongoClient;
 const ObjectId = mongolib.ObjectId;
 const mongodbUrl = process.env.MONGO_URL;
-if (!process.env.SERVER_ACCESS_TOKENS) return console.error('/!\ Please set the SERVER_ACCESS_TOKENS env.');
-const serverAccessTokens = process.env.SERVER_ACCESS_TOKENS.slice(1, -1).split(' ');
+const rabbitUrl = process.env.RABBIT_URL || 'amqp://usr:pwd@localhost';
 const healthcheckToken = 'healthcheck';
 
 let db;
-
 // var http = require('http');
 // var server = http.createServer(/* request handler */);
 const primus = Primus.createServer(function connection(spark) {
@@ -35,6 +34,65 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
     db = client.db(dbName);
     console.log("Primus connected to Mongo");
 });
+
+
+const ex = 'realtime_exchange';
+amqp.connect(rabbitUrl, function (err, conn) {
+    conn.createChannel(function (err, ch) {
+        if (err) {
+            console.error("RABBIT_URL not set on Primus");
+            throw err;
+        }
+        ch.assertExchange(ex, 'fanout', {durable: true});
+        ch.assertQueue('', {exclusive: true}, function (err, q) {
+            if (err) {
+                console.error("RABBIT_URL not set on Primus");
+                throw err;
+            }
+            ch.bindQueue(q.queue, ex, '');
+            console.log("Primus connected to RabbitMQ");
+            ch.consume(q.queue, function (msg) {
+                let payload = JSON.parse(msg.content.toString());
+                if (!payload) return;
+                // console.log(payload);
+                switch (payload.event) {
+                    case "message":
+                        messageHandler(payload);
+                        break;
+                    case "device":
+                        deviceHandler(payload);
+                        break;
+                    case "parser":
+                        parserHandler(payload);
+                        break;
+                    case "geoloc":
+                        geolocHandler(payload);
+                        break;
+                    case "alert":
+                        alertHandler(payload);
+                        break;
+                    case "beacon":
+                        beaconHandler(payload);
+                        break;
+                    case "connector":
+                        connectorHandler(payload);
+                        break;
+                    case "category":
+                        categoryHandler(payload);
+                        break;
+                    case "dashboard":
+                        dashboardHandler(payload);
+                        break;
+                    case "widget":
+                        widgetHandler(payload);
+                        break;
+                    default:
+                        break;
+                }
+            }, {noAck: true});
+        });
+    });
+});
 //
 // Add auth hook on server
 //
@@ -54,88 +112,48 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 // Listen for new connections and send data
 //
 
-// Handle connections
+// Handle connections to user client
 primus.on('connection', function connection(spark) {
     if (!db) return;
 
-    console.info(primus.connected + " clients connected");
     // manual auth hook, attach userId to spark if access token found
     const access_token = spark.request.query.access_token;
     if (!access_token || access_token === healthcheckToken) return spark.end();
+    console.info(primus.connected + " clients connected");
 
-    if (!serverAccessTokens.includes(access_token)) {
-        let AccessToken = db.collection("AccessToken");
-        AccessToken.findOne({_id: access_token}, (err, token) => {
-            if (err || !token) {
-                console.info("Access token not found");
-                spark.end();
-                return;
-            }
-            spark.userId = token.userId.toString();
-
-            // Check if user belongs to an organization
-            const orguser = db.collection("Organizationuser");
-            orguser.find({userId: token.userId}, {organizationId: true}).toArray((err, orgUsersIdObj) => {
-                err ?
-                    console.error(err) :
-                    spark.organizationIds = orgUsersIdObj.map(x => x.organizationId.toString());
-                console.log(spark.organizationIds);
-            });
-
-            // Update user properties: connected
-            let user = db.collection("user");
-            user.update({_id: ObjectId(spark.userId)}, {
-                $set: {
-                    connected: true,
-                    connectedAt: new Date()
-                }
-            }, (err, user) => {
-                if (err || !user) {
-                    console.info("User not found");
-                } else console.info('[' + spark.userId + '] Updated fields connected and connectedAt');
-            });
-        });
-    }
-
-    spark.on('data', function data(payload) {
-        if (!payload) return;
-        // console.log(payload);
-        switch (payload.event) {
-            case "message":
-                messageHandler(payload);
-                break;
-            case "device":
-                deviceHandler(payload);
-                break;
-            case "parser":
-                parserHandler(payload);
-                break;
-            case "geoloc":
-                geolocHandler(payload);
-                break;
-            case "alert":
-                alertHandler(payload);
-                break;
-            case "beacon":
-                beaconHandler(payload);
-                break;
-            case "connector":
-                connectorHandler(payload);
-                break;
-            case "category":
-                categoryHandler(payload);
-                break;
-            case "dashboard":
-                dashboardHandler(payload);
-                break;
-            case "widget":
-                widgetHandler(payload);
-                break;
-            default:
-                break;
+    let AccessToken = db.collection("AccessToken");
+    AccessToken.findOne({_id: access_token}, (err, token) => {
+        if (err || !token) {
+            console.info("Access token not found");
+            spark.end();
+            return;
         }
+        spark.userId = token.userId.toString();
+
+        // Check if user belongs to an organization
+        const orguser = db.collection("Organizationuser");
+        orguser.find({userId: token.userId}, {organizationId: true}).toArray((err, orgUsersIdObj) => {
+            err ?
+                console.error(err) :
+                spark.organizationIds = orgUsersIdObj.map(x => x.organizationId.toString());
+            console.log(spark.organizationIds);
+        });
+
+        // Update user properties: connected
+        let user = db.collection("user");
+        user.update({_id: ObjectId(spark.userId)}, {
+            $set: {
+                connected: true,
+                connectedAt: new Date()
+            }
+        }, (err, user) => {
+            if (err || !user) {
+                console.info("User not found");
+            } else console.info('[' + spark.userId + '] Updated fields connected and connectedAt');
+        });
     });
 });
+
 
 // Handle disconnections
 primus.on('disconnection', function (spark) {
@@ -386,7 +404,7 @@ function getTargetClients(userId, orgIds = null) {
             }
         });
     }
-    console.log(targetClients.size + ' clients online');
+    console.log(targetClients.size + ' targets online');
     return targetClients;
 }
 
@@ -404,7 +422,8 @@ function send(targetClients, eventName, action, content) {
 
 primus.on('disconnection', function end(spark) {
     console.log('disconnection');
-    console.info(primus.connected + " clients connected");
+    // don't log health check
+    if (spark.userId) console.info(primus.connected + " clients connected");
 });
 
 
