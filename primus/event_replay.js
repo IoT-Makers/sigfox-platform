@@ -42,7 +42,8 @@ const START_DATE = new Date("2018-10-24 08:00:00").getTime();
 const END_DATE = new Date("2018-10-25 22:00:00").getTime();
 console.log(START_DATE);
 console.log(END_DATE);
-const interval = 2 * 60 * 1000;
+//const interval = 2 * 60 * 1000;
+const interval = 1000 * 1000;
 var current = START_DATE;
 
 function intervalFunc() {
