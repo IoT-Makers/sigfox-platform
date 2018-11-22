@@ -54,7 +54,7 @@
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": ["find", "findById"]
+      "property": ["find", "findById", "getVersion"]
     },
     {
       "accessType": "*",
