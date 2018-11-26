@@ -277,8 +277,7 @@ function alertHandler(payload) {
 
         let targetClients = getTargetClients(userId);
         // if the message owner is not online, no need to look up
-        if (!targetClients.size)
-            return;
+        if (!targetClients.size) return;
 
         if (payload.action === "DELETE") return send(targetClients, payload.event, payload.action, alert);
 
@@ -300,8 +299,7 @@ function beaconHandler(payload) {
 
         let targetClients = getTargetClients(userId);
         // if the message owner is not online, no need to look up
-        if (!targetClients.size)
-            return;
+        if (!targetClients.size) return;
 
         return send(targetClients, payload.event, payload.action, beacon);
     }
@@ -315,8 +313,7 @@ function connectorHandler(payload) {
 
         let targetClients = getTargetClients(userId);
         // if the message owner is not online, no need to look up
-        if (!targetClients.size)
-            return;
+        if (!targetClients.size) return;
 
         return send(targetClients, payload.event, payload.action, connector);
     }
@@ -329,8 +326,7 @@ function categoryHandler(payload) {
         console.log(payload.action + ' category ' + category.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
-        if (!targetClients.size)
-            return;
+        if (!targetClients.size) return;
 
         if (payload.action === "DELETE") {
             send(targetClients, payload.event, payload.action, category);
@@ -356,8 +352,7 @@ function dashboardHandler(payload) {
         // from dashboard.ts
         console.log(payload.action + ' dashboard ' + dashboard.id + ' for user ' + userId);
         let targetClients = getTargetClients(userId, [dashboard.organizationId]);
-        if (!targetClients.size)
-            return;
+        if (!targetClients.size) return;
         return send(targetClients, payload.event, payload.action, dashboard);
     }
 }
@@ -370,8 +365,7 @@ function widgetHandler(payload) {
         console.log(payload.action + ' widget ' + widget.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
-        if (!targetClients.size)
-            return;
+        if (!targetClients.size) return;
         return send(targetClients, payload.event, payload.action, widget);
     }
 }
