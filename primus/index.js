@@ -172,10 +172,8 @@ function messageHandler(payload) {
         // from message.ts
         console.log(payload.action + ' message ' + msg.id + ' for user ' + userId);
 
-        let targetClients = getTargetClients(userId, payload.device.Organizations);
-        if (!targetClients.size)
-            return;
-
+        let targetClients = getTargetClients(userId, payload.device.Organizations.map(o => o.id));
+        if (!targetClients.size) return;
         if (payload.action === "DELETE") return send(targetClients, payload.event, payload.action, msg);
 
         db.collection("Geolocs").find({messageId: msg.id}).toArray((err, geolocs) => {
@@ -192,24 +190,34 @@ function deviceHandler(payload) {
     if (device) {
         // from device.ts
         console.log(payload.action + ' device ' + device.id + ' for user ' + userId);
-        let targetClients = getTargetClients(userId);
-        if (!targetClients.size)
-            return;
 
-        if (payload.action === "DELETE") return send(targetClients, payload.event, payload.action, device);
+        db.collection("OrganizationDevice").find({deviceId: device.id}).toArray((err, ods) => {
+            let targetClients = getTargetClients(userId, ods.map(od => od.organizationId));
 
-        db.collection("Message").find({deviceId: device.id}).limit(1).sort({"createdAt": -1}).toArray((err, messages) => {
-            addAttribute(device, "Messages", messages);
-            db.collection("Parser").findOne({_id: ObjectId(device.parserId)}, (err, parser) => {
-                addAttribute(device, "Parser", parser);
-                db.collection("Organization").find({deviceId: device.id}).toArray((err, organizations) => {
-                    addAttribute(device, "Organizations", organizations);
-                    if (device.categoryId)
-                        db.collection("Category").findOne({_id: ObjectId(device.categoryId)}, (err, category) => {
-                            addAttribute(device, "Category", category);
-                            return send(targetClients, payload.event, payload.action, device);
-                        });
-                    return send(targetClients, payload.event, payload.action, device);
+            if (!targetClients.size) return;
+            if (payload.action === "DELETE") return send(targetClients, payload.event, payload.action, device);
+
+            let organizations = [];
+            let promises = [];
+            ods.forEach(od => {
+                promises.push(db.collection("Organization").findOne({_id: ObjectId(od.organizationId)}).then(org => {
+                    organizations.push(org);
+                }));
+            });
+            Promise.all(promises).then(_ => {
+                addAttribute(device, "Organizations", organizations);
+                db.collection("Message").find({deviceId: device.id}).limit(1).sort({"createdAt": -1}).toArray((err, messages) => {
+                    addAttribute(device, "Messages", messages);
+                    db.collection("Parser").findOne({_id: ObjectId(device.parserId)}, (err, parser) => {
+                        addAttribute(device, "Parser", parser);
+
+                        if (device.categoryId)
+                            db.collection("Category").findOne({_id: ObjectId(device.categoryId)}, (err, category) => {
+                                addAttribute(device, "Category", category);
+                                return send(targetClients, payload.event, payload.action, device);
+                            });
+                        return send(targetClients, payload.event, payload.action, device);
+                    });
                 });
             });
         });
@@ -225,8 +233,7 @@ function parserHandler(payload) {
         console.log(payload.action + ' parser ' + parser.id + ' for user ' + userId);
 
         let targetClients = getTargetClients(userId);
-        if (!targetClients.size)
-            return;
+        if (!targetClients.size) return;
 
         if (payload.action === "DELETE") return send(targetClients, payload.event, payload.action, parser);
 
@@ -243,18 +250,20 @@ function geolocHandler(payload) {
     if (geoloc) {
         console.log(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
-        let targetClients = getTargetClients(userId);
-        if (!targetClients.size)
-            return;
+        db.collection("Organizationuser").find({userId: ObjectId(userId)}).toArray((err, ous) => {
+            let targetClients = getTargetClients(userId, ous.map(ou => ou.organizationId));
+            if (!targetClients.size) return;
 
-        db.collection("Device").findOne({_id: geoloc.deviceId}, (err, device) => {
-            addAttribute(geoloc, "Device", device);
-            if (geoloc.beaconId) {
-                db.collection("Beacon").findOne({_id: geoloc.beaconId}, (err, beacon) => {
-                    addAttribute(geoloc, "Beacon", beacon);
-                    return send(targetClients, payload.event, payload.action, geoloc);
-                });
-            } else return send(targetClients, payload.event, payload.action, geoloc);
+            db.collection("Device").findOne({_id: geoloc.deviceId}, (err, device) => {
+                addAttribute(geoloc, "Device", device);
+
+                if (geoloc.beaconId) {
+                    db.collection("Beacon").findOne({_id: geoloc.beaconId}, (err, beacon) => {
+                        addAttribute(geoloc, "Beacon", beacon);
+                        return send(targetClients, payload.event, payload.action, geoloc);
+                    });
+                } else return send(targetClients, payload.event, payload.action, geoloc);
+            });
         });
     }
 }
@@ -330,6 +339,7 @@ function categoryHandler(payload) {
 
         db.collection("Device").find({categoryId: category.id}).toArray((err, devices) => {
             addAttribute(category, "Devices", devices);
+            // TODO: ????
             db.collection("Organization").find({categoryId: category.id}).toArray((err, organizations) => {
                 addAttribute(category, "Organizations", organizations);
                 return send(targetClients, payload.event, payload.action, category);
@@ -385,19 +395,19 @@ function addAttribute(obj, attName, attValue) {
     }
 }
 
-function getTargetClients(userId, orgIds = null) {
+function getTargetClients(userId, orgIDs = null) {
     let targetClients = new Set();
     if (userId) {
         primus.forEach(function (spark, id, connections) {
             if (spark.userId === userId) targetClients.add(spark);
         });
     }
-    if (orgIds) {
+    if (orgIDs) {
         primus.forEach(function (spark, id, connections) {
             if (spark.organizationIds) {
-                orgIds.forEach(orgId => {
-                    if (spark.organizationIds.includes(orgId))
-                        targetClients.add(spark);
+                orgIDs.forEach(orgID => {
+                    if (spark.organizationIds.includes(String(orgID)))
+                       targetClients.add(spark);
                 });
             }
         });
