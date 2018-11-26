@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Connector, Device, Geoloc, Message, Organization, User} from '../../shared/sdk/models';
-import {UserApi} from '../../shared/sdk/services';
+import {Connector, Device, Geoloc, Message, Organization, Role, User} from '../../shared/sdk/models';
+import {MessageApi, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {Reception} from '../../shared/sdk/models/Reception';
 import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
@@ -58,8 +58,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   private api;
   private id;
+  private admin = false;
 
   constructor(private userApi: UserApi,
+              private messageApi: MessageApi,
               private organizationApi: OrganizationApi,
               private receptionApi: ReceptionApi,
               toasterService: ToasterService,
@@ -72,15 +74,24 @@ export class MessagesComponent implements OnInit, OnDestroy {
     console.log('Messages: ngOnInit');
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
+    this.userApi.getRoles(this.user.id).subscribe((roles: Role[]) => {
+      this.user.roles = roles;
+      roles.forEach((role: Role) => {
+        if (role.name === 'admin') {
+          this.admin = true;
+          return;
+        }
+      });
 
-    // Check if organization view
-    this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
-      if (parentParams.id) {
-        this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
-          this.organization = organization;
-          this.setup();
-        });
-      } else this.setup();
+      // Check if organization view
+      this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
+        if (parentParams.id) {
+          this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
+            this.organization = organization;
+            this.setup();
+          });
+        } else this.setup();
+      });
     });
   }
 
@@ -110,6 +121,11 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
       if (this.organization) {
         this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
+          this.messages = messages;
+          this.messagesReady = true;
+        });
+      } else if (this.admin && this.filterQuery) {
+        this.messageApi.find(this.messageFilter).subscribe((messages: Message[]) => {
           this.messages = messages;
           this.messagesReady = true;
         });
@@ -219,7 +235,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   rtHandler = (payload: any) => {
     const msg = payload.content;
-    if ((msg.userId && !this.organization ) || msg.Device.Organizations.map(x=>x.id).includes(this.organization.id)) {
+    if ((msg.userId && !this.organization) || msg.Device.Organizations.map(x => x.id).includes(this.organization.id)) {
       if (payload.action == "CREATE") {
         for (const geoloc of this.geolocBuffer) {
           if (geoloc.content.messageId === msg.id) {
