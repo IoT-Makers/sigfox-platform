@@ -1,6 +1,4 @@
 'use strict';
-// MONGO_URL=mongodb://usr:pwd@localhost:27017/testdb SERVER_ACCESS_TOKENS='"ghjmnbv44cdftgy rtyuh9784b"' npm start
-
 const Primus = require('primus');
 const amqp = require('amqplib/callback_api');
 const mongolib = require('mongodb');
