@@ -418,21 +418,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
       let idx = this.devices.findIndex(x => x.id == msg.Device.id);
       if (payload.action == "CREATE") {
         this.countMessages++;
-
-        // for rare case where geoloc arrives first
-        if (idx != -1) {
-          for (const geoloc of this.geolocBuffer) {
-            if (geoloc.content.messageId === msg.id) {
-              msg.Geolocs.push(geoloc.content);
-              console.log("geoloc msg linked!");
-              // remove from buffer
-              let index = this.geolocBuffer.indexOf(geoloc);
-              if (index > -1) this.geolocBuffer.splice(index, 1);
-              break;
-            }
-          }
-          this.devices[idx].Messages ? this.devices[idx].Messages.unshift(msg) : this.devices[idx].Messages = [msg];
-        }
+        let device = msg.Device;
+        device.Messages = [msg];
+        this.devices.unshift(device);
+        idx != -1 ? this.devices.splice(idx, 1) : this.devices.pop();
       } else if (payload.action == "DELETE") {
         this.countMessages--;
         this.devices[idx].Messages = this.devices[idx].Messages.filter( (msg) => {
