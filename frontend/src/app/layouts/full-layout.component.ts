@@ -356,12 +356,12 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   };
   rtDeviceHandler = (payload: any) => {
     const device = payload.content;
-    if ((device.userId && !this.organization) || device.Organizations.map(x => x.id).includes(this.organization.id))
+    if (device.userId == this.user.id || (this.organization && device.Device.Organizations.map(x => x.id).includes(this.organization.id)))
       payload.action == "CREATE" ? this.countDevices++ : payload.action == "DELETE" ? this.countDevices-- : 0;
   };
   rtMsgHandler = (payload: any) => {
     const msg = payload.content;
-    if ((msg.userId && !this.organization) || msg.Device.Organizations.map(x => x.id).includes(this.organization.id))
+    if (msg.userId == this.user.id || (this.organization && msg.Device.Organizations.map(x => x.id).includes(this.organization.id)))
       payload.action == "CREATE" ? this.countMessages++ : payload.action == "DELETE" ? this.countMessages-- : 0;
   };
   rtAlertHandler = (payload: any) => {
@@ -380,7 +380,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     const dashboard = payload.content;
     if (payload.action == "CREATE") {
       // ensure data for the user and any org don't mix up
-      if ((dashboard.userId && !this.organization) || (dashboard.organizationId === this.organization.id))
+      if (dashboard.userId == this.user.id || (this. organization && dashboard.Device.Organizations.map(x => x.id).includes(this.organization.id)))
         this.dashboards.unshift(dashboard);
     } else if (payload.action == "UPDATE") {
       let idx = this.dashboards.findIndex(x => x.id == dashboard.id);

@@ -235,7 +235,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   rtHandler = (payload: any) => {
     const msg = payload.content;
-    if ((msg.userId && !this.organization) || msg.Device.Organizations.map(x => x.id).includes(this.organization.id)) {
+    if (msg.userId == this.user.id || (this.organization && msg.Device.Organizations.map(x => x.id).includes(this.organization.id))) {
       if (payload.action == "CREATE") {
         for (const geoloc of this.geolocBuffer) {
           if (geoloc.content.messageId === msg.id) {

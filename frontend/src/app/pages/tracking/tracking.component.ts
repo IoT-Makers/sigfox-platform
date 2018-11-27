@@ -149,8 +149,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     this.mapZoom = 15;
     // D3
     // if (geoloc.type === 'beacon') this.setBubbles(geoloc);
-
-    if ((geoloc.userId && !this.organization) || geoloc.Organizations.map(x => x.id).includes(this.organization.id)) {
+    if (geoloc.userId == this.user.id || (this.organization && geoloc.Device.Organizations.map(x => x.id).includes(this.organization.id))) {
       if (payload.content.deviceId === this.deviceId) {
         if (payload.action == "CREATE") {
           this.geolocs.push(payload.content);
