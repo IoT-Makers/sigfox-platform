@@ -52,7 +52,7 @@ class Organization {
 
     Organization.findOne({
       where: {id: organizationId},
-      include: ["Members", "Categories", "Devices", "Messages", "Dashboards"],
+      include: ["Members", "Dashboards", "Categories", "Devices", "Messages", "Alerts"],
     }, (err: any, organization: any) => {
       // console.log(category);
       if (!err && organization) {
@@ -74,11 +74,6 @@ class Organization {
         organization.toJSON().Messages.forEach((message: any) => {
           organization.Messages.remove(message.id, (err: any) => {
             console.log("Unlinked messages from organization");
-          });
-        });
-        organization.toJSON().Geolocs.forEach((geoloc: any) => {
-          organization.Geolocs.remove(geoloc.id, (err: any) => {
-            console.log("Unlinked geolocs from organization");
           });
         });
         organization.toJSON().Alerts.forEach((alert: any) => {
