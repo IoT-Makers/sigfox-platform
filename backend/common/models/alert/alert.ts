@@ -53,11 +53,8 @@ const Nexmo = require('nexmo');
 
 class Alert {
 
-  private primusClient: any;
-
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
-
   }
 
   public beforeSave(ctx: any, next: Function): void {

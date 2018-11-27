@@ -8,12 +8,14 @@ import {ModalModule} from 'ngx-bootstrap/modal';
 import {AceEditorModule} from 'ng2-ace-editor';
 import {TooltipModule} from 'ngx-bootstrap';
 import {ClickCopyDirective} from './click-copy.directive';
+import {MomentModule} from "angular2-moment";
 
 
 @NgModule({
   imports: [
     ParsersRoutingModule,
     CommonModule,
+    MomentModule,
     FormsModule,
     ModalModule.forRoot(),
     TooltipModule.forRoot(),

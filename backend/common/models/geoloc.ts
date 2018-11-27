@@ -40,7 +40,6 @@ const loopback = require('loopback');
 
 class Geoloc {
 
-  private primusClient: any;
   private HERE = {
     app_id: process.env.HERE_APP_ID,
     app_code: process.env.HERE_APP_CODE
@@ -286,10 +285,8 @@ class Geoloc {
       },
       message,
       (err: any, messageInstance: any, created: boolean) => {
-        if (err) {
-          console.error(err);
-          next(err, data);
-        } else if (messageInstance) {
+        if (err) return next(err, data);
+        else if (messageInstance) {
           if (!created) console.log('Found the corresponding message.');
           else {
             /**
@@ -359,12 +356,12 @@ class Geoloc {
             }, // find
             geoloc, // create
             (err: any, geolocInstance: any, created: boolean) => { // callback
-              if (err) next(err, geolocInstance);
+              if (err) return next(err, geolocInstance);
               else if (created) {
                 console.log('Created geoloc as: ', geolocInstance);
                 this.updateDeviceLocatedAt(geolocInstance.deviceId, geolocInstance.createdAt);
-                next(null, geolocInstance);
-              } else next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
+                return next(null, geolocInstance);
+              } else return next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
             });
         }
       });
@@ -376,9 +373,7 @@ class Geoloc {
 
     Device.findById(deviceId, (err: any, deviceInstance: any) => {
       if (err) console.error(err);
-      else if (deviceInstance) {
-        deviceInstance.updateAttribute('locatedAt', createdAt);
-      }
+      else if (deviceInstance) deviceInstance.updateAttribute('locatedAt', createdAt);
     });
   }
 

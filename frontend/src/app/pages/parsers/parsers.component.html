@@ -49,7 +49,7 @@
         </div>
 
         <div class="card-block" *ngFor="let parser of parsers; let i = index">
-          <strong class="text-uppercase">{{parser.name}}</strong>
+          <strong class="text-uppercase">{{parser.name}}</strong><span class="small"> - Last update: {{parser.updatedAt | amTimeAgo}}</span>
           <div class="row">
             <div class="col-sm-12 col-md-4">
               <p *ngIf="parser.description">{{parser.description}}</p>

@@ -54,8 +54,6 @@ import {RabbitPub} from '../../server/RabbitPub';
 
 class Message {
 
-  private primusClient: any;
-
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
   }
@@ -122,9 +120,7 @@ class Message {
           deviceInstance = deviceInstance.toJSON();
           // Store the userId in the message
           message.userId = deviceInstance.userId;
-          if (created) {
-            console.log("Created new device: " + message.deviceId);
-          }
+          if (created) console.log("Created new device: " + message.deviceId);
 
           if (deviceInstance.locked === false && deviceInstance.userId.toString() !== userId.toString()) {
             // Store the userId in the message
@@ -146,30 +142,23 @@ class Message {
             Message.findById(
               message.id,
               (err: any, messageInstance: any) => {
-                if (err) {
-                  console.error(err);
-                  next(err, data);
-                } else if (messageInstance) {
+                if (err) return next(err, data);
+                else if (messageInstance) {
                   // console.log('Found the corresponding message and storing reception in it.');
                   if (!messageInstance.reception) messageInstance.reception = [];
-                  const reception = messageInstance.reception.push(data.reception[0]);
+                  messageInstance.reception.push(data.reception[0]);
                   messageInstance.updateAttribute(
                     'reception',
-                    [reception],
+                    messageInstance.reception,
                     (err: any, messageInstance: any) => {
-                      if (err) {
-                        console.error(err);
-                        next(err, messageInstance);
-                      } else {
-                        // console.log('Updated message as: ', messageInstance);
-                        next(null, messageInstance);
-                      }
+                      if (err) return next(err, messageInstance);
+                      else return next(null, messageInstance);
                     });
                 } else {
                   // No corresponding message found
                   const err = "Error - No corresponding message found, did you first receive a message containing duplicate = false?";
                   console.error(err);
-                  next(null, 'Trashing message');
+                  return next(null, 'Trashing message');
                 }
               });
           } else {
@@ -179,16 +168,12 @@ class Message {
                 // Save a parser in the device and parse the message
                 console.log('Associating parser to device.');
                 deviceInstanceFunction.updateAttribute('parserId', parserId, (err: any, deviceUpdated: any) => {
-                  if (err) {
-                    console.error(err);
-                    return next(err, data);
-                  } else {
+                  if (err) return next(err, data);
+                  else {
                     console.log("Updated device parser as: ", deviceUpdated);
                     Parser.findById(parserId, (err: any, parserInstance: any) => {
-                      if (err) {
-                        console.error(err);
-                        return next(err, data);
-                      } else if (parserInstance && parserInstance.function) {
+                      if (err) return next(err, data);
+                      else if (parserInstance && parserInstance.function) {
                         deviceUpdated = deviceUpdated.toJSON();
                         deviceUpdated.Parser = parserInstance.toJSON();
 
@@ -294,21 +279,14 @@ class Message {
       Message.create(
         message, // create
         (err: any, messageInstance: any) => { // callback
-          if (err) {
-            console.error(err);
-            // return next(err, messageInstance);
-          } else if (messageInstance) {
+          if (err) console.error(err);
+          else if (messageInstance) {
             // console.log('Created message as: ', messageInstance);
             if (message.data_parsed) {
               // Check if there is Geoloc in payload and create Geoloc object
               Geoloc.createFromParsedPayload(
                 messageInstance,
                 (err: any, res: any) => {
-                  if (err) {
-                    console.error(err);
-                  } else {
-                    // console.log(res);
-                  }
                 });
               // Trigger alerts (if any)
               Alert.triggerByDevice(
@@ -316,41 +294,26 @@ class Message {
                 device,
                 req,
                 (err: any, res: any) => {
-                  if (err) {
-                    // console.error(err);
-                  } else {
-                    // console.log(res);
-                  }
                 });
             }
-          } else {
-            console.error("This message for device (" + message.deviceId + ") has already been created.");
-          }
+          } else console.error("This message for device (" + message.deviceId + ") has already been created.");
         });
       // ack is true
-      next(null, result);
+      return next(null, result);
     } else {
       // ack is false
       // Creating new message with no downlink data
       Message.create(
         message, // create
         (err: any, messageInstance: any) => { // callback
-          if (err) {
-            console.error(err);
-            next(err, messageInstance);
-          } else if (messageInstance) {
+          if (err) return next(err, messageInstance);
+          else if (messageInstance) {
             // console.log('Created message as: ', messageInstance);
             if (message.data_parsed) {
               // Check if there is Geoloc in payload and create Geoloc object
               Geoloc.createFromParsedPayload(
                 messageInstance,
                 (err: any, res: any) => {
-                  if (err) {
-                    console.error(err);
-                    // next(err, null);
-                  } else {
-                    // console.log(res);
-                  }
                 });
               // Trigger alerts (if any)
               Alert.triggerByDevice(
@@ -358,17 +321,10 @@ class Message {
                 device,
                 req,
                 (err: any, res: any) => {
-                  if (err) {
-                    // console.error(err);
-                  } else {
-                    // console.log(res);
-                  }
                 });
             }
-            next(null, messageInstance);
-          } else {
-            next(null, "This message for device (" + message.deviceId + ") has already been created.");
-          }
+            return next(null, messageInstance);
+          } else return next(null, "This message for device (" + message.deviceId + ") has already been created.");
         });
     }
   }
@@ -456,30 +412,23 @@ class Message {
         ]
       },
     }, (err: any, messageInstance: any) => {
-      if (err) {
-        console.error(err);
-        next(err, data);
-      } else {
+      if (err) next(err, data);
+      else {
         if (messageInstance) {
           console.log("Found the corresponding message and downlinkAck in it.");
           messageInstance.downlinkAck = data.downlinkAck;
           Message.upsert(
             messageInstance,
             (err: any, messageInstance: any) => {
-              if (err) {
-                console.error(err);
-                next(err, messageInstance);
-              } else {
-                console.log("Updated message as: ", messageInstance);
-                next(null, messageInstance);
-              }
+              if (err) return next(err, messageInstance);
+              else next(null, messageInstance);
             });
 
         } else {
           // No corresponding message found
           const err = "Error - No corresponding message found, did you first receive a message containing ack = true?";
           console.error(err);
-          next(err, data);
+          return next(err, data);
         }
       }
     });
@@ -513,12 +462,10 @@ class Message {
 
     // Find the message containing the ack request
     Message.create(message, (err: any, messageInstance: any) => {
-      if (err) {
-        console.error(err);
-        next(err, data);
-      } else if (messageInstance) {
+      if (err) return next(err, data);
+      else if (messageInstance) {
         console.log("Created status message as: ", messageInstance);
-        next(null, messageInstance);
+        return next(null, messageInstance);
       }
     });
   }
@@ -542,15 +489,13 @@ class Message {
         if (message && message.Organizations) {
           message.toJSON().Organizations.forEach((orga: any) => {
             message.Organizations.remove(orga.id, (err: any, result: any) => {
-              if (!err) {
-                console.log("Unlinked device from organization (" + orga.name + ")");
-              }
+              if (!err) console.log("Unlinked device from organization (" + orga.name + ")");
             });
           });
         }
-        next(null, "Unlinked device from organization");
+        return next(null, "Unlinked device from organization");
       } else {
-        next(err);
+        return next(err);
       }
     });
   }

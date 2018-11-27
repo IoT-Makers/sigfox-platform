@@ -37,21 +37,6 @@ const json2csv = require("json2csv").parse;
       },
       returns: {type: "object", root: true},
     },
-    timeSeries: {
-      accepts: [
-        {arg: "deviceId", type: "string", required: true, description: "Device Id"},
-        {
-          arg: "dateBegin",
-          type: "string",
-          default: moment().subtract(1, "hours"),
-          description: "The starting date-time",
-        },
-        {arg: "dateEnd", type: "string", default: moment(), description: "The ending date-time"},
-        {arg: "req", type: "object", http: {source: "req"}},
-      ],
-      returns: {arg: "result", type: "array"},
-      http: {path: "/time-series", verb: "get"},
-    },
     getMessagesFromSigfoxBackend: {
       accepts: [
         {arg: "id", type: "string", required: true, description: "Device Id"},
@@ -69,8 +54,6 @@ const json2csv = require("json2csv").parse;
 })
 
 class Device {
-
-  private primusClient: any;
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
@@ -108,13 +91,9 @@ class Device {
               if (err) console.error(err);
             });
             next();
-          } else {
-            next(err);
-          }
+          } else next(err);
         });
-      } else {
-        next(err);
-      }
+      } else next(err);
     });
   }
 
@@ -161,99 +140,6 @@ class Device {
     // console.log(ctx);
   }
 
-  public timeSeries(deviceId: string, dateBegin: string, dateEnd: string, req: any, next: Function): void {
-    // Obtain the userId with the access token of ctx
-    const userId = req.accessToken.userId;
-
-    const result: any = {
-      xAxis: [],
-      yAxis: [],
-    };
-
-    let messages: any;
-
-    const arrayOfObject: any[] = [];
-
-    this.model.app.models.Device.findById(
-      deviceId,
-      {
-        include: [
-          {
-            relation: "Messages",
-            scope: {
-              // fields: ['data_parsed'],
-              where: {
-                and: [
-                  {userId},
-                  {createdAt: {gte: dateBegin}},
-                  {createdAt: {lte: dateEnd}},
-                  {data_parsed: {neq: null}},
-                ],
-              },
-              order: "createdAt ASC",
-            },
-          }],
-      },
-      (err: any, device: any) => {
-        if (err || !device) {
-          console.log(err);
-        } else {
-          // console.log("device:", device);
-          device = device.toJSON();
-
-          messages = device.Messages;
-          // console.log("messages", messages.length);
-
-          messages.forEach((message: any, messageIndex: number) => {
-            if (message.data_parsed) {
-              result.xAxis.push(message.createdAt);
-              message.data_parsed.forEach((data: any, dataIndex: number) => {
-                data.timestamp = message.createdAt;
-                arrayOfObject.push(data);
-
-                // console.log(data.key);
-              });
-            }
-          });
-
-          result.yAxis = _.groupBy(arrayOfObject, "key");
-          // groupByKey = _.groupBy(arrayOfObject, "key");
-          // console.log(groupByKey);
-
-          // for (var key in groupByKey) {
-          //   let obj: any;
-          //   obj = {
-          //     label: "",
-          //     data: []
-          //   };
-          //   let info: any;
-          //   info = {
-          //     property: "",
-          //     type: "",
-          //     unit: ""
-          //   };
-          //   // check also if property is not inherited from prototype
-          //   if (groupByKey.hasOwnProperty(key)) {
-          //     obj.label = key;
-          //     info.property = key;
-          //     groupByKey[key].forEach((item: any) => {
-          //       obj.data.push(item.value);
-          //       info.type = item.type;
-          //       info.unit = item.unit;
-          //     });
-          //
-          //     result.yAxis.push(obj);
-          //     result.info.push(info);
-          //   }
-          // }
-
-          // result.yAxis = _.groupBy(result.yAxis, "key");
-
-        }
-        next(err, result);
-      });
-  }
-
   public getMessagesFromSigfoxBackend(deviceId: string, limit: number, before: number, req: any, next: Function): void {
     // Models
     const Message = this.model.app.models.Message;
@@ -262,9 +148,7 @@ class Device {
 
     const userId = req.accessToken.userId;
 
-    if (!limit) {
-      limit = 100;
-    }
+    if (!limit) limit = 100;
 
     Connector.findOne(
       {
@@ -274,11 +158,8 @@ class Device {
         },
       },
       (err: any, connector: any) => {
-        if (err) {
-          console.log(err);
-          return next(err, null);
-        } else {
-          console.log(connector);
+        if (err) return next(err, null);
+        else {
           if (connector) {
             const sigfoxApiLogin = connector.login;
             const sigfoxApiPassword = decrypt(connector.password);
@@ -322,48 +203,45 @@ class Device {
                 Message.create(
                   message,
                   (err: any, messagePostProcess: any) => { // callback
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      if (messageInstance.computedLocation) {
-                        // Build the Geoloc object
-                        const geoloc = new Geoloc;
-                        geoloc.type = "sigfox";
-                        geoloc.location = new loopback.GeoPoint({
-                          lat: messageInstance.computedLocation.lat,
-                          lng: messageInstance.computedLocation.lng
-                        });
-                        geoloc.accuracy = messageInstance.computedLocation.radius;
-                        geoloc.createdAt = messagePostProcess.createdAt;
-                        geoloc.userId = messagePostProcess.userId;
-                        geoloc.messageId = messagePostProcess.id;
-                        geoloc.deviceId = messagePostProcess.deviceId;
-                        // Find or create a new Geoloc
-                        Geoloc.findOrCreate(
-                          {
-                            where: {
-                              and: [
-                                {type: geoloc.type},
-                                {location: geoloc.location},
-                                {createdAt: geoloc.createdAt},
-                                {messageId: geoloc.messageId},
-                                {deviceId: geoloc.deviceId},
-                              ],
-                            },
+                    if (err) console.log(err);
+                    else if (messageInstance.computedLocation) {
+                      // Build the Geoloc object
+                      const geoloc = new Geoloc;
+                      geoloc.type = "sigfox";
+                      geoloc.location = new loopback.GeoPoint({
+                        lat: messageInstance.computedLocation.lat,
+                        lng: messageInstance.computedLocation.lng
+                      });
+                      geoloc.accuracy = messageInstance.computedLocation.radius;
+                      geoloc.createdAt = messagePostProcess.createdAt;
+                      geoloc.userId = messagePostProcess.userId;
+                      geoloc.messageId = messagePostProcess.id;
+                      geoloc.deviceId = messagePostProcess.deviceId;
+                      // Find or create a new Geoloc
+                      Geoloc.findOrCreate(
+                        {
+                          where: {
+                            and: [
+                              {type: geoloc.type},
+                              {location: geoloc.location},
+                              {createdAt: geoloc.createdAt},
+                              {messageId: geoloc.messageId},
+                              {deviceId: geoloc.deviceId},
+                            ],
                           },
-                          geoloc,
-                          (err: any, geolocInstance: any, created: boolean) => {
-                            if (err) {
-                              console.error(err);
+                        },
+                        geoloc,
+                        (err: any, geolocInstance: any, created: boolean) => {
+                          if (err) {
+                            console.error(err);
+                          } else {
+                            if (created) {
+                              console.log("Created geoloc as: ", geolocInstance);
                             } else {
-                              if (created) {
-                                console.log("Created geoloc as: ", geolocInstance);
-                              } else {
-                                console.log("Skipped geoloc creation.");
-                              }
+                              console.log("Skipped geoloc creation.");
                             }
-                          });
-                      }
+                          }
+                        });
                     }
                   });
 
@@ -374,15 +252,10 @@ class Device {
                 }
               });
             }).catch((err: any) => {
-              if (err.statusCode === "403") {
-                return next(err, "Your Sigfox API credentials are not allowed to do so.");
-              } else {
-                return next(err, null);
-              }
+              if (err.statusCode === "403") return next(err, "Your Sigfox API credentials are not allowed to do so.");
+              else return next(err, null);
             });
-          } else {
-            return next(err, "Please refer your Sigfox API connector first.");
-          }
+          } else return next(err, "Please refer your Sigfox API connector first.");
         }
       });
   }
@@ -403,9 +276,8 @@ class Device {
         }],
       },
       function (err: any, device: any) {
-        if (err) {
-          console.error(err);
-        } else {
+        if (err) console.error(err);
+        else {
           device = device.toJSON();
           let attendedNbMessages: number;
           attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber + 1;
@@ -416,12 +288,9 @@ class Device {
 
           Device.upsert(
             device,
-            function (err: any, deviceUpdated: any) {
-              if (err) {
-                console.error(err);
-              } else {
-                console.log("Updated device as: " + deviceUpdated);
-              }
+            (err: any, deviceUpdated: any) => {
+              if (err) console.error(err);
+              else console.log("Updated device as: " + deviceUpdated);
             });
         }
       });
@@ -460,7 +329,7 @@ class Device {
         },
         include: ["Geolocs"],
         order: "createdAt DESC",
-      }, function (err: any, messages: any) {
+      }, (err: any, messages: any) => {
         if (err) {
           console.error(err);
           res.send(err);
@@ -533,9 +402,7 @@ class Device {
           // res.status(200).send({data: csv});
           res.send(csv);
           next();
-        } else {
-          next(null, "Error occured - not allowed");
-        }
+        } else next(null, "Error occured - not allowed");
       });
   }
 
@@ -552,9 +419,8 @@ class Device {
     if (deviceId) {
       Device.findOne({where: {id: deviceId}, include: "Organizations"}, (err: any, device: any) => {
         // console.log(category);
-        if (err) {
-          next(err, null);
-        } else {
+        if (err) return next(err, null);
+        else {
           if (device && device.Organizations) {
             device.toJSON().Organizations.forEach((orga: any) => {
               device.Organizations.remove(orga.id, (err: any, result: any) => {
@@ -565,24 +431,18 @@ class Device {
             });
           }
           console.log("Unlinked device from organization");
-          next();
+          return next();
         }
       });
 
       Message.destroyAll({deviceId}, (error: any, result: any) => {
-        if (!error) {
-          console.log("Deleted all messages for device: " + deviceId);
-        }
+        if (!error) console.log("Deleted all messages for device: " + deviceId);
       });
       Geoloc.destroyAll({deviceId}, (error: any, result: any) => {
-        if (!error) {
-          console.log("Deleted all geolocs for device: " + deviceId);
-        }
+        if (!error) console.log("Deleted all geolocs for device: " + deviceId);
       });
       Alert.destroyAll({deviceId}, (error: any, result: any) => {
-        if (!error) {
-          console.log("Deleted all alerts for device: " + deviceId);
-        }
+        if (!error) console.log("Deleted all alerts for device: " + deviceId);
       });
     }
   }
@@ -599,14 +459,14 @@ class Device {
   }
 
   public afterSave(ctx: any, next: Function): void {
-      // Pub-sub
-      let device = ctx.instance;
-      const payload = {
-        event: "device",
-        content: device,
-        action: ctx.isNewInstance ? "CREATE" : "UPDATE"
-      };
-      RabbitPub.getInstance().pub(payload);
+    // Pub-sub
+    let device = ctx.instance;
+    const payload = {
+      event: "device",
+      content: device,
+      action: ctx.isNewInstance ? "CREATE" : "UPDATE"
+    };
+    RabbitPub.getInstance().pub(payload);
     next();
   }
 }

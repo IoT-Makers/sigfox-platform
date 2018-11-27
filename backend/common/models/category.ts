@@ -51,8 +51,6 @@ const json2csv = require("json2csv").parse;
 
 class Category {
 
-  private primusClient: any;
-
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
   }
@@ -82,9 +80,7 @@ class Category {
           });
         }
         next(null, "Unlinked category from organization");
-      } else {
-        next(err);
-      }
+      } else next(err);
     });
   }
 
@@ -226,14 +222,10 @@ class Category {
                     res.send(csv);
                     // next();
                   }
-                } else if (i === category.Devices.length - 1) {
-                  next(null, "Device does not belong to user - not allowed");
-                }
+                } else if (i === category.Devices.length - 1) next(null, "Device does not belong to user - not allowed");
               });
           });
-        } else {
-          next(null, "Error occured - not allowed");
-        }
+        } else next(null, "Error occured - not allowed");
       });
   }
 

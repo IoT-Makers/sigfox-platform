@@ -21,8 +21,6 @@ import {RabbitPub} from '../../server/RabbitPub';
 
 class Dashboard {
 
-  private primusClient: any;
-
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
 
