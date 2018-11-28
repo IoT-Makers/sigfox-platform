@@ -207,5 +207,9 @@
         }
       }
     ]
+  },
+  "minio": {
+    "name": "minio",
+    "connector": "loopback-component-storage"
   }
 }
