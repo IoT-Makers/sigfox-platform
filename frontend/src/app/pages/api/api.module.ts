@@ -8,6 +8,7 @@ import {ToasterModule} from 'angular2-toaster';
 import {FormsModule} from '@angular/forms';
 import {MomentModule} from 'angular2-moment';
 import {ClickCopyDirective} from './click-copy.directive';
+import {AngularMultiSelectModule} from "angular2-multiselect-dropdown";
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import {ClickCopyDirective} from './click-copy.directive';
     FormsModule,
     ToasterModule.forRoot(),
     AccordionModule.forRoot(),
+    AngularMultiSelectModule,
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
     DataTableModule

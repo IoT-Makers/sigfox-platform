@@ -173,7 +173,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
           this.organizationApi.countMembers(this.organization.id).subscribe(result => {
             this.countOrganizationMembers = result.count;
             this.countOrganizationMembersReady = true;
-            console.log('Members', result.count);
           });
           this.setup();
         });
@@ -215,7 +214,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
         }
       }]
     }).subscribe((devices: Device[]) => {
-      console.log('devices', devices);
       this.devices = devices;
       this.devicesReady = true;
       this.fitMapBounds();
