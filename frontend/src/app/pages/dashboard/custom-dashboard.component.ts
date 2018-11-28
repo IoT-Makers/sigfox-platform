@@ -6,7 +6,8 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Geoloc, Message, Organization} from '../../shared/sdk/models';
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import {MessageApi, OrganizationApi} from '../../shared/sdk/services/custom';
+import {MessageApi, OrganizationApi, AssetApi} from '../../shared/sdk/services/custom';
+import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Rx';
 import {AgmMap, LatLngBounds} from '@agm/core';
 import {Subscription} from 'rxjs/Subscription';
@@ -253,7 +254,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private router: Router,
               toasterService: ToasterService,
-              private _location: Location) {
+              private _location: Location,
+              private http: HttpClient) {
     this.toasterService = toasterService;
   }
 
@@ -415,6 +417,28 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
     this.newWidgetFlag = true;
     this.addOrEditWidgetModal.show();
+  }
+
+  fileUpload(event): void {
+    let fileList: FileList = event.target.files;
+    if(fileList.length > 0) {
+      let file: File = fileList[0];
+      let formData:FormData = new FormData();
+      formData.append('file', file, file.name);
+
+      let headers = {
+        Accept: 'application/json',
+        filename: file.name,
+        enctype: 'multipart/form-data'
+      };
+      this.http.post('http://localhost:3000/api/assets/upload', formData, { headers: headers })
+        .map(res => (<any>res).url)
+        .catch(error => Observable.throw(error))
+        .subscribe(
+          url => this.newWidget.image = url,
+          error => console.error(error)
+        )
+    }
   }
 
   addTableType($event): void {

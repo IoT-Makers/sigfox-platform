@@ -34,7 +34,7 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo Device.
+   * Fetches belongsTo relation Device.
    *
    * @param {any} id Message id
    *
@@ -64,11 +64,11 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Recherchez un élément lié par id pour Geolocs.
+   * Find a related item by id for Geolocs.
    *
    * @param {any} id Message id
    *
-   * @param {any} fk Clé externe pour Geolocs
+   * @param {any} fk Foreign key for Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -94,11 +94,11 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez un élément lié par id pour Geolocs.
+   * Delete a related item by id for Geolocs.
    *
    * @param {any} id Message id
    *
-   * @param {any} fk Clé externe pour Geolocs
+   * @param {any} fk Foreign key for Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -121,11 +121,11 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Mettez à jour un élément lié par id pour Geolocs.
+   * Update a related item by id for Geolocs.
    *
    * @param {any} id Message id
    *
-   * @param {any} fk Clé externe pour Geolocs
+   * @param {any} fk Foreign key for Geolocs
    *
    * @param {object} data Request data.
    *
@@ -157,7 +157,7 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo user.
+   * Fetches belongsTo relation user.
    *
    * @param {any} id Message id
    *
@@ -187,11 +187,11 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Recherchez un élément lié par id pour Organizations.
+   * Find a related item by id for Organizations.
    *
    * @param {any} id Message id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -217,11 +217,11 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez un élément lié par id pour Organizations.
+   * Delete a related item by id for Organizations.
    *
    * @param {any} id Message id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -244,11 +244,11 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Mettez à jour un élément lié par id pour Organizations.
+   * Update a related item by id for Organizations.
    *
    * @param {any} id Message id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @param {object} data Request data.
    *
@@ -280,11 +280,11 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Ajoutez un élément lié par id pour Organizations.
+   * Add a related item by id for Organizations.
    *
    * @param {any} id Message id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @param {object} data Request data.
    *
@@ -316,11 +316,11 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez la relation Organizations à un élément par id.
+   * Remove the Organizations relation to an item by id.
    *
    * @param {any} id Message id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -343,11 +343,11 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Vérifiez l'existence de la relation Organizations à un élément par id.
+   * Check the existence of Organizations relation to an item by id.
    *
    * @param {any} id Message id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -373,7 +373,7 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Demandes Geolocs de Message.
+   * Queries Geolocs of Message.
    *
    * @param {any} id Message id
    *
@@ -403,7 +403,7 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Geolocs de ce modèle.
+   * Creates a new instance in Geolocs of this model.
    *
    * @param {any} id Message id
    *
@@ -436,7 +436,7 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprime tous les Geolocs de ce modèle.
+   * Deletes all Geolocs of this model.
    *
    * @param {any} id Message id
    *
@@ -460,7 +460,7 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Compte Geolocs de Message.
+   * Counts Geolocs of Message.
    *
    * @param {any} id Message id
    *
@@ -489,7 +489,7 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Demandes Organizations de Message.
+   * Queries Organizations of Message.
    *
    * @param {any} id Message id
    *
@@ -519,7 +519,7 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Organizations de ce modèle.
+   * Creates a new instance in Organizations of this model.
    *
    * @param {any} id Message id
    *
@@ -552,7 +552,7 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprime tous les Organizations de ce modèle.
+   * Deletes all Organizations of this model.
    *
    * @param {any} id Message id
    *
@@ -576,7 +576,7 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Compte Organizations de Message.
+   * Counts Organizations of Message.
    *
    * @param {any} id Message id
    *
@@ -801,7 +801,7 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Geolocs de ce modèle.
+   * Creates a new instance in Geolocs of this model.
    *
    * @param {any} id Message id
    *
@@ -834,7 +834,7 @@ export class MessageApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Organizations de ce modèle.
+   * Creates a new instance in Organizations of this model.
    *
    * @param {any} id Message id
    *

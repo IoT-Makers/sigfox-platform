@@ -20,5 +20,6 @@ export * from './Widget';
 export * from './Property';
 export * from './Beacon';
 export * from './Alexa';
+export * from './Asset';
 export * from './BaseModels';
 export * from './FireLoopRef';

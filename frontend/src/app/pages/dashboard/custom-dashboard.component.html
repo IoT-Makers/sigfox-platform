@@ -1572,10 +1572,12 @@
                 <div class="col-md-9">
                   <input type="text"
                          class="form-control"
-                         placeholder="Past the URL of the image here"
+                         placeholder="Paste the URL of the image here or upload with the button"
                          name="newWidget.image"
                          [(ngModel)]="newWidget.image"
                          required>
+                  <input type="file" (change)="fileUpload($event)" placeholder="Upload file" accept=".jpg,.png,.jpeg,.gif">
+
                 </div>
               </div>
             </ng-container>

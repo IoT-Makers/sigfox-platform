@@ -33,11 +33,11 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Recherchez un élément lié par id pour Devices.
+   * Find a related item by id for Devices.
    *
    * @param {any} id Category id
    *
-   * @param {any} fk Clé externe pour Devices
+   * @param {any} fk Foreign key for Devices
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -63,11 +63,11 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez un élément lié par id pour Devices.
+   * Delete a related item by id for Devices.
    *
    * @param {any} id Category id
    *
-   * @param {any} fk Clé externe pour Devices
+   * @param {any} fk Foreign key for Devices
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -90,11 +90,11 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Mettez à jour un élément lié par id pour Devices.
+   * Update a related item by id for Devices.
    *
    * @param {any} id Category id
    *
-   * @param {any} fk Clé externe pour Devices
+   * @param {any} fk Foreign key for Devices
    *
    * @param {object} data Request data.
    *
@@ -126,7 +126,7 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo user.
+   * Fetches belongsTo relation user.
    *
    * @param {any} id Category id
    *
@@ -156,11 +156,11 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Recherchez un élément lié par id pour Organizations.
+   * Find a related item by id for Organizations.
    *
    * @param {any} id Category id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -186,11 +186,11 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez un élément lié par id pour Organizations.
+   * Delete a related item by id for Organizations.
    *
    * @param {any} id Category id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -213,11 +213,11 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Mettez à jour un élément lié par id pour Organizations.
+   * Update a related item by id for Organizations.
    *
    * @param {any} id Category id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @param {object} data Request data.
    *
@@ -249,11 +249,11 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Ajoutez un élément lié par id pour Organizations.
+   * Add a related item by id for Organizations.
    *
    * @param {any} id Category id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @param {object} data Request data.
    *
@@ -285,11 +285,11 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez la relation Organizations à un élément par id.
+   * Remove the Organizations relation to an item by id.
    *
    * @param {any} id Category id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -312,11 +312,11 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Vérifiez l'existence de la relation Organizations à un élément par id.
+   * Check the existence of Organizations relation to an item by id.
    *
    * @param {any} id Category id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -342,7 +342,7 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Demandes Devices de Category.
+   * Queries Devices of Category.
    *
    * @param {any} id Category id
    *
@@ -372,7 +372,7 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Devices de ce modèle.
+   * Creates a new instance in Devices of this model.
    *
    * @param {any} id Category id
    *
@@ -405,7 +405,7 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprime tous les Devices de ce modèle.
+   * Deletes all Devices of this model.
    *
    * @param {any} id Category id
    *
@@ -429,7 +429,7 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Compte Devices de Category.
+   * Counts Devices of Category.
    *
    * @param {any} id Category id
    *
@@ -458,7 +458,7 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Demandes Organizations de Category.
+   * Queries Organizations of Category.
    *
    * @param {any} id Category id
    *
@@ -488,7 +488,7 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Organizations de ce modèle.
+   * Creates a new instance in Organizations of this model.
    *
    * @param {any} id Category id
    *
@@ -521,7 +521,7 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprime tous les Organizations de ce modèle.
+   * Deletes all Organizations of this model.
    *
    * @param {any} id Category id
    *
@@ -545,7 +545,7 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Compte Organizations de Category.
+   * Counts Organizations of Category.
    *
    * @param {any} id Category id
    *
@@ -746,7 +746,7 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Devices de ce modèle.
+   * Creates a new instance in Devices of this model.
    *
    * @param {any} id Category id
    *
@@ -779,7 +779,7 @@ export class CategoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Organizations de ce modèle.
+   * Creates a new instance in Organizations of this model.
    *
    * @param {any} id Category id
    *
