@@ -30,11 +30,11 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Recherchez un élément lié par id pour principals.
+   * Find a related item by id for principals.
    *
    * @param {any} id Role id
    *
-   * @param {any} fk Clé externe pour principals
+   * @param {any} fk Foreign key for principals
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -60,11 +60,11 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez un élément lié par id pour principals.
+   * Delete a related item by id for principals.
    *
    * @param {any} id Role id
    *
-   * @param {any} fk Clé externe pour principals
+   * @param {any} fk Foreign key for principals
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -87,11 +87,11 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Mettez à jour un élément lié par id pour principals.
+   * Update a related item by id for principals.
    *
    * @param {any} id Role id
    *
-   * @param {any} fk Clé externe pour principals
+   * @param {any} fk Foreign key for principals
    *
    * @param {object} data Request data.
    *
@@ -123,7 +123,7 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Demandes principals de Role.
+   * Queries principals of Role.
    *
    * @param {any} id Role id
    *
@@ -153,7 +153,7 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans principals de ce modèle.
+   * Creates a new instance in principals of this model.
    *
    * @param {any} id Role id
    *
@@ -186,7 +186,7 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprime tous les principals de ce modèle.
+   * Deletes all principals of this model.
    *
    * @param {any} id Role id
    *
@@ -210,7 +210,7 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Compte principals de Role.
+   * Counts principals of Role.
    *
    * @param {any} id Role id
    *
@@ -301,7 +301,7 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans principals de ce modèle.
+   * Creates a new instance in principals of this model.
    *
    * @param {any} id Role id
    *

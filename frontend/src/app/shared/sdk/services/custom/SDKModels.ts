@@ -21,6 +21,7 @@ import { Widget } from '../../models/Widget';
 import { Property } from '../../models/Property';
 import { Beacon } from '../../models/Beacon';
 import { Alexa } from '../../models/Alexa';
+import { Asset } from '../../models/Asset';
 
 export interface Models { [name: string]: any }
 
@@ -49,6 +50,7 @@ export class SDKModels {
     Property: Property,
     Beacon: Beacon,
     Alexa: Alexa,
+    Asset: Asset,
     
   };
 

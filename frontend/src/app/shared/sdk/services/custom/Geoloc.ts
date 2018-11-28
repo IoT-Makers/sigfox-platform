@@ -35,7 +35,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo Device.
+   * Fetches belongsTo relation Device.
    *
    * @param {any} id Geoloc id
    *
@@ -65,7 +65,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo Message.
+   * Fetches belongsTo relation Message.
    *
    * @param {any} id Geoloc id
    *
@@ -95,7 +95,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo user.
+   * Fetches belongsTo relation user.
    *
    * @param {any} id Geoloc id
    *
@@ -125,11 +125,11 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Recherchez un élément lié par id pour Organizations.
+   * Find a related item by id for Organizations.
    *
    * @param {any} id Geoloc id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -155,11 +155,11 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez un élément lié par id pour Organizations.
+   * Delete a related item by id for Organizations.
    *
    * @param {any} id Geoloc id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -182,11 +182,11 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Mettez à jour un élément lié par id pour Organizations.
+   * Update a related item by id for Organizations.
    *
    * @param {any} id Geoloc id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @param {object} data Request data.
    *
@@ -218,11 +218,11 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Ajoutez un élément lié par id pour Organizations.
+   * Add a related item by id for Organizations.
    *
    * @param {any} id Geoloc id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @param {object} data Request data.
    *
@@ -254,11 +254,11 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez la relation Organizations à un élément par id.
+   * Remove the Organizations relation to an item by id.
    *
    * @param {any} id Geoloc id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -281,11 +281,11 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Vérifiez l'existence de la relation Organizations à un élément par id.
+   * Check the existence of Organizations relation to an item by id.
    *
    * @param {any} id Geoloc id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -311,7 +311,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo Beacon.
+   * Fetches belongsTo relation Beacon.
    *
    * @param {any} id Geoloc id
    *
@@ -341,7 +341,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Demandes Organizations de Geoloc.
+   * Queries Organizations of Geoloc.
    *
    * @param {any} id Geoloc id
    *
@@ -371,7 +371,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Organizations de ce modèle.
+   * Creates a new instance in Organizations of this model.
    *
    * @param {any} id Geoloc id
    *
@@ -404,7 +404,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprime tous les Organizations de ce modèle.
+   * Deletes all Organizations of this model.
    *
    * @param {any} id Geoloc id
    *
@@ -428,7 +428,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Compte Organizations de Geoloc.
+   * Counts Organizations of Geoloc.
    *
    * @param {any} id Geoloc id
    *
@@ -616,7 +616,7 @@ export class GeolocApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Organizations de ce modèle.
+   * Creates a new instance in Organizations of this model.
    *
    * @param {any} id Geoloc id
    *
