@@ -93,6 +93,9 @@
         "functions": {
           "testConnection": [
             "credentials"
+          ],
+          "listDevicetypes": [
+            "credentials"
           ]
         }
       }

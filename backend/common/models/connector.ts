@@ -20,11 +20,21 @@ const request = require("request");
   remotes: {
     createSigfoxBackendCallbacks: {
       accepts: [
-        {arg: "req", type: "object", http: {source: "req"}},
         {arg: "devicetypeId", type: "string", required: true},
+        {arg: "req", type: "object", http: {source: "req"}}
       ],
       http: {
         path: "/create-sigfox-backend-callbacks",
+        verb: "post",
+      },
+      returns: {type: [], root: true},
+    },
+    listSigfoxBackendDevicetypes: {
+      accepts: [
+        {arg: "req", type: "object", http: {source: "req"}}
+      ],
+      http: {
+        path: "/list-sigfox-backend-devicetypes",
         verb: "get",
       },
       returns: {type: [], root: true},
@@ -63,7 +73,8 @@ class Connector {
     } else next();
   }
 
-  public createSigfoxBackendCallbacks(req: any, devicetypeId: string, next: Function) {
+  // Create Sigfox Backend callbacks
+  public createSigfoxBackendCallbacks(devicetypeId: string, req: any, next: Function) {
     // Models
     const User = this.model.app.models.user;
     if (!process.env.BASE_URL) return next('Please refer the environment variable `BASE_URL` first.');
@@ -163,6 +174,39 @@ class Connector {
       });
   }
 
+  // Get Sigfox Backend device types
+  public listSigfoxBackendDevicetypes(req: any, next: Function): void {
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
+    this.model.findOne(
+      {
+        where: {
+          userId,
+          type: "sigfox-api",
+        },
+      },
+      (err: any, connector: any) => {
+        if (err) {
+          console.log(err);
+          next(err, null);
+        } else {
+          if (connector) {
+            const sigfoxApiLogin = connector.login;
+            const sigfoxApiPassword = decrypt(connector.password);
+            const credentials = Buffer.from(sigfoxApiLogin + ":" + sigfoxApiPassword).toString("base64");
+            this.model.app.dataSources.sigfox.listDevicetypes(credentials).then((result: any) => {
+              next(null, result);
+            }).catch((err: any) => {
+              next(err, null);
+            });
+          } else {
+            next(err, "Please refer your Sigfox API connector first");
+          }
+        }
+      });
+  }
+
   // Test connector connection
   public testConnection(type: string, login: string, password: string, next: Function): void {
     if (type === "sigfox-api") {
@@ -175,7 +219,6 @@ class Connector {
       });
     } else next(null, "Not implemented yet.");
   }
-
 
   public afterDelete(ctx: any, next: Function): void {
     let connector = ctx.instance;
