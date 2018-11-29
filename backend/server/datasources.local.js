@@ -21,8 +21,8 @@ let minio_secret;
 
 try {
   // docker secret
-  minio_access = fs.readFileSync('/run/secrets/minio_access_key', 'utf8');
-  minio_secret = fs.readFileSync('/run/secrets/minio_secret_key', 'utf8');
+  minio_access = fs.readFileSync('/run/secrets/minio_access_key', 'utf8').trim();
+  minio_secret = fs.readFileSync('/run/secrets/minio_secret_key', 'utf8').trim();
 } catch (e) {
   // for local dev
   minio_access = process.env.MINIO_ACCESS_KEY;
