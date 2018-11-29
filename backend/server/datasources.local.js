@@ -1,7 +1,6 @@
 'use strict';
 const fs = require('fs');
 
-
 const MONGO_URL = process.env.MONGO_URL;
 
 if (MONGO_URL) {
@@ -14,7 +13,6 @@ if (MONGO_URL) {
     disableDefaultSort: true
   };
 } else console.error('Env MONGO_URL not set');
-
 
 let minio_access;
 let minio_secret;
