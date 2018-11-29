@@ -6,13 +6,14 @@ import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {Geoloc, Message, Organization} from '../../shared/sdk/models';
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import {MessageApi, OrganizationApi, AssetApi} from '../../shared/sdk/services/custom';
+import {MessageApi, OrganizationApi} from '../../shared/sdk/services/custom';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Rx';
 import {AgmMap, LatLngBounds} from '@agm/core';
 import {Subscription} from 'rxjs/Subscription';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
 import {Location} from '@angular/common';
+import {environment} from "../../../../environments/environment";
 
 declare let d3: any;
 declare const google: any;
@@ -431,7 +432,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         filename: file.name,
         enctype: 'multipart/form-data'
       };
-      this.http.post('http://localhost:3000/api/assets/upload', formData, { headers: headers })
+      this.http.post(`${environment.apiUrl}/${environment.apiVersion}/assets/upload`, formData, { headers: headers })
         .map(res => (<any>res).url)
         .catch(error => Observable.throw(error))
         .subscribe(
