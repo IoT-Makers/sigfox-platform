@@ -1,36 +1,54 @@
 'use strict';
+const fs = require('fs');
+
 
 const mongodbUrl = process.env.MONGO_URL;
 
 if (mongodbUrl) {
   console.log('Using MongoDB with: ' + mongodbUrl);
   var mongodb = {
-      useNewUrlParser: true,
-      url: mongodbUrl,
-      name: 'mongodb',
-      connector: 'mongodb',
-      disableDefaultSort: true
+    useNewUrlParser: true,
+    url: mongodbUrl,
+    name: 'mongodb',
+    connector: 'mongodb',
+    disableDefaultSort: true
   };
 } else console.error('Env MONGO_URL not set');
 
-const minio_access = process.env.MINIO_ACCESS_KEY;
-const minio_secret = process.env.MINIO_SECRET_KEY;
 
-if (minio_access && minio_secret) {
-  console.log('using minio as storage backend');
-   var minio = {
-      name: "minio",
-      connector: "loopback-component-storage",
-      provider: "amazon",
-      key: minio_secret,
-      keyId: minio_access,
-      forcePathBucket: true,
-      endpoint: 'minio.iotagency.sigfox.com',
-      bucket: 'public',
-      subfolder: process.env.MONGO_URL.split('/').pop(),
-      acl: "public-read"
-  };
-} else console.error('Env minio_access or minio_secret not set');
+let minio_access;
+let minio_secret;
+
+try {
+  // docker secret
+  minio_access = fs.readFileSync('/run/secrets/MINIO_ACCESS_KEY', 'utf8');
+  minio_secret = fs.readFileSync('/run/secrets/MINIO_SECRET_KEY', 'utf8');
+} catch (e) {
+  // for local dev
+  minio_access = process.env.MINIO_ACCESS_KEY;
+  minio_secret = process.env.MINIO_SECRET_KEY;
+}
+
+
+let minio;
+if (!(minio_access && minio_secret)) console.warn('Env minio_access or minio_secret not set');
+
+const subdomain = process.env.MONGO_URL.split('/').pop();
+const baseUrl = process.env.BASE_URL;
+
+minio = {
+  name: "minio",
+  connector: "loopback-component-storage",
+  provider: "amazon",
+  key: minio_secret || '',
+  keyId: minio_access || '',
+  forcePathBucket: true,
+  endpoint: baseUrl.replace(subdomain, 'minio'),
+  bucket: 'public',
+  subfolder: subdomain,
+  acl: "public-read"
+};
+
 
 module.exports = {
   mongodb,
