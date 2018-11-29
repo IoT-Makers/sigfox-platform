@@ -19,9 +19,9 @@ export class ApiComponent implements OnInit, OnDestroy {
   public callbackURL;
 
   // Select
-  private selectDevicetypes: Array<Object> = [];
-  private selectedDevicetypes = [];
-  private selectOneSettings = {
+  public selectDevicetypes: Array<Object> = [];
+  public selectedDevicetypes = [];
+  public selectOneSettings = {
     singleSelection: true,
     text: 'Select one device type',
     enableSearchFilter: true,
