@@ -421,7 +421,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   // }
   rtHandler = (payload: any) => {
     const device = payload.content;
-    if (device.userId == this.user.id || (this.organization && device.Device.Organizations.map(x => x.id).includes(this.organization.id))) {
+    if (device.userId == this.user.id || (this.organization && device.Organizations.map(x => x.id).includes(this.organization.id))) {
       if (payload.action == "CREATE") {
         this.devices.unshift(payload.content);
       } else if (payload.action == "DELETE") {
