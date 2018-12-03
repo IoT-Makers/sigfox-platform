@@ -24,6 +24,7 @@ import {DashboardGuard} from './_guards/dashboard.guard';
 import {OrganizationGuard} from './_guards/organization.guard';
 import {RealtimeModule} from "./shared/realtime/realtime.module";
 import {environment} from "../../environments/environment";
+import {Angulartics2Module} from "angulartics2";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -48,6 +49,7 @@ import {environment} from "../../environments/environment";
     RealtimeModule.forRoot({
       primusURL: environment.primusUrl || "http://localhost:2333"
     }),
+    Angulartics2Module.forRoot(),
     TooltipModule.forRoot()
   ],
   declarations: [
