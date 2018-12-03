@@ -418,6 +418,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.countMessages++;
         let device = msg.Device;
         device.Messages = [msg];
+        device.messagedAt = msg.updatedAt;
         this.devices.unshift(device);
         idx != -1 ? this.devices.splice(idx, 1) : this.devices.pop();
       } else if (payload.action == "DELETE") {
