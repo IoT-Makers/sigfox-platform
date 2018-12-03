@@ -53,6 +53,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private alerts: Alert[] = [];
   private categories: Category[] = [];
 
+  private numberOfDevicesToSee = 10;
+
   private isLimit_hourly = false;
   private isLimit_daily = false;
   private isLimit_weekly = false;
@@ -197,7 +199,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Devices
     api.getDevices(id, {
-      limit: 10,
+      limit: this.numberOfDevicesToSee,
       order: 'messagedAt DESC',
       include: ['Category', {
         relation: 'Messages',
@@ -420,7 +422,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
         device.Messages = [msg];
         device.messagedAt = msg.updatedAt;
         this.devices.unshift(device);
-        idx != -1 ? this.devices.splice(idx, 1) : this.devices.pop();
+        if (this.devices.length > this.numberOfDevicesToSee)
+          idx != -1 ? this.devices.splice(idx, 1) : this.devices.pop();
       } else if (payload.action == "DELETE") {
         this.countMessages--;
         this.devices[idx].Messages = this.devices[idx].Messages.filter((msg) => {
