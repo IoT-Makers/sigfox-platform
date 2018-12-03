@@ -134,7 +134,7 @@
       {
         "template": {
           "method": "POST",
-          "url": "https://pos.cit.api.here.com/positioning/v1/locate?app_id={!app_id:string}&app_code={!app_code:string}",
+          "url": "https://pos.api.here.com/positioning/v1/locate?app_id={!app_id:string}&app_code={!app_code:string}&fallback=singleWifi",
           "headers": {
             "Content-Type": "application/json"
           },
