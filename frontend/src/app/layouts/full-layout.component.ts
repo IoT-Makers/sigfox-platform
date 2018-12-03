@@ -10,6 +10,7 @@ import {
   UserApi
 } from '../shared/sdk/services/custom';
 import {RealtimeService} from "../shared/realtime/realtime.service";
+import * as _ from 'lodash';
 
 @Component({
   templateUrl: './full-layout.component.html',
@@ -57,12 +58,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   public disabled = false;
   public status: { isopen: boolean } = {isopen: false};
 
-  private selectUsersSettings = {
+  protected selectUsersSettings = {
     singleSelection: false,
     text: 'Select users',
-    selectAllText: 'Select all',
-    unSelectAllText: 'Unselect all',
     enableSearchFilter: true,
+    enableCheckAll: false,
     classes: 'select-organization'
   };
 
@@ -326,6 +326,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   editOrganization(): void {
+    const to_add = _.difference(this.selectedUsers.map(u=>u.id), this.organizationToAddOrEdit.Members.map(u=>u.id));
+    const to_del = _.difference(this.organizationToAddOrEdit.Members.map(u=>u.id), this.selectedUsers.map(u=>u.id).concat([this.user.id]));
+    to_add.forEach(user => {
+      this.linkMember(user);
+    });
+    to_del.forEach(user => {
+      this.unlinkMember(user);
+    });
     this.userApi.updateByIdOrganizations(this.user.id, this.organizationToAddOrEdit.id, this.organizationToAddOrEdit).subscribe((organization: Organization) => {
       console.log('Organization edited', organization);
       this.organizationApi.findById(organization.id, {include: 'Members'}).subscribe((organization: Organization) => {
@@ -335,14 +343,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     });
   }
 
-  linkMember(user: any): void {
-    this.organizationApi.linkMembers(this.organizationToAddOrEdit.id, user.id).subscribe((result) => {
+  linkMember(userId: any): void {
+    this.organizationApi.linkMembers(this.organizationToAddOrEdit.id, userId).subscribe((result) => {
       console.log('Result after linking member: ', result);
     });
   }
 
-  unlinkMember(user: any): void {
-    this.organizationApi.unlinkMembers(this.organizationToAddOrEdit.id, user.id).subscribe((result) => {
+  unlinkMember(userId: any): void {
+    this.organizationApi.unlinkMembers(this.organizationToAddOrEdit.id, userId).subscribe((result) => {
       console.log('Result after unlinking member: ', result);
     });
   }
