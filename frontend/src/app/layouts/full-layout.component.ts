@@ -35,8 +35,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   public countOrganizationsReady = false;
 
   public user: User;
-  private selectedUsers: Array<Object> = [];
-  private selectUsers: Array<Object> = [];
+  private selectedUsers: Array<any> = [];
+  private selectUsers: Array<any> = [];
   public organization: Organization;
 
   public addOrganizationFlag = true;
