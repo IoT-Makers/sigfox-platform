@@ -52,6 +52,7 @@
     "angular2-multiselect-dropdown": "^2.3.0",
     "angular2-text-mask": "^8.0.4",
     "angular2-toaster": "^6.1.0",
+    "angulartics2": "^7.2.2",
     "chart.js": "2.5.0",
     "codelyzer": "^4.5.0",
     "core-js": "^2.5.7",

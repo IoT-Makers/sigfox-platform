@@ -16,6 +16,7 @@ import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
+import {Angulartics2} from "angulartics2";
 
 declare var Zone: any;
 declare const google: any;
