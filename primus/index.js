@@ -60,6 +60,7 @@ amqp.connect(rabbitUrl, function (err, conn) {
                 let payload = JSON.parse(msg.content.toString());
                 if (!payload) return;
                 // console.log(payload);
+                adminStats(payload);
                 switch (payload.event) {
                     case "message":
                         messageHandler(payload);
@@ -424,6 +425,15 @@ function getTargetClients(userId, event='', orgIDs=null) {
     console.debug(`[${event}] ${complete.length} users needs detail`);
     console.debug(`[${event}] ${countOnly.length} users needs only count`);
     return {complete: complete, countOnly: countOnly};
+}
+
+function adminStats(payload) {
+    let targets = [];
+    primus.forEach(function (spark, id, connections) {
+        if (spark.userIsAdmin) targets.push(spark);
+    });
+    if (targets.length && payload.action !== 'UPDATE')
+        return send(targets, 'stats', payload.action, payload.event);
 }
 
 function send(targetClients, eventName, action, content) {
