@@ -336,8 +336,7 @@ function categoryHandler(payload) {
 
         db.collection("Device").find({categoryId: category.id}).toArray((err, devices) => {
             addAttribute(category, "Devices", devices);
-            // TODO: ????
-            db.collection("Organization").find({categoryId: category.id}).toArray((err, organizations) => {
+            db.collection("OrganizationCategory").find({categoryId: ObjectId(category.id)}).toArray((err, organizations) => {
                 addAttribute(category, "Organizations", organizations);
                 return send(targets.complete, payload.event, payload.action, category);
             });
