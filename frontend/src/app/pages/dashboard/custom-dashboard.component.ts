@@ -291,14 +291,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.unsubscribe();
-    this.subscribe();
-
     this.subscriptions.push(this.route.params.subscribe(params => {
-
       this.api = this.organization ? this.organizationApi : this.userApi;
       this.id = this.organization ? this.organization.id : this.user.id;
-
+      this.unsubscribe();
+      this.subscribe(this.id);
       // Load dashboard
       this.api.findByIdDashboards(this.id, params.id).subscribe((dashboard: Dashboard) => {
         this.dashboard = dashboard;
@@ -1777,7 +1774,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
   };
 
-  subscribe(): void {
+  subscribe(id: string): void {
+    this.rt.informCurrentPage(id, ['widget']);
     this.rtWidgetHandler = this.rt.addListener("widget", this.rtWidgetHandler);
   }
 

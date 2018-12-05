@@ -141,6 +141,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
+    this.api = this.organization ? this.organizationApi : this.userApi;
+    this.id = this.organization ? this.organization.id : this.user.id;
     this.unsubscribe();
     this.subscribe();
     this.getAppVersion();
@@ -153,9 +155,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.organizations = organizations;
         this.countOrganizationsReady = true;
       });
-
-      this.api = this.organization ? this.organizationApi : this.userApi;
-      this.id = this.organization ? this.organization.id : this.user.id;
 
       // Categories
       this.api.countCategories(this.id).subscribe(result => {
@@ -364,12 +363,10 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   };
   rtDeviceHandler = (payload: any) => {
     const device = payload.content;
-    if (device.userId == this.user.id || (this.organization && device.Organizations.map(x => x.id).includes(this.organization.id)))
       payload.action == "CREATE" ? this.countDevices++ : payload.action == "DELETE" ? this.countDevices-- : 0;
   };
   rtMsgHandler = (payload: any) => {
     const msg = payload.content;
-    if (msg.userId == this.user.id || (this.organization && msg.Device.Organizations.map(x => x.id).includes(this.organization.id)))
       payload.action == "CREATE" ? this.countMessages++ : payload.action == "DELETE" ? this.countMessages-- : 0;
   };
   rtAlertHandler = (payload: any) => {

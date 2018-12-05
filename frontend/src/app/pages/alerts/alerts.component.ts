@@ -262,7 +262,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.unsubscribe();
-    this.subscribe();
+    this.subscribe(this.user.id);
 
     // Get and listen alerts
     this.userApi.getAlerts(this.user.id, {
@@ -527,7 +527,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
     }
   };
 
-  subscribe(): void {
+  subscribe(id: string): void {
+    this.rt.informCurrentPage(id, ['category']);
     this.rtHandler = this.rt.addListener("alert", this.rtHandler);
   }
 
