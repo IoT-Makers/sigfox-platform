@@ -626,7 +626,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let device of devices; let i = index">
+              <tr *ngFor="let device of devices | slice:0:numberOfDevicesToSee; let i = index">
                 <td class="text-center">
                   <button class="btn btn-sm btn-outline-primary btn-round" tooltip="See device latest message"
                           (click)="seeDevice(device)"><i class="fa fa-eye fa-lg"></i></button>

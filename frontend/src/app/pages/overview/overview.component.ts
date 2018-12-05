@@ -402,6 +402,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     if (device.userId == this.user.id || (this.organization && device.Organizations.map(x => x.id).includes(this.organization.id))) {
       if (payload.action == "CREATE") {
         this.devices.unshift(payload.content);
+        if (this.devices.length > this.numberOfDevicesToSee) this.devices.pop();
         this.countDevices++;
       } else if (payload.action == "DELETE") {
         this.countDevices--;
