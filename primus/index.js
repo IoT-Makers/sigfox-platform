@@ -252,8 +252,8 @@ function geolocHandler(payload) {
         const userId = geoloc.userId;
         console.debug(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
-        db.collection("Organizationuser").find({userId: ObjectId(userId)}).toArray((err, ous) => {
-            const targets = getTargetClients(userId, 'geoloc', ous.map(ou => ou.organizationId.toString()));
+        db.collection("OrganizationDevice").find({deviceId: geoloc.deviceId}).toArray((err, ods) => {
+            const targets = getTargetClients(userId, 'geoloc', ods.map(od => od.organizationId.toString()));
             send(targets.countOnly, payload.event, payload.action, null);
             if (!targets.complete) return;
             // if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, device);
