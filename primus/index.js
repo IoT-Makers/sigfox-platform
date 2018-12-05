@@ -9,6 +9,7 @@ const rabbitUrl = process.env.RABBIT_URL || 'amqp://usr:pwd@localhost';
 const healthcheckToken = 'healthcheck';
 
 let db;
+let adminRoleID;
 // var http = require('http');
 // var server = http.createServer(/* request handler */);
 const primus = Primus.createServer(function connection(spark) {
@@ -31,6 +32,12 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 
     db = client.db(dbName);
     console.log("Primus connected to Mongo");
+
+    // cache admin role id
+    const Role = db.collection('Role');
+    Role.findOne({name: 'admin'}).then(adminRole => {
+        adminRoleID = adminRole._id;
+    });
 });
 
 
@@ -128,9 +135,14 @@ primus.on('connection', function connection(spark) {
         }
         spark.userId = token.userId.toString();
 
+        const RoleMapping = db.collection('RoleMapping');
+        RoleMapping.findOne({principalId: spark.userId}).then(userRM => {
+            spark.userIsAdmin = userRM.roleId.toString() === adminRoleID.toString();
+        });
+
         // Update user properties: connected
-        let user = db.collection("user");
-        user.update({_id: ObjectId(spark.userId)}, {
+        const user = db.collection("user");
+        user.updateOne({_id: token.userId}, {
             $set: {
                 connected: true,
                 connectedAt: new Date()
