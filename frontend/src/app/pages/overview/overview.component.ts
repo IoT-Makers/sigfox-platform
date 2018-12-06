@@ -423,9 +423,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
         let device = msg.Device;
         device.Messages = [msg];
         device.messagedAt = msg.updatedAt;
-        this.devices.unshift(device);
-        if (this.devices.length > this.numberOfDevicesToSee)
-          idx != -1 ? this.devices.splice(idx, 1) : this.devices.pop();
+        if (idx == -1) this.devices.unshift(device);
+        if (this.devices.length > this.numberOfDevicesToSee) this.devices.pop();
       } else if (payload.action == "DELETE") {
         this.countMessages--;
         this.devices[idx].Messages = this.devices[idx].Messages.filter((msg) => {
