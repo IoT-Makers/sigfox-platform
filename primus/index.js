@@ -331,7 +331,7 @@ function connectorHandler(payload) {
         const userId = connector.userId;
         log.debug(payload.action + ' connector ' + connector.id + ' for user ' + userId);
 
-        let targets = getTargetClients(userId, 'beacon');
+        let targets = getTargetClients(userId, 'connector');
         send(targets.countOnly, payload.event, payload.action, null);
         if (!targets.complete) return;
 
