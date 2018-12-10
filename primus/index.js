@@ -8,13 +8,11 @@ const mongodbUrl = process.env.MONGO_URL;
 const rabbitUrl = process.env.RABBIT_URL || 'amqp://usr:pwd@localhost';
 const healthcheckToken = 'healthcheck';
 const log = require('loglevel');
-// log.enableAll();
 log.setLevel('info');
+// log.enableAll();
 
 let db;
-let adminRoleID;
-// var http = require('http');
-// var server = http.createServer(/* request handler */);
+let AdminRoleID;
 const primus = Primus.createServer(function connection(spark) {
 
 }, {
@@ -39,7 +37,7 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
     // cache admin role id
     const Role = db.collection('Role');
     Role.findOne({name: 'admin'}).then(adminRole => {
-        adminRoleID = adminRole._id;
+        AdminRoleID = adminRole._id;
     });
 });
 
@@ -141,7 +139,7 @@ primus.on('connection', function connection(spark) {
 
         const RoleMapping = db.collection('RoleMapping');
         RoleMapping.findOne({principalId: spark.userId}).then(userRM => {
-            spark.userIsAdmin = userRM.roleId.toString() === adminRoleID.toString();
+            spark.userIsAdmin = userRM.roleId.toString() === AdminRoleID.toString();
         });
 
         // Update user properties: connected
@@ -323,8 +321,6 @@ function beaconHandler(payload) {
     }
 }
 
-
-// TODO: TEST THIS
 function connectorHandler(payload) {
     const connector = payload.content;
     if (connector) {
@@ -372,7 +368,6 @@ function dashboardHandler(payload) {
     }
 }
 
-// TODO: TEST
 function widgetHandler(payload) {
     const widget = payload.content;
     if (widget) {
