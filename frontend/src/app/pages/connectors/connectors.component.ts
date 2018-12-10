@@ -74,7 +74,7 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.unsubscribe();
-    this.subscribe();
+    this.subscribe(this.user.id);
 
     // Get and listen connectors
     this.userApi.getConnectors(this.user.id,{
@@ -187,7 +187,8 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
     }
   };
 
-  subscribe(): void {
+  subscribe(id: string): void {
+    this.rt.informCurrentPage(id, ['connector']);
     this.rtHandler = this.rt.addListener("connector", this.rtHandler);
   }
 
