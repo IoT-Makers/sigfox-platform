@@ -7,6 +7,9 @@ const ObjectId = mongolib.ObjectId;
 const mongodbUrl = process.env.MONGO_URL;
 const rabbitUrl = process.env.RABBIT_URL || 'amqp://usr:pwd@localhost';
 const healthcheckToken = 'healthcheck';
+const log = require('loglevel');
+// log.enableAll();
+log.setLevel('info');
 
 let db;
 let adminRoleID;
@@ -23,7 +26,7 @@ const primus = Primus.createServer(function connection(spark) {
 // Connect to the db
 MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) {
     if (err) {
-        console.error("MONGO_URL not set on Primus");
+        log.error("MONGO_URL not set on Primus");
         throw err;
     }
     // get db name
@@ -31,7 +34,7 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
     let dbName = s[s.length - 1];
 
     db = client.db(dbName);
-    console.log("Primus connected to Mongo");
+    log.info("Primus connected to Mongo");
 
     // cache admin role id
     const Role = db.collection('Role');
@@ -45,21 +48,21 @@ const ex = 'realtime_exchange';
 amqp.connect(rabbitUrl, function (err, conn) {
     conn.createChannel(function (err, ch) {
         if (err) {
-            console.error("RABBIT_URL not set on Primus");
+            log.error("RABBIT_URL not set on Primus");
             throw err;
         }
         ch.assertExchange(ex, 'fanout', {durable: true});
         ch.assertQueue('', {exclusive: true}, function (err, q) {
             if (err) {
-                console.error("RABBIT_URL not set on Primus");
+                log.error("RABBIT_URL not set on Primus");
                 throw err;
             }
             ch.bindQueue(q.queue, ex, '');
-            console.log("Primus connected to RabbitMQ");
+            log.info("Primus connected to RabbitMQ");
             ch.consume(q.queue, function (msg) {
                 let payload = JSON.parse(msg.content.toString());
                 if (!payload) return;
-                // console.log(payload);
+                // log.log(payload);
                 adminStatsHandler(payload);
                 switch (payload.event) {
                     case "message":
@@ -125,12 +128,12 @@ primus.on('connection', function connection(spark) {
     // manual auth hook, attach userId to spark if access token found
     const access_token = spark.request.query.access_token;
     if (!access_token || access_token === healthcheckToken) return spark.end();
-    console.info(primus.connected + " clients connected");
+    log.info(primus.connected + " clients connected");
 
     let AccessToken = db.collection("AccessToken");
     AccessToken.findOne({_id: access_token}, (err, token) => {
         if (err || !token) {
-            console.info("Access token not found");
+            log.info("Access token not found");
             spark.end();
             return;
         }
@@ -150,8 +153,8 @@ primus.on('connection', function connection(spark) {
             }
         }, (err, user) => {
             if (err || !user) {
-                console.info("User not found");
-            } else console.info('[' + spark.userId + '] Updated fields connected and connectedAt');
+                log.info("[connection] User not found");
+            } else log.debug('[' + spark.userId + '] Updated fields connected and connectedAt');
         });
     });
 
@@ -163,7 +166,7 @@ primus.on('connection', function connection(spark) {
             type: listenerType,
             listenTo: data.listenTo
         };
-        console.debug("listenerInfo", spark.listenerInfo);
+        log.debug("listenerInfo", spark.listenerInfo);
     });
 });
 
@@ -174,8 +177,8 @@ primus.on('disconnection', function (spark) {
     let user = db.collection("user");
     user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, disconnectedAt: new Date()}}, (err, user) => {
         if (err || !user) {
-            console.info("User not found");
-        } else console.info('[' + spark.userId + '] Updated fields connected and disconnectedAt');
+            log.info("[disconnection] User not found");
+        } else log.debug('[' + spark.userId + '] Updated fields connected and disconnectedAt');
     });
 });
 
@@ -185,7 +188,7 @@ function messageHandler(payload) {
     if (msg) {
         // from message.ts
         const userId = msg.userId;
-        console.debug(payload.action + ' message ' + msg.id + ' for user ' + userId);
+        log.debug(payload.action + ' message ' + msg.id + ' for user ' + userId);
         let targets = getTargetClients(userId, 'message', payload.device.Organizations.map(o => o.id.toString()));
 
         send(targets.countOnly, payload.event, payload.action, null);
@@ -205,7 +208,7 @@ function deviceHandler(payload) {
     const userId = device.userId;
     if (device) {
         // from device.ts
-        console.debug(payload.action + ' device ' + device.id + ' for user ' + userId);
+        log.debug(payload.action + ' device ' + device.id + ' for user ' + userId);
 
         db.collection("OrganizationDevice").find({deviceId: device.id}).toArray((err, ods) => {
             const targets = getTargetClients(userId, 'device', ods.map(od => od.organizationId.toString()));
@@ -246,7 +249,7 @@ function parserHandler(payload) {
     if (parser) {
         // from parser.ts
         const userId = parser.userId;
-        console.debug(payload.action + ' parser ' + parser.id + ' for user ' + userId);
+        log.debug(payload.action + ' parser ' + parser.id + ' for user ' + userId);
         let targets = getTargetClients(userId, 'parser');
         send(targets.countOnly, payload.event, payload.action, null);
         if (!targets.complete) return;
@@ -263,7 +266,7 @@ function geolocHandler(payload) {
     const geoloc = payload.content;
     if (geoloc) {
         const userId = geoloc.userId;
-        console.debug(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
+        log.debug(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
         db.collection("OrganizationDevice").find({deviceId: geoloc.deviceId}).toArray((err, ods) => {
             const targets = getTargetClients(userId, 'geoloc', ods.map(od => od.organizationId.toString()));
@@ -290,7 +293,7 @@ function alertHandler(payload) {
     const userId = alert.userId;
     if (alert) {
         // from alert.ts
-        console.debug(payload.action + ' alert ' + alert.id + ' for user ' + userId);
+        log.debug(payload.action + ' alert ' + alert.id + ' for user ' + userId);
         let targets = getTargetClients(userId, 'alert');
         send(targets.countOnly, payload.event, payload.action, null);
         if (!targets.complete) return;
@@ -310,7 +313,7 @@ function beaconHandler(payload) {
     const beacon = payload.content;
     const userId = beacon.userId;
     if (beacon) {
-        console.debug(payload.action + ' beacon ' + beacon.id + ' for user ' + userId);
+        log.debug(payload.action + ' beacon ' + beacon.id + ' for user ' + userId);
         let targets = getTargetClients(userId, 'beacon');
         send(targets.countOnly, payload.event, payload.action, null);
         if (!targets.complete) return;
@@ -326,7 +329,7 @@ function connectorHandler(payload) {
     const connector = payload.content;
     if (connector) {
         const userId = connector.userId;
-        console.debug(payload.action + ' connector ' + connector.id + ' for user ' + userId);
+        log.debug(payload.action + ' connector ' + connector.id + ' for user ' + userId);
 
         let targets = getTargetClients(userId, 'beacon');
         send(targets.countOnly, payload.event, payload.action, null);
@@ -340,7 +343,7 @@ function categoryHandler(payload) {
     const category = payload.content;
     if (category) {
         const userId = category.userId;
-        console.debug(payload.action + ' category ' + category.id + ' for user ' + userId);
+        log.debug(payload.action + ' category ' + category.id + ' for user ' + userId);
 
         let targets = getTargetClients(userId, 'category');
         send(targets.countOnly, payload.event, payload.action, null);
@@ -362,7 +365,7 @@ function dashboardHandler(payload) {
     if (dashboard) {
         const userId = dashboard.userId;
         // from dashboard.ts
-        console.debug(payload.action + ' dashboard ' + dashboard.id + ' for user ' + userId);
+        log.debug(payload.action + ' dashboard ' + dashboard.id + ' for user ' + userId);
         let targetClients = getTargetClients(userId, 'dashboard', [dashboard.organizationId]);
         if (!targetClients.complete) return;
         return send(targetClients.complete, payload.event, payload.action, dashboard);
@@ -375,7 +378,7 @@ function widgetHandler(payload) {
     if (widget) {
         const userId = widget.userId;
         // from widget.ts
-        console.debug(payload.action + ' widget ' + widget.id + ' for user ' + userId);
+        log.debug(payload.action + ' widget ' + widget.id + ' for user ' + userId);
         let targetClients = getTargetClients(userId, 'widget');
         send(targetClients.countOnly, payload.event, payload.action, null);
         if (!targetClients.complete) return;
@@ -408,7 +411,7 @@ function getTargetClients(userId, event='', orgIDs=null) {
     primus.forEach(function (spark, id, connections) {
         const listenerInfo = spark.listenerInfo;
         if (!listenerInfo) return;
-        // console.error(listenerInfo.listenTo);
+        // log.error(listenerInfo.listenTo);
 
         if (listenerInfo.type === 'personal') {
             if (listenerInfo.id === userId)
@@ -422,8 +425,7 @@ function getTargetClients(userId, event='', orgIDs=null) {
                     countOnly.push(spark);
         }
     });
-    console.debug(`[${event}] ${complete.length} users needs detail`);
-    console.debug(`[${event}] ${countOnly.length} users needs only count`);
+    log.debug(`[${event}] ${complete.length} users needs detail, ${countOnly.length} users needs only count`);
     return {complete: complete, countOnly: countOnly};
 }
 
@@ -445,14 +447,13 @@ function send(targetClients, eventName, action, content) {
     };
     targetClients.forEach(function (spark) {
         spark.write(outgoingPayload);
-        console.log(action + " sent");
+        log.log(action + " sent " + spark.userId);
     });
 }
 
 primus.on('disconnection', function end(spark) {
-    console.log('disconnection');
     // don't log health check
-    if (spark.userId) console.info(primus.connected + " clients connected");
+    if (spark.userId) log.info(`disconnection ${primus.connected} clients connected`);
 });
 
 
