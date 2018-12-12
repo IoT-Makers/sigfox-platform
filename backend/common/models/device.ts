@@ -236,7 +236,7 @@ class Device {
                             console.error(err);
                           } else {
                             if (created) {
-                              console.log("Created geoloc as: ", geolocInstance);
+                              // console.log("Created geoloc as: ", geolocInstance);
                             } else {
                               console.log("Skipped geoloc creation.");
                             }

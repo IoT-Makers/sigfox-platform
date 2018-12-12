@@ -358,7 +358,7 @@ class Geoloc {
             (err: any, geolocInstance: any, created: boolean) => { // callback
               if (err) return next(err, geolocInstance);
               else if (created) {
-                console.log('Created geoloc as: ', geolocInstance);
+                // console.log('Created geoloc as: ', geolocInstance);
                 this.updateDeviceLocatedAt(geolocInstance.deviceId, geolocInstance.createdAt);
                 return next(null, geolocInstance);
               } else return next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
@@ -384,7 +384,7 @@ class Geoloc {
       (err: any, geolocInstance: any) => {
         if (err) console.error(err);
         else {
-          console.log('Created geoloc as: ', geolocInstance);
+          // console.log('Created geoloc as: ', geolocInstance);
           this.updateDeviceLocatedAt(geolocInstance.deviceId, geolocInstance.createdAt);
         }
       });

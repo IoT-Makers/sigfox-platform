@@ -179,7 +179,7 @@ class Message {
 
                         // Decode the payload
                         Parser.parsePayload(
-                          deviceUpdated.Parser.function,
+                          deviceUpdated.Parser,
                           message.data,
                           req,
                           (err: any, data_parsed: any) => {
@@ -212,7 +212,7 @@ class Message {
 
                 // Decode the payload
                 Parser.parsePayload(
-                  deviceInstance.Parser.function,
+                  deviceInstance.Parser,
                   message.data,
                   req,
                   (err: any, data_parsed: any) => {
