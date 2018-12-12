@@ -89,7 +89,7 @@ class Parser {
     if (payload !== "") {
       try {
         const script = this.getCompiledParser(parser);
-        data_parsed = script.runInNewContext({payload: payload});
+        data_parsed = script.runInNewContext({payload: payload}, {timeout: 5000});
         console.log("Parser | Success data parsed");
         next(null, data_parsed);
       } catch (err) {
