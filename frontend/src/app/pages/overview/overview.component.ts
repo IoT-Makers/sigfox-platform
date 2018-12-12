@@ -27,7 +27,7 @@ declare const google: any;
 export class OverviewComponent implements OnInit, OnDestroy {
 
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
-
+  
   // Flags
   public devicesReady = false;
   public messagesReady = false;
@@ -53,6 +53,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
   public devices: Device[] = [];
   private alerts: Alert[] = [];
   private categories: Category[] = [];
+
+  private numberOfDevicesToSee = 10;
 
   private isLimit_hourly = false;
   private isLimit_daily = false;
@@ -184,12 +186,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.unsubscribe();
-    this.subscribe();
-    console.log('Setup Overview');
-
     const api = this.organization ? this.organizationApi : this.userApi;
     const id = this.organization ? this.organization.id : this.user.id;
+    this.unsubscribe();
+    this.subscribe(id);
+    console.log('Setup Overview');
+
     // Categories
     api.countCategories(id).subscribe(result => {
       this.countCategories = result.count;
@@ -198,7 +200,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Devices
     api.getDevices(id, {
-      limit: 10,
+      limit: this.numberOfDevicesToSee,
       order: 'messagedAt DESC',
       include: ['Category', {
         relation: 'Messages',
@@ -397,9 +399,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
   };
   rtDeviceHandler = (payload: any) => {
     const device = payload.content;
-    if (device.userId == this.user.id || (this.organization && device.Device.Organizations.map(x => x.id).includes(this.organization.id))) {
+    if (device.userId == this.user.id || (this.organization && device.Organizations.map(x => x.id).includes(this.organization.id))) {
       if (payload.action == "CREATE") {
         this.devices.unshift(payload.content);
+        if (this.devices.length > this.numberOfDevicesToSee) this.devices.pop();
         this.countDevices++;
       } else if (payload.action == "DELETE") {
         this.countDevices--;
@@ -419,8 +422,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.countMessages++;
         let device = msg.Device;
         device.Messages = [msg];
-        this.devices.unshift(device);
-        idx != -1 ? this.devices.splice(idx, 1) : this.devices.pop();
+        device.messagedAt = msg.updatedAt;
+        if (idx == -1) this.devices.unshift(device);
+        if (this.devices.length > this.numberOfDevicesToSee) this.devices.pop();
       } else if (payload.action == "DELETE") {
         this.countMessages--;
         this.devices[idx].Messages = this.devices[idx].Messages.filter((msg) => {
@@ -448,7 +452,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
   };
 
-  subscribe(): void {
+  subscribe(id: string): void {
+    this.rt.informCurrentPage(id, ['geoloc', 'device', 'message']);
     this.rtCategoryHandler = this.rt.addListener("category", this.rtCategoryHandler);
     this.rtDeviceHandler = this.rt.addListener("device", this.rtDeviceHandler);
     this.rtMsgHandler = this.rt.addListener("message", this.rtMsgHandler);

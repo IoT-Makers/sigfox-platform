@@ -110,7 +110,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.cleanSetup();
-    this.subscribe();
+    this.subscribe(this.user.id);
 
     const api = this.admin ? this.beaconApi.find({
       order: 'createdAt DESC',
@@ -287,7 +287,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     }
   };
 
-  subscribe(): void {
+  subscribe(id: string): void {
+    this.rt.informCurrentPage(id, ['beacon']);
     this.rtHandler = this.rt.addListener("beacon", this.rtHandler);
   }
 

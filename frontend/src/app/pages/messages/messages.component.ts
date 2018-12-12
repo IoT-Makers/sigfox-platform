@@ -96,9 +96,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.unsubscribe();
-    this.subscribe();
-
     // Get and listen messages
     this.deviceIdSub = this.route.params.subscribe(params => {
       this.filterQuery = params['id'];
@@ -118,6 +115,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
       }
       this.api = this.organization ? this.organizationApi : this.userApi;
       this.id = this.organization ? this.organization.id : this.user.id;
+      this.unsubscribe();
+      this.subscribe(this.id);
 
       if (this.organization) {
         this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
@@ -268,7 +267,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
     }
   };
 
-  subscribe(): void {
+  subscribe(id: string): void {
+    this.rt.informCurrentPage(id, ['message', 'geoloc']);
     this.rtHandler = this.rt.addListener('message', this.rtHandler);
     this.geolocHandler = this.rt.addListener('geoloc', this.geolocHandler);
   }
