@@ -1,6 +1,6 @@
 'use strict';
 const Primus = require('primus');
-const amqp = require('amqplib/callback_api');
+const amqp = require('amqplib');
 const mongolib = require('mongodb');
 const MongoClient = mongolib.MongoClient;
 const ObjectId = mongolib.ObjectId;
@@ -42,64 +42,59 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 });
 
 
-const ex = 'realtime_exchange';
-amqp.connect(rabbitUrl, function (err, conn) {
-    conn.createChannel(function (err, ch) {
-        if (err) {
-            log.error("RABBIT_URL not set on Primus");
-            throw err;
-        }
-        ch.assertExchange(ex, 'fanout', {durable: true});
-        ch.assertQueue('', {exclusive: true}, function (err, q) {
-            if (err) {
-                log.error("RABBIT_URL not set on Primus");
-                throw err;
-            }
-            ch.bindQueue(q.queue, ex, '');
-            log.info("Primus connected to RabbitMQ");
-            ch.consume(q.queue, function (msg) {
-                let payload = JSON.parse(msg.content.toString());
-                if (!payload) return;
-                // log.log(payload);
-                adminStatsHandler(payload);
-                switch (payload.event) {
-                    case "message":
-                        messageHandler(payload);
-                        break;
-                    case "device":
-                        deviceHandler(payload);
-                        break;
-                    case "parser":
-                        parserHandler(payload);
-                        break;
-                    case "geoloc":
-                        geolocHandler(payload);
-                        break;
-                    case "alert":
-                        alertHandler(payload);
-                        break;
-                    case "beacon":
-                        beaconHandler(payload);
-                        break;
-                    case "connector":
-                        connectorHandler(payload);
-                        break;
-                    case "category":
-                        categoryHandler(payload);
-                        break;
-                    case "dashboard":
-                        dashboardHandler(payload);
-                        break;
-                    case "widget":
-                        widgetHandler(payload);
-                        break;
-                    default:
-                        break;
-                }
-            }, {noAck: true});
-        });
+const EX = 'realtime_exchange_v2';
+let openConn = amqp.connect(rabbitUrl);
+openConn.then(conn => {
+    return conn.createChannel();
+}).then(ch => {
+    ch.assertExchange(EX, 'fanout', {durable: true});
+    return ch.assertQueue('', {exclusive: true}).then(function(q) {
+        log.info("Primus connected to RabbitMQ");
+        ch.bindQueue(q.queue, EX, '');
+        return ch.consume(q.queue, handlers, {noAck: true});
     });
-});
+}).catch(log.error);
+
+const handlers = function (msg) {
+    let payload = JSON.parse(msg.content.toString());
+    if (!payload) return;
+    // log.log(payload);
+    adminStatsHandler(payload);
+    switch (payload.event) {
+        case "message":
+            messageHandler(payload);
+            break;
+        case "device":
+            deviceHandler(payload);
+            break;
+        case "parser":
+            parserHandler(payload);
+            break;
+        case "geoloc":
+            geolocHandler(payload);
+            break;
+        case "alert":
+            alertHandler(payload);
+            break;
+        case "beacon":
+            beaconHandler(payload);
+            break;
+        case "connector":
+            connectorHandler(payload);
+            break;
+        case "category":
+            categoryHandler(payload);
+            break;
+        case "dashboard":
+            dashboardHandler(payload);
+            break;
+        case "widget":
+            widgetHandler(payload);
+            break;
+        default:
+            break;
+    }
+};
 //
 // Add auth hook on server
 //
