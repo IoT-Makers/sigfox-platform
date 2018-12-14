@@ -43,23 +43,79 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 
 
 const EX = 'realtime_exchange_v2';
+let WorkerCh;
+
+// worker connection
+amqp.connect(rabbitUrl).then(conn => {
+    return conn.createChannel();
+}).then(ch => {
+    WorkerCh = ch;
+    WorkerCh.assertExchange(EX, 'topic', {durable: true});
+    return WorkerCh.assertQueue('task_queue', {durable: true}).then(function(q) {
+        log.info("Worker connected to RabbitMQ");
+        WorkerCh.bindQueue('task_queue', EX, 'noOrg');
+        return WorkerCh.consume('task_queue', workerHandlers);
+    });
+}).catch(log.error);
+
+const workerHandlers = function (msg) {
+    let payload = JSON.parse(msg.content.toString());
+    if (!payload) return;
+    switch (payload.event) {
+        case "device":
+            deviceWorker(payload);
+            break;
+        case "geoloc":
+            geolocWorker(payload);
+            break;
+    }
+};
+
+function deviceWorker(payload) {
+    const device = payload.content;
+    if (!device) return;
+    const userId = device.userId;
+    log.debug(payload.action + ' device ' + device.id + ' for user ' + userId);
+
+    db.collection("OrganizationDevice").find({deviceId: device.id}).toArray((err, ods) => {
+        const orgIds = ods.map(od => od.organizationId.toString());
+        payload.orgIds = orgIds;
+        let rk = `${userId}.${orgIds}`;
+        WorkerCh.publish(EX, rk, Buffer.from(JSON.stringify(payload), 'utf8'));
+    });
+
+}
+
+function geolocWorker(payload) {
+    const geoloc = payload.content;
+    if (!geoloc) return;
+    const userId = geoloc.userId;
+    log.debug(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
+
+    db.collection("OrganizationDevice").find({deviceId: geoloc.deviceId}).toArray((err, ods) => {
+        const orgIds = ods.map(od => od.organizationId.toString());
+        payload.orgIds = orgIds;
+        let rk = `${userId}.${orgIds}`;
+        WorkerCh.publish(EX, rk, Buffer.from(JSON.stringify(payload), 'utf8'));
+    });
+}
+
 let Queue;
 let Ch;
-const openConn = amqp.connect(rabbitUrl);
-openConn.then(conn => {
+
+amqp.connect(rabbitUrl).then(conn => {
     return conn.createChannel();
 }).then(ch => {
     Ch = ch;
     Ch.assertExchange(EX, 'topic', {durable: true});
-    return ch.assertQueue('', {exclusive: true}).then(function(q) {
+    return Ch.assertQueue('', {exclusive: true}).then(function(q) {
         Queue = q;
         log.info("Primus connected to RabbitMQ");
-        Ch.bindQueue(Queue.queue, EX, '#.all');
-        return Ch.consume(Queue.queue, handlers, {noAck: true});
+        return Ch.consume(Queue.queue, rtHandlers, {noAck: true});
     });
 }).catch(log.error);
 
-const handlers = function (msg) {
+const rtHandlers = function (msg) {
     let payload = JSON.parse(msg.content.toString());
     if (!payload) return;
     // log.log(payload);
@@ -202,38 +258,37 @@ function messageHandler(payload) {
 
 function deviceHandler(payload) {
     const device = payload.content;
-    const userId = device.userId;
+    log.error(payload);
     if (device) {
         // from device.ts
+        const userId = device.userId;
         log.debug(payload.action + ' device ' + device.id + ' for user ' + userId);
 
-        db.collection("OrganizationDevice").find({deviceId: device.id}).toArray((err, ods) => {
-            const targets = getTargetClients(userId, 'device', ods.map(od => od.organizationId.toString()));
-            send(targets.countOnly, payload.event, payload.action, null);
-            if (!targets.complete) return;
-            if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, device);
+        const targets = getTargetClients(userId, 'device', payload.orgIds);
+        send(targets.countOnly, payload.event, payload.action, null);
+        if (!targets.complete) return;
+        if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, device);
 
-            let organizations = [];
-            let promises = [];
-            ods.forEach(od => {
-                promises.push(db.collection("Organization").findOne({_id: ObjectId(od.organizationId)}).then(org => {
-                    organizations.push(org);
-                }));
-            });
-            Promise.all(promises).then(_ => {
-                addAttribute(device, "Organizations", organizations);
-                db.collection("Message").find({deviceId: device.id}).limit(1).sort({"createdAt": -1}).toArray((err, messages) => {
-                    addAttribute(device, "Messages", messages);
-                    db.collection("Parser").findOne({_id: ObjectId(device.parserId)}, (err, parser) => {
-                        addAttribute(device, "Parser", parser);
+        let organizations = [];
+        let promises = [];
+        payload.orgIds.forEach(od => {
+            promises.push(db.collection("Organization").findOne({_id: ObjectId(od.organizationId)}).then(org => {
+                organizations.push(org);
+            }));
+        });
+        Promise.all(promises).then(_ => {
+            addAttribute(device, "Organizations", organizations);
+            db.collection("Message").find({deviceId: device.id}).limit(1).sort({"createdAt": -1}).toArray((err, messages) => {
+                addAttribute(device, "Messages", messages);
+                db.collection("Parser").findOne({_id: ObjectId(device.parserId)}, (err, parser) => {
+                    addAttribute(device, "Parser", parser);
 
-                        if (device.categoryId)
-                            db.collection("Category").findOne({_id: ObjectId(device.categoryId)}, (err, category) => {
-                                addAttribute(device, "Category", category);
-                                return send(targets.complete, payload.event, payload.action, device);
-                            });
-                        return send(targets.complete, payload.event, payload.action, device);
-                    });
+                    if (device.categoryId)
+                        db.collection("Category").findOne({_id: ObjectId(device.categoryId)}, (err, category) => {
+                            addAttribute(device, "Category", category);
+                            return send(targets.complete, payload.event, payload.action, device);
+                        });
+                    return send(targets.complete, payload.event, payload.action, device);
                 });
             });
         });
@@ -265,19 +320,17 @@ function geolocHandler(payload) {
         const userId = geoloc.userId;
         log.debug(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
-        db.collection("OrganizationDevice").find({deviceId: geoloc.deviceId}).toArray((err, ods) => {
-            const targets = getTargetClients(userId, 'geoloc', ods.map(od => od.organizationId.toString()));
-            send(targets.countOnly, payload.event, payload.action, null);
-            if (!targets.complete) return;
-            // if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, device);
-            addAttribute(geoloc, "Device", payload.device);
-            if (geoloc.beaconId) {
-                db.collection("Beacon").findOne({_id: geoloc.beaconId}, (err, beacon) => {
-                    addAttribute(geoloc, "Beacon", beacon);
-                    return send(targets.complete, payload.event, payload.action, geoloc);
-                });
-            } else return send(targets.complete, payload.event, payload.action, geoloc);
-        });
+        const targets = getTargetClients(userId, 'geoloc', payload.orgIds);
+        send(targets.countOnly, payload.event, payload.action, null);
+        if (!targets.complete) return;
+        // if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, device);
+        addAttribute(geoloc, "Device", payload.device);
+        if (geoloc.beaconId) {
+            db.collection("Beacon").findOne({_id: geoloc.beaconId}, (err, beacon) => {
+                addAttribute(geoloc, "Beacon", beacon);
+                return send(targets.complete, payload.event, payload.action, geoloc);
+            });
+        } else return send(targets.complete, payload.event, payload.action, geoloc);
     }
 }
 

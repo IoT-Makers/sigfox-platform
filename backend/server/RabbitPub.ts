@@ -39,6 +39,8 @@ export class RabbitPub {
       } else if (conn) {
         conn.createChannel((err, ch) => {
           if (err) console.error(err);
+          ch.assertQueue('task_queue', {durable: true});
+          ch.bindQueue('task_queue', this.EX, 'noOrg');
           ch.assertExchange(this.EX, 'topic', {durable: true}, (err, ok) => {
             if (err) console.error(err);
             this._ch = ch;
@@ -52,9 +54,11 @@ export class RabbitPub {
     if (!this._ch) return;
     let rk = msg.content.userId.toString();
     if (addRoutingKey)
-      rk = `${rk}.${addRoutingKey}`;
+      addRoutingKey === 'noOrg' ?
+        rk = 'noOrg' :
+        rk = `${rk}.${addRoutingKey}`;
     // if (msg.event === 'geoloc')
-      console.log(rk);
+    console.log(rk);
 
     this._ch.publish(this.EX, rk, Buffer.from(JSON.stringify(msg), 'utf8'));
   }

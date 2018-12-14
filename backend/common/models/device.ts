@@ -467,7 +467,7 @@ class Device {
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
     if (!ctx.isNewInstance)
-    RabbitPub.getInstance().pub(payload, 'all');
+    RabbitPub.getInstance().pub(payload, 'noOrg');
     next();
   }
 }
