@@ -528,7 +528,6 @@ class Message {
         content: msg,
         action: ctx.isNewInstance ? "CREATE" : "UPDATE"
       };
-      RabbitPub.getInstance().pub(payload);
       const orgIds = device.Organizations().map((o: Organization) => o.id.toString()).join('.');
       RabbitPub.getInstance().pub(payload, orgIds);
     }));
