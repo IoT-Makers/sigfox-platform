@@ -97,7 +97,14 @@
   },
   "Geoloc": {
     "dataSource": "mongodb",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "createFromParsedPayload": false
+        }
+      }
+    }
   },
   "AppSetting": {
     "dataSource": "mongodb",
