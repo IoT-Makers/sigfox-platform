@@ -419,7 +419,7 @@ class Geoloc {
       content: geoloc,
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
-    RabbitPub.getInstance().pub(payload);
+    RabbitPub.getInstance().pub(payload, 'all');
     next();
   }
 }

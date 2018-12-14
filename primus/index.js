@@ -8,8 +8,8 @@ const mongodbUrl = process.env.MONGO_URL;
 const rabbitUrl = process.env.RABBIT_URL || 'amqp://usr:pwd@localhost';
 const healthcheckToken = 'healthcheck';
 const log = require('loglevel');
-log.setLevel('info');
-// log.enableAll();
+// log.setLevel('info');
+log.enableAll();
 
 let db;
 let AdminRoleID;
@@ -43,15 +43,19 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 
 
 const EX = 'realtime_exchange_v2';
-let openConn = amqp.connect(rabbitUrl);
+let Queue;
+let Ch;
+const openConn = amqp.connect(rabbitUrl);
 openConn.then(conn => {
     return conn.createChannel();
 }).then(ch => {
-    ch.assertExchange(EX, 'fanout', {durable: true});
+    Ch = ch;
+    Ch.assertExchange(EX, 'topic', {durable: true});
     return ch.assertQueue('', {exclusive: true}).then(function(q) {
+        Queue = q;
         log.info("Primus connected to RabbitMQ");
-        ch.bindQueue(q.queue, EX, '');
-        return ch.consume(q.queue, handlers, {noAck: true});
+        Ch.bindQueue(Queue.queue, EX, '#.all');
+        return Ch.consume(Queue.queue, handlers, {noAck: true});
     });
 }).catch(log.error);
 
@@ -110,10 +114,6 @@ const handlers = function (msg) {
 //     }
 // });
 
-//
-// Listen for new connections and send data
-//
-
 // Handle connections to user client
 primus.on('connection', function connection(spark) {
     if (!db) return;
@@ -123,6 +123,7 @@ primus.on('connection', function connection(spark) {
     if (!access_token || access_token === healthcheckToken) return spark.end();
     log.info(primus.connected + " clients connected");
 
+    // auth & stats
     let AccessToken = db.collection("AccessToken");
     AccessToken.findOne({_id: access_token}, (err, token) => {
         if (err || !token) {
@@ -154,6 +155,7 @@ primus.on('connection', function connection(spark) {
     spark.on('data', function (data) {
         const id = data.id;
         const listenerType = id === spark.userId ? 'personal' : 'org';
+        Ch.bindQueue(Queue.queue, EX, `${id}.#`);
         spark.listenerInfo = {
             id: id,
             type: listenerType,
@@ -167,6 +169,8 @@ primus.on('connection', function connection(spark) {
 // Handle disconnections
 primus.on('disconnection', function (spark) {
     if (!db || !spark.userId) return;
+    // TODO: Ch.unbindQueue with bind count
+    Ch.unbindQueue(Queue.queue, EX, spark.listenerInfo.id);
     let user = db.collection("user");
     user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, disconnectedAt: new Date()}}, (err, user) => {
         if (err || !user) {

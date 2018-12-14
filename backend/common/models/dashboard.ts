@@ -65,6 +65,9 @@ class Dashboard {
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
     RabbitPub.getInstance().pub(payload);
+    dashboard.organizationId ?
+      RabbitPub.getInstance().pub(payload, dashboard.organizationId) :
+      RabbitPub.getInstance().pub(payload);
     next();
   }
 }
