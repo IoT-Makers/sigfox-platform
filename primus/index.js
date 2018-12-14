@@ -42,7 +42,7 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 });
 
 
-const EX = 'realtime_exchange_v2';
+const EX = 'realtime_exchange';
 let openConn = amqp.connect(rabbitUrl);
 openConn.then(conn => {
     return conn.createChannel();
