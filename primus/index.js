@@ -270,17 +270,13 @@ function geolocHandler(payload) {
             send(targets.countOnly, payload.event, payload.action, null);
             if (!targets.complete) return;
             // if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, device);
-
-            db.collection("Device").findOne({_id: geoloc.deviceId}, (err, device) => {
-                addAttribute(geoloc, "Device", device);
-
-                if (geoloc.beaconId) {
-                    db.collection("Beacon").findOne({_id: geoloc.beaconId}, (err, beacon) => {
-                        addAttribute(geoloc, "Beacon", beacon);
-                        return send(targets.complete, payload.event, payload.action, geoloc);
-                    });
-                } else return send(targets.complete, payload.event, payload.action, geoloc);
-            });
+            addAttribute(geoloc, "Device", payload.device);
+            if (geoloc.beaconId) {
+                db.collection("Beacon").findOne({_id: geoloc.beaconId}, (err, beacon) => {
+                    addAttribute(geoloc, "Beacon", beacon);
+                    return send(targets.complete, payload.event, payload.action, geoloc);
+                });
+            } else return send(targets.complete, payload.event, payload.action, geoloc);
         });
     }
 }

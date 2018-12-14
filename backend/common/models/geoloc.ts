@@ -359,7 +359,6 @@ class Geoloc {
               if (err) return next(err, geolocInstance);
               else if (created) {
                 // console.log('Created geoloc as: ', geolocInstance);
-                this.updateDeviceLocatedAt(geolocInstance.deviceId, geolocInstance.createdAt);
                 return next(null, geolocInstance);
               } else return next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
             });
@@ -367,13 +366,16 @@ class Geoloc {
       });
   }
 
-  updateDeviceLocatedAt(deviceId: string, createdAt: Date) {
+  updateDeviceLocatedAt(deviceId: string, createdAt: Date, cb: Function) {
     // Models
     const Device = this.model.app.models.Device;
 
     Device.findById(deviceId, (err: any, deviceInstance: any) => {
       if (err) console.error(err);
-      else if (deviceInstance) deviceInstance.updateAttribute('locatedAt', createdAt);
+      else if (deviceInstance) {
+        deviceInstance.updateAttribute('locatedAt', createdAt);
+        cb(deviceInstance);
+      }
     });
   }
 
@@ -385,7 +387,6 @@ class Geoloc {
         if (err) console.error(err);
         else {
           // console.log('Created geoloc as: ', geolocInstance);
-          this.updateDeviceLocatedAt(geolocInstance.deviceId, geolocInstance.createdAt);
         }
       });
   }
@@ -414,12 +415,19 @@ class Geoloc {
   public afterSave(ctx: any, next: Function): void {
     // Pub-sub
     let geoloc = ctx.instance;
-    const payload = {
-      event: "geoloc",
-      content: geoloc,
-      action: ctx.isNewInstance ? "CREATE" : "UPDATE"
-    };
-    RabbitPub.getInstance().pub(payload, 'all');
+
+    if (ctx.isNewInstance) {
+      this.updateDeviceLocatedAt(geoloc.deviceId, geoloc.createdAt, (device: any) => {
+        const payload = {
+          event: "geoloc",
+          device: device,
+          content: geoloc,
+          action: "CREATE"
+        };
+        console.log(payload);
+        RabbitPub.getInstance().pub(payload, 'all');
+      });
+    }
     next();
   }
 }
