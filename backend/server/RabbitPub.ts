@@ -39,7 +39,7 @@ export class RabbitPub {
       } else if (conn) {
         conn.createChannel((err, ch) => {
           if (err) console.error(err);
-          ch.assertQueue('task_queue', {durable: true});
+          ch.assertQueue('task_queue', {durable: true, messageTtl: 5000});
           ch.bindQueue('task_queue', this.EX, 'noOrg');
           ch.assertExchange(this.EX, 'topic', {durable: true}, (err, ok) => {
             if (err) console.error(err);
@@ -50,14 +50,13 @@ export class RabbitPub {
     });
   }
 
-  public pub(msg: PubMessage, addRoutingKey?: string) {
+  public pub(msg: PubMessage, extraRoutingKey?: string) {
     if (!this._ch) return;
     let rk = msg.content.userId.toString();
-    if (addRoutingKey)
-      addRoutingKey === 'noOrg' ?
+    if (extraRoutingKey)
+      extraRoutingKey === 'noOrg' ?
         rk = 'noOrg' :
-        rk = `${rk}.${addRoutingKey}`;
-    // if (msg.event === 'geoloc')
+        rk = `${rk}.${extraRoutingKey}`;
     console.log(rk);
 
     this._ch.publish(this.EX, rk, Buffer.from(JSON.stringify(msg), 'utf8'));
@@ -65,4 +64,3 @@ export class RabbitPub {
 }
 
 
-// setTimeout(function() { conn.close(); process.exit(0) }, 500);

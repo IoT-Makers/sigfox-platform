@@ -30,7 +30,6 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
     // get db name
     let s = mongodbUrl.split("/");
     let dbName = s[s.length - 1];
-
     db = client.db(dbName);
     log.info("Primus connected to Mongo");
 
@@ -44,34 +43,53 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 
 const EX = 'realtime_exchange_v2';
 let WorkerCh;
+let RtQueue;
+let RtCh;
 
-// worker connection
 amqp.connect(rabbitUrl).then(conn => {
-    return conn.createChannel();
-}).then(ch => {
-    WorkerCh = ch;
-    WorkerCh.assertExchange(EX, 'topic', {durable: true});
-    return WorkerCh.assertQueue('task_queue', {durable: true}).then(function(q) {
-        log.info("Worker connected to RabbitMQ");
-        WorkerCh.bindQueue('task_queue', EX, 'noOrg');
-        return WorkerCh.consume('task_queue', workerHandlers);
+    let promises = []; // array of promises
+    let workerChPromise = conn.createChannel().then(ch => {
+        WorkerCh = ch;
+        WorkerCh.assertExchange(EX, 'topic', {durable: true});
+        WorkerCh.assertQueue('task_queue', {durable: true, messageTtl: 5000}).then(function(q) {
+            log.info("Worker connected to RabbitMQ");
+            WorkerCh.bindQueue(q.queue, EX, 'noOrg');
+            WorkerCh.prefetch(30);
+            return WorkerCh.consume(q.queue, workerHandlers);
+        })
     });
+    promises.push(workerChPromise);
+
+    let rtChPromise = conn.createChannel().then(ch => {
+        RtCh = ch;
+        RtCh.assertExchange(EX, 'topic', {durable: true});
+        return RtCh.assertQueue('', {exclusive: true, messageTtl: 5000}).then(function(q) {
+            RtQueue = q;
+            log.info("Rt handler connected to RabbitMQ");
+            return RtCh.consume(RtQueue.queue, rtHandlers, {noAck: true});
+        })
+    });
+    promises.push(rtChPromise);
+    return Promise.all(promises);
 }).catch(log.error);
 
 const workerHandlers = function (msg) {
     let payload = JSON.parse(msg.content.toString());
     if (!payload) return;
+    const cbAck = _ => {
+        WorkerCh.ack(msg);
+    };
     switch (payload.event) {
         case "device":
-            deviceWorker(payload);
+            deviceWorker(payload, cbAck);
             break;
         case "geoloc":
-            geolocWorker(payload);
+            geolocWorker(payload, cbAck);
             break;
     }
 };
 
-function deviceWorker(payload) {
+function deviceWorker(payload, cb) {
     const device = payload.content;
     if (!device) return;
     const userId = device.userId;
@@ -80,13 +98,13 @@ function deviceWorker(payload) {
     db.collection("OrganizationDevice").find({deviceId: device.id}).toArray((err, ods) => {
         const orgIds = ods.map(od => od.organizationId.toString());
         payload.orgIds = orgIds;
-        let rk = `${userId}.${orgIds}`;
+        let rk = `${userId}.${orgIds.join('.')}`;
         WorkerCh.publish(EX, rk, Buffer.from(JSON.stringify(payload), 'utf8'));
+        cb();
     });
-
 }
 
-function geolocWorker(payload) {
+function geolocWorker(payload, cb) {
     const geoloc = payload.content;
     if (!geoloc) return;
     const userId = geoloc.userId;
@@ -95,25 +113,11 @@ function geolocWorker(payload) {
     db.collection("OrganizationDevice").find({deviceId: geoloc.deviceId}).toArray((err, ods) => {
         const orgIds = ods.map(od => od.organizationId.toString());
         payload.orgIds = orgIds;
-        let rk = `${userId}.${orgIds}`;
+        let rk = `${userId}.${orgIds.join('.')}`;
         WorkerCh.publish(EX, rk, Buffer.from(JSON.stringify(payload), 'utf8'));
+        cb();
     });
 }
-
-let Queue;
-let Ch;
-
-amqp.connect(rabbitUrl).then(conn => {
-    return conn.createChannel();
-}).then(ch => {
-    Ch = ch;
-    Ch.assertExchange(EX, 'topic', {durable: true});
-    return Ch.assertQueue('', {exclusive: true}).then(function(q) {
-        Queue = q;
-        log.info("Primus connected to RabbitMQ");
-        return Ch.consume(Queue.queue, rtHandlers, {noAck: true});
-    });
-}).catch(log.error);
 
 const rtHandlers = function (msg) {
     let payload = JSON.parse(msg.content.toString());
@@ -211,7 +215,7 @@ primus.on('connection', function connection(spark) {
     spark.on('data', function (data) {
         const id = data.id;
         const listenerType = id === spark.userId ? 'personal' : 'org';
-        Ch.bindQueue(Queue.queue, EX, `${id}.#`);
+        RtCh.bindQueue(RtQueue.queue, EX, `${id}.#`);
         spark.listenerInfo = {
             id: id,
             type: listenerType,
@@ -226,7 +230,7 @@ primus.on('connection', function connection(spark) {
 primus.on('disconnection', function (spark) {
     if (!db || !spark.userId) return;
     // TODO: Ch.unbindQueue with bind count
-    Ch.unbindQueue(Queue.queue, EX, spark.listenerInfo.id);
+    RtCh.unbindQueue(RtQueue.queue, EX, spark.listenerInfo.id);
     let user = db.collection("user");
     user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, disconnectedAt: new Date()}}, (err, user) => {
         if (err || !user) {
@@ -258,7 +262,6 @@ function messageHandler(payload) {
 
 function deviceHandler(payload) {
     const device = payload.content;
-    log.error(payload);
     if (device) {
         // from device.ts
         const userId = device.userId;
@@ -271,8 +274,8 @@ function deviceHandler(payload) {
 
         let organizations = [];
         let promises = [];
-        payload.orgIds.forEach(od => {
-            promises.push(db.collection("Organization").findOne({_id: ObjectId(od.organizationId)}).then(org => {
+        payload.orgIds.forEach(orgId => {
+            promises.push(db.collection("Organization").findOne({_id: ObjectId(orgId)}).then(org => {
                 organizations.push(org);
             }));
         });
