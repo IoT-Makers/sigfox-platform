@@ -424,7 +424,6 @@ class Geoloc {
           content: geoloc,
           action: "CREATE"
         };
-        console.log(payload);
         RabbitPub.getInstance().pub(payload, 'noOrg');
       });
     }

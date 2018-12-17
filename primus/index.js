@@ -1,4 +1,5 @@
 'use strict';
+const helper = require('./helper');
 const Primus = require('primus');
 const amqp = require('amqplib');
 const mongolib = require('mongodb');
@@ -8,8 +9,8 @@ const mongodbUrl = process.env.MONGO_URL;
 const rabbitUrl = process.env.RABBIT_URL || 'amqp://usr:pwd@localhost';
 const healthcheckToken = 'healthcheck';
 const log = require('loglevel');
-// log.setLevel('info');
-log.enableAll();
+log.setLevel('info');
+// log.enableAll();
 
 let db;
 let AdminRoleID;
@@ -174,6 +175,7 @@ const rtHandlers = function (msg) {
 //     }
 // });
 
+
 // Handle connections to user client
 primus.on('connection', function connection(spark) {
     if (!db) return;
@@ -215,7 +217,9 @@ primus.on('connection', function connection(spark) {
     spark.on('data', function (data) {
         const id = data.id;
         const listenerType = id === spark.userId ? 'personal' : 'org';
-        RtCh.bindQueue(RtQueue.queue, EX, `${id}.#`);
+        const rk = `#.${id}.#`;
+        RtCh.bindQueue(RtQueue.queue, EX, rk);
+
         spark.listenerInfo = {
             id: id,
             type: listenerType,
@@ -229,8 +233,16 @@ primus.on('connection', function connection(spark) {
 // Handle disconnections
 primus.on('disconnection', function (spark) {
     if (!db || !spark.userId) return;
-    // TODO: Ch.unbindQueue with bind count
-    RtCh.unbindQueue(RtQueue.queue, EX, spark.listenerInfo.id);
+
+    const rk = spark.listenerInfo.id;
+    let bindCount = 0;
+    primus.forEach(function (spark, id, connections) {
+        if (spark.listenerInfo.id === rk)
+            bindCount++;
+    });
+    if (bindCount === 0)
+        RtCh.unbindQueue(RtQueue.queue, EX, `#.${spark.listenerInfo.id}.#`);
+
     let user = db.collection("user");
     user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, disconnectedAt: new Date()}}, (err, user) => {
         if (err || !user) {
