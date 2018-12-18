@@ -65,6 +65,7 @@ import {VectormapDirective} from './directives/vectormap/vectormap.directive';
 import {NowDirective} from './directives/now/now.directive';
 import {ScrollableDirective} from './directives/scrollable/scrollable.directive';
 import {JqcloudDirective} from './directives/jqcloud/jqcloud.directive';
+import {MomentModule} from "angular2-moment";
 
 // https://angular.io/styleguide#!#04-10
 @NgModule({
@@ -123,7 +124,9 @@ import {JqcloudDirective} from './directives/jqcloud/jqcloud.directive';
         MatToolbarModule,
         MatTooltipModule,
         MatNativeDateModule,
-        MatStepperModule
+        MatStepperModule,
+        // Custom
+        MomentModule
     ],
     providers: [
         ColorsService
@@ -202,7 +205,9 @@ import {JqcloudDirective} from './directives/jqcloud/jqcloud.directive';
         MatToolbarModule,
         MatTooltipModule,
         MatNativeDateModule,
-        MatStepperModule
+        MatStepperModule,
+        // Custom
+        MomentModule
     ]
 })
 

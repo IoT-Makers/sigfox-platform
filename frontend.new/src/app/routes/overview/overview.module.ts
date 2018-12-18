@@ -3,7 +3,6 @@ import {OverviewComponent} from './overview/overview.component';
 import {RouterModule, Routes} from '@angular/router';
 import {SharedModule} from "../../shared/shared.module";
 import {AgmCoreModule} from "@agm/core";
-import {MomentModule} from "angular2-moment";
 import {NgxGaugeModule} from "ngx-gauge";
 
 const routes: Routes = [
@@ -15,7 +14,6 @@ const routes: Routes = [
         SharedModule,
         RouterModule.forChild(routes),
         AgmCoreModule,
-        MomentModule,
         NgxGaugeModule
     ],
     declarations: [
