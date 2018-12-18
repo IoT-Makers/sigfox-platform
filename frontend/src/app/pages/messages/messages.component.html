@@ -6,19 +6,19 @@
     <div *ngIf="organization" class="card-header">
       <i class="fa fa-envelope fa-lg text-message"></i><strong> Shared messages</strong>
     </div>
-    <div class="card-block">
-      <ng-container *ngIf="!messagesReady">
-        Loading messages...
-        <div class="sk-double-bounce">
-          <div class="sk-child sk-double-bounce1"></div>
-          <div class="sk-child sk-double-bounce2"></div>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="messagesReady && !messages.length">
-        No messages yet...
-      </ng-container>
+    <div *ngIf="!messagesReady" class="card-block">
+      Loading messages...
+      <div class="sk-double-bounce">
+        <div class="sk-child sk-double-bounce1"></div>
+        <div class="sk-child sk-double-bounce2"></div>
+      </div>
+    </div>
+    <div *ngIf="messagesReady && !messages.length" class="card-block">
+      No messages yet...
+    </div>
 
-      <ng-container *ngIf="messages.length>0">
+    <ng-container *ngIf="messages.length>0">
+      <div class="card-block">
         <div class="row mb-1">
           <div class="col-md-6">
             <div class="input-group">
@@ -45,147 +45,149 @@
             </div>
           </div>
         </div>
-        <div class="table-responsive">
-          <table class="table table-hover" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable"
-                 [mfRowsOnPage]="10">
-            <thead class="thead-inverse">
-            <tr>
-              <th class="text-center">
-                <mfDefaultSorter by="createdAt"><i class="fa fa-sort"></i> Date</mfDefaultSorter>
-              </th>
-              <th class="text-center">
-                <mfDefaultSorter by="data"><i class="fa fa-sort"></i> Data</mfDefaultSorter>
-              </th>
-              <th class="text-center">
-                <mfDefaultSorter by="deviceId"><i class="fa fa-sort"></i> Device</mfDefaultSorter>
-              </th>
-              <th class="text-center">
-                <mfDefaultSorter by="Geolocs"><i class="fa fa-sort"></i> Geoloc</mfDefaultSorter>
-              </th>
-              <th class="text-center">
-                <mfDefaultSorter by="seqNumber"><i class="fa fa-sort"></i> Seq Number</mfDefaultSorter>
-              </th>
-              <th class="text-center">
-                <mfDefaultSorter by="reception"><i class="fa fa-sort"></i> Reception</mfDefaultSorter>
-              </th>
-              <th class="text-center">Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let message of mf.data">
-              <td class="text-center">{{message.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
-              <td class="text-center">
-                <span class="text-message">{{message.data}}</span>
-                <div class="text-justify" *ngIf="message.data_parsed">
-                  <div *ngFor="let o of message.data_parsed">
-                    <small *ngIf="o.value || o.value === 0">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
-                  </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable"
+               [mfRowsOnPage]="10">
+          <thead class="thead-inverse">
+          <tr>
+            <th class="text-center">
+              <mfDefaultSorter by="createdAt"><i class="fa fa-sort"></i> Date</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="data"><i class="fa fa-sort"></i> Data</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="deviceId"><i class="fa fa-sort"></i> Device</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="Geolocs"><i class="fa fa-sort"></i> Geoloc</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="seqNumber"><i class="fa fa-sort"></i> Seq Number</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="reception"><i class="fa fa-sort"></i> Reception</mfDefaultSorter>
+            </th>
+            <th class="text-center">Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let message of mf.data">
+            <td class="text-center">{{message.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
+            <td class="text-center">
+              <span class="text-message">{{message.data}}</span>
+              <div class="text-justify" *ngIf="message.data_parsed">
+                <div *ngFor="let o of message.data_parsed">
+                  <small *ngIf="o.value || o.value === 0">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
                 </div>
-                <div class="font-weight-bold" *ngIf="message.deviceAck">
-                  Device downlink acknowledge: <span class="text-success" title="Acknowledged by device">{{message.deviceAck}}</span>
-                </div>
-                <div class="mt-1 font-weight-bold" *ngIf="message.data_downlink">
-                  Downlink: <span class="text-danger" title="Downlink payload">{{message.data_downlink}}</span>
-                </div>
-                <div class="mt-1 font-weight-bold" *ngIf="message.downlinkAck">
-                  Base station downlink acknowledge: <span class="text-success" title="Acknowledged by base station">{{message.downlinkAck}}</span>
-                </div>
-              </td>
-              <td class="text-center text-device">
-                <ng-container *ngIf="!organization">
-                  <a [routerLink]="['/messages', message.Device.id]">
-                    <strong class="text-device">{{message.Device.id}}</strong>
-                  </a>
-                </ng-container>
-                <ng-container *ngIf="organization">
-                  <a [routerLink]="['/organization/' + organization.id + '/messages', message.Device.id]">
-                    <strong class="text-device">{{message.Device.id}}</strong>
-                  </a>
-                </ng-container>
-                <br>
-                <small *ngIf="message.Device">{{message.Device.name}}</small>
-              </td>
-              <td class="text-center">
-                <div *ngIf="message.Geolocs">
-                  <div *ngFor="let geoloc of message.Geolocs">
-                    <div class="row">
-                      <div class="col col-7">
-                        <ng-container *ngIf="geoloc.type == 'sigfox'">
-                          <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-sigfox">
-                            <i class="fa fa-map-marker fa-2x"></i>
-                            <br>
-                            <strong>Sigfox</strong>
-                          </a>
-                        </ng-container>
-                        <ng-container *ngIf="geoloc.type == 'gps'">
-                          <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-gps">
-                            <i class="fa fa-map-marker fa-2x"></i>
-                            <br>
-                            <strong>GPS</strong>
-                          </a>
-                        </ng-container>
-                        <ng-container *ngIf="geoloc.type == 'beacon'">
-                          <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-beacon">
-                            <i class="fa fa-map-marker fa-2x"></i>
-                            <br>
-                            <strong>Beacon</strong>
-                          </a>
-                        </ng-container>
-                        <ng-container *ngIf="geoloc.type == 'wifi'">
-                          <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-wifi">
-                            <i class="fa fa-map-marker fa-2x"></i>
-                            <br>
-                            <strong>WiFi</strong>
-                          </a>
-                        </ng-container>
-                      </div>
-                      <div class="col col-5 text-left">
+              </div>
+              <div class="font-weight-bold" *ngIf="message.deviceAck">
+                Device downlink acknowledge: <span class="text-success"
+                                                   title="Acknowledged by device">{{message.deviceAck}}</span>
+              </div>
+              <div class="mt-1 font-weight-bold" *ngIf="message.data_downlink">
+                Downlink: <span class="text-danger" title="Downlink payload">{{message.data_downlink}}</span>
+              </div>
+              <div class="mt-1 font-weight-bold" *ngIf="message.downlinkAck">
+                Base station downlink acknowledge: <span class="text-success"
+                                                         title="Acknowledged by base station">{{message.downlinkAck}}</span>
+              </div>
+            </td>
+            <td class="text-center text-device">
+              <ng-container *ngIf="!organization">
+                <a [routerLink]="['/messages', message.Device.id]">
+                  <strong class="text-device">{{message.Device.id}}</strong>
+                </a>
+              </ng-container>
+              <ng-container *ngIf="organization">
+                <a [routerLink]="['/organization/' + organization.id + '/messages', message.Device.id]">
+                  <strong class="text-device">{{message.Device.id}}</strong>
+                </a>
+              </ng-container>
+              <br>
+              <small *ngIf="message.Device">{{message.Device.name}}</small>
+            </td>
+            <td class="text-center">
+              <div *ngIf="message.Geolocs">
+                <div *ngFor="let geoloc of message.Geolocs">
+                  <div class="row">
+                    <div class="col col-7">
+                      <ng-container *ngIf="geoloc.type == 'sigfox'">
+                        <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-sigfox">
+                          <i class="fa fa-map-marker fa-2x"></i>
+                          <br>
+                          <strong>Sigfox</strong>
+                        </a>
+                      </ng-container>
+                      <ng-container *ngIf="geoloc.type == 'gps'">
+                        <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-gps">
+                          <i class="fa fa-map-marker fa-2x"></i>
+                          <br>
+                          <strong>GPS</strong>
+                        </a>
+                      </ng-container>
+                      <ng-container *ngIf="geoloc.type == 'beacon'">
+                        <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-beacon">
+                          <i class="fa fa-map-marker fa-2x"></i>
+                          <br>
+                          <strong>Beacon</strong>
+                        </a>
+                      </ng-container>
+                      <ng-container *ngIf="geoloc.type == 'wifi'">
+                        <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-wifi">
+                          <i class="fa fa-map-marker fa-2x"></i>
+                          <br>
+                          <strong>WiFi</strong>
+                        </a>
+                      </ng-container>
+                    </div>
+                    <div class="col col-5 text-left">
                           <span class="small text-muted">
                             Lat: {{geoloc.location.lat | number:'.1-3'}}
                             <br>
                             Lng: {{geoloc.location.lng | number:'.1-3'}}
                           </span>
-                      </div>
                     </div>
                   </div>
                 </div>
-              </td>
-              <td class="text-center">{{message.seqNumber}}</td>
-              <td class="text-center" (click)="showMarkers(message)">
-                <p *ngFor="let reception of message.reception">
-                  <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success"
-                     aria-hidden="true"></i>
-                  <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI"
-                     class="fa fa-signal text-warning" aria-hidden="true"></i>
-                  <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger"
-                     aria-hidden="true"></i>
-                  {{reception.RSSI}}
-                  <span>&nbsp;</span>
-                  <i title="Base Station" class="fa fa-podcast text-primary" aria-hidden="true"></i>
-                  {{reception.id}}
-                  <span>&nbsp;</span>
-                  <i title="SNR" class="fa fa-feed" aria-hidden="true"></i>
-                  {{reception.SNR}}
-                </p>
-              </td>
-              <td class="text-center">
-                <button type="button" class="btn btn-outline-danger btn-round" (click)="deleteMessage(message)">
-                  <i class="fa fa-trash"></i>
-                </button>
-              </td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-              <td colspan="4">
-                <mfBootstrapPaginator [rowsOnPageSet]="[10, 25, 50, 100]"></mfBootstrapPaginator>
-              </td>
-            </tr>
-            </tfoot>
-          </table>
-        </div>
-      </ng-container>
-    </div>
+              </div>
+            </td>
+            <td class="text-center">{{message.seqNumber}}</td>
+            <td class="text-center" (click)="showMarkers(message)">
+              <p *ngFor="let reception of message.reception">
+                <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success"
+                   aria-hidden="true"></i>
+                <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI"
+                   class="fa fa-signal text-warning" aria-hidden="true"></i>
+                <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger"
+                   aria-hidden="true"></i>
+                {{reception.RSSI}}
+                <span>&nbsp;</span>
+                <i title="Base Station" class="fa fa-podcast text-primary" aria-hidden="true"></i>
+                {{reception.id}}
+                <span>&nbsp;</span>
+                <i title="SNR" class="fa fa-feed" aria-hidden="true"></i>
+                {{reception.SNR}}
+              </p>
+            </td>
+            <td class="text-center">
+              <button type="button" class="btn btn-outline-danger btn-round" (click)="deleteMessage(message)">
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+          <tfoot>
+          <tr>
+            <td colspan="4">
+              <mfBootstrapPaginator [rowsOnPageSet]="[10, 25, 50, 100]"></mfBootstrapPaginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </ng-container>
   </div>
 </div>
 

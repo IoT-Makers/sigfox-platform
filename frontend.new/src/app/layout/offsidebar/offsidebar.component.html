@@ -3,330 +3,57 @@
         <ng-template tabHeading>
             <em class="icon-people fa-lg"></em>
         </ng-template>
-        <h3 class="text-center text-thin mt-4">Ogranizations</h3>
+        <h3 class="text-center text-thin mt-4">Organizations</h3>
         <div class="list-group">
             <!-- START list title-->
             <div class="list-group-item border-0">
                 <small class="text-muted">OWNER OF</small>
             </div>
             <!-- END list title-->
-            <ng-container *ngFor="let orga of organizations" (click)="redirectToOgranizationView(orga.id)">
-            <div class="list-group-item list-group-item-action border-0">
+            <div *ngFor="let organization of organizations" (click)="redirectToOgranizationView(organization.id)"
+                 class="list-group-item list-group-item-action border-0">
                 <div class="media">
-                    <img class="align-self-center mr-3 rounded-circle thumb48" src="assets/img/user.svg" alt="Image">
+                    <img class="align-self-center mr-3 rounded-circle thumb48" src="{{organization.logo}}"
+                         alt="{{organization.name}}">
                     <div class="media-body text-truncate">
-                        <a href="#">
-                            <strong>{{orga.name}}</strong>
+                        <a class="text-organization" href [routerLink]="['/organization/', organization.id]">
+                            <strong>{{organization.name}}</strong>
                         </a>
                         <br>
-                        <small class="text-muted">Designeer</small>
+                        <small class="text-muted">{{organization.createdAt | amTimeAgo}}</small>
                     </div>
                     <div class="ml-auto">
-                        <span class="circle bg-success circle-lg">{{orga.countMembers}}</span>
-                    </div>
-                </div>
-            </div>
-            </ng-container>
-
-            <div class="list-group-item list-group-item-action border-0">
-                <div class="media">
-                    <img class="align-self-center mr-3 rounded-circle thumb48" src="assets/img/user.svg" alt="Image">
-                    <div class="media-body text-truncate">
-                        <a href="#">
-                            <strong>Maureen Jenkins</strong>
-                        </a>
-                        <br>
-                        <small class="text-muted">Designeer</small>
-                    </div>
-                    <div class="ml-auto">
-                        <span class="circle bg-success circle-lg"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="list-group-item list-group-item-action border-0">
-                <div class="media">
-                    <img class="align-self-center mr-3 rounded-circle thumb48" src="assets/img/user.svg" alt="Image">
-                    <div class="media-body text-truncate">
-                        <a href="#">
-                            <strong>Billie Dunn</strong>
-                        </a>
-                        <br>
-                        <small class="text-muted">Designeer</small>
-                    </div>
-                    <div class="ml-auto">
-                        <span class="circle bg-danger circle-lg"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="list-group-item list-group-item-action border-0">
-                <div class="media">
-                    <img class="align-self-center mr-3 rounded-circle thumb48" src="assets/img/user.svg" alt="Image">
-                    <div class="media-body text-truncate">
-                        <a href="#">
-                            <strong>Tomothy Roberts</strong>
-                        </a>
-                        <br>
-                        <small class="text-muted">Designeer</small>
-                    </div>
-                    <div class="ml-auto">
-                        <span class="circle bg-warning circle-lg"></span>
+                        <span *ngIf="organization.userId !== user.id"
+                              class="badge badge-organization text-white">{{organization.countMembers}}</span>
+                        <span *ngIf="organization.userId === user.id"
+                              class="badge badge-danger text-white">{{organization.countMembers}}</span>
                     </div>
                 </div>
             </div>
             <!-- START list title-->
-            <div class="list-group-item border-0">
+            <!--<div class="list-group-item border-0">
                 <small class="text-muted">MEMBER OF</small>
-            </div>
+            </div>-->
             <!-- END list title-->
-            <div class="list-group-item list-group-item-action border-0">
-                <div class="media">
-                    <img class="align-self-center mr-3 rounded-circle thumb48" src="assets/img/user.svg" alt="Image">
-                    <div class="media-body text-truncate">
-                        <a href="#">
-                            <strong>Lawrence Robinson</strong>
-                        </a>
-                        <br>
-                        <small class="text-muted">Designeer</small>
-                    </div>
-                    <div class="ml-auto">
-                        <span class="circle bg-warning circle-lg"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="list-group-item list-group-item-action border-0">
-                <div class="media">
-                    <img class="align-self-center mr-3 rounded-circle thumb48" src="assets/img/user.svg" alt="Image">
-                    <div class="media-body text-truncate">
-                        <a href="#">
-                            <strong>Tyrone Owens</strong>
-                        </a>
-                        <br>
-                        <small class="text-muted">Designeer</small>
-                    </div>
-                    <div class="ml-auto">
-                        <span class="circle bg-warning circle-lg"></span>
+            <!--<ng-container *ngFor="let organization of organizations">
+                <div *ngIf="organization.userId !== user.id" (click)="redirectToOgranizationView(organization.id)"
+                     class="list-group-item list-group-item-action border-0">
+                    <div class="media">
+                        <img class="align-self-center mr-3 rounded-circle thumb48" src="{{organization.logo}}"
+                             alt="{{organization.name}}">
+                        <div class="media-body text-truncate">
+                            <a class="text-organization" href [routerLink]="['/organization/', organization.id]">
+                                <strong>{{organization.name}}</strong>
+                            </a>
+                            <br>
+                            <small class="text-muted">{{organization.createdAt | amTimeAgo}}</small>
+                        </div>
+                        <div class="ml-auto">
+                            <span class="badge badge-organization text-white">{{organization.countMembers}}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </tab>
-    <tab>
-        <ng-template tabHeading>
-            <em class="icon-equalizer fa-lg"></em>
-        </ng-template>
-        <h3 class="text-center text-thin mt-4" [innerHTML]="'offsidebar.setting.SETTINGS' | translate"></h3>
-        <div class="p-2">
-            <h4 class="text-muted text-thin">Themes</h4>
-            <div class="row row-flush mb-2">
-                <div class="col mb-2">
-                    <div class="setting-color">
-                        <label>
-                            <input type="radio" name="setting-theme" [(ngModel)]="currentTheme" (ngModelChange)="setTheme()" value="A" />
-                            <span class="icon-check"></span>
-                            <span class="split">
-                            <span class="color bg-info"></span>
-                            <span class="color bg-info"></span>
-                            </span>
-                            <span class="color bg-white"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="col mb-2">
-                    <div class="setting-color">
-                        <label>
-                            <input type="radio" name="setting-theme" [(ngModel)]="currentTheme" (ngModelChange)="setTheme()" value="B" />
-                            <span class="icon-check"></span>
-                            <span class="split">
-                            <span class="color bg-primary"></span>
-                            <span class="color bg-primary"></span>
-                            </span>
-                            <span class="color bg-white"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="col mb-2">
-                    <div class="setting-color">
-                        <label>
-                            <input type="radio" name="setting-theme" [(ngModel)]="currentTheme" (ngModelChange)="setTheme()" value="C" />
-                            <span class="icon-check"></span>
-                            <span class="split">
-                            <span class="color bg-purple"></span>
-                            <span class="color bg-purple"></span>
-                            </span>
-                            <span class="color bg-white"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="col mb-2">
-                    <div class="setting-color">
-                        <label>
-                            <input type="radio" name="setting-theme" [(ngModel)]="currentTheme" (ngModelChange)="setTheme()" value="D" />
-                            <span class="icon-check"></span>
-                            <span class="split">
-                            <span class="color bg-success"></span>
-                            <span class="color bg-success"></span>
-                            </span>
-                            <span class="color bg-white"></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="row row-flush mb-2">
-                <div class="col mb-2">
-                    <div class="setting-color">
-                        <label>
-                            <input type="radio" name="setting-theme" [(ngModel)]="currentTheme" (ngModelChange)="setTheme()" value="E" />
-                            <span class="icon-check"></span>
-                            <span class="split">
-                            <span class="color bg-cyan-500"></span>
-                            <span class="color bg-cyan-500"></span>
-                            </span>
-                            <span class="color bg-white"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="col mb-2">
-                    <div class="setting-color">
-                        <label>
-                            <input type="radio" name="setting-theme" [(ngModel)]="currentTheme" (ngModelChange)="setTheme()" value="F" />
-                            <span class="icon-check"></span>
-                            <span class="split">
-                            <span class="color bg-pink-500"></span>
-                            <span class="color bg-pink-500"></span>
-                            </span>
-                            <span class="color bg-white"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="col mb-2">
-                    <div class="setting-color">
-                        <label>
-                            <input type="radio" name="setting-theme" [(ngModel)]="currentTheme" (ngModelChange)="setTheme()" value="G" />
-                            <span class="icon-check"></span>
-                            <span class="split">
-                            <span class="color bg-blue-grey-500"></span>
-                            <span class="color bg-blue-grey-500"></span>
-                            </span>
-                            <span class="color bg-white"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="col mb-2">
-                    <div class="setting-color">
-                        <label>
-                            <input type="radio" name="setting-theme" [(ngModel)]="currentTheme" (ngModelChange)="setTheme()" value="H" />
-                            <span class="icon-check"></span>
-                            <span class="split">
-                            <span class="color bg-blue-grey-900"></span>
-                            <span class="color bg-blue-grey-900"></span>
-                            </span>
-                            <span class="color bg-white"></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="p-2">
-            <h4 class="text-muted text-thin">Layout</h4>
-            <div class="clearfix">
-                <p class="float-left">Fixed</p>
-                <div class="float-right">
-                    <label class="switch">
-                        <input type="checkbox"
-                            [ngModel]="settings.getLayoutSetting('isFixed')"
-                            (ngModelChange)="settings.setLayoutSetting('isFixed', $event)" />
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-            <div class="clearfix">
-                <p class="float-left">Boxed</p>
-                <div class="float-right">
-                    <label class="switch">
-                        <input type="checkbox"
-                            [ngModel]="settings.getLayoutSetting('isBoxed')"
-                            (ngModelChange)="settings.setLayoutSetting('isBoxed', $event)" />
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-            <!--
-    <div class="clearfix">
-      <p class="float-left">RTL</p>
-      <div class="float-right">
-         <label class="switch">
-            <input type="checkbox" [(ngModel)]="layoutRTL"/>
-            <span></span>
-         </label>
-      </div>
-    </div>
-    -->
-        </div>
-        <div class="p-2" *ngIf="!settings.getLayoutSetting('horizontal')">
-            <h4 class="text-muted text-thin">Aside</h4>
-            <div class="clearfix">
-                <p class="float-left">Collapsed</p>
-                <div class="float-right">
-                    <label class="switch">
-                        <input type="checkbox"
-                            [ngModel]="settings.getLayoutSetting('isCollapsed')"
-                            (ngModelChange)="settings.setLayoutSetting('isCollapsed', $event)"
-                            [disabled]="settings.getLayoutSetting('isCollapsedText')" />
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-            <div class="clearfix">
-                <p class="float-left">Collapsed Text</p>
-                <div class="float-right">
-                    <label class="switch">
-                        <input type="checkbox"
-                            [ngModel]="settings.getLayoutSetting('isCollapsedText')"
-                            (ngModelChange)="settings.setLayoutSetting('isCollapsedText', $event)"
-                            [disabled]="settings.getLayoutSetting('isCollapsed')" />
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-            <div class="clearfix">
-                <p class="float-left">Float</p>
-                <div class="float-right">
-                    <label class="switch">
-                        <input type="checkbox"
-                            [ngModel]="settings.getLayoutSetting('isFloat')"
-                            (ngModelChange)="settings.setLayoutSetting('isFloat', $event)" />
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-            <div class="clearfix">
-                <p class="float-left">Hover</p>
-                <div class="float-right">
-                    <label class="switch">
-                        <input type="checkbox"
-                            [ngModel]="settings.getLayoutSetting('asideHover')"
-                            (ngModelChange)="settings.setLayoutSetting('asideHover', $event)" />
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-            <div class="clearfix">
-                <p class="float-left">Show Scrollbar</p>
-                <div class="float-right">
-                    <label class="switch">
-                        <input type="checkbox"
-                            [ngModel]="settings.getLayoutSetting('asideScrollbar')"
-                            (ngModelChange)="settings.setLayoutSetting('asideScrollbar', $event)" />
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="p-2">
-            <h4 class="text-muted text-thin">Language</h4>
-            <select class="form-control" [ngModel]="selectedLanguage" (ngModelChange)="setLang($event)">
-                <option [value]="lang.code" *ngFor="let lang of getLangs()">{{lang.text}}</option>
-            </select>
+            </ng-container>-->
         </div>
     </tab>
 </tabset>

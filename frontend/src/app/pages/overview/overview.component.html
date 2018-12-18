@@ -596,21 +596,20 @@
           <i class="fa fa-microchip fa-lg text-device"></i><strong> Devices </strong>
           <small>(10 latest)</small>
         </div>
-        <div class="card-block">
-          <ng-container *ngIf="!devicesReady">
-            Loading devices...
-            <div class="sk-double-bounce">
-              <div class="sk-child sk-double-bounce1"></div>
-              <div class="sk-child sk-double-bounce2"></div>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="devicesReady && !devices.length">
-            No devices yet...
-          </ng-container>
+        <div *ngIf="!devicesReady" class="card-block">
+          Loading devices...
+          <div class="sk-double-bounce">
+            <div class="sk-child sk-double-bounce1"></div>
+            <div class="sk-child sk-double-bounce2"></div>
+          </div>
+        </div>
+        <div *ngIf="devicesReady && !devices.length" class="card-block">
+          No devices yet...
+        </div>
 
           <!--Table-->
           <div *ngIf="devices.length > 0" class="table-responsive">
-            <table class="table table-hover table-outline">
+            <table class="m-0 table table-hover table-outline">
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">See</th>
@@ -769,7 +768,6 @@
               </tbody>
             </table>
           </div>
-        </div>
       </div>
     </div>
 

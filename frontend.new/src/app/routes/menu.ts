@@ -13,7 +13,7 @@ const headingDashboards = {
 const AddDashboard = {
     text: "Add dashboard",
     link: "/dashboard",
-    icon: "icon-plus",
+    icon: "icon-plus text-success"
 };
 
 const headingInformation = {

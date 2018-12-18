@@ -2,7 +2,7 @@ import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core
 import {SettingsService} from '../../core/settings/settings.service';
 import {ThemesService} from '../../core/themes/themes.service';
 import {TranslatorService} from '../../core/translator/translator.service';
-import {Organization, User} from "../../shared/sdk/models";
+import {Organization, Role, User} from "../../shared/sdk/models";
 import {ActivatedRoute, Router} from "@angular/router";
 import {OrganizationApi, UserApi} from "../../shared/sdk/services/custom";
 import * as _ from "lodash";
@@ -55,6 +55,57 @@ export class OffsidebarComponent implements OnInit, OnDestroy {
                 private router: Router) {
     }
 
+    ngOnInit() {
+        console.log('Offsidebar: ngOnInit');
+        this.anyClickClose();
+
+        // Get the logged in User object
+        this.user = this.userApi.getCachedCurrent();
+        this.userApi.getRoles(this.user.id).subscribe((roles: Role[]) => {
+            this.user.roles = roles;
+            roles.forEach((role: Role) => {
+                if (role.name === 'admin') {
+                    this.admin = true;
+                    return;
+                }
+            });
+
+            // Check if organization view
+            this.route.params.subscribe(params => {
+                this.isInitialized = false;
+                console.log('route.params Header', params);
+                if (params.id) {
+                    this.organizationApi.findById(params.id, {include: 'Members'}).subscribe((organization: Organization) => {
+                        this.organization = organization;
+                        this.setup();
+                    });
+                } else {
+                    this.setup();
+                }
+            });
+        });
+    }
+
+    setup(): void {
+        this.api = this.organization ? this.organizationApi : this.userApi;
+        this.id = this.organization ? this.organization.id : this.user.id;
+        this.unsubscribe();
+        this.subscribe();
+        if (!this.isInitialized) {
+            this.isInitialized = true;
+            console.log('Setup Offsidebar');
+            this.userApi.getOrganizations(this.user.id, {order: 'createdAt DESC'}).subscribe((organizations: Organization[]) => {
+                this.organizations = organizations;
+                this.countOrganizationsReady = true;
+                this.countOrganizationsMembers(true);
+            });
+        }
+    }
+
+    private cleanSetup() {
+        this.unsubscribe();
+    }
+
     redirectToOgranizationView(orgId: string): void {
         if (
             this.route.snapshot.firstChild.routeConfig.path === 'categories'
@@ -75,30 +126,6 @@ export class OffsidebarComponent implements OnInit, OnDestroy {
           this.organization = organization;
           this.setup();
         });*/
-    }
-
-    ngOnInit() {
-        console.log('Offsidebar: ngOnInit');
-        this.anyClickClose();
-    }
-
-    setup(): void {
-        this.api = this.organization ? this.organizationApi : this.userApi;
-        this.id = this.organization ? this.organization.id : this.user.id;
-        this.unsubscribe();
-        this.subscribe();
-        if (!this.isInitialized) {
-            this.isInitialized = true;
-            console.log('Setup Header');
-            this.userApi.getOrganizations(this.user.id, {order: 'createdAt DESC'}).subscribe((organizations: Organization[]) => {
-                this.organizations = organizations;
-                this.countOrganizationsReady = true;
-            });
-        }
-    }
-
-    private cleanSetup() {
-        this.unsubscribe();
     }
 
     countOrganizationsMembers(open: boolean): void {
@@ -216,9 +243,11 @@ export class OffsidebarComponent implements OnInit, OnDestroy {
         }
     }
 
-    subscribe(): void {}
+    subscribe(): void {
+    }
 
-    unsubscribe(): void {}
+    unsubscribe(): void {
+    }
 
     ngOnDestroy() {
         console.log('Offsidebar: ngOnDestroy');
