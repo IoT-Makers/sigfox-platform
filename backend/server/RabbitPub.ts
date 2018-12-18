@@ -39,10 +39,10 @@ export class RabbitPub {
       } else if (conn) {
         conn.createChannel((err, ch) => {
           if (err) console.error(err);
-          ch.assertQueue('task_queue', {durable: true, messageTtl: 5000});
-          ch.bindQueue('task_queue', this.EX, 'noOrg');
           ch.assertExchange(this.EX, 'topic', {durable: true}, (err, ok) => {
             if (err) console.error(err);
+            ch.assertQueue('task_queue', {durable: true, messageTtl: 5000});
+            ch.bindQueue('task_queue', this.EX, 'noOrg');
             this._ch = ch;
           });
         });

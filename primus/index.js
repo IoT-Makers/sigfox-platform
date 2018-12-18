@@ -38,6 +38,10 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
     const Role = db.collection('Role');
     Role.findOne({name: 'admin'}).then(adminRole => {
         AdminRoleID = adminRole._id;
+    }).catch(_ => {
+        // adminRole could be undef when launching new stack, just exit and wait for docker to bring it back
+        log.error('adminRole not defined yet');
+        process.exit(1);
     });
 });
 
@@ -232,12 +236,12 @@ primus.on('connection', function connection(spark) {
 
 // Handle disconnections
 primus.on('disconnection', function (spark) {
-    if (!db || !spark.userId) return;
+    if (!db || !spark.userId || !spark.listenerInfo) return;
 
     const rk = spark.listenerInfo.id;
     let bindCount = 0;
     primus.forEach(function (spark, id, connections) {
-        if (spark.listenerInfo.id === rk)
+        if (spark.listenerInfo && spark.listenerInfo.id === rk)
             bindCount++;
     });
     if (bindCount === 0)
@@ -468,7 +472,7 @@ function getTargetClients(userId, event='', orgIDs=null) {
     let complete=[], countOnly=[];
     primus.forEach(function (spark, id, connections) {
         const listenerInfo = spark.listenerInfo;
-        if (!listenerInfo) return;
+        if (!listenerInfo) return; // return === continue
         // log.error(listenerInfo.listenTo);
 
         if (listenerInfo.type === 'personal') {
