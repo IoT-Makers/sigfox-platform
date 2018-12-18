@@ -1,0 +1,752 @@
+<div class="overview-container">
+    <alert *ngIf="user && !user.username" type="info" [dismissOnTimeout]="5000" [dismissible]="true">
+        <h4 class="alert-heading">Hey! <i class="fa fa-smile-o"></i></h4>
+        <p>Don't forget you can set your username by clicking on your email on the top right corner.</p>
+    </alert>
+
+    <alert *ngIf="!organization && bannerMessage" type="light" [dismissible]="true">
+        <p>{{bannerMessage}}</p>
+    </alert>
+
+    <div *ngIf="devicesReady && !devices.length" class="jumbotron">
+        <div class="row">
+            <div class="col-xl-3 col-lg-4">
+                <div class="text-center">
+                    <img alt="Image" class="img-fluid overview-logo" src="assets/img/profile-bg.jpg"/>
+                </div>
+            </div>
+            <div class="col-xl-9 col-lg-8 overview-text">
+                <h1 class="overview-text-big">Information</h1>
+                <p class="lead">
+                    Head over to the organization <strong>....</strong>
+                    <br>
+                    <small>Feel free &amp; blabla.</small>
+                </p>
+                <p><a class="btn btn-primary btn-lg" href="https://material.angular.io/" target="_blank">Learn more</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- START cards box-->
+    <div class="row no-gutters">
+        <div class="col-xl-3 col-lg-3 pr-lg-1"
+             [routerLink]="[!organization ? '/categories' : '/organization/' + organization.id + '/categories']">
+            <div class="card flex-row align-items-center align-items-stretch border-0">
+                <div class="col-4 d-flex align-items-center bg-category-dark justify-content-center rounded-left">
+                    <em class="icon-tag fa-3x"></em>
+                </div>
+                <ng-container *ngIf="!countCategoriesReady">
+                    <div class="sk-spinner sk-spinner-pulse"></div>
+                </ng-container>
+                <ng-container *ngIf="countCategoriesReady">
+                    <div class="col-8 py-3 bg-category rounded-right">
+                        <div class="h2 mt-0 text-right">{{countCategories}}</div>
+                        <div class="text-uppercase">Categories</div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 pl-lg-1 pr-lg-1"
+             [routerLink]="[!organization ? '/devices' : '/organization/' + organization.id + '/devices']">
+            <div class="card flex-row align-items-center align-items-stretch border-0">
+                <div class="col-4 d-flex align-items-center bg-device-dark justify-content-center rounded-left">
+                    <em class="icon-cloud-upload fa-3x"></em>
+                </div>
+                <ng-container *ngIf="!countDevicesReady">
+                    <div class="sk-spinner sk-spinner-pulse"></div>
+                </ng-container>
+                <ng-container *ngIf="countDevicesReady">
+                    <div class="col-8 py-3 bg-device rounded-right">
+                        <div class="h2 mt-0 text-right">{{countDevices}}</div>
+                        <div class="text-uppercase">Devices</div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 pl-lg-1 pr-lg-1"
+             [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages']">
+            <div class="card flex-row align-items-center align-items-stretch border-0">
+                <div class="col-4 d-flex align-items-center bg-message-dark justify-content-center rounded-left">
+                    <em class="icon-envelope fa-3x"></em>
+                </div>
+                <ng-container *ngIf="!countMessagesReady">
+                    <div class="sk-spinner sk-spinner-pulse"></div>
+                </ng-container>
+                <ng-container *ngIf="countMessagesReady">
+                    <div class="col-8 py-3 bg-message rounded-right">
+                        <div class="h2 mt-0 text-right">{{countMessages}}</div>
+                        <div class="text-uppercase">Messages</div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 pl-lg-1"
+             [routerLink]="[!organization ? '/alerts' : '/organization/' + organization.id + '/alerts']">
+            <div class="card flex-row align-items-center align-items-stretch border-0">
+                <div class="col-4 d-flex align-items-center bg-alert-dark justify-content-center rounded-left">
+                    <em class="icon-envelope fa-3x"></em>
+                </div>
+                <ng-container *ngIf="!countAlertsReady">
+                    <div class="sk-spinner sk-spinner-pulse"></div>
+                </ng-container>
+                <ng-container *ngIf="countAlertsReady">
+                    <div class="col-8 py-3 bg-alert rounded-right">
+                        <div class="h2 mt-0 text-right">{{countAlerts}}</div>
+                        <div class="text-uppercase">Alerts</div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <!-- END cards box-->
+
+    <div class="container-fluid">
+        <div class="row">
+            <div *ngIf="!see" class="col-md-6">
+                <div class="md-card">
+                    <div class="md-card-heading bg-inverse">
+                        <!--<div class="float-right">
+                            <em class="icon-location-pin fa-3x"></em>
+                        </div>-->
+                        <div class="md-card-title">Devices locations</div>
+                        <small>Ten latest</small>
+                    </div>
+                    <div class="md-card-body" *ngIf="!devicesReady">
+                        Loading devices...
+                        <div class="sk-double-bounce">
+                            <div class="sk-child sk-double-bounce1"></div>
+                            <div class="sk-child sk-double-bounce2"></div>
+                        </div>
+                    </div>
+                    <div class="md-card-body" *ngIf="devicesReady && !devices.length">
+                        No devices yet...
+                    </div>
+                    <ng-container *ngIf="devices.length > 0">
+                        <agm-map (mapReady)="onMapReady($event)"
+                                 [streetViewControl]="false"
+                                 [scrollwheel]="true"
+                                 [fullscreenControl]="true"
+                                 [latitude]="mapLat"
+                                 [longitude]="mapLng"
+                                 [zoom]="mapZoom">
+                            <ng-container *ngFor="let device of devices; let i = index">
+                                <ng-container *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
+                                    <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
+                                        <!-- Sigfox -->
+                                        <ng-container *ngIf="geoloc.type === 'sigfox'">
+                                            <agm-marker
+                                                    (mouseOut)="markerOut(i)"
+                                                    (mouseOver)="markerOver(i)"
+                                                    [zIndex]="3"
+                                                    [latitude]="geoloc.location.lat"
+                                                    [longitude]="geoloc.location.lng"
+                                                    [iconUrl]="'assets/img/markers/marker-sigfox.png'">
+                                                <agm-info-window id="{{geoloc.id}}">
+                                                    <strong>ID: </strong><span
+                                                            class="text-device">{{device.id}}</span>
+                                                    <br>
+                                                    <strong *ngIf="device.name">Name: </strong>{{device.name}}
+                                                    <br *ngIf="device.name">
+                                                    <strong>Type: </strong><span
+                                                            class="text-geoloc-sigfox">Sigfox</span>
+                                                    <br>
+                                                    <strong>Date: </strong>{{geoloc.createdAt | date:"dd/MM/yyyy"}}
+                                                    <br>
+                                                    <strong>Time: </strong>{{geoloc.createdAt | date:"HH:mm:ss"}}
+                                                    <br>
+                                                    <strong>Accuracy: </strong>{{geoloc.accuracy}} m
+                                                </agm-info-window>
+                                            </agm-marker>
+                                            <!-- Circle -->
+                                            <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                                                        [zIndex]="1"
+                                                        [strokePosition]="CENTER"
+                                                        [strokeWeight]="1"
+                                                        [strokeColor]="'#8d5dd1'"
+                                                        [fillOpacity]="0.1"
+                                                        [fillColor]="'#8d5dd1'"
+                                                        [latitude]="geoloc.location.lat"
+                                                        [longitude]="geoloc.location.lng"
+                                                        [radius]="geoloc.accuracy">
+                                            </agm-circle>
+                                            <!-- End Circle -->
+                                        </ng-container>
+                                        <!-- Geoloc GPS -->
+                                        <ng-container *ngIf="geoloc.type === 'gps'">
+                                            <agm-marker
+                                                    [zIndex]="3"
+                                                    [latitude]="geoloc.location.lat"
+                                                    [longitude]="geoloc.location.lng"
+                                                    [iconUrl]="'assets/img/markers/marker-gps.png'">
+                                                <agm-info-window id="{{geoloc.id}}">
+                                                    <strong><b>ID: </b><span
+                                                            class="text-device">{{device.id}}</span></strong>
+                                                    <br>
+                                                    <strong *ngIf="device.name"><b>Name: </b>{{device.name}}
+                                                    </strong>
+                                                    <br *ngIf="device.name">
+                                                    <strong><b>Type: </b><span
+                                                            class="text-geoloc-gps">GPS</span></strong>
+                                                    <br>
+                                                    <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}
+                                                    </strong>
+                                                    <br>
+                                                    <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}
+                                                    </strong>
+                                                </agm-info-window>
+                                            </agm-marker>
+                                        </ng-container>
+                                        <!-- Geoloc Beacon -->
+                                        <ng-container *ngIf="geoloc.type === 'beacon'">
+                                            <agm-marker
+                                                    (mouseOut)="markerOut(i)"
+                                                    (mouseOver)="markerOver(i)"
+                                                    [zIndex]="3"
+                                                    [latitude]="geoloc.location.lat"
+                                                    [longitude]="geoloc.location.lng"
+                                                    [iconUrl]="'assets/img/markers/marker-beacon.png'">
+                                                <agm-info-window id="{{geoloc.id}}">
+                                                    <strong><b>ID: </b><span
+                                                            class="text-device">{{device.id}}</span></strong>
+                                                    <br>
+                                                    <strong *ngIf="device.name"><b>Name: </b>{{device.name}}
+                                                    </strong>
+                                                    <br *ngIf="device.name">
+                                                    <strong><b>Type: </b><span
+                                                            class="text-geoloc-beacon">Beacon</span></strong>
+                                                    <br>
+                                                    <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}
+                                                    </strong>
+                                                    <br>
+                                                    <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}
+                                                    </strong>
+                                                    <br>
+                                                    <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
+                                                </agm-info-window>
+                                            </agm-marker>
+                                            <!-- Circle -->
+                                            <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                                                        [zIndex]="1"
+                                                        [strokePosition]="CENTER"
+                                                        [strokeWeight]="1"
+                                                        [strokeColor]="'#3c58ce'"
+                                                        [fillOpacity]="0.1"
+                                                        [fillColor]="'#3c58ce'"
+                                                        [latitude]="geoloc.location.lat"
+                                                        [longitude]="geoloc.location.lng"
+                                                        [radius]="geoloc.accuracy">
+                                            </agm-circle>
+                                            <!-- End Circle -->
+                                        </ng-container>
+                                        <!-- Geoloc WiFi -->
+                                        <ng-container *ngIf="geoloc.type === 'wifi'">
+                                            <agm-marker
+                                                    (mouseOut)="markerOut(i)"
+                                                    (mouseOver)="markerOver(i)"
+                                                    [zIndex]="3"
+                                                    [latitude]="geoloc.location.lat"
+                                                    [longitude]="geoloc.location.lng"
+                                                    [iconUrl]="'assets/img/markers/marker-wifi.png'">
+                                                <agm-info-window id="{{geoloc.id}}">
+                                                    <strong><b>ID: </b><span
+                                                            class="text-device">{{device.id}}</span></strong>
+                                                    <br>
+                                                    <strong *ngIf="device.name"><b>Name: </b>{{device.name}}
+                                                    </strong>
+                                                    <br *ngIf="device.name">
+                                                    <strong><b>Type: </b><span
+                                                            class="text-geoloc-wifi">WiFi</span></strong>
+                                                    <br>
+                                                    <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}
+                                                    </strong>
+                                                    <br>
+                                                    <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}
+                                                    </strong>
+                                                    <br>
+                                                    <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
+                                                </agm-info-window>
+                                            </agm-marker>
+                                            <!-- Circle -->
+                                            <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                                                        [zIndex]="1"
+                                                        [strokePosition]="CENTER"
+                                                        [strokeWeight]="1"
+                                                        [strokeColor]="'#000000'"
+                                                        [fillOpacity]="0.1"
+                                                        [fillColor]="'#000000'"
+                                                        [latitude]="geoloc.location.lat"
+                                                        [longitude]="geoloc.location.lng"
+                                                        [radius]="geoloc.accuracy">
+                                            </agm-circle>
+                                            <!-- End Circle -->
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </agm-map>
+                    </ng-container>
+                </div>
+            </div>
+            <div *ngIf="see" class="col-md-6">
+                <div class="md-card">
+                    <div class="md-card-heading bg-inverse">
+                        <div class="float-right">
+                            <button class="btn btn-outline-secondary" (click)="cancelSee()"><i
+                                    class="icon-close fa-2x text-danger"></i></button>
+                        </div>
+                        <div class="md-card-title">Latest message</div>
+                        <small class="text-message mat-body-strong">{{message.createdAt | date:"yyyy/MM/dd - HH:mm:ss"}}</small>
+                    </div>
+                    <div class="md-card-body" *ngIf="!devicesReady">
+                        Loading devices...
+                        <div class="sk-double-bounce">
+                            <div class="sk-child sk-double-bounce1"></div>
+                            <div class="sk-child sk-double-bounce2"></div>
+                        </div>
+                    </div>
+                    <div class="md-card-body" *ngIf="!message">
+                        No message to see...
+                    </div>
+                    <ng-container *ngIf="message" class="md-card-body">
+                        <div *ngIf="message.data_parsed" class="card m-0 p-0 rounded-0 border border-light">
+                            <div class="card-body mx-auto">
+                                <div class="my-3">
+                                    <div *ngFor="let o of message.data_parsed">
+                                        <small *ngIf="o.value != null">{{o.key}}:
+                                            <strong>{{o.value}} {{o.unit}}</strong></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="temperature && temperature.value || humidity && humidity.value || speed && speed.value"
+                             class="card m-0 rounded-0 border border-light">
+                            <div class="card-body mx-auto">
+                                <ngx-gauge *ngIf="temperature && temperature.value"
+                                           #gauge
+                                           [type]="'arch'"
+                                           [size]="150"
+                                           [cap]="'round'"
+                                           [min]="-50"
+                                           [max]="50"
+                                           [thick]="10"
+                                           [value]="temperature.value"
+                                           [label]="'Temperature'"
+                                           [append]="temperature.unit"
+                                           [thresholds]="thresholdTemperature">
+                                </ngx-gauge>
+                                <ngx-gauge *ngIf="humidity && humidity.value"
+                                           #gauge
+                                           [type]="'arch'"
+                                           [size]="150"
+                                           [cap]="'round'"
+                                           [thick]="10"
+                                           [value]="humidity.value"
+                                           [label]="'Humidity'"
+                                           [append]="humidity.unit"
+                                           [thresholds]="thresholdHumidity">
+                                </ngx-gauge>
+                                <ngx-gauge *ngIf="speed && speed.value"
+                                           #gauge
+                                           [type]="'arch'"
+                                           [size]="150"
+                                           [cap]="'round'"
+                                           [min]="0"
+                                           [max]="150"
+                                           [thick]="15"
+                                           [value]="speed.value"
+                                           [label]="'Speed'"
+                                           [append]="speed.unit"
+                                           [thresholds]="thresholdSpeed">
+                                </ngx-gauge>
+                                <div *ngIf="battery && (battery.value !== null) && battery.unit === '%'" id="battery">
+                                    <div class="bottom"></div>
+                                    <ng-container *ngIf="mobile">
+                                        <div class="middle" [style.width]="'125px'">
+                    <span class="glass" [style.width]="'125px'">
+                      <h4 class="font-weight-bold mt-2 text-center">{{battery.value}} %</h4>
+                    </span>
+                                            <div *ngIf="battery.value > 50" class="fill-green"
+                                                 [style.width]="battery.value + '%'"></div>
+                                            <div *ngIf="battery.value <= 50 && battery.value > 25" class="fill-orange"
+                                                 [style.width]="battery.value + '%'"></div>
+                                            <div *ngIf="battery.value <= 25" class="fill-red"
+                                                 [style.width]="battery.value + '%'"></div>
+                                        </div>
+                                        <div class="top-b"></div>
+                                        <div class="top-a"></div>
+                                    </ng-container>
+                                    <ng-container *ngIf="!mobile">
+                                        <div class="middle">
+                    <span class="glass">
+                      <h4 class="font-weight-bold mt-2 text-center">{{battery.value}} %</h4>
+                    </span>
+                                            <div *ngIf="battery.value > 50" class="fill-green"
+                                                 [style.width]="battery.value + '%'"></div>
+                                            <div *ngIf="battery.value <= 50 && battery.value > 25" class="fill-orange"
+                                                 [style.width]="battery.value + '%'"></div>
+                                            <div *ngIf="battery.value <= 25" class="fill-red"
+                                                 [style.width]="battery.value + '%'"></div>
+                                        </div>
+                                        <div class="top-b"></div>
+                                        <div class="top-a"></div>
+                                    </ng-container>
+                                </div>
+                                <div *ngIf="altitude && altitude.value">
+                                    <h1>{{altitude.value}} <span class="small">{{altitude.unit}}</span></h1>
+                                </div>
+                                <div *ngIf="pressure && pressure.value">
+                                    <h1>{{pressure.value}} <span class="small">{{pressure.unit}}</span></h1>
+                                </div>
+                                <div *ngIf="light && light.value">
+                                    <h1>{{light.value}} <span class="small">{{light.unit}}</span></h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="message.Geolocs && message.Geolocs.length > 0"
+                             class="card m-0 p-0 rounded-0 border border-light">
+                            <agm-map [latitude]="message.Geolocs[0].location.lat"
+                                     [longitude]="message.Geolocs[0].location.lng"
+                                     [zoom]="10"
+                                     [zoomControl]="false"
+                                     [streetViewControl]="false"
+                                     [mapTypeControl]="false"
+                                     [fullscreenControl]="false">
+                                <ng-container *ngFor="let geoloc of message.Geolocs">
+                                    <!-- Sigfox -->
+                                    <ng-container *ngIf="geoloc.type === 'sigfox'">
+                                        <agm-marker
+                                                [zIndex]="3"
+                                                [latitude]="geoloc.location.lat"
+                                                [longitude]="geoloc.location.lng"
+                                                [iconUrl]="'assets/img/markers/marker-sigfox.png'">
+                                            <agm-info-window>
+                                                <strong><b>Type:</b> <span
+                                                        class="text-geoloc-sigfox">Sigfox</span></strong>
+                                                <br>
+                                                <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}
+                                                </strong>
+                                                <br>
+                                                <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}
+                                                </strong>
+                                                <br>
+                                                <strong><b>Accuracy:</b> {{geoloc.accuracy}} m</strong>
+                                            </agm-info-window>
+                                        </agm-marker>
+                                        <!-- Circle -->
+                                        <agm-circle [zIndex]="1"
+                                                    [strokePosition]="CENTER"
+                                                    [strokeWeight]="1"
+                                                    [strokeColor]="'#8d5dd1'"
+                                                    [fillOpacity]="0.1"
+                                                    [fillColor]="'#8d5dd1'"
+                                                    [latitude]="geoloc.location.lat"
+                                                    [longitude]="geoloc.location.lng"
+                                                    [radius]="geoloc.accuracy">
+                                        </agm-circle>
+                                        <!-- End Circle -->
+                                    </ng-container>
+                                    <!-- Geoloc GPS -->
+                                    <ng-container *ngIf="geoloc.type === 'gps'">
+                                        <agm-marker
+                                                [zIndex]="3"
+                                                [latitude]="geoloc.location.lat"
+                                                [longitude]="geoloc.location.lng"
+                                                [iconUrl]="'assets/img/markers/marker-gps.png'">
+                                            <agm-info-window>
+                                                <strong><b>Type:</b> <span
+                                                        class="text-geoloc-gps">GPS</span></strong>
+                                                <br>
+                                                <strong><b>Date:</b> {{geoloc.createdAt | date:"dd/MM/yyyy"}}
+                                                </strong>
+                                                <br>
+                                                <strong><b>Time:</b> {{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                                            </agm-info-window>
+                                        </agm-marker>
+                                    </ng-container>
+                                    <!-- Beacon -->
+                                    <ng-container *ngIf="geoloc.type === 'beacon'">
+                                        <agm-marker
+                                                [zIndex]="3"
+                                                [latitude]="geoloc.location.lat"
+                                                [longitude]="geoloc.location.lng"
+                                                [iconUrl]="'assets/img/markers/marker-beacon.png'">
+                                            <agm-info-window>
+                                                <strong><b>Type:</b> <span
+                                                        class="text-geoloc-beacon">Beacon</span></strong>
+                                                <br>
+                                                <strong><b>Date:</b> {{geoloc.createdAt | date: 'dd/MM/yyyy'}}
+                                                </strong>
+                                                <br>
+                                                <strong><b>Time:</b> {{geoloc.createdAt | date: 'HH:mm:ss'}}
+                                                </strong>
+                                                <br>
+                                                <strong><b>Accuracy:</b> {{geoloc.accuracy}} m</strong>
+                                            </agm-info-window>
+                                        </agm-marker>
+                                        <!-- Circle -->
+                                        <agm-circle [zIndex]="1"
+                                                    [strokePosition]="CENTER"
+                                                    [strokeWeight]="1"
+                                                    [strokeColor]="'#3c58ce'"
+                                                    [fillOpacity]="0.1"
+                                                    [fillColor]="'#3c58ce'"
+                                                    [latitude]="geoloc.location.lat"
+                                                    [longitude]="geoloc.location.lng"
+                                                    [radius]="geoloc.accuracy">
+                                        </agm-circle>
+                                        <!-- End Circle -->
+                                    </ng-container>
+                                    <!-- Geoloc WiFi -->
+                                    <ng-container *ngIf="geoloc.type === 'wifi'">
+                                        <agm-marker
+                                                (mouseOut)="markerOut(i)"
+                                                (mouseOver)="markerOver(i)"
+                                                [zIndex]="3"
+                                                [latitude]="geoloc.location.lat"
+                                                [longitude]="geoloc.location.lng"
+                                                [iconUrl]="'assets/img/markers/marker-wifi.png'">
+                                            <agm-info-window id="{{geoloc.id}}">
+                                                <strong><b>ID: </b><span
+                                                        class="text-device">{{device.id}}</span></strong>
+                                                <br>
+                                                <strong *ngIf="device.name"><b>Name: </b>{{device.name}}</strong>
+                                                <br *ngIf="device.name">
+                                                <strong><b>Type: </b><span
+                                                        class="text-geoloc-wifi">WiFi</span></strong>
+                                                <br>
+                                                <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}
+                                                </strong>
+                                                <br>
+                                                <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                                                <br>
+                                                <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
+                                            </agm-info-window>
+                                        </agm-marker>
+                                        <!-- Circle -->
+                                        <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                                                    [zIndex]="1"
+                                                    [strokePosition]="CENTER"
+                                                    [strokeWeight]="1"
+                                                    [strokeColor]="'#000000'"
+                                                    [fillOpacity]="0.1"
+                                                    [fillColor]="'#000000'"
+                                                    [latitude]="geoloc.location.lat"
+                                                    [longitude]="geoloc.location.lng"
+                                                    [radius]="geoloc.accuracy">
+                                        </agm-circle>
+                                        <!-- End Circle -->
+                                    </ng-container>
+                                </ng-container>
+                            </agm-map>
+                        </div>
+                    </ng-container>
+                </div> <!-- see -->
+            </div>
+            <div class="col-md-6">
+                <div class="md-card">
+                    <div class="md-card-heading bg-inverse">
+                        <!--<div class="float-right">
+                            <em class="icon-envelope-open fa-3x"></em>
+                        </div>-->
+                        <div class="md-card-title">Devices messages</div>
+                        <small>Ten latest</small>
+                    </div>
+                    <div class="md-card-body" *ngIf="!devicesReady">
+                        Loading devices...
+                        <div class="sk-double-bounce">
+                            <div class="sk-child sk-double-bounce1"></div>
+                            <div class="sk-child sk-double-bounce2"></div>
+                        </div>
+                    </div>
+                    <div class="md-card-body" *ngIf="devicesReady && !devices.length">
+                        No devices yet...
+                    </div>
+                    <ng-container *ngIf="devices.length > 0">
+                        <div *ngIf="devices.length > 0" class="table-responsive">
+                            <table class="table table-hover table-outline">
+                                <thead class="thead-light">
+                                <tr class="text-center">
+                                    <th>See</th>
+                                    <th>Info</th>
+                                    <th>Geoloc</th>
+                                    <th>Last message</th>
+                                    <!--<th class="text-center">Properties</th>-->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let device of devices | slice:0:numberOfDevicesToSee; let i = index"
+                                    class="text-center">
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary btn-oval"
+                                                tooltip="See device latest message"
+                                                (click)="seeDevice(device)"><i class="icon-eye fa-lg"></i></button>
+                                    </td>
+                                    <td>
+                                        <div class="col-md-12">
+                                            <a [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]"><strong
+                                                    class="text-device">{{device.id}}</strong></a>
+                                            <div class="small" *ngIf="device.name">
+                                                <span class="text-gray-dark">Name: </span>
+                                                <span class="text-device">{{device.name}}</span>
+                                            </div>
+                                            <div class="small" *ngIf="device.Category">
+                                                <span class="text-gray-dark">Category: </span>
+                                                <span class="text-category">{{device.Category.name}}</span>
+                                            </div>
+                                            <ng-container *ngIf="device.Messages[0]" class="text-left">
+                                                <ng-container *ngFor="let p of device.Messages[0].data_parsed">
+                                                    <!-- Battery -->
+                                                    <ng-container
+                                                            *ngIf="p.key === 'battery' && (p.value != null) && (p.unit === '%')">
+                                                        <div>
+                                                            <ng-container *ngIf="p.value >= 70">
+                                                                <span class="text-success"><i
+                                                                        class="fa fa-battery-three-quarters"></i> {{p.value}} {{p.unit}}</span>
+                                                            </ng-container>
+                                                            <ng-container *ngIf="p.value < 70 && p.value >= 40">
+                                                                <span class="text-info"><i
+                                                                        class="fa fa-battery-half"></i> {{p.value}} {{p.unit}}</span>
+                                                            </ng-container>
+                                                            <ng-container *ngIf="p.value < 40 && p.value >= 20">
+                              <span class="text-warning"><i
+                                      class="fa fa-battery-quarter"></i> {{p.value}} {{p.unit}}</span>
+                                                            </ng-container>
+                                                            <ng-container *ngIf="p.value < 20">
+                                                                <span class="text-alert"><i
+                                                                        class="fa fa-battery-empty"></i> {{p.value}} {{p.unit}}</span>
+                                                            </ng-container>
+                                                        </div>
+                                                    </ng-container>
+
+                                                    <!-- Temperature -->
+                                                    <ng-container *ngIf="p.key === 'temperature' && (p.value != null)">
+                                                        <div>
+                                                            <span class="text-gray-dark"><i
+                                                                    class="fa fa-thermometer-half"></i> {{p.value}} {{p.unit}}</span>
+                                                            <!--<ng-container *ngIf="p.value >= 30">
+                                                              <span class="text-alert"><i class="fa fa-thermometer-full"></i> {{p.value}} {{p.unit}}</span>
+                                                            </ng-container>
+                                                            <ng-container *ngIf="p.value < 30 && p.value >= 23">
+                                                              <span class="text-warning"><i class="fa fa-thermometer-three-quarters"></i> {{p.value}} {{p.unit}}</span>
+                                                            </ng-container>
+                                                            <ng-container *ngIf="p.value < 23 && p.value >= 17">
+                                                              <span class="text-success"><i class="fa fa-thermometer-half"></i> {{p.value}} {{p.unit}}</span>
+                                                            </ng-container>
+                                                            <ng-container *ngIf="p.value < 17">
+                                                              <span class="text-info"><i class="fa fa-thermometer-quarter"></i> {{p.value}} {{p.unit}}</span>
+                                                            </ng-container>-->
+                                                        </div>
+                                                    </ng-container>
+
+                                                    <!-- Humidity -->
+                                                    <ng-container *ngIf="p.key === 'humidity' && (p.value != null)">
+                                                        <div>
+                                                            <span class="text-gray-dark"><i
+                                                                    class="fa fa-cloud"></i> {{p.value}} {{p.unit}}</span>
+                                                            <!--<ng-container *ngIf="p.value >= 70">
+                                                              <span class="text-info"><i class="fa fa-cloud"></i> {{p.value}} {{p.unit}}</span>
+                                                            </ng-container>
+                                                            <ng-container *ngIf="p.value < 70 && p.value >= 40">
+                                                              <span class="text-success"><i class="fa fa-cloud"></i> {{p.value}} {{p.unit}}</span>
+                                                            </ng-container>
+                                                            <ng-container *ngIf="p.value < 40 && p.value >= 20">
+                                                              <span class="text-warning"><i class="fa fa-cloud"></i> {{p.value}} {{p.unit}}</span>
+                                                            </ng-container>
+                                                            <ng-container *ngIf="p.value < 20">
+                                                              <span class="text-alert"><i class="fa fa-cloud"></i> {{p.value}} {{p.unit}}</span>
+                                                            </ng-container>-->
+                                                        </div>
+                                                    </ng-container>
+
+                                                    <!-- Alert -->
+                                                    <ng-container *ngIf="p.key === 'alert' && p.value">
+                                                        <div>
+                                                            <span class="text-gray-dark"><i
+                                                                    class="fa fa-bell"></i> {{p.value}}</span>
+                                                        </div>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </ng-container>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
+                                            <div *ngFor="let geoloc of device.Messages[0].Geolocs">
+
+                                                <ng-container *ngIf="geoloc.type === 'sigfox'">
+                                                    <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)"
+                                                       class="small text-geoloc-sigfox">
+                                                        <i class="fa fa-map-marker-alt fa-2x"></i>
+                                                        <br>
+                                                        <strong>Sigfox</strong>
+                                                    </a>
+                                                </ng-container>
+                                                <ng-container *ngIf="geoloc.type === 'gps'">
+                                                    <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)"
+                                                       class="small text-geoloc-gps">
+                                                        <i class="fa fa-map-marker-alt fa-2x"></i>
+                                                        <br>
+                                                        <strong>GPS</strong>
+                                                    </a>
+                                                </ng-container>
+                                                <ng-container *ngIf="geoloc.type === 'beacon'">
+                                                    <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)"
+                                                       class="small text-geoloc-beacon">
+                                                        <i class="fa fa-map-marker-alt fa-2x"></i>
+                                                        <br>
+                                                        <strong>Beacon</strong>
+                                                    </a>
+                                                </ng-container>
+                                                <ng-container *ngIf="geoloc.type == 'wifi'">
+                                                    <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)"
+                                                       class="small text-geoloc-wifi">
+                                                        <i class="fa fa-map-marker-alt fa-2x"></i>
+                                                        <br>
+                                                        <strong>WiFi</strong>
+                                                    </a>
+                                                </ng-container>
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <strong>{{device.messagedAt | amTimeAgo}}</strong>
+                                    </td>
+                                    <!--<td>
+                                        <div *ngIf="!device.properties" class="small text-muted text-center">No properties</div>
+                                        <div *ngIf="device.properties && device.properties.length === 0" class="small text-muted text-center">
+                                            No properties yet
+                                        </div>
+                                        <div *ngIf="device.properties && device.properties.length > 0">
+                                            <div class="small text-gray-dark" *ngFor="let property of device.properties; let i = index">
+                                                <span class="font-weight-bold">{{property.key ? property.key : ""}}: </span>
+                                                <span class="text-primary">{{property.value ? property.value : ""}}</span>
+                                            </div>
+                                        </div>
+                                    </td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12">
+        <div class="card-deck">
+            <div class="card b mb-3">
+                <div class="card-header">
+                    <h3 class="mt-3">Messages</h3>
+                </div>
+                <div class="card-body">
+                    This project has been carefully designed to provide modules for Core, Layout, Shared and Routed
+                    components.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

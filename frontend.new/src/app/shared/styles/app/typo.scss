@@ -1,0 +1,105 @@
+/* ========================================================================
+     Component: typo
+ ========================================================================== */
+
+/* Roboto @font-face */
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('~roboto-fontface/fonts/roboto/Roboto-Light.woff2') format('woff2'),
+         url('~roboto-fontface/fonts/roboto/Roboto-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('~roboto-fontface/fonts/roboto/Roboto-LightItalic.woff2') format('woff2'),
+         url('~roboto-fontface/fonts/roboto/Roboto-LightItalic.woff') format('woff');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('~roboto-fontface/fonts/roboto/Roboto-Regular.woff2') format('woff2'),
+         url('~roboto-fontface/fonts/roboto/Roboto-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('~roboto-fontface/fonts/roboto/Roboto-RegularItalic.woff2') format('woff2'),
+         url('~roboto-fontface/fonts/roboto/Roboto-RegularItalic.woff') format('woff');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('~roboto-fontface/fonts/roboto/Roboto-Bold.woff2') format('woff2'),
+         url('~roboto-fontface/fonts/roboto/Roboto-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+
+body {
+    font-family: "Roboto", sans-serif;
+    color: $body-color;
+    font-size: 0.875rem; // 14px
+}
+
+h1,h2,h3,h4 {
+    font-weight: bold;
+}
+
+h1,h2,h3,h4,h5,h6,
+.h1,.h2,.h3,.h4,.h5,.h6 {
+    margin-bottom: 0.65625rem;
+    small {
+        font-size: 65%;
+    }
+}
+
+h1,.h1 {
+    font-size: 2.25rem; // 36px
+}
+
+h2,.h2 {
+    font-size: 1.875rem; // 30px
+}
+
+h3,.h3 {
+    font-size: 1.5rem; // 24px
+}
+
+h4,.h4 {
+    font-size: 1.125rem; // 18px
+}
+
+h5,.h5 {
+    font-size: .875rem;
+}
+
+h6,.h6 {
+    font-size: 1rem;
+}
+
+p {
+    margin-bottom: .65rem; // ~10px
+}
+
+.article {
+  font-size: 20px;
+  line-height: 32px;
+}
+
+strong {
+    font-weight: 700;
+}
+
+small {
+    font-weight: 100;
+}

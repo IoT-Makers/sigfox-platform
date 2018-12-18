@@ -56,10 +56,37 @@
     </div>
   </div>
 
-  <h3>Sigfox Backend Callbacks</h3>
+  <h3>Sigfox Backend Integration</h3>
   <hr>
   <div class="row">
-    <div class="col col-12">
+    <div class="col-md-4">
+      <accordion>
+        <accordion-group [isOpen]="true">
+          <div accordion-heading>
+            <strong class="text-api">AUTO CREATE CALLBACKS</strong> <i class="fa fa-circle-o-notch pull-right" aria-hidden="true"></i>
+          </div>
+          <div class="card-block">
+            <form (ngSubmit)="createSigfoxBackendCallbacks()" class="form-horizontal" #addOrEditForm="ngForm">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">Device type
+                  <small class="text-danger">(required)</small>
+                </label>
+                <div class="col-md-9">
+                  <angular2-multiselect name="selectDevicetypes"
+                                        [data]="selectDevicetypes"
+                                        [(ngModel)]="selectedDevicetypes"
+                                        [settings]="selectOneSettings"
+                                        required>
+                  </angular2-multiselect>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-api" [disabled]="!addOrEditForm.form.valid"><i class="fa fa-plus-circle"></i> Create callbacks</button>
+            </form>
+          </div>
+        </accordion-group>
+      </accordion>
+    </div>
+    <div class="col-md-8">
       <accordion>
         <accordion-group>
           <div accordion-heading>
@@ -69,25 +96,29 @@
             <p>Type: <strong>DATA</strong> | <strong>UPLINK</strong></p>
             <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see
               all the base stations that received the message)</i></p>
-            <p>Url pattern: <strong tooltip="Click to copy" click-copy (click)="toastClick()">{{ callbackURL + '/Messages/sigfox' }}</strong></p>
+            <p>Url pattern: <strong tooltip="Click to copy" click-copy
+                                    (click)="toastClick()">{{ callbackURL + '/Messages/sigfox' }}</strong></p>
             <p>Use HTTP Method: <strong>POST</strong></p>
             <p>Send SNI: <strong class="bg-api btn-round"><i class="fa fa-check" aria-hidden="true"></i></strong></p>
-            <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span class="text-danger"tooltip="Click to copy" click-copy (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
+            <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span
+              class="text-danger" tooltip="Click to copy" click-copy
+              (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
             </p>
-            <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong></p>
+            <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong>
+            </p>
             <p>Body: <code class="text-center" tooltip="Click to copy" click-copy (click)="toastClick()">{{
               '{
-              "deviceId": "{device}",
-              "time": {time},
-              "seqNumber": {seqNumber},
-              "data": "{data}",
-              "reception": [{
-              "id": "{station}",
-              "RSSI": {rssi},
-              "SNR": {snr}
+                "deviceId": "{device}",
+                "time": {time},
+                "seqNumber": {seqNumber},
+                "data": "{data}",
+                "reception": [{
+                "id": "{station}",
+                "RSSI": {rssi},
+                "SNR": {snr}
               }],
-              "duplicate": {duplicate}
-              }'
+                "duplicate": {duplicate}
+                }'
               }}</code>
             </p>
             <div class="mt-2"><u>Optional initialization parameters:</u>
@@ -100,7 +131,8 @@
                 </li>
                 <li class="list-group-item">
                   <code tooltip="Click to copy" click-copy (click)="toastClick()">"parserId":</code>
-                  <small><kbd>String</kbd> The ID of the parser you wish to decode the "data" (payload) with (see "Parsers"
+                  <small><kbd>String</kbd> The ID of the parser you wish to decode the "data" (payload) with (see
+                    "Parsers"
                     tab)
                   </small>
                 </li>
@@ -121,26 +153,30 @@
             <p>Type: <strong>DATA</strong> | <strong>BIDIR</strong></p>
             <p>Send duplicate: <strong><i class="fa fa-check" aria-hidden="true"></i></strong> <i>(if you wish to see
               all the base stations that received the message)</i></p>
-            <p>Url pattern: <strong tooltip="Click to copy" click-copy (click)="toastClick()">{{ callbackURL + '/Messages/sigfox' }}</strong></p>
+            <p>Url pattern: <strong tooltip="Click to copy" click-copy
+                                    (click)="toastClick()">{{ callbackURL + '/Messages/sigfox' }}</strong></p>
             <p>Use HTTP Method: <strong>POST</strong></p>
             <p>Send SNI: <strong class="bg-api btn-round"><i class="fa fa-check" aria-hidden="true"></i></strong></p>
-            <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span class="text-danger" tooltip="Click to copy" click-copy (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
+            <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span
+              class="text-danger" tooltip="Click to copy" click-copy
+              (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
             </p>
-            <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong></p>
+            <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong>
+            </p>
             <p>Body: <code class="text-center" tooltip="Click to copy" click-copy (click)="toastClick()">{{
               '{
-              "deviceId": "{device}",
-              "time": {time},
-              "seqNumber": {seqNumber},
-              "data": "{data}",
-              "reception": [{
-              "id": "{station}",
-              "RSSI": {rssi},
-              "SNR": {snr}
+                "deviceId": "{device}",
+                "time": {time},
+                "seqNumber": {seqNumber},
+                "data": "{data}",
+                "reception": [{
+                "id": "{station}",
+                "RSSI": {rssi},
+                "SNR": {snr}
               }],
-              "duplicate": {duplicate},
-              "ack": {ack}
-              }'
+                "duplicate": {duplicate},
+                "ack": {ack}
+                }'
               }}</code>
             </p>
             <div class="mt-2"><u>Optional initialization parameters:</u>
@@ -153,7 +189,8 @@
                 </li>
                 <li class="list-group-item">
                   <code tooltip="Click to copy" click-copy (click)="toastClick()">"parserId":</code>
-                  <small><kbd>String</kbd> The ID of the parser you wish to decode the "data" (payload) with (see "Parsers"
+                  <small><kbd>String</kbd> The ID of the parser you wish to decode the "data" (payload) with (see
+                    "Parsers"
                     tab)
                   </small>
                 </li>
@@ -171,54 +208,65 @@
         </accordion-group>
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-geoloc-sigfox">GEOLOC</strong> <i class="fa fa-map-marker pull-right" aria-hidden="true"></i>
+            <strong class="text-geoloc-sigfox">GEOLOC</strong> <i class="fa fa-map-marker pull-right"
+                                                                  aria-hidden="true"></i>
           </div>
           <div class="card-block">
             <p>Type: <strong>SERVICE</strong> | <strong>GEOLOC</strong></p>
-            <p>Url pattern: <strong tooltip="Click to copy" click-copy (click)="toastClick()">{{ callbackURL + '/Geolocs/sigfox'}}</strong></p>
+            <p>Url pattern: <strong tooltip="Click to copy" click-copy
+                                    (click)="toastClick()">{{ callbackURL + '/Geolocs/sigfox'}}</strong></p>
             <p>Use HTTP Method: <strong>POST</strong></p>
             <p>Send SNI: <strong class="bg-api btn-round"><i class="fa fa-check" aria-hidden="true"></i></strong></p>
-            <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span class="text-danger" tooltip="Click to copy" click-copy (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
+            <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span
+              class="text-danger" tooltip="Click to copy" click-copy
+              (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
             </p>
-            <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong></p>
+            <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong>
+            </p>
             <p>Body: <code class="text-center" tooltip="Click to copy" click-copy (click)="toastClick()">{{
               '{
-              "deviceId": "{device}",
-              "time": {time},
-              "seqNumber": {seqNumber},
-              "geoloc": {
-              "location": {
-              "lat": {lat},
-              "lng": {lng}
-              },
-              "accuracy": {radius}
+                "deviceId": "{device}",
+                "time": {time},
+                "seqNumber": {seqNumber},
+                "geoloc": {
+                "location": {
+                  "lat": {lat},
+                  "lng": {lng}
+                },
+                "accuracy": {radius}
               }
-              }'
+                }'
               }}</code>
             </p>
           </div>
         </accordion-group>
         <accordion-group>
           <div accordion-heading>
-            <strong class="text-success">ACKNOWLEDGE</strong> <i class="fa fa-check-circle pull-right" aria-hidden="true"></i>
+            <strong class="text-success">ACKNOWLEDGE</strong> <i class="fa fa-check-circle pull-right"
+                                                                 aria-hidden="true"></i>
           </div>
           <div class="card-block">
             <p>Type: <strong>SERVICE</strong> | <strong>ACKNOWLEDGE</strong></p>
-            <p>Url pattern: <strong tooltip="Click to copy" click-copy (click)="toastClick()">{{ callbackURL + '/Messages/sigfox/acknowledge' }}</strong></p>
+            <p>Url pattern: <strong tooltip="Click to copy" click-copy
+                                    (click)="toastClick()">{{ callbackURL + '/Messages/sigfox/acknowledge' }}</strong>
+            </p>
             <p>Use HTTP Method: <strong>POST</strong></p>
             <p>Send SNI: <strong class="bg-api btn-round"><i class="fa fa-check" aria-hidden="true"></i></strong></p>
-            <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span class="text-danger" tooltip="Click to copy" click-copy (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
+            <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span
+              class="text-danger" tooltip="Click to copy" click-copy
+              (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
             </p>
-            <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong></p>
+            <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong>
+            </p>
             <p>Body: <code class="text-center" tooltip="Click to copy" click-copy (click)="toastClick()">{{
               '{
-              "deviceId": "{device}",
-              "time": {time},
-              "infoCode": {infoCode},
-              "infoMessage": "{infoMessage}",
-              "downlinkAck": {downlinkAck},
-              "downlinkOverusage": {downlinkOverusage}
-              }'
+                "deviceId": "{device}",
+                "time": {time},
+                "infoCode": {infoCode},
+                "infoMessage": "{infoMessage}",
+                "downlinkAck": {downlinkAck},
+                "downlinkOverusage": {downlinkOverusage}
+                }'
               }}</code>
             </p>
           </div>
@@ -248,9 +296,11 @@
       </accordion>
     </div>
   </div>
+
 </div>
 
-<div bsModal #confirmTokenModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmTokenModal"
+<div bsModal #confirmTokenModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="confirmTokenModal"
      aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">

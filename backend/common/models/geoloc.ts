@@ -40,16 +40,13 @@ const loopback = require('loopback');
 
 class Geoloc {
 
-  private primusClient: any;
   private HERE = {
     app_id: process.env.HERE_APP_ID,
     app_code: process.env.HERE_APP_CODE
   };
 
   // LoopBack model instance is injected in constructor
-  constructor(public model: any) {
-
-  }
+  constructor(public model: any) {}
 
   private createFromParsedPayload(message: any, req: any): void {
     // Models
@@ -286,10 +283,8 @@ class Geoloc {
       },
       message,
       (err: any, messageInstance: any, created: boolean) => {
-        if (err) {
-          console.error(err);
-          next(err, data);
-        } else if (messageInstance) {
+        if (err) return next(err, data);
+        else if (messageInstance) {
           if (!created) console.log('Found the corresponding message.');
           else {
             /**
@@ -359,18 +354,17 @@ class Geoloc {
             }, // find
             geoloc, // create
             (err: any, geolocInstance: any, created: boolean) => { // callback
-              if (err) next(err, geolocInstance);
+              if (err) return next(err, geolocInstance);
               else if (created) {
-                console.log('Created geoloc as: ', geolocInstance);
-                this.updateDeviceLocatedAt(geolocInstance.deviceId, geolocInstance.createdAt);
-                next(null, geolocInstance);
-              } else next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
+                // console.log('Created geoloc as: ', geolocInstance);
+                return next(null, geolocInstance);
+              } else return next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
             });
         }
       });
   }
 
-  updateDeviceLocatedAt(deviceId: string, createdAt: Date) {
+  updateDeviceLocatedAt(deviceId: string, createdAt: Date, cb: Function) {
     // Models
     const Device = this.model.app.models.Device;
 
@@ -378,6 +372,7 @@ class Geoloc {
       if (err) console.error(err);
       else if (deviceInstance) {
         deviceInstance.updateAttribute('locatedAt', createdAt);
+        cb(deviceInstance);
       }
     });
   }
@@ -389,8 +384,7 @@ class Geoloc {
       (err: any, geolocInstance: any) => {
         if (err) console.error(err);
         else {
-          console.log('Created geoloc as: ', geolocInstance);
-          this.updateDeviceLocatedAt(geolocInstance.deviceId, geolocInstance.createdAt);
+          // console.log('Created geoloc as: ', geolocInstance);
         }
       });
   }
@@ -419,12 +413,18 @@ class Geoloc {
   public afterSave(ctx: any, next: Function): void {
     // Pub-sub
     let geoloc = ctx.instance;
-    const payload = {
-      event: "geoloc",
-      content: geoloc,
-      action: ctx.isNewInstance ? "CREATE" : "UPDATE"
-    };
-    RabbitPub.getInstance().pub(payload);
+
+    if (ctx.isNewInstance) {
+      this.updateDeviceLocatedAt(geoloc.deviceId, geoloc.createdAt, (device: any) => {
+        const payload = {
+          event: "geoloc",
+          device: device,
+          content: geoloc,
+          action: "CREATE"
+        };
+        RabbitPub.getInstance().pub(payload, 'noOrg');
+      });
+    }
     next();
   }
 }

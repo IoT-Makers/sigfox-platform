@@ -94,6 +94,12 @@
     <!--</div>-->
     <nav class="sidebar-nav" *ngIf="!organization">
       <ul class="nav">
+        <ng-container *ngIf="!isInitialized">
+          <div class="sk-double-bounce">
+            <div class="sk-child sk-double-bounce1 loading-in"></div>
+            <div class="sk-child sk-double-bounce2 loading-out"></div>
+          </div>
+        </ng-container>
         <ng-container *ngIf="isInitialized">
           <li class="nav-title">
             Dashboards
@@ -106,7 +112,8 @@
           </li>
           <li class="nav-item" *ngFor="let dashboard of dashboards">
             <a class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-               [routerLink]="['/dashboard', dashboard.id]"><i class="fa {{dashboard.icon ? dashboard.icon : null}}"></i>{{dashboard.name}}</a>
+               [routerLink]="['/dashboard', dashboard.id]"><i
+              class="fa {{dashboard.icon ? dashboard.icon : null}}"></i>{{dashboard.name}}</a>
           </li>
 
           <li class="divider"></li>
@@ -202,62 +209,71 @@
 
     <nav class="sidebar-nav" *ngIf="organization">
       <ul class="nav">
-
-        <li class="nav-title">
-          Dashboards
-          <button class="pull-right btn-round btn-outline-success btn-sm" routerLinkActive="active"
-                  tooltip="Create dashboard" placement="left"
-                  (click)="newDashboard()" style="outline: none"><i class="fa fa-plus-circle"></i></button>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/organization/', organization.id]"><i
-            class="fa fa-dashboard text-white"></i> Overview </a>
-        </li>
-        <ng-container *ngIf="dashboards">
-          <li class="nav-item" *ngFor="let dashboard of dashboards">
-            <a class="nav-link" routerLinkActive="active"
-               [routerLink]="['dashboard', dashboard.id]"><i class="fa {{dashboard.icon ? dashboard.icon : null}}"></i>{{dashboard.name}}</a>
-          </li>
+        <ng-container *ngIf="!isInitialized">
+          <div class="loading sk-double-bounce">
+            <div class="sk-child sk-double-bounce1"></div>
+            <div class="sk-child sk-double-bounce2"></div>
+          </div>
         </ng-container>
-
-        <li class="divider"></li>
-
-        <li class="nav-title">
-          Information
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active"
-             [routerLink]="['/organization/', organization.id, 'categories']">
-            <i class="fa fa-tag text-category"></i> Shared categories
-            <span *ngIf="countCategoriesReady" class="badge badge-category">{{countCategories}}</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/organization/', organization.id, 'devices']">
-            <i class="fa fa-microchip text-device"></i> Shared devices
-            <span *ngIf="countDevicesReady" class="badge badge-device">{{countDevices}}</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/organization/', organization.id, 'messages']">
-            <i class="fa fa-envelope text-message"></i> Shared messages
-            <span *ngIf="countMessagesReady" class="badge badge-message">{{countMessages}}</span>
-          </a>
-        </li>
-
-
-        <ng-container *ngIf="admin">
+        <ng-container *ngIf="isInitialized">
           <li class="nav-title">
-            Admin
+            Dashboards
+            <button class="pull-right btn-round btn-outline-success btn-sm" routerLinkActive="active"
+                    tooltip="Create dashboard" placement="left"
+                    (click)="newDashboard()" style="outline: none"><i class="fa fa-plus-circle"></i></button>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLinkActive="active" [routerLink]="['/admin']"><i
-              class="fa fa-key"></i> Admin </a>
+            <a class="nav-link" [routerLink]="['/organization/', organization.id]"><i
+              class="fa fa-dashboard text-white"></i> Overview </a>
+          </li>
+          <ng-container *ngIf="dashboards">
+            <li class="nav-item" *ngFor="let dashboard of dashboards">
+              <a class="nav-link" routerLinkActive="active"
+                 [routerLink]="['dashboard', dashboard.id]"><i
+                class="fa {{dashboard.icon ? dashboard.icon : null}}"></i>{{dashboard.name}}</a>
+            </li>
+          </ng-container>
+
+          <li class="divider"></li>
+
+          <li class="nav-title">
+            Information
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active"
+               [routerLink]="['/organization/', organization.id, 'categories']">
+              <i class="fa fa-tag text-category"></i> Shared categories
+              <span *ngIf="countCategoriesReady" class="badge badge-category">{{countCategories}}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/organization/', organization.id, 'devices']">
+              <i class="fa fa-microchip text-device"></i> Shared devices
+              <span *ngIf="countDevicesReady" class="badge badge-device">{{countDevices}}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active"
+               [routerLink]="['/organization/', organization.id, 'messages']">
+              <i class="fa fa-envelope text-message"></i> Shared messages
+              <span *ngIf="countMessagesReady" class="badge badge-message">{{countMessages}}</span>
+            </a>
+          </li>
+
+
+          <ng-container *ngIf="admin">
+            <li class="nav-title">
+              Admin
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLinkActive="active" [routerLink]="['/admin']"><i
+                class="fa fa-key"></i> Admin </a>
+            </li>
+          </ng-container>
+          <li class="nav-item mt-auto">
+            <a class="nav-link"><i class="fa fa-code-fork"></i> {{appVersion}}</a>
           </li>
         </ng-container>
-        <li class="nav-item mt-auto">
-          <a class="nav-link"><i class="fa fa-code-fork"></i> {{appVersion}}</a>
-        </li>
       </ul>
     </nav>
 
@@ -354,8 +370,6 @@
               <angular2-multiselect name="selectUsers"
                                     [data]="selectUsers"
                                     [(ngModel)]="selectedUsers"
-                                    (onDeSelect)="unlinkMember($event)"
-                                    (onSelect)="linkMember($event)"
                                     [settings]="selectUsersSettings">
               </angular2-multiselect>
             </div>

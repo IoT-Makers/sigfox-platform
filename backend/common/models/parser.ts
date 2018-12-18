@@ -1,5 +1,6 @@
 import {Model} from "@mean-expert/model";
 import {RabbitPub} from '../../server/RabbitPub';
+import {Script} from 'vm';
 
 /**
  * @module Parser
@@ -52,7 +53,7 @@ import {RabbitPub} from '../../server/RabbitPub';
 
 class Parser {
 
-  private primusClient: any;
+  private compiledParsers: {[uid: string]: Script} = {};
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
@@ -77,7 +78,7 @@ class Parser {
     next();
   }
 
-  public parsePayload(fn: string, payload: string, req: any, next: Function): void {
+  public parsePayload(parser: Parser, payload: string, req: any, next: Function): void {
     const userId = req.accessToken.userId;
     if (!userId) return next(null, "Please login or use a valid access token.");
     if (payload.length > 24) return next(null, "Sigfox payload cannot be more than 12 bytes.");
@@ -87,8 +88,8 @@ class Parser {
     let data_parsed: any = null;
     if (payload !== "") {
       try {
-        const func = Function("payload", fn);
-        data_parsed = func(payload);
+        const script = this.getCompiledParser(parser);
+        data_parsed = script.runInNewContext({payload: payload}, {timeout: 5000});
         console.log("Parser | Success data parsed");
         next(null, data_parsed);
       } catch (err) {
@@ -150,11 +151,11 @@ class Parser {
                   response.message = "No parser associated to this device.";
                   next(null, response);
                 } else {
-                  const fn = deviceInstance.Parser.function;
+                  const par = deviceInstance.Parser;
                   if (deviceInstance.Messages) {
                     deviceInstance.Messages.forEach((message: any, msgCount: number) => {
                       if (message.data) {
-                        Parser.parsePayload(fn, message.data, req, (err: any, data_parsed: any) => {
+                        Parser.parsePayload(par, message.data, req, (err: any, data_parsed: any) => {
                           if (err) {
                             next(err, null);
                           } else {
@@ -241,7 +242,7 @@ class Parser {
           response.message = "No parser associated to this device.";
           next(null, response);
         } else {
-          const fn = device.Parser.function;
+          const par = device.Parser;
           if (device.Messages) {
             /**
              * Destroy all geolocs different than Sigfox
@@ -253,7 +254,7 @@ class Parser {
             });
             device.Messages.forEach((message: any, msgCount: number) => {
               if (message.data) {
-                Parser.parsePayload(fn, message.data, req, (err: any, data_parsed: any) => {
+                Parser.parsePayload(par, message.data, req, (err: any, data_parsed: any) => {
                   if (err) {
                     next(err, null);
                   } else {
@@ -296,6 +297,17 @@ class Parser {
         next(null, response);
       }
     });
+  }
+
+  private getCompiledParser(parser: any): Script {
+    const uid = parser.id + parser.modifiedAt;
+    if (!this.compiledParsers[uid]) {
+      const fn = parser.function;
+      const sc = new Script(`(function (payload){${fn}})(payload)`);
+      // sc.createCachedData();
+      this.compiledParsers[uid] = sc;
+    }
+    return this.compiledParsers[uid];
   }
 
   public afterDelete(ctx: any, next: Function): void {

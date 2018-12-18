@@ -102,16 +102,15 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
+    const api = this.organization ? this.organizationApi : this.userApi;
+    const id = this.organization ? this.organization.id : this.user.id;
     this.cleanSetup();
-    this.subscribe();
+    this.subscribe(id);
     // Get and listen categories
     const filter = {
       order: 'updatedAt DESC',
       include: ['Devices', 'Organizations'],
     };
-
-    const api = this.organization ? this.organizationApi : this.userApi;
-    const id = this.organization ? this.organization.id : this.user.id;
 
     api.getCategories(id, filter).subscribe((categories: Category[]) => {
       this.categories = categories;
@@ -320,7 +319,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     }
   };
 
-  subscribe(): void {
+  subscribe(id: string): void {
+    this.rt.informCurrentPage(id, ['category']);
     this.rtHandler = this.rt.addListener("category", this.rtHandler);
   }
 

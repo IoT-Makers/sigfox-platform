@@ -18,6 +18,16 @@ export class ApiComponent implements OnInit, OnDestroy {
   public devAccessTokenToRemove: AccessToken = new AccessToken();
   public callbackURL;
 
+  // Select
+  public selectDevicetypes: Array<Object> = [];
+  public selectedDevicetypes = [];
+  public selectOneSettings = {
+    singleSelection: true,
+    text: 'Select one device type',
+    enableSearchFilter: true,
+    classes: 'select-one-api'
+  };
+
   // Notifications
   private toast;
   private toasterService: ToasterService;
@@ -42,6 +52,43 @@ export class ApiComponent implements OnInit, OnDestroy {
     // Fix
     if (!this.user.devAccessTokens) this.user.devAccessTokens = [];
     this.callbackURL = 'https://api.' + this.document.location.hostname + '/api';
+
+    this.listSigfoxBackendDevicetypes();
+  }
+
+  createSigfoxBackendCallbacks(): void {
+    if (this.selectedDevicetypes) {
+      this.connectorApi.createSigfoxBackendCallbacks(this.selectedDevicetypes[0].id).subscribe((result: any) => {
+        if (result.statusCode === 200) {
+          this.selectedDevicetypes = [];
+          if (this.toast)
+            this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+          this.toast = this.toasterService.pop('success', 'Success', 'Callbacks were successfully created.');
+        } else {
+          if (this.toast)
+            this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+          this.toast = this.toasterService.pop('error', 'Error', 'Error occurred, are you sure you have the DEVICE MANAGER [W] or CUSTOMER [W] API rights on the Sigfox Backend?');
+        }
+      });
+    }
+  }
+
+  listSigfoxBackendDevicetypes(): void {
+    this.connectorApi.listSigfoxBackendDevicetypes().subscribe((result: any) => {
+      if (result.data) {
+        result.data.forEach((dt: any) => {
+          const item = {
+            id: dt.id,
+            itemName: dt.name
+          };
+          this.selectDevicetypes.push(item);
+        });
+      } else {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('warning', 'Warning', 'To automatically create the callbacks, please create the Sigfox API connector first!');
+      }
+    });
   }
 
   createDevAccessToken(): void {

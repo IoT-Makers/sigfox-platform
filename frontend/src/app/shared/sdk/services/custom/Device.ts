@@ -1158,41 +1158,6 @@ export class DeviceApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} deviceId Device Id
-   *
-   * @param {string} dateBegin The starting date-time
-   *
-   * @param {string} dateEnd The ending date-time
-   *
-   * @param {object} req 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * Data properties:
-   *
-   *  - `result` – `{any}` - 
-   */
-  public timeSeries(deviceId: any, dateBegin: any = {}, dateEnd: any = {}, req: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Devices/time-series";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof deviceId !== 'undefined' && deviceId !== null) _urlParams.deviceId = deviceId;
-    if (typeof dateBegin !== 'undefined' && dateBegin !== null) _urlParams.dateBegin = dateBegin;
-    if (typeof dateEnd !== 'undefined' && dateEnd !== null) _urlParams.dateEnd = dateEnd;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
    * @param {string} id Device Id
    *
    * @param {number} limit Limit retrieved messages (max 100)

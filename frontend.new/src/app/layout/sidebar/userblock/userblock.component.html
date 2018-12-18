@@ -1,0 +1,16 @@
+<div class="item user-block" *ngIf="userBlockIsVisible()">
+    <!-- User picture-->
+    <div class="user-block-picture">
+        <div class="user-block-status">
+            <img class="img-thumbnail rounded-circle" [src]="user.avatar" alt="Avatar" />
+            <div *ngIf="isConnected" class="circle bg-success circle-lg"></div>
+            <div *ngIf="!isConnected" class="circle bg-danger circle-lg"></div>
+        </div>
+    </div>
+    <!-- Name and Job-->
+    <div class="user-block-info">
+        <!--<span class="user-block-name">{{ 'sidebar.WELCOME' | translate }} {{user.email}}</span>-->
+        <span class="user-block-name">{{user.email}}</span>
+        <span class="user-block-role">{{user.role}}</span>
+    </div>
+</div>

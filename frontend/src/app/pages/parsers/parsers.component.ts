@@ -65,11 +65,10 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.unsubscribe();
-    this.subscribe();
-
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
+    this.unsubscribe();
+    this.subscribe(this.user.id);
     this.userApi.getRoles(this.user.id).subscribe((roles: Role[]) => {
       this.user.roles = roles;
       roles.forEach((role: Role) => {
@@ -214,7 +213,8 @@ export class ParsersComponent implements OnInit, OnDestroy {
     }
   };
 
-  subscribe(): void {
+  subscribe(id: string): void {
+    this.rt.informCurrentPage(id, ['parser']);
     this.rtHandler = this.rt.addListener("parser", this.rtHandler);
   }
 

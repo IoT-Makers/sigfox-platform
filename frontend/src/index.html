@@ -2,6 +2,24 @@
 <html>
 
 <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-98227247-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-98227247-2');
+  </script>
+  <!-- Angular 6 fix -->
+  <script>
+    var global = global || window;
+    var Buffer = Buffer || [];
+    var process = process || {
+      env: { DEBUG: undefined },
+      version: []
+    };
+  </script>
+
   <base href="./">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,15 +30,6 @@
 
   <title>Sigfox Platform</title>
 
-  <!-- Angular 6 fix -->
-  <script>
-    var global = global || window;
-    var Buffer = Buffer || [];
-    var process = process || {
-      env: { DEBUG: undefined },
-      version: []
-    };
-  </script>
 </head>
 
 <!-- BODY options, add following classes to body to change options

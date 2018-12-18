@@ -89,7 +89,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.unsubscribe();
-    this.subscribe();
+    this.subscribe(this.user.id);
     console.log('Setup Tracking');
     // Get and listen messages
     this.deviceIdSub = this.route.params.subscribe(params => {
@@ -149,8 +149,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     this.mapZoom = 15;
     // D3
     // if (geoloc.type === 'beacon') this.setBubbles(geoloc);
-
-    if ((geoloc.userId && !this.organization) || geoloc.Organizations.map(x => x.id).includes(this.organization.id)) {
+    if (geoloc.userId == this.user.id || (this.organization && geoloc.Device.Organizations.map(x => x.id).includes(this.organization.id))) {
       if (payload.content.deviceId === this.deviceId) {
         if (payload.action == "CREATE") {
           this.geolocs.push(payload.content);
@@ -168,7 +167,8 @@ export class TrackingComponent implements OnInit, OnDestroy {
     }
   };
 
-  subscribe(): void {
+  subscribe(id: string): void {
+    this.rt.informCurrentPage(id, ['geoloc']);
     this.rtHandler = this.rt.addListener("geoloc", this.rtHandler);
   }
 

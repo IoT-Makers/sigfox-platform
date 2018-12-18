@@ -127,9 +127,11 @@ export class ConnectorApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {object} req 
+   * @param {object} data Request data.
    *
-   * @param {string} devicetypeId 
+   *  - `devicetypeId` – `{string}` - 
+   *
+   *  - `req` – `{object}` - 
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -140,14 +142,41 @@ export class ConnectorApi extends BaseLoopBackApi {
    * This usually means the response is a `Connector` object.)
    * </em>
    */
-  public createSigfoxBackendCallbacks(req: any = {}, devicetypeId: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
+  public createSigfoxBackendCallbacks(devicetypeId: any, req: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Connectors/create-sigfox-backend-callbacks";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof devicetypeId !== 'undefined' && devicetypeId !== null) _urlParams.devicetypeId = devicetypeId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} req 
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Connector` object.)
+   * </em>
+   */
+  public listSigfoxBackendDevicetypes(req: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Connectors/list-sigfox-backend-devicetypes";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

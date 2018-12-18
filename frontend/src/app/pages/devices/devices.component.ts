@@ -175,9 +175,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
+    this.api = this.organization ? this.organizationApi : this.userApi;
+    this.id = this.organization ? this.organization.id : this.user.id;
     this.unsubscribe();
     this.subscribe();
-    console.log('Setup Devices');
 
     const filter = {
       where: {},
@@ -197,10 +198,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
         }
       }]
     };
-
-    this.api = this.organization ? this.organizationApi : this.userApi;
-    this.id = this.organization ? this.organization.id : this.user.id;
-
     this.api.getDevices(this.id, filter).subscribe((devices: Device[]) => {
       this.devices = devices;
       this.devicesReady = true;
@@ -421,7 +418,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   // }
   rtHandler = (payload: any) => {
     const device = payload.content;
-    if ((device.userId && !this.organization) || device.Organizations.map(x => x.id).includes(this.organization.id)) {
+    if (device.userId == this.user.id || (this.organization && device.Organizations.map(x => x.id).includes(this.organization.id))) {
       if (payload.action == "CREATE") {
         this.devices.unshift(payload.content);
       } else if (payload.action == "DELETE") {
@@ -470,6 +467,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
 
   subscribe(): void {
+    this.rt.informCurrentPage(this.id, ['device', 'message', 'geoloc']);
     this.rtHandler = this.rt.addListener("device", this.rtHandler);
     this.rtLastMessageHandler = this.rt.addListener("message", this.rtLastMessageHandler);
     this.geolocHandler = this.rt.addListener("geoloc", this.geolocHandler);

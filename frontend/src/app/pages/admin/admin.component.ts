@@ -14,6 +14,8 @@ import {
   ParserApi,
   WidgetApi
 } from '../../shared/sdk/services/custom';
+import {RealtimeService} from "../../shared/realtime/realtime.service";
+import {el} from "@angular/platform-browser/testing/src/browser_util";
 
 @Component({
   selector: 'app-messages',
@@ -70,7 +72,8 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
 
 
-  constructor(private dashboardApi: DashboardApi,
+  constructor(private rt: RealtimeService,
+              private dashboardApi: DashboardApi,
               private widgetApi: WidgetApi,
               private categoryApi: CategoryApi,
               private deviceApi: DeviceApi,
@@ -96,6 +99,8 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   setup(): void {
     this.getUsers();
+    this.unsubscribe();
+    this.subscribe(this.myUser.id);
     this.getAppSettings();
     this.getAppStats();
     this.getOrganizations();
@@ -281,7 +286,27 @@ export class AdminComponent implements OnInit, OnDestroy {
   private cleanSetup() {
     if (this.userRef) this.userRef.dispose();
     if (this.userSub) this.userSub.unsubscribe();
+    this.unsubscribe();
   }
 
+  rtStatsHandler = (payload: any) => {
+    const convName = (w) => {
+      return w.substr(0,1).toUpperCase() +
+        w.substr(1);
+    };
+    if (payload.action === 'CREATE')
+      this[`count${convName(payload.content)}s`] += 1;
+    else if (payload.action === 'DELETE')
+      this[`count${convName(payload.content)}s`] -= 1;
+  };
+
+  subscribe(id): void {
+    this.rt.informCurrentPage(id, ['stats']);
+    this.rtStatsHandler = this.rt.addListener("stats", this.rtStatsHandler);
+  }
+
+  unsubscribe(): void {
+    this.rt.removeListener(this.rtStatsHandler);
+  }
 }
 

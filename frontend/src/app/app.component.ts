@@ -3,6 +3,9 @@ import {setTheme} from 'ngx-bootstrap';
 import {UserApi} from './shared/sdk/services/custom';
 import {User} from './shared/sdk/models';
 import {RealtimeService} from "./shared/realtime/realtime.service";
+import {Angulartics2GoogleGlobalSiteTag} from "angulartics2/gst";
+import {NavigationEnd, Router} from "@angular/router";
+import {filter} from "rxjs/operators";
 
 @Component({
   selector: 'body',
@@ -12,17 +15,25 @@ export class AppComponent implements OnInit {
 
   public user: User = new User();
 
-  constructor(private userApi: UserApi, private rt: RealtimeService) {
+  constructor(private userApi: UserApi,
+              private rt: RealtimeService,
+              private router: Router,
+              private angulartics: Angulartics2GoogleGlobalSiteTag) {
     setTheme('bs4'); // or 'bs3'
+    //angulartics.startTracking();
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) =>
+        this.angulartics.pageTrack(event.urlAfterRedirects));
   }
 
   ngOnInit(): void {
-    // Get the logged in User object
+    // Get the logged in user
     this.user = this.userApi.getCachedCurrent();
     if (this.user) this.setUserPosition();
     const accessToken = this.userApi.getCurrentToken().id;
+    // Create the real-time connection
     if (accessToken) this.rt.connect(accessToken);
-
   }
 
   setUserPosition(): void {

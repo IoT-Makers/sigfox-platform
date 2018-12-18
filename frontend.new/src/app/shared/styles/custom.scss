@@ -1,0 +1,221 @@
+// Custom Colors
+$sigfox: #230068;
+$dashboard: #52698b;
+$widget: #52698b;
+$category: #e76c52;
+$device: #71b98f;
+$message: #5b9bd3;
+$geoloc: #915749;
+$alert: #e73c36;
+$parser: #55b6e4;
+$connector: #db5faf;
+$beacon: #13a361;
+$api: #a31148;
+$user: #ae2e75;
+$organization: #00A39E;
+
+// Geoloc Markers
+$geoloc-sigfox: #792faa;
+$geoloc-gps: #9b7a48;
+$geoloc-wifi: #2F2A30;
+$geoloc-beacon: #3c58ce;
+$geoloc-ble: #3c58ce;
+
+
+/*agm-map {
+  width: 100%;
+  height: calc(100vh - 283px);
+}
+
+.modal {
+  visibility: hidden;
+  display: block;
+}
+
+.modal[aria-hidden='false'] {
+  visibility: visible;
+  display: block;
+}*/
+
+.btn {
+  border-radius: 2px;
+}
+
+.btn-round {
+  border-radius: 17px;
+}
+
+/***************************************
+*                                      *
+*            Custom Colors             *
+*                                      *
+****************************************/
+
+@each $variant, $color in (
+        sigfox: $sigfox,
+        dashboard: $dashboard,
+        widget: $widget,
+        category: $category,
+        device: $device,
+        message: $message,
+        geoloc: $geoloc,
+        alert: $alert,
+        parser: $parser,
+        connector: $connector,
+        beacon: $beacon,
+        api: $api,
+        user: $user,
+        organization: $organization
+) {
+
+  // Text
+  .text-#{$variant} {
+    color: $color !important;
+  }
+  a.text-#{$variant}:focus, a.text-#{$variant}:hover {
+    color: darken($color, 20%) !important;
+  }
+
+  // Badge
+  .badge-#{$variant} {
+    background-color: $color;
+  }
+  .badge-#{$variant}[href]:focus, .badge-#{$variant}[href]:hover {
+    background-color: darken($color, 20%);
+  }
+
+  // Background
+  .bg-#{$variant} {
+    color: #fff !important;
+    background-color: $color !important;
+  }
+  .bg-#{$variant}-dark {
+    color: #fff !important;
+    background-color: darken($color, 20%) !important;
+  }
+  a.bg-#{$variant}:focus, a.bg-#{$variant}:hover {
+    background-color: darken($color, 20%);
+  }
+
+  // Button
+  .btn-#{$variant}, .fc button {
+    color: #fff;
+    background-color: $color;
+    border-color: $color;
+  }
+  .btn-#{$variant}:hover, .fc button:hover {
+    color: #fff;
+    background-color: darken($color, 10%);
+    border-color: darken($color, 10%);
+  }
+  .btn-#{$variant}:focus, .fc button:focus, .btn-#{$variant}.focus, .fc button.focus {
+    box-shadow: 0 0 0 2px darken($color, 10%);
+  }
+  .btn-#{$variant}.disabled, .fc button.disabled, .btn-#{$variant}:disabled, .fc button:disabled {
+    background-color: $color;
+    border-color: $color;
+  }
+  .btn-#{$variant}:active, .fc button:active, .btn-#{$variant}.active, .fc button.active,
+  .show > .btn-#{$variant}.dropdown-toggle, .fc
+  .show > button.dropdown-toggle {
+    color: #2a2c36;
+    background-color: darken($color, 10%);
+    background-image: none;
+    border-color: darken($color, 10%);
+  }
+
+  .btn-outline-#{$variant} {
+    color: $color;
+    background-image: none;
+    background-color: transparent;
+    border-color: $color;
+  }
+  .btn-outline-#{$variant}:hover {
+    color: #fff;
+    background-color: $color;
+    border-color: $color;
+  }
+  .btn-outline-#{$variant}:focus, .btn-outline-#{$variant}.focus {
+    box-shadow: 0 0 0 1px darken($color, 5%);
+  }
+  .btn-outline-#{$variant}.disabled, .btn-outline-#{$variant}:disabled {
+    color: $color;
+    background-color: transparent;
+  }
+  .btn-outline-#{$variant}:active, .btn-outline-#{$variant}.active,
+  .show > .btn-outline-#{$variant}.dropdown-toggle {
+    color: #fff;
+    background-color: $color;
+    border-color: $color;
+  }
+
+  // Select
+  .select-#{$variant} {
+    color: #ccc;
+  }
+  .select-#{$variant} .c-token {
+    background: $color !important;
+  }
+  .select-#{$variant} .pure-checkbox label::before {
+    border-color: $color !important;
+  }
+  .select-#{$variant} .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
+    background: $color !important;
+  }
+
+  // Select one
+  .select-one-#{$variant} {
+    color: #ccc;
+  }
+  .select-one-#{$variant} .c-token {
+    background: $color !important;
+  }
+  .select-one-#{$variant} .pure-checkbox label::before {
+    border-radius: 100% !important;
+    border-color: $color !important;
+  }
+  .select-one-#{$variant} .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
+    background: $color !important;
+  }
+
+  /*// Switch
+  .switch-#{$variant} {
+    @include switch-variant($color);
+  }
+  .switch-#{$variant}-outline {
+    @include switch-outline-variant($color);
+  }
+  .switch-#{$variant}-outline-alt {
+    @include switch-outline-alt-variant($color);
+  }*/
+}
+
+// Custom selects
+.select-one {
+}
+
+.select-one .c-token {
+}
+
+.select-one .pure-checkbox label::before {
+  border-radius: 100% !important;
+}
+
+.select-one .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
+}
+
+// Geoloc Markers
+@each $variant, $color in (sigfox: $geoloc-sigfox, gps: $geoloc-gps, wifi: $geoloc-wifi, beacon: $geoloc-beacon, ble: $geoloc-ble) {
+  .text-geoloc-#{$variant} {
+    color: $color !important;
+  }
+  a.text-geoloc-#{$variant}:focus, a.text-geoloc-#{$variant}:hover {
+    color: darken($color, 20%) !important;
+  }
+  .badge-geoloc-#{$variant} {
+    background-color: $color;
+  }
+  .badge-geoloc-#{$variant}[href]:focus, .badge-geoloc-#{$variant}[href]:hover {
+    background-color: darken($color, 20%);
+  }
+}

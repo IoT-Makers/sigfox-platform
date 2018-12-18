@@ -1,8 +1,7 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Alert, AppSetting, Category, Device, Message, Organization, User} from '../../shared/sdk/models';
+import {Alert, AppSetting, Category, Device, Geoloc, Message, Organization, User} from '../../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
-import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow, LatLngBounds} from '@agm/core';
 import {
   AppSettingApi,
@@ -36,7 +35,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   public countAlertsReady = false;
   public countOrganizationMembersReady = false;
 
-  public user: User = new User();
+  public user: User;
 
   public organization: Organization;
   private filter: any;
@@ -52,6 +51,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
   public devices: Device[] = [];
   private alerts: Alert[] = [];
   private categories: Category[] = [];
+
+  private numberOfDevicesToSee = 10;
 
   private isLimit_hourly = false;
   private isLimit_daily = false;
@@ -173,7 +174,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
           this.organizationApi.countMembers(this.organization.id).subscribe(result => {
             this.countOrganizationMembers = result.count;
             this.countOrganizationMembersReady = true;
-            console.log('Members', result.count);
           });
           this.setup();
         });
@@ -184,12 +184,15 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
-    this.unsubscribe();
-    this.subscribe();
-    console.log('Setup Overview');
+    this.devices = [];
+    this.devicesReady = false;
 
     const api = this.organization ? this.organizationApi : this.userApi;
     const id = this.organization ? this.organization.id : this.user.id;
+    this.unsubscribe();
+    this.subscribe(id);
+    console.log('Setup Overview');
+
     // Categories
     api.countCategories(id).subscribe(result => {
       this.countCategories = result.count;
@@ -198,7 +201,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     // Devices
     api.getDevices(id, {
-      limit: 10,
+      limit: this.numberOfDevicesToSee,
       order: 'messagedAt DESC',
       include: ['Category', {
         relation: 'Messages',
@@ -215,7 +218,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
         }
       }]
     }).subscribe((devices: Device[]) => {
-      console.log('devices', devices);
       this.devices = devices;
       this.devicesReady = true;
       this.fitMapBounds();
@@ -252,13 +254,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   fitMapBounds() {
     if (this.map) {
-      const bounds: LatLngBounds = new google.maps.LatLngBounds();
-      this.devices.forEach((device: any) => {
-        if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
-          bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
-        }
-      });
-      this.map.fitBounds(bounds);
+      if (this.devices.length === 1) {
+        this.mapLat = this.devices[0].Messages[0].Geolocs[0].location.lat;
+        this.mapLng = this.devices[0].Messages[0].Geolocs[0].location.lng;
+        this.mapZoom = 10;
+      } else {
+        const bounds: LatLngBounds = new google.maps.LatLngBounds();
+        this.devices.forEach((device: any) => {
+          if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
+            bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
+          }
+        });
+        this.map.fitBounds(bounds);
+      }
     }
   }
 
@@ -398,9 +406,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
   };
   rtDeviceHandler = (payload: any) => {
     const device = payload.content;
-    if ((device.userId && !this.organization ) || device.Organizations.map(x=>x.id).includes(this.organization.id)) {
+    if (device.userId == this.user.id || (this.organization && device.Organizations.map(x => x.id).includes(this.organization.id))) {
       if (payload.action == "CREATE") {
         this.devices.unshift(payload.content);
+        if (this.devices.length > this.numberOfDevicesToSee) this.devices.pop();
         this.countDevices++;
       } else if (payload.action == "DELETE") {
         this.countDevices--;
@@ -414,28 +423,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
   };
   rtMsgHandler = (payload: any) => {
     const msg = payload.content;
-    if ((msg.userId && !this.organization ) || msg.Device.Organizations.map(x=>x.id).includes(this.organization.id)) {
+    if (msg.userId == this.user.id || (this.organization && msg.Device.Organizations.map(x => x.id).includes(this.organization.id))) {
       let idx = this.devices.findIndex(x => x.id == msg.Device.id);
       if (payload.action == "CREATE") {
         this.countMessages++;
-
-        // for rare case where geoloc arrives first
-        if (idx != -1) {
-          for (const geoloc of this.geolocBuffer) {
-            if (geoloc.content.messageId === msg.id) {
-              msg.Geolocs.push(geoloc.content);
-              console.log("geoloc msg linked!");
-              // remove from buffer
-              let index = this.geolocBuffer.indexOf(geoloc);
-              if (index > -1) this.geolocBuffer.splice(index, 1);
-              break;
-            }
-          }
-          this.devices[idx].Messages ? this.devices[idx].Messages.unshift(msg) : this.devices[idx].Messages = [msg];
-        }
+        let device = msg.Device;
+        device.Messages = [msg];
+        device.messagedAt = msg.updatedAt;
+        if (idx !== -1) this.devices.splice(idx, 1);
+        this.devices.unshift(device);
+        if (this.devices.length > this.numberOfDevicesToSee) this.devices.pop();
       } else if (payload.action == "DELETE") {
         this.countMessages--;
-        this.devices[idx].Messages = this.devices[idx].Messages.filter( (msg) => {
+        this.devices[idx].Messages = this.devices[idx].Messages.filter((msg) => {
           return msg.id !== payload.content.id;
         });
       }
@@ -460,7 +460,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
   };
 
-  subscribe(): void {
+  subscribe(id: string): void {
+    this.rt.informCurrentPage(id, ['geoloc', 'device', 'message']);
     this.rtCategoryHandler = this.rt.addListener("category", this.rtCategoryHandler);
     this.rtDeviceHandler = this.rt.addListener("device", this.rtDeviceHandler);
     this.rtMsgHandler = this.rt.addListener("message", this.rtMsgHandler);

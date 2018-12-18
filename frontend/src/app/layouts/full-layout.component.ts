@@ -10,6 +10,7 @@ import {
   UserApi
 } from '../shared/sdk/services/custom';
 import {RealtimeService} from "../shared/realtime/realtime.service";
+import * as _ from 'lodash';
 
 @Component({
   templateUrl: './full-layout.component.html',
@@ -34,8 +35,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   public countOrganizationsReady = false;
 
   public user: User;
-  private selectedUsers: Array<Object> = [];
-  private selectUsers: Array<Object> = [];
+  private selectedUsers: Array<any> = [];
+  private selectUsers: Array<any> = [];
   public organization: Organization;
 
   public addOrganizationFlag = true;
@@ -57,12 +58,11 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   public disabled = false;
   public status: { isopen: boolean } = {isopen: false};
 
-  private selectUsersSettings = {
+  protected selectUsersSettings = {
     singleSelection: false,
     text: 'Select users',
-    selectAllText: 'Select all',
-    unSelectAllText: 'Unselect all',
     enableSearchFilter: true,
+    enableCheckAll: false,
     classes: 'select-organization'
   };
 
@@ -110,7 +110,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     });*/
   }
 
-
   ngOnInit(): void {
     console.log('Full Layout: ngOnInit');
     // Get the logged in User object
@@ -141,6 +140,8 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
+    this.api = this.organization ? this.organizationApi : this.userApi;
+    this.id = this.organization ? this.organization.id : this.user.id;
     this.unsubscribe();
     this.subscribe();
     this.getAppVersion();
@@ -153,9 +154,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
         this.organizations = organizations;
         this.countOrganizationsReady = true;
       });
-
-      this.api = this.organization ? this.organizationApi : this.userApi;
-      this.id = this.organization ? this.organization.id : this.user.id;
 
       // Categories
       this.api.countCategories(this.id).subscribe(result => {
@@ -326,6 +324,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   }
 
   editOrganization(): void {
+    const to_add = _.difference(this.selectedUsers.map(u=>u.id), this.organizationToAddOrEdit.Members.map(u=>u.id));
+    const to_del = _.difference(this.organizationToAddOrEdit.Members.map(u=>u.id), this.selectedUsers.map(u=>u.id).concat([this.user.id]));
+    to_add.forEach(user => {
+      this.linkMember(user);
+    });
+    to_del.forEach(user => {
+      this.unlinkMember(user);
+    });
     this.userApi.updateByIdOrganizations(this.user.id, this.organizationToAddOrEdit.id, this.organizationToAddOrEdit).subscribe((organization: Organization) => {
       console.log('Organization edited', organization);
       this.organizationApi.findById(organization.id, {include: 'Members'}).subscribe((organization: Organization) => {
@@ -335,14 +341,14 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     });
   }
 
-  linkMember(user: any): void {
-    this.organizationApi.linkMembers(this.organizationToAddOrEdit.id, user.id).subscribe((result) => {
+  linkMember(userId: any): void {
+    this.organizationApi.linkMembers(this.organizationToAddOrEdit.id, userId).subscribe((result) => {
       console.log('Result after linking member: ', result);
     });
   }
 
-  unlinkMember(user: any): void {
-    this.organizationApi.unlinkMembers(this.organizationToAddOrEdit.id, user.id).subscribe((result) => {
+  unlinkMember(userId: any): void {
+    this.organizationApi.unlinkMembers(this.organizationToAddOrEdit.id, userId).subscribe((result) => {
       console.log('Result after unlinking member: ', result);
     });
   }
@@ -356,12 +362,10 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
   };
   rtDeviceHandler = (payload: any) => {
     const device = payload.content;
-    if ((device.userId && !this.organization) || device.Organizations.map(x => x.id).includes(this.organization.id))
       payload.action == "CREATE" ? this.countDevices++ : payload.action == "DELETE" ? this.countDevices-- : 0;
   };
   rtMsgHandler = (payload: any) => {
     const msg = payload.content;
-    if ((msg.userId && !this.organization) || msg.Device.Organizations.map(x => x.id).includes(this.organization.id))
       payload.action == "CREATE" ? this.countMessages++ : payload.action == "DELETE" ? this.countMessages-- : 0;
   };
   rtAlertHandler = (payload: any) => {
@@ -380,7 +384,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     const dashboard = payload.content;
     if (payload.action == "CREATE") {
       // ensure data for the user and any org don't mix up
-      if ((dashboard.userId && !this.organization) || (dashboard.organizationId === this.organization.id))
+      if (dashboard.userId == this.user.id || (this. organization && dashboard.Device.Organizations.map(x => x.id).includes(this.organization.id)))
         this.dashboards.unshift(dashboard);
     } else if (payload.action == "UPDATE") {
       let idx = this.dashboards.findIndex(x => x.id == dashboard.id);

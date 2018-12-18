@@ -5,6 +5,7 @@
       "loopback/server/models",
       "../common/models",
       "../common/models/alert",
+      "../common/models/static_file",
       "./models"
     ],
     "mixins": [
@@ -96,7 +97,14 @@
   },
   "Geoloc": {
     "dataSource": "mongodb",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "createFromParsedPayload": false
+        }
+      }
+    }
   },
   "AppSetting": {
     "dataSource": "mongodb",
@@ -156,6 +164,14 @@
   },
   "Alexa": {
     "dataSource": null,
+    "public": true
+  },
+  "Container": {
+    "dataSource": "minio",
+    "public": false
+  },
+  "Asset": {
+    "dataSource": "mongodb",
     "public": true
   }
 }
