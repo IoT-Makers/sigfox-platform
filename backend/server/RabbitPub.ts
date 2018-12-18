@@ -53,6 +53,8 @@ export class RabbitPub {
   public pub(msg: PubMessage, extraRoutingKey?: string) {
     if (!this._ch) return;
     let rk = msg.content.userId.toString();
+    let rk = msg.content.userId || msg.content.organizationId;
+    rk = rk.toString();
     if (extraRoutingKey)
       extraRoutingKey === 'noOrg' ?
         rk = 'noOrg' :
