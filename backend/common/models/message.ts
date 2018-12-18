@@ -1,7 +1,6 @@
 import {Model} from "@mean-expert/model";
 import {computeCtr, decryptPayload, encryptPayload} from "./utils";
 import {RabbitPub} from '../../server/RabbitPub';
-import {Organization} from "../../../frontend/src/app/shared/sdk/models";
 
 /**
  * @module Message
@@ -528,7 +527,7 @@ class Message {
         content: msg,
         action: ctx.isNewInstance ? "CREATE" : "UPDATE"
       };
-      const orgIds = device.Organizations().map((o: Organization) => o.id.toString()).join('.');
+      const orgIds = device.Organizations().map((o: any) => o.id.toString()).join('.');
       RabbitPub.getInstance().pub(payload, orgIds);
     }));
     next();

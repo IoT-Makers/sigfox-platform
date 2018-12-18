@@ -14,7 +14,7 @@ export interface PubMessage {
 export class RabbitPub {
 
   private _ch: amqp.Channel;
-  private EX = 'realtime_exchange';
+  private EX = 'realtime_exchange_v2';
 
   private static _instance: RabbitPub = new RabbitPub();
 
