@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {LoginComponent} from './login/login.component';
 import {SharedModule} from "../../shared/shared.module";
-import {ToasterService} from "angular2-toaster";
 
 @NgModule({
     imports: [
@@ -10,9 +9,7 @@ import {ToasterService} from "angular2-toaster";
     declarations: [
         LoginComponent
     ],
-    providers: [
-        ToasterService
-    ],
+    providers: [],
     exports: []
 })
 export class LoginModule {

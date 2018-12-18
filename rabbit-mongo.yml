@@ -15,5 +15,5 @@ services:
       RABBITMQ_DEFAULT_USER: usr
       RABBITMQ_DEFAULT_PASS: pwd
     ports:
-    - 15672:15672
-    - 5672:5672
+      - 15672:15672
+      - 5672:5672

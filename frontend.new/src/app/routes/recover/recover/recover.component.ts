@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {SettingsService} from '../../../core/settings/settings.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {CustomValidators} from 'ng2-validation';
 import {HttpHeaders} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {UserApi} from "../../../shared/sdk/services/custom";
+import {ToasterConfig, ToasterService} from "angular2-toaster";
 
 @Component({
     selector: 'app-recover',
@@ -14,25 +15,46 @@ import {UserApi} from "../../../shared/sdk/services/custom";
 export class RecoverComponent implements OnInit {
 
     valForm: FormGroup;
-
-    public email: string = '';
-    public errorMessage: string = '';
-    public successMessage: string = '';
+    passwordForm: FormGroup;
+    disableSendMail = false;
 
     public access_token: string = '';
     public newPassword: string = '';
-    public verifyPassword: string = '';
+    public email: string = '';
+
+    // Notifications
+    toast;
+    public toasterconfig: ToasterConfig =
+        new ToasterConfig({
+            tapToDismiss: true,
+            timeout: 5000,
+            animation: 'fade'
+        });
 
     constructor(public settings: SettingsService,
                 fb: FormBuilder,
                 private router: Router,
                 private userApi: UserApi,
+                public toasterService: ToasterService,
                 private activatedRoute: ActivatedRoute) {
-        this.valForm = fb.group({
-            'email': [null, Validators.compose([Validators.required, CustomValidators.email])]
-        });
+
         this.activatedRoute.queryParams.subscribe(params => {
             this.access_token = params['access_token'];
+            if (this.access_token) {
+                let password = new FormControl('', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z0-9]{6,10}$')]));
+                let certainPassword = new FormControl('', [Validators.required, CustomValidators.equalTo(password)]);
+                this.passwordForm = fb.group({
+                    'password': password,
+                    'confirmPassword': certainPassword
+                });
+                this.valForm = fb.group({
+                    'passwordGroup': this.passwordForm
+                });
+            } else {
+                this.valForm = fb.group({
+                    'email': [null, Validators.compose([Validators.required, CustomValidators.email])]
+                });
+            }
         });
     }
 
@@ -41,9 +63,19 @@ export class RecoverComponent implements OnInit {
         for (let c in this.valForm.controls) {
             this.valForm.controls[c].markAsTouched();
         }
+        if (this.passwordForm) {
+            for (let c in this.passwordForm.controls) {
+                this.passwordForm.controls[c].markAsTouched();
+            }
+        }
         if (this.valForm.valid) {
-            console.log('Valid!');
-            console.log(value);
+            if (value.email) {
+                this.email = value.email.toLocaleLowerCase();
+                this.onSendResetEmail();
+            } else if (value.passwordGroup.password) {
+                this.newPassword = value.passwordGroup.password;
+                this.onResetPassword();
+            }
         }
     }
 
@@ -51,13 +83,16 @@ export class RecoverComponent implements OnInit {
     }
 
     onSendResetEmail(): void {
-        this.email = this.email.toLocaleLowerCase();
         this.userApi.resetPassword({email: this.email}).subscribe(() => {
-            this.successMessage = 'Check your mailbox';
+            if (this.toast) this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+            this.toast = this.toasterService.pop('success', 'Success', 'Check your mailbox!');
         }, err => {
-            if (err.statusCode === 404)
-                this.errorMessage = 'Email does not exist.';
+            if (err.statusCode === 404) {
+                if (this.toast) this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+                this.toast = this.toasterService.pop('error', 'Error', 'Email does not exist.');
+            }
         });
+        this.disableSendMail = true;
     }
 
     onResetPassword(): void {
@@ -66,19 +101,12 @@ export class RecoverComponent implements OnInit {
             headers = headers.append('Authorization', this.access_token);
             return headers;
         }).subscribe(() => {
-            this.successMessage = 'Password reset successfully';
+            if (this.toast) this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+            this.toast = this.toasterService.pop('success', 'Success', 'Password reset successfully.');
         }, err => {
-            this.errorMessage = 'Failed.';
-            console.error(err);
+            if (this.toast) this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+            this.toast = this.toasterService.pop('error', 'Error', 'Failed...');
         });
-    }
-
-    verify(): void {
-        if (this.newPassword !== this.verifyPassword) {
-            this.errorMessage = 'Passwords do not match';
-        } else {
-            this.errorMessage = '';
-        }
     }
 
 }

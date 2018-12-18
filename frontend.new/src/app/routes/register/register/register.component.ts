@@ -7,6 +7,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {SettingsService} from "../../../core/settings/settings.service";
 import * as _ from 'lodash';
 import {CustomValidators} from "ng2-validation";
+import {ToasterConfig, ToasterService} from "angular2-toaster";
 
 @Component({
     selector: 'app-register',
@@ -16,8 +17,6 @@ import {CustomValidators} from "ng2-validation";
 export class RegisterComponent {
 
     public user: User = new User();
-    public verifyPassword = '';
-    public errorMessage = '';
 
     private appSetting: AppSetting;
     private appSettings: AppSetting[] = [];
@@ -27,13 +26,23 @@ export class RegisterComponent {
     valForm: FormGroup;
     passwordForm: FormGroup;
 
+    // Notifications
+    toast;
+    public toasterconfig: ToasterConfig =
+        new ToasterConfig({
+            tapToDismiss: true,
+            timeout: 5000,
+            animation: 'fade'
+        });
+
     constructor(private rt: RealtimeService,
                 private userApi: UserApi,
                 private appSettingApi: AppSettingApi,
                 private router: Router,
                 public settings: SettingsService,
+                private toasterService: ToasterService,
                 fb: FormBuilder) {
-        this.getAppSettings();
+        this.checkUserRegisterAppSetting();
 
         let password = new FormControl('', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z0-9]{6,10}$')]));
         let certainPassword = new FormControl('', [Validators.required, CustomValidators.equalTo(password)]);
@@ -43,9 +52,14 @@ export class RegisterComponent {
             'confirmPassword': certainPassword
         });
 
-        this.valForm = fb.group({
+        /*this.valForm = fb.group({
             'email': [null, Validators.compose([Validators.required, CustomValidators.email])],
             'accountagreed': [null, Validators.required],
+            'passwordGroup': this.passwordForm
+        });*/
+        // TODO: remove this if terms
+        this.valForm = fb.group({
+            'email': [null, Validators.compose([Validators.required, CustomValidators.email])],
             'passwordGroup': this.passwordForm
         });
     }
@@ -60,78 +74,58 @@ export class RegisterComponent {
         }
 
         if (this.valForm.valid) {
-            console.log('Valid!');
-            console.log(value);
+            this.user.id = null;
+            this.user.createdAt = new Date();
+            this.user.email = value.email.toLocaleLowerCase();
+            this.user.password = value.passwordGroup.password;
+            this.onRegister();
         }
     }
 
     onRegister(): void {
-        console.log('Registering');
-        if (this.user.password !== this.verifyPassword) {
-            this.errorMessage = 'Passwords do not match';
-            return;
-        }
-
-        this.user.email = this.user.email.toLocaleLowerCase();
-
-        this.user.id = null;
-        this.user.createdAt = new Date();
-
         this.userApi.create(this.user).subscribe((user: User) => {
             this.onLogin();
         }, err => {
             // console.log(err);
-            if (err.statusCode === 422)
-                this.errorMessage = 'Email already taken.';
-            else
-                this.errorMessage = 'Invalid username or password.';
+            if (err.statusCode === 422) {
+                if (this.toast) this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+                this.toast = this.toasterService.pop('error', 'Error', 'Email already taken.');
+            } else {
+                if (this.toast) this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+                this.toast = this.toasterService.pop('error', 'Error', 'Invalid username or password.');
+            }
         });
-    }
-
-    verify(): void {
-        if (this.user.password !== this.verifyPassword) {
-            this.errorMessage = 'Passwords do not match';
-        } else {
-            this.errorMessage = '';
-        }
     }
 
     onLogin(): void {
         this.userApi.login(this.user).subscribe(
             (token: AccessToken) => {
                 // console.log('New token: ', token);
-
-                // Update the last login date
-                this.userApi.patchAttributes(
-                    token.userId,
-                    {
-                        'loggedAt': new Date()
-                    }
-                ).subscribe();
                 this.rt.connect(token.id);
+
                 // Redirect to the /dashboard
                 this.router.navigate(['/']);
             }, err => {
                 // console.log(err);
                 if (err.statusCode === 401) {
-                    this.errorMessage = 'Invalid username or password.';
+                    if (this.toast) this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+                    this.toast = this.toasterService.pop('error', 'Error', 'Invalid username or password.');
                 } else if (err.statusCode === 500) {
-                    this.errorMessage = 'Internal server error';
+                    if (this.toast) this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+                    this.toasterService.pop('error', 'Error', 'Internal server error.');
                 } else {
-                    this.errorMessage = err.message;
+                    if (this.toast) this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+                    this.toasterService.pop('error', 'Error', err.message);
                 }
             });
     }
 
-    getAppSettings(): void {
+    checkUserRegisterAppSetting(): void {
         this.appSettingApi.find().subscribe((appSettings: AppSetting[]) => {
             this.appSettings = appSettings;
             let temp = _.filter(appSettings, {key: 'canUserRegister'});
             this.canUserRegister = temp[0].value;
-            if (this.canUserRegister == false) {
-                this.router.navigate(['/login']);
-            }
-            console.log(this.valForm);
+            if (this.canUserRegister == false) this.router.navigate(['/login']);
         });
     }
 }

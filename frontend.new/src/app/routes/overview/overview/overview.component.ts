@@ -162,8 +162,13 @@ export class OverviewComponent implements OnInit {
     }
 
     setup(): void {
-        this.devices = [];
+        this.countCategoriesReady = false;
+        this.countDevicesReady = false;
+        this.countMessagesReady = false;
+        this.countAlertsReady = false;
         this.devicesReady = false;
+        this.devices = [];
+
         this.unsubscribe();
         this.subscribe();
         console.log('Setup Overview');

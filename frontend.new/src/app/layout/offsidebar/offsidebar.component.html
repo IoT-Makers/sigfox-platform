@@ -5,31 +5,29 @@
         </ng-template>
         <h3 class="text-center text-thin mt-4">Organizations</h3>
         <div class="list-group">
-            <!-- START list title-->
-            <div class="list-group-item border-0">
-                <small class="text-muted">OWNER OF</small>
-            </div>
-            <!-- END list title-->
             <div *ngFor="let organization of organizations" (click)="redirectToOgranizationView(organization.id)"
-                 class="list-group-item list-group-item-action border-0">
+                 class="list-group-item list-group-item-action border-0" style="cursor: pointer">
                 <div class="media">
                     <img class="align-self-center mr-3 rounded-circle thumb48" src="{{organization.logo}}"
                          alt="{{organization.name}}">
                     <div class="media-body text-truncate">
-                        <a class="text-organization" href [routerLink]="['/organization/', organization.id]">
+                        <a class="text-organization" [routerLink]="['/organization/', organization.id]">
                             <strong>{{organization.name}}</strong>
                         </a>
                         <br>
                         <small class="text-muted">{{organization.createdAt | amTimeAgo}}</small>
+                        <small *ngIf="organization.userId === user.id" class="text-gray-dark">&nbsp;<em class="icon-settings"></em></small>
                     </div>
                     <div class="ml-auto">
-                        <span *ngIf="organization.userId !== user.id"
-                              class="badge badge-organization text-white">{{organization.countMembers}}</span>
-                        <span *ngIf="organization.userId === user.id"
-                              class="badge badge-danger text-white">{{organization.countMembers}}</span>
+                        <span class="badge badge-organization text-white">{{organization.countMembers}}</span>
                     </div>
                 </div>
             </div>
+            <!-- START list title-->
+            <!--<div class="list-group-item border-0">
+                <small class="text-muted">OWNER OF</small>
+            </div>-->
+            <!-- END list title-->
             <!-- START list title-->
             <!--<div class="list-group-item border-0">
                 <small class="text-muted">MEMBER OF</small>

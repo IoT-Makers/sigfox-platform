@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
-import {ToasterModule} from 'angular2-toaster/angular2-toaster';
+import {ToasterModule, ToasterService} from 'angular2-toaster/angular2-toaster';
 
 import {
     MatAutocompleteModule,
@@ -129,7 +129,8 @@ import {MomentModule} from "angular2-moment";
         MomentModule
     ],
     providers: [
-        ColorsService
+        ColorsService,
+        ToasterService
     ],
     declarations: [
         FlotDirective,

@@ -41,7 +41,7 @@
                 </ng-container>
                 <ng-container *ngIf="countCategoriesReady">
                     <div class="col-8 py-3 bg-category rounded-right">
-                        <div class="h2 mt-0 text-right">{{countCategories}}</div>
+                        <div class="h2 mt-0 text-right">{{countCategories | numberFormat : 2}}</div>
                         <div class="text-uppercase">Categories</div>
                     </div>
                 </ng-container>
@@ -58,7 +58,7 @@
                 </ng-container>
                 <ng-container *ngIf="countDevicesReady">
                     <div class="col-8 py-3 bg-device rounded-right">
-                        <div class="h2 mt-0 text-right">{{countDevices}}</div>
+                        <div class="h2 mt-0 text-right">{{countDevices | numberFormat : 2}}</div>
                         <div class="text-uppercase">Devices</div>
                     </div>
                 </ng-container>
@@ -75,7 +75,7 @@
                 </ng-container>
                 <ng-container *ngIf="countMessagesReady">
                     <div class="col-8 py-3 bg-message rounded-right">
-                        <div class="h2 mt-0 text-right">{{countMessages}}</div>
+                        <div class="h2 mt-0 text-right">{{countMessages | numberFormat : 2}}</div>
                         <div class="text-uppercase">Messages</div>
                     </div>
                 </ng-container>
@@ -92,7 +92,7 @@
                 </ng-container>
                 <ng-container *ngIf="countAlertsReady">
                     <div class="col-8 py-3 bg-alert rounded-right">
-                        <div class="h2 mt-0 text-right">{{countAlerts}}</div>
+                        <div class="h2 mt-0 text-right">{{countAlerts | numberFormat : 2}}</div>
                         <div class="text-uppercase">Alerts</div>
                     </div>
                 </ng-container>

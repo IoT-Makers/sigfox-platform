@@ -8,8 +8,9 @@
                 </a>
             </div>
             <div class="card-body">
+                <toaster-container [toasterconfig]="toasterconfig"></toaster-container>
                 <p class="text-center py-2 text-bold">Reset your password</p>
-                <form [formGroup]="valForm" class="form-validate" role="form" name="recoverForm" novalidate="" (submit)="submitForm($event, valForm.value)">
+                <form *ngIf="!access_token" [formGroup]="valForm" class="form-validate" role="form" name="recoverForm" novalidate="" (submit)="submitForm($event, valForm.value)">
                     <p class="text-center">Fill with your mail to receive instructions on how to reset your password.</p>
                     <div class="form-group">
                         <label class="text-muted">Email address</label>
@@ -24,7 +25,39 @@
                         <div class="text-danger" *ngIf="valForm.controls['email'].hasError('required') && (valForm.controls['email'].dirty || valForm.controls['email'].touched)">This field is required</div>
                         <div class="text-danger" *ngIf="valForm.controls['email'].hasError('email') && (valForm.controls['email'].dirty || valForm.controls['email'].touched)">This field must be a valid email address</div>
                     </div>
-                    <button class="btn btn-danger btn-block" type="submit">Reset</button>
+                    <button class="btn btn-danger btn-block" type="submit" [disabled]="disableSendMail">Send email</button>
+                </form>
+
+                <form *ngIf="access_token" [formGroup]="valForm" class="form-validate" role="form" name="recoverForm" novalidate="" (submit)="submitForm($event, valForm.value)">
+                    <div formGroupName="passwordGroup">
+                        <div class="form-group">
+                            <label class="text-muted mb-1">Password</label>
+                            <div class="input-group with-focus">
+                                <input class="form-control border-right-0" id="id-password" type="password" name="password" formControlName="password" [formControl]="valForm.get('passwordGroup.password')" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                        <em class="fa fa-lock"></em>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-danger" *ngIf="valForm.get('passwordGroup.password').hasError('required') && (valForm.get('passwordGroup.password').dirty || valForm.get('passwordGroup.password').touched)">This field is required</div>
+                            <div class="text-danger" *ngIf="valForm.get('passwordGroup.password').hasError('pattern') && (valForm.get('passwordGroup.password').dirty || valForm.get('passwordGroup.password').touched)">Input should match 'a-zA-Z0-9' and 6-10 length</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="text-muted mb-1">Retype Password</label>
+                            <div class="input-group with-focus">
+                                <input class="form-control border-right-0" type="password" name="confirmPassword" formControlName="confirmPassword" [formControl]="valForm.get('passwordGroup.confirmPassword')" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                        <em class="fa fa-lock"></em>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-danger" *ngIf="valForm.get('passwordGroup.confirmPassword').hasError('required') && (valForm.get('passwordGroup.confirmPassword').dirty || valForm.get('passwordGroup.confirmPassword').touched)">This field is required</div>
+                            <div class="text-danger" *ngIf="valForm.get('passwordGroup.confirmPassword').hasError('equalTo')">Passwords do not match</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger btn-block" type="submit">Reset password</button>
                 </form>
             </div>
         </div>

@@ -19,7 +19,7 @@ import {RecoverModule} from "./recover/recover.module";
         NotFoundModule,
         ProfileModule,
         RegisterModule,
-        RecoverModule,
+        RecoverModule
     ],
     declarations: [],
     exports: [
