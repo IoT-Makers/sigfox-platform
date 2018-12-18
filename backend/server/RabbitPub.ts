@@ -1,7 +1,7 @@
 import * as amqp from 'amqplib/callback_api'
 
 export interface PubMessageContent {
-  id: string;
+  userId: string;
   [propName: string]: any;
 }
 
@@ -39,7 +39,9 @@ export class RabbitPub {
       } else if (conn) {
         conn.createChannel((err, ch) => {
           if (err) console.error(err);
-          ch.assertExchange(this.EX, 'fanout', {durable: true}, (err, ok) => {
+          ch.assertQueue('task_queue', {durable: true, messageTtl: 5000});
+          ch.bindQueue('task_queue', this.EX, 'noOrg');
+          ch.assertExchange(this.EX, 'topic', {durable: true}, (err, ok) => {
             if (err) console.error(err);
             this._ch = ch;
           });
@@ -48,14 +50,17 @@ export class RabbitPub {
     });
   }
 
-  public pub(msg: PubMessage) {
+  public pub(msg: PubMessage, extraRoutingKey?: string) {
     if (!this._ch) return;
-    const routingKey = msg.content.id.toString();
+    let rk = msg.content.userId.toString();
+    if (extraRoutingKey)
+      extraRoutingKey === 'noOrg' ?
+        rk = 'noOrg' :
+        rk = `${rk}.${extraRoutingKey}`;
+    console.log(rk);
 
-    // console.log(routingKey);
-    this._ch.publish(this.EX, routingKey, Buffer.from(JSON.stringify(msg), 'utf8'));
+    this._ch.publish(this.EX, rk, Buffer.from(JSON.stringify(msg), 'utf8'));
   }
 }
 
 
-// setTimeout(function() { conn.close(); process.exit(0) }, 500);

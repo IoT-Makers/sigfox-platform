@@ -1,4 +1,5 @@
 'use strict';
+const helper = require('./helper');
 const Primus = require('primus');
 const amqp = require('amqplib');
 const mongolib = require('mongodb');
@@ -30,7 +31,6 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
     // get db name
     let s = mongodbUrl.split("/");
     let dbName = s[s.length - 1];
-
     db = client.db(dbName);
     log.info("Primus connected to Mongo");
 
@@ -42,20 +42,85 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 });
 
 
-const EX = 'realtime_exchange';
-let openConn = amqp.connect(rabbitUrl);
-openConn.then(conn => {
-    return conn.createChannel();
-}).then(ch => {
-    ch.assertExchange(EX, 'fanout', {durable: true});
-    return ch.assertQueue('', {exclusive: true}).then(function(q) {
-        log.info("Primus connected to RabbitMQ");
-        ch.bindQueue(q.queue, EX, '');
-        return ch.consume(q.queue, handlers, {noAck: true});
+const EX = 'realtime_exchange_v2';
+let WorkerCh;
+let RtQueue;
+let RtCh;
+
+amqp.connect(rabbitUrl).then(conn => {
+    let promises = []; // array of promises
+    let workerChPromise = conn.createChannel().then(ch => {
+        WorkerCh = ch;
+        WorkerCh.assertExchange(EX, 'topic', {durable: true});
+        WorkerCh.assertQueue('task_queue', {durable: true, messageTtl: 5000}).then(function(q) {
+            log.info("Worker connected to RabbitMQ");
+            WorkerCh.bindQueue(q.queue, EX, 'noOrg');
+            WorkerCh.prefetch(30);
+            return WorkerCh.consume(q.queue, workerHandlers);
+        })
     });
+    promises.push(workerChPromise);
+
+    let rtChPromise = conn.createChannel().then(ch => {
+        RtCh = ch;
+        RtCh.assertExchange(EX, 'topic', {durable: true});
+        return RtCh.assertQueue('', {exclusive: true, messageTtl: 5000}).then(function(q) {
+            RtQueue = q;
+            log.info("Rt handler connected to RabbitMQ");
+            return RtCh.consume(RtQueue.queue, rtHandlers, {noAck: true});
+        })
+    });
+    promises.push(rtChPromise);
+    return Promise.all(promises);
 }).catch(log.error);
 
-const handlers = function (msg) {
+const workerHandlers = function (msg) {
+    let payload = JSON.parse(msg.content.toString());
+    if (!payload) return;
+    const cbAck = _ => {
+        WorkerCh.ack(msg);
+    };
+    switch (payload.event) {
+        case "device":
+            deviceWorker(payload, cbAck);
+            break;
+        case "geoloc":
+            geolocWorker(payload, cbAck);
+            break;
+    }
+};
+
+function deviceWorker(payload, cb) {
+    const device = payload.content;
+    if (!device) return;
+    const userId = device.userId;
+    log.debug(payload.action + ' device ' + device.id + ' for user ' + userId);
+
+    db.collection("OrganizationDevice").find({deviceId: device.id}).toArray((err, ods) => {
+        const orgIds = ods.map(od => od.organizationId.toString());
+        payload.orgIds = orgIds;
+        let rk = `${userId}.${orgIds.join('.')}`;
+        WorkerCh.publish(EX, rk, Buffer.from(JSON.stringify(payload), 'utf8'));
+        cb();
+    });
+}
+
+function geolocWorker(payload, cb) {
+    const geoloc = payload.content;
+    if (!geoloc) return;
+    const userId = geoloc.userId;
+    log.debug(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
+
+    db.collection("OrganizationDevice").find({deviceId: geoloc.deviceId}).toArray((err, ods) => {
+        const orgIds = ods.map(od => od.organizationId.toString());
+        payload.orgIds = orgIds;
+        let rk = `${userId}.${orgIds.join('.')}`;
+        WorkerCh.publish(EX, rk, Buffer.from(JSON.stringify(payload), 'utf8'));
+        cb();
+    });
+}
+
+const rtHandlers = function (msg) {
     let payload = JSON.parse(msg.content.toString());
     if (!payload) return;
     // log.log(payload);
@@ -110,9 +175,6 @@ const handlers = function (msg) {
 //     }
 // });
 
-//
-// Listen for new connections and send data
-//
 
 // Handle connections to user client
 primus.on('connection', function connection(spark) {
@@ -123,6 +185,7 @@ primus.on('connection', function connection(spark) {
     if (!access_token || access_token === healthcheckToken) return spark.end();
     log.info(primus.connected + " clients connected");
 
+    // auth & stats
     let AccessToken = db.collection("AccessToken");
     AccessToken.findOne({_id: access_token}, (err, token) => {
         if (err || !token) {
@@ -154,6 +217,9 @@ primus.on('connection', function connection(spark) {
     spark.on('data', function (data) {
         const id = data.id;
         const listenerType = id === spark.userId ? 'personal' : 'org';
+        const rk = `#.${id}.#`;
+        RtCh.bindQueue(RtQueue.queue, EX, rk);
+
         spark.listenerInfo = {
             id: id,
             type: listenerType,
@@ -167,6 +233,16 @@ primus.on('connection', function connection(spark) {
 // Handle disconnections
 primus.on('disconnection', function (spark) {
     if (!db || !spark.userId) return;
+
+    const rk = spark.listenerInfo.id;
+    let bindCount = 0;
+    primus.forEach(function (spark, id, connections) {
+        if (spark.listenerInfo.id === rk)
+            bindCount++;
+    });
+    if (bindCount === 0)
+        RtCh.unbindQueue(RtQueue.queue, EX, `#.${spark.listenerInfo.id}.#`);
+
     let user = db.collection("user");
     user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, disconnectedAt: new Date()}}, (err, user) => {
         if (err || !user) {
@@ -198,38 +274,36 @@ function messageHandler(payload) {
 
 function deviceHandler(payload) {
     const device = payload.content;
-    const userId = device.userId;
     if (device) {
         // from device.ts
+        const userId = device.userId;
         log.debug(payload.action + ' device ' + device.id + ' for user ' + userId);
 
-        db.collection("OrganizationDevice").find({deviceId: device.id}).toArray((err, ods) => {
-            const targets = getTargetClients(userId, 'device', ods.map(od => od.organizationId.toString()));
-            send(targets.countOnly, payload.event, payload.action, null);
-            if (!targets.complete) return;
-            if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, device);
+        const targets = getTargetClients(userId, 'device', payload.orgIds);
+        send(targets.countOnly, payload.event, payload.action, null);
+        if (!targets.complete) return;
+        if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, device);
 
-            let organizations = [];
-            let promises = [];
-            ods.forEach(od => {
-                promises.push(db.collection("Organization").findOne({_id: ObjectId(od.organizationId)}).then(org => {
-                    organizations.push(org);
-                }));
-            });
-            Promise.all(promises).then(_ => {
-                addAttribute(device, "Organizations", organizations);
-                db.collection("Message").find({deviceId: device.id}).limit(1).sort({"createdAt": -1}).toArray((err, messages) => {
-                    addAttribute(device, "Messages", messages);
-                    db.collection("Parser").findOne({_id: ObjectId(device.parserId)}, (err, parser) => {
-                        addAttribute(device, "Parser", parser);
+        let organizations = [];
+        let promises = [];
+        payload.orgIds.forEach(orgId => {
+            promises.push(db.collection("Organization").findOne({_id: ObjectId(orgId)}).then(org => {
+                organizations.push(org);
+            }));
+        });
+        Promise.all(promises).then(_ => {
+            addAttribute(device, "Organizations", organizations);
+            db.collection("Message").find({deviceId: device.id}).limit(1).sort({"createdAt": -1}).toArray((err, messages) => {
+                addAttribute(device, "Messages", messages);
+                db.collection("Parser").findOne({_id: ObjectId(device.parserId)}, (err, parser) => {
+                    addAttribute(device, "Parser", parser);
 
-                        if (device.categoryId)
-                            db.collection("Category").findOne({_id: ObjectId(device.categoryId)}, (err, category) => {
-                                addAttribute(device, "Category", category);
-                                return send(targets.complete, payload.event, payload.action, device);
-                            });
-                        return send(targets.complete, payload.event, payload.action, device);
-                    });
+                    if (device.categoryId)
+                        db.collection("Category").findOne({_id: ObjectId(device.categoryId)}, (err, category) => {
+                            addAttribute(device, "Category", category);
+                            return send(targets.complete, payload.event, payload.action, device);
+                        });
+                    return send(targets.complete, payload.event, payload.action, device);
                 });
             });
         });
@@ -261,23 +335,17 @@ function geolocHandler(payload) {
         const userId = geoloc.userId;
         log.debug(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
-        db.collection("OrganizationDevice").find({deviceId: geoloc.deviceId}).toArray((err, ods) => {
-            const targets = getTargetClients(userId, 'geoloc', ods.map(od => od.organizationId.toString()));
-            send(targets.countOnly, payload.event, payload.action, null);
-            if (!targets.complete) return;
-            // if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, device);
-
-            db.collection("Device").findOne({_id: geoloc.deviceId}, (err, device) => {
-                addAttribute(geoloc, "Device", device);
-
-                if (geoloc.beaconId) {
-                    db.collection("Beacon").findOne({_id: geoloc.beaconId}, (err, beacon) => {
-                        addAttribute(geoloc, "Beacon", beacon);
-                        return send(targets.complete, payload.event, payload.action, geoloc);
-                    });
-                } else return send(targets.complete, payload.event, payload.action, geoloc);
+        const targets = getTargetClients(userId, 'geoloc', payload.orgIds);
+        send(targets.countOnly, payload.event, payload.action, null);
+        if (!targets.complete) return;
+        // if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, device);
+        addAttribute(geoloc, "Device", payload.device);
+        if (geoloc.beaconId) {
+            db.collection("Beacon").findOne({_id: geoloc.beaconId}, (err, beacon) => {
+                addAttribute(geoloc, "Beacon", beacon);
+                return send(targets.complete, payload.event, payload.action, geoloc);
             });
-        });
+        } else return send(targets.complete, payload.event, payload.action, geoloc);
     }
 }
 
