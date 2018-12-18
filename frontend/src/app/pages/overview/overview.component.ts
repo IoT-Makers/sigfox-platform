@@ -48,7 +48,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private organizationRouteSub: Subscription;
 
   private messages: Message[] = [];
-  private devices: Device[] = [];
+  public devices: Device[] = [];
   private alerts: Alert[] = [];
   private categories: Category[] = [];
 
