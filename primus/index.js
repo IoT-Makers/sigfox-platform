@@ -38,6 +38,10 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
     const Role = db.collection('Role');
     Role.findOne({name: 'admin'}).then(adminRole => {
         AdminRoleID = adminRole._id;
+    }).catch(_ => {
+        // adminRole could be undef when launching new stack, just exit and wait for docker to bring it back
+        log.error('adminRole not defined yet');
+        process.exit(1);
     });
 });
 
