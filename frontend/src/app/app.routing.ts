@@ -59,9 +59,7 @@ export const routes: Routes = [
       {path: 'messages', loadChildren: './pages/messages/messages.module#MessagesModule'},
       {path: 'messages/:id', loadChildren: './pages/messages/messages.module#MessagesModule'}
     ]
-  },
-  {path: 'not-found', loadChildren: './pages/not-found/not-found.module#NotFoundModule'},
-  {path: '**', redirectTo: 'not-found'}/*,
+  },/*
   {
     path: 'pages',
     component: SimpleLayoutComponent,
@@ -75,6 +73,8 @@ export const routes: Routes = [
       }
     ]
   }*/
+  {path: 'not-found', loadChildren: './pages/not-found/not-found.module#NotFoundModule'},
+  {path: '**', redirectTo: 'not-found'},
 ];
 
 @NgModule({

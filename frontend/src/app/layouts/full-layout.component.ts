@@ -110,7 +110,6 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     });*/
   }
 
-
   ngOnInit(): void {
     console.log('Full Layout: ngOnInit');
     // Get the logged in User object

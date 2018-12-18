@@ -28,7 +28,7 @@ try {
 }
 
 
-if (!(minio_access && minio_secret)) console.warn('Env minio_access or minio_secret not set');
+if (!(minio_access && minio_secret)) console.warn('Env minio_access_key or minio_secret_key not set');
 
 const subdomain = process.env.MONGO_URL.split('/').pop();
 const baseUrl = process.env.BASE_URL;

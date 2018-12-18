@@ -1,12 +1,10 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Connector, Device, Geoloc, Message, Organization, Role, User} from '../../shared/sdk/models';
+import {Connector, Geoloc, Message, Organization, Reception, Role, User} from '../../shared/sdk/models';
 import {MessageApi, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
-import {Reception} from '../../shared/sdk/models/Reception';
-import {ReceptionApi} from '../../shared/sdk/services/custom/Reception';
+import {OrganizationApi, ReceptionApi} from '../../shared/sdk/services/custom';
 import {AgmMap} from '@agm/core';
 import {ActivatedRoute} from '@angular/router';
-import {OrganizationApi} from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
 

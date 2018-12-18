@@ -1,8 +1,7 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Alert, AppSetting, Category, Device, Message, Organization, User} from '../../shared/sdk/models';
+import {Alert, AppSetting, Category, Device, Geoloc, Message, Organization, User} from '../../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
-import {Geoloc} from '../../shared/sdk/models/Geoloc';
 import {AgmInfoWindow, LatLngBounds} from '@agm/core';
 import {
   AppSettingApi,
@@ -16,7 +15,6 @@ import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
-import {Angulartics2} from "angulartics2";
 
 declare var Zone: any;
 declare const google: any;
@@ -27,7 +25,7 @@ declare const google: any;
 export class OverviewComponent implements OnInit, OnDestroy {
 
   @ViewChildren(AgmInfoWindow) agmInfoWindow: QueryList<AgmInfoWindow>;
-  
+
   // Flags
   public devicesReady = false;
   public messagesReady = false;
@@ -37,7 +35,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   public countAlertsReady = false;
   public countOrganizationMembersReady = false;
 
-  public user: User = new User();
+  public user: User;
 
   public organization: Organization;
   private filter: any;
@@ -50,7 +48,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private organizationRouteSub: Subscription;
 
   private messages: Message[] = [];
-  public devices: Device[] = [];
+  private devices: Device[] = [];
   private alerts: Alert[] = [];
   private categories: Category[] = [];
 
@@ -186,6 +184,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   setup(): void {
+    this.devices = [];
+    this.devicesReady = false;
+
     const api = this.organization ? this.organizationApi : this.userApi;
     const id = this.organization ? this.organization.id : this.user.id;
     this.unsubscribe();
@@ -253,13 +254,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   fitMapBounds() {
     if (this.map) {
-      const bounds: LatLngBounds = new google.maps.LatLngBounds();
-      this.devices.forEach((device: any) => {
-        if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
-          bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
-        }
-      });
-      this.map.fitBounds(bounds);
+      if (this.devices.length === 1) {
+        this.mapLat = this.devices[0].Messages[0].Geolocs[0].location.lat;
+        this.mapLng = this.devices[0].Messages[0].Geolocs[0].location.lng;
+        this.mapZoom = 10;
+      } else {
+        const bounds: LatLngBounds = new google.maps.LatLngBounds();
+        this.devices.forEach((device: any) => {
+          if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
+            bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
+          }
+        });
+        this.map.fitBounds(bounds);
+      }
     }
   }
 

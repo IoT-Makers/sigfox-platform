@@ -1,0 +1,332 @@
+<div *ngIf="!organization" class="content-heading">Messages</div>
+<div *ngIf="organization" class="content-heading">Shared messages</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="d-flex">
+      <div>
+        <div class="input-group">
+          <select class="custom-select" id="inputGroupSelect04" [(ngModel)]="selectedAction">
+            <option value="100">100</option>
+            <option value="500">500</option>
+            <option value="1000">1000</option>
+            <option value="all">All</option>
+            <option value="export">Export</option>
+          </select>
+          <div class="input-group-append">
+            <button class="btn btn-secondary" type="button" (click)="searchFilter()">Apply</button>
+          </div>
+        </div>
+      </div>
+      <div class="ml-auto">
+        <div class="input-group float-right">
+          <div class="input-group mb-2 mr-sm-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><i class="icon-magnifier"></i></div>
+            </div>
+            <input class="form-control" type="text" [(ngModel)]="filterQuery" placeholder="Search" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-block">
+    <div class="card-body" *ngIf="!messagesReady">
+      Loading messages...
+      <div class="sk-double-bounce">
+        <div class="sk-child sk-double-bounce1"></div>
+        <div class="sk-child sk-double-bounce2"></div>
+      </div>
+    </div>
+    <div class="card-body" *ngIf="messagesReady && !messages.length">
+      No messages yet...
+    </div>
+
+    <ng-container *ngIf="messages.length>0">
+      <div class="table-responsive">
+        <table class="table table-hover" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10">
+          <thead class="thead-inverse">
+          <tr>
+            <th class="text-center">
+              <mfDefaultSorter by="createdAt"><i class="fa fa-sort"></i> Date</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="data"><i class="fa fa-sort"></i> Data</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="deviceId"><i class="fa fa-sort"></i> Device</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="Geolocs"><i class="fa fa-sort"></i> Geoloc</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="seqNumber"><i class="fa fa-sort"></i> Seq Number</mfDefaultSorter>
+            </th>
+            <th class="text-center">
+              <mfDefaultSorter by="reception"><i class="fa fa-sort"></i> Reception</mfDefaultSorter>
+            </th>
+            <th class="text-center">Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let message of mf.data">
+            <td class="text-center">{{message.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
+            <td class="text-center">
+              <span class="text-message">{{message.data}}</span>
+              <div class="text-justify" *ngIf="message.data_parsed">
+                <div *ngFor="let o of message.data_parsed">
+                  <small *ngIf="o.value || o.value === 0">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
+                </div>
+              </div>
+              <div class="font-weight-bold" *ngIf="message.deviceAck">
+                Device downlink acknowledge: <span class="text-success" title="Acknowledged by device">{{message.deviceAck}}</span>
+              </div>
+              <div class="mt-1 font-weight-bold" *ngIf="message.data_downlink">
+                Downlink: <span class="text-danger" title="Downlink payload">{{message.data_downlink}}</span>
+              </div>
+              <div class="mt-1 font-weight-bold" *ngIf="message.downlinkAck">
+                Base station downlink acknowledge: <span class="text-success" title="Acknowledged by base station">{{message.downlinkAck}}</span>
+              </div>
+            </td>
+            <td class="text-center text-device">
+              <ng-container *ngIf="!organization">
+                <a [routerLink]="['/messages', message.Device.id]">
+                  <strong class="text-device">{{message.Device.id}}</strong>
+                </a>
+              </ng-container>
+              <ng-container *ngIf="organization">
+                <a [routerLink]="['/organization/' + organization.id + '/messages', message.Device.id]">
+                  <strong class="text-device">{{message.Device.id}}</strong>
+                </a>
+              </ng-container>
+              <br>
+              <small *ngIf="message.Device">{{message.Device.name}}</small>
+            </td>
+            <td class="text-center">
+              <div *ngIf="message.Geolocs">
+                <div *ngFor="let geoloc of message.Geolocs">
+                  <ng-container *ngIf="geoloc.type == 'sigfox'">
+                    <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-sigfox">
+                      <i class="fa fa-map-marker-alt fa-2x"></i>
+                      <br>
+                      <strong>Sigfox</strong>
+                    </a>
+                  </ng-container>
+                  <ng-container *ngIf="geoloc.type == 'gps'">
+                    <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-gps">
+                      <i class="fa fa-map-marker-alt fa-2x"></i>
+                      <br>
+                      <strong>GPS</strong>
+                    </a>
+                  </ng-container>
+                  <ng-container *ngIf="geoloc.type == 'beacon'">
+                    <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-beacon">
+                      <i class="fa fa-map-marker-alt fa-2x"></i>
+                      <br>
+                      <strong>Beacon</strong>
+                    </a>
+                  </ng-container>
+                  <ng-container *ngIf="geoloc.type == 'wifi'">
+                    <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-wifi">
+                      <i class="fa fa-map-marker-alt fa-2x"></i>
+                      <br>
+                      <strong>WiFi</strong>
+                    </a>
+                  </ng-container>
+                  <!--<div class="col col-5 text-left">
+                        <span class="small text-muted">
+                          Lat: {{geoloc.location.lat | number:'.1-3'}}
+                          <br>
+                          Lng: {{geoloc.location.lng | number:'.1-3'}}
+                        </span>
+                  </div>-->
+                </div>
+              </div>
+            </td>
+            <td class="text-center">{{message.seqNumber}}</td>
+            <td class="text-center" (click)="showMarkers(message)">
+              <p *ngFor="let reception of message.reception">
+                <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success"
+                   aria-hidden="true"></i>
+                <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI"
+                   class="fa fa-signal text-warning" aria-hidden="true"></i>
+                <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger"
+                   aria-hidden="true"></i>
+                {{reception.RSSI}}
+                <span>&nbsp;</span>
+                <i title="Base Station" class="fa fa-podcast text-primary" aria-hidden="true"></i>
+                {{reception.id}}
+                <span>&nbsp;</span>
+                <i title="SNR" class="fa fa-feed" aria-hidden="true"></i>
+                {{reception.SNR}}
+              </p>
+            </td>
+            <td class="text-center">
+              <button type="button" class="btn btn-outline-danger btn-oval" (click)="deleteMessage(message)">
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+          <tfoot>
+          <tr>
+            <td colspan="4">
+              <mfBootstrapPaginator [rowsOnPageSet]="[10, 25, 50, 100]"></mfBootstrapPaginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div bsModal #mapModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mapModal"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Message location map</h4>
+        <button type="button" class="close" (click)="mapModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <agm-map #agmMap
+                 [latitude]="mapLat"
+                 [longitude]="mapLng"
+                 [zoom]="mapZoom"
+                 [styles]=""
+                 [fullscreenControl]="true"
+                 [mapTypeId]="'roadmap'">
+          <!-- Receptions -->
+          <ng-container *ngFor="let reception of receptions">
+            <agm-marker
+                    [zIndex]="3"
+                    [latitude]="reception.lat"
+                    [longitude]="reception.lng"
+                    [iconUrl]="'assets/img/markers/marker-base-station.png'">
+              <agm-info-window>
+                <strong><b>ID:</b> {{reception.tap}}</strong>
+              </agm-info-window>
+            </agm-marker>
+          </ng-container>
+          <!-- Message Geoloc -->
+          <ng-container *ngFor="let geoloc of geolocs">
+            <!-- Sigfox -->
+            <ng-container *ngIf="geoloc.type === 'sigfox'">
+              <agm-marker
+                      [zIndex]="3"
+                      [latitude]="geoloc.location.lat"
+                      [longitude]="geoloc.location.lng"
+                      [iconUrl]="'assets/img/markers/marker-sigfox.png'">
+                <agm-info-window>
+                  <strong><b>Type: </b><span class="text-geoloc-sigfox">Sigfox</span></strong>
+                  <br>
+                  <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                  <br>
+                  <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                  <br>
+                  <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
+                </agm-info-window>
+              </agm-marker>
+              <!-- Circle -->
+              <agm-circle [zIndex]="1"
+                          [strokePosition]="CENTER"
+                          [strokeWeight]="1"
+                          [strokeColor]="'#8d5dd1'"
+                          [fillOpacity]="0.1"
+                          [fillColor]="'#8d5dd1'"
+                          [latitude]="geoloc.location.lat"
+                          [longitude]="geoloc.location.lng"
+                          [radius]="geoloc.accuracy">
+              </agm-circle>
+              <!-- End Circle -->
+            </ng-container>
+            <!-- Geoloc GPS -->
+            <ng-container *ngIf="geoloc.type === 'gps'">
+              <agm-marker
+                      [zIndex]="3"
+                      [latitude]="geoloc.location.lat"
+                      [longitude]="geoloc.location.lng"
+                      [iconUrl]="'assets/img/markers/marker-gps.png'">
+                <agm-info-window>
+                  <strong><b>Type: </b><span class="text-geoloc-gps">GPS</span></strong>
+                  <br>
+                  <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                  <br>
+                  <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                </agm-info-window>
+              </agm-marker>
+            </ng-container>
+            <!-- Geoloc Beacon -->
+            <ng-container *ngIf="geoloc.type === 'beacon'">
+              <agm-marker
+                      [zIndex]="3"
+                      [latitude]="geoloc.location.lat"
+                      [longitude]="geoloc.location.lng"
+                      [iconUrl]="'assets/img/markers/marker-beacon.png'">
+                <agm-info-window>
+                  <strong><b>Type: </b><span class="text-geoloc-beacon">Beacon</span></strong>
+                  <br>
+                  <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                  <br>
+                  <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                  <br>
+                  <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
+                </agm-info-window>
+              </agm-marker>
+              <!-- Circle -->
+              <agm-circle [zIndex]="1"
+                          [strokePosition]="CENTER"
+                          [strokeWeight]="1"
+                          [strokeColor]="'#3c58ce'"
+                          [fillOpacity]="0.1"
+                          [fillColor]="'#3c58ce'"
+                          [latitude]="geoloc.location.lat"
+                          [longitude]="geoloc.location.lng"
+                          [radius]="geoloc.accuracy">
+              </agm-circle>
+              <!-- End Circle -->
+            </ng-container>
+            <!-- Geoloc WiFi -->
+            <ng-container *ngIf="geoloc.type === 'wifi'">
+              <agm-marker
+                      [zIndex]="3"
+                      [latitude]="geoloc.location.lat"
+                      [longitude]="geoloc.location.lng"
+                      [iconUrl]="'assets/img/markers/marker-wifi.png'">
+                <agm-info-window id="{{geoloc.id}}">
+                  <strong><b>Type: </b><span class="text-geoloc-wifi">WiFi</span></strong>
+                  <br>
+                  <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                  <br>
+                  <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                  <br>
+                  <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
+                </agm-info-window>
+              </agm-marker>
+              <!-- Circle -->
+              <agm-circle [zIndex]="1"
+                          [strokePosition]="CENTER"
+                          [strokeWeight]="1"
+                          [strokeColor]="'#000000'"
+                          [fillOpacity]="0.1"
+                          [fillColor]="'#000000'"
+                          [latitude]="geoloc.location.lat"
+                          [longitude]="geoloc.location.lng"
+                          [radius]="geoloc.accuracy">
+              </agm-circle>
+              <!-- End Circle -->
+            </ng-container>
+          </ng-container>
+        </agm-map>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="mapModal.hide()">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

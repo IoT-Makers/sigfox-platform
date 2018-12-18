@@ -110,166 +110,161 @@
           <i class="fa fa-map-marker fa-lg text-tracking"></i><strong> Map </strong>
           <small>(10 latest)</small>
         </div>
-        <div class="card-block">
-          <ng-container *ngIf="!devicesReady">
-            Loading devices...
-            <div class="sk-double-bounce">
-              <div class="sk-child sk-double-bounce1"></div>
-              <div class="sk-child sk-double-bounce2"></div>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="devicesReady && !devices.length">
-            No devices yet...
-          </ng-container>
+        <div *ngIf="!devicesReady" class="card-block">
+          Loading devices...
+          <div class="sk-double-bounce">
+            <div class="sk-child sk-double-bounce1"></div>
+            <div class="sk-child sk-double-bounce2"></div>
+          </div>
+        </div>
+        <div *ngIf="devicesReady && !devices.length" class="card-block">
+          No devices yet...
+        </div>
 
-          <ng-container *ngIf="devices.length > 0">
-            <agm-map (mapReady)="onMapReady($event)"
-                     [latitude]="mapLat"
-                     [longitude]="mapLng"
-                     [zoom]="mapZoom"
-                     [fullscreenControl]="true">
-              <ng-container *ngFor="let device of devices; let i = index">
-                <ng-container *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
-                  <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
-                    <!-- Sigfox -->
-                    <ng-container *ngIf="geoloc.type === 'sigfox'">
-                      <agm-marker
-                        (mouseOut)="markerOut(i)"
-                        (mouseOver)="markerOver(i)"
-                        [zIndex]="3"
-                        [latitude]="geoloc.location.lat"
-                        [longitude]="geoloc.location.lng"
-                        [iconUrl]="'assets/img/markers/marker-sigfox.png'">
-                        <agm-info-window id="{{geoloc.id}}">
-                          <strong><b>ID: </b><span class="text-device">{{device.id}}</span></strong>
-                          <br>
-                          <strong *ngIf="device.name"><b>Name: </b>{{device.name}}</strong>
-                          <br *ngIf="device.name">
-                          <strong><b>Type: </b><span class="text-geoloc-sigfox">Sigfox</span></strong>
-                          <br>
-                          <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
-                          <br>
-                          <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
-                          <br>
-                          <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
-                        </agm-info-window>
-                      </agm-marker>
-                      <!-- Circle -->
-                      <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
-                                  [zIndex]="1"
-                                  [strokePosition]="CENTER"
-                                  [strokeWeight]="1"
-                                  [strokeColor]="'#8d5dd1'"
-                                  [fillOpacity]="0.1"
-                                  [fillColor]="'#8d5dd1'"
-                                  [latitude]="geoloc.location.lat"
-                                  [longitude]="geoloc.location.lng"
-                                  [radius]="geoloc.accuracy">
-                      </agm-circle>
-                      <!-- End Circle -->
-                    </ng-container>
-                    <!-- Geoloc GPS -->
-                    <ng-container *ngIf="geoloc.type === 'gps'">
-                      <agm-marker
-                        [zIndex]="3"
-                        [latitude]="geoloc.location.lat"
-                        [longitude]="geoloc.location.lng"
-                        [iconUrl]="'assets/img/markers/marker-gps.png'">
-                        <agm-info-window id="{{geoloc.id}}">
-                          <strong><b>ID: </b><span class="text-device">{{device.id}}</span></strong>
-                          <br>
-                          <strong *ngIf="device.name"><b>Name: </b>{{device.name}}</strong>
-                          <br *ngIf="device.name">
-                          <strong><b>Type: </b><span class="text-geoloc-gps">GPS</span></strong>
-                          <br>
-                          <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
-                          <br>
-                          <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
-                        </agm-info-window>
-                      </agm-marker>
-                    </ng-container>
-                    <!-- Geoloc Beacon -->
-                    <ng-container *ngIf="geoloc.type === 'beacon'">
-                      <agm-marker
-                        (mouseOut)="markerOut(i)"
-                        (mouseOver)="markerOver(i)"
-                        [zIndex]="3"
-                        [latitude]="geoloc.location.lat"
-                        [longitude]="geoloc.location.lng"
-                        [iconUrl]="'assets/img/markers/marker-beacon.png'">
-                        <agm-info-window id="{{geoloc.id}}">
-                          <strong><b>ID: </b><span class="text-device">{{device.id}}</span></strong>
-                          <br>
-                          <strong *ngIf="device.name"><b>Name: </b>{{device.name}}</strong>
-                          <br *ngIf="device.name">
-                          <strong><b>Type: </b><span class="text-geoloc-beacon">Beacon</span></strong>
-                          <br>
-                          <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
-                          <br>
-                          <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
-                          <br>
-                          <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
-                        </agm-info-window>
-                      </agm-marker>
-                      <!-- Circle -->
-                      <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
-                                  [zIndex]="1"
-                                  [strokePosition]="CENTER"
-                                  [strokeWeight]="1"
-                                  [strokeColor]="'#3c58ce'"
-                                  [fillOpacity]="0.1"
-                                  [fillColor]="'#3c58ce'"
-                                  [latitude]="geoloc.location.lat"
-                                  [longitude]="geoloc.location.lng"
-                                  [radius]="geoloc.accuracy">
-                      </agm-circle>
-                      <!-- End Circle -->
-                    </ng-container>
-                    <!-- Geoloc WiFi -->
-                    <ng-container *ngIf="geoloc.type === 'wifi'">
-                      <agm-marker
-                        (mouseOut)="markerOut(i)"
-                        (mouseOver)="markerOver(i)"
-                        [zIndex]="3"
-                        [latitude]="geoloc.location.lat"
-                        [longitude]="geoloc.location.lng"
-                        [iconUrl]="'assets/img/markers/marker-wifi.png'">
-                        <agm-info-window id="{{geoloc.id}}">
-                          <strong><b>ID: </b><span class="text-device">{{device.id}}</span></strong>
-                          <br>
-                          <strong *ngIf="device.name"><b>Name: </b>{{device.name}}</strong>
-                          <br *ngIf="device.name">
-                          <strong><b>Type: </b><span class="text-geoloc-wifi">WiFi</span></strong>
-                          <br>
-                          <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
-                          <br>
-                          <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
-                          <br>
-                          <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
-                        </agm-info-window>
-                      </agm-marker>
-                      <!-- Circle -->
-                      <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
-                                  [zIndex]="1"
-                                  [strokePosition]="CENTER"
-                                  [strokeWeight]="1"
-                                  [strokeColor]="'#000000'"
-                                  [fillOpacity]="0.1"
-                                  [fillColor]="'#000000'"
-                                  [latitude]="geoloc.location.lat"
-                                  [longitude]="geoloc.location.lng"
-                                  [radius]="geoloc.accuracy">
-                      </agm-circle>
-                      <!-- End Circle -->
-                    </ng-container>
-                  </ng-container>
+        <agm-map *ngIf="devices.length > 0" (mapReady)="onMapReady($event)"
+                 [latitude]="mapLat"
+                 [longitude]="mapLng"
+                 [zoom]="mapZoom"
+                 [fullscreenControl]="true">
+          <ng-container *ngFor="let device of devices; let i = index">
+            <ng-container *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
+              <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
+                <!-- Sigfox -->
+                <ng-container *ngIf="geoloc.type === 'sigfox'">
+                  <agm-marker
+                    (mouseOut)="markerOut(i)"
+                    (mouseOver)="markerOver(i)"
+                    [zIndex]="3"
+                    [latitude]="geoloc.location.lat"
+                    [longitude]="geoloc.location.lng"
+                    [iconUrl]="'assets/img/markers/marker-sigfox.png'">
+                    <agm-info-window id="{{geoloc.id}}">
+                      <strong><b>ID: </b><span class="text-device">{{device.id}}</span></strong>
+                      <br>
+                      <strong *ngIf="device.name"><b>Name: </b>{{device.name}}</strong>
+                      <br *ngIf="device.name">
+                      <strong><b>Type: </b><span class="text-geoloc-sigfox">Sigfox</span></strong>
+                      <br>
+                      <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                      <br>
+                      <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                      <br>
+                      <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
+                    </agm-info-window>
+                  </agm-marker>
+                  <!-- Circle -->
+                  <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                              [zIndex]="1"
+                              [strokePosition]="CENTER"
+                              [strokeWeight]="1"
+                              [strokeColor]="'#8d5dd1'"
+                              [fillOpacity]="0.1"
+                              [fillColor]="'#8d5dd1'"
+                              [latitude]="geoloc.location.lat"
+                              [longitude]="geoloc.location.lng"
+                              [radius]="geoloc.accuracy">
+                  </agm-circle>
+                  <!-- End Circle -->
+                </ng-container>
+                <!-- Geoloc GPS -->
+                <ng-container *ngIf="geoloc.type === 'gps'">
+                  <agm-marker
+                    [zIndex]="3"
+                    [latitude]="geoloc.location.lat"
+                    [longitude]="geoloc.location.lng"
+                    [iconUrl]="'assets/img/markers/marker-gps.png'">
+                    <agm-info-window id="{{geoloc.id}}">
+                      <strong><b>ID: </b><span class="text-device">{{device.id}}</span></strong>
+                      <br>
+                      <strong *ngIf="device.name"><b>Name: </b>{{device.name}}</strong>
+                      <br *ngIf="device.name">
+                      <strong><b>Type: </b><span class="text-geoloc-gps">GPS</span></strong>
+                      <br>
+                      <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                      <br>
+                      <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                    </agm-info-window>
+                  </agm-marker>
+                </ng-container>
+                <!-- Geoloc Beacon -->
+                <ng-container *ngIf="geoloc.type === 'beacon'">
+                  <agm-marker
+                    (mouseOut)="markerOut(i)"
+                    (mouseOver)="markerOver(i)"
+                    [zIndex]="3"
+                    [latitude]="geoloc.location.lat"
+                    [longitude]="geoloc.location.lng"
+                    [iconUrl]="'assets/img/markers/marker-beacon.png'">
+                    <agm-info-window id="{{geoloc.id}}">
+                      <strong><b>ID: </b><span class="text-device">{{device.id}}</span></strong>
+                      <br>
+                      <strong *ngIf="device.name"><b>Name: </b>{{device.name}}</strong>
+                      <br *ngIf="device.name">
+                      <strong><b>Type: </b><span class="text-geoloc-beacon">Beacon</span></strong>
+                      <br>
+                      <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                      <br>
+                      <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                      <br>
+                      <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
+                    </agm-info-window>
+                  </agm-marker>
+                  <!-- Circle -->
+                  <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                              [zIndex]="1"
+                              [strokePosition]="CENTER"
+                              [strokeWeight]="1"
+                              [strokeColor]="'#3c58ce'"
+                              [fillOpacity]="0.1"
+                              [fillColor]="'#3c58ce'"
+                              [latitude]="geoloc.location.lat"
+                              [longitude]="geoloc.location.lng"
+                              [radius]="geoloc.accuracy">
+                  </agm-circle>
+                  <!-- End Circle -->
+                </ng-container>
+                <!-- Geoloc WiFi -->
+                <ng-container *ngIf="geoloc.type === 'wifi'">
+                  <agm-marker
+                    (mouseOut)="markerOut(i)"
+                    (mouseOver)="markerOver(i)"
+                    [zIndex]="3"
+                    [latitude]="geoloc.location.lat"
+                    [longitude]="geoloc.location.lng"
+                    [iconUrl]="'assets/img/markers/marker-wifi.png'">
+                    <agm-info-window id="{{geoloc.id}}">
+                      <strong><b>ID: </b><span class="text-device">{{device.id}}</span></strong>
+                      <br>
+                      <strong *ngIf="device.name"><b>Name: </b>{{device.name}}</strong>
+                      <br *ngIf="device.name">
+                      <strong><b>Type: </b><span class="text-geoloc-wifi">WiFi</span></strong>
+                      <br>
+                      <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}</strong>
+                      <br>
+                      <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}</strong>
+                      <br>
+                      <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
+                    </agm-info-window>
+                  </agm-marker>
+                  <!-- Circle -->
+                  <agm-circle *ngIf="isCircleVisible[i]" [visible]="isCircleVisible[i]"
+                              [zIndex]="1"
+                              [strokePosition]="CENTER"
+                              [strokeWeight]="1"
+                              [strokeColor]="'#000000'"
+                              [fillOpacity]="0.1"
+                              [fillColor]="'#000000'"
+                              [latitude]="geoloc.location.lat"
+                              [longitude]="geoloc.location.lng"
+                              [radius]="geoloc.accuracy">
+                  </agm-circle>
+                  <!-- End Circle -->
                 </ng-container>
               </ng-container>
-
-            </agm-map>
-
+            </ng-container>
           </ng-container>
-        </div>
+
+        </agm-map>
       </div>
     </div> <!-- !see -->
 
@@ -650,7 +645,8 @@
                         <ng-container *ngIf="p.key === 'battery' && (p.value != null) && (p.unit === '%')">
                           <div>
                             <ng-container *ngIf="p.value >= 70">
-                              <span class="text-success"><i class="fa fa-battery-three-quarters"></i> {{p.value}} {{p.unit}}</span>
+                              <span class="text-success"><i
+                                class="fa fa-battery-three-quarters"></i> {{p.value}} {{p.unit}}</span>
                             </ng-container>
                             <ng-container *ngIf="p.value < 70 && p.value >= 40">
                               <span class="text-info"><i class="fa fa-battery-half"></i> {{p.value}} {{p.unit}}</span>

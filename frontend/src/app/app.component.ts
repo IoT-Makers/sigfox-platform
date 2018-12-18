@@ -28,12 +28,12 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Get the logged in User object
+    // Get the logged in user
     this.user = this.userApi.getCachedCurrent();
     if (this.user) this.setUserPosition();
     const accessToken = this.userApi.getCurrentToken().id;
+    // Create the real-time connection
     if (accessToken) this.rt.connect(accessToken);
-
   }
 
   setUserPosition(): void {

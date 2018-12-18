@@ -1,0 +1,64 @@
+<div class="wrapper">
+    <div class="block-center mt-4 wd-xl">
+        <!-- START card-->
+        <div class="card card-flat">
+            <div class="card-header text-center bg-sigfox">
+                <a href="#">
+                    <img class="block-center rounded" src="assets/img/logo.png" alt="Image" />
+                </a>
+            </div>
+            <div class="card-body">
+                <toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+                <p class="text-center py-2 text-bold">Login to continue</p>
+                <form [formGroup]="valForm" class="form-validate mb-3" role="form" name="loginForm" novalidate="" (submit)="submitForm($event, valForm.value)">
+                    <div class="form-group">
+                        <div class="input-group with-focus">
+                            <input class="form-control border-right-0" id="exampleInputEmail1" type="email" name="email" placeholder="Enter email" autocomplete="off" formControlName="email" required="" />
+                            <div class="input-group-append">
+                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                    <em class="fa fa-envelope"></em>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-danger" *ngIf="valForm.controls['email'].hasError('required') && (valForm.controls['email'].dirty || valForm.controls['email'].touched)">This field is required</div>
+                        <div class="text-danger" *ngIf="valForm.controls['email'].hasError('email') && (valForm.controls['email'].dirty || valForm.controls['email'].touched)">This field must be a valid email address</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group with-focus">
+                            <input class="form-control border-right-0" id="exampleInputPassword1" type="password" name="password" placeholder="Password" formControlName="password" required="" />
+                            <div class="input-group-append">
+                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                    <em class="fa fa-lock"></em>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-danger" *ngIf="valForm.controls['password'].hasError('required') && (valForm.controls['password'].dirty || valForm.controls['password'].touched)">This field is required</div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="checkbox c-checkbox float-left mt0">
+                            <label>
+                                <input type="checkbox" value="" name="account_remember" />
+                                <span class="fa fa-check"></span>Remember Me</label>
+                        </div>
+                        <div class="float-right">
+                            <a class="text-muted" [routerLink]="'/recover'">Forgot your password?</a>
+                        </div>
+                    </div>
+                    <button class="btn btn-block btn-primary mt-3" type="submit">Login</button>
+                </form>
+                <!-- <div class="alert alert-danger text-center" ></div> -->
+                <p class="pt-3 text-center">Need to Signup?</p>
+                <a class="btn btn-block btn-secondary" [routerLink]="'/register'">Register now</a>
+            </div>
+        </div>
+        <!-- END card-->
+        <div class="p-3 text-center">
+            <span>&copy;</span>
+            <span>{{ settings.getAppSetting('year') }}</span>
+            <span class="mx-2">-</span>
+            <span>{{ settings.getAppSetting('name') }}</span>
+            <br/>
+            <span>{{ settings.getAppSetting('description') }}</span>
+        </div>
+    </div>
+</div>

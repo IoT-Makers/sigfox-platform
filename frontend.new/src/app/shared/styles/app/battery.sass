@@ -1,0 +1,76 @@
+$bg: #222
+$batteryGreen: #18d933
+$batteryOrange: #ec9a38
+$batteryRed: #e2120b
+$batteryHealth: 25%
+$batteryHeight: 100px
+$batteryWidth: 200px
+$bottomNtopWidth: 8px
+$roundCorner: 3px
+$vertAlign: middle
+$texture: #444 linear-gradient(rgba(255,255,255,0.3) 0%, transparent 13%, transparent 20%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.6) 30%, transparent 50%, transparent 75%, rgba(255,255,255,0.5) 90%)
+
+#battery, #reflection
+  margin: 0 auto 2px auto
+  width: 225px
+#battery
+  margin-top: 0px
+#reflection
+  opacity: 0.4
+  transform: scaleY(-1)
+.bottom, .middle, .top-b, .top-a
+  margin-right: -4px
+.bottom, .top-b
+  background: $texture
+  border-radius: $roundCorner
+  display: inline-block
+  height: $batteryHeight
+  width: $bottomNtopWidth
+  vertical-align: $vertAlign
+.middle
+  border: 1px solid #222
+  border-radius: $roundCorner
+  display: inline-block
+  overflow: hidden
+  height: $batteryHeight
+  width: $batteryWidth
+  vertical-align: $vertAlign
+.top-a
+  background: $texture
+  border-radius: $roundCorner
+  display: inline-block
+  height: $batteryHeight / 2
+  width: $bottomNtopWidth
+  vertical-align: $vertAlign
+.fill-green
+  background: linear-gradient($batteryGreen 0%, $batteryGreen - #020 50%, $batteryGreen 100%)
+  box-shadow: 0 0 10px $batteryGreen
+  height: $batteryHeight - 4px
+  margin: 2px 0
+  width: $batteryHealth
+.fill-orange
+  background: linear-gradient($batteryOrange 0%, $batteryOrange - #020 50%, $batteryOrange 100%)
+  box-shadow: 0 0 10px $batteryOrange
+  height: $batteryHeight - 4px
+  margin: 2px 0
+  width: $batteryHealth
+.fill-red
+  background: linear-gradient($batteryRed 0%, $batteryRed - #020 50%, $batteryRed 100%)
+  box-shadow: 0 0 10px $batteryRed
+  height: $batteryHeight - 4px
+  margin: 2px 0
+  width: $batteryHealth
+.glass
+  background-image: linear-gradient(rgba(255,255,255,0.3) 0%, transparent 10%, transparent 20%, rgba(255,255,255,0.3) 20%, rgba(255,255,255,0.25) 20%, transparent 50%, transparent 75%, rgba(255,255,255,0.25) 90%)
+  border-radius: $roundCorner
+  display: block
+  height: $batteryHeight
+  position: absolute
+  width: $batteryWidth
+  z-index: 1
+.fade-battery
+  background: linear-gradient($bg 0%, $bg 50%, transparent 100%)
+  position: absolute
+  height: 100%
+  width: 101%
+  z-index: 2

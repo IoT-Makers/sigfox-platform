@@ -46,9 +46,7 @@ class Geoloc {
   };
 
   // LoopBack model instance is injected in constructor
-  constructor(public model: any) {
-
-  }
+  constructor(public model: any) {}
 
   private createFromParsedPayload(message: any, req: any): void {
     // Models

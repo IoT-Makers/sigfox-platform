@@ -38,6 +38,18 @@ export class RealtimeService {
     });
   }
 
+  public openListener(listener: (isConnected: any) => void): (isConnected) => boolean {
+    return this.primusClient.on('open', () => {
+      return listener(true);
+    });
+  }
+
+  public reconnectListener(listener: (isConnected: any) => void): (isConnected) => boolean {
+    return this.primusClient.on('reconnect', () => {
+      return listener(false);
+    });
+  }
+
   public informCurrentPage(id: string, listenTo: string[]) {
     if (id && listenTo) {
       this.listenerInfo = {
