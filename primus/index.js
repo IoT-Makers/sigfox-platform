@@ -10,8 +10,8 @@ const mongodbUrl = process.env.MONGO_URL;
 const rabbitUrl = process.env.RABBIT_URL || 'amqp://usr:pwd@localhost';
 const healthcheckToken = 'healthcheck';
 const log = require('loglevel');
-// log.setLevel('info');
-log.enableAll();
+log.setLevel('info');
+// log.enableAll();
 
 let db;
 let AdminRoleID;
@@ -262,7 +262,6 @@ primus.on('disconnection', function (spark) {
 
 function messageHandler(payload) {
     const msg = payload.content;
-    console.log(payload);
     if (msg) {
         // from message.ts
         const userId = payload.usrId;
