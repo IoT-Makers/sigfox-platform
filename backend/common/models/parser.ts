@@ -333,7 +333,7 @@ class Parser {
       content: parser,
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
-    RabbitPub.getInstance().pub(payload);
+    RabbitPub.getInstance().pub(payload, parser.userId.toString());
     next();
   }
 }

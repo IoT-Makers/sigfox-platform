@@ -422,15 +422,22 @@ class Device {
         if (err) return next(err, null);
         else {
           if (device && device.Organizations) {
-            device.toJSON().Organizations.forEach((orga: any) => {
+            const orgIds = device.toJSON().Organizations;
+            orgIds.forEach((orga: any) => {
               device.Organizations.remove(orga.id, (err: any, result: any) => {
                 if (!err) {
                   console.log("Unlinked device from organization (" + orga.name + ")");
                 }
               });
             });
+            const payload = {
+              event: "device",
+              content: device,
+              action: "DELETE"
+            };
+            RabbitPub.getInstance().pub(payload, device.userId, orgIds.map((o: any) => o.id.toString()));
           }
-          console.log("Unlinked device from organization");
+          console.log("Unlinked device from organizations");
           return next();
         }
       });
@@ -448,13 +455,6 @@ class Device {
   }
 
   public afterDelete(ctx: any, next: Function): void {
-    let device = ctx.instance;
-    const payload = {
-      event: "device",
-      content: device,
-      action: "DELETE"
-    };
-    RabbitPub.getInstance().pub(payload);
     next();
   }
 
@@ -466,8 +466,7 @@ class Device {
       content: device,
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
-    if (!ctx.isNewInstance)
-    RabbitPub.getInstance().pub(payload, 'noOrg');
+    RabbitPub.getInstance().pub(payload, device.userId, null);
     next();
   }
 }

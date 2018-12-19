@@ -487,11 +487,19 @@ class Message {
       // console.log(category);
       if (!err) {
         if (message && message.Organizations) {
-          message.toJSON().Organizations.forEach((orga: any) => {
+          const orgs = message.toJSON().Organizations;
+          orgs.forEach((orga: any) => {
             message.Organizations.remove(orga.id, (err: any, result: any) => {
               if (!err) console.log("Unlinked device from organization (" + orga.name + ")");
             });
           });
+          const orgIds = orgs.map((o: any) => o.id.toString());
+          const payload = {
+            event: "message",
+            content: ctx.instance,
+            action: "DELETE"
+          };
+          RabbitPub.getInstance().pub(payload, message.userId, orgIds);
         }
         return next(null, "Unlinked device from organization");
       } else {
@@ -501,16 +509,6 @@ class Message {
   }
 
   public afterDelete(ctx: any, next: Function): void {
-    let msg = ctx.instance;
-    if (msg) {
-      // if the message is delete via a cascade, no instance is provided
-      const payload = {
-        event: "message",
-        content: msg,
-        action: "DELETE"
-      };
-      RabbitPub.getInstance().pub(payload);
-    }
     next();
   }
 
@@ -521,14 +519,14 @@ class Message {
     this.linkMessageToOrganization(ctx.instance, (device => {
       // Pub-sub
       let msg = ctx.instance;
+      const orgIds = device.Organizations().map((o: any) => o.id.toString());
       const payload = {
         event: "message",
         device: device,
         content: msg,
         action: ctx.isNewInstance ? "CREATE" : "UPDATE"
       };
-      const orgIds = device.Organizations().map((o: any) => o.id.toString()).join('.');
-      RabbitPub.getInstance().pub(payload, orgIds);
+      RabbitPub.getInstance().pub(payload, msg.userId, orgIds);
     }));
     next();
   }
