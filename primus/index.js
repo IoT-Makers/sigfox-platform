@@ -367,7 +367,7 @@ function alertHandler(payload) {
         let targets = getTargetClients(userId, 'alert');
         send(targets.countOnly, payload.event, payload.action, null);
         if (!targets.complete) return;
-        if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, msg);
+        if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, alert);
 
         db.collection("Connector").findOne({_id: ObjectId(alert.connectorId)}, (err, connector) => {
             addAttribute(alert, "Connector", connector);

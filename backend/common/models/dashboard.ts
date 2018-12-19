@@ -64,8 +64,9 @@ class Dashboard {
       content: dashboard,
       action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
+    const usrId = (dashboard.userId || dashboard.organizationId).toString();
     dashboard.organizationId ?
-      RabbitPub.getInstance().pub(payload, dashboard.organizationId) :
+      RabbitPub.getInstance().pub(payload, usrId) :
       RabbitPub.getInstance().pub(payload);
     next();
   }

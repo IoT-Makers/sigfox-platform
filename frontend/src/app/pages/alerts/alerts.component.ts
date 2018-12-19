@@ -528,7 +528,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   };
 
   subscribe(id: string): void {
-    this.rt.informCurrentPage(id, ['category']);
+    this.rt.informCurrentPage(id, ['alert']);
     this.rtHandler = this.rt.addListener("alert", this.rtHandler);
   }
 

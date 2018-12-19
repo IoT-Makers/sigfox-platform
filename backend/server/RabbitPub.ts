@@ -60,8 +60,8 @@ export class RabbitPub {
   public pub(msg: PubMessage, usrId?: string, orgIds?: string[]) {
     if (!this._ch) return;
     const payload = msg as Payload;
-    payload.usrId = usrId ? usrId : (msg.content.userId || msg.content.organizationId).toString();
-    let rk = usrId;
+    payload.usrId = usrId !== undefined ? usrId : (msg.content.userId || msg.content.organizationId).toString();
+    let rk = payload.usrId;
     if (orgIds !== undefined) {
       if (orgIds === null) {
         return this._ch.sendToQueue(this.TASK_QUEUE, Buffer.from(JSON.stringify(payload), 'utf8'),  {persistent: true});
@@ -70,7 +70,6 @@ export class RabbitPub {
       rk = `${rk}.${orgIds.join('.')}`;
     }
     console.log(rk);
-    // console.log(payload);
     return this._ch.publish(this.RT_EX, rk, Buffer.from(JSON.stringify(payload), 'utf8'));
   }
 }
