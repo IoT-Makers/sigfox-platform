@@ -34,15 +34,9 @@ exports.unregisterAdminListener = function (spark) {
 
 
 function adminStatsHandler(msg) {
-    if (!msg) return;
+    if (!adminSparks.length || !msg) return;
     let payload = JSON.parse(msg.content.toString());
-    if (!payload) return;
-    let targets = [];
-    primus.forEach(function (spark, id, connections) {
-        if (spark.userIsAdmin && spark.listenerInfo && spark.listenerInfo.listenTo.includes('stats'))
-            targets.push(spark);
-    });
-    if (targets.length && payload.action !== 'UPDATE')
-        return send(targets, 'stats', payload.action, payload.event);
+    if (payload && payload.action !== 'UPDATE')
+        return send(adminSparks, 'stats', payload.action, payload.event);
 }
 
