@@ -9,6 +9,7 @@ export interface PubMessage {
   event: string;
   content: PubMessageContent;
   action: string;
+  orgIds: string[];
 }
 
 export class RabbitPub {

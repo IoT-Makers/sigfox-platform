@@ -266,7 +266,7 @@ function messageHandler(payload) {
         // from message.ts
         const userId = msg.userId;
         log.debug(payload.action + ' message ' + msg.id + ' for user ' + userId);
-        let targets = getTargetClients(userId, 'message', payload.device.Organizations.map(o => o.id.toString()));
+        let targets = getTargetClients(userId, 'message', payload.orgIds);
 
         send(targets.countOnly, payload.event, payload.action, null);
         if (!targets.complete) return;

@@ -521,14 +521,15 @@ class Message {
     this.linkMessageToOrganization(ctx.instance, (device => {
       // Pub-sub
       let msg = ctx.instance;
+      const orgIds = device.Organizations().map((o: any) => o.id.toString());
       const payload = {
         event: "message",
         device: device,
         content: msg,
+        orgIds: orgIds,
         action: ctx.isNewInstance ? "CREATE" : "UPDATE"
       };
-      const orgIds = device.Organizations().map((o: any) => o.id.toString()).join('.');
-      RabbitPub.getInstance().pub(payload, orgIds);
+      RabbitPub.getInstance().pub(payload, orgIds.join('.'));
     }));
     next();
   }
