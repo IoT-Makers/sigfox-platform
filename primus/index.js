@@ -46,7 +46,8 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 });
 
 
-const EX = 'realtime_exchange_v2';
+const RT_EX = 'realtime_exchange_v2';
+const TASK_QUEUE = 'task_queue';
 let WorkerCh;
 let RtQueue;
 let RtCh;
@@ -55,11 +56,9 @@ amqp.connect(rabbitUrl).then(conn => {
     let promises = []; // array of promises
     let workerChPromise = conn.createChannel().then(ch => {
         WorkerCh = ch;
-        WorkerCh.assertExchange(EX, 'topic', {durable: true});
-        WorkerCh.assertQueue('task_queue', {durable: true, messageTtl: 5000}).then(function(q) {
+        WorkerCh.assertQueue(TASK_QUEUE, {durable: true, messageTtl: 5000}).then(function(q) {
             log.info("Worker connected to RabbitMQ");
-            WorkerCh.bindQueue(q.queue, EX, 'noOrg');
-            WorkerCh.prefetch(30);
+            WorkerCh.prefetch(50);
             return WorkerCh.consume(q.queue, workerHandlers);
         })
     });
@@ -67,7 +66,7 @@ amqp.connect(rabbitUrl).then(conn => {
 
     let rtChPromise = conn.createChannel().then(ch => {
         RtCh = ch;
-        RtCh.assertExchange(EX, 'topic', {durable: true});
+        RtCh.assertExchange(RT_EX, 'topic', {durable: true});
         return RtCh.assertQueue('', {exclusive: true, messageTtl: 5000}).then(function(q) {
             RtQueue = q;
             log.info("Rt handler connected to RabbitMQ");
@@ -104,7 +103,7 @@ function deviceWorker(payload, cb) {
         const orgIds = ods.map(od => od.organizationId.toString());
         payload.orgIds = orgIds;
         let rk = `${userId}.${orgIds.join('.')}`;
-        WorkerCh.publish(EX, rk, Buffer.from(JSON.stringify(payload), 'utf8'));
+        WorkerCh.publish(RT_EX, rk, Buffer.from(JSON.stringify(payload), 'utf8'));
         cb();
     });
 }
@@ -119,7 +118,7 @@ function geolocWorker(payload, cb) {
         const orgIds = ods.map(od => od.organizationId.toString());
         payload.orgIds = orgIds;
         let rk = `${userId}.${orgIds.join('.')}`;
-        WorkerCh.publish(EX, rk, Buffer.from(JSON.stringify(payload), 'utf8'));
+        WorkerCh.publish(RT_EX, rk, Buffer.from(JSON.stringify(payload), 'utf8'));
         cb();
     });
 }
@@ -222,7 +221,7 @@ primus.on('connection', function connection(spark) {
         const id = data.id;
         const listenerType = id === spark.userId ? 'personal' : 'org';
         const rk = `#.${id}.#`;
-        RtCh.bindQueue(RtQueue.queue, EX, rk);
+        RtCh.bindQueue(RtQueue.queue, RT_EX, rk);
 
         spark.listenerInfo = {
             id: id,
@@ -245,7 +244,7 @@ primus.on('disconnection', function (spark) {
             bindCount++;
     });
     if (bindCount === 0)
-        RtCh.unbindQueue(RtQueue.queue, EX, `#.${spark.listenerInfo.id}.#`);
+        RtCh.unbindQueue(RtQueue.queue, RT_EX, `#.${spark.listenerInfo.id}.#`);
 
     let user = db.collection("user");
     user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, disconnectedAt: new Date()}}, (err, user) => {

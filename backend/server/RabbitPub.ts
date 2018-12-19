@@ -14,7 +14,8 @@ export interface PubMessage {
 export class RabbitPub {
 
   private _ch: amqp.Channel;
-  private EX = 'realtime_exchange_v2';
+  private RT_EX = 'realtime_exchange_v2';
+  private TASK_QUEUE = 'task_queue';
 
   private static _instance: RabbitPub = new RabbitPub();
 
@@ -39,11 +40,12 @@ export class RabbitPub {
       } else if (conn) {
         conn.createChannel((err, ch) => {
           if (err) console.error(err);
-          ch.assertExchange(this.EX, 'topic', {durable: true}, (err, ok) => {
+          ch.assertExchange(this.RT_EX, 'topic', {durable: true}, (err, ok) => {
             if (err) console.error(err);
-            ch.assertQueue('task_queue', {durable: true, messageTtl: 5000});
-            ch.bindQueue('task_queue', this.EX, 'noOrg');
-            this._ch = ch;
+            ch.assertQueue(this.TASK_QUEUE, {durable: true, messageTtl: 5000}, (err, ok) => {
+              if (err) console.error(err);
+              this._ch = ch;
+            });
           });
         });
       }
@@ -52,15 +54,15 @@ export class RabbitPub {
 
   public pub(msg: PubMessage, extraRoutingKey?: string) {
     if (!this._ch) return;
-    let rk = msg.content.userId || msg.content.organizationId;
-    rk = rk.toString();
-    if (extraRoutingKey)
-      extraRoutingKey === 'noOrg' ?
-        rk = 'noOrg' :
-        rk = `${rk}.${extraRoutingKey}`;
-    console.log(rk);
+    let rk = (msg.content.userId || msg.content.organizationId).toString();
 
-    this._ch.publish(this.EX, rk, Buffer.from(JSON.stringify(msg), 'utf8'));
+    if (extraRoutingKey) {
+      if (extraRoutingKey === 'noOrg') {
+        return this._ch.sendToQueue(this.TASK_QUEUE, Buffer.from(JSON.stringify(msg), 'utf8'),  {persistent: true});
+      }
+      rk = `${rk}.${extraRoutingKey}`;
+    }
+    return this._ch.publish(this.RT_EX, rk, Buffer.from(JSON.stringify(msg), 'utf8'));
   }
 }
 
