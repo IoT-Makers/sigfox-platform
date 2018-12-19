@@ -387,7 +387,7 @@ function beaconHandler(payload) {
         let targets = getTargetClients(userId, 'beacon');
         send(targets.countOnly, payload.event, payload.action, null);
         if (!targets.complete) return;
-        if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, msg);
+        if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, beacon);
 
         return send(targets.complete, payload.event, payload.action, beacon);
     }
