@@ -384,7 +384,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
     const dashboard = payload.content;
     if (payload.action == "CREATE") {
       // ensure data for the user and any org don't mix up
-      if (dashboard.userId == this.user.id || (this. organization && dashboard.Device.Organizations.map(x => x.id).includes(this.organization.id)))
+      if (dashboard.userId == this.user.id || (this.organization && dashboard.organizationId === this.organization.id))
         this.dashboards.unshift(dashboard);
     } else if (payload.action == "UPDATE") {
       let idx = this.dashboards.findIndex(x => x.id == dashboard.id);
