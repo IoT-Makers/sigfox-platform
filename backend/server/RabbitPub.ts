@@ -9,6 +9,10 @@ export interface PubMessage {
   event: string;
   content: PubMessageContent;
   action: string;
+}
+
+interface Payload extends PubMessage{
+  usrId: string;
   orgIds: string[];
 }
 
@@ -53,17 +57,21 @@ export class RabbitPub {
     });
   }
 
-  public pub(msg: PubMessage, extraRoutingKey?: string) {
+  public pub(msg: PubMessage, usrId?: string, orgIds?: string[]) {
     if (!this._ch) return;
-    let rk = (msg.content.userId || msg.content.organizationId).toString();
-
-    if (extraRoutingKey) {
-      if (extraRoutingKey === 'noOrg') {
-        return this._ch.sendToQueue(this.TASK_QUEUE, Buffer.from(JSON.stringify(msg), 'utf8'),  {persistent: true});
+    const payload = msg as Payload;
+    payload.usrId = usrId ? usrId : (msg.content.userId || msg.content.organizationId).toString();
+    let rk = usrId;
+    if (orgIds !== undefined) {
+      if (orgIds === null) {
+        return this._ch.sendToQueue(this.TASK_QUEUE, Buffer.from(JSON.stringify(payload), 'utf8'),  {persistent: true});
       }
-      rk = `${rk}.${extraRoutingKey}`;
+      payload.orgIds = orgIds;
+      rk = `${rk}.${orgIds.join('.')}`;
     }
-    return this._ch.publish(this.RT_EX, rk, Buffer.from(JSON.stringify(msg), 'utf8'));
+    console.log(rk);
+    // console.log(payload);
+    return this._ch.publish(this.RT_EX, rk, Buffer.from(JSON.stringify(payload), 'utf8'));
   }
 }
 

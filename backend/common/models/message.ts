@@ -497,10 +497,9 @@ class Message {
           const payload = {
             event: "message",
             content: ctx.instance,
-            orgIds: orgIds,
             action: "DELETE"
           };
-          RabbitPub.getInstance().pub(payload, orgIds.join('.'));
+          RabbitPub.getInstance().pub(payload, message.userId, orgIds);
         }
         return next(null, "Unlinked device from organization");
       } else {
@@ -525,10 +524,9 @@ class Message {
         event: "message",
         device: device,
         content: msg,
-        orgIds: orgIds,
         action: ctx.isNewInstance ? "CREATE" : "UPDATE"
       };
-      RabbitPub.getInstance().pub(payload, orgIds.join('.'));
+      RabbitPub.getInstance().pub(payload, msg.userId, orgIds);
     }));
     next();
   }

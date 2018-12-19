@@ -422,7 +422,7 @@ class Geoloc {
           content: geoloc,
           action: "CREATE"
         };
-        RabbitPub.getInstance().pub(payload, 'noOrg');
+        RabbitPub.getInstance().pub(payload, device.userId, null);
       });
     }
     next();

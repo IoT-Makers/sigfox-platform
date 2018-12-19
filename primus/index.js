@@ -10,8 +10,8 @@ const mongodbUrl = process.env.MONGO_URL;
 const rabbitUrl = process.env.RABBIT_URL || 'amqp://usr:pwd@localhost';
 const healthcheckToken = 'healthcheck';
 const log = require('loglevel');
-log.setLevel('info');
-// log.enableAll();
+// log.setLevel('info');
+log.enableAll();
 
 let db;
 let AdminRoleID;
@@ -98,7 +98,7 @@ const workerHandlers = function (msg) {
 function deviceWorker(payload, cb) {
     const device = payload.content;
     if (!device) return;
-    const userId = device.userId;
+    const userId = payload.usrId;
     log.debug(payload.action + ' device ' + device.id + ' for user ' + userId);
 
     db.collection("OrganizationDevice").find({deviceId: device.id}).toArray((err, ods) => {
@@ -113,7 +113,7 @@ function deviceWorker(payload, cb) {
 function geolocWorker(payload, cb) {
     const geoloc = payload.content;
     if (!geoloc) return;
-    const userId = geoloc.userId;
+    const userId = payload.usrId;
     log.debug(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
     db.collection("OrganizationDevice").find({deviceId: geoloc.deviceId}).toArray((err, ods) => {
@@ -262,9 +262,10 @@ primus.on('disconnection', function (spark) {
 
 function messageHandler(payload) {
     const msg = payload.content;
+    console.log(payload);
     if (msg) {
         // from message.ts
-        const userId = msg.userId;
+        const userId = payload.usrId;
         log.debug(payload.action + ' message ' + msg.id + ' for user ' + userId);
         let targets = getTargetClients(userId, 'message', payload.orgIds);
 
@@ -284,7 +285,7 @@ function deviceHandler(payload) {
     const device = payload.content;
     if (device) {
         // from device.ts
-        const userId = device.userId;
+        const userId = payload.usrId;
         log.debug(payload.action + ' device ' + device.id + ' for user ' + userId);
 
         const targets = getTargetClients(userId, 'device', payload.orgIds);
@@ -323,7 +324,7 @@ function parserHandler(payload) {
     const parser = payload.content;
     if (parser) {
         // from parser.ts
-        const userId = parser.userId;
+        const userId = payload.usrId;
         log.debug(payload.action + ' parser ' + parser.id + ' for user ' + userId);
         let targets = getTargetClients(userId, 'parser');
         send(targets.countOnly, payload.event, payload.action, null);
@@ -340,7 +341,7 @@ function parserHandler(payload) {
 function geolocHandler(payload) {
     const geoloc = payload.content;
     if (geoloc) {
-        const userId = geoloc.userId;
+        const userId = payload.usrId;
         log.debug(payload.action + ' geoloc ' + geoloc.id + ' for user ' + userId);
 
         const targets = getTargetClients(userId, 'geoloc', payload.orgIds);
@@ -359,7 +360,7 @@ function geolocHandler(payload) {
 
 function alertHandler(payload) {
     const alert = payload.content;
-    const userId = alert.userId;
+    const userId = payload.usrId;
     if (alert) {
         // from alert.ts
         log.debug(payload.action + ' alert ' + alert.id + ' for user ' + userId);
@@ -380,7 +381,7 @@ function alertHandler(payload) {
 
 function beaconHandler(payload) {
     const beacon = payload.content;
-    const userId = beacon.userId;
+    const userId = payload.usrId;
     if (beacon) {
         log.debug(payload.action + ' beacon ' + beacon.id + ' for user ' + userId);
         let targets = getTargetClients(userId, 'beacon');
@@ -395,7 +396,7 @@ function beaconHandler(payload) {
 function connectorHandler(payload) {
     const connector = payload.content;
     if (connector) {
-        const userId = connector.userId;
+        const userId = payload.usrId;
         log.debug(payload.action + ' connector ' + connector.id + ' for user ' + userId);
 
         let targets = getTargetClients(userId, 'connector');
@@ -409,7 +410,7 @@ function connectorHandler(payload) {
 function categoryHandler(payload) {
     const category = payload.content;
     if (category) {
-        const userId = category.userId;
+        const userId = payload.usrId;
         log.debug(payload.action + ' category ' + category.id + ' for user ' + userId);
 
         let targets = getTargetClients(userId, 'category');
@@ -430,7 +431,7 @@ function categoryHandler(payload) {
 function dashboardHandler(payload) {
     const dashboard = payload.content;
     if (dashboard) {
-        const userId = dashboard.userId;
+        const userId = payload.usrId;
         // from dashboard.ts
         log.debug(payload.action + ' dashboard ' + dashboard.id + ' for user ' + userId);
         let targetClients = getTargetClients(userId, 'dashboard', [dashboard.organizationId]);
@@ -442,7 +443,7 @@ function dashboardHandler(payload) {
 function widgetHandler(payload) {
     const widget = payload.content;
     if (widget) {
-        const userId = widget.userId;
+        const userId = payload.usrId;
         // from widget.ts
         log.debug(payload.action + ' widget ' + widget.id + ' for user ' + userId);
         let targetClients = getTargetClients(userId, 'widget');
