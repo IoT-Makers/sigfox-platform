@@ -1,5 +1,6 @@
 'use strict';
-const helper = require('./helper');
+const {addAttribute, getTargetClients, send} = require('./helper');
+const admin = require('./admin');
 const Primus = require('primus');
 const amqp = require('amqplib');
 const mongolib = require('mongodb');
@@ -14,9 +15,9 @@ log.setLevel('info');
 
 let db;
 let AdminRoleID;
-const primus = Primus.createServer(function connection(spark) {
+global.primus = Primus.createServer(function connection(spark) {
 
-}, {
+    }, {
     port: process.env.PORT || 2333,
     transformer: 'engine.io'
 });
@@ -46,7 +47,7 @@ MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) 
 });
 
 
-const RT_EX = 'realtime_exchange_v2';
+global.RT_EX = 'realtime_exchange_v2';
 const TASK_QUEUE = 'task_queue';
 let WorkerCh;
 let RtQueue;
@@ -54,6 +55,7 @@ let RtCh;
 
 amqp.connect(rabbitUrl).then(conn => {
     let promises = []; // array of promises
+    global.RabbitConn = conn;
     let workerChPromise = conn.createChannel().then(ch => {
         WorkerCh = ch;
         WorkerCh.assertQueue(TASK_QUEUE, {durable: true, messageTtl: 5000}).then(function(q) {
@@ -127,7 +129,6 @@ const rtHandlers = function (msg) {
     let payload = JSON.parse(msg.content.toString());
     if (!payload) return;
     // log.log(payload);
-    adminStatsHandler(payload);
     switch (payload.event) {
         case "message":
             messageHandler(payload);
@@ -229,6 +230,8 @@ primus.on('connection', function connection(spark) {
             listenTo: data.listenTo
         };
         log.debug("listenerInfo", spark.listenerInfo);
+
+        admin.registerAdminListener(spark);
     });
 });
 
@@ -245,6 +248,8 @@ primus.on('disconnection', function (spark) {
     });
     if (bindCount === 0)
         RtCh.unbindQueue(RtQueue.queue, RT_EX, `#.${spark.listenerInfo.id}.#`);
+
+    admin.unregisterAdminListener(spark);
 
     let user = db.collection("user");
     user.update({_id: ObjectId(spark.userId)}, {$set: {connected: false, disconnectedAt: new Date()}}, (err, user) => {
@@ -445,71 +450,6 @@ function widgetHandler(payload) {
         if (!targetClients.complete) return;
         return send(targetClients.complete, payload.event, payload.action, widget);
     }
-}
-
-function addAttribute(obj, attName, attValue) {
-    if (attValue) {
-        // change _id to id
-        if (attValue._id) {
-            attValue.id = attValue._id;
-            delete attValue._id;
-        }
-        if (Array.isArray(attValue))
-            attValue = attValue.map((v, i, arr) => {
-                if (v._id) {
-                    v.id = v._id;
-                    delete v._id;
-                }
-                return v;
-            });
-        obj[attName] = attValue;
-    }
-}
-
-// returns 2 groups of spark: clients needing detailed event (listenTo) and countOnly
-function getTargetClients(userId, event='', orgIDs=null) {
-    let complete=[], countOnly=[];
-    primus.forEach(function (spark, id, connections) {
-        const listenerInfo = spark.listenerInfo;
-        if (!listenerInfo) return; // return === continue
-        // log.error(listenerInfo.listenTo);
-
-        if (listenerInfo.type === 'personal') {
-            if (listenerInfo.id === userId)
-                listenerInfo.listenTo.includes(event) ?
-                    complete.push(spark) :
-                    countOnly.push(spark);
-        } else {
-            if (orgIDs && orgIDs.includes(listenerInfo.id))
-                listenerInfo.listenTo.includes(event) ?
-                    complete.push(spark) :
-                    countOnly.push(spark);
-        }
-    });
-    log.debug(`[${event}] ${complete.length} users needs detail, ${countOnly.length} users needs only count`);
-    return {complete: complete, countOnly: countOnly};
-}
-
-function adminStatsHandler(payload) {
-    let targets = [];
-    primus.forEach(function (spark, id, connections) {
-        if (spark.userIsAdmin && spark.listenerInfo && spark.listenerInfo.listenTo.includes('stats'))
-            targets.push(spark);
-    });
-    if (targets.length && payload.action !== 'UPDATE')
-        return send(targets, 'stats', payload.action, payload.event);
-}
-
-function send(targetClients, eventName, action, content) {
-    const outgoingPayload = {
-        event: eventName,
-        action: action,
-        content: content
-    };
-    targetClients.forEach(function (spark) {
-        spark.write(outgoingPayload);
-        log.log(action + " sent " + spark.userId);
-    });
 }
 
 primus.on('disconnection', function end(spark) {
