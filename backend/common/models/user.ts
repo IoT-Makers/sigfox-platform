@@ -122,11 +122,7 @@ class user {
 
   public afterRemoteCreate(ctx: any, userInstance: any, next: any) {
 
-    console.log('afterRemoteCreate');
-
-    const adminRole = {
-      name: "admin"
-    };
+    console.log('user afterRemoteCreate');
 
     const userRole = {
       name: "user"
@@ -135,31 +131,15 @@ class user {
     // Check if any user exists
     this.model.count(
       (err: any, countUser: any) => {
-        if (err) console.log(err);
+        if (err) console.error(err);
         else {
-          console.log(countUser);
           if (countUser === 1) {
-
-            // Create admin
-            this.model.app.models.Role.findOrCreate(
+            // Create admin user
+            this.model.app.models.Role.findOne(
               {where: {name: "admin"}}, // Find
-              adminRole, // Create
-              (err: any, instance: any, created: boolean) => { // Callback
+              (err: any, instance: any) => { // Callback
                 if (err) console.error("Error creating role", err);
-                else if (created) {
-                  console.log("Created role", instance);
-                  instance.principals.create({
-                    principalType: this.model.app.models.RoleMapping.USER,
-                    principalId: userInstance.id,
-                  }, (err: any, principalInstance: any) => {
-                    if (err) console.log(err);
-                    else {
-                      console.log(principalInstance);
-                      next();
-                    }
-                  });
-                } else {
-                  console.log("Found role", instance);
+                else {
                   instance.principals.create({
                     principalType: this.model.app.models.RoleMapping.USER,
                     principalId: userInstance.id,
@@ -173,7 +153,7 @@ class user {
                 }
               });
           } else {
-            // Create user
+            // Create normal user
             this.model.app.models.Role.findOrCreate(
               {where: {name: "user"}}, // Find
               userRole, // Create
@@ -185,15 +165,13 @@ class user {
                     principalType: this.model.app.models.RoleMapping.USER,
                     principalId: userInstance.id,
                   }, (err: any, principalInstance: any) => {
-                    if (err) console.log(err);
+                    if (err) console.error(err);
                     else {
                       console.log(principalInstance);
                       next();
                     }
                   });
-
                 } else {
-                  console.log("Found role", instance);
                   instance.principals.create({
                     principalType: this.model.app.models.RoleMapping.USER,
                     principalId: userInstance.id,

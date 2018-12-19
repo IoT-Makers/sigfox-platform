@@ -28,4 +28,16 @@ module.exports = (app: any, cb: any) => {
       cb();
     }
   });
+
+  // init with an admin role
+  const adminRole = {
+    name: "admin"
+  };
+  // Create admin
+  app.models.Role.findOrCreate(
+    {where: adminRole}, // Find
+    adminRole, // Create
+    (err: any, instance: any, created: boolean) => { // Callback
+      if (err) console.error("Error creating admin role", err);
+    });
 };
