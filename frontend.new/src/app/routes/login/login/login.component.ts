@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
                 private appSettingApi: AppSettingApi,
                 private route: ActivatedRoute,
                 private router: Router,
-                public toasterService: ToasterService,
+                private toasterService: ToasterService,
                 public settings: SettingsService,
                 fb: FormBuilder) {
         this.valForm = fb.group({

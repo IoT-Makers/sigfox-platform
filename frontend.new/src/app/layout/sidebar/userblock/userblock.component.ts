@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-
+import {Component, Input, OnInit} from '@angular/core';
 import {UserblockService} from './userblock.service';
-import {UserApi} from "../../../shared/sdk/services/custom";
-import {Role, User} from "../../../shared/sdk/models";
+import {OrganizationApi, UserApi} from "../../../shared/sdk/services/custom";
+import {Organization, User} from "../../../shared/sdk/models";
 import {RealtimeService} from "../../../shared/realtime/realtime.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'app-userblock',
@@ -12,35 +12,27 @@ import {RealtimeService} from "../../../shared/realtime/realtime.service";
 })
 export class UserblockComponent implements OnInit {
 
-    userExample: any;
-    user: User;
-    admin: boolean;
+    @Input() user: User;
+    @Input() admin: Boolean = false;
+    @Input() organization: Organization;
+
     isConnected: boolean = false;
 
     constructor(public userblockService: UserblockService,
                 private userApi: UserApi,
+                private organizationApi: OrganizationApi,
+                private route: ActivatedRoute,
                 private rt: RealtimeService) {
-
-        this.userExample = {
-            email: 'john.doe@test.com',
-            role: 'admin',
-            picture: 'assets/img/user/user.svg'
-        };
     }
 
     ngOnInit() {
+        // RT handlers for connection status
+        this.setup();
+    }
+
+    setup() {
         this.unsubscribe();
         this.subscribe();
-        this.user = this.userApi.getCachedCurrent();
-        this.userApi.getRoles(this.user.id).subscribe((roles: Role[]) => {
-            this.user.roles = roles;
-            roles.forEach((role: Role) => {
-                if (role.name === 'admin') {
-                    this.admin = true;
-                    return;
-                }
-            });
-        });
     }
 
     userBlockIsVisible() {

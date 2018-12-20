@@ -11,12 +11,10 @@ import {RabbitPub} from '../../server/RabbitPub';
 @Model({
   hooks: {
     beforeSave: {name: "before save", type: "operation"},
-    afterSave: { name: "after save", type: "operation" },
-    beforeDelete: {name: "before delete", type: "operation"},
-    afterDelete: {name: "after delete", type: "operation"},
+    afterSave: {name: "after save", type: "operation"},
+    afterDelete: {name: "after delete", type: "operation"}
   },
-  remotes: {
-  },
+  remotes: {},
 })
 
 class Dashboard {
@@ -33,17 +31,14 @@ class Dashboard {
     next();
   }
 
-  // Delete dashboard method
-  public beforeDelete(ctx: any, next: Function): void {
-    // Get the dashboardId from instance
+  public afterDelete(ctx: any, next: Function): void {
+    // Get the dashboardId and delete widgets belonging to the dashboard
     const dashboardId = ctx.where.id;
     if (dashboardId) {
-      this.model.app.models.Widget.destroyAll({dashboardId}, (err: any, result: any) => {  if (err) { console.error(err); } });
+      this.model.app.models.Widget.destroyAll({dashboardId: dashboardId}, (err: any, result: any) => {
+        if (err) console.error(err);
+      });
     }
-    next();
-  }
-
-  public afterDelete(ctx: any, next: Function): void {
     let dashboard = ctx.instance;
     if (dashboard) {
       const payload = {

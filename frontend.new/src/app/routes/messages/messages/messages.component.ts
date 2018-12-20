@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Connector, Geoloc, Message, Organization, Reception, Role, User} from '../../../shared/sdk/models';
+import {Connector, Geoloc, Message, Organization, Reception, User} from '../../../shared/sdk/models';
 import {MessageApi, UserApi} from '../../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {OrganizationApi, ReceptionApi} from '../../../shared/sdk/services/custom';
@@ -7,6 +7,8 @@ import {AgmMap} from '@agm/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {RealtimeService} from "../../../shared/realtime/realtime.service";
+import {UserService} from "../../../_services/user.service";
+import {OrganizationService} from "../../../_services/organization.service";
 
 @Component({
     selector: 'app-messages',
@@ -15,8 +17,8 @@ import {RealtimeService} from "../../../shared/realtime/realtime.service";
 })
 export class MessagesComponent implements OnInit, OnDestroy {
 
-    private deviceIdSub: any;
-    public user: User;
+    deviceIdSub: any;
+    user: User;
 
     @ViewChild('mapModal') mapModal: any;
     @ViewChild('agmMap') agmMap: AgmMap;
@@ -30,17 +32,16 @@ export class MessagesComponent implements OnInit, OnDestroy {
     public receptions: any[] = [];
     public geolocs: Geoloc[] = [];
 
-    private organizationRouteSub: Subscription;
+    organizationRouteSub: Subscription;
     public messages: Message[] = [];
 
     public organization: Organization;
-    private organizations: Organization[] = [];
+    organizations: Organization[] = [];
 
-    private messageFilter: any;
+    messageFilter: any;
 
     // Notifications
-    private toast;
-    private toasterService: ToasterService;
+    toast;
     public toasterconfig: ToasterConfig =
         new ToasterConfig({
             tapToDismiss: true,
@@ -50,44 +51,30 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
     public filterQuery = '';
 
-    private api;
-    private id;
-    private admin = false;
+    api;
+    id;
+    admin = false;
 
     selectedAction: any = 100;
 
-    constructor(private userApi: UserApi,
+    constructor(private rt: RealtimeService,
+                private userService: UserService,
+                private organizationService: OrganizationService,
+                private userApi: UserApi,
                 private messageApi: MessageApi,
                 private organizationApi: OrganizationApi,
                 private receptionApi: ReceptionApi,
-                toasterService: ToasterService,
-                private route: ActivatedRoute,
-                private rt: RealtimeService) {
-        this.toasterService = toasterService;
+                private toasterService: ToasterService,
+                private route: ActivatedRoute) {
     }
 
     ngOnInit(): void {
         console.log('Messages: ngOnInit');
-        // Get the logged in User object
-        this.user = this.userApi.getCachedCurrent();
-        this.userApi.getRoles(this.user.id).subscribe((roles: Role[]) => {
-            this.user.roles = roles;
-            roles.forEach((role: Role) => {
-                if (role.name === 'admin') {
-                    this.admin = true;
-                    return;
-                }
-            });
-
-            // Check if organization view
-            this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
-                if (parentParams.id) {
-                    this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
-                        this.organization = organization;
-                        this.setup();
-                    });
-                } else this.setup();
-            });
+        // Get the logged in user
+        this.user = this.userService.user;
+        this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
+            this.organization = this.organizationService.organization;
+            this.setup();
         });
     }
 
@@ -138,7 +125,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
         this.cleanSetup();
     }
 
-    private cleanSetup() {
+    cleanSetup() {
         if (this.organizationRouteSub) this.organizationRouteSub.unsubscribe();
         if (this.deviceIdSub) this.deviceIdSub.unsubscribe();
         this.unsubscribe();

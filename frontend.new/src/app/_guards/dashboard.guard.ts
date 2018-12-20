@@ -16,8 +16,8 @@ export class DashboardGuard implements CanActivate {
     }
 
     checkDashboardOwner(route: ActivatedRouteSnapshot): Observable<boolean> {
-        return this.userApi.findByIdDashboards(this.userApi.getCurrentId(), route.params.id).pipe(map((dashboards: Dashboard[]) => {
-            if (dashboards) return true;
+        return this.userApi.findByIdDashboards(this.userApi.getCurrentId(), route.params.id).pipe(map((dashboard: Dashboard) => {
+            if (dashboard) return true;
             else {
                 // Not dashboard owner so redirect to overview page
                 this.router.navigate(['/']);

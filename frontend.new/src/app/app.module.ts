@@ -17,6 +17,7 @@ import {AdminGuard} from './_guards/admin.guard';
 import {DashboardGuard} from './_guards/dashboard.guard';
 import {OrganizationGuard} from './_guards/organization.guard';
 import {AgmCoreModule} from "@agm/core";
+import {HashLocationStrategy, LocationStrategy} from "@angular/common";
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: HttpClient) {
@@ -55,12 +56,11 @@ export function createTranslateLoader(http: HttpClient) {
         AuthGuard,
         AdminGuard,
         DashboardGuard,
-        OrganizationGuard,/*
         OrganizationGuard,
         {
             provide: LocationStrategy,
             useClass: HashLocationStrategy
-        }*/
+        }
     ],
     bootstrap: [AppComponent]
 })

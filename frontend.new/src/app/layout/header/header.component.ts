@@ -1,8 +1,8 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {UserblockService} from '../sidebar/userblock/userblock.service';
 import {SettingsService} from '../../core/settings/settings.service';
 import {MenuService} from '../../core/menu/menu.service';
-import {Organization, Role, User} from "../../shared/sdk/models";
+import {Organization, User} from "../../shared/sdk/models";
 import {RealtimeService} from "../../shared/realtime/realtime.service";
 import {
     AppSettingApi,
@@ -21,10 +21,12 @@ const screenfull = require('screenfull');
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnChanges {
 
-    public user: User;
-    public admin = false;
+    @Input() isLayoutLoaded: Boolean;
+    @Input() user: User;
+    @Input() admin: Boolean = false;
+    @Input() organization: Organization;
 
     @ViewChild('addOrEditOrganizationModal') addOrEditOrganizationModal: any;
     @ViewChild('fsbutton') fsbutton;  // the fullscreen button
@@ -33,10 +35,7 @@ export class HeaderComponent implements OnInit {
     menuItems = []; // for horizontal layout
     isNavSearchVisible: boolean;
 
-    public isInitialized = false;
-
     // Organization
-    public organization: Organization;
     public countOrganizationsReady = false;
     countOrganizations = 0;
 
@@ -55,14 +54,18 @@ export class HeaderComponent implements OnInit {
                 private dashboardApi: DashboardApi,
                 private route: ActivatedRoute,
                 private router: Router) {
-        // show only a few items on demo
-        this.menuItems = menu.getMenu().slice(0, 4); // for horizontal layout
     }
 
     redirectToUserView(event) {
         event.preventDefault();
         this.userblockService.toggleVisibility();
         this.router.navigate(['/' + this.route.snapshot.firstChild.routeConfig.path]);
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (this.organization) this.menuItems = this.menu.getMenuOrganization().slice(0, 4); // for horizontal layout
+        else this.menuItems = this.menu.getMenuUser().slice(0, 4); // for horizontal layout
+        this.setup();
     }
 
     ngOnInit() {
@@ -79,33 +82,6 @@ export class HeaderComponent implements OnInit {
             if (el)
                 el.className = screenfull.isFullscreen ? 'fa fa-compress' : 'fa fa-expand';
         });*/
-
-
-        // Get the logged in User object
-        this.user = this.userApi.getCachedCurrent();
-        this.userApi.getRoles(this.user.id).subscribe((roles: Role[]) => {
-            this.user.roles = roles;
-            roles.forEach((role: Role) => {
-                if (role.name === 'admin') {
-                    this.admin = true;
-                    return;
-                }
-            });
-
-            // Check if organization view
-            this.route.params.subscribe(params => {
-                this.isInitialized = false;
-                console.log('route.params Header', params);
-                if (params.id) {
-                    this.organizationApi.findById(params.id, {include: 'Members'}).subscribe((organization: Organization) => {
-                        this.organization = organization;
-                        this.setup();
-                    });
-                } else {
-                    this.setup();
-                }
-            });
-        });
     }
 
     setup(): void {
@@ -113,14 +89,11 @@ export class HeaderComponent implements OnInit {
         this.id = this.organization ? this.organization.id : this.user.id;
         this.unsubscribe();
         this.subscribe();
-        if (!this.isInitialized) {
-            this.isInitialized = true;
-            console.log('Setup Header');
-            this.userApi.countOrganizations(this.user.id).subscribe((result: any) => {
-                this.countOrganizations = result.count;
-                this.countOrganizationsReady = true;
-            });
-        }
+        console.log('Setup Header');
+        this.userApi.countOrganizations(this.user.id).subscribe((result: any) => {
+            this.countOrganizations = result.count;
+            this.countOrganizationsReady = true;
+        });
     }
 
     private cleanSetup() {

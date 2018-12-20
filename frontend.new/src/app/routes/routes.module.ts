@@ -3,13 +3,13 @@ import {RouterModule} from '@angular/router';
 import {TranslatorService} from '../core/translator/translator.service';
 import {MenuService} from '../core/menu/menu.service';
 import {SharedModule} from '../shared/shared.module';
-import {menu} from './menu';
 import {routes} from './routes';
 import {NotFoundModule} from "./not-found/not-found.module";
-import {ProfileModule} from "./profile/profile.module";
 import {LoginModule} from "./login/login.module";
 import {RegisterModule} from "./register/register.module";
 import {RecoverModule} from "./recover/recover.module";
+import {menuUser} from "./menu-user";
+import {menuOrganization} from "./menu-organization";
 
 @NgModule({
     imports: [
@@ -17,7 +17,6 @@ import {RecoverModule} from "./recover/recover.module";
         RouterModule.forRoot(routes),
         LoginModule,
         NotFoundModule,
-        ProfileModule,
         RegisterModule,
         RecoverModule
     ],
@@ -29,6 +28,7 @@ import {RecoverModule} from "./recover/recover.module";
 
 export class RoutesModule {
     constructor(public menuService: MenuService, tr: TranslatorService) {
-        menuService.addMenu(menu);
+        menuService.addMenuUser(menuUser);
+        menuService.addMenuOrganization(menuOrganization);
     }
 }

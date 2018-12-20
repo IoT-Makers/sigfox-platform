@@ -180,20 +180,17 @@
                                                     [longitude]="geoloc.location.lng"
                                                     [iconUrl]="'assets/img/markers/marker-gps.png'">
                                                 <agm-info-window id="{{geoloc.id}}">
-                                                    <strong><b>ID: </b><span
-                                                            class="text-device">{{device.id}}</span></strong>
+                                                    <strong>ID: </strong><span
+                                                        class="text-device">{{device.id}}</span>
                                                     <br>
-                                                    <strong *ngIf="device.name"><b>Name: </b>{{device.name}}
-                                                    </strong>
+                                                    <strong *ngIf="device.name">Name: </strong>{{device.name}}
                                                     <br *ngIf="device.name">
-                                                    <strong><b>Type: </b><span
-                                                            class="text-geoloc-gps">GPS</span></strong>
+                                                    <strong>Type: </strong><span
+                                                        class="text-geoloc-gps">GPS</span>
                                                     <br>
-                                                    <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}
-                                                    </strong>
+                                                    <strong>Date: </strong>{{geoloc.createdAt | date:"dd/MM/yyyy"}}
                                                     <br>
-                                                    <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}
-                                                    </strong>
+                                                    <strong>Time: </strong>{{geoloc.createdAt | date:"HH:mm:ss"}}
                                                 </agm-info-window>
                                             </agm-marker>
                                         </ng-container>
@@ -207,22 +204,19 @@
                                                     [longitude]="geoloc.location.lng"
                                                     [iconUrl]="'assets/img/markers/marker-beacon.png'">
                                                 <agm-info-window id="{{geoloc.id}}">
-                                                    <strong><b>ID: </b><span
-                                                            class="text-device">{{device.id}}</span></strong>
+                                                    <strong>ID: </strong><span
+                                                        class="text-device">{{device.id}}</span>
                                                     <br>
-                                                    <strong *ngIf="device.name"><b>Name: </b>{{device.name}}
-                                                    </strong>
+                                                    <strong *ngIf="device.name">Name: </strong>{{device.name}}
                                                     <br *ngIf="device.name">
-                                                    <strong><b>Type: </b><span
-                                                            class="text-geoloc-beacon">Beacon</span></strong>
+                                                    <strong>Type: </strong><span
+                                                        class="text-geoloc-beacon">Beacon</span>
                                                     <br>
-                                                    <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}
-                                                    </strong>
+                                                    <strong>Date: </strong>{{geoloc.createdAt | date:"dd/MM/yyyy"}}
                                                     <br>
-                                                    <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}
-                                                    </strong>
+                                                    <strong>Time: </strong>{{geoloc.createdAt | date:"HH:mm:ss"}}
                                                     <br>
-                                                    <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
+                                                    <strong>Accuracy: </strong>{{geoloc.accuracy}} m
                                                 </agm-info-window>
                                             </agm-marker>
                                             <!-- Circle -->
@@ -249,22 +243,19 @@
                                                     [longitude]="geoloc.location.lng"
                                                     [iconUrl]="'assets/img/markers/marker-wifi.png'">
                                                 <agm-info-window id="{{geoloc.id}}">
-                                                    <strong><b>ID: </b><span
-                                                            class="text-device">{{device.id}}</span></strong>
+                                                    <strong>ID: </strong><span
+                                                        class="text-device">{{device.id}}</span>
                                                     <br>
-                                                    <strong *ngIf="device.name"><b>Name: </b>{{device.name}}
-                                                    </strong>
+                                                    <strong *ngIf="device.name">Name: </strong>{{device.name}}
                                                     <br *ngIf="device.name">
-                                                    <strong><b>Type: </b><span
-                                                            class="text-geoloc-wifi">WiFi</span></strong>
+                                                    <strong>Type: </strong><span
+                                                        class="text-geoloc-wifi">WiFi</span>
                                                     <br>
-                                                    <strong><b>Date: </b>{{geoloc.createdAt | date:"dd/MM/yyyy"}}
-                                                    </strong>
+                                                    <strong>Date: </strong>{{geoloc.createdAt | date:"dd/MM/yyyy"}}
                                                     <br>
-                                                    <strong><b>Time: </b>{{geoloc.createdAt | date:"HH:mm:ss"}}
-                                                    </strong>
+                                                    <strong>Time: </strong>{{geoloc.createdAt | date:"HH:mm:ss"}}
                                                     <br>
-                                                    <strong><b>Accuracy: </b>{{geoloc.accuracy}} m</strong>
+                                                    <strong>Accuracy: </strong>{{geoloc.accuracy}} m
                                                 </agm-info-window>
                                             </agm-marker>
                                             <!-- Circle -->

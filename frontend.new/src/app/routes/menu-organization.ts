@@ -1,4 +1,3 @@
-
 const Overview = {
     text: 'Overview',
     link: '/overview',
@@ -85,57 +84,7 @@ const Alerts = {
     label: "badge badge-alert text-white"
 };
 
-const headingDevelopers = {
-    text: 'Developers',
-    heading: true
-};
-
-const Parsers = {
-    text: "Parsers",
-    link: "/parsers",
-    icon: "icon-notebook",
-    alert: "0",
-    label: "badge badge-parser text-white"
-};
-
-const Connectors = {
-    text: "Connectors",
-    link: "/connectors",
-    icon: "icon-layers",
-    alert: "0",
-    label: "badge badge-connector text-white"
-};
-
-const Beacons = {
-    text: "Beacons",
-    link: "/beacons",
-    icon: "icon-feed",
-    alert: "0",
-    label: "badge badge-beacon text-white"
-};
-
-const Api = {
-    text: "API",
-    link: "/api",
-    icon: "icon-share",
-    alert: "0",
-    label: "badge badge-api text-white"
-};
-
-const headingAdmin = {
-    text: 'Admin',
-    heading: true
-};
-
-const Admin = {
-    text: "Admin",
-    link: "/admin",
-    icon: "icon-lock",
-    alert: "0",
-    label: "badge badge-admin text-white"
-};
-
-export const menu = [
+export const menuOrganization = [
     Overview,
     headingDashboards,
     AddDashboard,
@@ -143,12 +92,5 @@ export const menu = [
     Categories,
     Devices,
     Messages,
-    Alerts,
-    headingDevelopers,
-    Parsers,
-    Connectors,
-    Beacons,
-    Api,
-    headingAdmin,
-    Admin
+    Alerts
 ];

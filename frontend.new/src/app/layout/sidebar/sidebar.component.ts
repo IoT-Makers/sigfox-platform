@@ -1,4 +1,4 @@
-import {Component, Injector, OnDestroy, OnInit} from '@angular/core';
+import {Component, Injector, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MenuService} from '../../core/menu/menu.service';
 import {SettingsService} from '../../core/settings/settings.service';
@@ -13,16 +13,18 @@ declare var $: any;
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent implements OnInit, OnDestroy {
+export class SidebarComponent implements OnInit, OnDestroy, OnChanges {
+
+    @Input() isLayoutLoaded: Boolean = false;
+    @Input() user: User;
+    @Input() admin: Boolean = false;
+    @Input() organization: Organization;
 
     menuItems: Array<any>;
     sbclickEvent = 'click.sidebar-toggle';
     $doc: any = null;
 
     // Flags
-    public isInitialized = false;
-    public devicesReady = false;
-    public messagesReady = false;
     public countCategoriesReady = false;
     public countDevicesReady = false;
     public countMessagesReady = false;
@@ -30,9 +32,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
     public countParsersReady = false;
     public countConnectorsReady = false;
     public countBeaconsReady = false;
-
-    public user: User;
-    public organization: Organization;
 
     dashboards: Dashboard[] = [];
 
@@ -44,12 +43,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     countConnectors = 0;
     countBeacons = 0;
 
-    public admin = false;
-
     api;
     id;
 
-    constructor(public menu: MenuService,
+    constructor(private menu: MenuService,
                 public settings: SettingsService,
                 public injector: Injector,
                 private rt: RealtimeService,
@@ -60,7 +57,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
                 private dashboardApi: DashboardApi,
                 private route: ActivatedRoute,
                 private router: Router) {
-        this.menuItems = menu.getMenu();
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (this.organization) this.menuItems = this.menu.getMenuOrganization();
+        else this.menuItems = this.menu.getMenuUser();
+        this.setup();
     }
 
     ngOnInit() {
@@ -75,91 +77,60 @@ export class SidebarComponent implements OnInit, OnDestroy {
         });
         // enable sidebar autoclose from extenal clicks
         this.anyClickClose();
-
-        // Get the logged in User object
-        this.user = this.userApi.getCachedCurrent();
-        this.userApi.getRoles(this.user.id).subscribe((roles: Role[]) => {
-            this.user.roles = roles;
-            roles.forEach((role: Role) => {
-                if (role.name === 'admin') {
-                    this.admin = true;
-                    return;
-                }
-            });
-
-            // Check if organization view
-            this.route.params.subscribe(params => {
-                this.isInitialized = false;
-                console.log('params full layout', params);
-                if (params.id) {
-                    this.organizationApi.findById(params.id, {include: 'Members'}).subscribe((organization: Organization) => {
-                        this.organization = organization;
-                        this.setup();
-                    });
-                } else {
-                    this.setup();
-                }
-            });
-        });
     }
-
 
     setup(): void {
         this.api = this.organization ? this.organizationApi : this.userApi;
         this.id = this.organization ? this.organization.id : this.user.id;
         this.unsubscribe();
         this.subscribe();
-        if (!this.isInitialized) {
-            this.isInitialized = true;
-            console.log('Setup Sidebar');
 
-            // Categories
-            this.api.countCategories(this.id).subscribe(result => {
-                this.countCategories = result.count;
-                this.countCategoriesReady = true;
+        // Categories
+        this.api.countCategories(this.id).subscribe(result => {
+            this.countCategories = result.count;
+            this.countCategoriesReady = true;
+        });
+
+        // Devices
+        this.api.countDevices(this.id).subscribe(result => {
+            this.countDevices = result.count;
+            this.countDevicesReady = true;
+        });
+
+        // Messages
+        this.api.countMessages(this.id).subscribe(result => {
+            this.countMessages = result.count;
+            this.countMessagesReady = true;
+        });
+
+        this.api.getDashboards(this.id, {order: 'createdAt DESC'}).subscribe((dashboards: Dashboard[]) => {
+            this.dashboards = dashboards;
+        });
+
+        if (!this.organization) {
+            // Alerts
+            this.userApi.countAlerts(this.user.id).subscribe(result => {
+                this.countAlerts = result.count;
+                this.countAlertsReady = true;
             });
 
-            // Devices
-            this.api.countDevices(this.id).subscribe(result => {
-                this.countDevices = result.count;
-                this.countDevicesReady = true;
+            // Parsers
+            this.parserApi.count().subscribe(result => {
+                this.countParsers = result.count;
+                this.countParsersReady = true;
             });
 
-            // Messages
-            this.api.countMessages(this.id).subscribe(result => {
-                this.countMessages = result.count;
-                this.countMessagesReady = true;
+            // Beacons
+            this.userApi.countBeacons(this.user.id).subscribe(result => {
+                this.countBeacons = result.count;
+                this.countBeaconsReady = true;
             });
 
-            this.api.getDashboards(this.id, {order: 'createdAt DESC'}).subscribe((dashboards: Dashboard[]) => {
-                this.dashboards = dashboards;
+            // Connectors
+            this.userApi.countConnectors(this.user.id).subscribe(result => {
+                this.countConnectors = result.count;
+                this.countConnectorsReady = true;
             });
-
-            if (!this.organization) {
-                // Alerts
-                this.userApi.countAlerts(this.user.id).subscribe(result => {
-                    this.countAlerts = result.count;
-                    this.countAlertsReady = true;
-                });
-
-                // Parsers
-                this.parserApi.count().subscribe(result => {
-                    this.countParsers = result.count;
-                    this.countParsersReady = true;
-                });
-
-                // Beacons
-                this.userApi.countBeacons(this.user.id).subscribe(result => {
-                    this.countBeacons = result.count;
-                    this.countBeaconsReady = true;
-                });
-
-                // Connectors
-                this.userApi.countConnectors(this.user.id).subscribe(result => {
-                    this.countConnectors = result.count;
-                    this.countConnectorsReady = true;
-                });
-            }
         }
     }
 

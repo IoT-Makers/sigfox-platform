@@ -1,8 +1,8 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {SettingsService} from '../../core/settings/settings.service';
 import {ThemesService} from '../../core/themes/themes.service';
 import {TranslatorService} from '../../core/translator/translator.service';
-import {Organization, Role, User} from "../../shared/sdk/models";
+import {Organization, User} from "../../shared/sdk/models";
 import {ActivatedRoute, Router} from "@angular/router";
 import {OrganizationApi, UserApi} from "../../shared/sdk/services/custom";
 import * as _ from "lodash";
@@ -12,12 +12,13 @@ import * as _ from "lodash";
     templateUrl: './offsidebar.component.html',
     styleUrls: ['./offsidebar.component.scss']
 })
-export class OffsidebarComponent implements OnInit, OnDestroy {
+export class OffsidebarComponent implements OnInit, OnDestroy, OnChanges {
+
+    @Input() user: User;
+    @Input() admin: Boolean = false;
+    @Input() organization: Organization;
 
     @ViewChild('addOrEditOrganizationModal') addOrEditOrganizationModal: any;
-
-    public user: User;
-    public admin = false;
 
     // Organization
     selectedUsers: Array<any> = [];
@@ -25,12 +26,8 @@ export class OffsidebarComponent implements OnInit, OnDestroy {
     public addOrganizationFlag = true;
     organizationToAddOrEdit: Organization = new Organization();
     organizations: Organization[] = [];
-    public organization: Organization;
     public countOrganizationsReady = false;
     countOrganizations = 0;
-
-    // Flags
-    public isInitialized = false;
 
     public disabled = false;
     public status: { isopen: boolean } = {isopen: false};
@@ -55,35 +52,14 @@ export class OffsidebarComponent implements OnInit, OnDestroy {
                 private router: Router) {
     }
 
+    ngOnChanges(changes: SimpleChanges) {
+        //console.error(changes);
+    }
+
     ngOnInit() {
         console.log('Offsidebar: ngOnInit');
         this.anyClickClose();
-
-        // Get the logged in User object
-        this.user = this.userApi.getCachedCurrent();
-        this.userApi.getRoles(this.user.id).subscribe((roles: Role[]) => {
-            this.user.roles = roles;
-            roles.forEach((role: Role) => {
-                if (role.name === 'admin') {
-                    this.admin = true;
-                    return;
-                }
-            });
-
-            // Check if organization view
-            this.route.params.subscribe(params => {
-                this.isInitialized = false;
-                console.log('route.params Header', params);
-                if (params.id) {
-                    this.organizationApi.findById(params.id, {include: 'Members'}).subscribe((organization: Organization) => {
-                        this.organization = organization;
-                        this.setup();
-                    });
-                } else {
-                    this.setup();
-                }
-            });
-        });
+        this.setup();
     }
 
     setup(): void {
@@ -91,15 +67,12 @@ export class OffsidebarComponent implements OnInit, OnDestroy {
         this.id = this.organization ? this.organization.id : this.user.id;
         this.unsubscribe();
         this.subscribe();
-        if (!this.isInitialized) {
-            this.isInitialized = true;
-            console.log('Setup Offsidebar');
-            this.userApi.getOrganizations(this.user.id, {order: 'createdAt DESC'}).subscribe((organizations: Organization[]) => {
-                this.organizations = organizations;
-                this.countOrganizationsReady = true;
-                this.countOrganizationsMembers(true);
-            });
-        }
+        console.log('Setup Offsidebar');
+        this.userApi.getOrganizations(this.user.id, {order: 'createdAt DESC'}).subscribe((organizations: Organization[]) => {
+            this.organizations = organizations;
+            this.countOrganizationsReady = true;
+            this.countOrganizationsMembers(true);
+        });
     }
 
     private cleanSetup() {

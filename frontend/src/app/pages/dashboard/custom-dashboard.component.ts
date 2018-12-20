@@ -1359,7 +1359,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               const values = [];
               device.Messages.forEach((message: Message) => {
                 const p = _.filter(message.data_parsed, {key: key})[0];
-                if (p && p.value) values.push(p.value);
+                values.push(p.value);
                 widget.options.chartLabels.push(moment(message.createdAt).format('MMM-DD h:mm a'));
               });
               const label = this.capitalizeFirstLetter(key) + ' - ' + (device.name ? device.name : device.id);

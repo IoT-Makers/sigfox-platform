@@ -14,6 +14,8 @@ import {AgmInfoWindow, LatLngBounds} from "@agm/core";
 import {Subscription} from "rxjs";
 import * as moment from 'moment';
 import * as _ from 'lodash';
+import {UserService} from "../../../_services/user.service";
+import {OrganizationService} from "../../../_services/organization.service";
 
 declare var Zone: any;
 declare const google: any;
@@ -27,6 +29,9 @@ export class OverviewComponent implements OnInit {
 
     @ViewChildren(AgmInfoWindow) agmInfoWindows: QueryList<AgmInfoWindow>;
 
+    user: User;
+    organization: Organization;
+
     // Flags
     public devicesReady = false;
     public messagesReady = false;
@@ -36,48 +41,46 @@ export class OverviewComponent implements OnInit {
     public countAlertsReady = false;
     public countOrganizationMembersReady = false;
 
-    public user: User;
-    public organization: Organization;
-    private filter: any;
+    filter: any;
 
-    private mobile = false;
+    mobile = false;
 
-    private organizationRouteSub: Subscription;
+    organizationRouteSub: Subscription;
 
-    private devices: Device[] = [];
-    private numberOfDevicesToSee = 10;
+    devices: Device[] = [];
+    numberOfDevicesToSee = 10;
 
-    private isLimit_hourly = false;
-    private isLimit_daily = false;
-    private isLimit_weekly = false;
-    private isLimit_monthly = false;
-    private isLimit_yearly = false;
+    isLimit_hourly = false;
+    isLimit_daily = false;
+    isLimit_weekly = false;
+    isLimit_monthly = false;
+    isLimit_yearly = false;
 
-    private countMessages = 0;
-    private countDevices = 0;
-    private countAlerts = 0;
-    private countCategories = 0;
-    private countOrganizationMembers = 0;
+    countMessages = 0;
+    countDevices = 0;
+    countAlerts = 0;
+    countCategories = 0;
+    countOrganizationMembers = 0;
 
-    private isCircleVisible: boolean[] = [];
+    isCircleVisible: boolean[] = [];
 
-    private mapLat = 48.858093;
-    private mapLng = 2.294694;
-    private mapZoom = 2;
-    private map;
+    mapLat = 48.858093;
+    mapLng = 2.294694;
+    mapZoom = 2;
+    map;
 
     public filterQuery = '';
 
     public see = false;
-    private deviceToSee: Device = new Device();
+    deviceToSee: Device = new Device();
 
     // Graphs
-    private hasNoMessageChartData = false;
+    hasNoMessageChartData = false;
     public data = [];
     // Messages graph
-    private graphRange = 'hourly';
-    private messageChartData: Array<any> = [];
-    private messageChartLabels: Array<any> = [];
+    graphRange = 'hourly';
+    messageChartData: Array<any> = [];
+    messageChartLabels: Array<any> = [];
     public messageChartOptions = {
         responsive: true,
         scaleShowVerticalLines: false,
@@ -86,37 +89,37 @@ export class OverviewComponent implements OnInit {
             display: true,
         }
     };
-    private messageChartColors: Array<any> = [{backgroundColor: '#5b9bd3'}];
+    messageChartColors: Array<any> = [{backgroundColor: '#5b9bd3'}];
 
     // Widgets
-    private message: any;
-    private humidity;
-    private temperature;
-    private altitude;
-    private pressure;
-    private speed;
-    private light;
-    private alert;
-    private mode;
-    private battery;
-    private thresholdHumidity = {
+    message: any;
+    humidity;
+    temperature;
+    altitude;
+    pressure;
+    speed;
+    light;
+    alert;
+    mode;
+    battery;
+    thresholdHumidity = {
         '0': {color: '#cc853c'},
         '40': {color: '#66cccc'},
         '75': {color: '#3361cc'}
     };
-    private thresholdTemperature = {
+    thresholdTemperature = {
         '-50': {color: '#3361cc'},
         '17': {color: '#37ac55'},
         '23': {color: '#cc853c'},
         '30': {color: '#cb2c31'}
     };
-    private thresholdSpeed = {
+    thresholdSpeed = {
         '0': {color: '#936f4f'},
         '30': {color: '#ac756d'},
         '70': {color: '#ac5668'},
         '100': {color: '#cb2c31'}
     };
-    private thresholdBattery = {
+    thresholdBattery = {
         '0': {color: '#cb2c31'},
         '30': {color: '#cc6543'},
         '50': {color: '#cc8a36'},
@@ -126,6 +129,8 @@ export class OverviewComponent implements OnInit {
     public bannerMessage;
 
     constructor(private rt: RealtimeService,
+                private userService: UserService,
+                private organizationService: OrganizationService,
                 private userApi: UserApi,
                 private organizationApi: OrganizationApi,
                 private deviceApi: DeviceApi,
@@ -136,28 +141,21 @@ export class OverviewComponent implements OnInit {
     }
 
     ngOnInit() {
-        // Get the logged in User object
-        this.user = this.userApi.getCachedCurrent();
-
         // App settings (for banner)
         this.appSettingApi.findById('bannerMessage').subscribe((appSetting: AppSetting) => {
             this.bannerMessage = appSetting.value;
         });
-
-        // Check if organization view
+        // Get the logged in user
+        this.user = this.userService.user;
         this.organizationRouteSub = this.route.params.subscribe(params => {
-            if (params.id) {
-                this.userApi.findByIdOrganizations(this.user.id, params.id).subscribe((organization: Organization) => {
-                    this.organization = organization;
-                    this.organizationApi.countMembers(this.organization.id).subscribe(result => {
-                        this.countOrganizationMembers = result.count;
-                        this.countOrganizationMembersReady = true;
-                    });
-                    this.setup();
+            this.organization = this.organizationService.organization;
+            if (this.organization) {
+                this.organizationApi.countMembers(this.organization.id).subscribe(result => {
+                    this.countOrganizationMembers = result.count;
+                    this.countOrganizationMembersReady = true;
                 });
-            } else {
-                this.setup();
             }
+            this.setup();
         });
     }
 

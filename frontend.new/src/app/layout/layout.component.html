@@ -1,10 +1,10 @@
 <div class="wrapper">
     <!-- top navbar-->
-    <app-header class="topnavbar-wrapper"></app-header>
+    <app-header [admin]="admin" [user]="user" [organization]="organization" class="topnavbar-wrapper"></app-header>
     <!-- sidebar-->
-    <app-sidebar class="aside-container"></app-sidebar>
+    <app-sidebar [isLayoutLoaded]="isLayoutLoaded" [admin]="admin" [user]="user" [organization]="organization" class="aside-container"></app-sidebar>
     <!-- offsidebar-->
-    <app-offsidebar class="offsidebar"></app-offsidebar>
+    <app-offsidebar [admin]="admin" [user]="user" [organization]="organization" class="offsidebar"></app-offsidebar>
     <!-- Main section-->
     <section class="section-container">
         <!-- Page content-->

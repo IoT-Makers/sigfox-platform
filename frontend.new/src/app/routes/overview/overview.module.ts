@@ -7,7 +7,7 @@ import {NgxGaugeModule} from "ngx-gauge";
 import {NumberFormatPipe} from "./overview/numberformatpipe";
 
 const routes: Routes = [
-    {path: '', component: OverviewComponent},
+    {path: '', component: OverviewComponent}
 ];
 
 @NgModule({

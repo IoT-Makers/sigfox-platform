@@ -111,45 +111,34 @@
             <td class="text-center">
               <div *ngIf="message.Geolocs">
                 <div *ngFor="let geoloc of message.Geolocs">
-                  <div class="row">
-                    <div class="col col-7">
-                      <ng-container *ngIf="geoloc.type == 'sigfox'">
-                        <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-sigfox">
-                          <i class="fa fa-map-marker fa-2x"></i>
-                          <br>
-                          <strong>Sigfox</strong>
-                        </a>
-                      </ng-container>
-                      <ng-container *ngIf="geoloc.type == 'gps'">
-                        <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-gps">
-                          <i class="fa fa-map-marker fa-2x"></i>
-                          <br>
-                          <strong>GPS</strong>
-                        </a>
-                      </ng-container>
-                      <ng-container *ngIf="geoloc.type == 'beacon'">
-                        <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-beacon">
-                          <i class="fa fa-map-marker fa-2x"></i>
-                          <br>
-                          <strong>Beacon</strong>
-                        </a>
-                      </ng-container>
-                      <ng-container *ngIf="geoloc.type == 'wifi'">
-                        <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-wifi">
-                          <i class="fa fa-map-marker fa-2x"></i>
-                          <br>
-                          <strong>WiFi</strong>
-                        </a>
-                      </ng-container>
-                    </div>
-                    <div class="col col-5 text-left">
-                          <span class="small text-muted">
-                            Lat: {{geoloc.location.lat | number:'.1-3'}}
-                            <br>
-                            Lng: {{geoloc.location.lng | number:'.1-3'}}
-                          </span>
-                    </div>
-                  </div>
+                  <ng-container *ngIf="geoloc.type == 'sigfox'">
+                    <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-sigfox">
+                      <i class="fa fa-map-marker fa-2x"></i>
+                      <br>
+                      <strong>Sigfox</strong>
+                    </a>
+                  </ng-container>
+                  <ng-container *ngIf="geoloc.type == 'gps'">
+                    <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-gps">
+                      <i class="fa fa-map-marker fa-2x"></i>
+                      <br>
+                      <strong>GPS</strong>
+                    </a>
+                  </ng-container>
+                  <ng-container *ngIf="geoloc.type == 'beacon'">
+                    <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-beacon">
+                      <i class="fa fa-map-marker fa-2x"></i>
+                      <br>
+                      <strong>Beacon</strong>
+                    </a>
+                  </ng-container>
+                  <ng-container *ngIf="geoloc.type == 'wifi'">
+                    <a href="javascript:void(0)" (click)="showMarkers(message)" class="small text-geoloc-wifi">
+                      <i class="fa fa-map-marker fa-2x"></i>
+                      <br>
+                      <strong>WiFi</strong>
+                    </a>
+                  </ng-container>
                 </div>
               </div>
             </td>

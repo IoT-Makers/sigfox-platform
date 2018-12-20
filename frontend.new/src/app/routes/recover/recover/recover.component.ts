@@ -35,7 +35,7 @@ export class RecoverComponent implements OnInit {
                 fb: FormBuilder,
                 private router: Router,
                 private userApi: UserApi,
-                public toasterService: ToasterService,
+                private toasterService: ToasterService,
                 private activatedRoute: ActivatedRoute) {
 
         this.activatedRoute.queryParams.subscribe(params => {
