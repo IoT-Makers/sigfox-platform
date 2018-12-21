@@ -61,7 +61,7 @@
                   <span class="switch-handle"></span>
                 </label>
               </p>
-              parserId:<p class="text-parser" tooltip="Click to copy" click-copy> {{parser.id}}</p>
+              <p class="text-parser" tooltip="Click to copy" click-copy>"parserId": "{{parser.id}}"</p>
               <div class="input-group">
                 <input type="text" [(ngModel)]="payload" #payloadInput id="{{parser.id}}" name="{{parser.name}}"
                        class="form-control" placeholder="Sigfox payload in hexadecimal" maxlength="24"
