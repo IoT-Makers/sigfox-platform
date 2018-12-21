@@ -3,7 +3,6 @@ import {RabbitPub} from '../../server/RabbitPub';
 
 const loopback = require('loopback');
 
-
 /**
  * @module Geoloc
  * @description
@@ -58,6 +57,215 @@ class Geoloc {
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
+  }
+
+  postSigfox(req: any, data: any, next: Function): void {
+    // Models
+    const Geoloc = this.model;
+    const Message = this.model.app.models.Message;
+    const Alert = this.model.app.models.Alert;
+
+    if (typeof data.geoloc === 'undefined'
+      || typeof data.geoloc.location === 'undefined'
+      || typeof data.deviceId === 'undefined'
+      || typeof data.time === 'undefined'
+      || typeof data.seqNumber === 'undefined') {
+      return next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
+    }
+
+    // Force set uppercase for deviceId
+    data.deviceId = data.deviceId.toUpperCase();
+
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
+    // Saving a message anyway
+    const message = new Message;
+    message.id = data.deviceId + data.time + data.seqNumber;
+    message.userId = userId;
+    message.deviceId = data.deviceId;
+    message.time = data.time;
+    message.seqNumber = data.seqNumber;
+    message.createdAt = new Date(data.time * 1000);
+    message.deviceAck = true;
+
+    // Find the corresponding message in order to retrieve its message ID
+    Message.findOrCreate(
+      {
+        where: {id: data.deviceId + data.time + data.seqNumber}
+      },
+      message,
+      (err: any, messageInstance: any, created: boolean) => {
+        if (err) return next(err, data);
+        else if (messageInstance) {
+          if (!created) console.log('Found the corresponding message.');
+          else {
+            /**
+             * TODO: Check below - OOB frame device acknowledge ?
+             */
+            console.log('??? OOB for deviceId: ' + data.deviceId);
+          }
+
+          // Build the Geoloc object
+          const geoloc = new Geoloc;
+          geoloc.type = 'sigfox';
+          geoloc.location = new loopback.GeoPoint(data.geoloc.location);
+          geoloc.accuracy = data.geoloc.accuracy;
+          geoloc.createdAt = messageInstance.createdAt;
+          geoloc.userId = userId;
+          geoloc.messageId = messageInstance.id;
+          geoloc.deviceId = messageInstance.deviceId;
+
+          if (messageInstance.data_parsed) {
+            /**
+             * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
+             */
+              // Build the GPS Geoloc object
+            const geoloc_gps = new Geoloc;
+            geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
+            geoloc_gps.createdAt = messageInstance.createdAt;
+            geoloc_gps.userId = messageInstance.userId;
+            geoloc_gps.messageId = messageInstance.id;
+            geoloc_gps.deviceId = messageInstance.deviceId;
+
+            messageInstance.data_parsed.forEach((p: any) => {
+              if (p.value !== null && typeof p.value !== 'undefined') {
+                // Check if there is Ubiscale geoloc in parsed data
+                if (p.key === 'ubiscale') {
+                  geoloc_gps.type = 'gps';
+                  if (process.env.UBISCALE_LOGIN && process.env.UBISCALE_PASSWORD) {
+                    this.getUbiscaleGeolocation(geoloc_gps, geoloc, messageInstance.deviceId, p.value, messageInstance.time).then(value => {
+                      console.log('[Ubiscale Geolocation] - Device located successfully with Ubiscale.');
+                    }).catch(reason => {
+                      console.log('[Ubiscale Geolocation] - Could not locate device with Ubiscale.');
+                    });
+                  }
+                }
+              }
+            });
+          }
+
+          // Trigger alerts (if any)
+          Alert.triggerBySigfoxGeoloc(
+            geoloc.location.lat,
+            geoloc.location.lng,
+            geoloc.deviceId,
+            req,
+            (err: any, res: any) => {
+              if (err) console.error(err);
+            });
+
+          // Creating a new Geoloc
+          Geoloc.findOrCreate(
+            {
+              where: {
+                and: [
+                  {type: geoloc.type},
+                  {messageId: geoloc.messageId}
+                ]
+              }
+            }, // find
+            geoloc, // create
+            (err: any, geolocInstance: any, created: boolean) => { // callback
+              if (err) return next(err, geolocInstance);
+              else if (created) {
+                // console.log('Created geoloc as: ', geolocInstance);
+                return next(null, geolocInstance);
+              } else return next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
+            });
+        }
+      });
+  }
+
+  postDataAdvanced(req: any, data: any, next: Function): void {
+    // Models
+    const Geoloc = this.model;
+    const Message = this.model.app.models.Message;
+
+    if (typeof data.geoloc === 'undefined'
+      || typeof data.geoloc.location === 'undefined'
+      || typeof data.deviceId === 'undefined'
+      || typeof data.time === 'undefined'
+      || typeof data.seqNumber === 'undefined'
+      || typeof data.computedLocation === 'undefined') {
+      return next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
+    }
+
+    // Force set uppercase for deviceId
+    data.deviceId = data.deviceId.toUpperCase();
+
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
+    // Saving a message anyway
+    const message = new Message;
+    message.id = data.deviceId + data.time + data.seqNumber;
+    message.userId = userId;
+    message.deviceId = data.deviceId;
+    message.time = data.time;
+    message.seqNumber = data.seqNumber;
+    message.createdAt = new Date(data.time * 1000);
+    message.deviceAck = true;
+
+    // Find the corresponding message in order to retrieve its message ID
+    Message.findOrCreate(
+      {
+        where: {id: data.deviceId + data.time + data.seqNumber}
+      },
+      message,
+      (err: any, messageInstance: any, created: boolean) => {
+        if (err) return next(err, data);
+        else if (messageInstance) {
+          if (!created) console.log('Found the corresponding message.');
+          else {
+            /**
+             * TODO: Check below - OOB frame device acknowledge ?
+             */
+            console.log('??? OOB for deviceId: ' + data.deviceId);
+          }
+
+          if (data.computedLocation.status === 1 || data.computedLocation.status === 2) {
+            // Build the Geoloc object
+            const geoloc = new Geoloc;
+            switch (data.computedLocation.source) {
+              case 1:
+                geoloc.type = 'gps';
+                break;
+              case 2:
+                geoloc.type = 'sigfox';
+                break;
+              case 6:
+                geoloc.type = 'wifi';
+                break;
+            }
+            geoloc.location = new loopback.GeoPoint({lat: data.computedLocation.lat, lng: data.computedLocation.lng});
+            geoloc.accuracy = data.computedLocation.radius;
+            geoloc.createdAt = messageInstance.createdAt;
+            geoloc.userId = userId;
+            geoloc.messageId = messageInstance.id;
+            geoloc.deviceId = messageInstance.deviceId;
+
+            // Creating a new Geoloc
+            Geoloc.findOrCreate(
+              {
+                where: {
+                  and: [
+                    {type: geoloc.type},
+                    {messageId: geoloc.messageId}
+                  ]
+                }
+              }, // find
+              geoloc, // create
+              (err: any, geolocInstance: any, created: boolean) => { // callback
+                if (err) return next(err, geolocInstance);
+                else if (created) {
+                  // console.log('Created geoloc as: ', geolocInstance);
+                  return next(null, geolocInstance);
+                } else return next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
+              });
+          } else console.log('No position or invalid payload');
+        }
+      });
   }
 
   private createFromParsedPayload(message: any, req: any): void {
@@ -256,216 +464,6 @@ class Geoloc {
         reject(false);
       });
     });
-  }
-
-  postSigfox(req: any, data: any, next: Function): void {
-    // Models
-    const Geoloc = this.model;
-    const Message = this.model.app.models.Message;
-    const Alert = this.model.app.models.Alert;
-
-    if (typeof data.geoloc === 'undefined'
-      || typeof data.geoloc.location === 'undefined'
-      || typeof data.deviceId === 'undefined'
-      || typeof data.time === 'undefined'
-      || typeof data.seqNumber === 'undefined') {
-      return next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
-    }
-
-    // Force set uppercase for deviceId
-    data.deviceId = data.deviceId.toUpperCase();
-
-    // Obtain the userId with the access token of ctx
-    const userId = req.accessToken.userId;
-
-    // Saving a message anyway
-    const message = new Message;
-    message.id = data.deviceId + data.time + data.seqNumber;
-    message.userId = userId;
-    message.deviceId = data.deviceId;
-    message.time = data.time;
-    message.seqNumber = data.seqNumber;
-    message.createdAt = new Date(data.time * 1000);
-    message.deviceAck = true;
-
-    // Find the corresponding message in order to retrieve its message ID
-    Message.findOrCreate(
-      {
-        where: {id: data.deviceId + data.time + data.seqNumber}
-      },
-      message,
-      (err: any, messageInstance: any, created: boolean) => {
-        if (err) return next(err, data);
-        else if (messageInstance) {
-          if (!created) console.log('Found the corresponding message.');
-          else {
-            /**
-             * TODO: Check below - OOB frame device acknowledge ?
-             */
-            console.log('??? OOB for deviceId: ' + data.deviceId);
-          }
-
-          // Build the Geoloc object
-          const geoloc = new Geoloc;
-          geoloc.type = 'sigfox';
-          geoloc.location = new loopback.GeoPoint(data.geoloc.location);
-          geoloc.accuracy = data.geoloc.accuracy;
-          geoloc.createdAt = messageInstance.createdAt;
-          geoloc.userId = userId;
-          geoloc.messageId = messageInstance.id;
-          geoloc.deviceId = messageInstance.deviceId;
-
-          if (messageInstance.data_parsed) {
-            /**
-             * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
-             */
-              // Build the GPS Geoloc object
-            const geoloc_gps = new Geoloc;
-            geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
-            geoloc_gps.createdAt = messageInstance.createdAt;
-            geoloc_gps.userId = messageInstance.userId;
-            geoloc_gps.messageId = messageInstance.id;
-            geoloc_gps.deviceId = messageInstance.deviceId;
-
-            messageInstance.data_parsed.forEach((p: any) => {
-              if (p.value !== null && typeof p.value !== 'undefined') {
-                // Check if there is Ubiscale geoloc in parsed data
-                if (p.key === 'ubiscale') {
-                  geoloc_gps.type = 'gps';
-                  if (process.env.UBISCALE_LOGIN && process.env.UBISCALE_PASSWORD) {
-                    this.getUbiscaleGeolocation(geoloc_gps, geoloc, messageInstance.deviceId, p.value, messageInstance.time).then(value => {
-                      console.log('[Ubiscale Geolocation] - Device located successfully with Ubiscale.');
-                    }).catch(reason => {
-                      console.log('[Ubiscale Geolocation] - Could not locate device with Ubiscale.');
-                    });
-                  }
-                }
-              }
-            });
-          }
-
-          // Trigger alerts (if any)
-          Alert.triggerBySigfoxGeoloc(
-            geoloc.location.lat,
-            geoloc.location.lng,
-            geoloc.deviceId,
-            req,
-            (err: any, res: any) => {
-              if (err) console.error(err);
-            });
-
-          // Creating a new Geoloc
-          Geoloc.findOrCreate(
-            {
-              where: {
-                and: [
-                  {type: geoloc.type},
-                  {messageId: geoloc.messageId}
-                ]
-              }
-            }, // find
-            geoloc, // create
-            (err: any, geolocInstance: any, created: boolean) => { // callback
-              if (err) return next(err, geolocInstance);
-              else if (created) {
-                // console.log('Created geoloc as: ', geolocInstance);
-                return next(null, geolocInstance);
-              } else return next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
-            });
-        }
-      });
-  }
-
-  postDataAdvanced(req: any, data: any, next: Function): void {
-    // Models
-    const Geoloc = this.model;
-    const Message = this.model.app.models.Message;
-
-    if (typeof data.geoloc === 'undefined'
-      || typeof data.geoloc.location === 'undefined'
-      || typeof data.deviceId === 'undefined'
-      || typeof data.time === 'undefined'
-      || typeof data.seqNumber === 'undefined'
-      || typeof data.status === 'undefined'
-      || typeof data.source === 'undefined') {
-      return next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
-    }
-
-    // Force set uppercase for deviceId
-    data.deviceId = data.deviceId.toUpperCase();
-
-    // Obtain the userId with the access token of ctx
-    const userId = req.accessToken.userId;
-
-    // Saving a message anyway
-    const message = new Message;
-    message.id = data.deviceId + data.time + data.seqNumber;
-    message.userId = userId;
-    message.deviceId = data.deviceId;
-    message.time = data.time;
-    message.seqNumber = data.seqNumber;
-    message.createdAt = new Date(data.time * 1000);
-    message.deviceAck = true;
-
-    // Find the corresponding message in order to retrieve its message ID
-    Message.findOrCreate(
-      {
-        where: {id: data.deviceId + data.time + data.seqNumber}
-      },
-      message,
-      (err: any, messageInstance: any, created: boolean) => {
-        if (err) return next(err, data);
-        else if (messageInstance) {
-          if (!created) console.log('Found the corresponding message.');
-          else {
-            /**
-             * TODO: Check below - OOB frame device acknowledge ?
-             */
-            console.log('??? OOB for deviceId: ' + data.deviceId);
-          }
-
-          if (data.source === 1 || data.source === 2) {
-            // Build the Geoloc object
-            const geoloc = new Geoloc;
-            switch (data.source) {
-              case 1:
-                geoloc.type = 'gps';
-                break;
-              case 2:
-                geoloc.type = 'sigfox';
-                break;
-              case 6:
-                geoloc.type = 'wifi';
-                break;
-            }
-            geoloc.location = new loopback.GeoPoint(data.geoloc.location);
-            geoloc.accuracy = data.geoloc.accuracy;
-            geoloc.createdAt = messageInstance.createdAt;
-            geoloc.userId = userId;
-            geoloc.messageId = messageInstance.id;
-            geoloc.deviceId = messageInstance.deviceId;
-
-            // Creating a new Geoloc
-            Geoloc.findOrCreate(
-              {
-                where: {
-                  and: [
-                    {type: geoloc.type},
-                    {messageId: geoloc.messageId}
-                  ]
-                }
-              }, // find
-              geoloc, // create
-              (err: any, geolocInstance: any, created: boolean) => { // callback
-                if (err) return next(err, geolocInstance);
-                else if (created) {
-                  // console.log('Created geoloc as: ', geolocInstance);
-                  return next(null, geolocInstance);
-                } else return next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
-              });
-          }
-        } else console.log('No position or invalid payload');
-      });
   }
 
   updateDeviceLocatedAt(deviceId: string, createdAt: Date, cb: Function) {
