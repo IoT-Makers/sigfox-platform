@@ -2,7 +2,7 @@ import {Component, Injector, Input, OnChanges, OnDestroy, OnInit, SimpleChanges}
 import {ActivatedRoute, Router} from '@angular/router';
 import {MenuService} from '../../core/menu/menu.service';
 import {SettingsService} from '../../core/settings/settings.service';
-import {Dashboard, Organization, Role, User} from "../../shared/sdk/models";
+import {Dashboard, Organization, User} from "../../shared/sdk/models";
 import {RealtimeService} from "../../shared/realtime/realtime.service";
 import {BeaconApi, DashboardApi, OrganizationApi, ParserApi, UserApi} from "../../shared/sdk/services/custom";
 
@@ -15,7 +15,6 @@ declare var $: any;
 })
 export class SidebarComponent implements OnInit, OnDestroy, OnChanges {
 
-    @Input() isLayoutLoaded: Boolean = false;
     @Input() user: User;
     @Input() admin: Boolean = false;
     @Input() organization: Organization;

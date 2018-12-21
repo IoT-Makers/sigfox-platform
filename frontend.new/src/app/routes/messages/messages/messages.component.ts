@@ -71,9 +71,9 @@ export class MessagesComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         console.log('Messages: ngOnInit');
         // Get the logged in user
-        this.user = this.userService.user;
+        this.user = this.userService.getCurrentUser();
         this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
-            this.organization = this.organizationService.organization;
+            this.organization = this.organizationService.getCurrentOrganization();
             this.setup();
         });
     }

@@ -23,16 +23,16 @@ export class OrganizationGuard implements CanActivate {
     checkOrganizationMember(route: ActivatedRouteSnapshot): Observable<boolean> {
         return this.userApi.findByIdOrganizations(this.userApi.getCurrentId(), route.params.id).pipe(map((organization: Organization) => {
             if (organization) {
-                this.organizationService.organization = organization;
+                this.organizationService.setCurrentOrganization(organization);
                 return true;
             } else {
-                this.organizationService.organization = null;
+                this.organizationService.setCurrentOrganization(null);
                 // Not organization member so redirect to overview page
                 this.router.navigate(['/']);
                 return false;
             }
         }), catchError((e) => {
-            this.organizationService.organization = null;
+            this.organizationService.setCurrentOrganization(null);
             // Not organization member so redirect to overview page
             this.router.navigate(['/']);
             return of(false);

@@ -26,38 +26,6 @@ const Categories = {
     icon: "icon-tag",
     alert: "0",
     label: "badge badge-category text-white"
-    /*submenu: [
-        {
-            text: "Cards",
-            link: "/material/cards"
-        },
-        {
-            text: "Forms",
-            link: "/material/forms"
-        },
-        {
-            text: "Inputs",
-            link: "/material/inputs"
-        },
-        {
-            text: "Lists",
-            link: "/material/lists"
-        },
-        {
-            text: "Whiteframe",
-            link: "/material/whiteframe"
-        },
-        {
-            text: "Colors",
-            link: "/material/colors"
-        },
-        {
-            text: "ng2Material",
-            link: "/material/ngmaterial"
-        }
-    ],
-    "alert": "new",
-    "label": "badge badge-primary"*/
 };
 
 const Devices = {

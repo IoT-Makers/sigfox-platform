@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
     }
 
     onLogin(): void {
-        this.userApi.login(this.user).subscribe(
+        this.userApi.login(this.user, ['user', 'roles']).subscribe(
             (token: AccessToken) => {
                 // console.log('New token: ', token);
                 this.rt.connect(token.id);

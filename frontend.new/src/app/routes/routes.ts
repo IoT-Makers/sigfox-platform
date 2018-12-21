@@ -48,7 +48,8 @@ export const routes = [
             title: 'Organization'
         },
         children: [
-            {path: '', loadChildren: './overview/overview.module#OverviewModule'},
+            {path: '', redirectTo: 'overview', pathMatch: 'full'},
+            {path: 'overview', loadChildren: './overview/overview.module#OverviewModule'},
 
             {path: 'dashboard/:id', loadChildren: './dashboard/custom-dashboard.module#CustomDashboardModule'},
 

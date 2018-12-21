@@ -146,9 +146,9 @@ export class OverviewComponent implements OnInit {
             this.bannerMessage = appSetting.value;
         });
         // Get the logged in user
-        this.user = this.userService.user;
+        this.user = this.userService.getCurrentUser();
         this.organizationRouteSub = this.route.params.subscribe(params => {
-            this.organization = this.organizationService.organization;
+            this.organization = this.organizationService.getCurrentOrganization();
             if (this.organization) {
                 this.organizationApi.countMembers(this.organization.id).subscribe(result => {
                     this.countOrganizationMembers = result.count;

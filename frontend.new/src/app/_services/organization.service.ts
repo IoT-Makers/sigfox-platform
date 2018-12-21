@@ -7,8 +7,16 @@ import {Organization} from "../shared/sdk/models";
 
 export class OrganizationService {
 
-  public organization: Organization;
+  private organization: Organization;
 
   constructor() {
+  }
+
+  setCurrentOrganization(organization: Organization): void {
+    this.organization = organization;
+  }
+
+  getCurrentOrganization(): Organization {
+    return this.organization
   }
 }
