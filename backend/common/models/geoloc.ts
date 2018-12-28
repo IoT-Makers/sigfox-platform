@@ -182,9 +182,7 @@ class Geoloc {
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
 
-    if (typeof data.geoloc === 'undefined'
-      || typeof data.geoloc.location === 'undefined'
-      || typeof data.deviceId === 'undefined'
+    if (typeof data.deviceId === 'undefined'
       || typeof data.time === 'undefined'
       || typeof data.seqNumber === 'undefined'
       || typeof data.computedLocation === 'undefined') {
