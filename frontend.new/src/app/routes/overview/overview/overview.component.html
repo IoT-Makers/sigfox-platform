@@ -287,16 +287,16 @@
                                     class="icon-close fa-2x text-danger"></i></button>
                         </div>
                         <div class="md-card-title">Latest message</div>
-                        <small class="text-message mat-body-strong">{{message.createdAt | date:"yyyy/MM/dd - HH:mm:ss"}}</small>
+                        <small *ngIf="message" class="text-message mat-body-strong">{{message.createdAt | date:"yyyy/MM/dd - HH:mm:ss"}}</small>
                     </div>
-                    <div class="md-card-body" *ngIf="!devicesReady">
+                    <div *ngIf="!devicesReady" class="md-card-body">
                         Loading devices...
                         <div class="sk-double-bounce">
                             <div class="sk-child sk-double-bounce1"></div>
                             <div class="sk-child sk-double-bounce2"></div>
                         </div>
                     </div>
-                    <div class="md-card-body" *ngIf="!message">
+                    <div *ngIf="!message" class="md-card-body">
                         No message to see...
                     </div>
                     <ng-container *ngIf="message" class="md-card-body">
@@ -317,7 +317,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="temperature && temperature.value || humidity && humidity.value || speed && speed.value "
+                        <div *ngIf="temperature && temperature.value || humidity && humidity.value || speed && speed.value || battery && (battery.value !== null) && battery.unit === '%'"
                              class="card m-0 rounded-0 border border-light">
                             <div class="card-body mx-auto">
                                 <ngx-gauge *ngIf="temperature && temperature.value"
