@@ -147,7 +147,7 @@ export class OverviewComponent implements OnInit {
         });
         // Get the logged in user
         this.user = this.userService.getCurrentUser();
-        this.organizationRouteSub = this.route.params.subscribe(params => {
+        this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
             this.organization = this.organizationService.getCurrentOrganization();
             if (this.organization) {
                 this.organizationApi.countMembers(this.organization.id).subscribe(result => {

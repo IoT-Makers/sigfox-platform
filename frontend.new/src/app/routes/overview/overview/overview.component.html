@@ -144,12 +144,12 @@
                                                     [iconUrl]="'assets/img/markers/marker-sigfox.png'">
                                                 <agm-info-window id="{{geoloc.id}}">
                                                     <strong>ID: </strong><span
-                                                            class="text-device">{{device.id}}</span>
+                                                        class="text-device">{{device.id}}</span>
                                                     <br>
                                                     <strong *ngIf="device.name">Name: </strong>{{device.name}}
                                                     <br *ngIf="device.name">
                                                     <strong>Type: </strong><span
-                                                            class="text-geoloc-sigfox">Sigfox</span>
+                                                        class="text-geoloc-sigfox">Sigfox</span>
                                                     <br>
                                                     <strong>Date: </strong>{{geoloc.createdAt | date:"dd/MM/yyyy"}}
                                                     <br>
@@ -300,6 +300,13 @@
                         No message to see...
                     </div>
                     <ng-container *ngIf="message" class="md-card-body">
+                        <div *ngIf="!message.data_parsed" class="card m-0 p-0 rounded-0 border border-light">
+                            <div class="card-body mx-auto">
+                                <div class="my-3">
+                                    No parsed data
+                                </div>
+                            </div>
+                        </div>
                         <div *ngIf="message.data_parsed" class="card m-0 p-0 rounded-0 border border-light">
                             <div class="card-body mx-auto">
                                 <div class="my-3">
@@ -310,7 +317,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="temperature && temperature.value || humidity && humidity.value || speed && speed.value"
+                        <div *ngIf="temperature && temperature.value || humidity && humidity.value || speed && speed.value "
                              class="card m-0 rounded-0 border border-light">
                             <div class="card-body mx-auto">
                                 <ngx-gauge *ngIf="temperature && temperature.value"
