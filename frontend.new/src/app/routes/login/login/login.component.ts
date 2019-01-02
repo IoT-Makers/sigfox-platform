@@ -54,7 +54,8 @@ export class LoginComponent implements OnInit {
                 // console.log('New token: ', token);
                 this.rt.connect(token.id);
 
-                // Redirect to the /dashboard
+                // Redirect
+                this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
                 this.router.navigateByUrl(this.returnUrl);
             }, err => {
                 // console.log(err);
@@ -85,9 +86,6 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         console.log('Login: ngOnInit');
-        // Get return url from route parameters or default to '/'
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-
         this.getAppSettings();
     }
 

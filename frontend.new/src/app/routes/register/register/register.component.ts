@@ -103,7 +103,7 @@ export class RegisterComponent {
                 // console.log('New token: ', token);
                 this.rt.connect(token.id);
 
-                // Redirect to the /dashboard
+                // Redirect
                 this.router.navigate(['/']);
             }, err => {
                 // console.log(err);

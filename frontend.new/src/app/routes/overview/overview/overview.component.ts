@@ -1,5 +1,5 @@
 import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {AppSetting, Category, Device, Geoloc, Organization, User} from "../../../shared/sdk/models";
+import {AppSetting, Category, Device, Geoloc, Message, Organization, User} from "../../../shared/sdk/models";
 import {RealtimeService} from "../../../shared/realtime/realtime.service";
 import {
     AppSettingApi,
@@ -92,7 +92,7 @@ export class OverviewComponent implements OnInit {
     messageChartColors: Array<any> = [{backgroundColor: '#5b9bd3'}];
 
     // Widgets
-    message: any;
+    message: Message;
     humidity;
     temperature;
     altitude;
@@ -147,7 +147,7 @@ export class OverviewComponent implements OnInit {
         });
         // Get the logged in user
         this.user = this.userService.getCurrentUser();
-        this.organizationRouteSub = this.route.params.subscribe(params => {
+        this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
             this.organization = this.organizationService.getCurrentOrganization();
             if (this.organization) {
                 this.organizationApi.countMembers(this.organization.id).subscribe(result => {
@@ -160,6 +160,8 @@ export class OverviewComponent implements OnInit {
     }
 
     setup(): void {
+        this.resetSeeMessage();
+
         this.countCategoriesReady = false;
         this.countDevicesReady = false;
         this.countMessagesReady = false;
@@ -319,13 +321,9 @@ export class OverviewComponent implements OnInit {
         this.unsubscribe();
     }
 
-    cancelSee(): void {
+    resetSeeMessage() {
         this.see = false;
-    }
-
-    seeDevice(device: Device): void {
-        this.see = true;
-
+        this.message = null;
         // Reset all widget values on device change
         this.humidity = undefined;
         this.temperature = undefined;
@@ -334,7 +332,13 @@ export class OverviewComponent implements OnInit {
         this.speed = undefined;
         this.light = undefined;
         this.battery = undefined;
-        this.message = undefined;
+    }
+
+    seeDevice(device: Device): void {
+        // Reset all widget values on device change
+        this.resetSeeMessage();
+
+        this.see = true;
 
         // Used for time & geoloc
         this.message = device.Messages[0];
