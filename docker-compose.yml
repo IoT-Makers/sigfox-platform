@@ -31,8 +31,6 @@ services:
 
   frontend:
     container_name: frontend
-    depends_on:
-    - mongodb
     build:
       context: frontend
       args:
@@ -44,7 +42,7 @@ services:
     image: ${REGISTRY_URL}frontend-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
     restart: "always"
     ports:
-    - "80:80"
+    - "4200:80"
 
   mongodb:
     container_name: mongodb
