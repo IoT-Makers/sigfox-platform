@@ -86,10 +86,10 @@ class Parser {
     else if (payload.length > 24) return next(null, "Sigfox payload cannot be more than 12 bytes.");
     //else if (payload === "") return next(null, "Sigfox payload cannot be empty.");
 
-    // Here we will decode the Sigfox payload and search for geoloc to be extracted and store in the Message
+    // Here we will decode the Sigfox payload
     // @TODO: run it in another container because it can crash the app if something goes wrong...
     // @TODO: ADD A FIELD IN PARSER MODEL IF LAST PAYLOAD IS NECESSARY
-    // Get latest message received by the device
+    // Get latest message received by the device to inject it in the parser function variables
     const Message = this.model.app.models.Message;
     Message.findOne({
         where: {deviceId: deviceId, createdAt: {lt: createdAt}}

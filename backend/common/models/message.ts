@@ -301,7 +301,7 @@ class Message {
             }
           } else console.error("This message for device (" + message.deviceId + ") has already been created.");
         });
-      // ack is true
+      // ack is true => quickly send response to the Sigfox backend (don't wait for message creation to be ended)
       return next(null, result);
     } else {
       // ack is false

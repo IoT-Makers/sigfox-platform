@@ -312,7 +312,7 @@ class Geoloc {
           geoloc_wifi.accuracy = p.value;
         }
         // Check if there is WiFi geoloc in parsed data
-        else if (p.key.includes('wlan_')) {
+        else if (p.key.startsWith('wlan_')) {
           hasWifiLocation = true;
           if (p.unit && p.unit !== '') geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString(), signalStrength: Number(p.unit)});
           else geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString()});
@@ -454,7 +454,7 @@ class Geoloc {
 
   createGeoloc(geoloc: any) {
     const Geoloc = this.model;
-    Geoloc.create(
+    Geoloc.upsert(
       geoloc,
       (err: any, geolocInstance: any) => {
         if (err) console.error(err);
