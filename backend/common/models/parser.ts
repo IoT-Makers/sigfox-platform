@@ -236,9 +236,8 @@ class Parser {
     }
 
     Device.findById(deviceId, {include: ["Messages", "Parser"]}, (err: any, device: any) => {
-      if (err) {
-        next(err, null);
-      } else if (device) {
+      if (err) next(err, null);
+      else if (device) {
 
         device = device.toJSON();
 
@@ -256,14 +255,6 @@ class Parser {
         } else {
           const par = device.Parser;
           if (device.Messages) {
-            /**
-             * Destroy all geolocs different than Sigfox
-             */
-            Geoloc.destroyAll({deviceId, type: {neq: "sigfox"}}, (error: any, result: any) => {
-              if (!error) {
-                console.log("Deleted all geolocs for device, except for Sigfox type: " + deviceId);
-              }
-            });
             device.Messages.forEach((message: any, msgCount: number) => {
               if (message.data) {
                 Parser.parsePayload(deviceId, par, message.data, req, (err: any, data_parsed: any) => {
