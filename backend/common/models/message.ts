@@ -490,7 +490,7 @@ class Message {
           const orgs = message.toJSON().Organizations;
           orgs.forEach((orga: any) => {
             message.Organizations.remove(orga.id, (err: any, result: any) => {
-              if (!err) console.log("Unlinked device from organization (" + orga.name + ")");
+              if (!err) console.log("Unlinked message from organization (" + orga.name + ")");
             });
           });
           const orgIds = orgs.map((o: any) => o.id.toString());
@@ -501,7 +501,7 @@ class Message {
           };
           RabbitPub.getInstance().pub(payload, message.userId, orgIds);
         }
-        return next(null, "Unlinked device from organization");
+        return next(null, "Unlinked message from organization");
       } else {
         return next(err);
       }
@@ -514,21 +514,34 @@ class Message {
 
   public afterSave(ctx: any, next: Function): void {
     // TODO: merge these 2 functions
-    // Calculate success rate and update device
-    this.updateDevice(ctx.instance.deviceId, ctx.instance.createdAt);
-    this.linkMessageToOrganization(ctx.instance, (device => {
-      // Pub-sub
-      let msg = ctx.instance;
-      const orgIds = device.Organizations().map((o: any) => o.id.toString());
-      const payload = {
-        event: "message",
-        device: device,
-        content: msg,
-        action: ctx.isNewInstance ? "CREATE" : "UPDATE"
-      };
-      RabbitPub.getInstance().pub(payload, msg.userId, orgIds);
-    }));
+    let msg = ctx.instance;
+    if (ctx.isNewInstance === 'CREATE') {
+      this.linkMessageToOrganization(ctx.instance, (device => {
+        // Pub-sub
+        this.publish(device, msg);
+      }));
+      // Calculate success rate and update device
+      this.updateDevice(ctx.instance.deviceId, ctx.instance.createdAt);
+    } else {
+      const Device = this.model.app.models.Device;
+      Device.findOne({where: {id: ctx.instance.deviceId}, include: "Organizations"}, (err: any, device: any) => {
+        err?
+          console.error(err) :
+          this.publish(device, msg);
+      });
+    }
     next();
+  }
+
+  private publish(device: any, msg: any) {
+    const orgIds = device.Organizations().map((o: any) => o.id.toString());
+    const payload = {
+      event: "message",
+      device: device,
+      content: msg,
+      action: "CREATE"
+    };
+    RabbitPub.getInstance().pub(payload, msg.userId, orgIds);
   }
 }
 
