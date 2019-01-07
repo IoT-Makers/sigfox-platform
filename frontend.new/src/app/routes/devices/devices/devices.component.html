@@ -1,0 +1,189 @@
+<div *ngIf="!organization" class="content-heading">Devices</div>
+<div *ngIf="organization" class="content-heading">Shared devices</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex">
+            <div>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="btn-group" dropdown>
+                            <button class="btn dropdown-toggle btn-secondary" type="button" dropdownToggle>Filter
+                                ({{devices.length}})
+                                <span class="caret"></span>
+                            </button>
+                            <div *dropdownMenu class="dropdown-menu">
+                                <a class="dropdown-item" (click)="searchFilter('100')">100</a>
+                                <a class="dropdown-item" (click)="searchFilter('500')">500</a>
+                                <a class="dropdown-item" (click)="searchFilter('1000')">1000</a>
+                                <div class="dropdown-divider" role="separator"></div>
+                                <a class="dropdown-item" (click)="searchFilter('all')">All</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary" type="button" [disabled]="true">Export</button>
+                    </div>
+                </div>
+            </div>
+            <div class="ml-auto">
+                <div class="input-group float-right">
+                    <div class="input-group mb-2 mr-sm-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="icon-magnifier"></i></div>
+                        </div>
+                        <input class="form-control" type="text" [(ngModel)]="filterQuery" placeholder="Search"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-block">
+        <div class="card-body" *ngIf="!devicesReady">
+            Loading devices...
+            <div class="sk-double-bounce">
+                <div class="sk-child sk-double-bounce1"></div>
+                <div class="sk-child sk-double-bounce2"></div>
+            </div>
+        </div>
+        <div class="card-body" *ngIf="devicesReady && !devices.length">
+            No devices yet...
+        </div>
+
+        <ng-container *ngIf="devices.length>0">
+            <div class="table-responsive">
+                <table class="table table-hover" [mfData]="devices | dataFilter : filterQuery" #mf="mfDataTable"
+                       [mfRowsOnPage]="numberOfDevicesToSee">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th class="text-center">
+                            <mfDefaultSorter by="messagedAt"><i class="fa fa-sort"></i> Last message</mfDefaultSorter>
+                        </th>
+                        <th class="text-center">
+                            <mfDefaultSorter by="id"><i class="fa fa-sort"></i> ID</mfDefaultSorter>
+                        </th>
+                        <th class="text-center">
+                            <mfDefaultSorter by="Geolocs"><i class="fa fa-sort"></i> Geolocs</mfDefaultSorter>
+                        </th>
+                        <th class="text-center">
+                            <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
+                        </th>
+                        <th *ngIf="(showDeviceSuccessRate && showDeviceSuccessRate.value === true)" class="text-center">
+                            <mfDefaultSorter by="successRate"><i class="fa fa-sort"></i> Success rate</mfDefaultSorter>
+                        </th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let device of mf.data; let i = index">
+                        <td class="text-center">
+                            <strong>{{device.messagedAt | amTimeAgo}}</strong>
+                            <br>
+                            <small class="text-gray-dark">{{device.messagedAt | date:"yyyy/MM/dd HH:mm:ss"}}</small>
+                        </td>
+                        <td class="text-center text-device">
+                            <a [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]"><strong
+                                    class="text-device">{{device.id}}</strong></a>
+                            <br>
+                            <small *ngIf="device.name">{{device.name}}</small>
+                        </td>
+                        <td class="text-center">
+                            <div *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
+                                <div *ngFor="let geoloc of device.Messages[0].Geolocs">
+                                    <div class="row">
+                                        <div class="col col-12">
+                                            <ng-container *ngIf="geoloc.type === 'sigfox'">
+                                                <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)"
+                                                   class="small text-geoloc-sigfox">
+                                                    <i class="fa fa-map-marker-alt fa-2x"></i>
+                                                    <br>
+                                                    <strong>Sigfox</strong>
+                                                </a>
+                                            </ng-container>
+                                            <ng-container *ngIf="geoloc.type === 'gps'">
+                                                <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)"
+                                                   class="small text-geoloc-gps">
+                                                    <i class="fa fa-map-marker-alt fa-2x"></i>
+                                                    <br>
+                                                    <strong>GPS</strong>
+                                                </a>
+                                            </ng-container>
+                                            <ng-container *ngIf="geoloc.type === 'beacon'">
+                                                <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)"
+                                                   class="small text-geoloc-beacon">
+                                                    <i class="fa fa-map-marker-alt fa-2x"></i>
+                                                    <br>
+                                                    <strong>Beacon</strong>
+                                                </a>
+                                            </ng-container>
+                                            <ng-container *ngIf="geoloc.type == 'wifi'">
+                                                <a href="javascript:void(0)" (click)="zoomOnDevice(geoloc)"
+                                                   class="small text-geoloc-wifi">
+                                                    <i class="fa fa-map-marker-alt fa-2x"></i>
+                                                    <br>
+                                                    <strong>WiFi</strong>
+                                                </a>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </td>
+                        <td>
+                            <div *ngIf="device.Parser" class="small">
+                                <span class="text-gray-dark">Parser: </span>
+                                <span class="text-parser">{{device.Parser ? device.Parser.name : "None"}}</span>
+                            </div>
+                            <div *ngIf="device.Category" class="small">
+                                <span class="text-gray-dark">Category: </span>
+                                <span class="text-category">{{device.Category.name}}</span>
+                            </div>
+                            <div *ngIf="device.data_downlink" class="small">
+                                <span class="text-gray-dark">Downlink: </span>
+                                <span class="text-message">{{device.data_downlink}}</span>
+                            </div>
+                        </td>
+                        <td *ngIf="(showDeviceSuccessRate && showDeviceSuccessRate.value === true)" class="text-center">
+                            <strong *ngIf="device.successRate"
+                                    tooltip="Based on the last 100 received">{{device.successRate + ' %'}}</strong>
+                            <span *ngIf="!device.successRate">N/A</span>
+                        </td>
+                        <td class="text-center">
+                            <div *ngIf="device.Messages[0] && device.Messages[0].Geolocs[0]" class="btn-group">
+                                <button class="btn btn-outline-secondary btn-oval" matTooltip="Live track device"
+                                        [routerLink]="[!organization ? '/devices' : '/organization/' + organization.id + '/devices', device.id, 'tracking']"
+                                        [matTooltipPosition]="'above'"
+                                        (click)="editDevice(device)"><i class="fa fa-map-marker-alt"></i></button>
+                                <button class="btn btn-outline-info btn-oval" matTooltip="Edit device"
+                                        [routerLink]="[!organization ? '/devices' : '/organization/' + organization.id + '/devices', device.id]"
+                                        [matTooltipPosition]="'above'"><i class="fa fa-pencil-alt"></i></button>
+                                <button class="btn btn-outline-danger btn-oval" matTooltip="Delete device"
+                                        [matTooltipPosition]="'above'"
+                                        (click)="showRemoveModal(device)"><i class="fa fa-trash"></i></button>
+                            </div>
+                            <div *ngIf="!device.Messages[0].Geolocs[0]" class="btn-group">
+                                <button class="btn btn-outline-info btn-oval" matTooltip="Edit device"
+                                        [routerLink]="[!organization ? '/devices' : '/organization/' + organization.id + '/devices', device.id]"
+                                        [matTooltipPosition]="'above'"><i class="fa fa-pencil-alt"></i></button>
+                                <button class="btn btn-outline-danger btn-oval" matTooltip="Delete device"
+                                        [matTooltipPosition]="'above'"
+                                        (click)="showRemoveModal(device)"><i class="fa fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <mfBootstrapPaginator [rowsOnPageSet]="[10, 25, 50, 100]"></mfBootstrapPaginator>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </ng-container>
+    </div>
+</div>
+
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

@@ -328,11 +328,8 @@ class Geoloc {
         // Check if there is WiFi geoloc in parsed data
         else if (p.key.includes('wlan_')) {
           hasWifiLocation = true;
-          if (p.unit && p.unit !== '') {
-            geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString(), signalStrength: Number(p.unit)});
-          } else {
-            geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString()});
-          }
+          if (p.unit && p.unit !== '') geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString(), signalStrength: Number(p.unit)});
+          else geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString()});
         }
       }
     });
@@ -419,11 +416,8 @@ class Geoloc {
       wlan: []
     };
     geoloc_wifi.wifiAccessPoints.forEach((wifiAccessPoint: any) => {
-      if (wifiAccessPoint.signalStrength) {
-        wlans.wlan.push({mac: wifiAccessPoint.macAddress, powrx: wifiAccessPoint.signalStrength});
-      } else {
-        wlans.wlan.push({mac: wifiAccessPoint.macAddress});
-      }
+      if (wifiAccessPoint.signalStrength) wlans.wlan.push({mac: wifiAccessPoint.macAddress, powrx: wifiAccessPoint.signalStrength});
+      else wlans.wlan.push({mac: wifiAccessPoint.macAddress});
     });
 
     return new Promise((resolve: any, reject: any) => {

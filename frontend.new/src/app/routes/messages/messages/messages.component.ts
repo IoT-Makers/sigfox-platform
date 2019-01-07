@@ -17,7 +17,6 @@ import {OrganizationService} from "../../../_services/organization.service";
 })
 export class MessagesComponent implements OnInit, OnDestroy {
 
-    deviceIdSub: any;
     user: User;
 
     @ViewChild('mapModal') mapModal: any;
@@ -32,6 +31,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     public receptions: any[] = [];
     public geolocs: Geoloc[] = [];
 
+    deviceIdSub: Subscription;
     organizationRouteSub: Subscription;
     public messages: Message[] = [];
 
@@ -48,8 +48,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
             timeout: 5000,
             animation: 'fade'
         });
-
-    public filterQuery = '';
 
     api;
     id;
@@ -74,50 +72,51 @@ export class MessagesComponent implements OnInit, OnDestroy {
         this.user = this.userService.getCurrentUser();
         this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
             this.organization = this.organizationService.getCurrentOrganization();
-            this.setup();
+            this.deviceIdSub = this.route.params.subscribe(params => {
+                if (params['id']) this.setup(params['id'].toUpperCase());
+                else this.setup();
+            });
         });
     }
 
-    setup(): void {
+    setup(deviceId?: string): void {
         // Get and listen messages
-        this.deviceIdSub = this.route.params.subscribe(params => {
-            this.filterQuery = params['id'];
-            if (this.filterQuery) {
-                this.messageFilter = {
-                    order: 'createdAt DESC',
-                    limit: 100,
-                    include: ['Device', 'Geolocs'],
-                    where: {deviceId: this.filterQuery}
-                };
-            } else {
-                this.messageFilter = {
-                    order: 'createdAt DESC',
-                    limit: 100,
-                    include: ['Device', 'Geolocs']
-                };
-            }
-            this.api = this.organization ? this.organizationApi : this.userApi;
-            this.id = this.organization ? this.organization.id : this.user.id;
-            this.unsubscribe();
-            this.subscribe(this.id);
+        this.api = this.organization ? this.organizationApi : this.userApi;
+        this.id = this.organization ? this.organization.id : this.user.id;
+        this.unsubscribe();
+        this.subscribe(this.id);
 
-            if (this.organization) {
-                this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
-                    this.messages = messages;
-                    this.messagesReady = true;
-                });
-            } else if (this.admin && this.filterQuery) {
-                this.messageApi.find(this.messageFilter).subscribe((messages: Message[]) => {
-                    this.messages = messages;
-                    this.messagesReady = true;
-                });
-            } else {
-                this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
-                    this.messages = messages;
-                    this.messagesReady = true;
-                });
-            }
-        });
+        if (deviceId) {
+            this.messageFilter = {
+                order: 'createdAt DESC',
+                limit: 100,
+                include: ['Device', 'Geolocs'],
+                where: {deviceId: deviceId}
+            };
+        } else {
+            this.messageFilter = {
+                order: 'createdAt DESC',
+                limit: 100,
+                include: ['Device', 'Geolocs']
+            };
+        }
+
+        if (this.organization) {
+            this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
+                this.messages = messages;
+                this.messagesReady = true;
+            });
+        } else if (this.admin && deviceId) {
+            this.messageApi.find(this.messageFilter).subscribe((messages: Message[]) => {
+                this.messages = messages;
+                this.messagesReady = true;
+            });
+        } else {
+            this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
+                this.messages = messages;
+                this.messagesReady = true;
+            });
+        }
     }
 
     ngOnDestroy(): void {
@@ -133,12 +132,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
     deleteMessage(message: Message): void {
         this.userApi.destroyByIdMessages(this.user.id, message.id).subscribe(value => {
-            if (this.toast)
-                this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+            if (this.toast) this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
             this.toast = this.toasterService.pop('success', 'Success', 'The message has been deleted.');
         }, err => {
-            if (this.toast)
-                this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+            if (this.toast) this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
             this.toast = this.toasterService.pop('error', 'Error', err.error);
         });
     }
@@ -192,10 +189,17 @@ export class MessagesComponent implements OnInit, OnDestroy {
         });
     }
 
-    searchFilter() {
-        this.messageFilter.limit = this.selectedAction;
+    searchFilter(filter: string) {
+        switch (filter) {
+            case 'all':
+                this.messageFilter.limit = 10000;
+                break;
+            default:
+                this.messageFilter.limit = Number(filter)
+        }
+        /*this.messageFilter.limit = this.selectedAction;
         if (this.selectedAction === 'all') this.messageFilter.limit = 10000;
-        if (this.selectedAction === 'export') return;
+        if (this.selectedAction === 'export') return;*/
 
         this.messages = [];
         this.messagesReady = false;
