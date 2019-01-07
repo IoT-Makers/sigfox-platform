@@ -108,6 +108,7 @@ class Geoloc {
 
           // Build the Geoloc object
           const geoloc = new Geoloc;
+          geoloc.id = messageInstance.id + 'sigfox';
           geoloc.type = 'sigfox';
           geoloc.location = new loopback.GeoPoint(data.geoloc.location);
           geoloc.accuracy = data.geoloc.accuracy;
@@ -122,6 +123,7 @@ class Geoloc {
              */
               // Build the GPS Geoloc object
             const geoloc_gps = new Geoloc;
+            geoloc_gps.id = messageInstance.id + 'gps';
             geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
             geoloc_gps.createdAt = messageInstance.createdAt;
             geoloc_gps.userId = messageInstance.userId;
@@ -156,22 +158,11 @@ class Geoloc {
             });
 
           // Creating a new Geoloc
-          Geoloc.findOrCreate(
-            {
-              where: {
-                and: [
-                  {type: geoloc.type},
-                  {messageId: geoloc.messageId}
-                ]
-              }
-            }, // find
-            geoloc, // create
+          Geoloc.create(
+            geoloc,
             (err: any, geolocInstance: any, created: boolean) => { // callback
               if (err) return next(err, geolocInstance);
-              else if (created) {
-                // console.log('Created geoloc as: ', geolocInstance);
-                return next(null, geolocInstance);
-              } else return next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
+              else return next(null, geolocInstance);
             });
         }
       });
@@ -244,22 +235,11 @@ class Geoloc {
             geoloc.deviceId = messageInstance.deviceId;
 
             // Creating a new Geoloc
-            Geoloc.findOrCreate(
-              {
-                where: {
-                  and: [
-                    {type: geoloc.type},
-                    {messageId: geoloc.messageId}
-                  ]
-                }
-              }, // find
-              geoloc, // create
-              (err: any, geolocInstance: any, created: boolean) => { // callback
+            Geoloc.create(
+              geoloc,
+              (err: any, geolocInstance: any) => { // callback
                 if (err) return next(err, geolocInstance);
-                else if (created) {
-                  // console.log('Created geoloc as: ', geolocInstance);
-                  return next(null, geolocInstance);
-                } else return next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
+                else return next(null, geolocInstance);
               });
           } else console.log('No position or invalid payload');
         }
@@ -340,7 +320,7 @@ class Geoloc {
       }
     });
 
-    if (hasGpsLocation) this.upsertGeoloc(geoloc_gps);
+    if (hasGpsLocation) this.createGeoloc(geoloc_gps);
 
     if (hasBeaconLocation) {
       Beacon.findById(geoloc_beacon.beaconId, (err: any, beacon: any) => {
@@ -349,7 +329,7 @@ class Geoloc {
           geoloc_beacon.location.lat = beacon.location.lat;
           geoloc_beacon.location.lng = beacon.location.lng;
           geoloc_beacon.level = beacon.level;
-          this.upsertGeoloc(geoloc_beacon);
+          this.createGeoloc(geoloc_beacon);
         }
       });
     }
@@ -403,7 +383,7 @@ class Geoloc {
         geoloc_gps.location.lng = result.lng;
         geoloc_gps.accuracy = result.accuracy;
 
-        this.upsertGeoloc(geoloc_gps);
+        this.createGeoloc(geoloc_gps);
         resolve(true);
       }).catch((err: any) => {
         console.error(err);
@@ -429,7 +409,7 @@ class Geoloc {
         geoloc_wifi.location.lng = result.location.lng;
         geoloc_wifi.accuracy = result.location.accuracy;
 
-        this.upsertGeoloc(geoloc_wifi);
+        this.createGeoloc(geoloc_wifi);
         resolve(true);
       }).catch((err: any) => {
         //console.error(err);
@@ -450,7 +430,7 @@ class Geoloc {
         geoloc_wifi.location.lng = result.location.lng;
         geoloc_wifi.accuracy = result.accuracy;
 
-        this.upsertGeoloc(geoloc_wifi);
+        this.createGeoloc(geoloc_wifi);
         resolve(true);
       }).catch((err: any) => {
         //console.error(err);
@@ -472,9 +452,9 @@ class Geoloc {
     });
   }
 
-  upsertGeoloc(geoloc: any) {
+  createGeoloc(geoloc: any) {
     const Geoloc = this.model;
-    Geoloc.upsert(
+    Geoloc.create(
       geoloc,
       (err: any, geolocInstance: any) => {
         if (err) console.error(err);

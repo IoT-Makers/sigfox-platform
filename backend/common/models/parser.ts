@@ -22,6 +22,7 @@ import {Script} from 'vm';
       http: {path: "/parse-payload", verb: "post"},
       accepts: [
         {arg: "deviceId", type: "string", required: true, description: "Device ID"},
+        {arg: "createdAt", type: "Date", required: true, description: "Message createdAt"},
         {arg: "fn", type: "string", required: true, description: "Parser function"},
         {arg: "payload", type: "string", required: true, description: "Sigfox payload (12 bytes max)"},
         {arg: "req", type: "object", http: {source: "req"}},
@@ -79,7 +80,7 @@ class Parser {
     next();
   }
 
-  public parsePayload(deviceId: string, parser: Parser, payload: string, req: any, next: Function): void {
+  public parsePayload(deviceId: string, createdAt: Date, parser: Parser, payload: string, req: any, next: Function): void {
     const userId = req.accessToken.userId;
     if (!userId) return next(null, "Please login or use a valid access token.");
     else if (payload.length > 24) return next(null, "Sigfox payload cannot be more than 12 bytes.");
@@ -91,8 +92,7 @@ class Parser {
     // Get latest message received by the device
     const Message = this.model.app.models.Message;
     Message.findOne({
-        where: {deviceId: deviceId},
-        order: "createdAt DESC"
+        where: {deviceId: deviceId, createdAt: {lt: createdAt}}
       },
       (err: any, messageInstance: any) => {
         if (err) console.error(err);
@@ -164,32 +164,21 @@ class Parser {
                   response.message = "No parser associated to this device.";
                   next(null, response);
                 } else {
-                  const par = deviceInstance.Parser;
                   if (deviceInstance.Messages) {
                     deviceInstance.Messages.forEach((message: any, msgCount: number) => {
                       if (message.data) {
-                        Parser.parsePayload(deviceInstance.id, par, message.data, req, (err: any, data_parsed: any) => {
-                          if (err) next(err, null);
-                          else {
-                            if (data_parsed) {
-                              message.data_parsed = data_parsed;
-                              Message.upsert(message, (err: any, messageUpdated: any) => {
-                                if (err) {
-                                  next(err, response);
-                                } else {
-                                  // Check if there is Geoloc in payload and create Geoloc object
-                                  Geoloc.createFromParsedPayload(
-                                    messageUpdated,
-                                    (err: any, res: any) => {
-                                      if (err) {
-                                        next(err, null);
-                                      } else {
-                                        // console.log(res);
-                                      }
-                                    });
-                                }
-                              });
-                            }
+                        Parser.parsePayload(deviceInstance.id, message.createdAt, deviceInstance.Parser, message.data, req, (err: any, data_parsed: any) => {
+                          if (data_parsed) {
+                            message.data_parsed = data_parsed;
+                            Message.upsert(message, (err: any, messageUpdated: any) => {
+                              if (!err && messageUpdated.data_parsed.length > 0) {
+                                // Check if there is Geoloc in payload and create Geoloc object
+                                Geoloc.createFromParsedPayload(
+                                  messageUpdated,
+                                  (err: any, res: any) => {
+                                  });
+                              }
+                            });
                           }
                         });
                       }
@@ -235,7 +224,12 @@ class Parser {
       next(null, response);
     }
 
-    Device.findById(deviceId, {include: ["Messages", "Parser"]}, (err: any, device: any) => {
+    Device.findById(deviceId, {
+      include: [{
+        relation: "Messages",
+        order: 'createdAt ASC'
+      }, "Parser"]
+    }, (err: any, device: any) => {
       if (err) next(err, null);
       else if (device) {
 
@@ -253,39 +247,29 @@ class Parser {
           response.message = "No parser associated to this device.";
           next(null, response);
         } else {
-          const par = device.Parser;
           if (device.Messages) {
             device.Messages.forEach((message: any, msgCount: number) => {
               if (message.data) {
-                Parser.parsePayload(deviceId, par, message.data, req, (err: any, data_parsed: any) => {
-                  if (err) next(err, null);
-                  else {
-                    if (data_parsed) {
-                      message.data_parsed = data_parsed;
-                      Message.upsert(message, (err: any, messageUpdated: any) => {
-                        if (err) next(err, response);
-                        else {
-                          // Check if there is Geoloc in payload and create Geoloc object
-                          Geoloc.createFromParsedPayload(
-                            messageUpdated,
-                            (err: any, res: any) => {
-                              if (err) {
-                                next(err, null);
-                              } else {
-                                // console.log(res);
-                              }
-                            });
-                        }
-                        if (msgCount === device.Messages.length - 1) {
-                          // Send the response
-                          console.log("Successfully parsed all messages.");
-                          response.message = "Success";
-                          next(null, response);
-                        }
-                      });
-                    }
+                Parser.parsePayload(deviceId, message.createdAt, device.Parser, message.data, req, (err: any, data_parsed: any) => {
+                  if (data_parsed) {
+                    message.data_parsed = data_parsed;
+                    Message.upsert(message, (err: any, messageUpdated: any) => {
+                      if (!err && messageUpdated.data_parsed.length > 0) {
+                        // Check if there is Geoloc in payload and create Geoloc object
+                        Geoloc.createFromParsedPayload(
+                          messageUpdated,
+                          (err: any, res: any) => {
+                          });
+                      }
+                    });
                   }
                 });
+              }
+              if (msgCount === device.Messages.length - 1) {
+                // Send the response
+                console.log("Successfully parsed all messages.");
+                response.message = "Success";
+                next(null, response);
               }
             });
           } else {

@@ -180,6 +180,7 @@ class Message {
                         // Decode the payload
                         Parser.parsePayload(
                           deviceUpdated.id,
+                          message.createdAt,
                           deviceUpdated.Parser,
                           message.data,
                           req,
@@ -214,6 +215,7 @@ class Message {
                 // Decode the payload
                 Parser.parsePayload(
                   deviceInstance.id,
+                  message.createdAt,
                   deviceInstance.Parser,
                   message.data,
                   req,
