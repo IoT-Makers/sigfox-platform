@@ -84,7 +84,6 @@ export class ParsersComponent implements OnInit, OnDestroy {
       order: 'updatedAt DESC'
     }).subscribe((parsers: Parser[]) => {
       this.parsers = parsers;
-      console.log(parsers);
     });
   }
 
@@ -115,7 +114,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   setHidden(parser: Parser) {
-    this.parserApi.patchAttributes(parser.id, {hidden: parser.hidden}).subscribe((updatedParser: Parser) => {
+    this.parserApi.upsertPatch(parser).subscribe((updatedParser: Parser) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       if (updatedParser.hidden) this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully hidden.');
@@ -147,7 +146,7 @@ export class ParsersComponent implements OnInit, OnDestroy {
   }
 
   update(parser: Parser): void {
-    this.parserApi.updateAttributes(parser.id, parser).subscribe((updatedParser: Parser) => {
+    this.parserApi.upsertPatch(parser).subscribe((updatedParser: Parser) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('success', 'Success', 'The parser was successfully updated.');

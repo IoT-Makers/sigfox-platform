@@ -21,6 +21,7 @@ import {Script} from 'vm';
       returns: {arg: "result", type: "array"},
       http: {path: "/parse-payload", verb: "post"},
       accepts: [
+        {arg: "deviceId", type: "string", required: true, description: "Device ID"},
         {arg: "fn", type: "string", required: true, description: "Parser function"},
         {arg: "payload", type: "string", required: true, description: "Sigfox payload (12 bytes max)"},
         {arg: "req", type: "object", http: {source: "req"}},
@@ -53,7 +54,7 @@ import {Script} from 'vm';
 
 class Parser {
 
-  private compiledParsers: {[uid: string]: Script} = {};
+  private compiledParsers: { [uid: string]: Script } = {};
 
   // LoopBack model instance is injected in constructor
   constructor(public model: any) {
@@ -78,29 +79,41 @@ class Parser {
     next();
   }
 
-  public parsePayload(parser: Parser, payload: string, req: any, next: Function): void {
+  public parsePayload(deviceId: string, parser: Parser, payload: string, req: any, next: Function): void {
     const userId = req.accessToken.userId;
     if (!userId) return next(null, "Please login or use a valid access token.");
-    if (payload.length > 24) return next(null, "Sigfox payload cannot be more than 12 bytes.");
+    else if (payload.length > 24) return next(null, "Sigfox payload cannot be more than 12 bytes.");
+    //else if (payload === "") return next(null, "Sigfox payload cannot be empty.");
 
     // Here we will decode the Sigfox payload and search for geoloc to be extracted and store in the Message
     // @TODO: run it in another container because it can crash the app if something goes wrong...
-    let data_parsed: any = null;
-    if (payload !== "") {
-      try {
-        const script = this.getCompiledParser(parser);
-        data_parsed = script.runInNewContext({payload: payload}, {timeout: 5000});
-        console.log("Parser | Success data parsed");
-        next(null, data_parsed);
-      } catch (err) {
-        // console.log('Parser | Error parsing data');
-        // If you give to requester details about parser function
-        // next(err, null);
-        // If you give to requester only a generic error
-        console.error(err);
-        next("Parser | Error parsing data", null);
-      }
-    }
+    // @TODO: ADD A FIELD IN PARSER MODEL IF LAST PAYLOAD IS NECESSARY
+    // Get latest message received by the device
+    const Message = this.model.app.models.Message;
+    Message.findOne({
+        where: {deviceId: deviceId},
+        order: "createdAt DESC"
+      },
+      (err: any, messageInstance: any) => {
+        if (err) console.error(err);
+        // Parse
+        try {
+          const parserScript = this.getCompiledParser(parser);
+          const data_parsed = parserScript.runInNewContext({
+            payload: payload,
+            lastParsedPayload: messageInstance ? messageInstance.data_parsed : []
+          }, {timeout: 5000});
+          console.log("Parser | Success data parsed");
+          next(null, data_parsed);
+        } catch (err) {
+          // console.log('Parser | Error parsing data');
+          // If you give to requester details about parser function
+          // next(err, null);
+          // If you give to requester only a generic error
+          console.error(err);
+          next("Parser | Error parsing data", null);
+        }
+      });
   }
 
   public parseAllDevices(parserId: string, req: any, next: Function): void {
@@ -155,10 +168,9 @@ class Parser {
                   if (deviceInstance.Messages) {
                     deviceInstance.Messages.forEach((message: any, msgCount: number) => {
                       if (message.data) {
-                        Parser.parsePayload(par, message.data, req, (err: any, data_parsed: any) => {
-                          if (err) {
-                            next(err, null);
-                          } else {
+                        Parser.parsePayload(deviceInstance.id, par, message.data, req, (err: any, data_parsed: any) => {
+                          if (err) next(err, null);
+                          else {
                             if (data_parsed) {
                               message.data_parsed = data_parsed;
                               Message.upsert(message, (err: any, messageUpdated: any) => {
@@ -254,16 +266,14 @@ class Parser {
             });
             device.Messages.forEach((message: any, msgCount: number) => {
               if (message.data) {
-                Parser.parsePayload(par, message.data, req, (err: any, data_parsed: any) => {
-                  if (err) {
-                    next(err, null);
-                  } else {
+                Parser.parsePayload(deviceId, par, message.data, req, (err: any, data_parsed: any) => {
+                  if (err) next(err, null);
+                  else {
                     if (data_parsed) {
                       message.data_parsed = data_parsed;
                       Message.upsert(message, (err: any, messageUpdated: any) => {
-                        if (err) {
-                          next(err, response);
-                        } else {
+                        if (err) next(err, response);
+                        else {
                           // Check if there is Geoloc in payload and create Geoloc object
                           Geoloc.createFromParsedPayload(
                             messageUpdated,
@@ -300,10 +310,10 @@ class Parser {
   }
 
   private getCompiledParser(parser: any): Script {
-    const uid = parser.id + parser.modifiedAt;
+    const uid = parser.id + parser.updatedAt;
     if (!this.compiledParsers[uid]) {
       const fn = parser.function;
-      const sc = new Script(`(function (payload){${fn}})(payload)`);
+      const sc = new Script(`(function (payload, lastParsedPayload){${fn}})(payload, lastParsedPayload)`);
       // sc.createCachedData();
       this.compiledParsers[uid] = sc;
     }

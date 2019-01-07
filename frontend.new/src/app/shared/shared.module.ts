@@ -66,6 +66,7 @@ import {NowDirective} from './directives/now/now.directive';
 import {ScrollableDirective} from './directives/scrollable/scrollable.directive';
 import {JqcloudDirective} from './directives/jqcloud/jqcloud.directive';
 import {MomentModule} from "angular2-moment";
+import {NumberFormatPipe} from "./pipes/numberformatpipe";
 
 // https://angular.io/styleguide#!#04-10
 @NgModule({
@@ -140,7 +141,9 @@ import {MomentModule} from "angular2-moment";
         VectormapDirective,
         NowDirective,
         ScrollableDirective,
-        JqcloudDirective
+        JqcloudDirective,
+        // Pipes
+        NumberFormatPipe
     ],
     exports: [
         CommonModule,
@@ -174,6 +177,8 @@ import {MomentModule} from "angular2-moment";
         NowDirective,
         ScrollableDirective,
         JqcloudDirective,
+        // Pipes
+        NumberFormatPipe,
         // Material Modules
         MatAutocompleteModule,
         MatButtonModule,

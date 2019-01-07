@@ -6,15 +6,22 @@
     <div class="d-flex">
       <div>
         <div class="input-group">
-          <select class="custom-select" id="inputGroupSelect04" [(ngModel)]="selectedAction">
-            <option value="100">100</option>
-            <option value="500">500</option>
-            <option value="1000">1000</option>
-            <option value="all">All</option>
-            <option value="export">Export</option>
-          </select>
+          <div class="input-group-prepend">
+            <div class="btn-group" dropdown>
+              <button class="btn dropdown-toggle btn-secondary" type="button" dropdownToggle>Filter ({{messages.length}})
+                <span class="caret"></span>
+              </button>
+              <div *dropdownMenu class="dropdown-menu">
+                <a class="dropdown-item" (click)="searchFilter('100')">100</a>
+                <a class="dropdown-item" (click)="searchFilter('500')">500</a>
+                <a class="dropdown-item" (click)="searchFilter('1000')">1000</a>
+                <div class="dropdown-divider" role="separator"></div>
+                <a class="dropdown-item" (click)="searchFilter('all')">All</a>
+              </div>
+            </div>
+          </div>
           <div class="input-group-append">
-            <button class="btn btn-secondary" type="button" (click)="searchFilter()">Apply</button>
+            <button class="btn btn-secondary" type="button" [disabled]="true">Export</button>
           </div>
         </div>
       </div>
@@ -57,7 +64,7 @@
               <mfDefaultSorter by="deviceId"><i class="fa fa-sort"></i> Device</mfDefaultSorter>
             </th>
             <th class="text-center">
-              <mfDefaultSorter by="Geolocs"><i class="fa fa-sort"></i> Geoloc</mfDefaultSorter>
+              <mfDefaultSorter by="Geolocs"><i class="fa fa-sort"></i> Geolocs</mfDefaultSorter>
             </th>
             <th class="text-center">
               <mfDefaultSorter by="seqNumber"><i class="fa fa-sort"></i> Seq Number</mfDefaultSorter>
@@ -89,18 +96,10 @@
               </div>
             </td>
             <td class="text-center text-device">
-              <ng-container *ngIf="!organization">
-                <a [routerLink]="['/messages', message.Device.id]">
-                  <strong class="text-device">{{message.Device.id}}</strong>
-                </a>
-              </ng-container>
-              <ng-container *ngIf="organization">
-                <a [routerLink]="['/organization/' + organization.id + '/messages', message.Device.id]">
-                  <strong class="text-device">{{message.Device.id}}</strong>
-                </a>
-              </ng-container>
+              <a [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', message.Device.id]"><strong
+                      class="text-device">{{message.Device.id}}</strong></a>
               <br>
-              <small *ngIf="message.Device">{{message.Device.name}}</small>
+              <small *ngIf="message.Device.name">{{message.Device.name}}</small>
             </td>
             <td class="text-center">
               <div *ngIf="message.Geolocs">
@@ -162,7 +161,7 @@
               </p>
             </td>
             <td class="text-center">
-              <button type="button" class="btn btn-outline-danger btn-oval" (click)="deleteMessage(message)">
+              <button type="button" class="btn btn-outline-danger btn-oval" (click)="deleteMessage(message)" matTooltip="Delete message" [matTooltipPosition]="'above'">
                 <i class="fa fa-trash"></i>
               </button>
             </td>

@@ -4,7 +4,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {SharedModule} from "../../shared/shared.module";
 import {AgmCoreModule} from "@agm/core";
 import {NgxGaugeModule} from "ngx-gauge";
-import {NumberFormatPipe} from "./overview/numberformatpipe";
 
 const routes: Routes = [
     {path: '', component: OverviewComponent}
@@ -18,8 +17,7 @@ const routes: Routes = [
         NgxGaugeModule
     ],
     declarations: [
-        OverviewComponent,
-        NumberFormatPipe
+        OverviewComponent
     ],
     exports: [
         RouterModule

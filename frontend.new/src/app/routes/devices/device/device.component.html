@@ -1,0 +1,61 @@
+<div class="content-heading">{{contentHeading}}
+    <button class="btn btn-outline-inverse ml-auto" type="button" [routerLink]="[!organization ? '/devices' : '/organization/' + organization.id + '/devices']"><i class="icon-action-undo"></i> Back</button>
+</div>
+
+<ng-container *ngIf="deviceReady && device">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="h5 mt-0">Monthly received messages
+                            <small>(over the last 12 months)</small>
+                        </div>
+                        <!-- Line chart-->
+                        <div [sparkline]="sparkOptionsLine" [values]="messagesStats"></div>
+                        <!-- Bar chart-->
+                        <div class="text-center">
+                            <div [sparkline]="sparkOptionsBar" [values]="messagesStats"></div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-gray">
+                        <div class="row text-center">
+                            <div class="col-3">
+                                <p class="m-0 h3">{{countMessages ? (countMessages | numberFormat : 1) : '-'}}</p>
+                                <p class="m-0 text-muted">Since the beginning</p>
+                            </div>
+                            <div class="col-3">
+                                <p class="m-0 h3">{{messagesTotal ? (messagesTotal | numberFormat : 1) : '-'}}</p>
+                                <p class="m-0 text-muted">Since 12 months</p>
+                            </div>
+                            <div class="col-3">
+                                <p class="m-0 h3">{{messagesAverage ? (messagesAverage | numberFormat : 1) : '-'}}</p>
+                                <p class="m-0 text-muted">Monthly average</p>
+                            </div>
+                            <div class="col-3" [matTooltipPosition]="'below'"
+                                 matTooltip="{{device.successRate + '% over the last 100 messages'}}">
+                                <p class="m-0 h3">{{device.successRate.toFixed(0)}}%</p>
+                                <p class="m-0 text-muted">Success rate</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        Great information
+                    </div>
+                    <div class="card-footer bg-gray text-center">
+                        <div class="btn-group">
+                            <button class="btn btn-info"><i class="fa fa-check"></i> Update</button>
+                            <button class="btn btn-danger" (click)="showRemoveModal(device)"><i class="fa fa-trash"></i>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

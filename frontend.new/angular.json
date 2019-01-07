@@ -31,8 +31,9 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "src/app/core/wrapper/wrapper.js",
-              "src/assets/js/primus.js"
+              "node_modules/jquery/dist/jquery.js",
+              "src/assets/js/primus.js",
+              "node_modules/jquery-sparkline/jquery.sparkline.js"
             ]
           },
           "configurations": {
@@ -91,7 +92,8 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "src/app/core/wrapper/wrapper.js"
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/jquery-sparkline/jquery.sparkline.js"
             ],
             "assets": [
               "src/robots.txt",

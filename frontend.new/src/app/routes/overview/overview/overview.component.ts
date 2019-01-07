@@ -344,13 +344,13 @@ export class OverviewComponent implements OnInit {
         this.message = device.Messages[0];
 
         if (this.message && this.message.data_parsed) {
-            this.temperature = _.filter(this.message.data_parsed, {key: 'temperature'})[0];
-            this.humidity = _.filter(this.message.data_parsed, {key: 'humidity'})[0];
-            this.altitude = _.filter(this.message.data_parsed, {key: 'altitude'})[0];
-            this.pressure = _.filter(this.message.data_parsed, {key: 'pressure'})[0];
-            this.speed = _.filter(this.message.data_parsed, {key: 'speed'})[0];
-            this.light = _.filter(this.message.data_parsed, {key: 'light'})[0];
-            this.battery = _.filter(this.message.data_parsed, {key: 'battery'})[0];
+            this.temperature = _.filter(this.message.data_parsed, 'temperature')[0];
+            this.humidity = _.filter(this.message.data_parsed, 'humidity')[0];
+            this.altitude = _.filter(this.message.data_parsed, 'altitude')[0];
+            this.pressure = _.filter(this.message.data_parsed, 'pressure')[0];
+            this.speed = _.filter(this.message.data_parsed, 'speed')[0];
+            this.light = _.filter(this.message.data_parsed, 'light')[0];
+            this.battery = _.filter(this.message.data_parsed, 'battery')[0];
         }
     }
 
@@ -370,7 +370,7 @@ export class OverviewComponent implements OnInit {
     }
 
     zoomOnDevice(geoloc: Geoloc): void {
-        this.cancelSee();
+        this.resetSeeMessage();
         this.agmInfoWindows.forEach((child) => {
             // console.log(child['_el'].nativeElement.id);
             if (child['_el'].nativeElement.id === geoloc.id)

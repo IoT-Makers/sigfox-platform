@@ -179,6 +179,7 @@ class Message {
 
                         // Decode the payload
                         Parser.parsePayload(
+                          deviceUpdated.id,
                           deviceUpdated.Parser,
                           message.data,
                           req,
@@ -212,13 +213,13 @@ class Message {
 
                 // Decode the payload
                 Parser.parsePayload(
+                  deviceInstance.id,
                   deviceInstance.Parser,
                   message.data,
                   req,
                   (err: any, data_parsed: any) => {
-                    if (err) {
-                      console.error(err);
-                    } else {
+                    if (err) console.error(err);
+                    else if (data_parsed) {
                       message.data_parsed = data_parsed;
                       message.data_parsed.forEach((p: any) => {
                         if (p.key === "time" && p.type === "date") {
@@ -228,7 +229,7 @@ class Message {
                           return;
                         }
                       });
-                    }
+                    } else message.data_parsed = [];
                     // Create message
                     this.createMessageAndSendResponse(deviceInstance, message, req, next);
                   });
@@ -344,9 +345,8 @@ class Message {
         }],
       },
       (err: any, deviceInstance: any) => {
-        if (err) {
-          console.error(err);
-        } else if (deviceInstance) {
+        if (err) console.error(err);
+        else if (deviceInstance) {
           // Update the device success rate
           if (deviceInstance.Messages && deviceInstance.Messages.length > 0) {
             const device = deviceInstance.toJSON();
