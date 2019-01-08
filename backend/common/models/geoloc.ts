@@ -233,7 +233,7 @@ class Geoloc {
             geoloc.userId = userId;
             geoloc.messageId = messageInstance.id;
             geoloc.deviceId = messageInstance.deviceId;
-
+            geoloc.id = messageInstance.id + geoloc.type;
             // Creating a new Geoloc
             Geoloc.create(
               geoloc,
