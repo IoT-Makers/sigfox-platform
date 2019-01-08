@@ -651,6 +651,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               include: [{
                 relation: 'Geolocs',
                 scope: {
+                  where: {
+                    accuracy: {lte: this.newWidget.options.minAcc ? this.newWidget.options.minAcc : 99999999}
+                  },
                   order: 'accuracy ASC',
                   limit: 1
                 }
@@ -672,6 +675,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               where: {
                 and: [
                   {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}},
+                  {accuracy: {lte: this.newWidget.options.minAcc ? this.newWidget.options.minAcc : 999999}},
                   {type: this.newWidget.options.geolocType},
                 ]
               }
@@ -691,7 +695,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             scope: {
               where: {
                 and: [
-                  {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}}
+                  {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}},
+                  {accuracy: {lte: this.newWidget.options.minAcc ? this.newWidget.options.minAcc : 999999}}
                 ]
               }
             }
@@ -864,6 +869,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         delete this.newWidget.options.zoom;
         delete this.newWidget.options.lat;
         delete this.newWidget.options.lng;
+        delete this.newWidget.options.minAcc;
         break;
     }
   }
