@@ -517,7 +517,7 @@ class Message {
   public afterSave(ctx: any, next: Function): void {
     // TODO: merge these 2 functions
     let msg = ctx.instance;
-    if (ctx.isNewInstance === 'CREATE') {
+    if (ctx.isNewInstance) {
       this.linkMessageToOrganization(ctx.instance, (device => {
         // Pub-sub
         this.publish(device, msg, 'CREATE');
