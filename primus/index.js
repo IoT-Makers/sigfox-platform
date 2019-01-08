@@ -13,6 +13,8 @@ const log = require('loglevel');
 log.setLevel('info');
 // log.enableAll();
 
+// TODO: opt using mongo aggreagation
+
 let db;
 let AdminRoleID;
 global.primus = Primus.createServer(function connection(spark) {
