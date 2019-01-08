@@ -520,7 +520,7 @@ class Message {
     if (ctx.isNewInstance === 'CREATE') {
       this.linkMessageToOrganization(ctx.instance, (device => {
         // Pub-sub
-        this.publish(device, msg);
+        this.publish(device, msg, 'CREATE');
       }));
       // Calculate success rate and update device
       this.updateDevice(ctx.instance.deviceId, ctx.instance.createdAt);
@@ -529,19 +529,19 @@ class Message {
       Device.findOne({where: {id: ctx.instance.deviceId}, include: "Organizations"}, (err: any, device: any) => {
         err?
           console.error(err) :
-          this.publish(device, msg);
+          this.publish(device, msg, 'UPDATE');
       });
     }
     next();
   }
 
-  private publish(device: any, msg: any) {
+  private publish(device: any, msg: any, action: string) {
     const orgIds = device.Organizations().map((o: any) => o.id.toString());
     const payload = {
       event: "message",
       device: device,
       content: msg,
-      action: "CREATE"
+      action: action
     };
     RabbitPub.getInstance().pub(payload, msg.userId, orgIds);
   }
