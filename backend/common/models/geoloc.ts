@@ -108,6 +108,7 @@ class Geoloc {
 
           // Build the Geoloc object
           const geoloc = new Geoloc;
+          geoloc.id = messageInstance.id + 'sigfox';
           geoloc.type = 'sigfox';
           geoloc.location = new loopback.GeoPoint(data.geoloc.location);
           geoloc.accuracy = data.geoloc.accuracy;
@@ -122,6 +123,7 @@ class Geoloc {
              */
               // Build the GPS Geoloc object
             const geoloc_gps = new Geoloc;
+            geoloc_gps.id = messageInstance.id + 'gps';
             geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
             geoloc_gps.createdAt = messageInstance.createdAt;
             geoloc_gps.userId = messageInstance.userId;
@@ -156,22 +158,11 @@ class Geoloc {
             });
 
           // Creating a new Geoloc
-          Geoloc.findOrCreate(
-            {
-              where: {
-                and: [
-                  {type: geoloc.type},
-                  {messageId: geoloc.messageId}
-                ]
-              }
-            }, // find
-            geoloc, // create
+          Geoloc.create(
+            geoloc,
             (err: any, geolocInstance: any, created: boolean) => { // callback
               if (err) return next(err, geolocInstance);
-              else if (created) {
-                // console.log('Created geoloc as: ', geolocInstance);
-                return next(null, geolocInstance);
-              } else return next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
+              else return next(null, geolocInstance);
             });
         }
       });
@@ -244,22 +235,11 @@ class Geoloc {
             geoloc.deviceId = messageInstance.deviceId;
 
             // Creating a new Geoloc
-            Geoloc.findOrCreate(
-              {
-                where: {
-                  and: [
-                    {type: geoloc.type},
-                    {messageId: geoloc.messageId}
-                  ]
-                }
-              }, // find
-              geoloc, // create
-              (err: any, geolocInstance: any, created: boolean) => { // callback
+            Geoloc.create(
+              geoloc,
+              (err: any, geolocInstance: any) => { // callback
                 if (err) return next(err, geolocInstance);
-                else if (created) {
-                  // console.log('Created geoloc as: ', geolocInstance);
-                  return next(null, geolocInstance);
-                } else return next(null, 'This geoloc for device (' + geoloc.deviceId + ') has already been created.');
+                else return next(null, geolocInstance);
               });
           } else console.log('No position or invalid payload');
         }
@@ -283,6 +263,8 @@ class Geoloc {
 
     // Build the GPS Geoloc object
     const geoloc_gps = new Geoloc;
+    geoloc_gps.id = message.id + 'gps';
+    geoloc_gps.type = 'gps';
     geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
     geoloc_gps.createdAt = message.createdAt;
     geoloc_gps.userId = message.userId;
@@ -291,6 +273,8 @@ class Geoloc {
 
     // Build the Beacon Geoloc object
     const geoloc_beacon = new Geoloc;
+    geoloc_beacon.id = message.id + 'beacon';
+    geoloc_beacon.type = 'beacon';
     geoloc_beacon.location = new loopback.GeoPoint({lat: null, lng: null});
     geoloc_beacon.createdAt = message.createdAt;
     geoloc_beacon.userId = message.userId;
@@ -299,6 +283,8 @@ class Geoloc {
 
     // Build the WiFi Geoloc object
     const geoloc_wifi = new Geoloc;
+    geoloc_wifi.id = message.id + 'wifi';
+    geoloc_wifi.type = 'wifi';
     geoloc_wifi.location = new loopback.GeoPoint({lat: null, lng: null});
     geoloc_wifi.createdAt = message.createdAt;
     geoloc_wifi.userId = message.userId;
@@ -326,7 +312,7 @@ class Geoloc {
           geoloc_wifi.accuracy = p.value;
         }
         // Check if there is WiFi geoloc in parsed data
-        else if (p.key.includes('wlan_')) {
+        else if (p.key.startsWith('wlan_')) {
           hasWifiLocation = true;
           if (p.unit && p.unit !== '') geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString(), signalStrength: Number(p.unit)});
           else geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString()});
@@ -334,13 +320,9 @@ class Geoloc {
       }
     });
 
-    if (hasGpsLocation) {
-      geoloc_gps.type = 'gps';
-      this.createGeoloc(geoloc_gps);
-    }
+    if (hasGpsLocation) this.createGeoloc(geoloc_gps);
 
     if (hasBeaconLocation) {
-      geoloc_beacon.type = 'beacon';
       Beacon.findById(geoloc_beacon.beaconId, (err: any, beacon: any) => {
         if (err) console.error(err);
         else if (beacon) {
@@ -353,7 +335,6 @@ class Geoloc {
     }
 
     if (hasWifiLocation) {
-      geoloc_wifi.type = 'wifi';
       if (this.HERE.app_id && this.HERE.app_code && !process.env.GOOGLE_API_KEY) {
         this.getHereGeolocation(geoloc_wifi).then(value => {
           console.log('[WiFi Geolocation] - Device located successfully with Here.');
@@ -473,7 +454,7 @@ class Geoloc {
 
   createGeoloc(geoloc: any) {
     const Geoloc = this.model;
-    Geoloc.create(
+    Geoloc.upsert(
       geoloc,
       (err: any, geolocInstance: any) => {
         if (err) console.error(err);

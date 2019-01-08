@@ -180,6 +180,7 @@ class Message {
                         // Decode the payload
                         Parser.parsePayload(
                           deviceUpdated.id,
+                          message.createdAt,
                           deviceUpdated.Parser,
                           message.data,
                           req,
@@ -214,6 +215,7 @@ class Message {
                 // Decode the payload
                 Parser.parsePayload(
                   deviceInstance.id,
+                  message.createdAt,
                   deviceInstance.Parser,
                   message.data,
                   req,
@@ -299,7 +301,7 @@ class Message {
             }
           } else console.error("This message for device (" + message.deviceId + ") has already been created.");
         });
-      // ack is true
+      // ack is true => quickly send response to the Sigfox backend (don't wait for message creation to be ended)
       return next(null, result);
     } else {
       // ack is false
