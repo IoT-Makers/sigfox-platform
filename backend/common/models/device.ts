@@ -207,7 +207,8 @@ class Device {
                     else if (messageInstance.computedLocation) {
                       // Build the Geoloc object
                       const geoloc = new Geoloc;
-                      geoloc.type = "sigfox";
+                      geoloc.id = message.id + 'sigfox';
+                      geoloc.type = 'sigfox';
                       geoloc.location = new loopback.GeoPoint({
                         lat: messageInstance.computedLocation.lat,
                         lng: messageInstance.computedLocation.lng
@@ -218,29 +219,10 @@ class Device {
                       geoloc.messageId = messagePostProcess.id;
                       geoloc.deviceId = messagePostProcess.deviceId;
                       // Find or create a new Geoloc
-                      Geoloc.findOrCreate(
-                        {
-                          where: {
-                            and: [
-                              {type: geoloc.type},
-                              {location: geoloc.location},
-                              {createdAt: geoloc.createdAt},
-                              {messageId: geoloc.messageId},
-                              {deviceId: geoloc.deviceId},
-                            ],
-                          },
-                        },
+                      Geoloc.upsert(
                         geoloc,
-                        (err: any, geolocInstance: any, created: boolean) => {
-                          if (err) {
-                            console.error(err);
-                          } else {
-                            if (created) {
-                              // console.log("Created geoloc as: ", geolocInstance);
-                            } else {
-                              console.log("Skipped geoloc creation.");
-                            }
-                          }
+                        (err: any, geolocInstance: any) => {
+                          if (err) console.error(err);
                         });
                     }
                   });
@@ -266,7 +248,6 @@ class Device {
     Device.findOne(
       {
         where: {id: deviceId},
-        limit: 1,
         include: [{
           relation: "Messages",
           scope: {

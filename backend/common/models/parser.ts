@@ -21,10 +21,8 @@ import {Script} from 'vm';
       returns: {arg: "result", type: "array"},
       http: {path: "/parse-payload", verb: "post"},
       accepts: [
-        {arg: "deviceId", type: "string", required: true, description: "Device ID"},
-        {arg: "createdAt", type: "Date", required: true, description: "Message createdAt"},
-        {arg: "fn", type: "string", required: true, description: "Parser function"},
-        {arg: "payload", type: "string", required: true, description: "Sigfox payload (12 bytes max)"},
+        {arg: "device", type: "Device", required: true, description: "The device to parse"},
+        {arg: "message", type: "Message", required: true, description: "The current message"},
         {arg: "req", type: "object", http: {source: "req"}},
       ],
     },
@@ -80,11 +78,19 @@ class Parser {
     next();
   }
 
-  public parsePayload(deviceId: string, createdAt: Date, parser: Parser, payload: string, req: any, next: Function): void {
+  public parsePayload(device: any, message: any, req: any, next: Function): void {
     const userId = req.accessToken.userId;
-    if (!userId) return next(null, "Please login or use a valid access token.");
-    else if (payload.length > 24) return next(null, "Sigfox payload cannot be more than 12 bytes.");
-    //else if (payload === "") return next(null, "Sigfox payload cannot be empty.");
+    const deviceId = device.id;
+    const createdAt = message.createdAt;
+    const parser = device.Parser;
+    const payload = message.data;
+
+    if (!userId) return next("Please login or use a valid access token.");
+    else if (!deviceId) return next("The device must contain an ID.");
+    else if (!createdAt) return next("The message must contain the createdAt date to be parsed.");
+    else if (!parser) return next("The device must contain a Parser to be parsed.");
+    else if (!payload || !payload.length) return next("The message must contain data to be parsed.");
+    else if (payload.length > 24) return next("Sigfox payload cannot be more than 12 bytes.");
 
     // Here we will decode the Sigfox payload
     // @TODO: run it in another container because it can crash the app if something goes wrong...
@@ -92,10 +98,12 @@ class Parser {
     // Get latest message received by the device to inject it in the parser function variables
     const Message = this.model.app.models.Message;
     Message.findOne({
+        order: 'createdAt DESC',
         where: {deviceId: deviceId, createdAt: {lt: createdAt}}
       },
       (err: any, messageInstance: any) => {
         if (err) console.error(err);
+        console.log(messageInstance);
         // Parse
         try {
           const parserScript = this.getCompiledParser(parser);
@@ -136,15 +144,14 @@ class Parser {
       include: [{
         relation: "Devices",
         scope: {
-          where: {userId},
+          where: {userId: userId},
           limit: 100,
           order: "updatedAt DESC",
         },
       }],
     }, (err: any, parser: any) => {
-      if (err) {
-        next(err, null);
-      } else if (parser) {
+      if (err) next(err, null);
+      else if (parser) {
 
         parser = parser.toJSON();
 
@@ -154,10 +161,18 @@ class Parser {
         } else {
 
           parser.Devices.forEach((device: any, deviceCount: number) => {
-            Device.findById(device.id, {include: ["Messages", "Parser"]}, (err: any, deviceInstance: any) => {
-              if (err) {
-                next(err, null);
-              } else if (deviceInstance) {
+            Device.findById(device.id, {
+              include: [
+                {
+                  relation: "Messages",
+                  scope: {
+                    order: 'createdAt ASC'
+                  }
+                },
+                "Parser"]
+            }, (err: any, deviceInstance: any) => {
+              if (err) next(err, null);
+              else if (deviceInstance) {
                 deviceInstance = deviceInstance.toJSON();
                 // console.log(device);
                 if (!deviceInstance.Parser) {
@@ -167,7 +182,7 @@ class Parser {
                   if (deviceInstance.Messages) {
                     deviceInstance.Messages.forEach((message: any, msgCount: number) => {
                       if (message.data) {
-                        Parser.parsePayload(deviceInstance.id, message.createdAt, deviceInstance.Parser, message.data, req, (err: any, data_parsed: any) => {
+                        Parser.parsePayload(deviceInstance, message, req, (err: any, data_parsed: any) => {
                           if (data_parsed) {
                             message.data_parsed = data_parsed;
                             Message.upsert(message, (err: any, messageUpdated: any) => {
@@ -180,13 +195,13 @@ class Parser {
                               }
                             });
                           }
+                          if (deviceCount === parser.Devices.length - 1 && msgCount === deviceInstance.Messages.length - 1) {
+                            // Send the response
+                            console.log("Successfully parsed all messages.");
+                            response.message = "Success";
+                            next(null, response);
+                          }
                         });
-                      }
-                      if (deviceCount === parser.Devices.length - 1 && msgCount === deviceInstance.Messages.length - 1) {
-                        // Send the response
-                        console.log("Successfully parsed all messages.");
-                        response.message = "Success";
-                        next(null, response);
                       }
                     });
                   } else {
@@ -227,7 +242,9 @@ class Parser {
     Device.findById(deviceId, {
       include: [{
         relation: "Messages",
-        order: 'createdAt ASC'
+        scope: {
+          order: 'createdAt ASC'
+        }
       }, "Parser"]
     }, (err: any, device: any) => {
       if (err) next(err, null);
@@ -250,7 +267,7 @@ class Parser {
           if (device.Messages) {
             device.Messages.forEach((message: any, msgCount: number) => {
               if (message.data) {
-                Parser.parsePayload(deviceId, message.createdAt, device.Parser, message.data, req, (err: any, data_parsed: any) => {
+                Parser.parsePayload(device, message, req, (err: any, data_parsed: any) => {
                   if (data_parsed) {
                     message.data_parsed = data_parsed;
                     Message.upsert(message, (err: any, messageUpdated: any) => {
@@ -263,13 +280,13 @@ class Parser {
                       }
                     });
                   }
+                  if (msgCount === device.Messages.length - 1) {
+                    // Send the response
+                    console.log("Successfully parsed all messages.");
+                    response.message = "Success";
+                    next(null, response);
+                  }
                 });
-              }
-              if (msgCount === device.Messages.length - 1) {
-                // Send the response
-                console.log("Successfully parsed all messages.");
-                response.message = "Success";
-                next(null, response);
               }
             });
           } else {

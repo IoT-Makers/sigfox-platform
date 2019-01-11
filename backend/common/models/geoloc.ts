@@ -227,13 +227,13 @@ class Geoloc {
                 geoloc.type = 'wifi';
                 break;
             }
+            geoloc.id = messageInstance.id + geoloc.type;
             geoloc.location = new loopback.GeoPoint({lat: data.computedLocation.lat, lng: data.computedLocation.lng});
             geoloc.accuracy = data.computedLocation.radius;
             geoloc.createdAt = messageInstance.createdAt;
             geoloc.userId = userId;
             geoloc.messageId = messageInstance.id;
             geoloc.deviceId = messageInstance.deviceId;
-            geoloc.id = messageInstance.id + geoloc.type;
             // Creating a new Geoloc
             Geoloc.create(
               geoloc,

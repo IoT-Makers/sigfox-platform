@@ -179,10 +179,8 @@ class Message {
 
                         // Decode the payload
                         Parser.parsePayload(
-                          deviceUpdated.id,
-                          message.createdAt,
-                          deviceUpdated.Parser,
-                          message.data,
+                          deviceUpdated,
+                          message,
                           req,
                           (err: any, data_parsed: any) => {
                             if (err) {
@@ -214,10 +212,8 @@ class Message {
 
                 // Decode the payload
                 Parser.parsePayload(
-                  deviceInstance.id,
-                  message.createdAt,
-                  deviceInstance.Parser,
-                  message.data,
+                  deviceInstance,
+                  message,
                   req,
                   (err: any, data_parsed: any) => {
                     if (err) console.error(err);
