@@ -223,9 +223,15 @@ class Geoloc {
               case 2:
                 geoloc.type = 'sigfox';
                 break;
+              case 5:
+                geoloc.type = 'wifi';
+                geoloc.source = 'sigfox';
+                break;
               case 6:
                 geoloc.type = 'wifi';
                 break;
+              default:
+                geoloc.type = 'unknown';
             }
             geoloc.id = messageInstance.id + geoloc.type;
             geoloc.location = new loopback.GeoPoint({lat: data.computedLocation.lat, lng: data.computedLocation.lng});

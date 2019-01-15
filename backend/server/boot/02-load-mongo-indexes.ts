@@ -136,6 +136,14 @@ module.exports = (app: any) => {
         ]);
         console.log('Updated index for OrganizationMessage');
 
+        db.collection('OrganizationAlert').createIndexes([
+          {key: {messageId: 1}, name: 'alertId'},
+          {key: {deviceId: 1}, name: 'deviceId'},
+          {key: {organizationId: 1}, name: 'organizationId'},
+          {key: {createdAt: -1}, name: 'createdAt'}
+        ]);
+        console.log('Updated index for OrganizationAlert');
+
         db.collection('OrganizationGeoloc').createIndexes([
           {key: {geolocId: 1}, name: 'geolocId'},
           {key: {organizationId: 1}, name: 'organizationId'},
