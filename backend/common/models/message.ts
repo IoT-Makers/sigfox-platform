@@ -170,7 +170,7 @@ class Message {
                 deviceInstanceFunction.updateAttribute('parserId', parserId, (err: any, deviceUpdated: any) => {
                   if (err) return next(err, data);
                   else {
-                    console.log("Updated device parser as: ", deviceUpdated);
+                    // console.log("Updated device parser as: ", deviceUpdated);
                     Parser.findById(parserId, (err: any, parserInstance: any) => {
                       if (err) return next(err, data);
                       else if (parserInstance && parserInstance.function) {
@@ -288,7 +288,7 @@ class Message {
                 (err: any, res: any) => {
                 });
               // Trigger alerts (if any)
-              Alert.triggerByDevice(
+              Alert.triggerByData(
                 message.data_parsed,
                 device,
                 req,
@@ -315,7 +315,7 @@ class Message {
                 (err: any, res: any) => {
                 });
               // Trigger alerts (if any)
-              Alert.triggerByDevice(
+              Alert.triggerByData(
                 message.data_parsed,
                 device,
                 req,

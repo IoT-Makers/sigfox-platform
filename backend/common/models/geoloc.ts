@@ -1,6 +1,5 @@
 import {Model} from '@mean-expert/model';
 import {RabbitPub} from '../../server/RabbitPub';
-
 const loopback = require('loopback');
 
 /**
@@ -146,16 +145,6 @@ class Geoloc {
               }
             });
           }
-
-          // Trigger alerts (if any)
-          Alert.triggerBySigfoxGeoloc(
-            geoloc.location.lat,
-            geoloc.location.lng,
-            geoloc.deviceId,
-            req,
-            (err: any, res: any) => {
-              if (err) console.error(err);
-            });
 
           // Creating a new Geoloc
           Geoloc.create(
@@ -439,15 +428,17 @@ class Geoloc {
     });
   }
 
-  updateDeviceLocatedAt(deviceId: string, createdAt: Date, cb: Function) {
+  updateDeviceLocatedAt(geoloc: any, cb: Function) {
     // Models
     const Device = this.model.app.models.Device;
-
+    const deviceId = geoloc.deviceId;
+    const createdAt = geoloc.createdAt;
     Device.findById(deviceId, (err: any, deviceInstance: any) => {
       if (err) console.error(err);
       else if (deviceInstance) {
         deviceInstance.updateAttribute('locatedAt', createdAt);
         cb(deviceInstance);
+        this.checkForAlert(geoloc, deviceInstance);
       }
     });
   }
@@ -487,9 +478,8 @@ class Geoloc {
   public afterSave(ctx: any, next: Function): void {
     // Pub-sub
     let geoloc = ctx.instance;
-
     if (ctx.isNewInstance) {
-      this.updateDeviceLocatedAt(geoloc.deviceId, geoloc.createdAt, (device: any) => {
+      this.updateDeviceLocatedAt(geoloc, (device: any) => {
         const payload = {
           event: "geoloc",
           device: device,
@@ -500,6 +490,79 @@ class Geoloc {
       });
     }
     next();
+  }
+
+  private checkForAlert(currentGeoloc: any, device: any): void {
+    const Alert = this.model.app.models.Alert;
+    Alert.find({where: {deviceId: device._id, active: true, key: "geoloc"}}, (err: any, alerts: any) => {
+      if (!err && alerts.length > 0) {
+        const Geoloc = this.model.app.models.Geoloc;
+        Geoloc.find({where: {deviceId: device._id, id: {neq: currentGeoloc.id}}, limit: 1, order: "createdAt DESC"}, (err: any, lastGeoloc: any) => {
+          if (!lastGeoloc || !lastGeoloc[0]) return;
+          alerts.forEach((alert: any, index: any) => {
+            const currentLoc = currentGeoloc.location;
+            const lastLoc = lastGeoloc[0].location;
+            const currentGeoPoint = new loopback.GeoPoint({lat: Number(currentLoc.lat), lng: Number(currentLoc.lng)});
+            const lastGeoPoint = new loopback.GeoPoint({lat: Number(lastLoc.lat), lng: Number(lastLoc.lng)});
+            alert.geofence.forEach((alertGeofence: any) => {
+              const currentInZone = this.isDeviceInZone(currentGeoPoint, alertGeofence);
+              const lastInZone = this.isDeviceInZone(lastGeoPoint, alertGeofence);
+              if (alertGeofence.direction.includes("enter")) {
+                if (currentInZone && !lastInZone) {
+                  this.sendAlert(alert, 'device enters the zone', device, currentGeoloc);
+                }
+              }
+              if (alertGeofence.direction.includes("exit")) {
+                if (!currentInZone && lastInZone) {
+                  this.sendAlert(alert, 'device exits the zone', device, currentGeoloc);
+                }
+              }
+            });
+          });
+        });
+      }
+    });
+  }
+
+  private sendAlert(alert: any, message: string, device: any, location: any) {
+    if (alert.message) {
+      message = alert.message;
+    }
+    const Alert = this.model.app.models.Alert;
+    Alert.triggerAlert(alert, device, `{"text": "${message}"}`, location);
+  }
+
+  // wrapper
+  public isDeviceInZone(marker: any, geofence: any): boolean {
+    if (geofence.radius)
+      return this.isDeviceInsideCircle(marker, geofence);
+    else
+      return this.isDeviceInsidePolygon(marker, geofence);
+  }
+
+  private isDeviceInsideCircle(marker: any, alertGeofence: any): boolean {
+    let inside = false;
+    const location_geofence = new loopback.GeoPoint(alertGeofence.location[0]);
+    const distanceToGeofence = marker.distanceTo(location_geofence, {type: "meters"});
+    if (distanceToGeofence <= alertGeofence.radius) {
+      inside = !inside;
+    }
+    return inside;
+  }
+
+  private isDeviceInsidePolygon(marker: any, polygon: any): boolean {
+    const x = marker.lat, y = marker.lng;
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i].lat, yi = polygon[i].lng;
+      const xj = polygon[j].lat, yj = polygon[j].lng;
+      const intersect = ((yi > y) !== (yj > y))
+        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) {
+        inside = !inside;
+      }
+    }
+    return inside;
   }
 }
 

@@ -21,7 +21,7 @@ const Nexmo = require('nexmo');
     afterSave: {name: "after save", type: "operation"},
   },
   remotes: {
-    triggerByDevice: {
+    triggerByData: {
       returns: {arg: "result", type: "array"},
       http: {path: "/trigger-by-device", verb: "post"},
       accepts: [
@@ -30,14 +30,15 @@ const Nexmo = require('nexmo');
         {arg: "req", type: "object", http: {source: "req"}},
       ],
     },
-    triggerBySigfoxGeoloc: {
+    triggerAlert: {
       returns: {arg: "result", type: "array"},
-      http: {path: "/trigger-by-sigfox-geoloc", verb: "post"},
+      http: {path: "/trigger-alert", verb: "post"},
       accepts: [
-        {arg: "lat", type: "number", required: true, description: "The lat of the device"},
-        {arg: "lng", type: "number", required: true, description: "The lng of the device"},
-        {arg: "deviceId", type: "string", required: true, description: "The device ID"},
-        {arg: "req", type: "object", http: {source: "req"}},
+        {arg: "alert", type: "object", required: true},
+        {arg: "device", type: "object", required: true},
+        {arg: "alertMessage", type: "string", required: false},
+        {arg: "location", type: "object", required: false},
+        {arg: "test", type: "boolean", required: false},
       ],
     },
     test: {
@@ -62,31 +63,6 @@ class Alert {
     next();
   }
 
-  public isDeviceInsideCircle(marker: any, alertGeofence: any): boolean {
-    let inside = false;
-    const location_geofence = new loopback.GeoPoint(alertGeofence.location[0]);
-    const distanceToGeofence = marker.distanceTo(location_geofence, {type: "meters"});
-    if (distanceToGeofence <= alertGeofence.radius) {
-      inside = !inside;
-    }
-    return inside;
-  }
-
-  public isDeviceInsidePolygon(marker: any, polygon: any): boolean {
-    const x = marker.lat, y = marker.lng;
-    let inside = false;
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-      const xi = polygon[i].lat, yi = polygon[i].lng;
-      const xj = polygon[j].lat, yj = polygon[j].lng;
-      const intersect = ((yi > y) !== (yj > y))
-        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-      if (intersect) {
-        inside = !inside;
-      }
-    }
-    return inside;
-  }
-
   private test(alertId: string, req: any, next: Function): void {
     // Models
     const Alert = this.model.app.models.Alert;
@@ -105,83 +81,7 @@ class Alert {
     next();
   }
 
-  private triggerBySigfoxGeoloc(lat: number, lng: number, deviceId: string, req: any, next: Function): void {
-    // Models
-    const Device = this.model.app.models.Device;
-
-    // Get userId
-    const userId = req.accessToken.userId;
-    if (!userId) {
-      next(null, "Please login or use a valid access token.");
-    }
-    Device.findOne(
-      {
-        where: {
-          and: [
-            {id: deviceId},
-            {userId},
-          ],
-        },
-        include: ["Alerts"],
-      }, (err: any, deviceInstance: any) => {
-        if (err || !deviceInstance) {
-          console.error("Device not found.");
-          next(err, "Device not found.");
-        } else {
-          deviceInstance = deviceInstance.toJSON();
-          if (!deviceInstance.Alerts) {
-            next(null, "No alerts set for this device.");
-          }
-
-          const alerts = deviceInstance.Alerts;
-
-          if (lat && lng) {
-            // Loop in all the alerts
-            alerts.forEach((alert: any, index: any) => {
-              // Only check active alerts
-              if (alert.active && alert.geofence && alert.key === "geoloc_sigfox") {
-                /**
-                 *  Triggering alerts from "lat" and "lng" from Sigfox geoloc
-                 *  If the key being read is set for an alert and if it is activated
-                 */
-                const location_device = new loopback.GeoPoint({lat: Number(lat), lng: Number(lng)});
-                alert.geofence.forEach((alertGeofence: any) => {
-                  // If geofence is a circle
-                  if (alertGeofence.radius) {
-                    // Check trigger conditions
-                    if (alertGeofence.in && this.isDeviceInsideCircle(location_device, alertGeofence)) {
-                      // Trigger alert
-                      let alertMessage = alert.message;
-                      if (!alert.message) {
-                        alertMessage = "Device is in the circle!";
-                      }
-                      this.triggerAlert(alert, deviceInstance, alertMessage, location_device);
-                      // Alert has been triggered, removing it from array
-                      alerts.splice(index, 1);
-                    }
-                  } else {
-                    // Check trigger conditions
-                    if (alertGeofence.in && this.isDeviceInsidePolygon(location_device, alertGeofence.location)) {
-                      // Trigger alert
-                      let alertMessage = alert.message;
-                      if (!alert.message) {
-                        alertMessage = "Device is in the polygon!";
-                      }
-                      this.triggerAlert(alert, deviceInstance, alertMessage, location_device);
-                      // Alert has been triggered, removing it from array
-                      alerts.splice(index, 1);
-                    }
-                  }
-                });
-              }
-            });
-          }
-          next(null, "Processed Sigfox geoloc alerts.");
-        }
-      });
-  }
-
-  private triggerByDevice(data_parsed: any, device: any, req: any, next: Function): void {
+  private triggerByData(data_parsed: any, device: any, req: any, next: Function): void {
     // Get userId
     const userId = req.accessToken.userId;
     if (!userId) {
@@ -196,48 +96,7 @@ class Alert {
     alerts.forEach((alert: any, index: any) => {
       // Only check active alerts
       if (alert.active) {
-        if (alert.geofence && alert.key !== "geoloc_sigfox") {
-          /**
-           *  Triggering alerts from "lat" and "lng" in "data_parsed"
-           *  If the key being read is set for an alert and if it is activated
-           */
-          alert.geofence.forEach((alertGeofence: any) => {
-            const lat_device: any = _.filter(data_parsed, {key: "lat"})[0];
-            const lng_device: any = _.filter(data_parsed, {key: "lng"})[0];
-            if (lat_device && lat_device.value && lng_device && lng_device.value) {
-              const location_device = new loopback.GeoPoint({
-                lat: Number(lat_device.value),
-                lng: Number(lng_device.value)
-              });
-              // If geofence is a circle
-              if (alertGeofence.radius) {
-                // Check trigger conditions
-                if (alertGeofence.in && this.isDeviceInsideCircle(location_device, alertGeofence)) {
-                  // Trigger alert
-                  let alertMessage = alert.message;
-                  if (!alert.message) {
-                    alertMessage = "Device is in the circle!";
-                  }
-                  this.triggerAlert(alert, device, alertMessage, location_device);
-                  // Alert has been triggered, removing it from array
-                  alerts.splice(index, 1);
-                }
-              } else {
-                // Check trigger conditions
-                if (alertGeofence.in && this.isDeviceInsidePolygon(location_device, alertGeofence.location)) {
-                  // Trigger alert
-                  let alertMessage = alert.message;
-                  if (!alert.message) {
-                    alertMessage = "Device is in the polygon!";
-                  }
-                  this.triggerAlert(alert, device, alertMessage, location_device);
-                  // Alert has been triggered, removing it from array
-                  alerts.splice(index, 1);
-                }
-              }
-            }
-          });
-        } else if (alert.value) {
+        if (alert.value) {
           /**
            *  Triggering alerts from keys in "data_parsed"
            *  If the key being read is set for an alert and if it is activated
@@ -301,8 +160,9 @@ class Alert {
     next(null, "Processed alerts.");
   }
 
-  private triggerAlert(alert: any, device: any, alertMessage: string, location?: any, test?: boolean) {
+  private triggerAlert(alert: any, device: any, alertMessage?: string, location?: any, test?: boolean) {
     // Models
+    console.error(alertMessage);
     const Connector = this.model.app.models.Connector;
     const Alert = this.model.app.models.Alert;
     const AlertHistory = this.model.app.models.AlertHistory;
@@ -429,11 +289,16 @@ class Alert {
                 if (err) {
                   console.error(err);
                 } else {
-                  console.log("Updated alert as: ", alertInstance);
                   // Save triggered alerts in AlertHistory
-                  alertInstance.message = alertMessage;
-                  AlertHistory.create(alertInstance, (err: any, alert: any) => {
-                    console.log("Created alert history");
+                  let alertClone = JSON.parse(JSON.stringify(alertInstance));
+                  delete alertClone.id;
+                  if (alertMessage)
+                    alertClone.message = JSON.stringify(alertMessage);
+
+                  AlertHistory.create(alertClone, (err: any, alert: any) => {
+                    err?
+                      console.error(err):
+                      console.log("Created alert history");
                   });
                 }
               });
