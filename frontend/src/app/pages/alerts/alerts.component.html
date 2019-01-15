@@ -114,6 +114,9 @@
                         </ng-container>
                       </div>
                     </ng-container>
+                    <div class="col-md-9">
+                      TODO
+                    </div>
                   </ng-container>
                   <div class="small text-gray-dark" *ngIf="alert.message">
                     <strong>Message:</strong> {{alert.message}}
@@ -262,6 +265,19 @@
                    [leafletOptions]="mapOptions"
                    [leafletDrawOptions]="drawOptions">
               </div>
+              <div class="form-group row" *ngIf="alertToAddOrEdit.deviceId && alertToAddOrEdit.key">
+                <label tooltip="" class="offset-1 col-md-3 form-control-label">Geofence direction
+                  <small>(required)</small>
+                </label>
+                <div class="col-md-8">
+                  <angular2-multiselect #geofenceDirection
+                                        name="geofenceDirections"
+                                        [data]="geofenceDirectionOptions"
+                                        [(ngModel)]="geofenceDirections"
+                                        required>
+                  </angular2-multiselect>
+                </div>
+              </div>
             </ng-container>
 
             <div class="form-group row" *ngIf="alertToAddOrEdit.deviceId && alertToAddOrEdit.key">
@@ -392,6 +408,19 @@
                    (leafletMapReady)="onMapReady($event)"
                    [leafletOptions]="mapOptions"
                    [leafletDrawOptions]="drawOptions">
+              </div>
+              <div class="form-group row" *ngIf="alertToAddOrEdit.deviceId && alertToAddOrEdit.key">
+                <label tooltip="" class="offset-1 col-md-3 form-control-label">Geofence direction
+                  <small>(required)</small>
+                </label>
+                <div class="col-md-8">
+                  <angular2-multiselect #geofenceDirection
+                                        name="geofenceDirections"
+                                        [data]="geofenceDirectionOptions"
+                                        [(ngModel)]="geofenceDirections"
+                                        required>
+                  </angular2-multiselect>
+                </div>
               </div>
             </ng-container>
 
