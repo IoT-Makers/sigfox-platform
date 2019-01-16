@@ -259,6 +259,13 @@
               <span *ngIf="countMessagesReady" class="badge badge-message">{{countMessages}}</span>
             </a>
           </li>
+          <!--<li class="nav-item">
+            <a class="nav-link" routerLinkActive="active"
+               [routerLink]="['/organization/', organization.id, 'alerts']">
+              <i class="fa fa-bell text-alert"></i> Alerts
+              <span *ngIf="countAlertsReady" class="badge badge-alert">{{countAlerts}}</span>
+            </a>
+          </li>-->
 
 
           <ng-container *ngIf="admin">

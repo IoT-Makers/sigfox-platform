@@ -1,9 +1,7 @@
 import {Model} from "@mean-expert/model";
-import * as _ from "lodash";
 import {decrypt} from "../utils";
 import {RabbitPub} from '../../../server/RabbitPub';
 
-const loopback = require("loopback");
 const nodemailer = require("nodemailer");
 const Nexmo = require('nexmo');
 
