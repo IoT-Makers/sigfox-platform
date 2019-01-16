@@ -117,6 +117,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
     enableSearchFilter: false,
     classes: 'select-one'
   };
+  private geofenceDirectionOptions = [
+    {"id":1,"itemName":"enter"},
+    {"id":2,"itemName":"exit"}];
+  private geofenceDirections = [];
 
   // Notifications
   private toast;
@@ -304,7 +308,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   setAlertType(): void {
-    if (this.alertToAddOrEdit.key.startsWith('geoloc_')) {
+    if (this.alertToAddOrEdit.key.startsWith('geoloc')) {
       delete this.alertToAddOrEdit.value;
       this.alertToAddOrEdit.geofence = [];
       // Load map
@@ -332,6 +336,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     this.alertToAddOrEdit = new Alert();
     // Delete geofence array by default
     delete this.alertToAddOrEdit.geofence;
+    this.geofenceDirections = JSON.parse(JSON.stringify(this.geofenceDirectionOptions));
     // Open modal
     this.addOrEditAlertModal.show();
   }
@@ -359,8 +364,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
     // Open modal
     this.addOrEditAlertModal.show();
     // Load map
+    console.log(alert);
     if (this.alertToAddOrEdit.geofence) {
       this.loadMapGeofence();
+      this.geofenceDirections = alert.geofence[0].geofenceDirections;
     }
   }
 
@@ -406,6 +413,9 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   editAlert(alert?: Alert, key?: string): void {
     if (!alert) alert = this.alertToAddOrEdit;
+    if (this.alertToAddOrEdit.key === 'geoloc') {
+      this.setGeolocDirection();
+    }
     this.userApi.updateByIdAlerts(this.user.id, alert.id, alert).subscribe(value => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
@@ -436,7 +446,12 @@ export class AlertsComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  // TODO: enforce at least one geofence
   addAlert(): void {
+    if (this.alertToAddOrEdit.key === 'geoloc') {
+      this.setGeolocDirection();
+    }
     this.userApi.createAlerts(this.user.id, this.alertToAddOrEdit).subscribe((alert: Alert) => {
       if (this.toast)
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
@@ -447,6 +462,16 @@ export class AlertsComponent implements OnInit, OnDestroy {
         this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
       this.toast = this.toasterService.pop('error', 'Error', 'Please fill in the alert form.' + err.error.message);
     });
+  }
+
+  setGeolocDirection(): void {
+    this.alertToAddOrEdit.geofence.forEach((gf:any) => {
+      gf.direction = this.geofenceDirections.map((o:any) => {
+        return o.itemName;
+      });
+      return gf;
+    });
+    console.log(this.alertToAddOrEdit);
   }
 
   loadKeys(deviceId: string): void {
@@ -468,7 +493,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
         {
           relation: 'Geolocs',
           scope: {
-            where: {type: 'sigfox'},
             limit: 1,
             order: 'createdAt DESC'
           }
@@ -479,8 +503,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
       if (devices[0].Geolocs) {
         console.log(devices[0].Geolocs);
         const item = {
-          id: 'geoloc_sigfox',
-          itemName: 'Geoloc Sigfox'
+          id: 'geoloc',
+          itemName: 'Geoloc'
         };
         this.selectKeys.push(item);
       }
@@ -492,16 +516,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
             itemName: p.key
           };
           this.selectKeys.push(item);
-          if (item.id === 'lat') {
-            const item = {
-              id: 'geoloc_gps',
-              itemName: 'Geoloc GPS'
-            };
-            if (this.selectKeys.indexOf(item) === -1) {
-              this.selectKeys.push(item);
-              this.selectKeys.splice(1, 0, this.selectKeys.splice(this.selectKeys.indexOf(item), 1)[0]);
-            }
-          }
         });
       }
     });
