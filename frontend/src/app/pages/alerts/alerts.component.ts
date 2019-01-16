@@ -276,6 +276,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     }).subscribe((alerts: Alert[]) => {
       this.alerts = alerts;
       this.alertsReady = true;
+      console.log(this.alerts)
     });
 
     // Devices
@@ -466,7 +467,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
 
   setGeolocDirection(): void {
     this.alertToAddOrEdit.geofence.forEach((gf:any) => {
-      gf.direction = this.geofenceDirections.map((o:any) => {
+      gf.directions = this.geofenceDirections.map((o:any) => {
         return o.itemName;
       });
       return gf;

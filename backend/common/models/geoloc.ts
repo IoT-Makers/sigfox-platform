@@ -507,12 +507,12 @@ class Geoloc {
             alert.geofence.forEach((alertGeofence: any) => {
               const currentInZone = this.isDeviceInZone(currentGeoPoint, alertGeofence);
               const lastInZone = this.isDeviceInZone(lastGeoPoint, alertGeofence);
-              if (alertGeofence.direction.includes("enter")) {
+              if (alertGeofence.directions.includes("enter")) {
                 if (currentInZone && !lastInZone) {
                   this.sendAlert(alert, 'device enters the zone', device, currentGeoloc);
                 }
               }
-              if (alertGeofence.direction.includes("exit")) {
+              if (alertGeofence.directions.includes("exit")) {
                 if (!currentInZone && lastInZone) {
                   this.sendAlert(alert, 'device exits the zone', device, currentGeoloc);
                 }
