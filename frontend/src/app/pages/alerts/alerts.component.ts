@@ -227,6 +227,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
         alertGeofence.in = true;
         this.alertToAddOrEdit.geofence.push(alertGeofence);
       } else if (layer instanceof L.Polygon) {
+        layer = layer;
         alertGeofence.location = layer.getLatLngs()[0];
         alertGeofence.in = true;
         this.alertToAddOrEdit.geofence.push(alertGeofence);
@@ -246,6 +247,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
         alertGeofence.in = true;
         this.alertToAddOrEdit.geofence.push(alertGeofence);
       } else if (layer instanceof L.Polygon) {
+        layer = layer;
         alertGeofence.location = layer.getLatLngs()[0];
         alertGeofence.in = true;
         this.alertToAddOrEdit.geofence.push(alertGeofence);
