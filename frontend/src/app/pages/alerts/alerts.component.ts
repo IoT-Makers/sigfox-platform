@@ -118,8 +118,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
     classes: 'select-one'
   };
   private geofenceDirectionOptions = [
-    {"id":1,"itemName":"enter"},
-    {"id":2,"itemName":"exit"}];
+    {itemName:"enter"},
+    {itemName:"exit"}];
   private geofenceDirections = [];
 
   // Notifications
@@ -227,7 +227,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
         alertGeofence.in = true;
         this.alertToAddOrEdit.geofence.push(alertGeofence);
       } else if (layer instanceof L.Polygon) {
-        layer = layer;
         alertGeofence.location = layer.getLatLngs()[0];
         alertGeofence.in = true;
         this.alertToAddOrEdit.geofence.push(alertGeofence);
@@ -247,7 +246,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
         alertGeofence.in = true;
         this.alertToAddOrEdit.geofence.push(alertGeofence);
       } else if (layer instanceof L.Polygon) {
-        layer = layer;
         alertGeofence.location = layer.getLatLngs()[0];
         alertGeofence.in = true;
         this.alertToAddOrEdit.geofence.push(alertGeofence);
@@ -276,7 +274,6 @@ export class AlertsComponent implements OnInit, OnDestroy {
     }).subscribe((alerts: Alert[]) => {
       this.alerts = alerts;
       this.alertsReady = true;
-      console.log(this.alerts)
     });
 
     // Devices
@@ -365,10 +362,12 @@ export class AlertsComponent implements OnInit, OnDestroy {
     // Open modal
     this.addOrEditAlertModal.show();
     // Load map
-    console.log(alert);
     if (this.alertToAddOrEdit.geofence) {
       this.loadMapGeofence();
-      this.geofenceDirections = alert.geofence[0].geofenceDirections;
+      this.geofenceDirections = alert.geofence[0].directions.map(item => {
+        return {itemName: item};
+      });
+      console.log(this.geofenceDirections);
     }
   }
 
@@ -415,6 +414,10 @@ export class AlertsComponent implements OnInit, OnDestroy {
   editAlert(alert?: Alert, key?: string): void {
     if (!alert) alert = this.alertToAddOrEdit;
     if (this.alertToAddOrEdit.key === 'geoloc') {
+      if (!this.alertToAddOrEdit.geofence.length) {
+        this.toast = this.toasterService.pop('error', 'Missing geofence', 'Please add at least one geofence');
+        return;
+      }
       this.setGeofenceDirections();
     }
     this.userApi.updateByIdAlerts(this.user.id, alert.id, alert).subscribe(value => {
@@ -448,9 +451,13 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
 
-  // TODO: enforce at least one geofence
+  // TODO: use validator to enforce at least one geofence
   addAlert(): void {
     if (this.alertToAddOrEdit.key === 'geoloc') {
+      if (!this.alertToAddOrEdit.geofence.length) {
+        this.toast = this.toasterService.pop('error', 'Missing geofence', 'Please add at least one geofence');
+        return;
+      }
       this.setGeofenceDirections();
     }
     this.userApi.createAlerts(this.user.id, this.alertToAddOrEdit).subscribe((alert: Alert) => {
@@ -499,10 +506,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
           }
         }]
     }).subscribe((devices: Device[]) => {
-      console.log(devices);
       // Store geoloc specific alert keys
       if (devices[0].Geolocs) {
-        console.log(devices[0].Geolocs);
         const item = {
           id: 'geoloc',
           itemName: 'Geoloc'
