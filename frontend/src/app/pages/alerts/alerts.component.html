@@ -97,6 +97,9 @@
                     </div>
                   </ng-container>
                   <ng-container *ngIf="alert.geofence">
+                    <div class="small text-gray-dark">
+                      {{alert.geofence[0].directions.toString()}}
+                    </div>
                     <ng-container *ngFor="let geofence of alert.geofence; let i = index">
                       <div *ngIf="geofence.radius" class="small text-gray-dark">
                         <strong class="text-alert">{{i + 1}}. </strong>
@@ -114,9 +117,7 @@
                         </ng-container>
                       </div>
                     </ng-container>
-                    <div class="col-md-9">
-                      TODO
-                    </div>
+
                   </ng-container>
                   <div class="small text-gray-dark" *ngIf="alert.message">
                     <strong>Message:</strong> {{alert.message}}

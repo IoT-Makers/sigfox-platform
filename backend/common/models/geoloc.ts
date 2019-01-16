@@ -500,10 +500,10 @@ class Geoloc {
 
   private checkForAlert(currentGeoloc: any, device: any): void {
     const Alert = this.model.app.models.Alert;
-    Alert.find({where: {deviceId: device._id, active: true, key: "geoloc"}}, (err: any, alerts: any) => {
+    Alert.find({where: {and: [{deviceId: device.id}, {active: true}, {key: "geoloc"}]}}, (err: any, alerts: any) => {
       if (!err && alerts.length > 0) {
         const Geoloc = this.model.app.models.Geoloc;
-        Geoloc.find({where: {deviceId: device._id, id: {neq: currentGeoloc.id}}, limit: 1, order: "createdAt DESC"}, (err: any, lastGeoloc: any) => {
+        Geoloc.find({where: {and: [{deviceId: device.id}, {id: {neq: currentGeoloc.id}}]}, limit: 1, order: "createdAt DESC"}, (err: any, lastGeoloc: any) => {
           if (!lastGeoloc || !lastGeoloc[0]) return;
           alerts.forEach((alert: any, index: any) => {
             const currentLoc = currentGeoloc.location;
@@ -513,12 +513,12 @@ class Geoloc {
             alert.geofence.forEach((alertGeofence: any) => {
               const currentInZone = this.isDeviceInZone(currentGeoPoint, alertGeofence);
               const lastInZone = this.isDeviceInZone(lastGeoPoint, alertGeofence);
-              if (alertGeofence.direction.includes("enter")) {
+              if (alertGeofence.directions.includes("enter")) {
                 if (currentInZone && !lastInZone) {
                   this.sendAlert(alert, 'device enters the zone', device, currentGeoloc);
                 }
               }
-              if (alertGeofence.direction.includes("exit")) {
+              if (alertGeofence.directions.includes("exit")) {
                 if (!currentInZone && lastInZone) {
                   this.sendAlert(alert, 'device exits the zone', device, currentGeoloc);
                 }

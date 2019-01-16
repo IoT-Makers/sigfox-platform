@@ -118,8 +118,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
     classes: 'select-one'
   };
   private geofenceDirectionOptions = [
-    {"id":1,"itemName":"enter"},
-    {"id":2,"itemName":"exit"}];
+    {itemName:"enter"},
+    {itemName:"exit"}];
   private geofenceDirections = [];
 
   // Notifications
@@ -364,10 +364,12 @@ export class AlertsComponent implements OnInit, OnDestroy {
     // Open modal
     this.addOrEditAlertModal.show();
     // Load map
-    console.log(alert);
     if (this.alertToAddOrEdit.geofence) {
       this.loadMapGeofence();
-      this.geofenceDirections = alert.geofence[0].geofenceDirections;
+      this.geofenceDirections = alert.geofence[0].directions.map(item => {
+        return {itemName: item};
+      });
+      console.log(this.geofenceDirections);
     }
   }
 
@@ -414,7 +416,11 @@ export class AlertsComponent implements OnInit, OnDestroy {
   editAlert(alert?: Alert, key?: string): void {
     if (!alert) alert = this.alertToAddOrEdit;
     if (this.alertToAddOrEdit.key === 'geoloc') {
-      this.setGeolocDirection();
+      if (!this.alertToAddOrEdit.geofence.length) {
+        this.toast = this.toasterService.pop('error', 'Missing geofence', 'Please add at least one geofence');
+        return;
+      }
+      this.setGeofenceDirections();
     }
     this.userApi.updateByIdAlerts(this.user.id, alert.id, alert).subscribe(value => {
       if (this.toast)
@@ -447,10 +453,14 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
 
-  // TODO: enforce at least one geofence
+  // TODO: use validator to enforce at least one geofence
   addAlert(): void {
     if (this.alertToAddOrEdit.key === 'geoloc') {
-      this.setGeolocDirection();
+      if (!this.alertToAddOrEdit.geofence.length) {
+        this.toast = this.toasterService.pop('error', 'Missing geofence', 'Please add at least one geofence');
+        return;
+      }
+      this.setGeofenceDirections();
     }
     this.userApi.createAlerts(this.user.id, this.alertToAddOrEdit).subscribe((alert: Alert) => {
       if (this.toast)
@@ -464,9 +474,9 @@ export class AlertsComponent implements OnInit, OnDestroy {
     });
   }
 
-  setGeolocDirection(): void {
+  setGeofenceDirections(): void {
     this.alertToAddOrEdit.geofence.forEach((gf:any) => {
-      gf.direction = this.geofenceDirections.map((o:any) => {
+      gf.directions = this.geofenceDirections.map((o:any) => {
         return o.itemName;
       });
       return gf;
@@ -498,10 +508,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
           }
         }]
     }).subscribe((devices: Device[]) => {
-      console.log(devices);
       // Store geoloc specific alert keys
       if (devices[0].Geolocs) {
-        console.log(devices[0].Geolocs);
         const item = {
           id: 'geoloc',
           itemName: 'Geoloc'
