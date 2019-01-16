@@ -415,7 +415,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   editAlert(alert?: Alert, key?: string): void {
     if (!alert) alert = this.alertToAddOrEdit;
     if (this.alertToAddOrEdit.key === 'geoloc') {
-      this.setGeolocDirection();
+      this.setGeofenceDirections();
     }
     this.userApi.updateByIdAlerts(this.user.id, alert.id, alert).subscribe(value => {
       if (this.toast)
@@ -451,7 +451,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
   // TODO: enforce at least one geofence
   addAlert(): void {
     if (this.alertToAddOrEdit.key === 'geoloc') {
-      this.setGeolocDirection();
+      this.setGeofenceDirections();
     }
     this.userApi.createAlerts(this.user.id, this.alertToAddOrEdit).subscribe((alert: Alert) => {
       if (this.toast)
@@ -465,7 +465,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
     });
   }
 
-  setGeolocDirection(): void {
+  setGeofenceDirections(): void {
     this.alertToAddOrEdit.geofence.forEach((gf:any) => {
       gf.directions = this.geofenceDirections.map((o:any) => {
         return o.itemName;
