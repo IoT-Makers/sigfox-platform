@@ -118,8 +118,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
     classes: 'select-one'
   };
   private geofenceDirectionOptions = [
-    {itemName:"enter"},
-    {itemName:"exit"}];
+    {"id":0,"itemName":"enter"},
+    {"id":1,"itemName":"exit"}];
   private geofenceDirections = [];
 
   // Notifications
@@ -366,8 +366,8 @@ export class AlertsComponent implements OnInit, OnDestroy {
     // Load map
     if (this.alertToAddOrEdit.geofence) {
       this.loadMapGeofence();
-      this.geofenceDirections = alert.geofence[0].directions.map(item => {
-        return {itemName: item};
+      this.geofenceDirections = alert.geofence[0].directions.map((item:string, index: number) => {
+        return {id: index, itemName: item};
       });
       console.log(this.geofenceDirections);
     }
