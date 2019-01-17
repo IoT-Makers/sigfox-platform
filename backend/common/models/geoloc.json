@@ -100,7 +100,8 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
-        "postSigfox"
+        "postSigfox",
+        "postDataAdvanced"
       ]
     },
     {
