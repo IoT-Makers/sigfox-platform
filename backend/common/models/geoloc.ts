@@ -1,6 +1,8 @@
 import {Model} from '@mean-expert/model';
 import {RabbitPub} from '../../server/RabbitPub';
 const loopback = require('loopback');
+const circleToPolygon = require('circle-to-polygon');
+var GreinerHormann = require('greiner-hormann');
 
 /**
  * @module Geoloc
@@ -505,8 +507,10 @@ class Geoloc {
             const currentGeoPoint = new loopback.GeoPoint({lat: Number(currentLoc.lat), lng: Number(currentLoc.lng)});
             const lastGeoPoint = new loopback.GeoPoint({lat: Number(lastLoc.lat), lng: Number(lastLoc.lng)});
             alert.geofence.forEach((alertGeofence: any) => {
-              const currentInZone = this.isDeviceInZone(currentGeoPoint, alertGeofence);
-              const lastInZone = this.isDeviceInZone(lastGeoPoint, alertGeofence);
+              let precision = currentGeoloc.precision || currentGeoloc.accuracy;
+              const currentInZone = this.isDeviceInZone(currentGeoPoint, precision, alertGeofence);
+              precision = lastLoc.precision || lastLoc.accuracy || 0;
+              const lastInZone = this.isDeviceInZone(lastGeoPoint, precision, alertGeofence);
               if (alertGeofence.directions.includes("enter")) {
                 if (currentInZone && !lastInZone) {
                   this.sendAlert(alert, 'device enters the zone', device, currentGeoloc);
@@ -533,36 +537,86 @@ class Geoloc {
   }
 
   // wrapper
-  public isDeviceInZone(marker: any, geofence: any): boolean {
+  public isDeviceInZone(marker: any, precision: number, geofence: any): boolean {
     if (geofence.radius)
-      return this.isDeviceInsideCircle(marker, geofence);
+      return this.isDeviceInsideCircle(marker, precision, geofence);
     else
-      return this.isDeviceInsidePolygon(marker, geofence);
+      return this.isDeviceInsidePolygon(marker, precision, geofence);
   }
 
-  private isDeviceInsideCircle(marker: any, alertGeofence: any): boolean {
-    let inside = false;
-    const location_geofence = new loopback.GeoPoint(alertGeofence.location[0]);
-    const distanceToGeofence = marker.distanceTo(location_geofence, {type: "meters"});
-    if (distanceToGeofence <= alertGeofence.radius) {
-      inside = !inside;
-    }
-    return inside;
-  }
-
-  private isDeviceInsidePolygon(marker: any, polygon: any): boolean {
-    const x = marker.lat, y = marker.lng;
-    let inside = false;
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-      const xi = polygon[i].lat, yi = polygon[i].lng;
-      const xj = polygon[j].lat, yj = polygon[j].lng;
-      const intersect = ((yi > y) !== (yj > y))
-        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-      if (intersect) {
-        inside = !inside;
+  private isDeviceInsidePolygon(marker: any, precision: number, polygon: any): boolean {
+    if (precision) {
+      const geolocPoly = this.circle2Polygon(marker, precision);
+      const geolocPolyV = geolocPoly.coordinates[0].map((x: any) => {return {x: x[0], y: x[1]}});
+      let polygonV = polygon.location.map((x: any) => {return {x: x.lng, y: x.lat}});
+      polygonV.push(polygonV[0]); // make closed polygon
+      // console.log(geolocPoly.coordinates[0][0]);
+      console.log(geolocPolyV);
+      console.log(polygonV);
+      const intersection = GreinerHormann.intersection(geolocPolyV, polygonV);
+      if (!intersection || intersection.length === 0) {
+        return false;
+      } else {
+        const r = precision;
+        const areaGeoloc = Math.PI * r * r;
+        const areaIntersection = this.polygonArea(intersection);
+        return areaIntersection / areaGeoloc >= 0.5;
       }
+    } else {
+      const x = marker.lat, y = marker.lng;
+      let inside = false;
+      for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i].lat, yi = polygon[i].lng;
+        const xj = polygon[j].lat, yj = polygon[j].lng;
+        const intersect = ((yi > y) !== (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) {
+          inside = !inside;
+        }
+      }
+      return inside;
     }
-    return inside;
+  }
+
+  private isDeviceInsideCircle(marker: any, precision: number, alertGeofence: any): boolean {
+    const location_geofence = new loopback.GeoPoint(alertGeofence.location[0]);
+    if (precision) {
+      const d = marker.distanceTo(location_geofence, {type: "meters"});
+      const R = alertGeofence.radius, r = precision;
+      console.error(R, r, d);
+      if (d <= R) {
+        if (r+d < R)
+          return true; // 100% in
+        const areaGeoloc = Math.PI * r * r;
+        const areaIntersection = 0.5 * Math.sqrt((-d + r + R) * (d + r - R) * (d - r + R) * (d + r + R));
+        console.error(222222, areaGeoloc, areaIntersection, areaIntersection / areaGeoloc);
+        return areaIntersection / areaGeoloc >= 0.5;
+      } else {
+        return false;
+      }
+    } else {
+      const distanceToGeofence = marker.distanceTo(location_geofence, {type: "meters"});
+      return distanceToGeofence <= alertGeofence.radius;
+    }
+  }
+
+  private polygonArea(vertices: any) {
+    let total = 0;
+    for (let i = 0, l = vertices.length; i < l; i++) {
+      let addX = vertices[i].x;
+      let addY = vertices[i === vertices.length - 1 ? 0 : i + 1].y;
+      let subX = vertices[i === vertices.length - 1 ? 0 : i + 1].x;
+      let subY = vertices[i].y;
+      total += (addX * addY * 0.5);
+      total -= (subX * subY * 0.5);
+    }
+    return Math.abs(total);
+  }
+
+  private circle2Polygon(center: any, r: number) {
+    const coordinates = [center.lng, center.lat]; //[lon, lat]
+    const numberOfEdges = 16;                     //optional that defaults to 32
+    return circleToPolygon(coordinates, r, numberOfEdges);
   }
 }
 
