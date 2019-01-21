@@ -295,7 +295,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.api = this.organization ? this.organizationApi : this.userApi;
       this.id = this.organization ? this.organization.id : this.user.id;
       this.unsubscribe();
-      this.subscribe(this.id);
       // Load dashboard
       this.api.findByIdDashboards(this.id, params.id).subscribe((dashboard: Dashboard) => {
         this.dashboard = dashboard;
@@ -567,22 +566,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     else if (this.newWidget.type === 'map') {
       this.newWidget.filter = {
         limit: 100,
-        order: 'messagedAt DESC',
-        include: [
-          {
-            relation: 'Messages',
-            scope: {
-              limit: 1,
-              order: 'createdAt DESC',
-              include: [{
-                relation: 'Geolocs',
-                scope: {
-                  order: 'accuracy ASC',
-                  limit: 1
-                }
-              }]
-            }
-          }],
+        include: [{
+          relation: 'Geolocs',
+          scope: {
+            limit: 3,
+            order: 'createdAt DESC'
+          }
+        }],
         where: {
           or: []
         }
@@ -638,26 +628,16 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           order: 'messagedAt DESC',
           limit: 300,
           include: [{
-            relation: 'Messages',
+            relation: 'Geolocs',
             scope: {
-              order: 'createdAt ASC',
-              limit: 1,
-              fields: ['id'],
               where: {
                 and: [
-                  {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}}
+                  {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}},
+                  {accuracy: {lte: this.newWidget.options.minAcc ? this.newWidget.options.minAcc : 99999999}}
                 ]
               },
-              include: [{
-                relation: 'Geolocs',
-                scope: {
-                  where: {
-                    accuracy: {lte: this.newWidget.options.minAcc ? this.newWidget.options.minAcc : 99999999}
-                  },
-                  order: 'accuracy ASC',
-                  limit: 1
-                }
-              }]
+              order: 'createdAt DESC',
+              limit: 5
             }
           }]
         };
@@ -671,7 +651,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           include: [{
             relation: 'Geolocs',
             scope: {
-              order: 'createdAt ASC',
+              order: 'createdAt DESC',
               where: {
                 and: [
                   {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}},
@@ -892,7 +872,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
     this.api.getDevices(this.id, filter).subscribe((devices: any[]) => {
       devices.forEach((device: Device) => {
-        if (device.Messages[0].data_parsed) {
+        if (device.Messages && device.Messages[0].data_parsed) {
           device.Messages[0].data_parsed.forEach(o => {
             const item = {
               id: o.key,
@@ -1114,11 +1094,18 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       if (this.widgets) {
         this.dashboardReady = false;
         // Build widgets
+        let topics = new Set();
         this.widgets.forEach((widget: any, countWidgets: number) => {
           widget.ready = false;
           // Load widgets
           this.setWidgetData(widget);
+          if (widget.type === "tracking" || widget.type === "map") {
+            topics.add("geoloc");
+          } else if (!(widget.type === 'text' || widget.type === 'image' || widget.type === 'divider')) {
+            topics.add("message");
+          }
         });
+        this.subscribe(this.id, Array.from(topics));
         this.dashboardReady = true;
       }
     });
@@ -1163,12 +1150,26 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
         // Map
         else if (widget.type === 'map') {
+          console.log(devices);
+          devices.forEach((device: any) => {
+            device.Geolocs = this.groupBy(device.Geolocs, "messageId")[0];
+            device.Geolocs = [device.Geolocs.reduce((acc: any, c: any) => (c.precision || c.accuracy) < (acc.precision || acc.accuracy) ? c.precision : acc, device.Geolocs[0])];
+          });
+          console.log(devices);
           widget.data = devices;
           widget.ready = true;
         }
 
         // Tracking
         else if (widget.type === 'tracking') {
+          devices.forEach((device: any) => {
+            device.Geolocs = this.groupBy(device.Geolocs, "messageId");
+            device.Geolocs.forEach((geolocs: any[], idx: number) => {
+              const v = geolocs.reduce((acc:any, c:any) => (c.precision || c.accuracy) < (acc.precision || acc.accuracy) ? c.precision : acc, geolocs[0]);
+              device.Geolocs = [v];
+            });
+          });
+
           widget.data = devices;
           // Default parameters
           widget.data.forEach(device => {
@@ -1780,12 +1781,63 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     }
   };
 
-  subscribe(id: string): void {
-    this.rt.informCurrentPage(id, ['widget']);
+  geolocHandler = (payload: any) => {
+    console.log(payload);
+    // TODO: apply geoloc filters (geoloc type)
+    if (payload.action == "CREATE") {
+      this.widgets.forEach((widget: any) => {
+        if (widget.type === "tracking" || widget.type === "map") {
+          console.log(widget);
+          for (let device of widget.data) {
+            if (device.id === payload.content.deviceId) {
+              const lastGeoloc = device.Geolocs[device.Geolocs.length-1];
+              if (lastGeoloc.messageId === payload.content.messageId) {
+                if ((lastGeoloc.accuracy || lastGeoloc.precision) > payload.accuracy) {
+                  device.Geolocs.push(payload.content);
+                }
+              } else {
+                device.Geolocs.push(payload.content);
+              }
+              if (widget.type === "map") {
+                device.Geolocs = [device.Geolocs[device.Geolocs.length-1]];
+              }
+              return;
+            }
+          }
+        }
+      };
+    }
+  };
+
+  messageHandler = (payload: any) => {
+    // if (payload.action == "CREATE" || payload.action == "UPDATE") {
+    //   this.loadWidgets();
+    // } else if (payload.action == "DELETE") {
+    //   this.widgets = this.widgets.filter(function (obj) {
+    //     return obj.id !== payload.content.id;
+    //   });
+    // }
+  };
+
+  subscribe(id: string, topics: string[]): void {
+    this.rt.informCurrentPage(id, ['widget'].concat(topics));
     this.rtWidgetHandler = this.rt.addListener("widget", this.rtWidgetHandler);
+    if (topics.includes("geoloc")) {
+      this.rtWidgetHandler = this.rt.addListener("geoloc", this.geolocHandler);
+    }
+    if (topics.includes("message")) {
+      this.rtWidgetHandler = this.rt.addListener("message", this.messageHandler);
+    }
   }
 
   unsubscribe(): void {
     this.rt.removeListener(this.rtWidgetHandler);
   }
+
+  groupBy(xs, key): any[] {
+    return Object.values(xs.reduce(function(rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {}));
+  };
 }

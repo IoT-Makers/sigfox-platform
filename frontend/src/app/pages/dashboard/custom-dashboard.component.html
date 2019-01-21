@@ -182,8 +182,8 @@
                          placeholder="Search for a place">
 
                   <ng-container *ngFor="let device of widget.data; let i = index">
-                    <ng-container *ngIf="device.Messages && device.Messages[0].Geolocs">
-                      <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
+                    <ng-container *ngIf="device.Geolocs">
+                      <ng-container *ngFor="let geoloc of device.Geolocs">
                         <!-- Sigfox -->
                         <ng-container *ngIf="geoloc.type === 'sigfox'">
                           <agm-marker (mouseOut)="markerOut(i)" (mouseOver)="markerOver(i)" [zIndex]="3"
