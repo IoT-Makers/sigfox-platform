@@ -556,9 +556,6 @@ class Geoloc {
       const geolocPolyV = geolocPoly.coordinates[0].map((x: any) => {return {x: x[0], y: x[1]}});
       let polygonV = polygon.location.map((x: any) => {return {x: x.lng, y: x.lat}});
       polygonV.push(polygonV[0]); // make closed polygon
-      // console.log(geolocPoly.coordinates[0][0]);
-      console.log(geolocPolyV);
-      console.log(polygonV);
       const intersection = GreinerHormann.intersection(geolocPolyV, polygonV);
       if (!intersection || intersection.length === 0) {
         return false;
@@ -589,13 +586,11 @@ class Geoloc {
     if (precision) {
       const d = marker.distanceTo(location_geofence, {type: "meters"});
       const R = alertGeofence.radius, r = precision;
-      console.error(R, r, d);
       if (d <= R) {
         if (r+d < R)
           return true; // 100% in
         const areaGeoloc = Math.PI * r * r;
         const areaIntersection = 0.5 * Math.sqrt((-d + r + R) * (d + r - R) * (d - r + R) * (d + r + R));
-        console.error(222222, areaGeoloc, areaIntersection, areaIntersection / areaGeoloc);
         return areaIntersection / areaGeoloc >= 0.5;
       } else {
         return false;
