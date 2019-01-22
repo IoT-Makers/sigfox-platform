@@ -1764,42 +1764,54 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   };
 
   geolocHandler = (payload: any) => {
-    // map has implicit "preferBestAccuracy"
-    console.log(payload);
+    // console.log(payload);
     const newGeoloc = payload.content;
     if (payload.action == "CREATE") {
       this.widgets.forEach((widget: any) => {
-        if (widget.type === "tracking" || widget.type === "map") {
+        if (widget.type === "tracking") {
           for (let device of widget.data) {
-            if (widget.type === "tracking" && !device.visibility) continue;
+            if (!device.visibility) continue;
+            if (device.id !== newGeoloc.deviceId) continue;
             const geolocType = widget.options.geolocType;
-            if (widget.type === "map" || geolocType === 'preferBestAccuracy' || geolocType === 'all' || geolocType === newGeoloc.type) {
-              if (device.id === newGeoloc.deviceId) {
-                if (device.Geolocs && device.Geolocs[device.Geolocs.length - 1].messageId === newGeoloc.messageId) {
-                  const lastGeoloc = device.Geolocs[device.Geolocs.length - 1];
-                  if (newGeoloc.accuracy < (lastGeoloc.accuracy || lastGeoloc.precision)) {
-                    // remove less precise one
+            if (geolocType === 'preferBestAccuracy' || geolocType === 'all' || geolocType === newGeoloc.type) {
+              if (device.Geolocs && device.Geolocs[device.Geolocs.length - 1].messageId === newGeoloc.messageId) {
+                const lastGeoloc = device.Geolocs[device.Geolocs.length - 1];
+                if (newGeoloc.accuracy < (lastGeoloc.accuracy || lastGeoloc.precision)) {
+                  // remove less precise one
+                  if (geolocType === 'preferBestAccuracy')
                     device.Geolocs.splice(device.Geolocs.length - 1, 1);
-                    device.Geolocs.push(newGeoloc);
-                  }
-                } else {
-                  // geoloc for new message or no existing geoloc, need to check accuracy filter
-                  if (widget.type === "tracking") {
-                    for (let cond of widget.filter.include[0].scope.where.and) {
-                      if (cond.accuracy && cond.accuracy.lte && newGeoloc.accuracy < cond.accuracy.lte) {
-                        device.Geolocs ? device.Geolocs.push(newGeoloc) : device.Geolocs = [newGeoloc];
-                      }
-                    }
-                  } else {
-                    device.Geolocs ? device.Geolocs.push(newGeoloc) : device.Geolocs = [newGeoloc];
-                  }
+                  device.Geolocs.push(newGeoloc);
                 }
-                // map: keep only the latest
-                if (widget.type === "map") {
-                  device.Geolocs = [device.Geolocs[device.Geolocs.length - 1]];
+              } else {
+                // geoloc for new message or no existing geoloc, need to check accuracy filter
+                for (let cond of widget.filter.include[0].scope.where.and) {
+                  // find accuracy filter and apply
+                  if (cond.accuracy && cond.accuracy.lte && newGeoloc.accuracy < cond.accuracy.lte) {
+                    device.Geolocs ? device.Geolocs.push(newGeoloc) : device.Geolocs = [newGeoloc];
+                    break;
+                  }
                 }
               }
             }
+          }
+        } else
+        if (widget.type === "map") {
+          // map has implicit "preferBestAccuracy"
+          for (let device of widget.data) {
+            if (device.id !== newGeoloc.deviceId) continue;
+            if (device.Geolocs && device.Geolocs[device.Geolocs.length - 1].messageId === newGeoloc.messageId) {
+              // if has a previous geoloc and it belongs to the same message
+              const lastGeoloc = device.Geolocs[device.Geolocs.length - 1];
+              if (newGeoloc.accuracy < (lastGeoloc.accuracy || lastGeoloc.precision)) {
+                // remove less precise one
+                device.Geolocs.push(newGeoloc);
+              }
+            } else {
+              device.Geolocs ? device.Geolocs.push(newGeoloc) : device.Geolocs = [newGeoloc];
+            }
+            // keep only the latest
+            device.Geolocs = [device.Geolocs[device.Geolocs.length - 1]];
+
           }
         }
       });
