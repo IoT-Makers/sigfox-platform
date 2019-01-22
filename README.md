@@ -88,6 +88,6 @@ A short wiki can be found [here](https://github.com/IoT-Makers/sigfox-platform/w
 
 ## Contributors
 
-Feel free to submit a Pull Request and don't forget to add you name and your useful links ;)
+* [Siyu Zhang](https://github.com/siyu6974)
 
-> Made with &nbsp;:heart:&nbsp; by Antoine de Chassey & Louis Moreau
+Feel free to submit a Pull Request and don't forget to add you name and your useful links.
