@@ -1150,26 +1150,17 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
         // Map
         else if (widget.type === 'map') {
-          console.log(devices);
           devices.forEach((device: any) => {
             device.Geolocs = this.groupBy(device.Geolocs, "messageId")[0];
-            device.Geolocs = [device.Geolocs.reduce((acc: any, c: any) => (c.precision || c.accuracy) < (acc.precision || acc.accuracy) ? c.precision : acc, device.Geolocs[0])];
+            device.Geolocs = [device.Geolocs.reduce((acc: any, c: any) => (c.precision || c.accuracy) < (acc.precision || acc.accuracy) ? c : acc)];
           });
-          console.log(devices);
+
           widget.data = devices;
           widget.ready = true;
         }
 
         // Tracking
         else if (widget.type === 'tracking') {
-          devices.forEach((device: any) => {
-            device.Geolocs = this.groupBy(device.Geolocs, "messageId");
-            device.Geolocs.forEach((geolocs: any[], idx: number) => {
-              const v = geolocs.reduce((acc:any, c:any) => (c.precision || c.accuracy) < (acc.precision || acc.accuracy) ? c.precision : acc, geolocs[0]);
-              device.Geolocs = [v];
-            });
-          });
-
           widget.data = devices;
           // Default parameters
           widget.data.forEach(device => {
@@ -1177,7 +1168,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             device.directionsDisplayStore = [];
             device.color = this.getRandomColor();
           });
-
           widget.ready = true;
         }
 
@@ -1658,23 +1648,15 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     if (device.visibility) {
       const widgetFilter = Object.assign({}, widget.filter);
       widgetFilter.where = {id: device.id};
-      widgetFilter.include[0].scope.limit = 5000;
-
+      widgetFilter.include[0].scope.limit = 500;
       this.getDevicesWithFilter(widget, widgetFilter).subscribe((devices: any[]) => {
-        device.Messages = devices[0].Messages;
         const bounds: LatLngBounds = new google.maps.LatLngBounds();
-
+        device.Geolocs = devices[0].Geolocs;
         if (widget.options.geolocType === 'preferBestAccuracy') {
-          devices[0].Messages.forEach((message: any) => {
-            message.Geolocs.forEach((geoloc: Geoloc) => {
-              device.Geolocs.push(geoloc);
-              /* if (message.Geolocs.length > 1 && geoloc.type !== 'gps') {
-                 device.Geolocs.splice(geoloc, 1);
-               }*/
-            });
+          device.Geolocs = this.groupBy(device.Geolocs, "messageId");
+          device.Geolocs = device.Geolocs.map((groupedGeolocs: any[]) => {
+            return groupedGeolocs.reduce((acc:any, c:any) => (c.precision || c.accuracy) < (acc.precision || acc.accuracy) ? c : acc);
           });
-        } else {
-          device.Geolocs = devices[0].Geolocs;
         }
         for (const geoloc of device.Geolocs) {
           bounds.extend(new google.maps.LatLng(geoloc.location.lat, geoloc.location.lng));
@@ -1782,30 +1764,45 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   };
 
   geolocHandler = (payload: any) => {
+    // map has implicit "preferBestAccuracy"
     console.log(payload);
-    // TODO: apply geoloc filters (geoloc type)
+    const newGeoloc = payload.content;
     if (payload.action == "CREATE") {
       this.widgets.forEach((widget: any) => {
         if (widget.type === "tracking" || widget.type === "map") {
-          console.log(widget);
           for (let device of widget.data) {
-            if (device.id === payload.content.deviceId) {
-              const lastGeoloc = device.Geolocs[device.Geolocs.length-1];
-              if (lastGeoloc.messageId === payload.content.messageId) {
-                if ((lastGeoloc.accuracy || lastGeoloc.precision) > payload.accuracy) {
-                  device.Geolocs.push(payload.content);
+            if (widget.type === "tracking" && !device.visibility) continue;
+            const geolocType = widget.options.geolocType;
+            if (widget.type === "map" || geolocType === 'preferBestAccuracy' || geolocType === 'all' || geolocType === newGeoloc.type) {
+              if (device.id === newGeoloc.deviceId) {
+                if (device.Geolocs && device.Geolocs[device.Geolocs.length - 1].messageId === newGeoloc.messageId) {
+                  const lastGeoloc = device.Geolocs[device.Geolocs.length - 1];
+                  if (newGeoloc.accuracy < (lastGeoloc.accuracy || lastGeoloc.precision)) {
+                    // remove less precise one
+                    device.Geolocs.splice(device.Geolocs.length - 1, 1);
+                    device.Geolocs.push(newGeoloc);
+                  }
+                } else {
+                  // geoloc for new message or no existing geoloc, need to check accuracy filter
+                  if (widget.type === "tracking") {
+                    for (let cond of widget.filter.include[0].scope.where.and) {
+                      if (cond.accuracy && cond.accuracy.lte && newGeoloc.accuracy < cond.accuracy.lte) {
+                        device.Geolocs ? device.Geolocs.push(newGeoloc) : device.Geolocs = [newGeoloc];
+                      }
+                    }
+                  } else {
+                    device.Geolocs ? device.Geolocs.push(newGeoloc) : device.Geolocs = [newGeoloc];
+                  }
                 }
-              } else {
-                device.Geolocs.push(payload.content);
+                // map: keep only the latest
+                if (widget.type === "map") {
+                  device.Geolocs = [device.Geolocs[device.Geolocs.length - 1]];
+                }
               }
-              if (widget.type === "map") {
-                device.Geolocs = [device.Geolocs[device.Geolocs.length-1]];
-              }
-              return;
             }
           }
         }
-      };
+      });
     }
   };
 
