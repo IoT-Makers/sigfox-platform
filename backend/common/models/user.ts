@@ -47,7 +47,7 @@ class user {
       const options = {
         type: "email",
         to: info.email,
-        from: "Sigfox Platform <sigfox-platform@iotageny.sigfox.com>",
+        from: "Sigfox Platform <sigfox-platform@iotagency.sigfox.com>",
         subject: "Reset your password on sigfox platform",
         html: html_body,
         redirect: "",
@@ -205,7 +205,7 @@ class user {
       const options = {
         type: "email",
         to: userInstance.email,
-        from: "Sigfox Platform <sigfox-platform@iotageny.sigfox.com>",
+        from: "Sigfox Platform <sigfox-platform@iotagency.sigfox.com>",
         subject: "Welcome to the Sigfox Platform!",
         html: html_body,
         redirect: "",
