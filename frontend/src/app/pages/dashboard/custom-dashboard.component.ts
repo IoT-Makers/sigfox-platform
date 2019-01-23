@@ -174,7 +174,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   };
   private selectCategoriesSettings = {
     singleSelection: false,
-    text: 'Select categories',
+    text: 'Select category filters',
     selectAllText: 'Select all',
     unSelectAllText: 'Unselect all',
     enableSearchFilter: true,
@@ -301,29 +301,40 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         this.loadWidgets();
       });
 
-      // Categories
-      this.api.getCategories(this.id).subscribe((categories: Category[]) => {
-        this.selectCategories = [];
-        this.categories = categories;
-        this.categories.forEach((category: Category) => {
-          const item = {
-            id: category.id,
-            itemName: category.name
-          };
-          this.selectCategories.push(item);
-        });
-      });
+      // // Categories
+      // this.api.getCategories(this.id).subscribe((categories: Category[]) => {
+      //   this.selectCategories = [];
+      //   this.categories = categories;
+      //   this.categories.forEach((category: Category) => {
+      //     const item = {
+      //       id: category.id,
+      //       itemName: category.name
+      //     };
+      //     this.selectCategories.push(item);
+      //   });
+      // });
       // Devices
       this.api.getDevices(this.id, {order: 'messagedAt DESC'}).subscribe((devices: Device[]) => {
         this.selectDevices = [];
         this.devices = devices;
+        let selectableCategoryFilters = new Set();
         this.devices.forEach((device: Device) => {
           const item = {
             id: device.id,
             itemName: device.name ? device.name + ' (' + device.id + ')' : device.id
           };
           this.selectDevices.push(item);
+          if (device.properties) {
+            device.properties.forEach((p: any) => {
+              const item = {
+                id: `${p.key}=${p.value}`,
+                itemName: `${p.key} = ${p.value}`
+              };
+              selectableCategoryFilters.add(item);
+            });
+          }
         });
+        this.selectCategories = Array.from(selectableCategoryFilters);
       });
     }));
   }
@@ -760,7 +771,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       });
       // Set categories
       this.selectedCategories.forEach((item: any) => {
-        this.newWidget.filter.where.or.push({categoryId: item.id});
+        const tmp = item.id.split('=');
+        this.newWidget.filter.where.or.push({properties: {elemMatch: {key:tmp[0], value:tmp[1]}}});
       });
     }
 
