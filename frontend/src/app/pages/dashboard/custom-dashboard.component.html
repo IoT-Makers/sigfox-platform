@@ -1611,9 +1611,9 @@
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectOneDeviceSettings"
                                         (onSelect)="loadSelectableKeys(); selectOneDevice.isActive = false;"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
                                         (onSelectAll)="loadSelectableKeys();"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];"
                                         required>
                   </angular2-multiselect>
                 </div>
@@ -1622,8 +1622,8 @@
                 <label class="col-md-3 form-control-label">Key</label>
                 <div class="col-md-9">
                   <angular2-multiselect #selectOneKey
-                                        name="selectKeys"
-                                        [data]="selectKeys"
+                                        name="selectableKeys"
+                                        [data]="selectableKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
                                         (onSelect)="selectOneKey.isActive = false;"
@@ -1645,9 +1645,9 @@
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
                                         (onSelect)="loadSelectableKeys();"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
                                         (onSelectAll)="loadSelectableKeys();"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
 
@@ -1657,9 +1657,9 @@
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
                                         (onSelect)="loadSelectableKeys();"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
                                         (onSelectAll)="loadSelectableKeys();"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1727,9 +1727,9 @@
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
                                         (onSelect)="loadSelectableKeys();"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
                                         (onSelectAll)="loadSelectableKeys();"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
 
@@ -1739,9 +1739,9 @@
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
                                         (onSelect)="loadSelectableKeys();"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
                                         (onSelectAll)="loadSelectableKeys();"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -1995,8 +1995,8 @@
                 <label class="col-md-3 form-control-label">Key</label>
                 <div class="col-md-9">
                   <angular2-multiselect #selectOneKey
-                                        name="selectKeys"
-                                        [data]="selectKeys"
+                                        name="selectableKeys"
+                                        [data]="selectableKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
                                         (onSelect)="selectOneKey.isActive = false;"
@@ -2034,8 +2034,8 @@
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
 
@@ -2044,8 +2044,8 @@
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -2053,11 +2053,11 @@
               <div class="form-group row" *ngIf="selectedCategories.length > 0 || selectedDevices.length > 0">
                 <label class="col-md-3 form-control-label">Keys</label>
                 <div class="col-md-9">
-                  <angular2-multiselect name="selectKeys"
+                  <angular2-multiselect name="selectableKeys"
                                         (onOpen)="loadSelectableKeys();"
-                                        [data]="selectKeys"
+                                        [data]="selectableKeys"
                                         [(ngModel)]="selectedKeys"
-                                        [settings]="selectKeysSettings"
+                                        [settings]="selectableKeysSettings"
                                         required>
                   </angular2-multiselect>
                 </div>
@@ -2103,9 +2103,9 @@
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
                                         (onSelect)="loadSelectableKeys();"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
                                         (onSelectAll)="loadSelectableKeys();"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
 
@@ -2115,9 +2115,9 @@
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
                                         (onSelect)="loadSelectableKeys();"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
                                         (onSelectAll)="loadSelectableKeys();"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -2127,7 +2127,7 @@
                 <div class="col-md-9">
                   <angular2-multiselect #selectOneKey
                                         [ngModelOptions]="{standalone: true}"
-                                        [data]="selectKeys"
+                                        [data]="selectableKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
                                         (onSelect)="selectOneKey.isActive = false;"
@@ -2189,9 +2189,9 @@
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
                                         (onSelect)="loadSelectableKeys();"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
                                         (onSelectAll)="loadSelectableKeys();"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
 
@@ -2201,9 +2201,9 @@
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
                                         (onSelect)="loadSelectableKeys();"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
                                         (onSelectAll)="loadSelectableKeys();"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -2213,7 +2213,7 @@
                 <div class="col-md-9">
                   <angular2-multiselect #selectOneKey
                                         [ngModelOptions]="{standalone: true}"
-                                        [data]="selectKeys"
+                                        [data]="selectableKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
                                         (onSelect)="selectOneKey.isActive = false;"
@@ -2251,9 +2251,9 @@
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
                                         (onSelect)="loadSelectableKeys();"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
                                         (onSelectAll)="loadSelectableKeys();"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
 
@@ -2263,9 +2263,9 @@
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
                                         (onSelect)="loadSelectableKeys();"
-                                        (onDeSelect)="selectKeys = []; selectedKeys = [];"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
                                         (onSelectAll)="loadSelectableKeys();"
-                                        (onDeSelectAll)="selectKeys = []; selectedKeys = [];">
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
                   </angular2-multiselect>
                 </div>
               </div>
@@ -2275,7 +2275,7 @@
                 <div class="col-md-9">
                   <angular2-multiselect #selectOneKey
                                         [ngModelOptions]="{standalone: true}"
-                                        [data]="selectKeys"
+                                        [data]="selectableKeys"
                                         [(ngModel)]="selectedKeys"
                                         [settings]="selectOneSettings"
                                         (onSelect)="selectOneKey.isActive = false;"
