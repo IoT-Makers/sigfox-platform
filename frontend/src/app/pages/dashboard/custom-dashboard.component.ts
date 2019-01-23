@@ -97,7 +97,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   private selectCategories: Array<Object> = [];
   private selectDevices: Array<Object> = [];
-  private selectKeys: Array<Object> = [];
+  private selectableKeys: Array<Object> = [];
 
   private selectIconSettings = {
     singleSelection: true,
@@ -165,7 +165,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     enableSearchFilter: false,
     classes: 'select-one'
   };
-  private selectKeysSettings = {
+  private selectableKeysSettings = {
     singleSelection: false,
     text: 'Select keys',
     selectAllText: 'Select all',
@@ -859,7 +859,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     // Reset the selected keys
     this.selectedKeys = [];
     // Reset the selectable keys
-    this.selectKeys = [];
+    this.selectableKeys = [];
     // Prepare widget keys object
     this.newWidget.options.keys = [];
     // Fetch all the keys belonging to selected devices
@@ -879,8 +879,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               itemName: o.key + ' (' + device.id + ')'
             };
             // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
-            //if (!_.find(this.selectKeys, item))
-            this.selectKeys.push(item);
+            //if (!_.find(this.selectableKeys, item))
+            this.selectableKeys.push(item);
           });
         }
       });
