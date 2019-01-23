@@ -417,7 +417,7 @@ function categoryHandler(payload) {
         let targets = getTargetClients(userId, 'category');
         send(targets.countOnly, payload.event, payload.action, null);
         if (!targets.complete) return;
-        if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, parser);
+        if (payload.action === "DELETE") return send(targets.complete, payload.event, payload.action, category);
 
         db.collection("Device").find({categoryId: category.id}).toArray((err, devices) => {
             addAttribute(category, "Devices", devices);
