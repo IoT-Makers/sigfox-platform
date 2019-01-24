@@ -102,24 +102,21 @@ class Device {
     const Organization = this.model.app.models.Organization;
     // console.log(Organization.prototype.__link__Messages);
     Organization.findById(ctx.args.fk, (err: any, org: any) => {
-      console.log(ctx.instance.id);
-      console.log(org.id);
       const db = Message.dataSource.connector.db;
       // Delete organization shared messages
       const OrganizationMessage = db.collection('OrganizationMessage');
       OrganizationMessage.deleteMany({deviceId: ctx.instance.id, organizationId: org.id},
         (err: Error, info: Object) => {
           console.error(err);
-          next();
         });
       // Delete organization shared alerts
       const OrganizationAlert = db.collection('OrganizationAlert');
       OrganizationAlert.deleteMany({deviceId: ctx.instance.id, organizationId: org.id},
         (err: Error, info: Object) => {
           console.error(err);
-          next();
         });
     });
+    next();
 
     // Message.find({where: {deviceId: ctx.instance.id}, fields: {id: true}}, (err: any, messages: any) => {
     //   if (!err) {
