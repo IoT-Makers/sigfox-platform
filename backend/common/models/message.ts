@@ -120,7 +120,26 @@ class Message {
           deviceInstance = deviceInstance.toJSON();
           // Store the userId in the message
           message.userId = deviceInstance.userId;
-          if (created) console.log("Created new device: " + message.deviceId);
+          if (created) {
+            console.log("Created new device: " + message.deviceId);
+            // share device if device in a shared category
+            if (device.categoryId) {
+              const Category = this.model.app.models.Category;
+              Category.findOne({where: {id: device.categoryId}, include: ["Organizations"]},
+                (err: any, category: any) => {
+                  if (err) console.error(err);
+                  else if (category) {
+                    category = category.toJSON();
+                    if (category.Organizations) {
+                      // category is shared
+                      category.Organizations.forEach((org: any) => {
+                        deviceInstanceFunction.Organizations.add(org.id, {deviceId: device.id});
+                      });
+                    }
+                  }
+                });
+            }
+          }
 
           if (deviceInstance.locked === false && deviceInstance.userId.toString() !== userId.toString()) {
             // Store the userId in the message
