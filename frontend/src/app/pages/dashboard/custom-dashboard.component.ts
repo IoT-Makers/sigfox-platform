@@ -301,18 +301,19 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         this.loadWidgets();
       });
 
-      // // Categories
-      // this.api.getCategories(this.id).subscribe((categories: Category[]) => {
-      //   this.selectCategories = [];
-      //   this.categories = categories;
-      //   this.categories.forEach((category: Category) => {
-      //     const item = {
-      //       id: category.id,
-      //       itemName: category.name
-      //     };
-      //     this.selectCategories.push(item);
-      //   });
-      // });
+      // Categories
+      this.api.getCategories(this.id).subscribe((categories: Category[]) => {
+        this.selectCategories = [];
+        this.categories = categories;
+        this.categories.forEach((category: Category) => {
+          console.log(this.categories);
+          const item = {
+            id: `categoryId=${category.id}`,
+            itemName: `${category.name} all`
+          };
+          this.selectCategories.push(item);
+        });
+      });
       // Devices
       this.api.getDevices(this.id, {order: 'messagedAt DESC'}).subscribe((devices: Device[]) => {
         this.selectDevices = [];
@@ -334,7 +335,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
             });
           }
         });
-        this.selectCategories = Array.from(selectableCategoryFilters);
+        if (this.selectCategories) {
+          if (selectableCategoryFilters.size) this.selectCategories = this.selectCategories.concat(Array.from(selectableCategoryFilters));
+        }
+        else
+          this.selectCategories = Array.from(selectableCategoryFilters);
       });
     }));
   }
@@ -772,7 +777,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       // Set categories
       this.selectedCategories.forEach((item: any) => {
         const tmp = item.id.split('=');
-        this.newWidget.filter.where.or.push({properties: {elemMatch: {key:tmp[0], value:tmp[1]}}});
+        if (tmp[0] === 'categoryId')
+          this.newWidget.filter.where.or.push({categoryId: tmp[1]});
+        else
+          this.newWidget.filter.where.or.push({properties: {elemMatch: {key:tmp[0], value:tmp[1]}}});
       });
     }
 
@@ -1026,7 +1034,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.newWidget.filter.where.or.forEach((item: any, index: number) => {
         if (item.categoryId) {
           const foundCategory: any = _.find(this.categories, {id: item.categoryId});
-          this.selectedCategories.push({id: item.categoryId, itemName: foundCategory.name});
+          this.selectedCategories.push({id: `categoryId=${item.categoryId}`, itemName: `${foundCategory.name} all`});
         } else if (item.id) {
           const foundDevice: any = _.find(this.devices, {id: item.id});
           this.selectedDevices.push({
