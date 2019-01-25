@@ -34,7 +34,6 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
 ## Technologies
 
 ### Application
-
  * Backend: [Loopback 3+](https://loopback.io/)
  * Frontend: [Angular 6+](https://angular.io/)
  * Real-time: [Primus](https://github.com/primus/primus)
@@ -42,14 +41,21 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
  * Pub-sub & queuing: [RabbitMQ](https://www.rabbitmq.com/)
  
  ### Deployment
- 
  * Reverse proxy: [Traefik](https://traefik.io/)
  * Containerization: [Docker](https://www.docker.com/)
  * Orchestrator: [Docker Swarm](https://docs.docker.com/engine/swarm/)
  * Environment management UI: [Portainer](https://portainer.io/)
- * Supervision: [Prometheus](https://prometheus.io/)
  * DB backups (private cloud storage): [Minio](https://www.minio.io/)
 
+ ### Monitoring
+* Metrics database: [Prometheus](https://prometheus.io/)
+* Visualize metrics: [Grafana](https://grafana.com/)
+* Host metrics collector: [Node-exporter](https://github.com/prometheus/node_exporter)
+* Containers metrics collector: [cAdvisor](https://github.com/google/cadvisor/)
+* Docker daemon metrics collector, requires Docker experimental metrics-addr to be enabled: [dockerd-exporter](https://github.com/stefanprodan/dockerd-exporter)
+* Alerts dispatcher: [Alertmanager](https://github.com/prometheus/alertmanager)
+* Alert manager dashboard: [Unsee](https://github.com/google/cadvisor/)
+ 
 ## Development
 
 ### Requirements
