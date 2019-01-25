@@ -52,7 +52,7 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
 * Visualize metrics: [Grafana](https://grafana.com/)
 * Host metrics collector: [Node-exporter](https://github.com/prometheus/node_exporter)
 * Containers metrics collector: [cAdvisor](https://github.com/google/cadvisor/)
-* Docker daemon metrics collector, requires Docker experimental metrics-addr to be enabled: [dockerd-exporter](https://github.com/stefanprodan/dockerd-exporter)
+* Docker daemon metrics collector: [dockerd-exporter](https://github.com/stefanprodan/dockerd-exporter)
 * Alerts dispatcher: [Alertmanager](https://github.com/prometheus/alertmanager)
 * Alert manager dashboard: [Unsee](https://github.com/google/cadvisor/)
  
