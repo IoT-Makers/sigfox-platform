@@ -51,6 +51,9 @@ export class ApiComponent implements OnInit, OnDestroy {
     this.user = this.userApi.getCachedCurrent();
     // Fix
     if (!this.user.devAccessTokens) this.user.devAccessTokens = [];
+    this.userApi.getDevAccessTokens(this.user.id, {where: {ttl: -1}}).subscribe((devTokens: any[]) => {
+      this.user.devAccessTokens = devTokens;
+    });
     this.callbackURL = 'https://api.' + this.document.location.hostname + '/api';
 
     this.listSigfoxBackendDevicetypes();
@@ -97,9 +100,6 @@ export class ApiComponent implements OnInit, OnDestroy {
     };
     this.userApi.createAccessTokens(this.user.id, newAccessToken).subscribe((accessToken: AccessToken) => {
       this.user.devAccessTokens.push(accessToken);
-      this.userApi.patchAttributes(this.user.id, {devAccessTokens: this.user.devAccessTokens}).subscribe((user: User) => {
-        this.user = user;
-      });
     });
   }
 
@@ -112,9 +112,6 @@ export class ApiComponent implements OnInit, OnDestroy {
     this.userApi.destroyByIdAccessTokens(this.user.id, this.devAccessTokenToRemove.id).subscribe(value => {
         const index = this.user.devAccessTokens.indexOf(this.devAccessTokenToRemove);
         this.user.devAccessTokens.splice(index, 1);
-        this.userApi.patchAttributes(this.user.id, {devAccessTokens: this.user.devAccessTokens}).subscribe((user: User) => {
-          this.user = user;
-        });
       }
     );
     this.confirmTokenModal.hide();

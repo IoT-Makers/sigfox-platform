@@ -33,11 +33,11 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Recherchez un élément lié par id pour Devices.
+   * Find a related item by id for Devices.
    *
    * @param {any} id Parser id
    *
-   * @param {any} fk Clé externe pour Devices
+   * @param {any} fk Foreign key for Devices
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -63,11 +63,11 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez un élément lié par id pour Devices.
+   * Delete a related item by id for Devices.
    *
    * @param {any} id Parser id
    *
-   * @param {any} fk Clé externe pour Devices
+   * @param {any} fk Foreign key for Devices
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -90,11 +90,11 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Mettez à jour un élément lié par id pour Devices.
+   * Update a related item by id for Devices.
    *
    * @param {any} id Parser id
    *
-   * @param {any} fk Clé externe pour Devices
+   * @param {any} fk Foreign key for Devices
    *
    * @param {object} data Request data.
    *
@@ -126,7 +126,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo user.
+   * Fetches belongsTo relation user.
    *
    * @param {any} id Parser id
    *
@@ -156,7 +156,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo Organization.
+   * Fetches belongsTo relation Organization.
    *
    * @param {any} id Parser id
    *
@@ -186,7 +186,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Demandes Devices de Parser.
+   * Queries Devices of Parser.
    *
    * @param {any} id Parser id
    *
@@ -216,7 +216,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Devices de ce modèle.
+   * Creates a new instance in Devices of this model.
    *
    * @param {any} id Parser id
    *
@@ -249,7 +249,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprime tous les Devices de ce modèle.
+   * Deletes all Devices of this model.
    *
    * @param {any} id Parser id
    *
@@ -273,7 +273,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Compte Devices de Parser.
+   * Counts Devices of Parser.
    *
    * @param {any} id Parser id
    *
@@ -370,9 +370,9 @@ export class ParserApi extends BaseLoopBackApi {
    *
    * @param {object} data Request data.
    *
-   *  - `fn` – `{string}` - Parser function
+   *  - `device` – `{Device}` - The device to parse
    *
-   *  - `payload` – `{string}` - Sigfox payload (12 bytes max)
+   *  - `message` – `{Message}` - The current message
    *
    *  - `req` – `{object}` - 
    *
@@ -384,15 +384,15 @@ export class ParserApi extends BaseLoopBackApi {
    *
    *  - `result` – `{any}` - 
    */
-  public parsePayload(fn: any, payload: any, req: any = {}, customHeaders?: Function): Observable<any> {
+  public parsePayload(device: Device, message: any, req: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Parsers/parse-payload";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof fn !== 'undefined' && fn !== null) _urlParams.fn = fn;
-    if (typeof payload !== 'undefined' && payload !== null) _urlParams.payload = payload;
+    if (typeof device !== 'undefined' && device !== null) _urlParams.device = device;
+    if (typeof message !== 'undefined' && message !== null) _urlParams.message = message;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -499,7 +499,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Devices de ce modèle.
+   * Creates a new instance in Devices of this model.
    *
    * @param {any} id Parser id
    *

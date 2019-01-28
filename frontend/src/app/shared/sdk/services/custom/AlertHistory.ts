@@ -34,7 +34,7 @@ export class AlertHistoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo Device.
+   * Fetches belongsTo relation Device.
    *
    * @param {any} id AlertHistory id
    *
@@ -64,7 +64,7 @@ export class AlertHistoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo user.
+   * Fetches belongsTo relation user.
    *
    * @param {any} id AlertHistory id
    *
@@ -94,7 +94,7 @@ export class AlertHistoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo Organization.
+   * Fetches belongsTo relation Organization.
    *
    * @param {any} id AlertHistory id
    *
@@ -124,7 +124,7 @@ export class AlertHistoryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo Connector.
+   * Fetches belongsTo relation Connector.
    *
    * @param {any} id AlertHistory id
    *

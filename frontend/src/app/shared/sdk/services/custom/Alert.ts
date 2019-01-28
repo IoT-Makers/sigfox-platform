@@ -34,7 +34,7 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo user.
+   * Fetches belongsTo relation user.
    *
    * @param {any} id Alert id
    *
@@ -64,11 +64,11 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Recherchez un élément lié par id pour Organizations.
+   * Find a related item by id for Organizations.
    *
    * @param {any} id Alert id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -94,11 +94,11 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez un élément lié par id pour Organizations.
+   * Delete a related item by id for Organizations.
    *
    * @param {any} id Alert id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -121,11 +121,11 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Mettez à jour un élément lié par id pour Organizations.
+   * Update a related item by id for Organizations.
    *
    * @param {any} id Alert id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @param {object} data Request data.
    *
@@ -157,11 +157,11 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Ajoutez un élément lié par id pour Organizations.
+   * Add a related item by id for Organizations.
    *
    * @param {any} id Alert id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @param {object} data Request data.
    *
@@ -193,11 +193,11 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez la relation Organizations à un élément par id.
+   * Remove the Organizations relation to an item by id.
    *
    * @param {any} id Alert id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -220,11 +220,11 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Vérifiez l'existence de la relation Organizations à un élément par id.
+   * Check the existence of Organizations relation to an item by id.
    *
    * @param {any} id Alert id
    *
-   * @param {any} fk Clé externe pour Organizations
+   * @param {any} fk Foreign key for Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -250,7 +250,7 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo Device.
+   * Fetches belongsTo relation Device.
    *
    * @param {any} id Alert id
    *
@@ -280,7 +280,7 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo Connector.
+   * Fetches belongsTo relation Connector.
    *
    * @param {any} id Alert id
    *
@@ -310,7 +310,7 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Demandes Organizations de Alert.
+   * Queries Organizations of Alert.
    *
    * @param {any} id Alert id
    *
@@ -340,7 +340,7 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Organizations de ce modèle.
+   * Creates a new instance in Organizations of this model.
    *
    * @param {any} id Alert id
    *
@@ -373,7 +373,7 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprime tous les Organizations de ce modèle.
+   * Deletes all Organizations of this model.
    *
    * @param {any} id Alert id
    *
@@ -397,7 +397,7 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Compte Organizations de Alert.
+   * Counts Organizations of Alert.
    *
    * @param {any} id Alert id
    *
@@ -508,7 +508,7 @@ export class AlertApi extends BaseLoopBackApi {
    *
    *  - `result` – `{any}` - 
    */
-  public triggerByDevice(data_parsed: any, device: any, req: any = {}, customHeaders?: Function): Observable<any> {
+  public triggerByData(data_parsed: any, device: any, req: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Alerts/trigger-by-device";
@@ -528,13 +528,15 @@ export class AlertApi extends BaseLoopBackApi {
    *
    * @param {object} data Request data.
    *
-   *  - `lat` – `{number}` - The lat of the device
+   *  - `alert` – `{object}` - 
    *
-   *  - `lng` – `{number}` - The lng of the device
+   *  - `device` – `{object}` - 
    *
-   *  - `deviceId` – `{string}` - The device ID
+   *  - `alertMessage` – `{string}` - 
    *
-   *  - `req` – `{object}` - 
+   *  - `location` – `{object}` - 
+   *
+   *  - `test` – `{boolean}` - 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -544,16 +546,18 @@ export class AlertApi extends BaseLoopBackApi {
    *
    *  - `result` – `{any}` - 
    */
-  public triggerBySigfoxGeoloc(lat: any, lng: any, deviceId: any, req: any = {}, customHeaders?: Function): Observable<any> {
+  public triggerAlert(alert: any, device: any, alertMessage: any = {}, location: any = {}, test: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Alerts/trigger-by-sigfox-geoloc";
+    "/Alerts/trigger-alert";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof lat !== 'undefined' && lat !== null) _urlParams.lat = lat;
-    if (typeof lng !== 'undefined' && lng !== null) _urlParams.lng = lng;
-    if (typeof deviceId !== 'undefined' && deviceId !== null) _urlParams.deviceId = deviceId;
+    if (typeof alert !== 'undefined' && alert !== null) _urlParams.alert = alert;
+    if (typeof device !== 'undefined' && device !== null) _urlParams.device = device;
+    if (typeof alertMessage !== 'undefined' && alertMessage !== null) _urlParams.alertMessage = alertMessage;
+    if (typeof location !== 'undefined' && location !== null) _urlParams.location = location;
+    if (typeof test !== 'undefined' && test !== null) _urlParams.test = test;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -625,7 +629,7 @@ export class AlertApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Organizations de ce modèle.
+   * Creates a new instance in Organizations of this model.
    *
    * @param {any} id Alert id
    *

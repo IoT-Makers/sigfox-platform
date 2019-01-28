@@ -10,13 +10,13 @@ import {
 
 declare var Object: any;
 export interface GeolocInterface {
+  "id": string;
   "type": string;
   "location": GeoPoint;
   "level"?: number;
   "accuracy"?: number;
   "source"?: string;
   "createdAt"?: Date;
-  "id"?: any;
   "deviceId"?: string;
   "messageId"?: string;
   "updatedAt"?: Date;
@@ -30,13 +30,13 @@ export interface GeolocInterface {
 }
 
 export class Geoloc implements GeolocInterface {
+  "id": string = '';
   "type": string = '';
   "location": GeoPoint = <any>null;
   "level": number = 0;
   "accuracy": number = 0;
   "source": string = '';
   "createdAt": Date = new Date(0);
-  "id": any = <any>null;
   "deviceId": string = '';
   "messageId": string = '';
   "updatedAt": Date = new Date(0);
@@ -80,6 +80,10 @@ export class Geoloc implements GeolocInterface {
       path: 'Geolocs',
       idName: 'id',
       properties: {
+        "id": {
+          name: 'id',
+          type: 'string'
+        },
         "type": {
           name: 'type',
           type: 'string'
@@ -103,10 +107,6 @@ export class Geoloc implements GeolocInterface {
         "createdAt": {
           name: 'createdAt',
           type: 'Date'
-        },
-        "id": {
-          name: 'id',
-          type: 'any'
         },
         "deviceId": {
           name: 'deviceId',

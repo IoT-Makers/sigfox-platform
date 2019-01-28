@@ -81,17 +81,20 @@ class Connector {
 
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
-
     User.findById(
       userId,
-      {},
+      {include: [{
+          relation: "devAccessTokens",
+          where: {
+            ttl: -1
+          },
+        }]},
       (err: any, userInstance: any) => {
         if (err) {
           console.error(err);
           next(err, userInstance);
         } else if (userInstance) {
-
-          const devAccessTokens = userInstance.devAccessTokens;
+          const devAccessTokens = JSON.parse(JSON.stringify(userInstance)).devAccessTokens;
 
           if (!devAccessTokens || devAccessTokens.length === 0) {
             return next(err, "Please create a developer access token first.");

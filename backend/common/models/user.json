@@ -47,15 +47,15 @@
     },
     "position": {
       "type": "object"
-    },
-    "devAccessTokens": {
-      "type": [
-        "AccessToken"
-      ]
     }
   },
   "validations": [],
   "relations": {
+    "devAccessTokens": {
+      "type": "hasMany",
+      "model": "AccessToken",
+      "foreignKey": "userId"
+    },
     "Organizations": {
       "type": "hasAndBelongsToMany",
       "model": "Organization",

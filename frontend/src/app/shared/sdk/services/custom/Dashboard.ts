@@ -33,7 +33,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo user.
+   * Fetches belongsTo relation user.
    *
    * @param {any} id Dashboard id
    *
@@ -63,7 +63,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Extrait la relation belongsTo Organizations.
+   * Fetches belongsTo relation Organizations.
    *
    * @param {any} id Dashboard id
    *
@@ -93,11 +93,11 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Recherchez un élément lié par id pour Widgets.
+   * Find a related item by id for Widgets.
    *
    * @param {any} id Dashboard id
    *
-   * @param {any} fk Clé externe pour Widgets
+   * @param {any} fk Foreign key for Widgets
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -123,11 +123,11 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprimez un élément lié par id pour Widgets.
+   * Delete a related item by id for Widgets.
    *
    * @param {any} id Dashboard id
    *
-   * @param {any} fk Clé externe pour Widgets
+   * @param {any} fk Foreign key for Widgets
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -150,11 +150,11 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Mettez à jour un élément lié par id pour Widgets.
+   * Update a related item by id for Widgets.
    *
    * @param {any} id Dashboard id
    *
-   * @param {any} fk Clé externe pour Widgets
+   * @param {any} fk Foreign key for Widgets
    *
    * @param {object} data Request data.
    *
@@ -186,7 +186,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Demandes Widgets de Dashboard.
+   * Queries Widgets of Dashboard.
    *
    * @param {any} id Dashboard id
    *
@@ -216,7 +216,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Widgets de ce modèle.
+   * Creates a new instance in Widgets of this model.
    *
    * @param {any} id Dashboard id
    *
@@ -249,7 +249,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Supprime tous les Widgets de ce modèle.
+   * Deletes all Widgets of this model.
    *
    * @param {any} id Dashboard id
    *
@@ -273,7 +273,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Compte Widgets de Dashboard.
+   * Counts Widgets of Dashboard.
    *
    * @param {any} id Dashboard id
    *
@@ -364,7 +364,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Crée une instance dans Widgets de ce modèle.
+   * Creates a new instance in Widgets of this model.
    *
    * @param {any} id Dashboard id
    *

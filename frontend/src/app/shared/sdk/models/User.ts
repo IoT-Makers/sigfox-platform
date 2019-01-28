@@ -23,7 +23,6 @@ export interface UserInterface {
   "disconnectedAt"?: Date;
   "connected"?: boolean;
   "position"?: any;
-  "devAccessTokens"?: Array<any>;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -33,6 +32,7 @@ export interface UserInterface {
   "updatedAt"?: Date;
   "password"?: string;
   accessTokens?: AccessToken[];
+  devAccessTokens?: AccessToken[];
   roles?: Role[];
   Dashboards?: Dashboard[];
   Categories?: Category[];
@@ -54,7 +54,6 @@ export class User implements UserInterface {
   "disconnectedAt": Date = new Date(0);
   "connected": boolean = false;
   "position": any = <any>null;
-  "devAccessTokens": Array<any> = <any>[];
   "realm": string = '';
   "username": string = '';
   "email": string = '';
@@ -64,6 +63,7 @@ export class User implements UserInterface {
   "updatedAt": Date = new Date(0);
   "password": string = '';
   accessTokens: AccessToken[] = null;
+  devAccessTokens: AccessToken[] = null;
   roles: Role[] = null;
   Dashboards: Dashboard[] = null;
   Categories: Category[] = null;
@@ -134,10 +134,6 @@ export class User implements UserInterface {
           name: 'position',
           type: 'any'
         },
-        "devAccessTokens": {
-          name: 'devAccessTokens',
-          type: 'Array&lt;any&gt;'
-        },
         "realm": {
           name: 'realm',
           type: 'string'
@@ -174,6 +170,14 @@ export class User implements UserInterface {
       relations: {
         accessTokens: {
           name: 'accessTokens',
+          type: 'AccessToken[]',
+          model: 'AccessToken',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'userId'
+        },
+        devAccessTokens: {
+          name: 'devAccessTokens',
           type: 'AccessToken[]',
           model: 'AccessToken',
           relationType: 'hasMany',
