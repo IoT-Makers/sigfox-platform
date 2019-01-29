@@ -652,7 +652,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
                   {accuracy: {lte: this.newWidget.options.minAcc ? this.newWidget.options.minAcc : 99999999}}
                 ]
               },
-              order: 'createdAt DESC',
+              order: 'createdAt ASC',
               limit: 5
             }
           }]
@@ -667,7 +667,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           include: [{
             relation: 'Geolocs',
             scope: {
-              order: 'createdAt DESC',
+              order: 'createdAt ASC',
               where: {
                 and: [
                   {createdAt: {gte: this.selectedDateTimeBegin.toISOString()}},
