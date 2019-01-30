@@ -65,7 +65,7 @@ while true; do
             docker tag ${REGISTRY_URL}rabbitmq-${SUBDOMAIN}:$GIT_HASH ${REGISTRY_URL}rabbitmq-${SUBDOMAIN}:latest
 
             docker push ${REGISTRY_URL}primus-${SUBDOMAIN}:$GIT_HASH
-            docker push ${REGISTRY_URL}backend-${SUBDOMAIN}:$GIT_HASH}
+            docker push ${REGISTRY_URL}backend-${SUBDOMAIN}:$GIT_HASH
             docker push ${REGISTRY_URL}frontend-${SUBDOMAIN}:$GIT_HASH
             docker push ${REGISTRY_URL}mongodb-${SUBDOMAIN}:$GIT_HASH
             docker push ${REGISTRY_URL}rabbitmq-${SUBDOMAIN}:$GIT_HASH
