@@ -94,6 +94,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   private selectedGeolocType = [];
   private selectedKeys = [];
   private selectedBarMsgCounterPeriod = [];
+  private selectableCategoryProps = [];
+  private selectedCategoryProps = [];
 
   private selectCategories: Array<Object> = [];
   private selectDevices: Array<Object> = [];
@@ -174,7 +176,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   };
   private selectCategoriesSettings = {
     singleSelection: false,
-    text: 'Select category filters',
+    text: 'Select category and filters',
     selectAllText: 'Select all',
     unSelectAllText: 'Unselect all',
     enableSearchFilter: true,
@@ -306,10 +308,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         this.selectCategories = [];
         this.categories = categories;
         this.categories.forEach((category: Category) => {
-          console.log(this.categories);
           const item = {
-            id: `categoryId=${category.id}`,
-            itemName: `${category.name} all`
+            id: category.id,
+            itemName: `${category.name}`
           };
           this.selectCategories.push(item);
         });
@@ -318,30 +319,35 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.api.getDevices(this.id, {order: 'messagedAt DESC'}).subscribe((devices: Device[]) => {
         this.selectDevices = [];
         this.devices = devices;
-        let selectableCategoryFilters = new Set();
         this.devices.forEach((device: Device) => {
           const item = {
             id: device.id,
             itemName: device.name ? device.name + ' (' + device.id + ')' : device.id
           };
           this.selectDevices.push(item);
-          if (device.properties) {
-            device.properties.forEach((p: any) => {
-              const item = {
-                id: `${p.key}=${p.value}`,
-                itemName: `${p.key} = ${p.value}`
-              };
-              selectableCategoryFilters.add(item);
-            });
-          }
         });
-        if (this.selectCategories) {
-          if (selectableCategoryFilters.size) this.selectCategories = this.selectCategories.concat(Array.from(selectableCategoryFilters));
-        }
-        else
-          this.selectCategories = Array.from(selectableCategoryFilters);
       });
     }));
+  }
+
+  getSelectableCategoryFilters(categories: any[]): void {
+    console.error(categories);
+    const selectedCategoryIds = categories.map((c:any) => c.id);
+    console.error(selectedCategoryIds);
+
+    let selectableCategoryFilters = new Set();
+    this.categories.forEach((cat: Category) => {
+      if (selectedCategoryIds.includes(cat.id)) {
+        cat.properties.forEach((p: any) => {
+          const item = {
+            id: `${cat.id}::${p.key}=${p.value}`,
+            itemName: `[${cat.name}] ${p.key} = ${p.value}`
+          };
+          selectableCategoryFilters.add(item);
+        });
+      }
+    });
+    this.selectableCategoryProps = Array.from(selectableCategoryFilters);
   }
 
   ngOnDestroy(): void {
@@ -486,7 +492,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       });
 
       this.api.getDevices(this.id, this.newWidget.filter).subscribe(devices => {
-        // console.log(devices);
         if (devices[0].properties) {
           devices[0].properties.forEach(o => {
             const object: any = {
@@ -496,7 +501,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               as: o.key + ' (category)'
             };
 
-            // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
             if (!_.find(this.newWidget.options.tableColumnOptions, object)) {
               this.newWidget.options.tableColumnOptions.push(object);
             }
@@ -520,11 +524,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           }
 
         });
-        //console.log(this.newWidget.options.tableColumnOptions);
         if (!this.newWidget.options.columns) {
           this.newWidget.options.columns = new Array(1);
         }
-        //console.log(this.newWidget.options.columns);
         this.loadingTableOptions = false;
       });
     }
@@ -776,11 +778,22 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       });
       // Set categories
       this.selectedCategories.forEach((item: any) => {
-        const tmp = item.id.split('=');
-        if (tmp[0] === 'categoryId')
-          this.newWidget.filter.where.or.push({categoryId: tmp[1]});
-        else
-          this.newWidget.filter.where.or.push({properties: {elemMatch: {key:tmp[0], value:tmp[1]}}});
+        const catId = item.id;
+        let filterApplied = false;
+        if (this.selectedCategoryProps) {
+          this.selectedCategoryProps.forEach((item: any) => {
+            const tmp = item.id.split(/::|=/);
+            if (tmp[0] === catId) {
+              this.newWidget.filter.where.or.push({
+                and: [{categoryId: tmp[0]},
+                  {properties: {elemMatch: {key: tmp[1], value: tmp[2]}}}]
+              });
+              filterApplied = true;
+            }
+          });
+        }
+        if (!filterApplied)
+          this.newWidget.filter.where.or.push({categoryId: catId});
       });
     }
 
@@ -905,7 +918,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         }
       });
     });
-
+    this.getSelectableCategoryFilters(this.selectedCategories);
   }
 
   addWidget(): void {
@@ -985,6 +998,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.selectedKeys = [];
     this.selectedBarMsgCounterPeriod = [];
     this.selectedTimeSpan = [];
+    this.selectedCategoryProps = [];
 
     if (this.newWidget.icon) {
       this.selectedWidgetIcon = [{id: this.newWidget.icon, itemName: this.newWidget.icon.substr(3)}];
@@ -1031,10 +1045,20 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       }];
     }
     if (this.newWidget.filter.where && this.newWidget.filter.where.or) {
+      console.error(this.newWidget.filter.where.or);
       this.newWidget.filter.where.or.forEach((item: any, index: number) => {
         if (item.categoryId) {
           const foundCategory: any = _.find(this.categories, {id: item.categoryId});
-          this.selectedCategories.push({id: `categoryId=${item.categoryId}`, itemName: `${foundCategory.name} all`});
+          this.selectedCategories.push({id: item.categoryId, itemName: `${foundCategory.name}`});
+        } else if (item.and) {
+          let catId = item.and[0].categoryId;
+          let kv = item.and[1].properties.elemMatch;
+          const foundCategory: any = _.find(this.categories, {id: catId});
+          this.selectedCategoryProps.push({
+            id: `${catId}::${kv.key}=${kv.value}`,
+            itemName: `[${foundCategory.name}] ${kv.key} = ${kv.value}`
+          });
+          this.selectedCategories.push({id: catId, itemName: `${foundCategory.name}`});
         } else if (item.id) {
           const foundDevice: any = _.find(this.devices, {id: item.id});
           this.selectedDevices.push({
@@ -1221,7 +1245,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               // Loop each keys chosen for this widget
               widget.options.keys.forEach((key: any) => {
                 const o: any = _.filter(device.Messages[0].data_parsed, {key: key})[0];
-                //console.log(device.id, o);
                 if (o) {
                   keys_units.push(o);
                   // Check if the device has this key and set the format to display
