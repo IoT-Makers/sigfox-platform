@@ -1639,7 +1639,7 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Categories / Devices
                 </label>
-                <div class="col-md-4">
+                <div class="col-md-5">
                   <angular2-multiselect name="selectCategories"
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
@@ -1651,11 +1651,27 @@
                   </angular2-multiselect>
                 </div>
 
-                <div class="col-md-5">
+                <div class="col-md-4">
                   <angular2-multiselect name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
                                         [settings]="selectDevicesSettings"
+                                        (onSelect)="loadSelectableKeys();"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
+                  </angular2-multiselect>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="selectedCategories && selectedCategories.length">
+                <div class="col-md-3">
+                </div>
+                <div class="col-md-5">
+                  <angular2-multiselect name="selectCategoryProps"
+                                        [data]="selectableCategoryProps"
+                                        [(ngModel)]="selectedCategoryProps"
+                                        [settings]="selectCategoriesSettings"
                                         (onSelect)="loadSelectableKeys();"
                                         (onDeSelect)="selectableKeys = []; selectedKeys = [];"
                                         (onSelectAll)="loadSelectableKeys();"
@@ -1805,19 +1821,19 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Categories / Devices
                 </label>
-                <div class="col-md-4">
+                <div class="col-md-5">
                   <angular2-multiselect name="selectCategories"
                                         [data]="selectCategories"
                                         [(ngModel)]="selectedCategories"
                                         [settings]="selectCategoriesSettings"
-                                        (onDeSelect)="setWidgetFilter();"
-                                        (onDeSelectAll)="setWidgetFilter();"
-                                        (onSelect)="setWidgetFilter();"
-                                        (onSelectAll)="setWidgetFilter();">
+                                        (onDeSelect)="setWidgetFilter();getSelectableCategoryFilters(selectedCategories);"
+                                        (onDeSelectAll)="setWidgetFilter();getSelectableCategoryFilters(selectedCategories);"
+                                        (onSelect)="setWidgetFilter();getSelectableCategoryFilters(selectedCategories);"
+                                        (onSelectAll)="setWidgetFilter();getSelectableCategoryFilters(selectedCategories);">
                   </angular2-multiselect>
                 </div>
 
-                <div class="col-md-5">
+                <div class="col-md-4">
                   <angular2-multiselect name="selectDevices"
                                         [data]="selectDevices"
                                         [(ngModel)]="selectedDevices"
@@ -1829,7 +1845,21 @@
                   </angular2-multiselect>
                 </div>
               </div>
-
+              <div class="form-group row" *ngIf="selectedCategories && selectedCategories.length">
+                <div class="col-md-3">
+                </div>
+                <div class="col-md-5">
+                  <angular2-multiselect name="selectCategoryProps"
+                                        [data]="selectableCategoryProps"
+                                        [(ngModel)]="selectedCategoryProps"
+                                        [settings]="selectCategoriesSettings"
+                                        (onSelect)="loadSelectableKeys();"
+                                        (onDeSelect)="selectableKeys = []; selectedKeys = [];"
+                                        (onSelectAll)="loadSelectableKeys();"
+                                        (onDeSelectAll)="selectableKeys = []; selectedKeys = [];">
+                  </angular2-multiselect>
+                </div>
+              </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Directions routes<br>
                 </label>

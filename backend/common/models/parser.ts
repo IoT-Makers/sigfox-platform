@@ -103,7 +103,7 @@ class Parser {
       },
       (err: any, messageInstance: any) => {
         if (err) console.error(err);
-        console.log(messageInstance);
+        // console.log(messageInstance);
         // Parse
         try {
           const parserScript = this.getCompiledParser(parser);

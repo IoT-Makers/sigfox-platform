@@ -9,6 +9,7 @@ import {DOCUMENT} from '@angular/common';
 import {saveAs} from 'file-saver';
 import {ActivatedRoute} from '@angular/router';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-categories',
@@ -120,7 +121,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   downloadFromOrganization(organizationId: string, category: Category, type: string): void {
     this.loadingDownload = true;
-    const url = 'https://api.' + this.document.location.hostname + '/api/Categories/download/' + organizationId + '/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    const url = environment.apiUrl + '/api/Categories/download/' + organizationId + '/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
     //const url = 'http://localhost:3000/api/Categories/download/' + organizationId + '/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
 
     this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
@@ -140,7 +141,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   download(category: Category, type: string): void {
     this.loadingDownload = true;
-    const url = this.document.location.origin + '/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    const url = environment.apiUrl + '/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
     //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
 
     this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {

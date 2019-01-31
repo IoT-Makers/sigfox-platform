@@ -16,6 +16,7 @@ const request = require("request");
     beforeSave: {name: "before save", type: "operation"},
     afterDelete: {name: "after delete", type: "operation"},
     afterSave: {name: "after save", type: "operation"},
+    beforeRemoteCreate: {name: "create", type: "beforeRemote"}
   },
   remotes: {
     createSigfoxBackendCallbacks: {
@@ -48,7 +49,11 @@ class Connector {
   constructor(public model: any) {
 
   }
-
+  public beforeRemoteCreate(ctx:any, instance:any, next:Function) {
+    // TODO: DOES NOT WORK, use this to ensure there is only one sigfox connector
+    console.log(111111111111111);
+    next();
+  }
   // Example Operation Hook
   public beforeSave(ctx: any, next: Function): void {
     console.log("Connector: Before Save");
