@@ -13,7 +13,8 @@
             <div class="col-md-4 offset-md-2">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-search"></i></span>
-                <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
+                <input type="text" class="form-control" #searchbox [(ngModel)]="filterQuery"
+                       (keyup.enter)="search(searchbox.value)" (keyup)="onKey($event, searchbox.value)" placeholder="Search"/>
               </div>
             </div>
           </div>

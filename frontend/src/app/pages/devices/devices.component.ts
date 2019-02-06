@@ -190,28 +190,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.id = this.organization ? this.organization.id : this.user.id;
     this.unsubscribe();
     this.subscribe();
-    this.api.getDevices(this.id, {
-      where: {},
-      order: 'messagedAt DESC',
-      include: ['Parser', 'Category', 'Organizations', {
-        relation: 'Messages',
-        scope: {
-          limit: 1,
-          order: 'createdAt DESC',
-          include: [{
-            relation: 'Geolocs',
-            scope: {
-              order: 'createdAt DESC'
-            }
-          }]
-        }
-      }]
-    }).subscribe((devices: Device[]) => {
-      this.displayedDevices = devices;
-    });
-    this.api.countDevices(this.id).subscribe((result: any) => {
-      this.total = result.count;
-    });
+
     this.getPage(1);
     this.parserApi.find({order: 'createdAt DESC'}).subscribe((result: any) => {
       this.parsers = result;
@@ -221,26 +200,32 @@ export class DevicesComponent implements OnInit, OnDestroy {
     });
   }
 
-  public loadDevice(page: number): Observable<any> {
-    const filter = {
-      where: {},
-      limit: this.rowsOnPage,
-      skip: this.rowsOnPage * (page - 1),
-      order: 'messagedAt DESC',
-      include: ['Parser', 'Category', 'Organizations', {
-        relation: 'Messages',
-        scope: {
-          limit: 1,
-          order: 'createdAt DESC',
-          include: [{
-            relation: 'Geolocs',
-            scope: {
-              order: 'createdAt DESC'
-            }
-          }]
-        }
-      }]
-    };
+  private queryFilter = {
+    where: {},
+    limit: this.rowsOnPage,
+    skip: 0, //this.rowsOnPage * (page - 1),
+    order: 'messagedAt DESC',
+    include: ['Parser', 'Category', 'Organizations', {
+      relation: 'Messages',
+      scope: {
+        limit: 1,
+        order: 'createdAt DESC',
+        include: [{
+          relation: 'Geolocs',
+          scope: {
+            order: 'createdAt DESC'
+          }
+        }]
+      }
+    }]
+  };
+
+  private loadDevice(page: number): Observable<any> {
+    const filter = JSON.parse(JSON.stringify(this.queryFilter));
+    filter.skip = this.rowsOnPage * (page - 1);
+    this.api.countDevices(this.id, filter.where).subscribe((result: any) => {
+      this.total = result.count;
+    });
     return this.api.getDevices(this.id, filter);
   }
 
@@ -251,6 +236,22 @@ export class DevicesComponent implements OnInit, OnDestroy {
       this.activePage = page;
       this.displayedDevices = r;
     });
+  }
+
+  // search box
+  timer: number;
+  onKey(event: KeyboardEvent, value: string) { // with type info
+    if (event.key === "Enter") return;
+    clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      this.search(value);
+    },500);
+  }
+
+  search(value: string) {
+    clearInterval(this.timer);
+    this.queryFilter.where = {or: [{id: {regexp: `/.*${value}.*/i`}}, {name: {regexp: `/.*${value}.*/i`}}]};
+    this.getPage(1);
   }
 
   ngOnDestroy(): void {
