@@ -13,52 +13,57 @@
             <div class="col-md-4 offset-md-2">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-search"></i></span>
-                <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
+                <input type="text" class="form-control" #searchbox [(ngModel)]="filterQuery"
+                       (keyup.enter)="search(searchbox.value)" (keyup)="onKey($event, searchbox.value)" placeholder="Search"/>
               </div>
             </div>
           </div>
         </div>
-        <div *ngIf="!devicesReady" class="card-block">
+        <div *ngIf="loading" class="card-block">
           Loading devices...
           <div class="sk-double-bounce">
             <div class="sk-child sk-double-bounce1"></div>
             <div class="sk-child sk-double-bounce2"></div>
           </div>
         </div>
-        <div *ngIf="devicesReady && !devices.length" class="card-block">
+        <div *ngIf="!loading && !displayedDevices.length" class="card-block">
           No devices yet...
         </div>
+
+
         <!-- Table -->
-        <div *ngIf="devices.length > 0" class="table-responsive">
-          <table class="table table-hover table-outline"
-                 [mfData]="devices | dataFilter : filterQuery"
-                 #mf="mfDataTable"
-                 [mfRowsOnPage]="numberOfDevicesToSee">
+        <div *ngIf="!loading && displayedDevices.length > 0" class="table-responsive">
+          <table class="table table-hover table-outline">
             <thead class="thead-inverse">
             <tr>
               <th class="text-center">
-                <mfDefaultSorter by="id"><i class="fa fa-sort"></i> ID</mfDefaultSorter>
+                ID
+                <!--<mfDefaultSorter by="id"><i class="fa fa-sort"></i> ID</mfDefaultSorter>-->
               </th>
               <th class="text-center">
-                <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
+                Info
+                <!--<mfDefaultSorter by="name"><i class="fa fa-sort"></i> Info</mfDefaultSorter>-->
               </th>
               <th *ngIf="!edit" class="text-center">
                 Geoloc
               </th>
               <th class="text-center">
-                <mfDefaultSorter by="messagedAt"><i class="fa fa-sort"></i> Last message</mfDefaultSorter>
+                Last message
+                <!--<mfDefaultSorter by="messagedAt"><i class="fa fa-sort"></i> Last message</mfDefaultSorter>-->
               </th>
               <th *ngIf="!edit" class="text-center">
-                <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>
+                Properties
+                <!--<mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>-->
               </th>
               <th *ngIf="!edit && (showDeviceSuccessRate && showDeviceSuccessRate.value === true)" class="text-center">
-                <mfDefaultSorter by="successRate"><i class="fa fa-sort"></i> Success rate</mfDefaultSorter>
+                Success rate
+                <!--<mfDefaultSorter by="successRate"><i class="fa fa-sort"></i> Success rate</mfDefaultSorter>-->
               </th>
               <th class="text-center">Action</th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let device of mf.data; let i = index">
+            <tr *ngFor="let device of displayedDevices | paginate: { id: 'server', itemsPerPage: rowsOnPage, currentPage: activePage, totalItems: total }">
               <td class="text-center">
                 <a
                   [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]"><strong
@@ -155,11 +160,10 @@
             </tr>
             </tbody>
             <tfoot>
-            <tr>
-              <td colspan="4">
-                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
-              </td>
-            </tr>
+            <div class="has-text-centered">
+              <div class="spinner" [ngClass]="{ 'hidden': !loading }"></div>
+              <pagination-controls (pageChange)="getPage($event)" id="server"></pagination-controls>
+            </div>
             </tfoot>
           </table>
         </div>
@@ -346,7 +350,7 @@
                  [zoom]="mapZoom"
                  [mapTypeControl]="true"
                  [fullscreenControl]="true">
-          <ng-container *ngFor="let device of devices; let i = index">
+          <ng-container *ngFor="let device of displayedDevices; let i = index">
             <ng-container *ngIf="device.Messages[0] && device.Messages[0].Geolocs">
               <ng-container *ngFor="let geoloc of device.Messages[0].Geolocs">
                 <!-- Sigfox -->
