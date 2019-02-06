@@ -496,9 +496,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
     if (payload.action == "CREATE" || payload.action == "UPDATE") {
       let idx = this.displayedDevices.findIndex(x => x.id == payload.content.Device.id);
       if (idx != -1) {
-        let updatedDevice = this.displayedDevices[idx];
+        let updatedDevice = JSON.parse(JSON.stringify(this.displayedDevices[idx]));
         updatedDevice.Messages = [payload.content];
-        this.displayedDevices[idx] = updatedDevice;
+        this.displayedDevices.splice(idx, 1);
+        this.displayedDevices.unshift(updatedDevice);
       }
     }
   };
