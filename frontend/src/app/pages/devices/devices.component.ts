@@ -11,7 +11,6 @@ import {
 } from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {
-  ChangeDetectionStrategy,
   Component,
   ElementRef,
   Inject, Input,
@@ -28,6 +27,7 @@ import * as moment from 'moment';
 import {ActivatedRoute} from '@angular/router';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
 import {Observable} from "rxjs";
+import {DataFilterPipe} from "./datafilterpipe";
 
 @Component({
   selector: 'app-devices',
@@ -97,10 +97,11 @@ export class DevicesComponent implements OnInit, OnDestroy {
   };
 
   // Pagination
-  public rowsOnPage = 10;
+  rowsOnPage = 10;
   activePage = 1;
   total: number;
   loading: boolean;
+  searchFilter: string;
 
   private api;
   private id;
@@ -221,12 +222,11 @@ export class DevicesComponent implements OnInit, OnDestroy {
   };
 
   private loadDevice(page: number): Observable<any> {
-    const filter = JSON.parse(JSON.stringify(this.queryFilter));
-    filter.skip = this.rowsOnPage * (page - 1);
-    this.api.countDevices(this.id, filter.where).subscribe((result: any) => {
+    this.queryFilter.skip = this.rowsOnPage * (page - 1);
+    this.api.countDevices(this.id, this.queryFilter.where).subscribe((result: any) => {
       this.total = result.count;
     });
-    return this.api.getDevices(this.id, filter);
+    return this.api.getDevices(this.id, this.queryFilter);
   }
 
   getPage(page: number) {
@@ -249,6 +249,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   search(value: string) {
+    this.searchFilter = value;
     clearInterval(this.timer);
     this.queryFilter.where = {or: [{id: {regexp: `/.*${value}.*/i`}}, {name: {regexp: `/.*${value}.*/i`}}]};
     this.getPage(1);
@@ -453,17 +454,13 @@ export class DevicesComponent implements OnInit, OnDestroy {
     });
   }
 
-  // getOrganizations(): void {
-  //   this.userApi.getOrganizations(this.user.id).subscribe((organizations: Organization[]) => {
-  //     this.organizations = organizations;
-  //     console.log(organizations);
-  //   });
-  // }
   rtHandler = (payload: any) => {
     const device = payload.content;
     if (device.userId == this.user.id || (this.organization && device.Organizations.map(x => x.id).includes(this.organization.id))) {
       if (payload.action == "CREATE") {
         this.displayedDevices.unshift(payload.content);
+        // apply search filter
+        this.displayedDevices = new DataFilterPipe().transform(this.displayedDevices, this.searchFilter);
       } else if (payload.action == "DELETE") {
         this.displayedDevices = this.displayedDevices.filter(function (device) {
           return device.id !== payload.content.id;
