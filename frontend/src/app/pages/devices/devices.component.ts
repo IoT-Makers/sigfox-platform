@@ -97,7 +97,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   };
 
   // Pagination
-  rowsOnPage = 10;
+  rowsOnPage = 15;
   activePage = 1;
   total: number;
   loading: boolean;
@@ -458,6 +458,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
     const device = payload.content;
     if (device.userId == this.user.id || (this.organization && device.Organizations.map(x => x.id).includes(this.organization.id))) {
       if (payload.action == "CREATE") {
+        if (this.activePage !== 1) return;
+        if (this.displayedDevices.length === this.rowsOnPage)
+          this.displayedDevices.pop();
         this.displayedDevices.unshift(payload.content);
         // apply search filter
         this.displayedDevices = new DataFilterPipe().transform(this.displayedDevices, this.searchFilter);
