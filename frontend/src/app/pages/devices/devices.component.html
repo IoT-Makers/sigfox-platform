@@ -160,10 +160,12 @@
             </tr>
             </tbody>
             <tfoot>
-            <div class="has-text-centered">
+            <tr >
+              <td colspan="4">
               <div class="spinner" [ngClass]="{ 'hidden': !loading }"></div>
               <pagination-controls (pageChange)="getPage($event)" id="server"></pagination-controls>
-            </div>
+              </td>
+            </tr>
             </tfoot>
           </table>
         </div>
