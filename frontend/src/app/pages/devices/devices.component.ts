@@ -97,7 +97,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   };
 
   // Pagination
-  rowsOnPage = 10;
+  rowsOnPage = 15;
   activePage = 1;
   total: number;
   loading: boolean;
@@ -234,6 +234,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.loadDevice(page).subscribe((r:any) => {
       this.loading = false;
       this.activePage = page;
+      if (page !== 1)
+        this.toasterService.pop('info', 'Realtime disabled', 'Realtime update is only enabled on page 1');
       this.displayedDevices = r;
     });
   }
@@ -455,9 +457,14 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   rtHandler = (payload: any) => {
+    // disable RT if it's not on page 1
+    if (this.activePage !== 1) return;
+
     const device = payload.content;
     if (device.userId == this.user.id || (this.organization && device.Organizations.map(x => x.id).includes(this.organization.id))) {
       if (payload.action == "CREATE") {
+        if (this.displayedDevices.length === this.rowsOnPage)
+          this.displayedDevices.pop();
         this.displayedDevices.unshift(payload.content);
         // apply search filter
         this.displayedDevices = new DataFilterPipe().transform(this.displayedDevices, this.searchFilter);
@@ -475,13 +482,17 @@ export class DevicesComponent implements OnInit, OnDestroy {
               device.Messages[0] = lastMsg;
             }
           }
-          this.displayedDevices[idx] = payload.content;
+          this.displayedDevices.splice(idx, 1);
+          this.displayedDevices.unshift(device);
         }
       }
     }
   };
 
   rtLastMessageHandler = (payload: any) => {
+    // disable RT if it's not on page 1
+    if (this.activePage !== 1) return;
+
     if (payload.action == "CREATE" || payload.action == "UPDATE") {
       let idx = this.displayedDevices.findIndex(x => x.id == payload.content.Device.id);
       if (idx != -1) {
@@ -493,6 +504,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
   };
 
   geolocHandler = (payload: any) => {
+    // disable RT if it's not on page 1
+    if (this.activePage !== 1) return;
+
     if (payload.action == "CREATE") {
       for (let device of this.displayedDevices) {
         let lastMsg = device.Messages[0];
