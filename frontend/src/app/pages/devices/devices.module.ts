@@ -11,6 +11,7 @@ import {LaddaModule} from 'angular2-ladda';
 import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 import {HttpClientModule} from '@angular/common/http';
 import {DataFilterPipe} from './datafilterpipe';
+import {NgxPaginationModule} from 'ngx-pagination'; // <-- import the module
 import {DataTableModule} from "angular2-datatable";
 
 @NgModule({
@@ -18,6 +19,7 @@ import {DataTableModule} from "angular2-datatable";
     DevicesRoutingModule,
     CommonModule,
     MomentModule,
+    NgxPaginationModule,
     DataTableModule,
     FormsModule,
     TabsModule.forRoot(),

@@ -10,13 +10,24 @@ import {
   UserApi
 } from '../../shared/sdk/services/custom';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Inject, Input,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {DOCUMENT} from '@angular/common';
 import {saveAs} from 'file-saver';
 import * as moment from 'moment';
 import {ActivatedRoute} from '@angular/router';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-devices',
@@ -39,8 +50,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
   @ViewChild('shareDeviceWithOrganizationModal') shareDeviceWithOrganizationModal: any;
 
   // Flags
-  public devicesReady = false;
-
   private isCircleVisible: boolean[] = [];
 
   private connectors: Connector[] = [];
@@ -50,7 +59,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   private organizationRouteSub: Subscription;
 
   private categories: Category[] = [];
-  public devices: Device[] = [];
+  public displayedDevices: Device[] = [];
   private parsers: Parser[] = [];
 
   public deviceToEdit: Device = new Device();
@@ -88,8 +97,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
   };
 
   // Pagination
-  public numberOfDevicesToSee = 10;
-  private pageOfDevicesToSee = 0;
+  public rowsOnPage = 10;
+  activePage = 1;
+  total: number;
+  loading: boolean;
 
   private api;
   private id;
@@ -161,7 +172,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   }
 
   setCircles() {
-    for (let i = 0; i < this.devices.length; i++) {
+    for (let i = 0; i < this.displayedDevices.length; i++) {
       this.isCircleVisible.push(false);
     }
   }
@@ -179,10 +190,42 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.id = this.organization ? this.organization.id : this.user.id;
     this.unsubscribe();
     this.subscribe();
+    this.api.getDevices(this.id, {
+      where: {},
+      order: 'messagedAt DESC',
+      include: ['Parser', 'Category', 'Organizations', {
+        relation: 'Messages',
+        scope: {
+          limit: 1,
+          order: 'createdAt DESC',
+          include: [{
+            relation: 'Geolocs',
+            scope: {
+              order: 'createdAt DESC'
+            }
+          }]
+        }
+      }]
+    }).subscribe((devices: Device[]) => {
+      this.displayedDevices = devices;
+    });
+    this.api.countDevices(this.id).subscribe((result: any) => {
+      this.total = result.count;
+    });
+    this.getPage(1);
+    this.parserApi.find({order: 'createdAt DESC'}).subscribe((result: any) => {
+      this.parsers = result;
+    });
+    this.api.getCategories(this.id).subscribe((result: any) => {
+      this.categories = result;
+    });
+  }
 
+  public loadDevice(page: number): Observable<any> {
     const filter = {
       where: {},
-      limit: 1000,
+      limit: this.rowsOnPage,
+      skip: this.rowsOnPage * (page - 1),
       order: 'messagedAt DESC',
       include: ['Parser', 'Category', 'Organizations', {
         relation: 'Messages',
@@ -198,16 +241,15 @@ export class DevicesComponent implements OnInit, OnDestroy {
         }
       }]
     };
-    this.api.getDevices(this.id, filter).subscribe((devices: Device[]) => {
-      this.devices = devices;
-      this.devicesReady = true;
-    });
+    return this.api.getDevices(this.id, filter);
+  }
 
-    this.parserApi.find({order: 'createdAt DESC'}).subscribe((result: any) => {
-      this.parsers = result;
-    });
-    this.api.getCategories(this.id).subscribe((result: any) => {
-      this.categories = result;
+  getPage(page: number) {
+    this.loading = true;
+    this.loadDevice(page).subscribe((r:any) => {
+      this.loading = false;
+      this.activePage = page;
+      this.displayedDevices = r;
     });
   }
 
@@ -420,22 +462,22 @@ export class DevicesComponent implements OnInit, OnDestroy {
     const device = payload.content;
     if (device.userId == this.user.id || (this.organization && device.Organizations.map(x => x.id).includes(this.organization.id))) {
       if (payload.action == "CREATE") {
-        this.devices.unshift(payload.content);
+        this.displayedDevices.unshift(payload.content);
       } else if (payload.action == "DELETE") {
-        this.devices = this.devices.filter(function (device) {
+        this.displayedDevices = this.displayedDevices.filter(function (device) {
           return device.id !== payload.content.id;
         });
       } else if (payload.action == "UPDATE") {
-        let idx = this.devices.findIndex(x => x.id == payload.content.id);
+        let idx = this.displayedDevices.findIndex(x => x.id == payload.content.id);
         if (idx != -1) {
           // keep geolocs, payload does not have geoloc inside message
-          if (this.devices[idx].Messages[0]) {
-            const lastMsg = this.devices[idx].Messages[0];
+          if (this.displayedDevices[idx].Messages[0]) {
+            const lastMsg = this.displayedDevices[idx].Messages[0];
             if (device && device.Messages[0] && device.Messages[0].id == lastMsg.id) {
               device.Messages[0] = lastMsg;
             }
           }
-          this.devices[idx] = payload.content;
+          this.displayedDevices[idx] = payload.content;
         }
       }
     }
@@ -443,18 +485,18 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   rtLastMessageHandler = (payload: any) => {
     if (payload.action == "CREATE" || payload.action == "UPDATE") {
-      let idx = this.devices.findIndex(x => x.id == payload.content.Device.id);
+      let idx = this.displayedDevices.findIndex(x => x.id == payload.content.Device.id);
       if (idx != -1) {
-        let updatedDevice = this.devices[idx];
+        let updatedDevice = this.displayedDevices[idx];
         updatedDevice.Messages = [payload.content];
-        this.devices[idx] = updatedDevice;
+        this.displayedDevices[idx] = updatedDevice;
       }
     }
   };
 
   geolocHandler = (payload: any) => {
     if (payload.action == "CREATE") {
-      for (let device of this.devices) {
+      for (let device of this.displayedDevices) {
         let lastMsg = device.Messages[0];
         if (!lastMsg) continue;
         if (lastMsg.id == payload.content.messageId) {
