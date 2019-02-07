@@ -15,8 +15,8 @@ YELLOW="\033[38;5;11m"
 BOLD="\033[1m"
 RESET="\033[0m"
 
-if [[ -z "${REGISTRY_URL}" ]]; then
-    printf "${RED}REGISTRY_URL not set. If you are using sudo, try sudo -E\n${RESET}"
+if [[ -z "${REGISTRY_URL}" ]] || [[ -z "${DOMAIN}" ]]; then
+    printf "${RED}REGISTRY_URL or DOMAIN not set. If you are using sudo, try sudo -E\n${RESET}"
     exit 1
 fi
 
