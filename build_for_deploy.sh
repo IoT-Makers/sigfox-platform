@@ -45,7 +45,7 @@ while true; do
     export SERVER_NAME=${SUBDOMAIN}${DOMAIN:+.}${DOMAIN:-localhost}
     export GIT_HASH=`git log --pretty=format:'%h' -n 1`
 
-    docker-compose build
+    docker-compose build --parallel
     printf "${GREEN}===============> Building completed for $SUBDOMAIN\n${RESET}"
 
     push_img=$push_img_arg
