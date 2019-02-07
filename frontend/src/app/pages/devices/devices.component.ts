@@ -428,10 +428,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
         this.organizationApi.findById(orga.id).subscribe((org: Organization) => {
           this.deviceToEdit.Organizations.push(org);
         });
-        // if(this.deviceToEdit.Organizations){
-        //
-        // }
-
       }, err => {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
