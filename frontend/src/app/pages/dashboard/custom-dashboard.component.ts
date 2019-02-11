@@ -902,17 +902,20 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       }
     }
     this.api.getDevices(this.id, filter).subscribe((devices: any[]) => {
+      // find the latest parsed message, extract its values as keys
       devices.forEach((device: Device) => {
-        if (device.Messages && device.Messages[0].data_parsed) {
-          device.Messages[0].data_parsed.forEach(o => {
-            const item = {
-              id: o.key,
-              itemName: o.key + ' (' + device.id + ')'
-            };
-            // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
-            //if (!_.find(this.selectableKeys, item))
-            this.selectableKeys.push(item);
-          });
+        if (!device.Messages) return;
+        for (let i = device.Messages.length -1; i >= 0; i--) {
+          if (device.Messages[i].data_parsed) {
+            device.Messages[i].data_parsed.forEach(o => {
+              const item = {
+                id: o.key,
+                itemName: o.key + ' (' + device.id + ')'
+              };
+              this.selectableKeys.push(item);
+            });
+            break;
+          }
         }
       });
     });
