@@ -331,9 +331,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   getSelectableCategoryFilters(categories: any[]): void {
-    console.error(categories);
     const selectedCategoryIds = categories.map((c:any) => c.id);
-    console.error(selectedCategoryIds);
 
     let selectableCategoryFilters = new Set();
     this.categories.forEach((cat: Category) => {
@@ -1045,7 +1043,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       }];
     }
     if (this.newWidget.filter.where && this.newWidget.filter.where.or) {
-      console.error(this.newWidget.filter.where.or);
       this.newWidget.filter.where.or.forEach((item: any, index: number) => {
         if (item.categoryId) {
           const foundCategory: any = _.find(this.categories, {id: item.categoryId});
@@ -1084,14 +1081,15 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     const bounds: LatLngBounds = new google.maps.LatLngBounds();
     if (devices) {
       devices.forEach((device: any) => {
-        if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
-          bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
+        if (device.Geolocs && device.Geolocs[0]) {
+          bounds.extend(new google.maps.LatLng(device.Geolocs[0].location.lat, device.Geolocs[0].location.lng));
         }
       });
     }
     const zoomChangeBoundsListener =
       google.maps.event.addListenerOnce(this.map, 'bounds_changed', function (event) {
-        this.setZoom(zoom);
+        if (devices.length === 1)
+          this.setZoom(zoom);
       });
     setTimeout(function () {
       google.maps.event.removeListener(zoomChangeBoundsListener)
