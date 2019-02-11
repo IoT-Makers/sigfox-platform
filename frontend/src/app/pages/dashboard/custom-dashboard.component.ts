@@ -894,28 +894,26 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     // Prepare widget keys object
     this.newWidget.options.keys = [];
     // Fetch all the keys belonging to selected devices
-    const filter = this.newWidget.filter;
+    const filter = JSON.parse(JSON.stringify(this.newWidget.filter));
     if (this.newWidget.filter.include[0].scope.where) {
       filter.include[0].scope.limit = 1;
+      filter.include[0].scope.order = 'createdAt DESC';
       if (this.newWidget.filter.include[0].scope.where.and[0].createdAt && this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte) {
         filter.include[0].scope.where.and[0] = {};
       }
     }
     this.api.getDevices(this.id, filter).subscribe((devices: any[]) => {
-      // find the latest parsed message, extract its values as keys
       devices.forEach((device: Device) => {
-        if (!device.Messages) return;
-        for (let i = device.Messages.length -1; i >= 0; i--) {
-          if (device.Messages[i].data_parsed) {
-            device.Messages[i].data_parsed.forEach(o => {
-              const item = {
-                id: o.key,
-                itemName: o.key + ' (' + device.id + ')'
-              };
-              this.selectableKeys.push(item);
-            });
-            break;
-          }
+        if (device.Messages && device.Messages[0].data_parsed) {
+          device.Messages[0].data_parsed.forEach(o => {
+            const item = {
+              id: o.key,
+              itemName: o.key + ' (' + device.id + ')'
+            };
+            // console.log(_.find(this.newWidget.options.tableColumnOptions, object));
+            //if (!_.find(this.selectableKeys, item))
+            this.selectableKeys.push(item);
+          });
         }
       });
     });
