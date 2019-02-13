@@ -208,6 +208,34 @@
         </accordion-group>
         <accordion-group>
           <div accordion-heading>
+            <strong class="text-geoloc-sigfox">DATA ADVANCED</strong> <i class="fa fa-wifi pull-right"
+                                                                  aria-hidden="true"></i>
+          </div>
+          <div class="card-block">
+            <p>Type: <strong>SERVICE</strong> | <strong>DATA_ADVANCED</strong></p>
+            <p>Url pattern: <strong tooltip="Click to copy" click-copy
+                                    (click)="toastClick()">{{ callbackURL + '/Geolocs/sigfox/advanced'}}</strong></p>
+            <p>Use HTTP Method: <strong>POST</strong></p>
+            <p>Send SNI: <strong class="bg-api btn-round"><i class="fa fa-check" aria-hidden="true"></i></strong></p>
+            <p>Headers: <strong tooltip="Click to copy" click-copy (click)="toastClick()">Authorization</strong> | <span
+              class="text-danger" tooltip="Click to copy" click-copy
+              (click)="toastClick()">{{user.devAccessTokens[0] ? user.devAccessTokens[0].id : "Please create a developer access token first" }}</span>
+            </p>
+            <p>Content Type: <strong tooltip="Click to copy" click-copy (click)="toastClick()">application/json</strong>
+            </p>
+            <p>Body: <code class="text-center" tooltip="Click to copy" click-copy (click)="toastClick()">{{
+              '{
+                "deviceId": "{device}",
+                "time": {time},
+                "seqNumber": {seqNumber},
+                "computedLocation": {computedLocation}
+                }'
+              }}</code>
+            </p>
+          </div>
+        </accordion-group>
+        <accordion-group>
+          <div accordion-heading>
             <strong class="text-geoloc-sigfox">GEOLOC</strong> <i class="fa fa-map-marker pull-right"
                                                                   aria-hidden="true"></i>
           </div>

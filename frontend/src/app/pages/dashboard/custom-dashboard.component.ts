@@ -894,9 +894,10 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     // Prepare widget keys object
     this.newWidget.options.keys = [];
     // Fetch all the keys belonging to selected devices
-    const filter = this.newWidget.filter;
+    const filter = JSON.parse(JSON.stringify(this.newWidget.filter));
     if (this.newWidget.filter.include[0].scope.where) {
       filter.include[0].scope.limit = 1;
+      filter.include[0].scope.order = 'createdAt DESC';
       if (this.newWidget.filter.include[0].scope.where.and[0].createdAt && this.newWidget.filter.include[0].scope.where.and[0].createdAt.gte) {
         filter.include[0].scope.where.and[0] = {};
       }
