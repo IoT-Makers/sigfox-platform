@@ -89,7 +89,6 @@ build-dev:
   variables:
     SUBDOMAIN: dev
   only:
-  - dev
   - staging
 
 # ======== staging ========
