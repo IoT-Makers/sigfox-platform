@@ -51,13 +51,6 @@ variables:
   # - docker push $MONGO_IMG
   # - docker push $RABBIT_IMG
 
-build-dev:
-  <<: *build_job
-  variables:
-    SUBDOMAIN: dev
-  only:
-  - dev
-
 
 .deploy_job: &deploy_job
   stage: deploy
@@ -79,14 +72,108 @@ build-dev:
     docker service update ${SUBDOMAIN}_frontend ${ARGS} --image $FRONTEND_IMG &&
     docker service update ${SUBDOMAIN}_primus ${ARGS} --image $PRIMUS_IMG &&
     docker service update ${SUBDOMAIN}_backend ${ARGS} --image $BACKEND_IMG"
+
+.prod_build_job: &prod_build_job
+  <<: *build_job
   only:
-  - branches
-  except:
   - master
 
-deploy_staging:
+.prod_deploy_job: &prod_deploy_job
+  <<: *deploy_job
+  only:
+  - master
+
+# ======== dev ========
+build-dev:
+  <<: *build_job
+  variables:
+    SUBDOMAIN: dev
+  only:
+  - dev
+  - staging
+
+# ======== staging ========
+deploy-staging:
   <<: *deploy_job
   variables:
     SUBDOMAIN: dev
   only:
   - staging
+
+# ======== PROD ========
+# app
+build-app:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: app
+
+deploy-app:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: app
+
+# try
+build-try:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: try
+
+deploy-try:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: try
+
+# demo
+build-demo:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: demo
+
+deploy-demo:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: demo
+
+# workshop
+build-workshop:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: workshop
+
+deploy-workshop:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: workshop
+
+# stela
+build-stela:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: stela
+
+deploy-stela:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: stela
+
+# foncia
+build-foncia:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: foncia
+
+deploy-foncia:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: foncia    
+
+# foundation
+build-foundation:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: foundation
+
+deploy-foundation:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: foundation
