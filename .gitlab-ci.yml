@@ -12,8 +12,6 @@ variables:
   BUILD_ENV: prod
   SERVER_NAME: ${SUBDOMAIN}.${DOMAIN}
 
-  FRONTEND_BUILD_ARGS: --build-arg BUILD_ENV=${BUILD_ENV} --build-arg SERVER_NAME=${SERVER_NAME} --build-arg API_URL=${API_URL} --build-arg API_VERSION=${API_VERSION} --build-arg PRIMUS_URL=${PRIMUS_URL}
-
   PRIMUS_IMG: ${CI_REGISTRY_IMAGE}/primus-${SUBDOMAIN}:latest
   BACKEND_IMG: ${CI_REGISTRY_IMAGE}/backend-${SUBDOMAIN}:latest
   FRONTEND_IMG: ${CI_REGISTRY_IMAGE}/frontend-${SUBDOMAIN}:latest
@@ -37,6 +35,7 @@ variables:
   # - docker pull $MONGO_IMG || true
   # - docker pull $RABBIT_IMG || true
   # build
+  - export FRONTEND_BUILD_ARGS="--build-arg BUILD_ENV=${BUILD_ENV} --build-arg SERVER_NAME=${SERVER_NAME} --build-arg API_URL=${API_URL} --build-arg API_VERSION=${API_VERSION} --build-arg PRIMUS_URL=${PRIMUS_URL}"
   - docker build --cache-from $PRIMUS_IMG -t $PRIMUS_IMG primus
   - docker build --cache-from $BACKEND_IMG -t $BACKEND_IMG --build-arg GIT_REV=${GIT_HASH} backend
   - docker build --cache-from $FRONTEND_BUILDER_IMG -t $FRONTEND_BUILDER_IMG --target builder $FRONTEND_BUILD_ARGS frontend
