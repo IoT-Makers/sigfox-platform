@@ -1,5 +1,6 @@
 import {Model} from '@mean-expert/model';
 import {RabbitPub} from '../../server/RabbitPub';
+
 const loopback = require('loopback');
 const circleToPolygon = require('circle-to-polygon');
 var GreinerHormann = require('greiner-hormann');
@@ -64,7 +65,6 @@ class Geoloc {
     // Models
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
-    const Alert = this.model.app.models.Alert;
 
     if (typeof data.geoloc === 'undefined'
       || typeof data.geoloc.location === 'undefined'
@@ -90,10 +90,10 @@ class Geoloc {
     message.createdAt = new Date(data.time * 1000);
     message.deviceAck = true;
 
-    // Find the corresponding message in order to retrieve its message ID
+    // Find the corresponding message or create one
     Message.findOrCreate(
       {
-        where: {id: data.deviceId + data.time + data.seqNumber}
+        where: {id: message.id}
       },
       message,
       (err: any, messageInstance: any, created: boolean) => {
@@ -168,15 +168,13 @@ class Geoloc {
       || typeof data.time === 'undefined'
       || typeof data.seqNumber === 'undefined'
       || typeof data.computedLocation === 'undefined') {
-      return next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
+      return next('Missing "deviceId", "time", "seqNumber" and "computedLocation"', data);
     }
 
     // Force set uppercase for deviceId
     data.deviceId = data.deviceId.toUpperCase();
-
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
-
     // Saving a message anyway
     const message = new Message;
     message.id = data.deviceId + data.time + data.seqNumber;
@@ -185,25 +183,18 @@ class Geoloc {
     message.time = data.time;
     message.seqNumber = data.seqNumber;
     message.createdAt = new Date(data.time * 1000);
-    message.deviceAck = true;
 
-    // Find the corresponding message in order to retrieve its message ID
+    // Find the corresponding message or create one
     Message.findOrCreate(
       {
-        where: {id: data.deviceId + data.time + data.seqNumber}
+        where: {id: message.id}
       },
       message,
       (err: any, messageInstance: any, created: boolean) => {
         if (err) return next(err, data);
         else if (messageInstance) {
           if (!created) console.log('Found the corresponding message.');
-          else {
-            /**
-             * TODO: Check below - OOB frame device acknowledge ?
-             */
-            console.log('??? OOB for deviceId: ' + data.deviceId);
-          }
-
+          else console.log('[geoloc.ts] - Created new message.' + data.deviceId);
           if (data.computedLocation.status === 1 || data.computedLocation.status === 2) {
             // Build the Geoloc object
             const geoloc = new Geoloc;
@@ -224,13 +215,13 @@ class Geoloc {
               default:
                 geoloc.type = 'unknown';
             }
-            geoloc.id = messageInstance.id + geoloc.type;
+            geoloc.id = message.id + geoloc.type;
             geoloc.location = new loopback.GeoPoint({lat: data.computedLocation.lat, lng: data.computedLocation.lng});
             geoloc.accuracy = data.computedLocation.radius;
-            geoloc.createdAt = messageInstance.createdAt;
+            geoloc.createdAt = new Date(data.time * 1000);
             geoloc.userId = userId;
-            geoloc.messageId = messageInstance.id;
-            geoloc.deviceId = messageInstance.deviceId;
+            geoloc.messageId = message.id;
+            geoloc.deviceId = data.deviceId;
             // Creating a new Geoloc
             Geoloc.create(
               geoloc,
@@ -238,7 +229,7 @@ class Geoloc {
                 if (err) return next(err, geolocInstance);
                 else return next(null, geolocInstance);
               });
-          } else console.log('No position or invalid payload');
+          } else next(null, 'No position or invalid payload');
         }
       });
   }
@@ -311,7 +302,10 @@ class Geoloc {
         // Check if there is WiFi geoloc in parsed data
         else if (p.key.startsWith('wlan_')) {
           hasWifiLocation = true;
-          if (p.unit && p.unit !== '') geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString(), signalStrength: Number(p.unit)});
+          if (p.unit && p.unit !== '') geoloc_wifi.wifiAccessPoints.push({
+            macAddress: p.value.toString(),
+            signalStrength: Number(p.unit)
+          });
           else geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString()});
         }
       }
@@ -394,7 +388,10 @@ class Geoloc {
       wlan: []
     };
     geoloc_wifi.wifiAccessPoints.forEach((wifiAccessPoint: any) => {
-      if (wifiAccessPoint.signalStrength) wlans.wlan.push({mac: wifiAccessPoint.macAddress, powrx: wifiAccessPoint.signalStrength});
+      if (wifiAccessPoint.signalStrength) wlans.wlan.push({
+        mac: wifiAccessPoint.macAddress,
+        powrx: wifiAccessPoint.signalStrength
+      });
       else wlans.wlan.push({mac: wifiAccessPoint.macAddress});
     });
 
@@ -505,7 +502,11 @@ class Geoloc {
     Alert.find({where: {and: [{deviceId: device.id}, {active: true}, {key: "geoloc"}]}}, (err: any, alerts: any) => {
       if (!err && alerts.length > 0) {
         const Geoloc = this.model.app.models.Geoloc;
-        Geoloc.find({where: {and: [{deviceId: device.id}, {id: {neq: currentGeoloc.id}}]}, limit: 1, order: "createdAt DESC"}, (err: any, lastGeoloc: any) => {
+        Geoloc.find({
+          where: {and: [{deviceId: device.id}, {id: {neq: currentGeoloc.id}}]},
+          limit: 1,
+          order: "createdAt DESC"
+        }, (err: any, lastGeoloc: any) => {
           if (!lastGeoloc || !lastGeoloc[0]) return;
           alerts.forEach((alert: any, index: any) => {
             const currentLoc = currentGeoloc.location;
@@ -553,8 +554,12 @@ class Geoloc {
   private isDeviceInsidePolygon(marker: any, precision: number, polygon: any): boolean {
     if (precision) {
       const geolocPoly = this.circle2Polygon(marker, precision);
-      const geolocPolyV = geolocPoly.coordinates[0].map((x: any) => {return {x: x[0], y: x[1]}});
-      let polygonV = polygon.location.map((x: any) => {return {x: x.lng, y: x.lat}});
+      const geolocPolyV = geolocPoly.coordinates[0].map((x: any) => {
+        return {x: x[0], y: x[1]}
+      });
+      let polygonV = polygon.location.map((x: any) => {
+        return {x: x.lng, y: x.lat}
+      });
       polygonV.push(polygonV[0]); // make closed polygon
       const intersection = GreinerHormann.intersection(geolocPolyV, polygonV);
       if (!intersection || intersection.length === 0) {
@@ -587,7 +592,7 @@ class Geoloc {
       const d = marker.distanceTo(location_geofence, {type: "meters"});
       const R = alertGeofence.radius, r = precision;
       if (d <= R) {
-        if (r+d < R)
+        if (r + d < R)
           return true; // 100% in
         const areaGeoloc = Math.PI * r * r;
         const areaIntersection = 0.5 * Math.sqrt((-d + r + R) * (d + r - R) * (d - r + R) * (d + r + R));
