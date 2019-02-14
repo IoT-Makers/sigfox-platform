@@ -1,0 +1,179 @@
+stages:
+- build
+- deploy
+
+variables:
+  DOMAIN: iotagency.sigfox.com
+  API_VERSION: api
+
+  SUBDOMAIN: dev
+  PRIMUS_URL: https://primus.${SUBDOMAIN}.${DOMAIN}
+  API_URL: https://api.${SUBDOMAIN}.${DOMAIN}
+  BUILD_ENV: prod
+  SERVER_NAME: ${SUBDOMAIN}.${DOMAIN}
+
+  FRONTEND_BUILD_ARGS: --target builder --build-arg BUILD_ENV=${BUILD_ENV} --build-arg SERVER_NAME=${SERVER_NAME} --build-arg API_URL=${API_URL} --build-arg API_VERSION=${API_VERSION} --build-arg PRIMUS_URL=${PRIMUS_URL}
+
+  PRIMUS_IMG: ${CI_REGISTRY_IMAGE}/primus-${SUBDOMAIN}:latest
+  BACKEND_IMG: ${CI_REGISTRY_IMAGE}/backend-${SUBDOMAIN}:latest
+  FRONTEND_IMG: ${CI_REGISTRY_IMAGE}/frontend-${SUBDOMAIN}:latest
+  FRONTEND_BUILDER_IMG: ${CI_REGISTRY_IMAGE}/frontend-${SUBDOMAIN}:builder
+  # MONGO_IMG: ${CI_REGISTRY_IMAGE}/mongodb-${SUBDOMAIN}:latest
+  # RABBIT_IMG: ${CI_REGISTRY_IMAGE}/rabbitmq-${SUBDOMAIN}:latest
+
+
+.build_job: &build_job
+  stage: build
+  image: docker:latest
+  services:
+  - docker:dind
+  script:
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  # cache
+  - docker pull $PRIMUS_IMG || true
+  - docker pull $BACKEND_IMG || true
+  - docker pull $FRONTEND_BUILDER_IMG || true
+  - docker pull $FRONTEND_IMG || true
+  # - docker pull $MONGO_IMG || true
+  # - docker pull $RABBIT_IMG || true
+  # build
+  - docker build --cache-from $PRIMUS_IMG -t $PRIMUS_IMG primus
+  - docker build --cache-from $BACKEND_IMG -t $BACKEND_IMG --build-arg GIT_REV=${GIT_HASH} backend
+  - docker build --cache-from $FRONTEND_BUILDER_IMG -t $FRONTEND_BUILDER_IMG --target builder $FRONTEND_BUILD_ARGS frontend
+  - docker build --cache-from $FRONTEND_BUILDER_IMG --cache-from $FRONTEND_IMG -t $FRONTEND_IMG $FRONTEND_BUILD_ARGS frontend
+  # - docker build --cache-from $MONGO_IMG -t $MONGO_IMG mongodb
+  # - docker build --cache-from $RABBIT_IMG -t $RABBIT_IMG rabbitmq
+  # push
+  - docker push $PRIMUS_IMG
+  - docker push $BACKEND_IMG
+  - docker push $FRONTEND_BUILDER_IMG
+  - docker push $FRONTEND_IMG
+  # - docker push $MONGO_IMG
+  # - docker push $RABBIT_IMG
+
+
+.deploy_job: &deploy_job
+  stage: deploy
+  image: kroniak/ssh-client:latest
+  variables:
+    GIT_STRATEGY: none
+    ARGS: "--health-start-period 5s --with-registry-auth --update-failure-action rollback --update-parallelism 2 --update-order start-first"
+  script:
+  # add the server as a known host
+  - mkdir ~/.ssh
+  - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+  # add ssh key stored in SSH_PRIVATE_KEY variable to the agent store
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")
+  # log into Docker registry
+  - |
+    ssh ci_deployer@iotagency.sigfox.com "docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY} &&
+    docker service update ${SUBDOMAIN}_frontend ${ARGS} --image $FRONTEND_IMG &&
+    docker service update ${SUBDOMAIN}_primus ${ARGS} --image $PRIMUS_IMG &&
+    docker service update ${SUBDOMAIN}_backend ${ARGS} --image $BACKEND_IMG"
+
+.prod_build_job: &prod_build_job
+  <<: *build_job
+  only:
+  - master
+
+.prod_deploy_job: &prod_deploy_job
+  <<: *deploy_job
+  only:
+  - master
+
+# ======== dev ========
+build-dev:
+  <<: *build_job
+  variables:
+    SUBDOMAIN: dev
+  only:
+  - dev
+  - staging
+
+# ======== staging ========
+deploy-staging:
+  <<: *deploy_job
+  variables:
+    SUBDOMAIN: dev
+  only:
+  - staging
+
+# ======== PROD ========
+# app
+build-app:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: app
+
+deploy-app:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: app
+
+# try
+build-try:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: try
+
+deploy-try:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: try
+
+# demo
+build-demo:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: demo
+
+deploy-demo:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: demo
+
+# workshop
+build-workshop:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: workshop
+
+deploy-workshop:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: workshop
+
+# stela
+build-stela:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: stela
+
+deploy-stela:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: stela
+
+# foncia
+build-foncia:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: foncia
+
+deploy-foncia:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: foncia    
+
+# foundation
+build-foundation:
+  <<: *prod_build_job
+  variables:
+    SUBDOMAIN: foundation
+
+deploy-foundation:
+  <<: *prod_deploy_job
+  variables:
+    SUBDOMAIN: foundation
