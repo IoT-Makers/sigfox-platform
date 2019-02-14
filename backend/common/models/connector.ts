@@ -143,7 +143,7 @@ class Connector {
                         url: messageUrl,
                         httpMethod: "POST",
                         enabled: true,
-                        sendDuplicate: true,
+                        sendDuplicate: false,
                         sendSni: true,
                         bodyTemplate: '{\n\t"deviceId": "{device}",\n\t"time": {time},\n\t"seqNumber": {seqNumber},\n\t"data": "{data}",\n\t"reception": [{ "id": "{station}", "RSSI": {rssi}, "SNR": {snr} }],\n\t"duplicate": {duplicate},\n\t"ack": {ack}\n}',
                         headers: {Authorization: devAccessTokens[0].id},

@@ -65,7 +65,6 @@ class Geoloc {
     // Models
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
-    const Alert = this.model.app.models.Alert;
 
     if (typeof data.geoloc === 'undefined'
       || typeof data.geoloc.location === 'undefined'
@@ -91,7 +90,7 @@ class Geoloc {
     message.createdAt = new Date(data.time * 1000);
     message.deviceAck = true;
 
-    // Find the corresponding message in order to retrieve its message ID
+    // Find the corresponding message or create one
     Message.findOrCreate(
       {
         where: {id: message.id}
@@ -163,55 +162,76 @@ class Geoloc {
   postDataAdvanced(req: any, data: any, next: Function): void {
     // Models
     const Geoloc = this.model;
+    const Message = this.model.app.models.Message;
 
     if (typeof data.deviceId === 'undefined'
       || typeof data.time === 'undefined'
       || typeof data.seqNumber === 'undefined'
       || typeof data.computedLocation === 'undefined') {
-      return next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
+      return next('Missing "deviceId", "time", "seqNumber" and "computedLocation"', data);
     }
 
     // Force set uppercase for deviceId
     data.deviceId = data.deviceId.toUpperCase();
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
+    // Saving a message anyway
+    const message = new Message;
+    message.id = data.deviceId + data.time + data.seqNumber;
+    message.userId = userId;
+    message.deviceId = data.deviceId;
+    message.time = data.time;
+    message.seqNumber = data.seqNumber;
+    message.createdAt = new Date(data.time * 1000);
 
-    if (data.computedLocation.status === 1 || data.computedLocation.status === 2) {
-      // Build the Geoloc object
-      const geoloc = new Geoloc;
-      switch (data.computedLocation.source) {
-        case 1:
-          geoloc.type = 'gps';
-          break;
-        case 2:
-          geoloc.type = 'sigfox';
-          break;
-        case 5:
-          geoloc.type = 'wifi';
-          geoloc.source = 'sigfox';
-          break;
-        case 6:
-          geoloc.type = 'wifi';
-          break;
-        default:
-          geoloc.type = 'unknown';
-      }
-      const messageId = data.deviceId + data.time + data.seqNumber;
-      geoloc.id = messageId + geoloc.type;
-      geoloc.location = new loopback.GeoPoint({lat: data.computedLocation.lat, lng: data.computedLocation.lng});
-      geoloc.accuracy = data.computedLocation.radius;
-      geoloc.createdAt = new Date(data.time * 1000);
-      geoloc.userId = userId;
-      geoloc.messageId = messageId;
-      geoloc.deviceId = data.deviceId;
-      // Creating a new Geoloc
-      Geoloc.create(
-        geoloc,
-        (err: any, geolocInstance: any) => { // callback
-          if (err) return next(err, geolocInstance);
-          else return next(null, geolocInstance);
-        });
-    } else next(null, 'No position or invalid payload');
+    // Find the corresponding message or create one
+    Message.findOrCreate(
+      {
+        where: {id: message.id}
+      },
+      message,
+      (err: any, messageInstance: any, created: boolean) => {
+        if (err) return next(err, data);
+        else if (messageInstance) {
+          if (!created) console.log('Found the corresponding message.');
+          else console.log('[geoloc.ts] - Created new message.' + data.deviceId);
+          if (data.computedLocation.status === 1 || data.computedLocation.status === 2) {
+            // Build the Geoloc object
+            const geoloc = new Geoloc;
+            switch (data.computedLocation.source) {
+              case 1:
+                geoloc.type = 'gps';
+                break;
+              case 2:
+                geoloc.type = 'sigfox';
+                break;
+              case 5:
+                geoloc.type = 'wifi';
+                geoloc.source = 'sigfox';
+                break;
+              case 6:
+                geoloc.type = 'wifi';
+                break;
+              default:
+                geoloc.type = 'unknown';
+            }
+            geoloc.id = message.id + geoloc.type;
+            geoloc.location = new loopback.GeoPoint({lat: data.computedLocation.lat, lng: data.computedLocation.lng});
+            geoloc.accuracy = data.computedLocation.radius;
+            geoloc.createdAt = new Date(data.time * 1000);
+            geoloc.userId = userId;
+            geoloc.messageId = message.id;
+            geoloc.deviceId = data.deviceId;
+            // Creating a new Geoloc
+            Geoloc.create(
+              geoloc,
+              (err: any, geolocInstance: any) => { // callback
+                if (err) return next(err, geolocInstance);
+                else return next(null, geolocInstance);
+              });
+          } else next(null, 'No position or invalid payload');
+        }
+      });
   }
 
   private createFromParsedPayload(message: any, req: any): void {
