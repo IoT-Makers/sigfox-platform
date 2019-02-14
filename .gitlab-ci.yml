@@ -12,7 +12,7 @@ variables:
   BUILD_ENV: prod
   SERVER_NAME: ${SUBDOMAIN}.${DOMAIN}
 
-  FRONTEND_BUILD_ARGS: --target builder --build-arg BUILD_ENV=${BUILD_ENV} --build-arg SERVER_NAME=${SERVER_NAME} --build-arg API_URL=${API_URL} --build-arg API_VERSION=${API_VERSION} --build-arg PRIMUS_URL=${PRIMUS_URL}
+  FRONTEND_BUILD_ARGS: --build-arg BUILD_ENV=${BUILD_ENV} --build-arg SERVER_NAME=${SERVER_NAME} --build-arg API_URL=${API_URL} --build-arg API_VERSION=${API_VERSION} --build-arg PRIMUS_URL=${PRIMUS_URL}
 
   PRIMUS_IMG: ${CI_REGISTRY_IMAGE}/primus-${SUBDOMAIN}:latest
   BACKEND_IMG: ${CI_REGISTRY_IMAGE}/backend-${SUBDOMAIN}:latest
@@ -55,7 +55,7 @@ variables:
 .deploy_job: &deploy_job
   stage: deploy
   image: kroniak/ssh-client:latest
-  variables:
+  variables: &deploy_var
     GIT_STRATEGY: none
     ARGS: "--health-start-period 5s --with-registry-auth --update-failure-action rollback --update-parallelism 2 --update-order start-first"
   script:
@@ -68,10 +68,11 @@ variables:
   - ssh-add <(echo "$SSH_PRIVATE_KEY")
   # log into Docker registry
   - |
-    ssh ci_deployer@iotagency.sigfox.com "docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY} &&
+    ssh ci_deployer@iotagency.sigfox.com "docker login -u "$DEPLOY_USER" -p "$DEPLOY_TOKEN" $CI_REGISTRY && echo $FRONTEND_IMG &&
     docker service update ${SUBDOMAIN}_frontend ${ARGS} --image $FRONTEND_IMG &&
     docker service update ${SUBDOMAIN}_primus ${ARGS} --image $PRIMUS_IMG &&
     docker service update ${SUBDOMAIN}_backend ${ARGS} --image $BACKEND_IMG"
+
 
 .prod_build_job: &prod_build_job
   <<: *build_job
@@ -83,7 +84,7 @@ variables:
   only:
   - master
 
-# ======== dev ========
+# ======== dev on staging ========
 build-dev:
   <<: *build_job
   variables:
@@ -91,10 +92,10 @@ build-dev:
   only:
   - staging
 
-# ======== staging ========
-deploy-staging:
+deploy-dev:
   <<: *deploy_job
   variables:
+    <<: *deploy_var
     SUBDOMAIN: dev
   only:
   - staging
@@ -109,6 +110,7 @@ build-app:
 deploy-app:
   <<: *prod_deploy_job
   variables:
+    <<: *deploy_var
     SUBDOMAIN: app
 
 # try
@@ -120,6 +122,7 @@ build-try:
 deploy-try:
   <<: *prod_deploy_job
   variables:
+    <<: *deploy_var
     SUBDOMAIN: try
 
 # demo
@@ -131,6 +134,7 @@ build-demo:
 deploy-demo:
   <<: *prod_deploy_job
   variables:
+    <<: *deploy_var
     SUBDOMAIN: demo
 
 # workshop
@@ -142,6 +146,7 @@ build-workshop:
 deploy-workshop:
   <<: *prod_deploy_job
   variables:
+    <<: *deploy_var
     SUBDOMAIN: workshop
 
 # stela
@@ -153,6 +158,7 @@ build-stela:
 deploy-stela:
   <<: *prod_deploy_job
   variables:
+    <<: *deploy_var
     SUBDOMAIN: stela
 
 # foncia
@@ -164,6 +170,7 @@ build-foncia:
 deploy-foncia:
   <<: *prod_deploy_job
   variables:
+    <<: *deploy_var
     SUBDOMAIN: foncia    
 
 # foundation
@@ -175,4 +182,5 @@ build-foundation:
 deploy-foundation:
   <<: *prod_deploy_job
   variables:
+    <<: *deploy_var
     SUBDOMAIN: foundation
