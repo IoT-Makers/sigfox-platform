@@ -193,8 +193,8 @@ class Geoloc {
       (err: any, messageInstance: any, created: boolean) => {
         if (err) return next(err, data);
         else if (messageInstance) {
-          if (!created) console.log('Found the corresponding message.');
-          else console.log('[geoloc.ts] - Created new message.' + data.deviceId);
+          if (!created) console.log('[geoloc.ts - postDataAdvanced] - Found the corresponding message.');
+          else console.log('[geoloc.ts - postDataAdvanced] - Created new message.' + data.deviceId);
           if (data.computedLocation.status === 1 || data.computedLocation.status === 2) {
             // Build the Geoloc object
             const geoloc = new Geoloc;
@@ -226,7 +226,7 @@ class Geoloc {
             Geoloc.create(
               geoloc,
               (err: any, geolocInstance: any) => { // callback
-                if (err) return next(err, geolocInstance);
+                if (err) return next("The Geoloc already exists, please check your parser does not force platform Geoloc decoding.", geolocInstance);
                 else return next(null, geolocInstance);
               });
           } else next(null, 'No position or invalid payload');
