@@ -284,9 +284,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="shareCategoryWithOrganization(categoryToEdit.id, shareAssociatedDevices)" class="form-horizontal" #editForm="ngForm">
-
-
+        <form (ngSubmit)="shareCategoryWithOrganization(categoryToEdit.id)" class="form-horizontal" #editForm="ngForm">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Select organizations</label>
             <div class="col-md-9">
@@ -297,22 +295,13 @@
               </angular2-multiselect>
             </div>
           </div>
-          <div class="form-group row">
-            <label class="col-md-6 form-control-label">Share all associated devices</label>
-            <div class="col-md-6">
-              <label class="switch switch-sm switch-3d switch-organization-outline-alt">
-                <input [(ngModel)]="shareAssociatedDevices" type="checkbox" [ngModelOptions]="{standalone: true}"
-                       class="switch-input">
-                <span class="switch-label"></span>
-                <span class="switch-handle"></span>
-              </label>
-            </div>
-          </div>
-
         </form>
-      </div>
+        <div class="form-group row">
+          <label class="col-md-12 form-control-label">This also shares all associated devices!</label>
+        </div>
+        </div>
       <div class="modal-footer">
-        <button class="btn btn-sm btn-organization" (click)="shareCategoryWithOrganization(categoryToEdit, shareAssociatedDevices)">Share</button>
+        <button class="btn btn-sm btn-organization" (click)="shareCategoryWithOrganization(categoryToEdit)">Share</button>
         <button class="btn btn-sm btn-default" (click)="shareCategoryWithOrganizationModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->

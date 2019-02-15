@@ -17,6 +17,8 @@ const json2csv = require("json2csv").parse;
     beforeDelete: { name: "before delete", type: "operation" },
     afterDelete: { name: "after delete", type: "operation" },
     afterSave: { name: "after save", type: "operation" },
+    afterRemoteLinkOrganizations: {name: "prototype.__link__Organizations", type: "afterRemote"},
+    afterRemoteUnlinkOrganizations: {name: "prototype.__unlink__Organizations", type: "afterRemote"},
   },
   remotes: {
     download: {
@@ -62,11 +64,44 @@ class Category {
     next();
   }
 
+  public afterRemoteLinkOrganizations(ctx: any, data: any, next: Function): void {
+    // console.log("category.ts afterRemoteLinkOrganizations");
+    const Device = this.model.app.models.Device;
+    Device.find({where: {categoryId: data.categoryId}},
+      (err: any, devices: any) => {
+        if (err) console.error(err);
+        else if (devices) {
+          devices.forEach((device: any) => {
+            device.Organizations.add(data.organizationId, {deviceId: device.id}, () => {
+              Device.addDeviceMessagesToOrganization(device.id, data.organizationId);
+            });
+          });
+        }
+      });
+    next();
+  }
+
+  public afterRemoteUnlinkOrganizations(ctx: any, data: any, next: Function): void {
+    // console.log("category.ts afterRemoteUnlinkOrganizations");
+    const Device = this.model.app.models.Device;
+    Device.find({where: {categoryId: ctx.instance.id}},
+      (err: any, devices: any) => {
+        if (err) console.error(err);
+        else if (devices) {
+          devices.forEach((device: any) => {
+            device.Organizations.remove(ctx.args.fk, {deviceId: device.id}, () => {
+              Device.removeDeviceMessagesFromOrganization(device.id, ctx.args.fk);
+            });
+          });
+        }
+      });
+    next();
+  }
+
   // Before delete category, remove category organization links
   public beforeDelete(ctx: any, next: Function): void {
     // Models
     const Category = this.model;
-
     Category.findOne({where: {id: ctx.where.id}, include: "Organizations"}, (err: any, category: any) => {
       // console.log(category);
       if (!err) {

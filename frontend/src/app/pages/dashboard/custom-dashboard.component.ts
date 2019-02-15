@@ -182,6 +182,13 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     enableSearchFilter: true,
     classes: 'select-category'
   };
+  private selectCategoryPropsSettings = {
+    singleSelection: false,
+    text: 'Select properties',
+    selectAllText: 'Select all',
+    unSelectAllText: 'Unselect all',
+    enableSearchFilter: true
+  };
   private selectDevicesSettings = {
     singleSelection: false,
     text: 'Select devices',

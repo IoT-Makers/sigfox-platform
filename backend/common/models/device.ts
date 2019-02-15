@@ -24,6 +24,20 @@ const json2csv = require("json2csv").parse;
     afterRemoteUnlinkOrganizations: {name: "prototype.__unlink__Organizations", type: "afterRemote"},
   },
   remotes: {
+    addDeviceMessagesToOrganization: {
+      http: {path: '/add-device-messages-to-organization', verb: 'post'},
+      accepts: [
+        {arg: 'deviceId', type: 'string', required: true, description: 'deviceId'},
+        {arg: 'organizationId', type: 'string', required: true, description: 'organizationId'}
+      ],
+    },
+    removeDeviceMessagesFromOrganization: {
+      http: {path: '/remove-device-messages-from-organization', verb: 'post'},
+      accepts: [
+        {arg: 'deviceId', type: 'string', required: true, description: 'deviceId'},
+        {arg: 'organizationId', type: 'string', required: true, description: 'organizationId'}
+      ],
+    },
     download: {
       accepts: [
         {arg: "id", required: true, type: "string", http: {source: "path"}},
@@ -59,90 +73,60 @@ class Device {
   constructor(public model: any) {
   }
 
-  // Example Operation Hook
-  public beforeSave(ctx: any, next: Function): void {
-    if (ctx.data && ctx.data.id) {
-      console.log("Device: Before Save: " + ctx.data.id);
-      ctx.data.id = ctx.data.id.toUpperCase();
-    } else if (ctx.instance && ctx.instance.id) {
-      console.log("Device: Before Save: " + ctx.instance.id);
-      ctx.instance.id = ctx.instance.id.toUpperCase();
-      ctx.instance.createdAt = new Date();
-    }
-    next();
-  }
-
-  public afterRemoteLinkOrganizations(ctx: any, data: any, next: Function): void {
+  private addDeviceMessagesToOrganization(deviceId: string, organizationId: string): void {
+    // console.log('addDeviceMessagesToOrganization');
     const Message = this.model.app.models.Message;
     const Organization = this.model.app.models.Organization;
-
-    Message.find({where: {deviceId: data.deviceId}, fields: {id: true, createdAt: true}}, (err: any, messages: any) => {
+    Message.find({where: {deviceId: deviceId}, fields: {id: true, createdAt: true}}, (err: any, messages: any) => {
       if (!err && messages.length > 0) {
-        Organization.findById(data.organizationId, (err: any, orga: any) => {
+        Organization.findById(organizationId, (err: any, orga: any) => {
           if (!err) {
             const db = Message.dataSource.connector.db;
             const OrganizationMessage = db.collection('OrganizationMessage');
             OrganizationMessage.insertMany(messages.map((x: any) => ({
               messageId: x.id,
-              deviceId: data.deviceId,
+              deviceId: deviceId,
               createdAt: x.createdAt,
               organizationId: orga.id
             })), (err: any, result: any) => {
               if (err) console.error(err);
             });
-            next();
-          } else next(err);
+          }
         });
-      } else next(err);
+      }
+    });
+  }
+
+  public afterRemoteLinkOrganizations(ctx: any, data: any, next: Function): void {
+    // console.log('device afterRemoteLinkOrganizations');
+    this.addDeviceMessagesToOrganization(data.deviceId, data.organizationId);
+    next();
+  }
+
+  private removeDeviceMessagesFromOrganization(deviceId: string, organizationId: string): void {
+    const Message = this.model.app.models.Message;
+    const Organization = this.model.app.models.Organization;
+    Organization.findById(organizationId, (err: any, org: any) => {
+      const db = Message.dataSource.connector.db;
+      // Delete organization shared messages
+      const OrganizationMessage = db.collection('OrganizationMessage');
+      OrganizationMessage.deleteMany({deviceId: deviceId, organizationId: org.id},
+        (err: Error, info: Object) => {
+          if (err) console.error(err);
+        });
+      // Delete organization shared alerts
+      const OrganizationAlert = db.collection('OrganizationAlert');
+      OrganizationAlert.deleteMany({deviceId: deviceId, organizationId: org.id},
+        (err: Error, info: Object) => {
+          if (err) console.error(err);
+        });
     });
   }
 
   public afterRemoteUnlinkOrganizations(ctx: any, data: any, next: Function): void {
-    const Message = this.model.app.models.Message;
-    const Organization = this.model.app.models.Organization;
-    // console.log(Organization.prototype.__link__Messages);
-    Organization.findById(ctx.args.fk, (err: any, org: any) => {
-      const db = Message.dataSource.connector.db;
-      // Delete organization shared messages
-      const OrganizationMessage = db.collection('OrganizationMessage');
-      OrganizationMessage.deleteMany({deviceId: ctx.instance.id, organizationId: org.id},
-        (err: Error, info: Object) => {
-          console.error(err);
-        });
-      // Delete organization shared alerts
-      const OrganizationAlert = db.collection('OrganizationAlert');
-      OrganizationAlert.deleteMany({deviceId: ctx.instance.id, organizationId: org.id},
-        (err: Error, info: Object) => {
-          console.error(err);
-        });
-    });
+    // console.log('device afterRemoteUnlinkOrganizations');
+    this.removeDeviceMessagesFromOrganization(data.deviceId, data.organizationId);
     next();
-
-    // Message.find({where: {deviceId: ctx.instance.id}, fields: {id: true}}, (err: any, messages: any) => {
-    //   if (!err) {
-    //     // console.log(messages);
-    //     Organization.findById(ctx.args.fk, (err: any, orga: any) => {
-    //       // console.log(orga);
-    //       if (!err) {
-    //         // orga.Messages.remove(messages.map())
-    //         messages.forEach((message: any) => {
-    //           /**
-    //            * TODO: check if its not better to use: orga.Messages.remove(message, function...)
-    //            */
-    //           orga.Messages.remove(message.id, (err: any, result: any) => {
-    //             // console.log(result);
-    //           });
-    //         });
-    //         next();
-    //       } else {
-    //         next(err);
-    //       }
-    //     });
-    //   } else {
-    //     next(err);
-    //   }
-    // });
-    // console.log(ctx);
   }
 
   public getMessagesFromSigfoxBackend(deviceId: string, limit: number, before: number, req: any, next: Function): void {
@@ -444,6 +428,92 @@ class Device {
     next();
   }
 
+  public beforeSave(ctx: any, next: Function): void {
+    const Device = this.model.app.models.Device;
+    const Category = this.model.app.models.Category;
+
+    if (ctx.data && ctx.data.id) {
+      console.log("Device: Before Save: " + ctx.data.id);
+      ctx.data.id = ctx.data.id.toUpperCase();
+    } else if (ctx.instance && ctx.instance.id) {
+      console.log("Device: Before Save: " + ctx.instance.id);
+      ctx.instance.id = ctx.instance.id.toUpperCase();
+      ctx.instance.createdAt = new Date();
+    }
+    const newDevice = ctx.data;
+    const oldDevice = ctx.currentInstance;
+    // device is being added to a category for the first time
+    if (!ctx.isNewInstance && !oldDevice.categoryId && newDevice.categoryId) {
+      Category.findById(newDevice.categoryId, {include: ["Organizations"]},
+        (err: any, category: any) => {
+          if (err) console.error(err);
+          else if (category) {
+            category = category.toJSON();
+            if (category.Organizations) {
+              // category is shared
+              category.Organizations.forEach((org: any) => {
+                oldDevice.Organizations.add(org.id, {deviceId: newDevice.id}, () => {
+                  Device.addDeviceMessagesToOrganization(newDevice.id, org.id);
+                });
+              });
+            }
+          }
+        });
+    } // device is being removed from a category
+    else if (!ctx.isNewInstance && oldDevice.categoryId && !newDevice.categoryId) {
+      Category.findById(oldDevice.categoryId, {include: ["Organizations"]},
+        (err: any, category: any) => {
+          if (err) console.error(err);
+          else if (category) {
+            category = category.toJSON();
+            if (category.Organizations) {
+              // category is shared
+              category.Organizations.forEach((org: any) => {
+                oldDevice.Organizations.remove(org.id, () => {
+                  Device.removeDeviceMessagesFromOrganization(oldDevice.id, org.id);
+                });
+              });
+            }
+          }
+        });
+    }
+    // Device is being switched to another category
+    else if (!ctx.isNewInstance && oldDevice.categoryId && newDevice.categoryId && (oldDevice.categoryId !== newDevice.categoryId)) {
+      // Remove device from linked organizations belonging to old category
+      Category.findById(oldDevice.categoryId, {include: ["Organizations"]},
+        (err: any, category: any) => {
+          if (err) console.error(err);
+          else if (category) {
+            category = category.toJSON();
+            if (category.Organizations) {
+              // category is shared
+              category.Organizations.forEach((org: any) => {
+                oldDevice.Organizations.remove(org.id, () => {
+                  Device.removeDeviceMessagesFromOrganization(oldDevice.id, org.id);
+                });
+              });
+            }
+          }
+        });
+      Category.findById(newDevice.categoryId, {include: ["Organizations"]},
+        (err: any, category: any) => {
+          if (err) console.error(err);
+          else if (category) {
+            category = category.toJSON();
+            if (category.Organizations) {
+              // category is shared
+              category.Organizations.forEach((org: any) => {
+                oldDevice.Organizations.add(org.id, {deviceId: newDevice.id}, () => {
+                  Device.addDeviceMessagesToOrganization(newDevice.id, org.id);
+                });
+              });
+            }
+          }
+        });
+    }
+    next();
+  }
+
   public afterSave(ctx: any, next: Function): void {
     // Pub-sub
     let device = ctx.instance;
@@ -455,6 +525,8 @@ class Device {
     RabbitPub.getInstance().pub(payload, device.userId, null);
     next();
   }
+
+
 }
 
 module.exports = Device;

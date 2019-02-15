@@ -81,7 +81,15 @@
   },
   "Device": {
     "dataSource": "mongodb",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "addDeviceMessagesToOrganization": false,
+          "removeDeviceMessagesFromOrganization": false
+        }
+      }
+    }
   },
   "Parser": {
     "dataSource": "mongodb",
