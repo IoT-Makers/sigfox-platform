@@ -90,7 +90,7 @@ class Category {
         else if (devices) {
           devices.forEach((device: any) => {
             device.Organizations.remove(ctx.args.fk, {deviceId: device.id}, () => {
-              Device.removeDeviceMessagesToOrganization(device.id, ctx.args.fk);
+              Device.removeDeviceMessagesFromOrganization(device.id, ctx.args.fk);
             });
           });
         }

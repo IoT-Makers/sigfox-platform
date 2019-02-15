@@ -31,8 +31,8 @@ const json2csv = require("json2csv").parse;
         {arg: 'organizationId', type: 'string', required: true, description: 'organizationId'}
       ],
     },
-    removeDeviceMessagesToOrganization: {
-      http: {path: '/remove-device-messages-to-organization', verb: 'post'},
+    removeDeviceMessagesFromOrganization: {
+      http: {path: '/remove-device-messages-from-organization', verb: 'post'},
       accepts: [
         {arg: 'deviceId', type: 'string', required: true, description: 'deviceId'},
         {arg: 'organizationId', type: 'string', required: true, description: 'organizationId'}
@@ -103,7 +103,7 @@ class Device {
     next();
   }
 
-  private removeDeviceMessagesToOrganization(deviceId: string, organizationId: string): void {
+  private removeDeviceMessagesFromOrganization(deviceId: string, organizationId: string): void {
     const Message = this.model.app.models.Message;
     const Organization = this.model.app.models.Organization;
     Organization.findById(organizationId, (err: any, org: any) => {
@@ -125,7 +125,7 @@ class Device {
 
   public afterRemoteUnlinkOrganizations(ctx: any, data: any, next: Function): void {
     // console.log('device afterRemoteUnlinkOrganizations');
-    this.removeDeviceMessagesToOrganization(ctx.instance.id, ctx.args.fk);
+    this.removeDeviceMessagesFromOrganization(data.deviceId, data.organizationId);
     next();
   }
 
@@ -429,6 +429,9 @@ class Device {
   }
 
   public beforeSave(ctx: any, next: Function): void {
+    const Device = this.model.app.models.Device;
+    const Category = this.model.app.models.Category;
+
     if (ctx.data && ctx.data.id) {
       console.log("Device: Before Save: " + ctx.data.id);
       ctx.data.id = ctx.data.id.toUpperCase();
@@ -437,12 +440,10 @@ class Device {
       ctx.instance.id = ctx.instance.id.toUpperCase();
       ctx.instance.createdAt = new Date();
     }
-    const Device = this.model.app.models.Device;
     const newDevice = ctx.data;
     const oldDevice = ctx.currentInstance;
-    // device is being linked to a category
+    // device is being added to a category for the first time
     if (!ctx.isNewInstance && !oldDevice.categoryId && newDevice.categoryId) {
-      const Category = this.model.app.models.Category;
       Category.findById(newDevice.categoryId, {include: ["Organizations"]},
         (err: any, category: any) => {
           if (err) console.error(err);
@@ -458,9 +459,8 @@ class Device {
             }
           }
         });
-    } else if (!ctx.isNewInstance && oldDevice.categoryId && !newDevice.categoryId) {
-      // device is being unlinked to a category
-      const Category = this.model.app.models.Category;
+    } // device is being removed from a category
+    else if (!ctx.isNewInstance && oldDevice.categoryId && !newDevice.categoryId) {
       Category.findById(oldDevice.categoryId, {include: ["Organizations"]},
         (err: any, category: any) => {
           if (err) console.error(err);
@@ -469,8 +469,42 @@ class Device {
             if (category.Organizations) {
               // category is shared
               category.Organizations.forEach((org: any) => {
-                oldDevice.Organizations.remove(org.id, {deviceId: oldDevice.id}, () => {
-                  Device.removeDeviceMessagesToOrganization(oldDevice.id, org.id);
+                oldDevice.Organizations.remove(org.id, () => {
+                  Device.removeDeviceMessagesFromOrganization(oldDevice.id, org.id);
+                });
+              });
+            }
+          }
+        });
+    }
+    // Device is being switched to another category
+    else if (!ctx.isNewInstance && oldDevice.categoryId && newDevice.categoryId && (oldDevice.categoryId !== newDevice.categoryId)) {
+      // Remove device from linked organizations belonging to old category
+      Category.findById(oldDevice.categoryId, {include: ["Organizations"]},
+        (err: any, category: any) => {
+          if (err) console.error(err);
+          else if (category) {
+            category = category.toJSON();
+            if (category.Organizations) {
+              // category is shared
+              category.Organizations.forEach((org: any) => {
+                oldDevice.Organizations.remove(org.id, () => {
+                  Device.removeDeviceMessagesFromOrganization(oldDevice.id, org.id);
+                });
+              });
+            }
+          }
+        });
+      Category.findById(newDevice.categoryId, {include: ["Organizations"]},
+        (err: any, category: any) => {
+          if (err) console.error(err);
+          else if (category) {
+            category = category.toJSON();
+            if (category.Organizations) {
+              // category is shared
+              category.Organizations.forEach((org: any) => {
+                oldDevice.Organizations.add(org.id, {deviceId: newDevice.id}, () => {
+                  Device.addDeviceMessagesToOrganization(newDevice.id, org.id);
                 });
               });
             }
