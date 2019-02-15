@@ -24,6 +24,20 @@ const json2csv = require("json2csv").parse;
     afterRemoteUnlinkOrganizations: {name: "prototype.__unlink__Organizations", type: "afterRemote"},
   },
   remotes: {
+    addDeviceMessagesToOrganization: {
+      http: {path: '/add-device-messages-to-organization', verb: 'post'},
+      accepts: [
+        {arg: 'deviceId', type: 'string', required: true, description: 'deviceId'},
+        {arg: 'organizationId', type: 'string', required: true, description: 'organizationId'}
+      ],
+    },
+    removeDeviceMessagesToOrganization: {
+      http: {path: '/remove-device-messages-to-organization', verb: 'post'},
+      accepts: [
+        {arg: 'deviceId', type: 'string', required: true, description: 'deviceId'},
+        {arg: 'organizationId', type: 'string', required: true, description: 'organizationId'}
+      ],
+    },
     download: {
       accepts: [
         {arg: "id", required: true, type: "string", http: {source: "path"}},
@@ -59,77 +73,60 @@ class Device {
   constructor(public model: any) {
   }
 
-  public afterRemoteLinkOrganizations(ctx: any, data: any, next: Function): void {
+  private addDeviceMessagesToOrganization(deviceId: string, organizationId: string): void {
+    // console.log('addDeviceMessagesToOrganization');
     const Message = this.model.app.models.Message;
     const Organization = this.model.app.models.Organization;
-    Message.find({where: {deviceId: data.deviceId}, fields: {id: true, createdAt: true}}, (err: any, messages: any) => {
+    Message.find({where: {deviceId: deviceId}, fields: {id: true, createdAt: true}}, (err: any, messages: any) => {
       if (!err && messages.length > 0) {
-        Organization.findById(data.organizationId, (err: any, orga: any) => {
+        Organization.findById(organizationId, (err: any, orga: any) => {
           if (!err) {
             const db = Message.dataSource.connector.db;
             const OrganizationMessage = db.collection('OrganizationMessage');
             OrganizationMessage.insertMany(messages.map((x: any) => ({
               messageId: x.id,
-              deviceId: data.deviceId,
+              deviceId: deviceId,
               createdAt: x.createdAt,
               organizationId: orga.id
             })), (err: any, result: any) => {
               if (err) console.error(err);
             });
-            next();
-          } else next(err);
+          }
         });
-      } else next(err);
+      }
+    });
+  }
+
+  public afterRemoteLinkOrganizations(ctx: any, data: any, next: Function): void {
+    // console.log('device afterRemoteLinkOrganizations');
+    this.addDeviceMessagesToOrganization(data.deviceId, data.organizationId);
+    next();
+  }
+
+  private removeDeviceMessagesToOrganization(deviceId: string, organizationId: string): void {
+    const Message = this.model.app.models.Message;
+    const Organization = this.model.app.models.Organization;
+    Organization.findById(organizationId, (err: any, org: any) => {
+      const db = Message.dataSource.connector.db;
+      // Delete organization shared messages
+      const OrganizationMessage = db.collection('OrganizationMessage');
+      OrganizationMessage.deleteMany({deviceId: deviceId, organizationId: org.id},
+        (err: Error, info: Object) => {
+          if (err) console.error(err);
+        });
+      // Delete organization shared alerts
+      const OrganizationAlert = db.collection('OrganizationAlert');
+      OrganizationAlert.deleteMany({deviceId: deviceId, organizationId: org.id},
+        (err: Error, info: Object) => {
+          if (err) console.error(err);
+        });
     });
   }
 
   public afterRemoteUnlinkOrganizations(ctx: any, data: any, next: Function): void {
-    console.log(22222222222);
-    const Message = this.model.app.models.Message;
-    const Organization = this.model.app.models.Organization;
-    // console.log(Organization.prototype.__link__Messages);
-    Organization.findById(ctx.args.fk, (err: any, org: any) => {
-      const db = Message.dataSource.connector.db;
-      // Delete organization shared messages
-      const OrganizationMessage = db.collection('OrganizationMessage');
-      OrganizationMessage.deleteMany({deviceId: ctx.instance.id, organizationId: org.id},
-        (err: Error, info: Object) => {
-          console.error(err);
-        });
-      // Delete organization shared alerts
-      const OrganizationAlert = db.collection('OrganizationAlert');
-      OrganizationAlert.deleteMany({deviceId: ctx.instance.id, organizationId: org.id},
-        (err: Error, info: Object) => {
-          console.error(err);
-        });
-    });
+    // console.log('device afterRemoteUnlinkOrganizations');
+    this.removeDeviceMessagesToOrganization(ctx.instance.id, ctx.args.fk);
     next();
-
-    // Message.find({where: {deviceId: ctx.instance.id}, fields: {id: true}}, (err: any, messages: any) => {
-    //   if (!err) {
-    //     // console.log(messages);
-    //     Organization.findById(ctx.args.fk, (err: any, orga: any) => {
-    //       // console.log(orga);
-    //       if (!err) {
-    //         // orga.Messages.remove(messages.map())
-    //         messages.forEach((message: any) => {
-    //           /**
-    //            * TODO: check if its not better to use: orga.Messages.remove(message, function...)
-    //            */
-    //           orga.Messages.remove(message.id, (err: any, result: any) => {
-    //             // console.log(result);
-    //           });
-    //         });
-    //         next();
-    //       } else {
-    //         next(err);
-    //       }
-    //     });
-    //   } else {
-    //     next(err);
-    //   }
-    // });
-    // console.log(ctx);
   }
 
   public getMessagesFromSigfoxBackend(deviceId: string, limit: number, before: number, req: any, next: Function): void {
@@ -440,7 +437,7 @@ class Device {
       ctx.instance.id = ctx.instance.id.toUpperCase();
       ctx.instance.createdAt = new Date();
     }
-
+    const Device = this.model.app.models.Device;
     const newDevice = ctx.data;
     const oldDevice = ctx.currentInstance;
     // device is being linked to a category
@@ -454,14 +451,15 @@ class Device {
             if (category.Organizations) {
               // category is shared
               category.Organizations.forEach((org: any) => {
-                oldDevice.Organizations.add(org.id, {deviceId: newDevice.id});
+                oldDevice.Organizations.add(org.id, {deviceId: newDevice.id}, () => {
+                  Device.addDeviceMessagesToOrganization(newDevice.id, org.id);
+                });
               });
             }
           }
         });
     } else if (!ctx.isNewInstance && oldDevice.categoryId && !newDevice.categoryId) {
       // device is being unlinked to a category
-      console.log('unlink');
       const Category = this.model.app.models.Category;
       Category.findById(oldDevice.categoryId, {include: ["Organizations"]},
         (err: any, category: any) => {
@@ -471,7 +469,9 @@ class Device {
             if (category.Organizations) {
               // category is shared
               category.Organizations.forEach((org: any) => {
-                oldDevice.Organizations.remove(org.id, {deviceId: oldDevice.id});
+                oldDevice.Organizations.remove(org.id, {deviceId: oldDevice.id}, () => {
+                  Device.removeDeviceMessagesToOrganization(oldDevice.id, org.id);
+                });
               });
             }
           }

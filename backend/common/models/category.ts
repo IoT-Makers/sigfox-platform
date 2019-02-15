@@ -65,13 +65,16 @@ class Category {
   }
 
   public afterRemoteLinkOrganizations(ctx: any, data: any, next: Function): void {
+    // console.log("category.ts afterRemoteLinkOrganizations");
     const Device = this.model.app.models.Device;
     Device.find({where: {categoryId: data.categoryId}},
       (err: any, devices: any) => {
         if (err) console.error(err);
         else if (devices) {
           devices.forEach((device: any) => {
-            device.Organizations.add(data.organizationId, {deviceId: device.id});
+            device.Organizations.add(data.organizationId, {deviceId: device.id}, () => {
+              Device.addDeviceMessagesToOrganization(device.id, data.organizationId);
+            });
           });
         }
       });
@@ -79,16 +82,16 @@ class Category {
   }
 
   public afterRemoteUnlinkOrganizations(ctx: any, data: any, next: Function): void {
+    // console.log("category.ts afterRemoteUnlinkOrganizations");
     const Device = this.model.app.models.Device;
     Device.find({where: {categoryId: ctx.instance.id}},
       (err: any, devices: any) => {
         if (err) console.error(err);
         else if (devices) {
           devices.forEach((device: any) => {
-            console.log(1111111111111);
-            console.log(ctx.args);
-
-            device.Organizations.remove(ctx.args.fk, {deviceId: device.id});
+            device.Organizations.remove(ctx.args.fk, {deviceId: device.id}, () => {
+              Device.removeDeviceMessagesToOrganization(device.id, ctx.args.fk);
+            });
           });
         }
       });
@@ -99,7 +102,6 @@ class Category {
   public beforeDelete(ctx: any, next: Function): void {
     // Models
     const Category = this.model;
-
     Category.findOne({where: {id: ctx.where.id}, include: "Organizations"}, (err: any, category: any) => {
       // console.log(category);
       if (!err) {
