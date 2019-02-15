@@ -260,16 +260,6 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   shareCategoryWithOrganization(category): void {
     this.selectedOrganizations.forEach(orga => {
       this.categoryApi.linkOrganizations(category.id, orga.id).subscribe(results => {
-        // console.log(results);
-        // if (category.Devices.length > 0) {
-        //   category.Devices.forEach(device => {
-        //     this.selectedOrganizations.forEach(orga => {
-        //       this.deviceApi.linkOrganizations(device.id, orga.id).subscribe(results => {
-        //         console.log(results);
-        //       });
-        //     });
-        //   });
-        // }
         this.shareCategoryWithOrganizationModal.hide();
         console.log(results);
         this.organizationApi.findById(orga.id).subscribe((org: Organization) => {
