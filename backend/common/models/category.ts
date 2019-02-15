@@ -17,6 +17,8 @@ const json2csv = require("json2csv").parse;
     beforeDelete: { name: "before delete", type: "operation" },
     afterDelete: { name: "after delete", type: "operation" },
     afterSave: { name: "after save", type: "operation" },
+    afterRemoteLinkOrganizations: {name: "prototype.__link__Organizations", type: "afterRemote"},
+    afterRemoteUnlinkOrganizations: {name: "prototype.__unlink__Organizations", type: "afterRemote"},
   },
   remotes: {
     download: {
@@ -59,6 +61,37 @@ class Category {
   public beforeSave(ctx: any, next: Function): void {
     console.log("Category: Before Save");
     if (ctx.instance) ctx.instance.createdAt = new Date();
+    next();
+  }
+
+  public afterRemoteLinkOrganizations(ctx: any, data: any, next: Function): void {
+    const Device = this.model.app.models.Device;
+    Device.find({where: {categoryId: data.categoryId}},
+      (err: any, devices: any) => {
+        if (err) console.error(err);
+        else if (devices) {
+          devices.forEach((device: any) => {
+            device.Organizations.add(data.organizationId, {deviceId: device.id});
+          });
+        }
+      });
+    next();
+  }
+
+  public afterRemoteUnlinkOrganizations(ctx: any, data: any, next: Function): void {
+    const Device = this.model.app.models.Device;
+    Device.find({where: {categoryId: ctx.instance.id}},
+      (err: any, devices: any) => {
+        if (err) console.error(err);
+        else if (devices) {
+          devices.forEach((device: any) => {
+            console.log(1111111111111);
+            console.log(ctx.args);
+
+            device.Organizations.remove(ctx.args.fk, {deviceId: device.id});
+          });
+        }
+      });
     next();
   }
 

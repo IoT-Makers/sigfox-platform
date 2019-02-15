@@ -48,8 +48,6 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   public categoryToEdit: Category = new Category();
   private newCategory = false;
 
-  public shareAssociatedDevices = false;
-
   public propertyType = ['string', 'number', 'geoloc', 'date', 'boolean'];
 
   // Notifications
@@ -259,20 +257,21 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
   }
 
-  shareCategoryWithOrganization(category, shareAssociatedDevices): void {
+  shareCategoryWithOrganization(category): void {
     this.selectedOrganizations.forEach(orga => {
       this.categoryApi.linkOrganizations(category.id, orga.id).subscribe(results => {
-        console.log(results);
-        if (shareAssociatedDevices && category.Devices.length > 0) {
-          category.Devices.forEach(device => {
-            this.selectedOrganizations.forEach(orga => {
-              this.deviceApi.linkOrganizations(device.id, orga.id).subscribe(results => {
-                console.log(results);
-              });
-            });
-          });
-        }
+        // console.log(results);
+        // if (category.Devices.length > 0) {
+        //   category.Devices.forEach(device => {
+        //     this.selectedOrganizations.forEach(orga => {
+        //       this.deviceApi.linkOrganizations(device.id, orga.id).subscribe(results => {
+        //         console.log(results);
+        //       });
+        //     });
+        //   });
+        // }
         this.shareCategoryWithOrganizationModal.hide();
+        console.log(results);
         this.organizationApi.findById(orga.id).subscribe((org: Organization) => {
           this.categoryToEdit.Organizations.push(org);
         });

@@ -59,23 +59,9 @@ class Device {
   constructor(public model: any) {
   }
 
-  // Example Operation Hook
-  public beforeSave(ctx: any, next: Function): void {
-    if (ctx.data && ctx.data.id) {
-      console.log("Device: Before Save: " + ctx.data.id);
-      ctx.data.id = ctx.data.id.toUpperCase();
-    } else if (ctx.instance && ctx.instance.id) {
-      console.log("Device: Before Save: " + ctx.instance.id);
-      ctx.instance.id = ctx.instance.id.toUpperCase();
-      ctx.instance.createdAt = new Date();
-    }
-    next();
-  }
-
   public afterRemoteLinkOrganizations(ctx: any, data: any, next: Function): void {
     const Message = this.model.app.models.Message;
     const Organization = this.model.app.models.Organization;
-
     Message.find({where: {deviceId: data.deviceId}, fields: {id: true, createdAt: true}}, (err: any, messages: any) => {
       if (!err && messages.length > 0) {
         Organization.findById(data.organizationId, (err: any, orga: any) => {
@@ -98,6 +84,7 @@ class Device {
   }
 
   public afterRemoteUnlinkOrganizations(ctx: any, data: any, next: Function): void {
+    console.log(22222222222);
     const Message = this.model.app.models.Message;
     const Organization = this.model.app.models.Organization;
     // console.log(Organization.prototype.__link__Messages);
@@ -444,6 +431,55 @@ class Device {
     next();
   }
 
+  public beforeSave(ctx: any, next: Function): void {
+    if (ctx.data && ctx.data.id) {
+      console.log("Device: Before Save: " + ctx.data.id);
+      ctx.data.id = ctx.data.id.toUpperCase();
+    } else if (ctx.instance && ctx.instance.id) {
+      console.log("Device: Before Save: " + ctx.instance.id);
+      ctx.instance.id = ctx.instance.id.toUpperCase();
+      ctx.instance.createdAt = new Date();
+    }
+
+    const newDevice = ctx.data;
+    const oldDevice = ctx.currentInstance;
+    // device is being linked to a category
+    if (!ctx.isNewInstance && !oldDevice.categoryId && newDevice.categoryId) {
+      const Category = this.model.app.models.Category;
+      Category.findById(newDevice.categoryId, {include: ["Organizations"]},
+        (err: any, category: any) => {
+          if (err) console.error(err);
+          else if (category) {
+            category = category.toJSON();
+            if (category.Organizations) {
+              // category is shared
+              category.Organizations.forEach((org: any) => {
+                oldDevice.Organizations.add(org.id, {deviceId: newDevice.id});
+              });
+            }
+          }
+        });
+    } else if (!ctx.isNewInstance && oldDevice.categoryId && !newDevice.categoryId) {
+      // device is being unlinked to a category
+      console.log('unlink');
+      const Category = this.model.app.models.Category;
+      Category.findById(oldDevice.categoryId, {include: ["Organizations"]},
+        (err: any, category: any) => {
+          if (err) console.error(err);
+          else if (category) {
+            category = category.toJSON();
+            if (category.Organizations) {
+              // category is shared
+              category.Organizations.forEach((org: any) => {
+                oldDevice.Organizations.remove(org.id, {deviceId: oldDevice.id});
+              });
+            }
+          }
+        });
+    }
+    next();
+  }
+
   public afterSave(ctx: any, next: Function): void {
     // Pub-sub
     let device = ctx.instance;
@@ -455,6 +491,8 @@ class Device {
     RabbitPub.getInstance().pub(payload, device.userId, null);
     next();
   }
+
+
 }
 
 module.exports = Device;
