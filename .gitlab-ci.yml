@@ -37,7 +37,7 @@ variables:
   # build
   - export FRONTEND_BUILD_ARGS="--build-arg BUILD_ENV=${BUILD_ENV} --build-arg SERVER_NAME=${SERVER_NAME} --build-arg API_URL=${API_URL} --build-arg API_VERSION=${API_VERSION} --build-arg PRIMUS_URL=${PRIMUS_URL}"
   - docker build --cache-from $PRIMUS_IMG -t $PRIMUS_IMG primus
-  - docker build --cache-from $BACKEND_IMG -t $BACKEND_IMG --build-arg GIT_REV=${GIT_HASH} backend
+  - docker build --cache-from $BACKEND_IMG -t $BACKEND_IMG --build-arg GIT_REV=${CI_COMMIT_SHORT_SHA} backend
   - docker build --cache-from $FRONTEND_BUILDER_IMG -t $FRONTEND_BUILDER_IMG --target builder $FRONTEND_BUILD_ARGS frontend
   - docker build --cache-from $FRONTEND_BUILDER_IMG --cache-from $FRONTEND_IMG -t $FRONTEND_IMG $FRONTEND_BUILD_ARGS frontend
   # - docker build --cache-from $MONGO_IMG -t $MONGO_IMG mongodb
