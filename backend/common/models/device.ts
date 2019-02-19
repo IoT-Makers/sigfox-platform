@@ -442,74 +442,78 @@ class Device {
     }
     const newDevice = ctx.data;
     const oldDevice = ctx.currentInstance;
-    // device is being added to a category for the first time
-    if (!ctx.isNewInstance && !oldDevice.categoryId && newDevice.categoryId) {
-      Category.findById(newDevice.categoryId, {include: ["Organizations"]},
-        (err: any, category: any) => {
-          if (err) console.error(err);
-          else if (category) {
-            category = category.toJSON();
-            if (category.Organizations) {
-              // category is shared
-              category.Organizations.forEach((org: any) => {
-                oldDevice.Organizations.add(org.id, {deviceId: newDevice.id}, () => {
-                  Device.addDeviceMessagesToOrganization(newDevice.id, org.id);
+    // If device is not being created, only updated
+    if (!ctx.isNewInstance && newDevice && oldDevice) {
+      // Device is being added to a category for the first time
+      if (!oldDevice.categoryId && newDevice.categoryId) {
+        Category.findById(newDevice.categoryId, {include: ["Organizations"]},
+          (err: any, category: any) => {
+            if (err) console.error(err);
+            else if (category) {
+              category = category.toJSON();
+              if (category.Organizations) {
+                // category is shared
+                category.Organizations.forEach((org: any) => {
+                  oldDevice.Organizations.add(org.id, {deviceId: newDevice.id}, () => {
+                    Device.addDeviceMessagesToOrganization(newDevice.id, org.id);
+                  });
                 });
-              });
+              }
             }
-          }
-        });
-    } // device is being removed from a category
-    else if (!ctx.isNewInstance && oldDevice.categoryId && !newDevice.categoryId) {
-      Category.findById(oldDevice.categoryId, {include: ["Organizations"]},
-        (err: any, category: any) => {
-          if (err) console.error(err);
-          else if (category) {
-            category = category.toJSON();
-            if (category.Organizations) {
-              // category is shared
-              category.Organizations.forEach((org: any) => {
-                oldDevice.Organizations.remove(org.id, () => {
-                  Device.removeDeviceMessagesFromOrganization(oldDevice.id, org.id);
+          });
+      }
+      // Device is being removed from a category
+      else if (oldDevice.categoryId && !newDevice.categoryId) {
+        Category.findById(oldDevice.categoryId, {include: ["Organizations"]},
+          (err: any, category: any) => {
+            if (err) console.error(err);
+            else if (category) {
+              category = category.toJSON();
+              if (category.Organizations) {
+                // category is shared
+                category.Organizations.forEach((org: any) => {
+                  oldDevice.Organizations.remove(org.id, () => {
+                    Device.removeDeviceMessagesFromOrganization(oldDevice.id, org.id);
+                  });
                 });
-              });
+              }
             }
-          }
-        });
-    }
-    // Device is being switched to another category
-    else if (!ctx.isNewInstance && oldDevice.categoryId && newDevice.categoryId && (oldDevice.categoryId !== newDevice.categoryId)) {
-      // Remove device from linked organizations belonging to old category
-      Category.findById(oldDevice.categoryId, {include: ["Organizations"]},
-        (err: any, category: any) => {
-          if (err) console.error(err);
-          else if (category) {
-            category = category.toJSON();
-            if (category.Organizations) {
-              // category is shared
-              category.Organizations.forEach((org: any) => {
-                oldDevice.Organizations.remove(org.id, () => {
-                  Device.removeDeviceMessagesFromOrganization(oldDevice.id, org.id);
+          });
+      }
+      // Device is being switched to another category
+      else if (oldDevice.categoryId && newDevice.categoryId && (oldDevice.categoryId !== newDevice.categoryId)) {
+        // Remove device from linked organizations belonging to old category
+        Category.findById(oldDevice.categoryId, {include: ["Organizations"]},
+          (err: any, category: any) => {
+            if (err) console.error(err);
+            else if (category) {
+              category = category.toJSON();
+              if (category.Organizations) {
+                // category is shared
+                category.Organizations.forEach((org: any) => {
+                  oldDevice.Organizations.remove(org.id, () => {
+                    Device.removeDeviceMessagesFromOrganization(oldDevice.id, org.id);
+                  });
                 });
-              });
+              }
             }
-          }
-        });
-      Category.findById(newDevice.categoryId, {include: ["Organizations"]},
-        (err: any, category: any) => {
-          if (err) console.error(err);
-          else if (category) {
-            category = category.toJSON();
-            if (category.Organizations) {
-              // category is shared
-              category.Organizations.forEach((org: any) => {
-                oldDevice.Organizations.add(org.id, {deviceId: newDevice.id}, () => {
-                  Device.addDeviceMessagesToOrganization(newDevice.id, org.id);
+          });
+        Category.findById(newDevice.categoryId, {include: ["Organizations"]},
+          (err: any, category: any) => {
+            if (err) console.error(err);
+            else if (category) {
+              category = category.toJSON();
+              if (category.Organizations) {
+                // category is shared
+                category.Organizations.forEach((org: any) => {
+                  oldDevice.Organizations.add(org.id, {deviceId: newDevice.id}, () => {
+                    Device.addDeviceMessagesToOrganization(newDevice.id, org.id);
+                  });
                 });
-              });
+              }
             }
-          }
-        });
+          });
+      }
     }
     next();
   }
