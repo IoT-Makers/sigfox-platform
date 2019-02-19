@@ -351,7 +351,6 @@ class Message {
     // Model
     const Device = this.model.app.models.Device;
     Device.findById(deviceId, {
-        limit: 1,
         include: [{
           relation: "Messages",
           scope: {
