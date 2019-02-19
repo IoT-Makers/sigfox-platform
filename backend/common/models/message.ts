@@ -87,7 +87,7 @@ class Message {
     message.createdAt = new Date(message.time * 1000);
 
     // Create a new device object
-    const device = new Message.app.models.Device;
+    const device = new this.model.app.models.Device;
     device.id = message.deviceId;
     device.userId = userId;
 
@@ -125,7 +125,7 @@ class Message {
             // share device if device in a shared category
             if (device.categoryId) {
               const Category = this.model.app.models.Category;
-              Category.findOne({where: {id: device.categoryId}, include: ["Organizations"]},
+              Category.findById(device.categoryId, {include: ["Organizations"]},
                 (err: any, category: any) => {
                   if (err) console.error(err);
                   else if (category) {
@@ -350,8 +350,7 @@ class Message {
   public updateDevice(deviceId: string, createdAt: Date) {
     // Model
     const Device = this.model.app.models.Device;
-    Device.findOne({
-        where: {id: deviceId},
+    Device.findById(deviceId, {
         limit: 1,
         include: [{
           relation: "Messages",
@@ -541,8 +540,8 @@ class Message {
       this.updateDevice(ctx.instance.deviceId, ctx.instance.createdAt);
     } else {
       const Device = this.model.app.models.Device;
-      Device.findOne({where: {id: ctx.instance.deviceId}, include: "Organizations"}, (err: any, device: any) => {
-        err?
+      Device.findById(ctx.instance.deviceId, {include: "Organizations"}, (err: any, device: any) => {
+        err ?
           console.error(err) :
           this.publish(device, msg, 'UPDATE');
       });
