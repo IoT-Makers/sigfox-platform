@@ -463,7 +463,7 @@ class Device {
           });
       }
       // Device is being removed from a category
-      else if (oldDevice.categoryId && !newDevice.categoryId) {
+      else if (oldDevice.categoryId && newDevice.categoryId === '') {
         Category.findById(oldDevice.categoryId, {include: ["Organizations"]},
           (err: any, category: any) => {
             if (err) console.error(err);
