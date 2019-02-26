@@ -17,13 +17,13 @@ import {Model} from "@mean-expert/model";
       accepts: [
         {arg: "id", type: "string", required: true, description: "Organization id"},
         {arg: "filter", type: "object", required: true, description: "Message filter"},
-        {arg: "req", type: "object", http: {source: "req"}},
+        {arg: "req", type: "object", http: {source: "req"}}
       ],
       http: {
-        path: "/:id/FilteredMessages",
-        verb: "get",
+        path: "/:id/filtered-messages",
+        verb: "get"
       },
-      returns: {type: ["Message"], root: true},
+      returns: {type: ["Message"], root: true}
     },
   },
 })

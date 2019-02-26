@@ -1,19 +1,15 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
-import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
-import { ErrorHandler } from '../core/error.service';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Dashboard } from '../../models/Dashboard';
-import { SocketConnection } from '../../sockets/socket.connections';
-import { User } from '../../models/User';
-import { Organization } from '../../models/Organization';
-import { Widget } from '../../models/Widget';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {SDKModels} from './SDKModels';
+import {BaseLoopBackApi} from '../core/base.service';
+import {LoopBackConfig} from '../../lb.config';
+import {LoopBackAuth} from '../core/auth.service';
+import {LoopBackFilter,} from '../../models/BaseModels';
+import {ErrorHandler} from '../core/error.service';
+import {Observable} from 'rxjs';
+import {Dashboard} from '../../models/Dashboard';
+import {SocketConnection} from '../../sockets/socket.connections';
 
 
 /**
@@ -33,7 +29,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation user.
+   * Extrait la relation belongsTo user.
    *
    * @param {any} id Dashboard id
    *
@@ -63,7 +59,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation Organizations.
+   * Extrait la relation belongsTo Organizations.
    *
    * @param {any} id Dashboard id
    *
@@ -93,11 +89,11 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Widgets.
+   * Recherchez un élément lié par id pour Widgets.
    *
    * @param {any} id Dashboard id
    *
-   * @param {any} fk Foreign key for Widgets
+   * @param {any} fk Clé externe pour Widgets
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -123,11 +119,11 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Widgets.
+   * Supprimez un élément lié par id pour Widgets.
    *
    * @param {any} id Dashboard id
    *
-   * @param {any} fk Foreign key for Widgets
+   * @param {any} fk Clé externe pour Widgets
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -150,11 +146,11 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Widgets.
+   * Mettez à jour un élément lié par id pour Widgets.
    *
    * @param {any} id Dashboard id
    *
-   * @param {any} fk Foreign key for Widgets
+   * @param {any} fk Clé externe pour Widgets
    *
    * @param {object} data Request data.
    *
@@ -186,7 +182,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Widgets of Dashboard.
+   * Demandes Widgets de Dashboard.
    *
    * @param {any} id Dashboard id
    *
@@ -216,7 +212,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Widgets of this model.
+   * Crée une instance dans Widgets de ce modèle.
    *
    * @param {any} id Dashboard id
    *
@@ -249,7 +245,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Widgets of this model.
+   * Supprime tous les Widgets de ce modèle.
    *
    * @param {any} id Dashboard id
    *
@@ -273,7 +269,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Widgets of Dashboard.
+   * Compte Widgets de Dashboard.
    *
    * @param {any} id Dashboard id
    *
@@ -364,7 +360,7 @@ export class DashboardApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Widgets of this model.
+   * Crée une instance dans Widgets de ce modèle.
    *
    * @param {any} id Dashboard id
    *

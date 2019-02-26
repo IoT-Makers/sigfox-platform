@@ -1,23 +1,15 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
-import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
-import { ErrorHandler } from '../core/error.service';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Device } from '../../models/Device';
-import { SocketConnection } from '../../sockets/socket.connections';
-import { Parser } from '../../models/Parser';
-import { Category } from '../../models/Category';
-import { Message } from '../../models/Message';
-import { Geoloc } from '../../models/Geoloc';
-import { User } from '../../models/User';
-import { Organization } from '../../models/Organization';
-import { Alert } from '../../models/Alert';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {SDKModels} from './SDKModels';
+import {BaseLoopBackApi} from '../core/base.service';
+import {LoopBackConfig} from '../../lb.config';
+import {LoopBackAuth} from '../core/auth.service';
+import {LoopBackFilter,} from '../../models/BaseModels';
+import {ErrorHandler} from '../core/error.service';
+import {Observable} from 'rxjs';
+import {Device} from '../../models/Device';
+import {SocketConnection} from '../../sockets/socket.connections';
 
 
 /**
@@ -37,7 +29,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation Parser.
+   * Extrait la relation belongsTo Parser.
    *
    * @param {any} id Device id
    *
@@ -67,7 +59,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation Category.
+   * Extrait la relation belongsTo Category.
    *
    * @param {any} id Device id
    *
@@ -97,11 +89,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Messages.
+   * Recherchez un élément lié par id pour Messages.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Messages
+   * @param {any} fk Clé externe pour Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -127,11 +119,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Messages.
+   * Supprimez un élément lié par id pour Messages.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Messages
+   * @param {any} fk Clé externe pour Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -154,11 +146,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Messages.
+   * Mettez à jour un élément lié par id pour Messages.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Messages
+   * @param {any} fk Clé externe pour Messages
    *
    * @param {object} data Request data.
    *
@@ -190,11 +182,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Geolocs.
+   * Recherchez un élément lié par id pour Geolocs.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -220,11 +212,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Geolocs.
+   * Supprimez un élément lié par id pour Geolocs.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -247,11 +239,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Geolocs.
+   * Mettez à jour un élément lié par id pour Geolocs.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @param {object} data Request data.
    *
@@ -283,7 +275,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation user.
+   * Extrait la relation belongsTo user.
    *
    * @param {any} id Device id
    *
@@ -313,11 +305,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Organizations.
+   * Recherchez un élément lié par id pour Organizations.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Organizations
+   * @param {any} fk Clé externe pour Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -343,11 +335,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Organizations.
+   * Supprimez un élément lié par id pour Organizations.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Organizations
+   * @param {any} fk Clé externe pour Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -370,11 +362,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Organizations.
+   * Mettez à jour un élément lié par id pour Organizations.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Organizations
+   * @param {any} fk Clé externe pour Organizations
    *
    * @param {object} data Request data.
    *
@@ -406,11 +398,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for Organizations.
+   * Ajoutez un élément lié par id pour Organizations.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Organizations
+   * @param {any} fk Clé externe pour Organizations
    *
    * @param {object} data Request data.
    *
@@ -442,11 +434,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the Organizations relation to an item by id.
+   * Supprimez la relation Organizations à un élément par id.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Organizations
+   * @param {any} fk Clé externe pour Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -469,11 +461,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of Organizations relation to an item by id.
+   * Vérifiez l'existence de la relation Organizations à un élément par id.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Organizations
+   * @param {any} fk Clé externe pour Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -499,11 +491,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Alerts.
+   * Recherchez un élément lié par id pour Alerts.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Alerts
+   * @param {any} fk Clé externe pour Alerts
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -529,11 +521,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Alerts.
+   * Supprimez un élément lié par id pour Alerts.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Alerts
+   * @param {any} fk Clé externe pour Alerts
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -556,11 +548,11 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Alerts.
+   * Mettez à jour un élément lié par id pour Alerts.
    *
    * @param {any} id Device id
    *
-   * @param {any} fk Foreign key for Alerts
+   * @param {any} fk Clé externe pour Alerts
    *
    * @param {object} data Request data.
    *
@@ -592,7 +584,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Messages of Device.
+   * Demandes Messages de Device.
    *
    * @param {any} id Device id
    *
@@ -622,7 +614,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Messages of this model.
+   * Crée une instance dans Messages de ce modèle.
    *
    * @param {any} id Device id
    *
@@ -655,7 +647,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Messages of this model.
+   * Supprime tous les Messages de ce modèle.
    *
    * @param {any} id Device id
    *
@@ -679,7 +671,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Messages of Device.
+   * Compte Messages de Device.
    *
    * @param {any} id Device id
    *
@@ -708,7 +700,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Geolocs of Device.
+   * Demandes Geolocs de Device.
    *
    * @param {any} id Device id
    *
@@ -738,7 +730,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Geolocs of this model.
+   * Crée une instance dans Geolocs de ce modèle.
    *
    * @param {any} id Device id
    *
@@ -771,7 +763,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Geolocs of this model.
+   * Supprime tous les Geolocs de ce modèle.
    *
    * @param {any} id Device id
    *
@@ -795,7 +787,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Geolocs of Device.
+   * Compte Geolocs de Device.
    *
    * @param {any} id Device id
    *
@@ -824,7 +816,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Organizations of Device.
+   * Demandes Organizations de Device.
    *
    * @param {any} id Device id
    *
@@ -854,7 +846,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Organizations of this model.
+   * Crée une instance dans Organizations de ce modèle.
    *
    * @param {any} id Device id
    *
@@ -887,7 +879,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Organizations of this model.
+   * Supprime tous les Organizations de ce modèle.
    *
    * @param {any} id Device id
    *
@@ -911,7 +903,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Organizations of Device.
+   * Compte Organizations de Device.
    *
    * @param {any} id Device id
    *
@@ -940,7 +932,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Alerts of Device.
+   * Demandes Alerts de Device.
    *
    * @param {any} id Device id
    *
@@ -970,7 +962,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Alerts of this model.
+   * Crée une instance dans Alerts de ce modèle.
    *
    * @param {any} id Device id
    *
@@ -1003,7 +995,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Alerts of this model.
+   * Supprime tous les Alerts de ce modèle.
    *
    * @param {any} id Device id
    *
@@ -1027,7 +1019,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Alerts of Device.
+   * Compte Alerts de Device.
    *
    * @param {any} id Device id
    *
@@ -1226,7 +1218,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Messages of this model.
+   * Crée une instance dans Messages de ce modèle.
    *
    * @param {any} id Device id
    *
@@ -1259,7 +1251,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Geolocs of this model.
+   * Crée une instance dans Geolocs de ce modèle.
    *
    * @param {any} id Device id
    *
@@ -1292,7 +1284,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Organizations of this model.
+   * Crée une instance dans Organizations de ce modèle.
    *
    * @param {any} id Device id
    *
@@ -1325,7 +1317,7 @@ export class DeviceApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Alerts of this model.
+   * Crée une instance dans Alerts de ce modèle.
    *
    * @param {any} id Device id
    *

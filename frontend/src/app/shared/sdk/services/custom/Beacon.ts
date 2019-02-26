@@ -1,18 +1,15 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
-import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
-import { ErrorHandler } from '../core/error.service';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Beacon } from '../../models/Beacon';
-import { SocketConnection } from '../../sockets/socket.connections';
-import { Geoloc } from '../../models/Geoloc';
-import { User } from '../../models/User';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {SDKModels} from './SDKModels';
+import {BaseLoopBackApi} from '../core/base.service';
+import {LoopBackConfig} from '../../lb.config';
+import {LoopBackAuth} from '../core/auth.service';
+import {LoopBackFilter,} from '../../models/BaseModels';
+import {ErrorHandler} from '../core/error.service';
+import {Observable} from 'rxjs';
+import {Beacon} from '../../models/Beacon';
+import {SocketConnection} from '../../sockets/socket.connections';
 
 
 /**
@@ -32,11 +29,11 @@ export class BeaconApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Geolocs.
+   * Recherchez un élément lié par id pour Geolocs.
    *
    * @param {any} id Beacon id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -62,11 +59,11 @@ export class BeaconApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Geolocs.
+   * Supprimez un élément lié par id pour Geolocs.
    *
    * @param {any} id Beacon id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -89,11 +86,11 @@ export class BeaconApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Geolocs.
+   * Mettez à jour un élément lié par id pour Geolocs.
    *
    * @param {any} id Beacon id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @param {object} data Request data.
    *
@@ -125,7 +122,7 @@ export class BeaconApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation user.
+   * Extrait la relation belongsTo user.
    *
    * @param {any} id Beacon id
    *
@@ -155,7 +152,7 @@ export class BeaconApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Geolocs of Beacon.
+   * Demandes Geolocs de Beacon.
    *
    * @param {any} id Beacon id
    *
@@ -185,7 +182,7 @@ export class BeaconApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Geolocs of this model.
+   * Crée une instance dans Geolocs de ce modèle.
    *
    * @param {any} id Beacon id
    *
@@ -218,7 +215,7 @@ export class BeaconApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Geolocs of this model.
+   * Supprime tous les Geolocs de ce modèle.
    *
    * @param {any} id Beacon id
    *
@@ -242,7 +239,7 @@ export class BeaconApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Geolocs of Beacon.
+   * Compte Geolocs de Beacon.
    *
    * @param {any} id Beacon id
    *
@@ -368,7 +365,7 @@ export class BeaconApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Geolocs of this model.
+   * Crée une instance dans Geolocs de ce modèle.
    *
    * @param {any} id Beacon id
    *

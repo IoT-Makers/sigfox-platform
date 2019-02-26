@@ -21,7 +21,7 @@ const json2csv = require("json2csv").parse;
     beforeDelete: {name: "before delete", type: "operation"},
     afterDelete: {name: "after delete", type: "operation"},
     afterRemoteLinkOrganizations: {name: "prototype.__link__Organizations", type: "afterRemote"},
-    afterRemoteUnlinkOrganizations: {name: "prototype.__unlink__Organizations", type: "afterRemote"},
+    afterRemoteUnlinkOrganizations: {name: "prototype.__unlink__Organizations", type: "afterRemote"}
   },
   remotes: {
     addDeviceMessagesToOrganization: {
@@ -29,40 +29,40 @@ const json2csv = require("json2csv").parse;
       accepts: [
         {arg: 'deviceId', type: 'string', required: true, description: 'deviceId'},
         {arg: 'organizationId', type: 'string', required: true, description: 'organizationId'}
-      ],
+      ]
     },
     removeDeviceMessagesFromOrganization: {
       http: {path: '/remove-device-messages-from-organization', verb: 'post'},
       accepts: [
         {arg: 'deviceId', type: 'string', required: true, description: 'deviceId'},
         {arg: 'organizationId', type: 'string', required: true, description: 'organizationId'}
-      ],
+      ]
     },
     download: {
       accepts: [
         {arg: "id", required: true, type: "string", http: {source: "path"}},
         {arg: "type", required: true, type: "string", http: {source: "path"}},
         {arg: "req", type: "object", http: {source: "req"}},
-        {arg: "res", type: "object", http: {source: "res"}},
+        {arg: "res", type: "object", http: {source: "res"}}
       ],
       http: {
         path: "/download/:id/:type",
-        verb: "get",
+        verb: "get"
       },
-      returns: {type: "object", root: true},
+      returns: {type: "object", root: true}
     },
     getMessagesFromSigfoxBackend: {
       accepts: [
         {arg: "id", type: "string", required: true, description: "Device Id"},
         {arg: "limit", type: "number", required: false, description: "Limit retrieved messages (max 100)"},
         {arg: "before", type: "number", description: "Before"},
-        {arg: "req", type: "object", http: {source: "req"}},
+        {arg: "req", type: "object", http: {source: "req"}}
       ],
       http: {
         path: "/:id/messages-from-sigfox-backend",
-        verb: "get",
+        verb: "get"
       },
-      returns: {type: [], root: true},
+      returns: {type: [], root: true}
     },
   },
 })

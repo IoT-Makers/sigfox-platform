@@ -254,19 +254,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   fitMapBounds() {
     if (this.map) {
-      if (this.devices.length === 1) {
-        this.mapLat = this.devices[0].Messages[0].Geolocs[0].location.lat;
-        this.mapLng = this.devices[0].Messages[0].Geolocs[0].location.lng;
-        this.mapZoom = 10;
-      } else {
-        const bounds: LatLngBounds = new google.maps.LatLngBounds();
-        this.devices.forEach((device: any) => {
-          if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
-            bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
-          }
-        });
-        this.map.fitBounds(bounds);
-      }
+      const bounds: LatLngBounds = new google.maps.LatLngBounds();
+      this.devices.forEach((device: any) => {
+        if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
+          bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));
+        }
+      });
+      this.map.fitBounds(bounds);
     }
   }
 

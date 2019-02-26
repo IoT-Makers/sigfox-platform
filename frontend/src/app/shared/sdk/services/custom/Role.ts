@@ -1,16 +1,15 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
-import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
-import { ErrorHandler } from '../core/error.service';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Role } from '../../models/Role';
-import { SocketConnection } from '../../sockets/socket.connections';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {SDKModels} from './SDKModels';
+import {BaseLoopBackApi} from '../core/base.service';
+import {LoopBackConfig} from '../../lb.config';
+import {LoopBackAuth} from '../core/auth.service';
+import {LoopBackFilter,} from '../../models/BaseModels';
+import {ErrorHandler} from '../core/error.service';
+import {Observable} from 'rxjs';
+import {Role} from '../../models/Role';
+import {SocketConnection} from '../../sockets/socket.connections';
 
 
 /**
@@ -30,11 +29,11 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for principals.
+   * Recherchez un élément lié par id pour principals.
    *
    * @param {any} id Role id
    *
-   * @param {any} fk Foreign key for principals
+   * @param {any} fk Clé externe pour principals
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -60,11 +59,11 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for principals.
+   * Supprimez un élément lié par id pour principals.
    *
    * @param {any} id Role id
    *
-   * @param {any} fk Foreign key for principals
+   * @param {any} fk Clé externe pour principals
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -87,11 +86,11 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for principals.
+   * Mettez à jour un élément lié par id pour principals.
    *
    * @param {any} id Role id
    *
-   * @param {any} fk Foreign key for principals
+   * @param {any} fk Clé externe pour principals
    *
    * @param {object} data Request data.
    *
@@ -123,7 +122,7 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries principals of Role.
+   * Demandes principals de Role.
    *
    * @param {any} id Role id
    *
@@ -153,7 +152,7 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in principals of this model.
+   * Crée une instance dans principals de ce modèle.
    *
    * @param {any} id Role id
    *
@@ -186,7 +185,7 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all principals of this model.
+   * Supprime tous les principals de ce modèle.
    *
    * @param {any} id Role id
    *
@@ -210,7 +209,7 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts principals of Role.
+   * Compte principals de Role.
    *
    * @param {any} id Role id
    *
@@ -301,7 +300,7 @@ export class RoleApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in principals of this model.
+   * Crée une instance dans principals de ce modèle.
    *
    * @param {any} id Role id
    *

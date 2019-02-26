@@ -1,29 +1,17 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
-import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter, SDKToken } from '../../models/BaseModels';
-import { ErrorHandler } from '../core/error.service';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { User } from '../../models/User';
-import { SocketConnection } from '../../sockets/socket.connections';
-import { AccessToken } from '../../models/AccessToken';
-import { Role } from '../../models/Role';
-import { Dashboard } from '../../models/Dashboard';
-import { Category } from '../../models/Category';
-import { Device } from '../../models/Device';
-import { Message } from '../../models/Message';
-import { Geoloc } from '../../models/Geoloc';
-import { Parser } from '../../models/Parser';
-import { Organization } from '../../models/Organization';
-import { Alert } from '../../models/Alert';
-import { Connector } from '../../models/Connector';
-import { Widget } from '../../models/Widget';
-import { Beacon } from '../../models/Beacon';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {SDKModels} from './SDKModels';
+import {BaseLoopBackApi} from '../core/base.service';
+import {LoopBackConfig} from '../../lb.config';
+import {LoopBackAuth} from '../core/auth.service';
+import {LoopBackFilter} from '../../models/BaseModels';
+import {ErrorHandler} from '../core/error.service';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {User} from '../../models/User';
+import {SocketConnection} from '../../sockets/socket.connections';
+import {AccessToken} from '../../models/AccessToken';
 
 
 /**
@@ -43,11 +31,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for accessTokens.
+   * Recherchez un élément lié par id pour accessTokens.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for accessTokens
+   * @param {any} fk Clé externe pour accessTokens
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -73,11 +61,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for accessTokens.
+   * Supprimez un élément lié par id pour accessTokens.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for accessTokens
+   * @param {any} fk Clé externe pour accessTokens
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -100,11 +88,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for accessTokens.
+   * Mettez à jour un élément lié par id pour accessTokens.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for accessTokens
+   * @param {any} fk Clé externe pour accessTokens
    *
    * @param {object} data Request data.
    *
@@ -136,11 +124,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for devAccessTokens.
+   * Recherchez un élément lié par id pour devAccessTokens.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for devAccessTokens
+   * @param {any} fk Clé externe pour devAccessTokens
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -166,11 +154,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for devAccessTokens.
+   * Supprimez un élément lié par id pour devAccessTokens.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for devAccessTokens
+   * @param {any} fk Clé externe pour devAccessTokens
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -193,11 +181,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for devAccessTokens.
+   * Mettez à jour un élément lié par id pour devAccessTokens.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for devAccessTokens
+   * @param {any} fk Clé externe pour devAccessTokens
    *
    * @param {object} data Request data.
    *
@@ -229,11 +217,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for roles.
+   * Recherchez un élément lié par id pour roles.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for roles
+   * @param {any} fk Clé externe pour roles
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -259,11 +247,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for roles.
+   * Supprimez un élément lié par id pour roles.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for roles
+   * @param {any} fk Clé externe pour roles
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -286,11 +274,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for roles.
+   * Mettez à jour un élément lié par id pour roles.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for roles
+   * @param {any} fk Clé externe pour roles
    *
    * @param {object} data Request data.
    *
@@ -322,11 +310,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for roles.
+   * Ajoutez un élément lié par id pour roles.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for roles
+   * @param {any} fk Clé externe pour roles
    *
    * @param {object} data Request data.
    *
@@ -358,11 +346,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the roles relation to an item by id.
+   * Supprimez la relation roles à un élément par id.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for roles
+   * @param {any} fk Clé externe pour roles
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -385,11 +373,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of roles relation to an item by id.
+   * Vérifiez l'existence de la relation roles à un élément par id.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for roles
+   * @param {any} fk Clé externe pour roles
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -415,11 +403,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Dashboards.
+   * Recherchez un élément lié par id pour Dashboards.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Dashboards
+   * @param {any} fk Clé externe pour Dashboards
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -445,11 +433,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Dashboards.
+   * Supprimez un élément lié par id pour Dashboards.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Dashboards
+   * @param {any} fk Clé externe pour Dashboards
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -472,11 +460,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Dashboards.
+   * Mettez à jour un élément lié par id pour Dashboards.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Dashboards
+   * @param {any} fk Clé externe pour Dashboards
    *
    * @param {object} data Request data.
    *
@@ -508,11 +496,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Categories.
+   * Recherchez un élément lié par id pour Categories.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Categories
+   * @param {any} fk Clé externe pour Categories
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -538,11 +526,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Categories.
+   * Supprimez un élément lié par id pour Categories.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Categories
+   * @param {any} fk Clé externe pour Categories
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -565,11 +553,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Categories.
+   * Mettez à jour un élément lié par id pour Categories.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Categories
+   * @param {any} fk Clé externe pour Categories
    *
    * @param {object} data Request data.
    *
@@ -601,11 +589,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Devices.
+   * Recherchez un élément lié par id pour Devices.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Devices
+   * @param {any} fk Clé externe pour Devices
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -631,11 +619,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Devices.
+   * Supprimez un élément lié par id pour Devices.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Devices
+   * @param {any} fk Clé externe pour Devices
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -658,11 +646,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Devices.
+   * Mettez à jour un élément lié par id pour Devices.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Devices
+   * @param {any} fk Clé externe pour Devices
    *
    * @param {object} data Request data.
    *
@@ -694,11 +682,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Messages.
+   * Recherchez un élément lié par id pour Messages.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Messages
+   * @param {any} fk Clé externe pour Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -724,11 +712,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Messages.
+   * Supprimez un élément lié par id pour Messages.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Messages
+   * @param {any} fk Clé externe pour Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -751,11 +739,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Messages.
+   * Mettez à jour un élément lié par id pour Messages.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Messages
+   * @param {any} fk Clé externe pour Messages
    *
    * @param {object} data Request data.
    *
@@ -787,11 +775,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Geolocs.
+   * Recherchez un élément lié par id pour Geolocs.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -817,11 +805,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Geolocs.
+   * Supprimez un élément lié par id pour Geolocs.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -844,11 +832,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Geolocs.
+   * Mettez à jour un élément lié par id pour Geolocs.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @param {object} data Request data.
    *
@@ -880,11 +868,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Parsers.
+   * Recherchez un élément lié par id pour Parsers.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Parsers
+   * @param {any} fk Clé externe pour Parsers
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -910,11 +898,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Parsers.
+   * Supprimez un élément lié par id pour Parsers.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Parsers
+   * @param {any} fk Clé externe pour Parsers
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -937,11 +925,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Parsers.
+   * Mettez à jour un élément lié par id pour Parsers.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Parsers
+   * @param {any} fk Clé externe pour Parsers
    *
    * @param {object} data Request data.
    *
@@ -973,11 +961,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Organizations.
+   * Recherchez un élément lié par id pour Organizations.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Organizations
+   * @param {any} fk Clé externe pour Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1003,11 +991,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Organizations.
+   * Supprimez un élément lié par id pour Organizations.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Organizations
+   * @param {any} fk Clé externe pour Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1030,11 +1018,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Organizations.
+   * Mettez à jour un élément lié par id pour Organizations.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Organizations
+   * @param {any} fk Clé externe pour Organizations
    *
    * @param {object} data Request data.
    *
@@ -1066,11 +1054,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for Organizations.
+   * Ajoutez un élément lié par id pour Organizations.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Organizations
+   * @param {any} fk Clé externe pour Organizations
    *
    * @param {object} data Request data.
    *
@@ -1102,11 +1090,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the Organizations relation to an item by id.
+   * Supprimez la relation Organizations à un élément par id.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Organizations
+   * @param {any} fk Clé externe pour Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1129,11 +1117,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of Organizations relation to an item by id.
+   * Vérifiez l'existence de la relation Organizations à un élément par id.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Organizations
+   * @param {any} fk Clé externe pour Organizations
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1159,11 +1147,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Alerts.
+   * Recherchez un élément lié par id pour Alerts.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Alerts
+   * @param {any} fk Clé externe pour Alerts
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1189,11 +1177,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Alerts.
+   * Supprimez un élément lié par id pour Alerts.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Alerts
+   * @param {any} fk Clé externe pour Alerts
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1216,11 +1204,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Alerts.
+   * Mettez à jour un élément lié par id pour Alerts.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Alerts
+   * @param {any} fk Clé externe pour Alerts
    *
    * @param {object} data Request data.
    *
@@ -1252,11 +1240,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Connectors.
+   * Recherchez un élément lié par id pour Connectors.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Connectors
+   * @param {any} fk Clé externe pour Connectors
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1282,11 +1270,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Connectors.
+   * Supprimez un élément lié par id pour Connectors.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Connectors
+   * @param {any} fk Clé externe pour Connectors
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1309,11 +1297,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Connectors.
+   * Mettez à jour un élément lié par id pour Connectors.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Connectors
+   * @param {any} fk Clé externe pour Connectors
    *
    * @param {object} data Request data.
    *
@@ -1345,11 +1333,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Widgets.
+   * Recherchez un élément lié par id pour Widgets.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Widgets
+   * @param {any} fk Clé externe pour Widgets
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1375,11 +1363,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Widgets.
+   * Supprimez un élément lié par id pour Widgets.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Widgets
+   * @param {any} fk Clé externe pour Widgets
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1402,11 +1390,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Widgets.
+   * Mettez à jour un élément lié par id pour Widgets.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Widgets
+   * @param {any} fk Clé externe pour Widgets
    *
    * @param {object} data Request data.
    *
@@ -1438,11 +1426,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Beacons.
+   * Recherchez un élément lié par id pour Beacons.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Beacons
+   * @param {any} fk Clé externe pour Beacons
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1468,11 +1456,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Beacons.
+   * Supprimez un élément lié par id pour Beacons.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Beacons
+   * @param {any} fk Clé externe pour Beacons
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1495,11 +1483,11 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Beacons.
+   * Mettez à jour un élément lié par id pour Beacons.
    *
    * @param {any} id user id
    *
-   * @param {any} fk Foreign key for Beacons
+   * @param {any} fk Clé externe pour Beacons
    *
    * @param {object} data Request data.
    *
@@ -1531,7 +1519,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries accessTokens of user.
+   * Demandes accessTokens de user.
    *
    * @param {any} id user id
    *
@@ -1561,7 +1549,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in accessTokens of this model.
+   * Crée une instance dans accessTokens de ce modèle.
    *
    * @param {any} id user id
    *
@@ -1594,7 +1582,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all accessTokens of this model.
+   * Supprime tous les accessTokens de ce modèle.
    *
    * @param {any} id user id
    *
@@ -1618,7 +1606,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts accessTokens of user.
+   * Compte accessTokens de user.
    *
    * @param {any} id user id
    *
@@ -1647,7 +1635,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries devAccessTokens of user.
+   * Demandes devAccessTokens de user.
    *
    * @param {any} id user id
    *
@@ -1677,7 +1665,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in devAccessTokens of this model.
+   * Crée une instance dans devAccessTokens de ce modèle.
    *
    * @param {any} id user id
    *
@@ -1710,7 +1698,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all devAccessTokens of this model.
+   * Supprime tous les devAccessTokens de ce modèle.
    *
    * @param {any} id user id
    *
@@ -1734,7 +1722,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts devAccessTokens of user.
+   * Compte devAccessTokens de user.
    *
    * @param {any} id user id
    *
@@ -1763,7 +1751,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries roles of user.
+   * Demandes roles de user.
    *
    * @param {any} id user id
    *
@@ -1793,7 +1781,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in roles of this model.
+   * Crée une instance dans roles de ce modèle.
    *
    * @param {any} id user id
    *
@@ -1826,7 +1814,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all roles of this model.
+   * Supprime tous les roles de ce modèle.
    *
    * @param {any} id user id
    *
@@ -1850,7 +1838,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts roles of user.
+   * Compte roles de user.
    *
    * @param {any} id user id
    *
@@ -1879,7 +1867,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Dashboards of user.
+   * Demandes Dashboards de user.
    *
    * @param {any} id user id
    *
@@ -1909,7 +1897,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Dashboards of this model.
+   * Crée une instance dans Dashboards de ce modèle.
    *
    * @param {any} id user id
    *
@@ -1942,7 +1930,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Dashboards of this model.
+   * Supprime tous les Dashboards de ce modèle.
    *
    * @param {any} id user id
    *
@@ -1966,7 +1954,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Dashboards of user.
+   * Compte Dashboards de user.
    *
    * @param {any} id user id
    *
@@ -1995,7 +1983,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Categories of user.
+   * Demandes Categories de user.
    *
    * @param {any} id user id
    *
@@ -2025,7 +2013,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Categories of this model.
+   * Crée une instance dans Categories de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2058,7 +2046,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Categories of this model.
+   * Supprime tous les Categories de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2082,7 +2070,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Categories of user.
+   * Compte Categories de user.
    *
    * @param {any} id user id
    *
@@ -2111,7 +2099,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Devices of user.
+   * Demandes Devices de user.
    *
    * @param {any} id user id
    *
@@ -2141,7 +2129,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Devices of this model.
+   * Crée une instance dans Devices de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2174,7 +2162,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Devices of this model.
+   * Supprime tous les Devices de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2198,7 +2186,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Devices of user.
+   * Compte Devices de user.
    *
    * @param {any} id user id
    *
@@ -2227,7 +2215,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Messages of user.
+   * Demandes Messages de user.
    *
    * @param {any} id user id
    *
@@ -2257,7 +2245,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Messages of this model.
+   * Crée une instance dans Messages de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2290,7 +2278,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Messages of this model.
+   * Supprime tous les Messages de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2314,7 +2302,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Messages of user.
+   * Compte Messages de user.
    *
    * @param {any} id user id
    *
@@ -2343,7 +2331,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Geolocs of user.
+   * Demandes Geolocs de user.
    *
    * @param {any} id user id
    *
@@ -2373,7 +2361,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Geolocs of this model.
+   * Crée une instance dans Geolocs de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2406,7 +2394,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Geolocs of this model.
+   * Supprime tous les Geolocs de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2430,7 +2418,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Geolocs of user.
+   * Compte Geolocs de user.
    *
    * @param {any} id user id
    *
@@ -2459,7 +2447,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Parsers of user.
+   * Demandes Parsers de user.
    *
    * @param {any} id user id
    *
@@ -2489,7 +2477,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Parsers of this model.
+   * Crée une instance dans Parsers de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2522,7 +2510,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Parsers of this model.
+   * Supprime tous les Parsers de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2546,7 +2534,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Parsers of user.
+   * Compte Parsers de user.
    *
    * @param {any} id user id
    *
@@ -2575,7 +2563,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Organizations of user.
+   * Demandes Organizations de user.
    *
    * @param {any} id user id
    *
@@ -2605,7 +2593,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Organizations of this model.
+   * Crée une instance dans Organizations de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2638,7 +2626,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Organizations of this model.
+   * Supprime tous les Organizations de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2662,7 +2650,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Organizations of user.
+   * Compte Organizations de user.
    *
    * @param {any} id user id
    *
@@ -2691,7 +2679,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Alerts of user.
+   * Demandes Alerts de user.
    *
    * @param {any} id user id
    *
@@ -2721,7 +2709,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Alerts of this model.
+   * Crée une instance dans Alerts de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2754,7 +2742,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Alerts of this model.
+   * Supprime tous les Alerts de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2778,7 +2766,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Alerts of user.
+   * Compte Alerts de user.
    *
    * @param {any} id user id
    *
@@ -2807,7 +2795,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Connectors of user.
+   * Demandes Connectors de user.
    *
    * @param {any} id user id
    *
@@ -2837,7 +2825,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Connectors of this model.
+   * Crée une instance dans Connectors de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2870,7 +2858,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Connectors of this model.
+   * Supprime tous les Connectors de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2894,7 +2882,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Connectors of user.
+   * Compte Connectors de user.
    *
    * @param {any} id user id
    *
@@ -2923,7 +2911,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Widgets of user.
+   * Demandes Widgets de user.
    *
    * @param {any} id user id
    *
@@ -2953,7 +2941,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Widgets of this model.
+   * Crée une instance dans Widgets de ce modèle.
    *
    * @param {any} id user id
    *
@@ -2986,7 +2974,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Widgets of this model.
+   * Supprime tous les Widgets de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3010,7 +2998,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Widgets of user.
+   * Compte Widgets de user.
    *
    * @param {any} id user id
    *
@@ -3039,7 +3027,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Beacons of user.
+   * Demandes Beacons de user.
    *
    * @param {any} id user id
    *
@@ -3069,7 +3057,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Beacons of this model.
+   * Crée une instance dans Beacons de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3102,7 +3090,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Beacons of this model.
+   * Supprime tous les Beacons de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3126,7 +3114,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Beacons of user.
+   * Compte Beacons de user.
    *
    * @param {any} id user id
    *
@@ -3234,10 +3222,10 @@ export class UserApi extends BaseLoopBackApi {
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * The response body contains properties of the AccessToken created on login.
-   * Depending on the value of `include` parameter, the body may contain additional properties:
+   * Le corps de réponse contient les propriétés de AccessToken créées lors de la connexion.
+   * En fonction de la valeur du paramètre `include`, le corps peut contenir des propriétés supplémentaires :
    * 
-   *   - `user` - `U+007BUserU+007D` - Data of the currently logged in user. (`include=user`)
+   *   - `user` - `U+007BUserU+007D` - Données de l'utilisateur connecté. (`include=user`)
    * 
    *
    */
@@ -3499,7 +3487,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in accessTokens of this model.
+   * Crée une instance dans accessTokens de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3532,7 +3520,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in devAccessTokens of this model.
+   * Crée une instance dans devAccessTokens de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3565,7 +3553,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in roles of this model.
+   * Crée une instance dans roles de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3598,7 +3586,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Dashboards of this model.
+   * Crée une instance dans Dashboards de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3631,7 +3619,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Categories of this model.
+   * Crée une instance dans Categories de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3664,7 +3652,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Devices of this model.
+   * Crée une instance dans Devices de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3697,7 +3685,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Messages of this model.
+   * Crée une instance dans Messages de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3730,7 +3718,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Geolocs of this model.
+   * Crée une instance dans Geolocs de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3763,7 +3751,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Parsers of this model.
+   * Crée une instance dans Parsers de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3796,7 +3784,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Organizations of this model.
+   * Crée une instance dans Organizations de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3829,7 +3817,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Alerts of this model.
+   * Crée une instance dans Alerts de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3862,7 +3850,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Connectors of this model.
+   * Crée une instance dans Connectors de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3895,7 +3883,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Widgets of this model.
+   * Crée une instance dans Widgets de ce modèle.
    *
    * @param {any} id user id
    *
@@ -3928,7 +3916,7 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Beacons of this model.
+   * Crée une instance dans Beacons de ce modèle.
    *
    * @param {any} id user id
    *

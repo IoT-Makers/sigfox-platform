@@ -23,30 +23,30 @@ import {Script} from 'vm';
       accepts: [
         {arg: "device", type: "Device", required: true, description: "The device to parse"},
         {arg: "message", type: "Message", required: true, description: "The current message"},
-        {arg: "req", type: "object", http: {source: "req"}},
-      ],
+        {arg: "req", type: "object", http: {source: "req"}}
+      ]
     },
     parseAllMessages: {
       accepts: [
         {arg: "id", type: "string", required: true, description: "Device Id"},
-        {arg: "req", type: "object", http: {source: "req"}},
+        {arg: "req", type: "object", http: {source: "req"}}
       ],
       http: {
         path: "/:id/parse-messages",
-        verb: "put",
+        verb: "put"
       },
-      returns: {type: [], root: true},
+      returns: {type: [], root: true}
     },
     parseAllDevices: {
       accepts: [
         {arg: "id", type: "string", required: true, description: "Parser Id"},
-        {arg: "req", type: "object", http: {source: "req"}},
+        {arg: "req", type: "object", http: {source: "req"}}
       ],
       http: {
         path: "/:id/parse-devices",
-        verb: "put",
+        verb: "put"
       },
-      returns: {type: [], root: true},
+      returns: {type: [], root: true}
     },
   },
 })

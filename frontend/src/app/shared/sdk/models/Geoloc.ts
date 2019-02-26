@@ -1,12 +1,5 @@
 /* tslint:disable */
-import {
-  Device,
-  Message,
-  User,
-  Organization,
-  Beacon,
-  GeoPoint
-} from '../index';
+import {Beacon, Device, GeoPoint, Message, Organization, User} from '../index';
 
 declare var Object: any;
 export interface GeolocInterface {
@@ -98,7 +91,8 @@ export class Geoloc implements GeolocInterface {
         },
         "accuracy": {
           name: 'accuracy',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "source": {
           name: 'source',

@@ -1,18 +1,11 @@
 /* tslint:disable */
-import {
-  User,
-  Dashboard,
-  Category,
-  Device,
-  Message,
-  Geoloc,
-  Alert
-} from '../index';
+import {Alert, Category, Dashboard, Device, Geoloc, Message, User} from '../index';
 
 declare var Object: any;
 export interface OrganizationInterface {
   "name": string;
   "logo"?: string;
+  "usedAt"?: Date;
   "id"?: any;
   "userId"?: any;
   "createdAt"?: Date;
@@ -30,6 +23,7 @@ export interface OrganizationInterface {
 export class Organization implements OrganizationInterface {
   "name": string = 'My organization';
   "logo": string = 'https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png';
+  "usedAt": Date = new Date(0);
   "id": any = <any>null;
   "userId": any = <any>null;
   "createdAt": Date = new Date(0);
@@ -84,6 +78,10 @@ export class Organization implements OrganizationInterface {
           name: 'logo',
           type: 'string',
           default: 'https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png'
+        },
+        "usedAt": {
+          name: 'usedAt',
+          type: 'Date'
         },
         "id": {
           name: 'id',

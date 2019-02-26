@@ -18,7 +18,7 @@ const json2csv = require("json2csv").parse;
     afterDelete: { name: "after delete", type: "operation" },
     afterSave: { name: "after save", type: "operation" },
     afterRemoteLinkOrganizations: {name: "prototype.__link__Organizations", type: "afterRemote"},
-    afterRemoteUnlinkOrganizations: {name: "prototype.__unlink__Organizations", type: "afterRemote"},
+    afterRemoteUnlinkOrganizations: {name: "prototype.__unlink__Organizations", type: "afterRemote"}
   },
   remotes: {
     download: {
@@ -26,13 +26,13 @@ const json2csv = require("json2csv").parse;
         {arg: "categoryId", required: true, type: "string", http: {source: "path"}},
         {arg: "type", required: true, type: "string", http: {source: "path"}},
         {arg: "req", type: "object", http: {source: "req"}},
-        {arg: "res", type: "object", http: {source: "res"}},
+        {arg: "res", type: "object", http: {source: "res"}}
       ],
       http: {
         path: "/download/:categoryId/:type",
-        verb: "get",
+        verb: "get"
       },
-      returns: {type: "object", root: true},
+      returns: {type: "object", root: true}
     },
     downloadFromOrganization: {
       accepts: [
@@ -40,13 +40,13 @@ const json2csv = require("json2csv").parse;
         {arg: "categoryId", required: true, type: "string", http: {source: "path"}},
         {arg: "type", required: true, type: "string", http: {source: "path"}},
         {arg: "req", type: "object", http: {source: "req"}},
-        {arg: "res", type: "object", http: {source: "res"}},
+        {arg: "res", type: "object", http: {source: "res"}}
       ],
       http: {
         path: "/download/:organizationId/:categoryId/:type",
-        verb: "get",
+        verb: "get"
       },
-      returns: {type: "object", root: true},
+      returns: {type: "object", root: true}
     },
   },
 })

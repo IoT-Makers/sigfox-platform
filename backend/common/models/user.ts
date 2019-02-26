@@ -19,17 +19,17 @@ const loopback = require("loopback");
     afterRemoteCreate: {name: "create", type: "afterRemote"},
     afterRemoteChangePassword: {name: "changePassword", type: "afterRemote"},
     beforeRemoteDelete: {name: "deleteById", type: "beforeRemote"},
-    afterRemoteDelete: {name: "deleteById", type: "afterRemote"},
+    afterRemoteDelete: {name: "deleteById", type: "afterRemote"}
   },
   remotes: {
     loginQr: {
       accepts: [
         {arg: "redirect", type: "string", required: true},
-        {arg: "res", type: "object", http: {source: "res"}},
+        {arg: "res", type: "object", http: {source: "res"}}
       ],
       returns: {arg: "result", type: "array"},
-      http: {path: "/login/qr", verb: "get"},
-    },
+      http: {path: "/login/qr", verb: "get"}
+    }
   },
 })
 

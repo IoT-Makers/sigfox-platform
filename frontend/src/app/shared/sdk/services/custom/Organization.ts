@@ -1,23 +1,15 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
-import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
-import { ErrorHandler } from '../core/error.service';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Organization } from '../../models/Organization';
-import { SocketConnection } from '../../sockets/socket.connections';
-import { User } from '../../models/User';
-import { Dashboard } from '../../models/Dashboard';
-import { Category } from '../../models/Category';
-import { Device } from '../../models/Device';
-import { Message } from '../../models/Message';
-import { Geoloc } from '../../models/Geoloc';
-import { Alert } from '../../models/Alert';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {SDKModels} from './SDKModels';
+import {BaseLoopBackApi} from '../core/base.service';
+import {LoopBackConfig} from '../../lb.config';
+import {LoopBackAuth} from '../core/auth.service';
+import {LoopBackFilter,} from '../../models/BaseModels';
+import {ErrorHandler} from '../core/error.service';
+import {Observable} from 'rxjs';
+import {Organization} from '../../models/Organization';
+import {SocketConnection} from '../../sockets/socket.connections';
 
 
 /**
@@ -37,11 +29,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Members.
+   * Recherchez un élément lié par id pour Members.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Members
+   * @param {any} fk Clé externe pour Members
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -67,11 +59,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Members.
+   * Supprimez un élément lié par id pour Members.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Members
+   * @param {any} fk Clé externe pour Members
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -94,11 +86,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Members.
+   * Mettez à jour un élément lié par id pour Members.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Members
+   * @param {any} fk Clé externe pour Members
    *
    * @param {object} data Request data.
    *
@@ -130,11 +122,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for Members.
+   * Ajoutez un élément lié par id pour Members.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Members
+   * @param {any} fk Clé externe pour Members
    *
    * @param {object} data Request data.
    *
@@ -166,11 +158,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the Members relation to an item by id.
+   * Supprimez la relation Members à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Members
+   * @param {any} fk Clé externe pour Members
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -193,11 +185,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of Members relation to an item by id.
+   * Vérifiez l'existence de la relation Members à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Members
+   * @param {any} fk Clé externe pour Members
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -223,7 +215,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation user.
+   * Extrait la relation belongsTo user.
    *
    * @param {any} id Organization id
    *
@@ -253,11 +245,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Dashboards.
+   * Recherchez un élément lié par id pour Dashboards.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Dashboards
+   * @param {any} fk Clé externe pour Dashboards
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -283,11 +275,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Dashboards.
+   * Supprimez un élément lié par id pour Dashboards.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Dashboards
+   * @param {any} fk Clé externe pour Dashboards
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -310,11 +302,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Dashboards.
+   * Mettez à jour un élément lié par id pour Dashboards.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Dashboards
+   * @param {any} fk Clé externe pour Dashboards
    *
    * @param {object} data Request data.
    *
@@ -346,11 +338,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Categories.
+   * Recherchez un élément lié par id pour Categories.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Categories
+   * @param {any} fk Clé externe pour Categories
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -376,11 +368,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Categories.
+   * Supprimez un élément lié par id pour Categories.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Categories
+   * @param {any} fk Clé externe pour Categories
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -403,11 +395,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Categories.
+   * Mettez à jour un élément lié par id pour Categories.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Categories
+   * @param {any} fk Clé externe pour Categories
    *
    * @param {object} data Request data.
    *
@@ -439,11 +431,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for Categories.
+   * Ajoutez un élément lié par id pour Categories.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Categories
+   * @param {any} fk Clé externe pour Categories
    *
    * @param {object} data Request data.
    *
@@ -475,11 +467,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the Categories relation to an item by id.
+   * Supprimez la relation Categories à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Categories
+   * @param {any} fk Clé externe pour Categories
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -502,11 +494,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of Categories relation to an item by id.
+   * Vérifiez l'existence de la relation Categories à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Categories
+   * @param {any} fk Clé externe pour Categories
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -532,11 +524,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Devices.
+   * Recherchez un élément lié par id pour Devices.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Devices
+   * @param {any} fk Clé externe pour Devices
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -562,11 +554,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Devices.
+   * Supprimez un élément lié par id pour Devices.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Devices
+   * @param {any} fk Clé externe pour Devices
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -589,11 +581,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Devices.
+   * Mettez à jour un élément lié par id pour Devices.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Devices
+   * @param {any} fk Clé externe pour Devices
    *
    * @param {object} data Request data.
    *
@@ -625,11 +617,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for Devices.
+   * Ajoutez un élément lié par id pour Devices.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Devices
+   * @param {any} fk Clé externe pour Devices
    *
    * @param {object} data Request data.
    *
@@ -661,11 +653,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the Devices relation to an item by id.
+   * Supprimez la relation Devices à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Devices
+   * @param {any} fk Clé externe pour Devices
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -688,11 +680,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of Devices relation to an item by id.
+   * Vérifiez l'existence de la relation Devices à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Devices
+   * @param {any} fk Clé externe pour Devices
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -718,11 +710,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Messages.
+   * Recherchez un élément lié par id pour Messages.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Messages
+   * @param {any} fk Clé externe pour Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -748,11 +740,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Messages.
+   * Supprimez un élément lié par id pour Messages.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Messages
+   * @param {any} fk Clé externe pour Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -775,11 +767,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Messages.
+   * Mettez à jour un élément lié par id pour Messages.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Messages
+   * @param {any} fk Clé externe pour Messages
    *
    * @param {object} data Request data.
    *
@@ -811,11 +803,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for Messages.
+   * Ajoutez un élément lié par id pour Messages.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Messages
+   * @param {any} fk Clé externe pour Messages
    *
    * @param {object} data Request data.
    *
@@ -847,11 +839,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the Messages relation to an item by id.
+   * Supprimez la relation Messages à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Messages
+   * @param {any} fk Clé externe pour Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -874,11 +866,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of Messages relation to an item by id.
+   * Vérifiez l'existence de la relation Messages à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Messages
+   * @param {any} fk Clé externe pour Messages
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -904,11 +896,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Geolocs.
+   * Recherchez un élément lié par id pour Geolocs.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -934,11 +926,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Geolocs.
+   * Supprimez un élément lié par id pour Geolocs.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -961,11 +953,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Geolocs.
+   * Mettez à jour un élément lié par id pour Geolocs.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @param {object} data Request data.
    *
@@ -997,11 +989,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for Geolocs.
+   * Ajoutez un élément lié par id pour Geolocs.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @param {object} data Request data.
    *
@@ -1033,11 +1025,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the Geolocs relation to an item by id.
+   * Supprimez la relation Geolocs à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1060,11 +1052,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of Geolocs relation to an item by id.
+   * Vérifiez l'existence de la relation Geolocs à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Geolocs
+   * @param {any} fk Clé externe pour Geolocs
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1090,11 +1082,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Alerts.
+   * Recherchez un élément lié par id pour Alerts.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Alerts
+   * @param {any} fk Clé externe pour Alerts
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1120,11 +1112,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Alerts.
+   * Supprimez un élément lié par id pour Alerts.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Alerts
+   * @param {any} fk Clé externe pour Alerts
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1147,11 +1139,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Alerts.
+   * Mettez à jour un élément lié par id pour Alerts.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Alerts
+   * @param {any} fk Clé externe pour Alerts
    *
    * @param {object} data Request data.
    *
@@ -1183,11 +1175,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for Alerts.
+   * Ajoutez un élément lié par id pour Alerts.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Alerts
+   * @param {any} fk Clé externe pour Alerts
    *
    * @param {object} data Request data.
    *
@@ -1219,11 +1211,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the Alerts relation to an item by id.
+   * Supprimez la relation Alerts à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Alerts
+   * @param {any} fk Clé externe pour Alerts
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1246,11 +1238,11 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of Alerts relation to an item by id.
+   * Vérifiez l'existence de la relation Alerts à un élément par id.
    *
    * @param {any} id Organization id
    *
-   * @param {any} fk Foreign key for Alerts
+   * @param {any} fk Clé externe pour Alerts
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -1276,7 +1268,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Members of Organization.
+   * Demandes Members de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1306,7 +1298,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Members of this model.
+   * Crée une instance dans Members de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1339,7 +1331,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Members of this model.
+   * Supprime tous les Members de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1363,7 +1355,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Members of Organization.
+   * Compte Members de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1392,7 +1384,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Dashboards of Organization.
+   * Demandes Dashboards de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1422,7 +1414,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Dashboards of this model.
+   * Crée une instance dans Dashboards de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1455,7 +1447,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Dashboards of this model.
+   * Supprime tous les Dashboards de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1479,7 +1471,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Dashboards of Organization.
+   * Compte Dashboards de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1508,7 +1500,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Categories of Organization.
+   * Demandes Categories de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1538,7 +1530,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Categories of this model.
+   * Crée une instance dans Categories de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1571,7 +1563,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Categories of this model.
+   * Supprime tous les Categories de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1595,7 +1587,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Categories of Organization.
+   * Compte Categories de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1624,7 +1616,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Devices of Organization.
+   * Demandes Devices de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1654,7 +1646,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Devices of this model.
+   * Crée une instance dans Devices de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1687,7 +1679,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Devices of this model.
+   * Supprime tous les Devices de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1711,7 +1703,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Devices of Organization.
+   * Compte Devices de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1740,7 +1732,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Messages of Organization.
+   * Demandes Messages de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1770,7 +1762,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Messages of this model.
+   * Crée une instance dans Messages de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1803,7 +1795,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Messages of this model.
+   * Supprime tous les Messages de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1827,7 +1819,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Messages of Organization.
+   * Compte Messages de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1856,7 +1848,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Geolocs of Organization.
+   * Demandes Geolocs de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1886,7 +1878,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Geolocs of this model.
+   * Crée une instance dans Geolocs de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1919,7 +1911,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Geolocs of this model.
+   * Supprime tous les Geolocs de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -1943,7 +1935,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Geolocs of Organization.
+   * Compte Geolocs de Organization.
    *
    * @param {any} id Organization id
    *
@@ -1972,7 +1964,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Alerts of Organization.
+   * Demandes Alerts de Organization.
    *
    * @param {any} id Organization id
    *
@@ -2002,7 +1994,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Alerts of this model.
+   * Crée une instance dans Alerts de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -2035,7 +2027,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Alerts of this model.
+   * Supprime tous les Alerts de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -2059,7 +2051,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Alerts of Organization.
+   * Compte Alerts de Organization.
    *
    * @param {any} id Organization id
    *
@@ -2172,7 +2164,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   public getFilteredMessages(id: any, filter: LoopBackFilter, req: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Organizations/:id/FilteredMessages";
+    "/Organizations/:id/filtered-messages";
     let _routeParams: any = {
       id: id
     };
@@ -2219,7 +2211,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Members of this model.
+   * Crée une instance dans Members de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -2252,7 +2244,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Dashboards of this model.
+   * Crée une instance dans Dashboards de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -2285,7 +2277,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Categories of this model.
+   * Crée une instance dans Categories de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -2318,7 +2310,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Devices of this model.
+   * Crée une instance dans Devices de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -2351,7 +2343,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Messages of this model.
+   * Crée une instance dans Messages de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -2384,7 +2376,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Geolocs of this model.
+   * Crée une instance dans Geolocs de ce modèle.
    *
    * @param {any} id Organization id
    *
@@ -2417,7 +2409,7 @@ export class OrganizationApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Alerts of this model.
+   * Crée une instance dans Alerts de ce modèle.
    *
    * @param {any} id Organization id
    *

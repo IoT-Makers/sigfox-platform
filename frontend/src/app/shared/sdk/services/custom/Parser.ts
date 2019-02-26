@@ -1,19 +1,15 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
-import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
-import { ErrorHandler } from '../core/error.service';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Parser } from '../../models/Parser';
-import { SocketConnection } from '../../sockets/socket.connections';
-import { Device } from '../../models/Device';
-import { User } from '../../models/User';
-import { Organization } from '../../models/Organization';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {SDKModels} from './SDKModels';
+import {BaseLoopBackApi} from '../core/base.service';
+import {LoopBackConfig} from '../../lb.config';
+import {LoopBackAuth} from '../core/auth.service';
+import {LoopBackFilter,} from '../../models/BaseModels';
+import {ErrorHandler} from '../core/error.service';
+import {Observable} from 'rxjs';
+import {SocketConnection} from '../../sockets/socket.connections';
+import {Device} from '../../models/Device';
 
 
 /**
@@ -33,11 +29,11 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for Devices.
+   * Recherchez un élément lié par id pour Devices.
    *
    * @param {any} id Parser id
    *
-   * @param {any} fk Foreign key for Devices
+   * @param {any} fk Clé externe pour Devices
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -63,11 +59,11 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for Devices.
+   * Supprimez un élément lié par id pour Devices.
    *
    * @param {any} id Parser id
    *
-   * @param {any} fk Foreign key for Devices
+   * @param {any} fk Clé externe pour Devices
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -90,11 +86,11 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for Devices.
+   * Mettez à jour un élément lié par id pour Devices.
    *
    * @param {any} id Parser id
    *
-   * @param {any} fk Foreign key for Devices
+   * @param {any} fk Clé externe pour Devices
    *
    * @param {object} data Request data.
    *
@@ -126,7 +122,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation user.
+   * Extrait la relation belongsTo user.
    *
    * @param {any} id Parser id
    *
@@ -156,7 +152,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation Organization.
+   * Extrait la relation belongsTo Organization.
    *
    * @param {any} id Parser id
    *
@@ -186,7 +182,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries Devices of Parser.
+   * Demandes Devices de Parser.
    *
    * @param {any} id Parser id
    *
@@ -216,7 +212,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Devices of this model.
+   * Crée une instance dans Devices de ce modèle.
    *
    * @param {any} id Parser id
    *
@@ -249,7 +245,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all Devices of this model.
+   * Supprime tous les Devices de ce modèle.
    *
    * @param {any} id Parser id
    *
@@ -273,7 +269,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts Devices of Parser.
+   * Compte Devices de Parser.
    *
    * @param {any} id Parser id
    *
@@ -499,7 +495,7 @@ export class ParserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in Devices of this model.
+   * Crée une instance dans Devices de ce modèle.
    *
    * @param {any} id Parser id
    *
