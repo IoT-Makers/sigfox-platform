@@ -316,6 +316,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
 
     this.userApi.createOrganizations(this.user.id, this.organizationToAddOrEdit).subscribe((organization: Organization) => {
       console.log('Organization created', organization);
+      this.router.navigate(['organization/' + organization.id]);
       this.organizationApi.findById(organization.id, {include: 'Members'}).subscribe((organization: Organization) => {
         this.organization = organization;
         this.addOrEditOrganizationModal.hide();
@@ -340,6 +341,12 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
       });
     });
   }
+
+  /*deleteOrganization(organization: Organization): void {
+    this.organizationApi.deleteById(organization.id).subscribe(result => {
+      this.router.navigate(['/']);
+    });
+  }*/
 
   linkMember(userId: any): void {
     this.organizationApi.linkMembers(this.organizationToAddOrEdit.id, userId).subscribe((result) => {

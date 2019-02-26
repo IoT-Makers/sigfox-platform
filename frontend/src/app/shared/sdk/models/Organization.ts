@@ -5,7 +5,7 @@ declare var Object: any;
 export interface OrganizationInterface {
   "name": string;
   "logo"?: string;
-  "usedAt"?: Date;
+  "visitedAt"?: Date;
   "id"?: any;
   "userId"?: any;
   "createdAt"?: Date;
@@ -23,7 +23,7 @@ export interface OrganizationInterface {
 export class Organization implements OrganizationInterface {
   "name": string = 'My organization';
   "logo": string = 'https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png';
-  "usedAt": Date = new Date(0);
+  "visitedAt": Date = new Date(0);
   "id": any = <any>null;
   "userId": any = <any>null;
   "createdAt": Date = new Date(0);
@@ -79,8 +79,8 @@ export class Organization implements OrganizationInterface {
           type: 'string',
           default: 'https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png'
         },
-        "usedAt": {
-          name: 'usedAt',
+        "visitedAt": {
+          name: 'visitedAt',
           type: 'Date'
         },
         "id": {

@@ -316,6 +316,9 @@
                       <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
                     </th>
                     <th class="text-center">
+                      <mfDefaultSorter by="visitedAt"><i class="fa fa-sort"></i> Visited</mfDefaultSorter>
+                    </th>
+                    <th class="text-center">
                       <mfDefaultSorter by="createdAt"><i class="fa fa-sort"></i> Created</mfDefaultSorter>
                     </th>
                     <th class="text-center">
@@ -336,6 +339,9 @@
                       <a [routerLink]="['/organization/', orga.id]">
                         <strong class="text-organization">{{orga.name}}</strong>
                       </a>
+                    </td>
+                    <td class="text-center">
+                      <strong class="">{{orga.visitedAt | amTimeAgo}}</strong>
                     </td>
                     <td class="text-center">
                       <strong class="">{{orga.createdAt | amTimeAgo}}</strong>

@@ -383,6 +383,9 @@
           </div>
         </div>
         <div class="modal-footer">
+          <!--<button type="button" class="btn btn-danger mr-auto" tooltip="Including widgets and dashboards"
+                  (click)="deleteOrganization(organization)">Delete
+          </button>-->
           <button type="button" class="btn btn-secondary" (click)="addOrEditOrganizationModal.hide()">Close</button>
           <button [disabled]="!addOrEditForm.form.valid" type="button" class="btn btn-organization"
                   (click)="editOrganization()">Update
