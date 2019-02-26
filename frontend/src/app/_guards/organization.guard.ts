@@ -24,7 +24,7 @@ export class OrganizationGuard implements CanActivate {
     return this.userApi.findByIdOrganizations(this.userApi.getCurrentId(), route.params.id).pipe(map((organization: Organization) => {
       if (organization) {
         // Update the usedAt date for the current organization
-        this.userApi.updateByIdOrganizations(this.userApi.getCurrentId(), route.params.id, {usedAt: new Date()}).subscribe(() => {
+        this.userApi.updateByIdOrganizations(this.userApi.getCurrentId(), route.params.id, {visitedAt: new Date()}).subscribe(() => {
         });
         return true;
       } else {
