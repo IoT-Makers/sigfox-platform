@@ -97,3 +97,8 @@ A short wiki can be found [here](https://github.com/IoT-Makers/sigfox-platform/w
 * [Siyu Zhang](https://github.com/siyu6974)
 
 Feel free to submit a Pull Request and don't forget to add you name and your useful links.
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/IoT-Makers/sigfox-platform/badge.svg?style=beer-square)](https://beerpay.io/IoT-Makers/sigfox-platform)  [![Beerpay](https://beerpay.io/IoT-Makers/sigfox-platform/make-wish.svg?style=flat-square)](https://beerpay.io/IoT-Makers/sigfox-platform?focus=wish)
