@@ -10,7 +10,7 @@
 
 ## About this project
 This is a cloud platform to manage Sigfox devices and visualize messages.
-![overview](doc/img/overview.png)
+![overview](docs/img/overview.png)
 
 ## [Try it](https://try.iotagency.sigfox.com)
 You can deploy it yourself, but we encourage you to try it out [here](https://try.iotagency.sigfox.com).
@@ -20,22 +20,22 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
 **Create customizable dashboards**
 
 *charts*
-![dashboard_temp_hum](doc/img/dashboard_temp_hum.png)
+![dashboard_temp_hum](docs/img/dashboard_temp_hum.png)
 
 *maps*
-![tracking](doc/img/dashboard_tracking.png)
+![tracking](docs/img/dashboard_tracking.png)
 
 **Review raw & decoded data in realtime**
-![message](doc/img/message.png)
+![message](docs/img/message.png)
 
 **Create and share parsers**
-![parser](doc/img/parser.png)
+![parser](docs/img/parser.png)
 
 **Connect to other services with alerts**
-![alert](doc/img/alert.png)
+![alert](docs/img/alert.png)
 
 **Manage devices, share with others in organization**
-![device](doc/img/device.png)
+![device](docs/img/device.png)
 
 ## Technologies
 
@@ -70,7 +70,7 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
 
 Below is the functional/sequential diagram representing the message journey.
 
-![message_journey](doc/img/message-journey.png)
+![message_journey](docs/img/message-journey.png)
 
 ### Frontend
 
