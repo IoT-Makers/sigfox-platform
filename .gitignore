@@ -1,5 +1,12 @@
-**/node_modules
-.DS_store
-**/.idea/
+.DS_Store
+.idea
+node_modules
 
-frontend/environments/environment\.prod\.ts
+lib/core/metadata.js
+lib/core/MetadataBlog.js
+
+website/translated_docs
+website/build/
+website/yarn.lock
+website/node_modules
+website/i18n/*

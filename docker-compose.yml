@@ -1,64 +1,18 @@
-version: '3'
+version: "3"
+
 services:
-  backend:
-    container_name: backend
-    depends_on:
-    - mongodb
-    - rabbitmq
-    build:
-      context: backend
-      args:
-      - GIT_REV=${GIT_HASH}
-    image: ${REGISTRY_URL}backend-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
-    restart: "always"
-    env_file: env/backend.env
-    command: npm start
+  docs:
+    build: .
     ports:
-    - "3000:3000"
-
-  primus:
-    container_name: primus
-    depends_on:
-      - mongodb
-      - rabbitmq
-    build: primus
-    image: ${REGISTRY_URL}primus-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
-    restart: "always"
-    env_file: env/primus.env
-    command: npm start
-    ports:
-    - "2333:2333"
-
-  frontend:
-    container_name: frontend
-    build:
-      context: frontend
-      args:
-      - BUILD_ENV=${BUILD_ENV}
-      - SERVER_NAME=${SERVER_NAME}
-      - API_URL=${API_URL:-http://localhost:3000}
-      - API_VERSION=${API_VERSION:-api}
-      - PRIMUS_URL=${PRIMUS_URL:-http://localhost:2333}
-    image: ${REGISTRY_URL}frontend-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
-    restart: "always"
-    ports:
-    - "4200:80"
-
-  mongodb:
-    container_name: mongodb
-    build: mongodb
-    image: ${REGISTRY_URL}mongodb-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
-    restart: "always"
-    ports:
-    - "27017:27017"
-    env_file: env/mongodb.env
-
-  rabbitmq:
-    container_name: rabbitmq
-    build: rabbitmq
-    image: ${REGISTRY_URL}rabbitmq-${SUBDOMAIN:-localhost}:${GIT_HASH:-latest}
-    env_file: env/rabbitmq.env
-    ports:
-    - "15672:15672"
-    - "5672:5672"
-    - "1883:1883"
+      - 3000:3000
+      - 35729:35729
+    volumes:
+      - ./docs:/app/docs
+      - ./website/blog:/app/website/blog
+      - ./website/core:/app/website/core
+      - ./website/i18n:/app/website/i18n
+      - ./website/pages:/app/website/pages
+      - ./website/static:/app/website/static
+      - ./website/sidebars.json:/app/website/sidebars.json
+      - ./website/siteConfig.js:/app/website/siteConfig.js
+    working_dir: /app/website
