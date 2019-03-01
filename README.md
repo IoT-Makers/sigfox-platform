@@ -3,7 +3,7 @@
 ![Gitlab pipeline status (branch)](https://img.shields.io/gitlab/pipeline/AntoinedeChassey/sigfox-platform/master.svg?label=build%20%28master%29)
 ![Gitlab pipeline status (branch)](https://img.shields.io/gitlab/pipeline/AntoinedeChassey/sigfox-platform/staging.svg?label=build%20%28staging%29)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/IoT-Makers/sigfox-platform/dev.svg?label=last%20commit%20%28dev%29)
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors)
 ![GitHub](https://img.shields.io/github/license/IoT-Makers/sigfox-platform.svg)
 ![Beerpay](https://img.shields.io/beerpay/IoT-Makers/sigfox-platform.svg)
 
@@ -103,8 +103,8 @@ A short wiki can be found [here](https://github.com/IoT-Makers/sigfox-platform/w
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="https://avatars0.githubusercontent.com/u/5591266?v=4" width="100px;" alt="Aurelien Lequertier"/><br /><sub><b>Aurelien Lequertier</b></sub>](https://twitter.com/aureleq)<br />[💻](https://github.com/IoT-Makers/sigfox-platform/commits?author=aureleq "Code") | [<img src="https://avatars1.githubusercontent.com/u/16639103?v=4" width="100px;" alt="Marko"/><br /><sub><b>Marko</b></sub>](https://github.com/markoceri)<br />[💻](https://github.com/IoT-Makers/sigfox-platform/commits?author=markoceri "Code") | [<img src="https://avatars2.githubusercontent.com/u/15124932?v=4" width="100px;" alt="Nestor Ayuso"/><br /><sub><b>Nestor Ayuso</b></sub>](https://twitter.com/nestorayuso)<br />[📖](https://github.com/IoT-Makers/sigfox-platform/commits?author=nestorayuso "Documentation") |
-| :---: | :---: | :---: |
+| [<img src="https://avatars0.githubusercontent.com/u/5591266?v=4" width="100px;" alt="Aurelien Lequertier"/><br /><sub><b>Aurelien Lequertier</b></sub>](https://twitter.com/aureleq)<br />[💻](https://github.com/IoT-Makers/sigfox-platform/commits?author=aureleq "Code") | [<img src="https://avatars1.githubusercontent.com/u/16639103?v=4" width="100px;" alt="Marko"/><br /><sub><b>Marko</b></sub>](https://github.com/markoceri)<br />[💻](https://github.com/IoT-Makers/sigfox-platform/commits?author=markoceri "Code") | [<img src="https://avatars2.githubusercontent.com/u/15124932?v=4" width="100px;" alt="Nestor Ayuso"/><br /><sub><b>Nestor Ayuso</b></sub>](https://twitter.com/nestorayuso)<br />[📖](https://github.com/IoT-Makers/sigfox-platform/commits?author=nestorayuso "Documentation") | [<img src="https://avatars1.githubusercontent.com/u/15876323?v=4" width="100px;" alt="Siyu"/><br /><sub><b>Siyu</b></sub>](https://github.com/siyu6974)<br />[💻](https://github.com/IoT-Makers/sigfox-platform/commits?author=siyu6974 "Code") |
+| :---: | :---: | :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 * [Siyu Zhang](https://github.com/siyu6974)
 
