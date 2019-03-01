@@ -24,8 +24,8 @@
     "primus": "cd primus/ && npm start && cd ..",
     "test": "npm run install"
   },
-  "devDependencies": {},
-  "dependencies": {
+  "devDependencies": {
     "all-contributors-cli": "^6.1.2"
-  }
+  },
+  "dependencies": {}
 }
