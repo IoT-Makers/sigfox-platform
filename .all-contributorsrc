@@ -26,6 +26,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "nestorayuso",
+      "name": "Nestor Ayuso",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/15124932?v=4",
+      "profile": "https://twitter.com/nestorayuso",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
