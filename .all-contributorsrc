@@ -1,0 +1,50 @@
+{
+  "projectName": "sigfox-platform",
+  "projectOwner": "IoT-Makers",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "siyu6974",
+      "name": "Siyu",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/15876323?v=4",
+      "profile": "https://github.com/siyu6974",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "aureleq",
+      "name": "Aurelien Lequertier",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/5591266?v=4",
+      "profile": "https://twitter.com/aureleq",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "markoceri",
+      "name": "Marko",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/16639103?v=4",
+      "profile": "https://github.com/markoceri",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "nestorayuso",
+      "name": "Nestor Ayuso",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/15124932?v=4",
+      "profile": "https://twitter.com/nestorayuso",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

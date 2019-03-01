@@ -1,10 +1,17 @@
-# Sigfox Platform ![Gitlab pipeline status (branch)](https://img.shields.io/gitlab/pipeline/AntoinedeChassey/sigfox-platform/master.svg?label=build%20%28master%29) ![Gitlab pipeline status (branch)](https://img.shields.io/gitlab/pipeline/AntoinedeChassey/sigfox-platform/staging.svg?label=build%20%28staging%29) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/IoT-Makers/sigfox-platform/dev.svg?label=last%20commit%20%28dev%29) ![GitHub](https://img.shields.io/github/license/IoT-Makers/sigfox-platform.svg) ![Beerpay](https://img.shields.io/beerpay/IoT-Makers/sigfox-platform.svg)
+# Sigfox Platform
+
+![Gitlab pipeline status (branch)](https://img.shields.io/gitlab/pipeline/AntoinedeChassey/sigfox-platform/master.svg?label=build%20%28master%29)
+![Gitlab pipeline status (branch)](https://img.shields.io/gitlab/pipeline/AntoinedeChassey/sigfox-platform/staging.svg?label=build%20%28staging%29)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/IoT-Makers/sigfox-platform/dev.svg?label=last%20commit%20%28dev%29)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors)
+![GitHub](https://img.shields.io/github/license/IoT-Makers/sigfox-platform.svg)
+![Beerpay](https://img.shields.io/beerpay/IoT-Makers/sigfox-platform.svg)
 
 **Disclaimer: Project under active development, use it at your own risk!**
 
 ## About this project
 This is a cloud platform to manage Sigfox devices and visualize messages.
-![overview](docs/img/overview.png)
+![overview](doc/img/overview.png)
 
 ## [Try it](https://try.iotagency.sigfox.com)
 You can deploy it yourself, but we encourage you to try it out [here](https://try.iotagency.sigfox.com).
@@ -14,22 +21,22 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
 **Create customizable dashboards**
 
 *charts*
-![dashboard_temp_hum](docs/img/dashboard_temp_hum.png)
+![dashboard_temp_hum](doc/img/dashboard_temp_hum.png)
 
 *maps*
-![tracking](docs/img/dashboard_tracking.png)
+![tracking](doc/img/dashboard_tracking.png)
 
 **Review raw & decoded data in realtime**
-![message](docs/img/message.png)
+![message](doc/img/message.png)
 
 **Create and share parsers**
-![parser](docs/img/parser.png)
+![parser](doc/img/parser.png)
 
 **Connect to other services with alerts**
-![alert](docs/img/alert.png)
+![alert](doc/img/alert.png)
 
 **Manage devices, share with others in organization**
-![device](docs/img/device.png)
+![device](doc/img/device.png)
 
 ## Technologies
 
@@ -64,7 +71,7 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
 
 Below is the functional/sequential diagram representing the message journey.
 
-![message_journey](docs/img/message-journey.png)
+![message_journey](doc/img/message-journey.png)
 
 ### Frontend
 
@@ -94,7 +101,11 @@ A short wiki can be found [here](https://github.com/IoT-Makers/sigfox-platform/w
 
 ## Contributors
 
-* [Siyu Zhang](https://github.com/siyu6974)
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+| [<img src="https://avatars1.githubusercontent.com/u/15876323?v=4" width="100px;" alt="Siyu"/><br /><sub><b>Siyu</b></sub>](https://github.com/siyu6974)<br />[💻](https://github.com/IoT-Makers/sigfox-platform/commits?author=siyu6974 "Code") | [<img src="https://avatars0.githubusercontent.com/u/5591266?v=4" width="100px;" alt="Aurelien Lequertier"/><br /><sub><b>Aurelien Lequertier</b></sub>](https://twitter.com/aureleq)<br />[💻](https://github.com/IoT-Makers/sigfox-platform/commits?author=aureleq "Code") | [<img src="https://avatars1.githubusercontent.com/u/16639103?v=4" width="100px;" alt="Marko"/><br /><sub><b>Marko</b></sub>](https://github.com/markoceri)<br />[💻](https://github.com/IoT-Makers/sigfox-platform/commits?author=markoceri "Code") | [<img src="https://avatars2.githubusercontent.com/u/15124932?v=4" width="100px;" alt="Nestor Ayuso"/><br /><sub><b>Nestor Ayuso</b></sub>](https://twitter.com/nestorayuso)<br />[📖](https://github.com/IoT-Makers/sigfox-platform/commits?author=nestorayuso "Documentation") |
+| :---: | :---: | :---: | :---: |
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 Feel free to submit a Pull Request and don't forget to add you name and your useful links.
 
