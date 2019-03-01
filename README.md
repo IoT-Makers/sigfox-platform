@@ -3,6 +3,8 @@
 ![Gitlab pipeline status (branch)](https://img.shields.io/gitlab/pipeline/AntoinedeChassey/sigfox-platform/master.svg?label=build%20%28master%29)
 ![Gitlab pipeline status (branch)](https://img.shields.io/gitlab/pipeline/AntoinedeChassey/sigfox-platform/staging.svg?label=build%20%28staging%29)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/IoT-Makers/sigfox-platform/dev.svg?label=last%20commit%20%28dev%29)
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 ![GitHub](https://img.shields.io/github/license/IoT-Makers/sigfox-platform.svg)
 ![Beerpay](https://img.shields.io/beerpay/IoT-Makers/sigfox-platform.svg)
 
@@ -100,6 +102,11 @@ A short wiki can be found [here](https://github.com/IoT-Makers/sigfox-platform/w
 
 ## Contributors
 
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+| [<img src="https://avatars0.githubusercontent.com/u/5591266?v=4" width="100px;" alt="Aurelien Lequertier"/><br /><sub><b>Aurelien Lequertier</b></sub>](https://twitter.com/aureleq)<br />[💻](https://github.com/IoT-Makers/sigfox-platform/commits?author=aureleq "Code") |
+| :---: |
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 * [Siyu Zhang](https://github.com/siyu6974)
 
 Feel free to submit a Pull Request and don't forget to add you name and your useful links.
