@@ -48,7 +48,7 @@ You can deploy it yourself, but we encourage you to try it out [here](https://tr
  * Pub-sub & queuing: [RabbitMQ](https://www.rabbitmq.com/)
  
  ### Deployment
- * Reverse proxy: [Traefik](https://traefik.io/)
+ * Reverse proxy: [Traefik](https://traefik.io/) => a nice talk @devoxx to understand Traefik [here](https://www.youtube.com/watch?v=AqiGcLsVMeI)
  * Containerization: [Docker](https://www.docker.com/)
  * Orchestrator: [Docker Swarm](https://docs.docker.com/engine/swarm/)
  * Environment management UI: [Portainer](https://portainer.io/)
