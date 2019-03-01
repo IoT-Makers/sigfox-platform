@@ -10,10 +10,11 @@
   "author": "Antoine de Chassey & Louis Moreau",
   "license": "AGPL-3.0-only",
   "engines": {
-    "node": ">=10.8.0",
-    "npm": ">=6.0.1"
+    "node": ">=10.15.2",
+    "npm": ">=6.4.1"
   },
   "scripts": {
+    "contributors:add": "all-contributors add",
     "preinstall": "cd backend/ && npm install && cd ../frontend && npm install && cd ..",
     "postinstall": "npm run build",
     "build": "cd frontend/ && npm cache verify && npm run build && cd ..",
@@ -24,5 +25,7 @@
     "test": "npm run install"
   },
   "devDependencies": {},
-  "dependencies": {}
+  "dependencies": {
+    "all-contributors-cli": "^6.1.2"
+  }
 }
