@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DashboardApi, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {Geoloc, Message, Organization} from '../../shared/sdk/models';
+import {Message, Organization} from '../../shared/sdk/models';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import {MessageApi, OrganizationApi} from '../../shared/sdk/services/custom';
@@ -338,7 +338,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   getSelectableCategoryFilters(categories: any[]): void {
-    const selectedCategoryIds = categories.map((c:any) => c.id);
+    const selectedCategoryIds = categories.map((c: any) => c.id);
 
     let selectableCategoryFilters = new Set();
     this.categories.forEach((cat: Category) => {
@@ -445,9 +445,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   fileUpload(event): void {
     let fileList: FileList = event.target.files;
-    if(fileList.length > 0) {
+    if (fileList.length > 0) {
       let file: File = fileList[0];
-      let formData:FormData = new FormData();
+      let formData: FormData = new FormData();
       formData.append('file', file, file.name);
 
       let headers = {
@@ -455,7 +455,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         filename: file.name,
         enctype: 'multipart/form-data'
       };
-      this.http.post(`${environment.apiUrl}/${environment.apiVersion}/assets/upload`, formData, { headers: headers })
+      this.http.post(`${environment.apiUrl}/${environment.apiVersion}/assets/upload`, formData, {headers: headers})
         .map(res => (<any>res).url)
         .catch(error => Observable.throw(error))
         .subscribe(
@@ -1214,7 +1214,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
           widget.data = devices;
           // Default parameters
           widget.data.forEach(device => {
-            device.visibility = false;
+            device.isVisible = false;
             device.directionsDisplayStore = [];
             device.color = this.getRandomColor();
           });
@@ -1694,7 +1694,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     device.Geolocs = [];
     device.Messages = [];
 
-    if (device.visibility) {
+    if (device.isVisible) {
       const widgetFilter = Object.assign({}, widget.filter);
       widgetFilter.where = {id: device.id};
       widgetFilter.include[0].scope.limit = 500;
@@ -1704,18 +1704,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         if (widget.options.geolocType === 'preferBestAccuracy') {
           device.Geolocs = this.groupBy(device.Geolocs, "messageId");
           device.Geolocs = device.Geolocs.map((groupedGeolocs: any[]) => {
-            return groupedGeolocs.reduce((acc:any, c:any) => (c.precision || c.accuracy) < (acc.precision || acc.accuracy) ? c : acc);
+            return groupedGeolocs.reduce((acc: any, c: any) => (c.precision || c.accuracy) < (acc.precision || acc.accuracy) ? c : acc);
           });
         }
-        for (const geoloc of device.Geolocs) {
-          bounds.extend(new google.maps.LatLng(geoloc.location.lat, geoloc.location.lng));
-        }
+        for (const geoloc of device.Geolocs) bounds.extend(new google.maps.LatLng(geoloc.location.lat, geoloc.location.lng));
         if (device.Geolocs.length > 0 && !widget.options.directions) {
           this.agmMaps.forEach((agmMap: any) => {
             //agmMap._mapsWrapper.setCenter(device.Geolocs[device.Geolocs.length - 1].location);
-            if (agmMap._elem.nativeElement.id === widget.id) {
-              agmMap._mapsWrapper.fitBounds(bounds);
-            }
+            if (agmMap._elem.nativeElement.id === widget.id) agmMap._mapsWrapper.fitBounds(bounds);
           });
         }
       });
@@ -1747,17 +1743,11 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       widget.options.columns.forEach(col => {
         const obj: any = {};
         obj.key = col.key;
-        if (col.model === 'device') {
-          obj.value = row[col.key];
-        }
-        if (col.model === 'device.Parser') {
-          obj.value = row.Parser[col.key];
-        }
+        if (col.model === 'device') obj.value = row[col.key];
+        if (col.model === 'device.Parser') obj.value = row.Parser[col.key];
         if (col.model === 'device.properties') {
           const index = _.findIndex(row.properties, {'key': col.key});
-          if (index !== -1) {
-            obj.value = row.properties[index].value;
-          }
+          if (index !== -1) obj.value = row.properties[index].value;
         }
         if (col.model === 'device.data_parsed') {
           const index = _.findIndex(row.data_parsed, {'key': col.key});
@@ -1776,18 +1766,14 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   private getDevicesWithFilter(widget: any, newFilter?: any): Observable<any[]> {
-    if (widget.options.timeSpan) {
-      this.setTimeSpan(widget);
-    }
+    if (widget.options.timeSpan) this.setTimeSpan(widget);
     if (newFilter) return this.api.getDevices(this.id, newFilter);
     else return this.api.getDevices(this.id, widget.filter);
   }
 
   // Map functions
   setCircles() {
-    for (let i = 0; i < this.devices.length; i++) {
-      this.isCircleVisible.push(false);
-    }
+    for (let i = 0; i < this.devices.length; i++) this.isCircleVisible.push(false);
   }
 
   markerOut(i) {
@@ -1803,10 +1789,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   rtWidgetHandler = (payload: any) => {
-    if (payload.action == "CREATE" || payload.action == "UPDATE") {
-      this.loadWidgets();
-    } else if (payload.action == "DELETE") {
-      this.widgets = this.widgets.filter(function (obj) {
+    if (payload.action == "CREATE" || payload.action == "UPDATE") this.loadWidgets();
+    else if (payload.action == "DELETE") {
+      this.widgets = this.widgets.filter((obj: any) => {
         return obj.id !== payload.content.id;
       });
     }
@@ -1819,7 +1804,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.widgets.forEach((widget: any) => {
         if (widget.type === "tracking") {
           for (let device of widget.data) {
-            if (!device.visibility) continue;
+            if (!device.isVisible) continue;
             if (device.id !== newGeoloc.deviceId) continue;
             const geolocType = widget.options.geolocType;
             if (geolocType === 'preferBestAccuracy' || geolocType === 'all' || geolocType === newGeoloc.type) {
@@ -1843,21 +1828,16 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               }
             }
           }
-        } else
-        if (widget.type === "map") {
+        } else if (widget.type === "map") {
           // map has implicit "preferBestAccuracy"
           for (let device of widget.data) {
             if (device.id !== newGeoloc.deviceId) continue;
             if (device.Geolocs && device.Geolocs[device.Geolocs.length - 1].messageId === newGeoloc.messageId) {
               // if has a previous geoloc and it belongs to the same message
               const lastGeoloc = device.Geolocs[device.Geolocs.length - 1];
-              if (newGeoloc.accuracy < (lastGeoloc.accuracy || lastGeoloc.precision)) {
-                // remove less precise one
-                device.Geolocs.push(newGeoloc);
-              }
-            } else {
-              device.Geolocs ? device.Geolocs.push(newGeoloc) : device.Geolocs = [newGeoloc];
-            }
+              // remove less precise one
+              if (newGeoloc.accuracy < (lastGeoloc.accuracy || lastGeoloc.precision)) device.Geolocs.push(newGeoloc);
+            } else device.Geolocs ? device.Geolocs.push(newGeoloc) : device.Geolocs = [newGeoloc];
             // keep only the latest
             device.Geolocs = [device.Geolocs[device.Geolocs.length - 1]];
 
@@ -1880,12 +1860,9 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   subscribe(id: string, topics: string[]): void {
     this.rt.informCurrentPage(id, ['widget'].concat(topics));
     this.rtWidgetHandler = this.rt.addListener("widget", this.rtWidgetHandler);
-    if (topics.includes("geoloc")) {
-      this.rtWidgetHandler = this.rt.addListener("geoloc", this.geolocHandler);
-    }
-    if (topics.includes("message")) {
-      this.rtWidgetHandler = this.rt.addListener("message", this.messageHandler);
-    }
+    if (topics.includes("geoloc")) this.rtWidgetHandler = this.rt.addListener("geoloc", this.geolocHandler);
+    if (topics.includes("message")) this.rtWidgetHandler = this.rt.addListener("message", this.messageHandler);
+
   }
 
   unsubscribe(): void {
@@ -1893,7 +1870,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   groupBy(xs, key): any[] {
-    return Object.values(xs.reduce(function(rv, x) {
+    return Object.values(xs.reduce(function (rv, x) {
       (rv[x[key]] = rv[x[key]] || []).push(x);
       return rv;
     }, {}));

@@ -468,7 +468,7 @@
                                class="switch switch-sm switch-3d switch-device-outline-alt">
                           <input id="{{device.id + widget.id}}"
                                  (change)="onDeviceVisibility(i, w)"
-                                 [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
+                                 [(ngModel)]="device.isVisible" type="checkbox" class="switch-input">
                           <span class="switch-label"></span>
                           <span class="switch-handle"></span>
                         </label>
@@ -486,7 +486,7 @@
                                class="switch switch-sm switch-3d switch-device-outline-alt">
                           <input id="{{device.id + widget.id}}"
                                  (change)="onDeviceVisibility(i, w)"
-                                 [(ngModel)]="device.visibility" type="checkbox" class="switch-input">
+                                 [(ngModel)]="device.isVisible" type="checkbox" class="switch-input">
                           <span class="switch-label"></span>
                           <span class="switch-handle"></span>
                         </label>
@@ -512,7 +512,7 @@
 
                       <agm-marker-cluster *ngIf="widget.options.clustering" [styles]="clusterStyles">
                         <ng-container *ngFor="let device of widget.data; let i = index">
-                          <ng-container *ngIf="device.visibility">
+                          <ng-container *ngIf="device.isVisible">
                             <!-- Polylines -->
                             <agm-polyline *ngIf="widget.options.polylines"
                                           [zIndex]="2"
@@ -937,7 +937,7 @@
                       </agm-marker-cluster>
                       <ng-container *ngIf="!widget.options.clustering">
                         <ng-container *ngFor="let device of widget.data; let i = index">
-                          <ng-container *ngIf="device.visibility">
+                          <ng-container *ngIf="device.isVisible">
                             <!-- Polylines -->
                             <agm-polyline *ngIf="widget.options.polylines"
                                           [zIndex]="2"
