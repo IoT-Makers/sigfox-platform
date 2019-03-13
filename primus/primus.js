@@ -5980,7 +5980,7 @@ if (typeof module !== 'undefined') {
 function Emitter(obj) {
   if (obj) return mixin(obj);
 }
-        /**
+    /**
  * Mixin the emitter properties.
  *
  * @param {Object} obj
@@ -7055,10 +7055,10 @@ function BlobBuilderConstructor(ary, options) {
 
   return (options.type) ? bb.getBlob(options.type) : bb.getBlob();
 }
-        function BlobConstructor(ary, options) {
+    function BlobConstructor(ary, options) {
   return new Blob(mapArrayBufferViews(ary), options || {});
 }
-        if (typeof Blob !== 'undefined') {
+    if (typeof Blob !== 'undefined') {
   BlobBuilderConstructor.prototype = Blob.prototype;
   BlobConstructor.prototype = Blob.prototype;
 }
