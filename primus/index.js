@@ -224,7 +224,7 @@ primus.on('connection', function connection(spark) {
         const id = data.id;
         const listenerType = id === spark.userId ? 'personal' : 'org';
         const rk = `#.${id}.#`;
-        if (RtCh) RtCh.bindQueue(RtQueue.queue, RT_EX, rk);
+        RtCh.bindQueue(RtQueue.queue, RT_EX, rk);
 
         spark.listenerInfo = {
             id: id,
