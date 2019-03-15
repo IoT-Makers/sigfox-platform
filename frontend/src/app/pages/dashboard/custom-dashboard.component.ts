@@ -1697,7 +1697,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     if (device.isVisible) {
       const widgetFilter = Object.assign({}, widget.filter);
       widgetFilter.where = {id: device.id};
-      widgetFilter.include[0].scope.limit = 500;
+      widgetFilter.include[0].scope.limit = 1000;
       this.getDevicesWithFilter(widget, widgetFilter).subscribe((devices: any[]) => {
         const bounds: LatLngBounds = new google.maps.LatLngBounds();
         device.Geolocs = devices[0].Geolocs;
