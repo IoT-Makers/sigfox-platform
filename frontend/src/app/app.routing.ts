@@ -1,15 +1,25 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {FullLayoutComponent} from './layouts/full-layout.component';
-import {AuthGuard} from './_guards/auth.guard';
-import {AdminGuard} from './_guards/admin.guard';
-import {DashboardGuard} from './_guards/dashboard.guard';
-import {OrganizationGuard} from './_guards/organization.guard';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { FullLayoutComponent } from './layouts/full-layout.component';
+import { AuthGuard } from './_guards/auth.guard';
+import { AdminGuard } from './_guards/admin.guard';
+import { DashboardGuard } from './_guards/dashboard.guard';
+import { OrganizationGuard } from './_guards/organization.guard';
 
 export const routes: Routes = [
-  {path: 'login', loadChildren: './pages/user/login/login.module#LoginModule'},
-  {path: 'register', loadChildren: './pages/user/register/register.module#RegisterModule'},
-  {path: 'reset-password', loadChildren: './pages/user/reset-password/reset-password.module#ResetPasswordModule'},
+  {
+    path: 'login',
+    loadChildren: './pages/user/login/login.module#LoginModule'
+  },
+  {
+    path: 'register',
+    loadChildren: './pages/user/register/register.module#RegisterModule'
+  },
+  {
+    path: 'reset-password',
+    loadChildren:
+      './pages/user/reset-password/reset-password.module#ResetPasswordModule'
+  },
   {
     path: '',
     canActivate: [AuthGuard],
@@ -18,27 +28,69 @@ export const routes: Routes = [
       title: 'Home'
     },
     children: [
-      {path: '', loadChildren: './pages/overview/overview.module#OverviewModule'},
+      {
+        path: '',
+        loadChildren: './pages/overview/overview.module#OverviewModule'
+      },
 
-      {path: 'demo', loadChildren: './pages/demo/demo.module#DemoModule'},
+      { path: 'demo', loadChildren: './pages/demo/demo.module#DemoModule' },
 
-      {path: 'dashboard/:id', canActivate: [DashboardGuard], loadChildren: './pages/dashboard/custom-dashboard.module#CustomDashboardModule'},
+      {
+        path: 'dashboard/:id',
+        canActivate: [DashboardGuard],
+        loadChildren:
+          './pages/dashboard/custom-dashboard.module#CustomDashboardModule'
+      },
 
-      {path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule'},
-      {path: 'devices', loadChildren: './pages/devices/devices.module#DevicesModule'},
-      {path: 'devices/:id/tracking', loadChildren: './pages/tracking/tracking.module#TrackingModule'},
-      {path: 'alerts', loadChildren: './pages/alerts/alerts.module#AlertsModule'},
-      {path: 'messages', loadChildren: './pages/messages/messages.module#MessagesModule'},
-      {path: 'messages/:id', loadChildren: './pages/messages/messages.module#MessagesModule'},
+      {
+        path: 'categories',
+        loadChildren: './pages/categories/categories.module#CategoriesModule'
+      },
+      {
+        path: 'devices',
+        loadChildren: './pages/devices/devices.module#DevicesModule'
+      },
+      {
+        path: 'devices/:id/tracking',
+        loadChildren: './pages/tracking/tracking.module#TrackingModule'
+      },
+      {
+        path: 'alerts',
+        loadChildren: './pages/alerts/alerts.module#AlertsModule'
+      },
+      {
+        path: 'messages',
+        loadChildren: './pages/messages/messages.module#MessagesModule'
+      },
+      {
+        path: 'messages/:id',
+        loadChildren: './pages/messages/messages.module#MessagesModule'
+      },
 
-      {path: 'profile', loadChildren: './pages/user/profile/profile.module#ProfileModule'},
+      {
+        path: 'profile',
+        loadChildren: './pages/user/profile/profile.module#ProfileModule'
+      },
 
-      {path: 'api', loadChildren: './pages/api/api.module#ApiModule'},
-      {path: 'parsers', loadChildren: './pages/parsers/parsers.module#ParsersModule'},
-      {path: 'connectors', loadChildren: './pages/connectors/connectors.module#ConnectorsModule'},
-      {path: 'beacons', loadChildren: './pages/beacons/beacons.module#BeaconsModule'},
+      { path: 'api', loadChildren: './pages/api/api.module#ApiModule' },
+      {
+        path: 'parsers',
+        loadChildren: './pages/parsers/parsers.module#ParsersModule'
+      },
+      {
+        path: 'connectors',
+        loadChildren: './pages/connectors/connectors.module#ConnectorsModule'
+      },
+      {
+        path: 'beacons',
+        loadChildren: './pages/beacons/beacons.module#BeaconsModule'
+      },
 
-      {path: 'admin', canActivate: [AdminGuard], loadChildren: './pages/admin/admin.module#AdminModule'}
+      {
+        path: 'admin',
+        canActivate: [AdminGuard],
+        loadChildren: './pages/admin/admin.module#AdminModule'
+      }
     ]
   },
   {
@@ -49,17 +101,39 @@ export const routes: Routes = [
       title: 'Organization'
     },
     children: [
-      {path: '', loadChildren: './pages/overview/overview.module#OverviewModule'},
+      {
+        path: '',
+        loadChildren: './pages/overview/overview.module#OverviewModule'
+      },
 
-      {path: 'dashboard/:id', loadChildren: './pages/dashboard/custom-dashboard.module#CustomDashboardModule'},
+      {
+        path: 'dashboard/:id',
+        loadChildren:
+          './pages/dashboard/custom-dashboard.module#CustomDashboardModule'
+      },
 
-      {path: 'categories', loadChildren: './pages/categories/categories.module#CategoriesModule'},
-      {path: 'devices', loadChildren: './pages/devices/devices.module#DevicesModule'},
-      {path: 'devices/:id/tracking', loadChildren: './pages/tracking/tracking.module#TrackingModule'},
-      {path: 'messages', loadChildren: './pages/messages/messages.module#MessagesModule'},
-      {path: 'messages/:id', loadChildren: './pages/messages/messages.module#MessagesModule'}
+      {
+        path: 'categories',
+        loadChildren: './pages/categories/categories.module#CategoriesModule'
+      },
+      {
+        path: 'devices',
+        loadChildren: './pages/devices/devices.module#DevicesModule'
+      },
+      {
+        path: 'devices/:id/tracking',
+        loadChildren: './pages/tracking/tracking.module#TrackingModule'
+      },
+      {
+        path: 'messages',
+        loadChildren: './pages/messages/messages.module#MessagesModule'
+      },
+      {
+        path: 'messages/:id',
+        loadChildren: './pages/messages/messages.module#MessagesModule'
+      }
     ]
-  },/*
+  } /*
   {
     path: 'pages',
     component: SimpleLayoutComponent,
@@ -72,17 +146,21 @@ export const routes: Routes = [
         loadChildren: './pages/pages.module#PagesModule',
       }
     ]
-  }*/
-  {path: 'not-found', loadChildren: './pages/not-found/not-found.module#NotFoundModule'},
-  {path: '**', redirectTo: 'not-found'},
+  }*/,
+  {
+    path: 'not-found',
+    loadChildren: './pages/not-found/not-found.module#NotFoundModule'
+  },
+  { path: '**', redirectTo: 'not-found' }
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes
+    RouterModule.forRoot(
+      routes
       /*, { enableTracing: true }*/
-    )],
+    )
+  ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

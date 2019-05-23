@@ -23,71 +23,70 @@ module.exports = (app: any) => {
   // User.hasMany(RoleMapping, {foreignKey: 'principalId'});
   // Role.hasMany(User, {through: RoleMapping, foreignKey: 'roleId'});
 
+  Role.registerResolver(
+    'organizationMember',
+    (role: any, context: any, cb: Function) => {
+      //cb(null, true);
 
-  Role.registerResolver('organizationMember', (role: any, context: any, cb: Function) => {
+      // console.log('Role: ', role);
+      //console.log('context: ', context);
 
-    //cb(null, true);
-
-    // console.log('Role: ', role);
-    //console.log('context: ', context);
-
-    function reject() {
-      //console.log('Reject');
-      process.nextTick(() => {
-        cb('RoleResolver Error', false);
-      });
-
-    }
-
-    function authorize() {
-      //console.log('Authorize');
-      process.nextTick(() => {
-        cb(null, true);
-      });
-
-    }
-
-    // Do not allow anonymous users
-    const userId = context.accessToken.userId;
-    if (!userId) return reject();
-
-    // If the target model is Organization
-    else if (context.modelName === 'Organization') {
-
-      if (!context.modelId) {
-        //Is admin?
-        User.findById(userId, {include: 'roles'}, (err: any, object: any) => {
-          const roles = object.toJSON().roles;
-          let authorized = false;
-          roles.forEach((role: any, index: any, array: any) => {
-            if (role.name === 'admin') {
-              authorized = true;
-              return authorized;
-            } else if (index === array.length - 1 && authorized === false) {
-              if (!cb) return reject();
-            }
-          });
-        });
-
-      } else {
-
-        context.model.findById(context.modelId, {include: 'Members'}, (err: any, organization: any) => {
-          if (err || !organization) return reject();
-          else if (!organization.Members) return reject();
-          else {
-            // Check if user is a member of the organization
-            const members = organization.toJSON().Members;
-            let authorized = false;
-            for (let i = 0; i < members.length; i++) {
-              if (members[i].id.toString() === userId.toString()) {
-                authorized = true;
-                return authorize();
-              } else if (i === members.length - 1 && authorized === false) if (!cb) return reject();
-            }
-          }
+      function reject() {
+        //console.log('Reject');
+        process.nextTick(() => {
+          cb('RoleResolver Error', false);
         });
       }
+
+      function authorize() {
+        //console.log('Authorize');
+        process.nextTick(() => {
+          cb(null, true);
+        });
+      }
+
+      // Do not allow anonymous users
+      const userId = context.accessToken.userId;
+      if (!userId) return reject();
+      // If the target model is Organization
+      else if (context.modelName === 'Organization') {
+        if (!context.modelId) {
+          //Is admin?
+          User.findById(userId, {include: 'roles'}, (err: any, object: any) => {
+            const roles = object.toJSON().roles;
+            let authorized = false;
+            roles.forEach((role: any, index: any, array: any) => {
+              if (role.name === 'admin') {
+                authorized = true;
+                return authorized;
+              } else if (index === array.length - 1 && authorized === false) {
+                if (!cb) return reject();
+              }
+            });
+          });
+        } else {
+          context.model.findById(
+            context.modelId,
+            {include: 'Members'},
+            (err: any, organization: any) => {
+              if (err || !organization) return reject();
+              else if (!organization.Members) return reject();
+              else {
+                // Check if user is a member of the organization
+                const members = organization.toJSON().Members;
+                let authorized = false;
+                for (let i = 0; i < members.length; i++) {
+                  if (members[i].id.toString() === userId.toString()) {
+                    authorized = true;
+                    return authorize();
+                  } else if (i === members.length - 1 && authorized === false)
+                    if (!cb) return reject();
+                }
+              }
+            }
+          );
+        }
+      } else return reject();
     }
-    else return reject();
-  });
+  );
 };

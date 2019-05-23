@@ -1,119 +1,126 @@
 // Here you can add other styles
 .card {
-  border-radius: 2px;
+    border-radius: 2px;
 }
 
 .navbar {
 
-  .form-inline {
-    i {
-      color: $navbar-color;
-    }
-    .form-control {
-      min-width: 220px;
-      color: $navbar-color;
-      border: 0;
+    .form-inline {
+        i {
+            color: $navbar-color;
+        }
 
-      &::placeholder {
-        color: $navbar-color;
-      }
+        .form-control {
+            min-width: 220px;
+            color: $navbar-color;
+            border: 0;
+
+            &::placeholder {
+                color: $navbar-color;
+            }
+        }
+
+        .form-control::-webkit-input-placeholder {
+            color: $navbar-color;
+        }
+
+        .form-control:-moz-placeholder {
+            color: $navbar-color;
+        }
+
+        .form-control::-moz-placeholder {
+            color: $navbar-color;
+        }
+
+        .form-control:-ms-input-placeholder {
+            color: $navbar-color;
+        }
     }
-    .form-control::-webkit-input-placeholder {
-      color: $navbar-color;
-    }
-    .form-control:-moz-placeholder {
-      color: $navbar-color;
-    }
-    .form-control::-moz-placeholder {
-      color: $navbar-color;
-    }
-    .form-control:-ms-input-placeholder {
-      color: $navbar-color;
-    }
-  }
 }
 
 $sidebar-header-height: 200px;
 
 .sidebar {
-  .sidebar-header {
-    height: $sidebar-header-height;
-    padding-bottom: 10px;
-    text-align: center;
-    background: $sidebar-header-bg;
+    .sidebar-header {
+        height: $sidebar-header-height;
+        padding-bottom: 10px;
+        text-align: center;
+        background: $sidebar-header-bg;
 
-    .img-avatar {
-      width: 80px;
-      margin: 20px auto 10px;
-      border-radius: 20em;
+        .img-avatar {
+            width: 80px;
+            margin: 20px auto 10px;
+            border-radius: 20em;
+        }
+
+        .text-muted {
+            margin-top: -5px;
+        }
+
+        >.btn-group {
+            margin-top: 10px;
+        }
+
+        .btn-link {
+            color: $text-muted;
+
+            .badge {
+                top: -8px;
+            }
+
+            &:hover {
+                color: $sidebar-color;
+                text-decoration: none;
+            }
+        }
     }
 
-    .text-muted {
-      margin-top: -5px;
+    .sidebar-header+.sidebar-nav {
+        height: calc(100vh - #{$navbar-height} - #{$sidebar-header-height}) !important;
     }
-
-    > .btn-group {
-      margin-top: 10px;
-    }
-
-    .btn-link {
-      color: $text-muted;
-
-      .badge {
-        top: -8px;
-      }
-
-      &:hover {
-        color: $sidebar-color;
-        text-decoration: none;
-      }
-    }
-  }
-  .sidebar-header + .sidebar-nav {
-    height: calc(100vh - #{$navbar-height} - #{$sidebar-header-height}) !important;
-  }
 }
 
 @include media-breakpoint-up(sm) {
-  .sidebar-compact {
-    .sidebar {
-      .sidebar-header {
-        height: 20px;
-        padding: 0;
+    .sidebar-compact {
+        .sidebar {
+            .sidebar-header {
+                height: 20px;
+                padding: 0;
 
-        .img-avatar {
-          width: $sidebar-compact-width - 10px;
-          margin: 5px auto;
+                .img-avatar {
+                    width: $sidebar-compact-width - 10px;
+                    margin: 5px auto;
+                }
+
+                div {
+                    display: none;
+                }
+            }
         }
-        div {
-          display: none;
-        }
-      }
     }
-  }
 }
 
 agm-map {
-  width: 100%;
-  height: calc(100vh - 283px);
+    width: 100%;
+    height: calc(100vh - 283px);
 }
 
 .modal {
-  visibility: hidden;
-  display: block;
+    visibility: hidden;
+    display: block;
 }
 
 .modal[aria-hidden='false'] {
-  visibility: visible;
-  display: block;
+    visibility: visible;
+    display: block;
 }
 
 .btn {
-  border-radius: 2px;
+    border-radius: 2px;
 }
 
 .btn-round {
-  border-radius: 17px;
+    border-radius: 17px;
 }
 
 /***************************************
@@ -122,167 +129,205 @@ agm-map {
 *                                      *
 ****************************************/
 
-@each $variant, $color in (
-  sigfox: $sigfox,
-  dashboard: $dashboard,
-  widget: $widget,
-  category: $category,
-  device: $device,
-  message: $message,
-  geoloc: $geoloc,
-  alert: $alert,
-  parser: $parser,
-  connector: $connector,
-  beacon: $beacon,
-  api: $api,
-  user: $user,
-  organization: $organization
-) {
+@each $variant,
+$color in (sigfox: $sigfox,
+dashboard: $dashboard,
+widget: $widget,
+category: $category,
+device: $device,
+message: $message,
+geoloc: $geoloc,
+alert: $alert,
+parser: $parser,
+connector: $connector,
+beacon: $beacon,
+api: $api,
+user: $user,
+organization: $organization) {
 
-  // Text
-  .text-#{$variant} {
-    color: $color !important;
-  }
-  a.text-#{$variant}:focus, a.text-#{$variant}:hover {
-    color: darken($color, 20%) !important;
-  }
+    // Text
+    .text-#{$variant} {
+        color: $color !important;
+    }
 
-  // Badge
-  .badge-#{$variant} {
-    background-color: $color;
-  }
-  .badge-#{$variant}[href]:focus, .badge-#{$variant}[href]:hover {
-    background-color: darken($color, 20%);
-  }
+    a.text-#{$variant}:focus,
+    a.text-#{$variant}:hover {
+        color: darken($color, 20%) !important;
+    }
 
-  // Background
-  .bg-#{$variant} {
-    color: #fff !important;
-    background-color: $color !important;
-  }
-  a.bg-#{$variant}:focus, a.bg-#{$variant}:hover {
-    background-color: darken($color, 20%);
-  }
+    // Badge
+    .badge-#{$variant} {
+        background-color: $color;
+    }
 
-  // Button
-  .btn-#{$variant}, .fc button {
-    color: #fff;
-    background-color: $color;
-    border-color: $color;
-  }
-  .btn-#{$variant}:hover, .fc button:hover {
-    color: #fff;
-    background-color: darken($color, 10%);
-    border-color: darken($color, 10%);
-  }
-  .btn-#{$variant}:focus, .fc button:focus, .btn-#{$variant}.focus, .fc button.focus {
-    box-shadow: 0 0 0 2px darken($color, 10%);
-  }
-  .btn-#{$variant}.disabled, .fc button.disabled, .btn-#{$variant}:disabled, .fc button:disabled {
-    background-color: $color;
-    border-color: $color;
-  }
-  .btn-#{$variant}:active, .fc button:active, .btn-#{$variant}.active, .fc button.active,
-  .show > .btn-#{$variant}.dropdown-toggle, .fc
-  .show > button.dropdown-toggle {
-    color: #2a2c36;
-    background-color: darken($color, 10%);
-    background-image: none;
-    border-color: darken($color, 10%);
-  }
+    .badge-#{$variant}[href]:focus,
+    .badge-#{$variant}[href]:hover {
+        background-color: darken($color, 20%);
+    }
 
-  .btn-outline-#{$variant} {
-    color: $color;
-    background-image: none;
-    background-color: transparent;
-    border-color: $color;
-  }
-  .btn-outline-#{$variant}:hover {
-    color: #fff;
-    background-color: $color;
-    border-color: $color;
-  }
-  .btn-outline-#{$variant}:focus, .btn-outline-#{$variant}.focus {
-    box-shadow: 0 0 0 1px darken($color, 5%);
-  }
-  .btn-outline-#{$variant}.disabled, .btn-outline-#{$variant}:disabled {
-    color: $color;
-    background-color: transparent;
-  }
-  .btn-outline-#{$variant}:active, .btn-outline-#{$variant}.active,
-  .show > .btn-outline-#{$variant}.dropdown-toggle {
-    color: #fff;
-    background-color: $color;
-    border-color: $color;
-  }
+    // Background
+    .bg-#{$variant} {
+        color: #fff !important;
+        background-color: $color !important;
+    }
 
-  // Select
-  .select-#{$variant} {
-    color: #ccc;
-  }
-  .select-#{$variant} .c-token {
-    background: $color !important;
-  }
-  .select-#{$variant} .pure-checkbox label::before {
-    border-color: $color !important;
-  }
-  .select-#{$variant} .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
-    background: $color !important;
-  }
+    a.bg-#{$variant}:focus,
+    a.bg-#{$variant}:hover {
+        background-color: darken($color, 20%);
+    }
 
-  // Select one
-  .select-one-#{$variant} {
-    color: #ccc;
-  }
-  .select-one-#{$variant} .c-token {
-    background: $color !important;
-  }
-  .select-one-#{$variant} .pure-checkbox label::before {
-    border-radius: 100% !important;
-    border-color: $color !important;
-  }
-  .select-one-#{$variant} .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
-    background: $color !important;
-  }
+    // Button
+    .btn-#{$variant},
+    .fc button {
+        color: #fff;
+        background-color: $color;
+        border-color: $color;
+    }
 
-  // Switch
-  .switch-#{$variant} {
-    @include switch-variant($color);
-  }
-  .switch-#{$variant}-outline {
-    @include switch-outline-variant($color);
-  }
-  .switch-#{$variant}-outline-alt {
-    @include switch-outline-alt-variant($color);
-  }
+    .btn-#{$variant}:hover,
+    .fc button:hover {
+        color: #fff;
+        background-color: darken($color, 10%);
+        border-color: darken($color, 10%);
+    }
+
+    .btn-#{$variant}:focus,
+    .fc button:focus,
+    .btn-#{$variant}.focus,
+    .fc button.focus {
+        box-shadow: 0 0 0 2px darken($color, 10%);
+    }
+
+    .btn-#{$variant}.disabled,
+    .fc button.disabled,
+    .btn-#{$variant}:disabled,
+    .fc button:disabled {
+        background-color: $color;
+        border-color: $color;
+    }
+
+    .btn-#{$variant}:active,
+    .fc button:active,
+    .btn-#{$variant}.active,
+    .fc button.active,
+    .show>.btn-#{$variant}.dropdown-toggle,
+    .fc .show>button.dropdown-toggle {
+        color: #2a2c36;
+        background-color: darken($color, 10%);
+        background-image: none;
+        border-color: darken($color, 10%);
+    }
+
+    .btn-outline-#{$variant} {
+        color: $color;
+        background-image: none;
+        background-color: transparent;
+        border-color: $color;
+    }
+
+    .btn-outline-#{$variant}:hover {
+        color: #fff;
+        background-color: $color;
+        border-color: $color;
+    }
+
+    .btn-outline-#{$variant}:focus,
+    .btn-outline-#{$variant}.focus {
+        box-shadow: 0 0 0 1px darken($color, 5%);
+    }
+
+    .btn-outline-#{$variant}.disabled,
+    .btn-outline-#{$variant}:disabled {
+        color: $color;
+        background-color: transparent;
+    }
+
+    .btn-outline-#{$variant}:active,
+    .btn-outline-#{$variant}.active,
+    .show>.btn-outline-#{$variant}.dropdown-toggle {
+        color: #fff;
+        background-color: $color;
+        border-color: $color;
+    }
+
+    // Select
+    .select-#{$variant} {
+        color: #ccc;
+    }
+
+    .select-#{$variant} .c-token {
+        background: $color !important;
+    }
+
+    .select-#{$variant} .pure-checkbox label::before {
+        border-color: $color !important;
+    }
+
+    .select-#{$variant} .pure-checkbox input[type="checkbox"]:checked+label[_ngcontent-c1]:before {
+        background: $color !important;
+    }
+
+    // Select one
+    .select-one-#{$variant} {
+        color: #ccc;
+    }
+
+    .select-one-#{$variant} .c-token {
+        background: $color !important;
+    }
+
+    .select-one-#{$variant} .pure-checkbox label::before {
+        border-radius: 100% !important;
+        border-color: $color !important;
+    }
+
+    .select-one-#{$variant} .pure-checkbox input[type="checkbox"]:checked+label[_ngcontent-c1]:before {
+        background: $color !important;
+    }
+
+    // Switch
+    .switch-#{$variant} {
+        @include switch-variant($color);
+    }
+
+    .switch-#{$variant}-outline {
+        @include switch-outline-variant($color);
+    }
+
+    .switch-#{$variant}-outline-alt {
+        @include switch-outline-alt-variant($color);
+    }
 }
 
 // Custom selects
-.select-one {
-}
+.select-one {}
 
-.select-one .c-token {
-}
+.select-one .c-token {}
 
 .select-one .pure-checkbox label::before {
-  border-radius: 100% !important;
+    border-radius: 100% !important;
 }
 
-.select-one .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
-}
+.select-one .pure-checkbox input[type="checkbox"]:checked+label[_ngcontent-c1]:before {}
 
 // Geoloc Markers
-@each $variant, $color in (sigfox: $geoloc-sigfox, gps: $geoloc-gps, wifi: $geoloc-wifi, beacon: $geoloc-beacon, ble: $geoloc-ble) {
-  .text-geoloc-#{$variant} {
-    color: $color !important;
-  }
-  a.text-geoloc-#{$variant}:focus, a.text-geoloc-#{$variant}:hover {
-    color: darken($color, 20%) !important;
-  }
-  .badge-geoloc-#{$variant} {
-    background-color: $color;
-  }
-  .badge-geoloc-#{$variant}[href]:focus, .badge-geoloc-#{$variant}[href]:hover {
-    background-color: darken($color, 20%);
-  }
+@each $variant,
+$color in (sigfox: $geoloc-sigfox, gps: $geoloc-gps, wifi: $geoloc-wifi, beacon: $geoloc-beacon, ble: $geoloc-ble) {
+    .text-geoloc-#{$variant} {
+        color: $color !important;
+    }
+
+    a.text-geoloc-#{$variant}:focus,
+    a.text-geoloc-#{$variant}:hover {
+        color: darken($color, 20%) !important;
+    }
+
+    .badge-geoloc-#{$variant} {
+        background-color: $color;
+    }
+
+    .badge-geoloc-#{$variant}[href]:focus,
+    .badge-geoloc-#{$variant}[href]:hover {
+        background-color: darken($color, 20%);
+    }
 }

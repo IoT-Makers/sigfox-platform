@@ -206,11 +206,9 @@ class Message {
                               // console.error(err);
                             } else {
                               message.data_parsed = data_parsed;
-                              for (let p of message.data_parsed) {
+                              for (const p of message.data_parsed) {
                                 if (p.key === "time" && p.type === "date") {
-                                  if (p.value instanceof Date) {
-                                    message.createdAt = p.value;
-                                  }
+                                  message.createdAt = p.value;
                                   break;
                                 }
                               }
@@ -238,14 +236,12 @@ class Message {
                     if (err) console.error(err);
                     else if (data_parsed) {
                       message.data_parsed = data_parsed;
-                      message.data_parsed.forEach((p: any) => {
+                      for (const p of message.data_parsed) {
                         if (p.key === "time" && p.type === "date") {
-                          if (p.value instanceof Date) {
-                            message.createdAt = p.value;
-                          }
-                          return;
+                          message.createdAt = p.value;
+                          break;
                         }
-                      });
+                      }
                     } else message.data_parsed = [];
                     // Create message
                     this.createMessageAndSendResponse(deviceInstance, message, req, next);

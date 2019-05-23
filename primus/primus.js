@@ -490,7 +490,7 @@ if ('undefined' !== typeof module) {
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor;
+    ctor.super_ = superCtor
     ctor.prototype = Object.create(superCtor.prototype, {
       constructor: {
         value: ctor,
@@ -503,10 +503,10 @@ if (typeof Object.create === 'function') {
 } else {
   // old school shim for old browsers
   module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor;
-    var TempCtor = function () {};
-    TempCtor.prototype = superCtor.prototype;
-    ctor.prototype = new TempCtor();
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
     ctor.prototype.constructor = ctor
   }
 }
@@ -691,7 +691,7 @@ function defaultClearTimeout () {
     } catch (e) {
         cachedClearTimeout = defaultClearTimeout;
     }
-} ());
+} ())
 function runTimeout(fun) {
     if (cachedSetTimeout === setTimeout) {
         //normal enviroments in sane situations
@@ -828,7 +828,7 @@ process.emit = noop;
 process.prependListener = noop;
 process.prependOnceListener = noop;
 
-process.listeners = function (name) { return [] };
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -5832,25 +5832,25 @@ module.exports = function (opts) {
 };
 
 },{"has-cors":21}],11:[function(_dereq_,module,exports){
-module.exports = after;
+module.exports = after
 
 function after(count, callback, err_cb) {
-    var bail = false;
-    err_cb = err_cb || noop;
-    proxy.count = count;
+    var bail = false
+    err_cb = err_cb || noop
+    proxy.count = count
 
-    return (count === 0) ? callback() : proxy;
+    return (count === 0) ? callback() : proxy
 
     function proxy(err, result) {
         if (proxy.count <= 0) {
             throw new Error('after called too many times')
         }
-        --proxy.count;
+        --proxy.count
 
         // after first error, rest are passed to err_cb
         if (err) {
-            bail = true;
-            callback(err);
+            bail = true
+            callback(err)
             // future error callbacks will go to error handler
             callback = err_cb
         } else if (proxy.count === 0 && !bail) {
@@ -5979,8 +5979,9 @@ if (typeof module !== 'undefined') {
 
 function Emitter(obj) {
   if (obj) return mixin(obj);
-}
-    /**
+};
+
+/**
  * Mixin the emitter properties.
  *
  * @param {Object} obj
@@ -7054,11 +7055,13 @@ function BlobBuilderConstructor(ary, options) {
   });
 
   return (options.type) ? bb.getBlob(options.type) : bb.getBlob();
-}
-    function BlobConstructor(ary, options) {
+};
+
+function BlobConstructor(ary, options) {
   return new Blob(mapArrayBufferViews(ary), options || {});
-}
-    if (typeof Blob !== 'undefined') {
+};
+
+if (typeof Blob !== 'undefined') {
   BlobBuilderConstructor.prototype = Blob.prototype;
   BlobConstructor.prototype = Blob.prototype;
 }
