@@ -149,8 +149,8 @@ class Category {
         } else if (category) {
           category = category.toJSON();
 
-          const today = moment().format("YYYY.MM.DD");
-          const filename = today + "_" + category.name + "_export.csv";
+          const today = moment().format('YYYYMMDD');
+          const filename = category.name + '_' + today + '.csv';
           res.setTimeout(600000);
           res.set("Cache-Control", "max-age=0, no-cache, must-revalidate, proxy-revalidate");
           res.set("Content-Type", "application/force-download");
@@ -211,7 +211,7 @@ class Category {
 
                     obj.deviceId = message.deviceId;
                     obj.seqNumber = message.seqNumber;
-                    obj.createdAt = moment(message.createdAt).format("YYYY-MM-DD HH:mm:ss");
+                    obj.createdAt = moment(message.createdAt).format("DD-MMM-YY HH:mm:ss");
                     obj.year = new Date(message.createdAt).getFullYear();
                     obj.month = new Date(message.createdAt).getMonth() + 1;
                     obj.day = new Date(message.createdAt).getDate();
@@ -307,8 +307,8 @@ class Category {
           const category = organization.Categories[0];
           const devices = category.Devices;
 
-          const today = moment().format("YYYY.MM.DD");
-          const filename = today + "_" + category.id + "_export.csv";
+          const today = moment().format('YYYYMMDD');
+          const filename = category.name + '_' + today + '.csv';
           res.setTimeout(600000);
           res.set("Cache-Control", "max-age=0, no-cache, must-revalidate, proxy-revalidate");
           res.set("Content-Type", "application/force-download");
@@ -366,7 +366,7 @@ class Category {
 
                     obj.deviceId = message.deviceId;
                     obj.seqNumber = message.seqNumber;
-                    obj.createdAt = moment(message.createdAt).format("YYYY-MM-DD HH:mm:ss");
+                    obj.createdAt = moment(message.createdAt).format("DD-MMM-YY HH:mm:ss");
                     obj.year = new Date(message.createdAt).getFullYear();
                     obj.month = new Date(message.createdAt).getMonth() + 1;
                     obj.day = new Date(message.createdAt).getDate();

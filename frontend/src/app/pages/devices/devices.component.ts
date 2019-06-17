@@ -159,8 +159,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
     this.http.get(url, {responseType: 'blob'}).subscribe(res => {
       const blob: Blob = new Blob([res], {type: 'text/csv'});
-      const today = moment().format('YYYY.MM.DD');
-      const filename = today + '_' + this.deviceToEdit.id + '_export.csv';
+      const today = moment().format('YYYYMMDD');
+      const filename = this.deviceToEdit.id + '_' + today + '.csv';
       saveAs(blob, filename);
       this.loadingDownload = false;
     }, err => {

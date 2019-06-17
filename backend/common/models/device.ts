@@ -279,8 +279,8 @@ class Device {
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
-    const today = moment().format("YYYY.MM.DD");
-    const filename = today + "_" + deviceId + "_export.csv";
+    const today = moment().format('YYYYMMDD');
+    const filename = deviceId + '_' + today + '.csv';
     res.setTimeout(600000);
     res.set("Cache-Control", "max-age=0, no-cache, must-revalidate, proxy-revalidate");
     res.set("Content-Type", "application/force-download");
@@ -328,7 +328,7 @@ class Device {
             const date = new Date(message.createdAt);
 
             obj.seqNumber = message.seqNumber;
-            obj.createdAt = moment(message.createdAt).format("YYYY-MM-DD HH:mm:ss");
+            obj.createdAt = moment(message.createdAt).format("DD-MMM-YY HH:mm:ss");
             obj.year = date.getFullYear();
             obj.month = date.getMonth() + 1;
             obj.day = date.getDate();

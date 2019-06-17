@@ -124,8 +124,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
     this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
       const blob: Blob = new Blob([res], {type: 'text/csv'});
-      const today = moment().format('YYYY.MM.DD');
-      const filename = today + '_' + category.name + '_export.csv';
+      const today = moment().format('YYYYMMDD');
+      const filename = this.organization.name + '_' + category.name + '_' + today + '.csv';
       saveAs(blob, filename);
       this.loadingDownload = false;
     }, err => {
@@ -141,11 +141,12 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.loadingDownload = true;
     const url = environment.apiUrl + '/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
     //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
-
+    
     this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
       const blob: Blob = new Blob([res], {type: 'text/csv'});
-      const today = moment().format('YYYY.MM.DD');
-      const filename = today + '_' + category.name + '_export.csv';
+      //const today = moment().format('YYYY.MM.DD');
+      const today = moment().format('YYYYMMDD');
+      const filename = category.name + '_' + today + '.csv';
       saveAs(blob, filename);
       this.loadingDownload = false;
     }, err => {
