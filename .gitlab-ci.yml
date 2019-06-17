@@ -82,14 +82,14 @@ variables:
     - master
 
 # ======== branch staging on staging domain ========
-build-dev:
+build-staging:
   <<: *build_job
   variables:
     SUBDOMAIN: staging
   only:
     - staging
 
-deploy-dev:
+deploy-staging:
   <<: *deploy_job
   variables:
     <<: *deploy_var
@@ -97,7 +97,7 @@ deploy-dev:
   only:
     - staging
 
-# ======== branch foundation on dev domain ========
+# ======== branch dev-foundation on dev-foundation domain ========
 build-dev-foundation:
   <<: *build_job
   variables:
@@ -112,6 +112,22 @@ deploy-dev-foundation:
     SUBDOMAIN: dev-foundation
   only:
     - dev-foundation
+
+# ======== branch foundation on foundation domain ========
+build-foundation:
+  <<: *build_job
+  variables:
+    SUBDOMAIN: foundation
+  only:
+    - foundation
+
+deploy-foundation:
+  <<: *deploy_job
+  variables:
+    <<: *deploy_var
+    SUBDOMAIN: foundation
+  only:
+    - foundation
 
 # ======== PROD ========
 # app
@@ -185,15 +201,3 @@ deploy-foncia:
   variables:
     <<: *deploy_var
     SUBDOMAIN: foncia
-
-# foundation
-build-foundation:
-  <<: *prod_build_job
-  variables:
-    SUBDOMAIN: foundation
-
-deploy-foundation:
-  <<: *prod_deploy_job
-  variables:
-    <<: *deploy_var
-    SUBDOMAIN: foundation
