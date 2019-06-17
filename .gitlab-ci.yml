@@ -113,21 +113,21 @@ deploy-dev-foundation:
   only:
     - dev-foundation
 
-# ======== branch foundation on foundation domain ========
-build-foundation:
+# ======== branch master-foundation on foundation domain ========
+build-master-foundation:
   <<: *build_job
   variables:
     SUBDOMAIN: foundation
   only:
-    - foundation
+    - master-foundation
 
-deploy-foundation:
+deploy-master-foundation:
   <<: *deploy_job
   variables:
     <<: *deploy_var
     SUBDOMAIN: foundation
   only:
-    - foundation
+    - master-foundation
 
 # ======== PROD ========
 # app
