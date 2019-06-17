@@ -84,11 +84,11 @@ variables:
   only:
   - master
 
-# ======== dev on staging ========
+# ======== branch staging on staging domain ========
 build-dev:
   <<: *build_job
   variables:
-    SUBDOMAIN: dev
+    SUBDOMAIN: staging
   only:
   - staging
 
@@ -96,9 +96,25 @@ deploy-dev:
   <<: *deploy_job
   variables:
     <<: *deploy_var
-    SUBDOMAIN: dev
+    SUBDOMAIN: staging
   only:
   - staging
+
+# ======== branch foundation on dev domain ========
+build-dev:
+  <<: *build_job
+  variables:
+    SUBDOMAIN: dev-foundation
+  only:
+  - dev-foundation
+
+deploy-dev:
+  <<: *deploy_job
+  variables:
+    <<: *deploy_var
+    SUBDOMAIN: dev-foundation
+  only:
+  - dev-foundation
 
 # ======== PROD ========
 # app
