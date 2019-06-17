@@ -1,6 +1,6 @@
 stages:
-- build
-- deploy
+  - build
+  - deploy
 
 variables:
   DOMAIN: iotagency.sigfox.com
@@ -19,86 +19,115 @@ variables:
   MONGO_IMG: ${CI_REGISTRY_IMAGE}/mongodb-${SUBDOMAIN}:latest
   RABBIT_IMG: ${CI_REGISTRY_IMAGE}/rabbitmq-${SUBDOMAIN}:latest
 
-
 .build_job: &build_job
   stage: build
   image: docker:latest
   services:
-  - docker:dind
+    - docker:dind
   script:
-  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-  # cache
-  - docker pull $PRIMUS_IMG || true
-  - docker pull $BACKEND_IMG || true
-  - docker pull $FRONTEND_BUILDER_IMG || true
-  - docker pull $FRONTEND_IMG || true
-  - docker pull $MONGO_IMG || true
-  - docker pull $RABBIT_IMG || true
-  # build
-  - export FRONTEND_BUILD_ARGS="--build-arg BUILD_ENV=${BUILD_ENV} --build-arg SERVER_NAME=${SERVER_NAME} --build-arg API_URL=${API_URL} --build-arg API_VERSION=${API_VERSION} --build-arg PRIMUS_URL=${PRIMUS_URL}"
-  - docker build --cache-from $PRIMUS_IMG -t $PRIMUS_IMG primus
-  - docker build --cache-from $BACKEND_IMG -t $BACKEND_IMG --build-arg GIT_REV=${CI_COMMIT_SHORT_SHA} backend
-  - docker build --cache-from $FRONTEND_BUILDER_IMG -t $FRONTEND_BUILDER_IMG --target builder $FRONTEND_BUILD_ARGS frontend
-  - docker build --cache-from $FRONTEND_BUILDER_IMG --cache-from $FRONTEND_IMG -t $FRONTEND_IMG $FRONTEND_BUILD_ARGS frontend
-  - docker build --cache-from $MONGO_IMG -t $MONGO_IMG mongodb
-  - docker build --cache-from $RABBIT_IMG -t $RABBIT_IMG rabbitmq
-  # push
-  - docker push $PRIMUS_IMG
-  - docker push $BACKEND_IMG
-  - docker push $FRONTEND_BUILDER_IMG
-  - docker push $FRONTEND_IMG
-  - docker push $MONGO_IMG
-  - docker push $RABBIT_IMG
-
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    # cache
+    - docker pull $PRIMUS_IMG || true
+    - docker pull $BACKEND_IMG || true
+    - docker pull $FRONTEND_BUILDER_IMG || true
+    - docker pull $FRONTEND_IMG || true
+    - docker pull $MONGO_IMG || true
+    - docker pull $RABBIT_IMG || true
+    # build
+    - export FRONTEND_BUILD_ARGS="--build-arg BUILD_ENV=${BUILD_ENV} --build-arg SERVER_NAME=${SERVER_NAME} --build-arg API_URL=${API_URL} --build-arg API_VERSION=${API_VERSION} --build-arg PRIMUS_URL=${PRIMUS_URL}"
+    - docker build --cache-from $PRIMUS_IMG -t $PRIMUS_IMG primus
+    - docker build --cache-from $BACKEND_IMG -t $BACKEND_IMG --build-arg GIT_REV=${CI_COMMIT_SHORT_SHA} backend
+    - docker build --cache-from $FRONTEND_BUILDER_IMG -t $FRONTEND_BUILDER_IMG --target builder $FRONTEND_BUILD_ARGS frontend
+    - docker build --cache-from $FRONTEND_BUILDER_IMG --cache-from $FRONTEND_IMG -t $FRONTEND_IMG $FRONTEND_BUILD_ARGS frontend
+    - docker build --cache-from $MONGO_IMG -t $MONGO_IMG mongodb
+    - docker build --cache-from $RABBIT_IMG -t $RABBIT_IMG rabbitmq
+    # push
+    - docker push $PRIMUS_IMG
+    - docker push $BACKEND_IMG
+    - docker push $FRONTEND_BUILDER_IMG
+    - docker push $FRONTEND_IMG
+    - docker push $MONGO_IMG
+    - docker push $RABBIT_IMG
 
 .deploy_job: &deploy_job
   stage: deploy
   image: kroniak/ssh-client:latest
   variables: &deploy_var
     GIT_STRATEGY: none
-    ARGS: "--health-start-period 5s --with-registry-auth --update-failure-action rollback --update-parallelism 2 --update-order start-first"
+    ARGS: '--health-start-period 5s --with-registry-auth --update-failure-action rollback --update-parallelism 2 --update-order start-first'
   script:
-  # add the server as a known host
-  - mkdir ~/.ssh
-  - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-  - chmod 644 ~/.ssh/known_hosts
-  # add ssh key stored in SSH_PRIVATE_KEY variable to the agent store
-  - eval $(ssh-agent -s)
-  - ssh-add <(echo "$SSH_PRIVATE_KEY")
-  # log into Docker registry
-  - |
-    ssh ci_deployer@iotagency.sigfox.com "docker login -u "$DEPLOY_USER" -p "$DEPLOY_TOKEN" $CI_REGISTRY && echo $FRONTEND_IMG &&
-    docker service update ${SUBDOMAIN}_frontend ${ARGS} --image $FRONTEND_IMG &&
-    docker service update ${SUBDOMAIN}_primus ${ARGS} --image $PRIMUS_IMG &&
-    docker service update ${SUBDOMAIN}_backend ${ARGS} --image $BACKEND_IMG &&
-    docker service update ${SUBDOMAIN}_rabbitmq ${ARGS} --image $RABBIT_IMG"
-
+    # add the server as a known host
+    - mkdir ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    # add ssh key stored in SSH_PRIVATE_KEY variable to the agent store
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    # log into Docker registry
+    - |
+      ssh ci_deployer@iotagency.sigfox.com "docker login -u "$DEPLOY_USER" -p "$DEPLOY_TOKEN" $CI_REGISTRY && echo $FRONTEND_IMG &&
+      docker service update ${SUBDOMAIN}_frontend ${ARGS} --image $FRONTEND_IMG &&
+      docker service update ${SUBDOMAIN}_primus ${ARGS} --image $PRIMUS_IMG &&
+      docker service update ${SUBDOMAIN}_backend ${ARGS} --image $BACKEND_IMG &&
+      docker service update ${SUBDOMAIN}_rabbitmq ${ARGS} --image $RABBIT_IMG"
 
 .prod_build_job: &prod_build_job
   <<: *build_job
   only:
-  - master
+    - master
 
 .prod_deploy_job: &prod_deploy_job
   <<: *deploy_job
   only:
-  - master
+    - master
 
-# ======== dev on staging ========
-build-dev:
+# ======== branch staging on staging domain ========
+build-staging:
   <<: *build_job
   variables:
-    SUBDOMAIN: dev
+    SUBDOMAIN: staging
   only:
-  - staging
+    - staging
 
-deploy-dev:
+deploy-staging:
   <<: *deploy_job
   variables:
     <<: *deploy_var
-    SUBDOMAIN: dev
+    SUBDOMAIN: staging
   only:
-  - staging
+    - staging
+
+# ======== branch dev-foundation on dev-foundation domain ========
+build-dev-foundation:
+  <<: *build_job
+  variables:
+    SUBDOMAIN: dev-foundation
+  only:
+    - dev-foundation
+
+deploy-dev-foundation:
+  <<: *deploy_job
+  variables:
+    <<: *deploy_var
+    SUBDOMAIN: dev-foundation
+  only:
+    - dev-foundation
+
+# ======== branch foundation on foundation domain ========
+build-foundation:
+  <<: *build_job
+  variables:
+    SUBDOMAIN: foundation
+  only:
+    - foundation
+
+deploy-foundation:
+  <<: *deploy_job
+  variables:
+    <<: *deploy_var
+    SUBDOMAIN: foundation
+  only:
+    - foundation
 
 # ======== PROD ========
 # app
@@ -171,16 +200,4 @@ deploy-foncia:
   <<: *prod_deploy_job
   variables:
     <<: *deploy_var
-    SUBDOMAIN: foncia    
-
-# foundation
-build-foundation:
-  <<: *prod_build_job
-  variables:
-    SUBDOMAIN: foundation
-
-deploy-foundation:
-  <<: *prod_deploy_job
-  variables:
-    <<: *deploy_var
-    SUBDOMAIN: foundation
+    SUBDOMAIN: foncia
