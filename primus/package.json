@@ -23,6 +23,7 @@
     "amqplib": "^0.5.3",
     "engine.io": "^3.3.2",
     "loglevel": "^1.6.1",
+    "loopback-component-storage": "^3.6.1",
     "mongodb": "^3.1.13",
     "primus": "^7.3.2",
     "ws": "latest"

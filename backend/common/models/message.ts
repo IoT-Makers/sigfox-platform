@@ -225,7 +225,7 @@ class Message {
                   }
                 });
               } else {
-                // console.log('Found parser!');
+                console.log('Found parser!');
 
                 // Decode the payload
                 Parser.parsePayload(
@@ -322,7 +322,7 @@ class Message {
         (err: any, messageInstance: any) => { // callback
           if (err) return next(err, messageInstance);
           else if (messageInstance) {
-            // console.log('Created message as: ', messageInstance);
+            console.log('Created message as: ', messageInstance);
             if (message.data_parsed) {
               // Check if there is Geoloc in payload and create Geoloc object
               Geoloc.createFromParsedPayload(
