@@ -269,12 +269,12 @@ class Geoloc {
 
            
             // Creating a new Geoloc
-            Geoloc.create(
+            /*Geoloc.create(
               geoloc,
               (err: any, geolocInstance: any) => { // callback
                 if (err) return next("The Geoloc already exists, please check your parser does not force platform Geoloc decoding.", geolocInstance);
                 else return next(null, geolocInstance);
-              });
+              });*/
           } else next(null, 'No position or invalid payload');
         }
       });
