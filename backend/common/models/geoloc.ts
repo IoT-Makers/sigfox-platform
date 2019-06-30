@@ -67,6 +67,10 @@ class Geoloc {
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
 
+    var ubistate: boolean = false;
+    console.log('1/ ubistate value: ', ubistate);
+
+
     if (typeof data.geoloc === 'undefined'
       || typeof data.geoloc.location === 'undefined'
       || typeof data.deviceId === 'undefined'
@@ -121,6 +125,8 @@ class Geoloc {
           geoloc.deviceId = messageInstance.deviceId;
 
           if (messageInstance.data_parsed) {
+            ubistate=true;
+            console.log('2/ ubistate value: ', ubistate);
             /**
              * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
              */
@@ -140,6 +146,7 @@ class Geoloc {
                 if (p.key === 'ubiscale') {
                   console.log('UBISCALE p.key detected !!')
                   geoloc_gps.type = 'gps';
+                  //ubistate=true;
 
                   if (process.env.UBISCALE_LOGIN && process.env.UBISCALE_PASSWORD) {
                     console.log("On rentre dans le if process.env.ubicalelogin ...!");
@@ -153,15 +160,21 @@ class Geoloc {
               }
             });
           }
+          console.log("created avant geoloc create",created)
+          console.log('3/ ubistate value: ', ubistate);
 
           // Creating a new Geoloc
-          Geoloc.create(
-            geoloc,
-            console.log('on creer la geoloc avec geoloc.create'),
-            (err: any, geolocInstance: any, created: boolean) => { // callback
-              if (err) return next(err, geolocInstance);
-              else return next(null, geolocInstance);
-            });
+        
+            Geoloc.create(
+              geoloc,
+              console.log('on creer la geoloc avec geoloc.create'),
+              (err: any, geolocInstance: any, created: boolean) => { // callback
+                console.log('created in geoloc create',created);
+                if (err) return next(err, geolocInstance);
+                else return next(null, geolocInstance);
+              });
+         
+          
         }
       });
   }
@@ -171,6 +184,7 @@ class Geoloc {
     // Models
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
+    var ubistate: boolean = false;
 
     if (typeof data.deviceId === 'undefined'
       || typeof data.time === 'undefined'
@@ -258,6 +272,7 @@ class Geoloc {
                       console.log("5/ On rentre dans le if process.env.ubicalelogin ...!");
                       this.getUbiscaleGeolocation(geoloc_gps, geoloc, messageInstance.deviceId, p.value, messageInstance.time).then(value => {
                         console.log('[Ubiscale Geolocation] - Device located successfully with Ubiscale.');
+                        ubistate = true;
                       }).catch(reason => {
                         console.log('[Ubiscale Geolocation] - Could not locate device with Ubiscale.');
                       });
@@ -269,12 +284,15 @@ class Geoloc {
 
            
             // Creating a new Geoloc
-            /*Geoloc.create(
-              geoloc,
-              (err: any, geolocInstance: any) => { // callback
-                if (err) return next("The Geoloc already exists, please check your parser does not force platform Geoloc decoding.", geolocInstance);
-                else return next(null, geolocInstance);
-              });*/
+            if (!ubistate){
+              console.log('ubistate value: ', ubistate)
+              Geoloc.create(
+                geoloc,
+                (err: any, geolocInstance: any) => { // callback
+                  if (err) return next("The Geoloc already exists, please check your parser does not force platform Geoloc decoding.", geolocInstance);
+                  else return next(null, geolocInstance);
+                });
+            }
           } else next(null, 'No position or invalid payload');
         }
       });
