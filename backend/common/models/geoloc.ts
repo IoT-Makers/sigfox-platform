@@ -165,14 +165,14 @@ class Geoloc {
 
           // Creating a new Geoloc
         
-            Geoloc.create(
+            /*Geoloc.create(
               geoloc,
               console.log('on creer la geoloc avec geoloc.create'),
               (err: any, geolocInstance: any, created: boolean) => { // callback
                 console.log('created in geoloc create',created);
                 if (err) return next(err, geolocInstance);
                 else return next(null, geolocInstance);
-              });
+              });*/
          
           
         }
