@@ -272,10 +272,12 @@ class Geoloc {
                       console.log("5/ On rentre dans le if process.env.ubicalelogin ...!");
                       this.getUbiscaleGeolocation(geoloc_gps, geoloc, messageInstance.deviceId, p.value, messageInstance.time).then(value => {
                         console.log('[Ubiscale Geolocation] - Device located successfully with Ubiscale.');
+                        
                       }).catch(reason => {
                         console.log('[Ubiscale Geolocation] - Could not locate device with Ubiscale.');
                       });
                       ubistate = true;
+                      return next(null,messageInstance);
                     }
                   }
                 }
@@ -292,7 +294,7 @@ class Geoloc {
                   if (err) return next("The Geoloc already exists, please check your parser does not force platform Geoloc decoding.", geolocInstance);
                   else return next(null, geolocInstance);
                 });
-            }
+            } 
           } else next(null, 'No position or invalid payload');
         }
       });
@@ -441,7 +443,7 @@ class Geoloc {
         geoloc_gps.location.lng = result.lng;
         geoloc_gps.accuracy = result.accuracy;
         console.log('On à un retour du post json');
-
+        
         this.createGeoloc(geoloc_gps);
         resolve(true);
       }).catch((err: any) => {
