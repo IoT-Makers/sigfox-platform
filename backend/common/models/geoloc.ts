@@ -272,10 +272,10 @@ class Geoloc {
                       console.log("5/ On rentre dans le if process.env.ubicalelogin ...!");
                       this.getUbiscaleGeolocation(geoloc_gps, geoloc, messageInstance.deviceId, p.value, messageInstance.time).then(value => {
                         console.log('[Ubiscale Geolocation] - Device located successfully with Ubiscale.');
-                        ubistate = true;
                       }).catch(reason => {
                         console.log('[Ubiscale Geolocation] - Could not locate device with Ubiscale.');
                       });
+                      ubistate = true;
                     }
                   }
                 }
@@ -284,7 +284,7 @@ class Geoloc {
 
            
             // Creating a new Geoloc
-            if (!ubistate){
+            if (ubistate){
               console.log('ubistate value: ', ubistate)
               Geoloc.create(
                 geoloc,
