@@ -286,7 +286,7 @@ class Geoloc {
 
            
             // Creating a new Geoloc
-            if (ubistate){
+            if (!ubistate){
               console.log('ubistate value: ', ubistate)
               Geoloc.create(
                 geoloc,
