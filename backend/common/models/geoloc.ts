@@ -62,13 +62,11 @@ class Geoloc {
   }
 
   postSigfox(req: any, data: any, next: Function): void {
-    console.log('ON RENTRE DANS POSTSIGFOX')
     // Models
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
 
     var ubistate: boolean = false;
-    console.log('1/ ubistate value: ', ubistate);
 
 
     if (typeof data.geoloc === 'undefined'
@@ -104,7 +102,6 @@ class Geoloc {
       (err: any, messageInstance: any, created: boolean) => {
         if (err) return next(err, data);
         else if (messageInstance) {
-          console.log('valeur de created :', created);
           if (!created) console.log('Found the corresponding message.');
           else {
             /**
@@ -112,7 +109,6 @@ class Geoloc {
              */
             console.log('??? OOB for deviceId: ' + data.deviceId);
           }
-          console.log('the message instance is :', messageInstance);
           // Build the Geoloc object
           const geoloc = new Geoloc;
           geoloc.id = messageInstance.id + 'sigfox';
@@ -125,13 +121,10 @@ class Geoloc {
           geoloc.deviceId = messageInstance.deviceId;
 
           if (messageInstance.data_parsed) {
-            ubistate=true;
-            console.log('2/ ubistate value: ', ubistate);
             /**
              * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
              */
               // Build the GPS Geoloc object
-            console.log('Il y a bien une data parsée pour le message dont la geoloc est :',geoloc);
             const geoloc_gps = new Geoloc;
             geoloc_gps.id = messageInstance.id + 'gps';
             geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
@@ -144,12 +137,10 @@ class Geoloc {
               if (p.value !== null && typeof p.value !== 'undefined') {
                 // Check if there is Ubiscale geoloc in parsed data
                 if (p.key === 'ubiscale') {
-                  console.log('UBISCALE p.key detected !!')
                   geoloc_gps.type = 'gps';
                   //ubistate=true;
 
                   if (process.env.UBISCALE_LOGIN && process.env.UBISCALE_PASSWORD) {
-                    console.log("On rentre dans le if process.env.ubicalelogin ...!");
                     this.getUbiscaleGeolocation(geoloc_gps, geoloc, messageInstance.deviceId, p.value, messageInstance.time).then(value => {
                       console.log('[Ubiscale Geolocation] - Device located successfully with Ubiscale.');
                     }).catch(reason => {
@@ -160,19 +151,16 @@ class Geoloc {
               }
             });
           }
-          console.log("created avant geoloc create",created)
-          console.log('3/ ubistate value: ', ubistate);
 
           // Creating a new Geoloc
         
-            /*Geoloc.create(
+            Geoloc.create(
               geoloc,
-              console.log('on creer la geoloc avec geoloc.create'),
               (err: any, geolocInstance: any, created: boolean) => { // callback
                 console.log('created in geoloc create',created);
                 if (err) return next(err, geolocInstance);
                 else return next(null, geolocInstance);
-              });*/
+              });
          
           
         }
@@ -180,7 +168,6 @@ class Geoloc {
   }
 
   postDataAdvanced(req: any, data: any, next: Function): void {
-    console.log('1/ On rentre dans data_parsed')
     // Models
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
@@ -238,7 +225,6 @@ class Geoloc {
                 geoloc.type = 'unknown';
             }
             
-            console.log('2/ la geoloc type est la suivante:', geoloc.type);
             geoloc.id = message.id + geoloc.type;
             geoloc.location = new loopback.GeoPoint({lat: data.computedLocation.lat, lng: data.computedLocation.lng});
             geoloc.accuracy = data.computedLocation.radius;
@@ -252,7 +238,6 @@ class Geoloc {
                * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
                */
                 // Build the GPS Geoloc object
-              console.log('3/ Il y a bien une data parsée pour le message dont la geoloc est :',geoloc);
               const geoloc_gps = new Geoloc;
               geoloc_gps.id = messageInstance.id + 'gps';
               geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
@@ -265,14 +250,11 @@ class Geoloc {
                 if (p.value !== null && typeof p.value !== 'undefined') {
                   // Check if there is Ubiscale geoloc in parsed data
                   if (p.key === 'ubiscale') {
-                    console.log('4/ UBISCALE p.key detected !!')
                     geoloc_gps.type = 'gps';
   
                     if (process.env.UBISCALE_LOGIN && process.env.UBISCALE_PASSWORD) {
-                      console.log("5/ On rentre dans le if process.env.ubicalelogin ...!");
                       this.getUbiscaleGeolocation(geoloc_gps, geoloc, messageInstance.deviceId, p.value, messageInstance.time).then(value => {
                         console.log('[Ubiscale Geolocation] - Device located successfully with Ubiscale.');
-                        
                       }).catch(reason => {
                         console.log('[Ubiscale Geolocation] - Could not locate device with Ubiscale.');
                       });
@@ -287,7 +269,6 @@ class Geoloc {
            
             // Creating a new Geoloc
             if (!ubistate){
-              console.log('ubistate value: ', ubistate)
               Geoloc.create(
                 geoloc,
                 (err: any, geolocInstance: any) => { // callback
@@ -421,7 +402,6 @@ class Geoloc {
         console.error('[WiFi Geolocation] - Trying to position with WiFi but no service provider has been set - check your environment variables!');
       }
     }
-    console.log('Geoloc gps location is', geoloc_gps.location);
   }
 
   getUbiscaleGeolocation(geoloc_gps: any, geoloc_sigfox: any, deviceId: any, ubiscaleData: any, time: any): Promise<boolean> {
@@ -520,7 +500,6 @@ class Geoloc {
   }
 
   createGeoloc(geoloc: any) {
-    console.log('              GEOLOC CREE !!!!!!!!        ');
     const Geoloc = this.model;
     Geoloc.upsert(
       geoloc,
