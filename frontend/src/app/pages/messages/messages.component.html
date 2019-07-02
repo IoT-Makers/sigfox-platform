@@ -79,7 +79,17 @@
               <span class="text-message">{{message.data}}</span>
               <div class="text-justify" *ngIf="message.data_parsed">
                 <div *ngFor="let o of message.data_parsed">
-                  <small *ngIf="o.value || o.value === 0">{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
+                  <div *ngIf="o.value || o.value === 0">
+                    <small>{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
+                    <div *ngIf="o.key === 'ubiscale'">
+                        <div *ngIf="message.Geolocs">
+                            <div *ngFor="let geoloc of message.Geolocs">
+                                <small>lat: <strong>{{geoloc.location.lat}}</strong></small>
+                                <small>lng: <strong>{{geoloc.location.lng}}</strong></small>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="font-weight-bold" *ngIf="message.deviceAck">
