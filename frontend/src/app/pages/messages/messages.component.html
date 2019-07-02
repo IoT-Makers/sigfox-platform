@@ -84,8 +84,9 @@
                     <div *ngIf="o.key === 'ubiscale'">
                         <div *ngIf="message.Geolocs">
                             <div *ngFor="let geoloc of message.Geolocs">
-                                <small>lat: <strong>{{geoloc.location.lat}}</strong></small>
-                                <small>lng: <strong>{{geoloc.location.lng}}</strong></small>
+                                <div><small>lat: <strong>{{geoloc.location.lat}}</strong></small></div>
+                                <div><small>lng: <strong>{{geoloc.location.lng}}</strong></small></div>
+                                <div><small>accuracy: <strong>{{geoloc.accuracy}}</strong></small></div>
                             </div>
                         </div>
                     </div>
