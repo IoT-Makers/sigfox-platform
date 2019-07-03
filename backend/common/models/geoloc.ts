@@ -172,6 +172,7 @@ class Geoloc {
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
     var ubistate: boolean = false;
+    var timeoutstate: boolean = false;
 
     if (typeof data.deviceId === 'undefined'
       || typeof data.time === 'undefined'
@@ -192,6 +193,7 @@ class Geoloc {
     message.time = data.time;
     message.seqNumber = data.seqNumber;
     message.createdAt = new Date(data.time * 1000);
+    
 
     // Find the corresponding message or create one
     Message.findOrCreate(
@@ -248,8 +250,11 @@ class Geoloc {
   
               messageInstance.data_parsed.forEach((p: any) => {
                 if (p.value !== null && typeof p.value !== 'undefined') {
+                  if (p.value == 'Timeout') {
+                    timeoutstate = true;
+                  }
                   // Check if there is Ubiscale geoloc in parsed data
-                  if (p.key === 'ubiscale') {
+                  else if (p.key === 'ubiscale') {
                     geoloc_gps.type = 'gps';
   
                     if (process.env.UBISCALE_LOGIN && process.env.UBISCALE_PASSWORD) {
@@ -258,8 +263,6 @@ class Geoloc {
                       }).catch(reason => {
                         console.log('[Ubiscale Geolocation] - Could not locate device with Ubiscale.');
                       });
-                      ubistate = true;
-                      return next(null,messageInstance);
                     }
                   }
                 }
@@ -268,14 +271,14 @@ class Geoloc {
 
            
             // Creating a new Geoloc
-            if (!ubistate){
+            if (timeoutstate){
               Geoloc.create(
                 geoloc,
                 (err: any, geolocInstance: any) => { // callback
                   if (err) return next("The Geoloc already exists, please check your parser does not force platform Geoloc decoding.", geolocInstance);
                   else return next(null, geolocInstance);
                 });
-            } 
+            } else next(null, geoloc);
           } else next(null, 'No position or invalid payload');
         }
       });
@@ -359,7 +362,6 @@ class Geoloc {
     });
 
     if (hasGpsLocation) {
-      console.log('has Gps locationnnnn');
       this.createGeoloc(geoloc_gps);
     }
     if (hasBeaconLocation) {

@@ -81,7 +81,7 @@
                 <div *ngFor="let o of message.data_parsed">
                   <div *ngIf="o.value || o.value === 0">
                     <small>{{o.key}}: <strong>{{o.value}} {{o.unit}}</strong></small>
-                    <div *ngIf="o.key === 'ubiscale'">
+                    <div *ngIf="o.key === 'ubiscale' || o.value === 'Timeout'">
                         <div *ngIf="message.Geolocs">
                             <div *ngFor="let geoloc of message.Geolocs">
                                 <div><small>lat: <strong>{{geoloc.location.lat}}</strong></small></div>
