@@ -164,6 +164,7 @@ class Category {
           const options: any = {
             fields: [],
           };
+          options.fields.push("rssi");
           options.fields.push("deviceId");
           options.fields.push("seqNumber");
           options.fields.push("createdAt");
@@ -209,6 +210,7 @@ class Category {
                   device.Messages.forEach((message: any) => {
                     const obj: any = {};
 
+                    obj.rssi = message.reception.RSSI;
                     obj.deviceId = message.deviceId;
                     obj.seqNumber = message.seqNumber;
                     obj.createdAt = moment(message.createdAt).format("DD-MMM-YY HH:mm:ss");
@@ -221,6 +223,7 @@ class Category {
                     obj.data = message.data;
                     obj.ack = message.ack;
                     obj.data_downlink = message.data_downlink;
+                  
 
                     if (message.data_parsed) {
                       message.data_parsed.forEach((p: any) => {
