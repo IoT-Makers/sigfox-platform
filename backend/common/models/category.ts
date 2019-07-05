@@ -222,16 +222,16 @@ class Category {
                     obj.data = message.data;
                     obj.ack = message.ack;
                     obj.data_downlink = message.data_downlink;
-                  
-                    if(message.reception){
-                      message.reception.forEach((rec :any) => {
+                    
+
+                    /*if (message.reception) {
+                      message.reception.forEach((rec: any) => {
                         if (options.fields.indexOf(rec.key) === -1) {
                           options.fields.push(rec.key);
                         }
                         obj[rec.key] = rec.value;
-                       
                       });
-                    }
+                    }*/
 
                     if (message.data_parsed) {
                       message.data_parsed.forEach((p: any) => {
