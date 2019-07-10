@@ -123,7 +123,7 @@ class Category {
     // Model
     const Category = this.model;
     const Device = this.model.app.models.Device;
-
+    console.log("DOWNLOAD")
     if ((type !== "csv"
       && type !== "json")
       || typeof categoryId === "undefined") {
@@ -224,22 +224,24 @@ class Category {
                 } else if (device) {
                   device = device.toJSON();
 
-                  console.log("device properties", device.properties);
+                  if (device.properties){
+                    console.log("device properties", device.properties);
 
-                  device.properties.forEach((property: any) => {
-                    console.log("property key and value:" + property.key + ":" + property.value);
-                    hasProperty = true;
-                    propertyKey[nbProperty] = property.key;
-                    propertyValue[nbProperty] = property.value;
-                    if (options.fields.indexOf(propertyKey[nbProperty]) === -1) {
-                      options.fields.push(propertyKey[nbProperty]);
-
-                      console.log(" 1/ tab key and value " + propertyKey[nbProperty] + ":" + propertyValue[nbProperty])
-
-                    }
-                    ++nbProperty;
-                  });
-
+                    device.properties.forEach((property: any) => {
+                      console.log("property key and value:" + property.key + ":" + property.value);
+                      hasProperty = true;
+                      propertyKey[nbProperty] = property.key;
+                      propertyValue[nbProperty] = property.value;
+                      if (options.fields.indexOf(propertyKey[nbProperty]) === -1) {
+                        options.fields.push(propertyKey[nbProperty]);
+  
+                        console.log(" 1/ tab key and value " + propertyKey[nbProperty] + ":" + propertyValue[nbProperty])
+  
+                      }
+                      ++nbProperty;
+                    });
+                  }
+                  
                   device.Messages.forEach((message: any) => {
                     const obj: any = {};
                     console.log("device.properties !!!!! ", device.properties);
@@ -357,7 +359,7 @@ class Category {
                   if (data.length > 0 && nbProcessedDevices === category.Devices.length) {
 
                     let nb = 0;
-                    let n = 1;
+                    let n = 0;
                     let nb2 = 0;
                     options2.fields2.push("createdAt", "ID", "Name", "Sex", "Age", "Time", "all_lat", "all_lng", "UTM", "Area", "EVENT", "deviceId", "Notes", "gps_acq", "sat", "hdop", "speed", "battery", "seqNumber", "timestamp");
                     // check for fields in options.fields not existent in LRT options2.fields2
@@ -407,7 +409,7 @@ class Category {
     // Model
     const Organization = this.model.app.models.Organization;
     const Device = this.model.app.models.Device;
-
+    console.log("DOWNLOAD FROM ORGANIZATION");
     if (
       (type !== "csv" && type !== "json")
       || typeof categoryId === "undefined"
