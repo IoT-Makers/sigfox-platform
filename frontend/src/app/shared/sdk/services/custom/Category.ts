@@ -638,7 +638,42 @@ export class CategoryApi extends BaseLoopBackApi {
    *
    * @param {string} categoryId 
    *
+   * @param {object} req 
+   * 
+   * @param {object} res 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Category` object.)
+   * </em>
+   */
+  public getColumns(categoryId: any, req: any = {}, res: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Categories/download/:categoryId";
+    let _routeParams: any = {
+      categoryId: categoryId
+      //col:col,
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} categoryId 
+   *
    * @param {string} type 
+   * 
+   * @param {string} tosend
    *
    * @param {object} req 
    *
@@ -653,13 +688,14 @@ export class CategoryApi extends BaseLoopBackApi {
    * This usually means the response is a `Category` object.)
    * </em>
    */
-  public download(categoryId: any, type: any, req: any = {}, res: any = {}, customHeaders?: Function): Observable<any> {
+  public download(categoryId: any, type: any, tosend: any, req: any = {}, res: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Categories/download/:categoryId/:type";
+    "/Categories/download/:categoryId/:type/:tosend";
     let _routeParams: any = {
       categoryId: categoryId,
-      type: type
+      type: type,
+      tosend: tosend,
     };
     let _postBody: any = {};
     let _urlParams: any = {};

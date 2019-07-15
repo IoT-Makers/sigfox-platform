@@ -10,6 +10,7 @@ import {saveAs} from 'file-saver';
 import {ActivatedRoute} from '@angular/router';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
 import {environment} from "../../../../environments/environment";
+import { TabDirective } from 'ngx-bootstrap';
 
 @Component({
   selector: 'app-categories',
@@ -22,6 +23,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   @ViewChild('confirmModal') confirmModal: any;
   @ViewChild('shareCategoryWithOrganizationModal') shareCategoryWithOrganizationModal: any;
+  @ViewChild('selectColumnsToDownloadModal') selectColumnsToDownloadModal: any;
 
   // Flags
   public categoriesReady = false;
@@ -43,6 +45,9 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   public selectOrganizations: Array<any> = [];
   public selectedOrganizations: Array<any> = [];
+
+  public selectColumns: Array<any> = [];
+  public selectedColumns: Array<any> = [];
 
   public edit = false;
   public categoryToEdit: Category = new Category();
@@ -67,6 +72,15 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     unSelectAllText: 'Unselect all',
     enableSearchFilter: true,
     classes: 'select-organization'
+  };
+
+  public selectColumnsSettings = {
+    singleSelection: false,
+    text: 'Select columns',
+    selectAllText: 'Select all',
+    unSelectAllText: 'Unselect all',
+    enableSearchFilter: true,
+    classes: 'select-column'
   };
 
   constructor(private rt: RealtimeService,
@@ -117,6 +131,33 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
   }
 
+  
+  getColumns(category: Category): void {
+    this.categoryToEdit = category;
+    this.loadingDownload = true;
+    const url = environment.apiUrl + '/api/Categories/download/' + category.id + '?access_token=' + this.userApi.getCurrentToken().id;
+    //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    
+
+    this.http.get(url).timeout(600000).subscribe((res: any[]) => {
+        //const blob: Blob = new Blob([res], {type: 'text/csv'});
+        console.log("getcol res Value", res);
+        this.selectColumns = [];
+        res.forEach(r => {
+            console.log("sous champ:",r);
+            const item2 = {
+                id: r,
+                itemName: r
+              };
+            this.selectColumns.push(item2);
+        });
+        console.log("selectColumns",this.selectColumns)
+      
+      this.loadingDownload = false;
+      this.selectColumnsToDownloadModal.show();
+    });
+  }
+  
   downloadFromOrganization(organizationId: string, category: Category, type: string): void {
     this.loadingDownload = true;
     const url = environment.apiUrl + '/api/Categories/download/' + organizationId + '/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
@@ -137,7 +178,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
   }
 
-  download(category: Category, type: string): void {
+  downloadO(category: Category, type: string): void {
     this.loadingDownload = true;
     const url = environment.apiUrl + '/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
     //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
@@ -155,6 +196,48 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       this.toast = this.toasterService.pop('error', 'Error', 'Server error');
       this.loadingDownload = false;
     });
+  }
+
+  download(category: Category, type: string, tosend: string): void {
+    console.log("category is :",category);
+    this.loadingDownload = true;
+    if(this.selectedColumns.length !== 0){
+      console.log("SELECTED COLUMNS !!", this.selectedColumns)
+      let tableau : any = [];
+      let tabid : any = [];
+      
+      this.selectedColumns.forEach(column => {
+          tableau.push(column);
+          console.log("column val", column);
+      });
+      tableau.forEach(p => {
+          tabid.push(p.id);
+      });
+      console.log("tabid",tabid);
+      tosend = tabid;
+      console.log("To send value helo", tosend);
+      console.log("tableau val", tableau);
+      const url = environment.apiUrl + '/api/Categories/download/' + category.id + '/' + type + '/'+ tosend + '?access_token=' + this.userApi.getCurrentToken().id;
+      //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+      
+      
+      this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
+        const blob: Blob = new Blob([res], {type: 'text/csv'});
+        console.log("res value", res);
+        const today = moment().format('YYYYMMDD');
+        const filename = category.name + '_' + today + '.csv';
+        saveAs(blob, filename);
+        this.loadingDownload = false;
+      }, err => {
+        console.log(err);
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', 'Server error');
+        this.loadingDownload = false;
+      });
+    }else this.loadingDownload = false;
+    
+    
   }
 
   openConfirmModal(category): void {

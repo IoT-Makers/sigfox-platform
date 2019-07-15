@@ -1,5 +1,5 @@
 <div class="animated fadeIn">
-  "Hi"
+  
   <div class="row">
 
     <div [ngClass]="(edit)?'col-md-6 col-xs-12':'col-md-12 col-sm-12'">
@@ -111,13 +111,23 @@
                         <i class="fa fa-share"></i>
                       </button>
                       <button *ngIf="!organization" class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
-                              (click)="$event.preventDefault(); download(category, 'csv');">
+                              (click)="$event.preventDefault(); getColumns(category);">
                         <i class="fa fa-download"></i>
                       </button>
                       <button *ngIf="organization" class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
                               (click)="$event.preventDefault(); downloadFromOrganization(organization.id, category, 'csv');">
                         <i class="fa fa-download"></i>
                       </button>
+
+
+
+                      <button *ngIf="!organization" class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
+                              (click)="$event.preventDefault(); showShareCategoryWithOrganizationModal2(category);">
+                        <i class="fa fa-cloud-download"></i>
+                      </button>
+                     
+
+
                     </div>
                   </td>
                 </tr>
@@ -307,5 +317,38 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div bsModal #selectColumnsToDownloadModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="selectColumnsToDownloadModal"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">download category <b>{{categoryToEdit.name}}</b> with columns selected</h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="download(categoryToEdit.id,'csv')" class="form-horizontal" #editForm="ngForm">
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Select columns to export</label>
+            <div class="col-md-9">
+              <angular2-multiselect name="selectColumns"
+                                    [data]="selectColumns"
+                                    [(ngModel)]="selectedColumns"
+                                    [settings]="selectColumnsSettings">
+              </angular2-multiselect>
+            </div>
+          </div>
+        </form>
+        </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-organization" (click)="download(categoryToEdit, 'csv')">Download</button>
+        <button class="btn btn-sm btn-default" (click)="selectColumnsToDownloadModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 <toaster-container [toasterconfig]="toasterconfig"></toaster-container>
