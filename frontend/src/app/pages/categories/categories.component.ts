@@ -215,7 +215,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       });
       console.log("tabid",tabid);
       tosend = tabid;
-      console.log("To send value helo", tosend);
+      console.log("To send value", tosend);
       console.log("tableau val", tableau);
       const url = environment.apiUrl + '/api/Categories/download/' + category.id + '/' + type + '/'+ tosend + '?access_token=' + this.userApi.getCurrentToken().id;
       //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;

@@ -329,7 +329,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="download(categoryToEdit.id,'csv')" class="form-horizontal" #editForm="ngForm">
+        <form (ngSubmit)="download(categoryToEdit.id,'csv', 'rows')" class="form-horizontal" #editForm="ngForm">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Select columns to export</label>
             <div class="col-md-9">
@@ -343,7 +343,7 @@
         </form>
         </div>
       <div class="modal-footer">
-        <button class="btn btn-sm btn-organization" (click)="download(categoryToEdit, 'csv')">Download</button>
+        <button class="btn btn-sm btn-organization" (click)="download(categoryToEdit, 'csv', 'rows')">Download</button>
         <button class="btn btn-sm btn-default" (click)="selectColumnsToDownloadModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->
