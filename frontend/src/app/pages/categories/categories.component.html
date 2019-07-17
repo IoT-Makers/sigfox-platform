@@ -115,18 +115,9 @@
                         <i class="fa fa-download"></i>
                       </button>
                       <button *ngIf="organization" class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
-                              (click)="$event.preventDefault(); downloadFromOrganization(organization.id, category, 'csv');">
+                              (click)="$event.preventDefault(); getColumnsFromOrganization(organization.id, category);">
                         <i class="fa fa-download"></i>
                       </button>
-
-
-
-                      <button *ngIf="!organization" class="btn btn-success btn-round btn-ladda" data-style="slide-up" [ladda]='loadingDownload' tooltip="Download category devices messages (CSV)"
-                              (click)="$event.preventDefault(); showShareCategoryWithOrganizationModal2(category);">
-                        <i class="fa fa-cloud-download"></i>
-                      </button>
-                     
-
 
                     </div>
                   </td>
@@ -323,13 +314,27 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">download category <b>{{categoryToEdit.name}}</b> with columns selected</h4>
+        <h4 class="modal-title">download category <b>{{categoryToEdit.name}}</b> with selected datas</h4>
         <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <form (ngSubmit)="download(categoryToEdit.id,'csv', 'rows')" class="form-horizontal" #editForm="ngForm">
+      <div *ngIf="!organization"class="modal-body">
+        <form  (ngSubmit)="download(categoryToEdit.id,'csv', 'rows')" class="form-horizontal" #editForm="ngForm">
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Select columns to export</label>
+            <div class="col-md-9">
+              <angular2-multiselect name="selectColumns"
+                                    [data]="selectColumns"
+                                    [(ngModel)]="selectedColumns"
+                                    [settings]="selectColumnsSettings">
+              </angular2-multiselect>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div *ngIf="organization" class="modal-body">
+        <form  (ngSubmit)="downloadFromOrganization(organization.id, categoryToEdit.id,'csv', 'rows')" class="form-horizontal" #editForm="ngForm">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Select columns to export</label>
             <div class="col-md-9">
@@ -343,7 +348,8 @@
         </form>
         </div>
       <div class="modal-footer">
-        <button class="btn btn-sm btn-organization" (click)="download(categoryToEdit, 'csv', 'rows')">Download</button>
+        <button *ngIf="!organization" class="btn btn-sm btn-organization" (click)="download(categoryToEdit, 'csv', 'rows')">Download</button>
+        <button *ngIf="organization" class="btn btn-sm btn-organization" (click)="downloadFromOrganization(organization.id, categoryToEdit, 'csv', 'rows')">Download</button>
         <button class="btn btn-sm btn-default" (click)="selectColumnsToDownloadModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->

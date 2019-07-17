@@ -158,24 +158,68 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
   }
   
-  downloadFromOrganization(organizationId: string, category: Category, type: string): void {
+  getColumnsFromOrganization(organizationId: string, category: Category): void {
+    this.categoryToEdit = category;
     this.loadingDownload = true;
-    const url = environment.apiUrl + '/api/Categories/download/' + organizationId + '/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
-    //const url = 'http://localhost:3000/api/Categories/download/' + organizationId + '/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    const url = environment.apiUrl + '/api/Categories/download/' + organizationId + '/' + category.id + '?access_token=' + this.userApi.getCurrentToken().id;
+    //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    
 
-    this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
-      const blob: Blob = new Blob([res], {type: 'text/csv'});
-      const today = moment().format('YYYYMMDD');
-      const filename = this.organization.name + '_' + category.name + '_' + today + '.csv';
-      saveAs(blob, filename);
+    this.http.get(url).timeout(600000).subscribe((res: any[]) => {
+        //const blob: Blob = new Blob([res], {type: 'text/csv'});
+        console.log("getcol res Value", res);
+        this.selectColumns = [];
+        res.forEach(r => {
+            console.log("sous champ:",r);
+            const item2 = {
+                id: r,
+                itemName: r
+              };
+            this.selectColumns.push(item2);
+        });
+        console.log("selectColumns",this.selectColumns)
+      
       this.loadingDownload = false;
-    }, err => {
-      console.log(err);
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', 'Server error');
-      this.loadingDownload = false;
+      this.selectColumnsToDownloadModal.show();
     });
+  }
+  downloadFromOrganization(organizationId: string, category: Category, type: string, tosend: string): void {
+    this.loadingDownload = true;
+    if(this.selectedColumns.length !== 0){
+      console.log("SELECTED COLUMNS !!", this.selectedColumns)
+      let tab : any = [];
+      let tabid : any = [];
+      
+      this.selectedColumns.forEach(column => {
+          tab.push(column);
+          console.log("column val", column);
+      });
+      tab.forEach(p => {
+          tabid.push(p.id);
+      });
+
+      tosend = tabid;
+      
+      const url = environment.apiUrl + '/api/Categories/download/' + organizationId + '/' + category.id + '/' + type + '/'+ tosend + '?access_token=' + this.userApi.getCurrentToken().id;
+      //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+      
+      this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
+        this.selectColumnsToDownloadModal.hide();
+        const blob: Blob = new Blob([res], {type: 'text/csv'});
+        const today = moment().format('YYYYMMDD');
+        const filename = this.organization.name + '_' + category.name + '_' + today + '.csv';
+        //const filename =  today + '_' + category.name + '_export.csv';
+        saveAs(blob, filename);
+        this.loadingDownload = false;
+      }, err => {
+        console.log(err);
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', 'Server error');
+        this.loadingDownload = false;
+      });
+    }else this.loadingDownload = false;
+    
   }
 
   downloadO(category: Category, type: string): void {
@@ -203,25 +247,27 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.loadingDownload = true;
     if(this.selectedColumns.length !== 0){
       console.log("SELECTED COLUMNS !!", this.selectedColumns)
-      let tableau : any = [];
+      let tab : any = [];
       let tabid : any = [];
       
       this.selectedColumns.forEach(column => {
-          tableau.push(column);
+          tab.push(column);
           console.log("column val", column);
       });
-      tableau.forEach(p => {
-          tabid.push(p.id);
+      tab.forEach(p => {
+        tabid.push(p.id);
       });
+      
       console.log("tabid",tabid);
       tosend = tabid;
       console.log("To send value", tosend);
-      console.log("tableau val", tableau);
+      console.log("tableau val", tab);
       const url = environment.apiUrl + '/api/Categories/download/' + category.id + '/' + type + '/'+ tosend + '?access_token=' + this.userApi.getCurrentToken().id;
       //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
       
       
       this.http.get(url, {responseType: 'blob'}).timeout(600000).subscribe(res => {
+        this.selectColumnsToDownloadModal.hide();
         const blob: Blob = new Blob([res], {type: 'text/csv'});
         console.log("res value", res);
         const today = moment().format('YYYYMMDD');
@@ -236,7 +282,6 @@ export class CategoriesComponent implements OnInit, OnDestroy {
         this.loadingDownload = false;
       });
     }else this.loadingDownload = false;
-    
     
   }
 

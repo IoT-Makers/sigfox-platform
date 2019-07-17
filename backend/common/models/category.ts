@@ -34,6 +34,20 @@ const json2csv = require("json2csv").parse;
       }, 
       returns: { type: "object", root: true }
     },
+    getColumnsFromOrganization: {
+      accepts: [
+        { arg: "organizationId", required: true, type: "string", http: { source: "path" } },
+        { arg: "categoryId", required: true, type: "string", http: { source: "path" } },
+        //{ arg: "col", required: true, type: "string", http: { source: "path" } },
+        { arg: "req", type: "object", http: { source: "req" } },
+        { arg: "res", type: "object", http: { source: "res" } }
+      ],
+      http: {
+        path: "/download/:organizationId/:categoryId",
+        verb: "get"
+      }, 
+      returns: { type: "object", root: true }
+    },
     download: {
       accepts: [
         { arg: "categoryId", required: true, type: "string", http: { source: "path" } },
@@ -53,11 +67,12 @@ const json2csv = require("json2csv").parse;
         { arg: "organizationId", required: true, type: "string", http: { source: "path" } },
         { arg: "categoryId", required: true, type: "string", http: { source: "path" } },
         { arg: "type", required: true, type: "string", http: { source: "path" } },
+        { arg: "tosend", required: true, type: "string", http: { source: "path" } },
         { arg: "req", type: "object", http: { source: "req" } },
         { arg: "res", type: "object", http: { source: "res" } }
       ],
       http: {
-        path: "/download/:organizationId/:categoryId/:type",
+        path: "/download/:organizationId/:categoryId/:type/:tosend",
         verb: "get"
       },
       returns: { type: "object", root: true }
@@ -137,15 +152,7 @@ class Category {
     // Model
     const Category = this.model;
     const Device = this.model.app.models.Device;
-    console.log("GET COLUMNS")
-    /*if ((type !== "csv"
-      && type !== "json" )
-      || typeof categoryId === "undefined") {
-      res.send('Missing "type" ("csv" or "json"), "categoryId"');
-    }*/
-    //console.log("COL VALUE",col);
-    console.log("CAT VALUE", categoryId);
-
+    console.log("GETCOLUMNS");
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
@@ -190,10 +197,9 @@ class Category {
           options.fields.push("data");
           options.fields.push("ack");
           options.fields.push("data_downlink");
-          //[options.fields[0], options.fields[1]] = [options.fields[1], options.fields[0]];
-
 
           let nbProcessedDevices = 0;
+
           category.Devices.forEach((device: any, i: number) => {
             let hasProperty = false;
             let nbProperty = 0;
@@ -241,8 +247,6 @@ class Category {
                   
                   device.Messages.forEach((message: any) => {
                     const obj: any = {};
-                    console.log("device.properties !!!!! ", device.properties);
-                    console.log("device name --->", device.name);
 
                     if (message.Geolocs) {
                       message.Geolocs.forEach((geoloc: any) => {
@@ -254,7 +258,6 @@ class Category {
                       });
                     }
 
-
                     if (message.data_parsed) {
                       message.data_parsed.forEach((p: any) => {
                         if (options.fields.indexOf(p.key) === -1) {
@@ -264,13 +267,11 @@ class Category {
                     }
 
                     if (obj["lat_gps"] || obj["lat"] || obj["lat_sigfox"]) {
-                      console.log("contenu de lat_gps", obj["lat_gps"]);
                       if (options.fields.indexOf("all_lat") === -1) {
                         options.fields.push("all_lat");
                       }
                     }
                     if (obj["lng_gps"] || obj["lng"] || obj["lng_sigfox"]) {
-                      console.log("contenu de lng_gps", obj["lng_gps"]);
                       if (options.fields.indexOf("all_llng") === -1) {
                         options.fields.push("all_lng");
                       }
@@ -280,7 +281,6 @@ class Category {
 
                       let nb = 1;
                       message.reception.forEach((rec: any) => {
-                        console.log("____rec value is:", rec);
                         if (rec) {
                           if (options.fields.indexOf("stationId" + "_" + nb) === -1) {
                             options.fields.push("stationId" + "_" + nb);
@@ -297,38 +297,7 @@ class Category {
                   ++nbProcessedDevices;
 
                   if (nbProcessedDevices === category.Devices.length) {
-                    console.log("options.fields values :", options.fields);
-                    let nb = 0;
-                    let n = 0;
-                    let nb2 = 0;
-                    options2.fields2.push("createdAt", "ID", "Name", "Sex", "Age", "Time", "all_lat", "all_lng", "UTM", "Area", "EVENT", "deviceId", "Notes", "gps_acq", "sat", "hdop", "speed", "battery", "seqNumber", "timestamp");
-                    // check for fields in options.fields not existent in LRT options2.fields2
-                    while (n < options.fields.length) {
-                      if (options2.fields2.indexOf(options.fields[n]) === -1) {
-                        if (options.fields[n].startsWith("RSSI")) {
-                          options2.fields2.push(options.fields[n]);
-                        }
-                        else {
-                          options3.fields3.push(options.fields[n]);
-                        }
-                      }
-                      n++;
-                    }
-
-                    while (nb < options2.fields2.length) {
-                      options.fields[nb] = options2.fields2[nb];
-                      nb++;
-
-                    } options.fields.splice(options2.fields2.length, options.fields.length - options2.fields2.length);
-
-                    while (nb2 < options3.fields3.length) {
-                      options.fields.push(options3.fields3[nb2]);
-                      nb2++;
-
-                    }
-
-                    console.log("options.fields values :", options.fields);
-                    
+ 
                     res.send(options.fields);
                   }
                   
@@ -341,6 +310,457 @@ class Category {
       });
   }
 
+  public getColumnsFromOrganization(organizationId: string, categoryId: string, req: any, res: any, next: Function) {
+    // Model
+    const Organization = this.model.app.models.Organization;
+    const Device = this.model.app.models.Device;
+    console.log("GETCOLUMNSFROMORGANIZATION");
+    console.log('CATEGORYID: ',categoryId );
+    console.log('ORGANIZATIONID: ',organizationId );
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
+    Organization.findOne(
+      {
+        where: {
+          id: organizationId,
+        },
+        include: [{
+          relation: "Categories",
+          scope: {
+            order: "createdAt DESC",
+            where: { id: categoryId },
+            limit: 1,
+            include: [{
+              relation: "Devices",
+              scope: {
+                limit: 100,
+                order: "updatedAt DESC",
+              },
+            }],
+          },
+        }],
+      }, (err: any, organization: any) => {
+        organization = organization.toJSON();
+        if (err) {
+          console.error(err);
+          //res.send(err);
+        } else if (organization && organization.Categories.length >= 1) {
+          let n = 0;
+          let category: any;
+          while (n<organization.Categories.length){
+            let cat = organization.Categories[n];
+            if (categoryId.indexOf(cat.id) != -1){
+              console.log("found Category !");
+              category = organization.Categories[n];
+            };
+            n++;
+          }
+          
+          //const category = organization.Categories[0];
+
+          console.log("Category to catch :", category.name);
+          const devices = category.Devices;
+
+          const options: any = {
+            fields: [],
+          };
+          const options2: any = {
+            fields2: [],
+          };
+          const options3: any = {
+            fields3: [],
+          };
+
+          options.fields.push("createdAt");
+          options.fields.push("Name");
+          options.fields.push("Time")
+          options.fields.push("deviceId");
+          options.fields.push("seqNumber");
+          options.fields.push("timestamp");
+          //options.fields.push("year"); //
+          //options.fields.push("month"); //
+          //options.fields.push("day"); //
+          //options.fields.push("hours"); //
+          //options.fields.push("minutes"); //
+          //options.fields.push("seconds"); //
+          options.fields.push("data");
+          options.fields.push("ack");
+          options.fields.push("data_downlink");
+
+          let nbProcessedDevices = 0;
+
+          devices.forEach((device: any, i: number) => {
+            let hasProperty = false;
+            let nbProperty = 0;
+            let propertyKey: any = [];
+            let propertyValue: any = [];
+            Device.findOne(
+              {
+                where: {
+                  id: device.id,
+                },
+                include: [{
+                  relation: "Messages",
+                  scope: {
+                    order: "createdAt DESC",
+                    include: [{
+                      relation: "Geolocs",
+                      scope: {
+                        limit: 5,
+                        order: "createdAt DESC",
+                      },
+                    }],
+                  },
+                }],
+              }, (err: any, device: any) => {
+                if (err) {
+                  console.error(err);
+                  //res.send(err);
+                } else {
+                  device = device.toJSON();
+
+                  if (device.properties){
+                    device.properties.forEach((property: any) => {
+                      hasProperty = true;
+                      propertyKey[nbProperty] = property.key;
+                      propertyValue[nbProperty] = property.value;
+                      if (options.fields.indexOf(propertyKey[nbProperty]) === -1) {
+                        options.fields.push(propertyKey[nbProperty]);
+                      }
+                      ++nbProperty;
+                    });
+                  }
+                  
+                  device.Messages.forEach((message: any) => {
+                    const obj: any = {};
+
+                    if (message.Geolocs) {
+                      message.Geolocs.forEach((geoloc: any) => {
+                        if (options.fields.indexOf("lat_" + geoloc.type) === -1) {
+                          options.fields.push("lat_" + geoloc.type);
+                          options.fields.push("lng_" + geoloc.type);
+                          options.fields.push("accuracy_" + geoloc.type);
+                        }
+                      });
+                    }
+
+                    if (message.data_parsed) {
+                      message.data_parsed.forEach((p: any) => {
+                        if (options.fields.indexOf(p.key) === -1) {
+                          options.fields.push(p.key);
+                        }
+                      });
+                    }
+
+                    if (obj["lat_gps"] || obj["lat"] || obj["lat_sigfox"]) {
+                      console.log("ON RENTRE DANS IF OBJ");
+                      if (options.fields.indexOf("all_lat") === -1) {
+                        options.fields.push("all_lat");
+                      }
+                    }
+                    if (obj["lng_gps"] || obj["lng"] || obj["lng_sigfox"]) {
+                      if (options.fields.indexOf("all_llng") === -1) {
+                        options.fields.push("all_lng");
+                      }
+                    }
+
+                    if (message.reception) {
+
+                      let nb = 1;
+                      message.reception.forEach((rec: any) => {
+                        if (rec) {
+                          if (options.fields.indexOf("stationId" + "_" + nb) === -1) {
+                            options.fields.push("stationId" + "_" + nb);
+                            options.fields.push("RSSI" + "_" + nb);
+                            options.fields.push("SNR" + "_" + nb);
+                          }
+                        }
+
+                        ++nb;
+                      });
+
+                    }
+                  });
+                  ++nbProcessedDevices;
+
+                  
+                  if (nbProcessedDevices === devices.length) {
+
+                    //Specific order of columns for LRT Organization
+                    if(organization.name === "LRT"){
+                      console.log("LRT organization found!");
+                      let nb = 0;
+                      let nb1 = 0;
+                      let nb2 = 0;
+                      options2.fields2.push("Date", "ID", "Name", "Sex", "Age", "Time", "South", "East", "UTM", "Area", "EVENT", "deviceId", "Notes", "gps_acq", "sat", "hdop", "speed", "battery", "seqNumber", "timestamp");
+                      
+                      while (nb < options.fields.length) {
+                        if (options2.fields2.indexOf(options.fields[nb]) === -1) {
+                          if (options.fields[nb].startsWith("RSSI")) {
+                            options2.fields2.push(options.fields[nb]);
+                          }
+
+                          else if (!options.fields[nb].startsWith("createdAt")){
+                            options3.fields3.push(options.fields[nb]);
+                          }
+                        }
+                        nb++;
+                      }
+
+                      while (nb1 < options2.fields2.length) {
+                        options.fields[nb1] = options2.fields2[nb1];
+                        nb1++;
+
+                      } options.fields.splice(options2.fields2.length, options.fields.length - options2.fields2.length);
+
+                      while (nb2 < options3.fields3.length) {
+                        options.fields.push(options3.fields3[nb2]);
+                        nb2++;
+
+                      }
+                    }
+                    
+                    res.send(options.fields);
+                  }
+                }
+              });
+          });
+        } else next(null, "Error occured - not allowed");
+      });
+  }
+
+  public downloadFromOrganization(organizationId: string, categoryId: string, type: string, tosend:string, req: any, res: any, next: Function) {
+    // Model
+    const Organization = this.model.app.models.Organization;
+    const Device = this.model.app.models.Device;
+    console.log("DOWNLOADFROMORGANIZATION");
+    if (
+      (type !== "csv" && type !== "json")
+      || typeof categoryId === "undefined"
+      || typeof organizationId === "undefined"
+    ) res.send('Missing "type" ("csv" or "json"), "categoryId", "organizationId');
+
+
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
+    Organization.findOne(
+      {
+        where: {
+          id: organizationId,
+        },
+        include: [{
+          relation: "Categories",
+          scope: {
+            order: "createdAt DESC",
+            where: { id: categoryId },
+            limit: 1,
+            include: [{
+              relation: "Devices",
+              scope: {
+                limit: 100,
+                order: "updatedAt DESC",
+              },
+            }],
+          },
+        }],
+      }, (err: any, organization: any) => {
+        organization = organization.toJSON();
+        if (err) {
+          console.error(err);
+          res.send(err);
+        } else if (organization && organization.Categories.length >= 1) {
+          let n = 0;
+          let category: any;
+          while (n<organization.Categories.length){
+            let cat = organization.Categories[n];
+            if (categoryId.indexOf(cat.id) != -1){
+              console.log("found categoryId !");
+              category = organization.Categories[n];
+            };
+            n++;
+          }
+          const devices = category.Devices;
+
+          console.log("Category to download :", category.name);
+
+          const today = moment().format('YYYY.MM.DD');
+          //const filename = category.name + '_' + today + '.csv';
+
+          const filename =  today + '_' + category.name + '_export.csv';
+          res.setTimeout(600000);
+          res.set("Cache-Control", "max-age=0, no-cache, must-revalidate, proxy-revalidate");
+          res.set("Content-Type", "application/force-download");
+          res.set("Content-Type", "application/octet-stream");
+          res.set("Content-Type", "application/download");
+          res.set("Content-Disposition", "attachment;filename=" + filename);
+          res.set("Content-Transfer-Encoding", "binary");
+
+          const data: any = [];
+          let csv: any = [];
+          let columns : any = [];
+
+          columns = tosend.split(',');
+
+          let nbProcessedDevices = 0;
+
+          devices.forEach((device: any, i: number) => {
+            let hasProperty = false;
+            let nbProperty = 0;
+            let propertyKey: any = [];
+            let propertyValue: any = [];
+
+            Device.findOne(
+              {
+                where: {
+                  id: device.id,
+                },
+                include: [{
+                  relation: "Messages",
+                  scope: {
+                    order: "createdAt DESC",
+                    include: [{
+                      relation: "Geolocs",
+                      scope: {
+                        limit: 5,
+                        order: "createdAt DESC",
+                      },
+                    }],
+                  },
+                }],
+              }, (err: any, device: any) => {
+                if (err) {
+                  console.error(err);
+                  res.send(err);
+                } else {
+                  device = device.toJSON();
+
+                  if (device.properties){
+                    device.properties.forEach((property: any) => {
+                      hasProperty = true;
+                      propertyKey[nbProperty] = property.key;
+                      propertyValue[nbProperty] = property.value;
+                      ++nbProperty;
+                    });
+                  }
+                  
+                  device.Messages.forEach((message: any) => {
+                    const obj: any = {};
+
+                    if (hasProperty) {
+                      let nb = 0;
+                      while (nb < nbProperty) {
+                        obj[propertyKey[nb]] = propertyValue[nb];
+                        nb++;
+                      }
+                    }
+
+                    obj.Name = device.name;
+                    obj.Time = moment(message.createdAt).format("HH:mm:ss");
+                    obj.deviceId = message.deviceId;
+                    obj.seqNumber = message.seqNumber;
+                    obj.createdAt = moment(message.createdAt).format("DD-MMM-YY");
+                    obj.timestamp = message.createdAt;
+                    //obj.year = new Date(message.createdAt).getFullYear();
+                    //obj.month = new Date(message.createdAt).getMonth() + 1;
+                    //obj.day = new Date(message.createdAt).getDate();
+                    //obj.hours = new Date(message.createdAt).getHours();
+                    //obj.minutes = new Date(message.createdAt).getMinutes();
+                    //obj.seconds = new Date(message.createdAt).getSeconds();
+                    obj.data = message.data;
+                    obj.ack = message.ack;
+                    obj.data_downlink = message.data_downlink;
+
+
+                    if (message.Geolocs) {
+                      message.Geolocs.forEach((geoloc: any) => {
+                        obj["lat_" + geoloc.type] = geoloc.location.lat;
+                        obj["lng_" + geoloc.type] = geoloc.location.lng;
+                        obj["accuracy_" + geoloc.type] = geoloc.accuracy;
+                        
+                      });
+                    }
+
+                    if (message.data_parsed) {
+                      message.data_parsed.forEach((p: any) => {
+                        obj[p.key] = p.value;
+
+                      });
+                    }
+
+                    if (message.reception) {
+
+                      let nb = 1;
+                      message.reception.forEach((rec: any) => {
+                        if (rec) {
+                          obj["stationId" + "_" + nb] = rec.id;
+                          obj["RSSI" + "_" + nb] = rec.RSSI;
+                          obj["SNR" + "_" + nb] = rec.SNR;
+                        }
+
+                        ++nb;
+                      });
+
+                    }
+
+                    //used only when orga is LRT
+                    if (organization.name === "LRT"){
+                      if (obj["lat_gps"] || obj["lat"] || obj["lat_sigfox"]) {
+                        if (obj["lat_gps"]) {
+                          obj["South"] = obj["lat_gps"];
+                        }
+                        else if (obj["lat_sigfox"]) {
+                          obj["South"] = obj["lat_sigfox"];
+                        }
+                        else if (obj["lat"]) {
+                          obj["South"] = obj["lat"];
+                        }
+  
+                      }
+                      if (obj["lng_gps"] || obj["lng"] || obj["lng_sigfox"]) {
+                        if (obj["lng_gps"]) {
+                          obj["East"] = obj["lng_gps"];
+                        }
+                        else if (obj["lng_sigfox"]) {
+                          obj["East"] = obj["lng_sigfox"];
+                        }
+                        else if (obj["lng"]) {
+                          obj["East"] = obj["lng"];
+                        }
+  
+                      }
+                      if (obj.createdAt){
+                        obj["Date"] = obj.createdAt;
+                      }
+                    }
+
+                    data.push(obj);
+                  });
+                  ++nbProcessedDevices;
+
+                  if (data.length > 0 && nbProcessedDevices === category.Devices.length) {
+
+                    try {
+                      csv = json2csv(data, {fields: columns} );
+                      console.log("csv value:",csv);
+                      console.log("Done CSV processing.");
+                    } catch (err) {
+                      console.error(err);
+                    }
+                    // res.status(200).send({data: csv});
+                    res.send(csv);
+                    // next();
+                  }
+                } 
+              });
+          });
+        } else next(null, "Error occured - not allowed");
+      });
+  }
+
+  
+
   public download(categoryId: string, type: string, tosend: string, req: any, res: any, next: Function) {
     // Model
     const Category = this.model;
@@ -348,7 +768,7 @@ class Category {
     console.log("DOWNLOAD")
     if ((type !== "csv"
       && type !== "json" )
-      || typeof categoryId === "undefined" || tosend === "hey") {
+      || typeof categoryId === "undefined") {
       res.send('Missing "type" ("csv" or "json"), "categoryId"');
     }
     console.log("TYPE VALUE",type);
@@ -441,12 +861,10 @@ class Category {
                   device.Messages.forEach((message: any) => {
                     const obj: any = {};
 
-                    console.log("device.properties", device.properties);
                     if (hasProperty) {
                       let nb = 0;
                       while (nb < nbProperty) {
                         obj[propertyKey[nb]] = propertyValue[nb];
-                        
                         nb++;
                       }
                     }
@@ -456,8 +874,6 @@ class Category {
                     obj.seqNumber = message.seqNumber;
                     obj.createdAt = moment(message.createdAt).format("DD-MMM-YY");
                     obj.timestamp = message.createdAt;
-                    
-                    
                     //obj.year = new Date(message.createdAt).getFullYear();
                     //obj.month = new Date(message.createdAt).getMonth() + 1;
                     //obj.day = new Date(message.createdAt).getDate();
@@ -468,8 +884,6 @@ class Category {
                     obj.ack = message.ack;
                     obj.data_downlink = message.data_downlink;
 
-
-
                     if (message.Geolocs) {
                       message.Geolocs.forEach((geoloc: any) => {
                         obj["lat_" + geoloc.type] = geoloc.location.lat;
@@ -479,11 +893,9 @@ class Category {
                       });
                     }
 
-
                     if (message.data_parsed) {
                       message.data_parsed.forEach((p: any) => {
                         obj[p.key] = p.value;
-                        
 
                       });
                     }
@@ -517,12 +929,10 @@ class Category {
 
                       let nb = 1;
                       message.reception.forEach((rec: any) => {
-                        console.log("____rec value is:", rec);
                         if (rec) {
                           obj["stationId" + "_" + nb] = rec.id;
                           obj["RSSI" + "_" + nb] = rec.RSSI;
                           obj["SNR" + "_" + nb] = rec.SNR;
-
                         }
 
                         ++nb;
@@ -537,7 +947,6 @@ class Category {
                   // If all devices are treated
                   if (data.length > 0 && nbProcessedDevices === category.Devices.length) {
 
-                    console.log("COLUMNS AVANT TELECHARGEMENT", columns);
                     try {
                       csv = json2csv(data, {fields: columns} );
                       console.log("csv value:",csv);
@@ -558,7 +967,8 @@ class Category {
   }
   
 
-  public downloadFromOrganization(organizationId: string, categoryId: string, type: string, req: any, res: any, next: Function) {
+  
+  public downloadFromOrganization0(organizationId: string, categoryId: string, type: string, tosend: string, req: any, res: any, next: Function) {
     // Model
     const Organization = this.model.app.models.Organization;
     const Device = this.model.app.models.Device;
