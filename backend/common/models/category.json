@@ -89,7 +89,10 @@
       "permission": "ALLOW",
       "property": [
         "download",
-        "downloadFromOrganization"
+        "downloadFromOrganization",
+        "getColumns",
+        "getColumnsFromOrganization"
+
       ]
     }
   ],
