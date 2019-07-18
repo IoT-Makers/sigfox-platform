@@ -109,7 +109,8 @@
     "options": {
       "remoting": {
         "sharedMethods": {
-          "createFromParsedPayload": false
+          "createFromParsedPayload": false,
+          "createFromGeolocReceived": false
         }
       }
     }
