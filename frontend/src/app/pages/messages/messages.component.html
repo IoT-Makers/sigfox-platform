@@ -93,6 +93,18 @@
                   </div>
                 </div>
               </div>
+              <div class="text-justify" *ngIf="message.group === 'capturs'">
+                    <div *ngIf="message.latitude"><small>latitude: <strong>{{message.latitude}}</strong></small></div>
+                    <div *ngIf="message.longitude"><small>longitude: <strong>{{message.longitude}}</strong></small></div>
+                    <div *ngIf="message.altitude"><small>altitude: <strong>{{message.altitude}}</strong></small></div>
+                    <div *ngIf="message.speed"><small>speed: <strong>{{message.speed}}</strong></small></div>
+                    <div *ngIf="message.temperature"><small>temperature: <strong>{{message.temperature}}</strong></small></div>
+                    <div *ngIf="message.battery"><small>battery: <strong>{{message.battery}}</strong></small></div>
+                    <div *ngIf="message.batteryPercentage"><small>batteryPercentage: <strong>{{message.batteryPercentage}}</strong></small></div>
+                    <div *ngIf="message.type"><small>type : <strong>{{message.type}}</strong></small></div>
+                    <div *ngIf="message.group"><small>group: <strong>{{message.group}}</strong></small></div>
+                
+              </div>
               <div class="font-weight-bold" *ngIf="message.deviceAck">
                 Device downlink acknowledge: <span class="text-success"
                                                    title="Acknowledged by device">{{message.deviceAck}}</span>
