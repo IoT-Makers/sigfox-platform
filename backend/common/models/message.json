@@ -49,9 +49,7 @@
       "max": 24
     },
     "data_parsed": {
-      "type": [
-        "Property"
-      ]
+      "type": ["Property"]
     },
     "data_downlink": {
       "type": "string",
@@ -68,10 +66,11 @@
     "ack": {
       "type": "boolean"
     },
+    "oob": {
+      "type": "boolean"
+    },
     "reception": {
-      "type": [
-        "Reception"
-      ]
+      "type": ["Reception"]
     }
   },
   "validations": [],
