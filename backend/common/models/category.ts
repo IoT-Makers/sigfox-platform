@@ -470,10 +470,11 @@ class Category {
                       let nb = 1;
                       message.reception.forEach((rec: any) => {
                         if (rec) {
-                          if (options.fields.indexOf("stationId" + "_" + nb) === -1) {
-                            options.fields.push("stationId" + "_" + nb);
-                            options.fields.push("RSSI" + "_" + nb);
-                            options.fields.push("SNR" + "_" + nb);
+                          if (options.fields.indexOf("stationId") === -1) {
+                            //options.fields.push("stationId" + "_" + nb);
+                            options.fields.push("stationId");
+                            options.fields.push("RSSI");
+                            options.fields.push("SNR");
                           }
                         }
 
@@ -694,9 +695,13 @@ class Category {
                       let nb = 1;
                       message.reception.forEach((rec: any) => {
                         if (rec) {
-                          obj["stationId" + "_" + nb] = rec.id;
-                          obj["RSSI" + "_" + nb] = rec.RSSI;
-                          obj["SNR" + "_" + nb] = rec.SNR;
+                          console.log("ob RSSI value",obj["RSSI"]);
+                          if (obj["RSSI"] < 0){
+                            console.log("inferieur à 0");
+                          }
+                          obj["stationId"] = rec.id;
+                          obj["RSSI"] = rec.RSSI;
+                          obj["SNR"] = rec.SNR;
                         }
 
                         ++nb;
