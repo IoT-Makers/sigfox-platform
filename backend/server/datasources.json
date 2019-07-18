@@ -23,11 +23,7 @@
           }
         },
         "functions": {
-          "sendSMS": [
-            "user",
-            "pass",
-            "msg"
-          ]
+          "sendSMS": ["user", "pass", "msg"]
         }
       }
     ]
@@ -40,7 +36,7 @@
       {
         "template": {
           "method": "GET",
-          "url": "https://backend.sigfox.com/api/devices/{!deviceId:string}/messages",
+          "url": "https://backend.sigfox.com/api/devices/{!deviceId:string}/messages?oob=true",
           "headers": {
             "Authorization": "Basic {!credentials:string}"
           },
@@ -50,18 +46,8 @@
           }
         },
         "functions": {
-          "getBaseStations": [
-            "credentials",
-            "deviceId",
-            "limit",
-            "before"
-          ],
-          "getMessages": [
-            "credentials",
-            "deviceId",
-            "limit",
-            "before"
-          ]
+          "getBaseStations": ["credentials", "deviceId", "limit", "before"],
+          "getMessages": ["credentials", "deviceId", "limit", "before"]
         }
       },
       {
@@ -75,11 +61,7 @@
           "body": "{!body:any}"
         },
         "functions": {
-          "createCallbacks": [
-            "credentials",
-            "devicetypeId",
-            "body"
-          ]
+          "createCallbacks": ["credentials", "devicetypeId", "body"]
         }
       },
       {
@@ -91,12 +73,8 @@
           }
         },
         "functions": {
-          "testConnection": [
-            "credentials"
-          ],
-          "listDevicetypes": [
-            "credentials"
-          ]
+          "testConnection": ["credentials"],
+          "listDevicetypes": ["credentials"]
         }
       }
     ]
@@ -116,12 +94,7 @@
           "body": "{json:string}"
         },
         "functions": {
-          "send": [
-            "url",
-            "method",
-            "credentials",
-            "json"
-          ]
+          "send": ["url", "method", "credentials", "json"]
         }
       }
     ]
@@ -141,11 +114,7 @@
           "body": "{!json:string}"
         },
         "functions": {
-          "locate": [
-            "app_id",
-            "app_code",
-            "json"
-          ]
+          "locate": ["app_id", "app_code", "json"]
         }
       }
     ]
@@ -165,10 +134,7 @@
           "body": "{!json:string}"
         },
         "functions": {
-          "locate": [
-            "key",
-            "json"
-          ]
+          "locate": ["key", "json"]
         }
       },
       {
@@ -177,12 +143,7 @@
           "url": "https://maps.googleapis.com/maps/api/geocode/json?latlng={!latitude:number},{!longitude:number}&key={!key:string}&language={language:string}"
         },
         "functions": {
-          "geocode": [
-            "key",
-            "latitude",
-            "longitude",
-            "language"
-          ]
+          "geocode": ["key", "latitude", "longitude", "language"]
         }
       }
     ]
@@ -203,10 +164,7 @@
           "body": "{!json:string}"
         },
         "functions": {
-          "locate": [
-            "credentials",
-            "json"
-          ]
+          "locate": ["credentials", "json"]
         }
       }
     ]
