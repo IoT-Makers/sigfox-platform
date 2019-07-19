@@ -48,6 +48,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
   @ViewChild('confirmDBModal') confirmDBModal: any;
   @ViewChild('confirmParseModal') confirmParseModal: any;
   @ViewChild('shareDeviceWithOrganizationModal') shareDeviceWithOrganizationModal: any;
+  @ViewChild('selectColumnsToDownloadModal') selectColumnsToDownloadModal: any;
 
   // Flags
   private isCircleVisible: boolean[] = [];
@@ -67,6 +68,9 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   public selectOrganizations: Array<any> = [];
   public selectedOrganizations: Array<any> = [];
+
+  public selectColumns: Array<any> = [];
+  public selectedColumns: Array<any> = [];
 
   public edit = false;
   private loadingFromBackend = false;
@@ -95,6 +99,16 @@ export class DevicesComponent implements OnInit, OnDestroy {
     enableSearchFilter: true,
     classes: 'select-organization'
   };
+
+  public selectColumnsSettings = {
+    singleSelection: false,
+    text: 'Select columns',
+    selectAllText: 'Select all',
+    unSelectAllText: 'Unselect all',
+    enableSearchFilter: true,
+    classes: 'select-column'
+  };
+
 
   // Pagination
   rowsOnPage = 15;
@@ -152,12 +166,44 @@ export class DevicesComponent implements OnInit, OnDestroy {
     });
   }
 
-  download(type: string) {
+  getColumns(type: string): void {
     this.loadingDownload = true;
+    console.log("on rentre dans getcolumns");
+    const url = 'https://api.' + this.document.location.hostname + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    
+    //const url = environment.apiUrl + '/api/Categories/download/' + category.id + '?access_token=' + this.userApi.getCurrentToken().id;
+    //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    
+
+    this.http.get(url).timeout(600000).subscribe((res: any[]) => {
+        //const blob: Blob = new Blob([res], {type: 'text/csv'});
+        console.log("getcol res Value", res);
+        this.selectColumns = [];
+        res.forEach(r => {
+            console.log("sous champ:",r);
+            const item2 = {
+                id: r,
+                itemName: r
+              };
+            this.selectColumns.push(item2);
+        });
+        console.log("selectColumns",this.selectColumns)
+      
+      this.loadingDownload = false;
+      this.selectColumnsToDownloadModal.show();
+    });
+  }
+
+  download(type: string) {
+    console.log("on rentre dans download");
+    console.log("device to edit", this.deviceToEdit);
+    this.loadingDownload = true;
+
     const url = 'https://api.' + this.document.location.hostname + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
     //const url = 'http://localhost:3000/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
 
     this.http.get(url, {responseType: 'blob'}).subscribe(res => {
+      console.log("on rentre dans http get")
       const blob: Blob = new Blob([res], {type: 'text/csv'});
       const today = moment().format('YYYYMMDD');
       const filename = this.deviceToEdit.id + '_' + today + '.csv';

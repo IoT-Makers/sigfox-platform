@@ -38,6 +38,18 @@ const json2csv = require("json2csv").parse;
         {arg: 'organizationId', type: 'string', required: true, description: 'organizationId'}
       ]
     },
+    getColumns: {
+      accepts: [
+        {arg: "type", required: true, type: "string", http: {source: "path"}},
+        { arg: "req", type: "object", http: { source: "req" } },
+        { arg: "res", type: "object", http: { source: "res" } }
+      ],
+      http: {
+        path: "/download/:type",
+        verb: "get"
+      }, 
+      returns: { type: "object", root: true }
+    },
     download: {
       accepts: [
         {arg: "id", required: true, type: "string", http: {source: "path"}},
@@ -263,6 +275,100 @@ class Device {
               else console.log("Updated device as: " + deviceUpdated);
             });
         }
+      });
+  }
+
+  public getColumns(deviceId: string, type: string, req: any, res: any, next: Function) {
+    // Model
+    const Message = this.model.app.models.Message;
+    console.log("GETCOLUMNS");
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
+    Message.find(
+      {
+        where: {
+          and: [
+            { id: deviceId },
+          ],
+        },
+        include: ["Geolocs"],
+      }, (err: any, messages: any) => {
+        if (err) {
+          console.error(err);
+          //res.send(err);
+          next();
+        } else if (messages) {
+
+          const options: any = {
+            fields: [],
+          };
+          const options2: any = {
+            fields2: [],
+          };
+          const options3: any = {
+            fields3: [],
+          };
+
+          options.fields.push("createdAt");
+          options.fields.push("Name");
+          options.fields.push("Time")
+          options.fields.push("deviceId");
+          options.fields.push("seqNumber");
+          options.fields.push("timestamp");
+          //options.fields.push("year"); //
+          //options.fields.push("month"); //
+          //options.fields.push("day"); //
+          //options.fields.push("hours"); //
+          //options.fields.push("minutes"); //
+          //options.fields.push("seconds"); //
+          options.fields.push("data");
+          options.fields.push("ack");
+          options.fields.push("data_downlink");
+          let nbProcessedMessages = 0;
+          messages.forEach((message: any) => {
+            if (message.Geolocs) {
+              message.Geolocs.forEach((geoloc: any) => {
+                if (options.fields.indexOf("lat_" + geoloc.type) === -1) {
+                  options.fields.push("lat_" + geoloc.type);
+                  options.fields.push("lng_" + geoloc.type);
+                  options.fields.push("accuracy_" + geoloc.type);
+                }
+              });
+            }
+
+            if (message.data_parsed) {
+              message.data_parsed.forEach((p: any) => {
+                if (options.fields.indexOf(p.key) === -1) {
+                  options.fields.push(p.key);
+                }
+              });
+            }
+
+            
+
+            if (message.reception) {
+
+              message.reception.forEach((rec: any) => {
+                if (rec) {
+                  if (options.fields.indexOf("stationId") === -1) {
+                    options.fields.push("stationId");
+                    options.fields.push("RSSI");
+                    options.fields.push("SNR");
+                  }
+                }
+              });
+
+            }
+            nbProcessedMessages++;
+          });
+          
+          if (nbProcessedMessages === messages.length){
+            console.log("On envoit les columns");
+            res.send(options.fields);
+          }
+          next();
+        } else next(null, "Error occured - not allowed");
       });
   }
 

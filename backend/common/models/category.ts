@@ -279,20 +279,18 @@ class Category {
 
                     if (message.reception) {
 
-                      let nb = 1;
                       message.reception.forEach((rec: any) => {
                         if (rec) {
-                          if (options.fields.indexOf("stationId" + "_" + nb) === -1) {
-                            options.fields.push("stationId" + "_" + nb);
-                            options.fields.push("RSSI" + "_" + nb);
-                            options.fields.push("SNR" + "_" + nb);
+                          if (options.fields.indexOf("stationId") === -1) {
+                            options.fields.push("stationId");
+                            options.fields.push("RSSI");
+                            options.fields.push("SNR");
                           }
                         }
-
-                        ++nb;
                       });
 
                     }
+                    
                   });
                   ++nbProcessedDevices;
 
@@ -467,7 +465,6 @@ class Category {
 
                     if (message.reception) {
 
-                      let nb = 1;
                       message.reception.forEach((rec: any) => {
                         if (rec) {
                           if (options.fields.indexOf("stationId") === -1) {
@@ -477,8 +474,6 @@ class Category {
                             options.fields.push("SNR");
                           }
                         }
-
-                        ++nb;
                       });
 
                     }
@@ -490,19 +485,19 @@ class Category {
 
                     //Specific order of columns for LRT Organization
                     if(organization.name === "LRT"){
-                      console.log("LRT organization found!");
+                      console.log("LRT organization found!!!!");
                       let nb = 0;
                       let nb1 = 0;
                       let nb2 = 0;
-                      options2.fields2.push("Date", "ID", "Name", "Sex", "Age", "Time", "South", "East", "UTM", "Area", "EVENT", "deviceId", "Notes", "gps_acq", "sat", "hdop", "speed", "battery", "seqNumber", "timestamp");
+                      options2.fields2.push("Date", "ID", "Name", "Sex", "Age", "Time", "South", "East", "UTM", "Area", "EVENT", "deviceId", "Notes", "gps_acq", "sat", "hdop", "speed", "battery", "seqNumber", "timestamp","RSSI");
                       
                       while (nb < options.fields.length) {
                         if (options2.fields2.indexOf(options.fields[nb]) === -1) {
-                          if (options.fields[nb].startsWith("RSSI")) {
+                          /*if (options.fields[nb].startsWith("RSSI")) {
                             options2.fields2.push(options.fields[nb]);
-                          }
+                          }*/
 
-                          else if (!options.fields[nb].startsWith("createdAt")){
+                          if (!options.fields[nb].startsWith("createdAt")){
                             options3.fields3.push(options.fields[nb]);
                           }
                         }
@@ -691,20 +686,31 @@ class Category {
                     }
 
                     if (message.reception) {
-
+                      //Selection of the best RSSI value, with SNR and stationId associated
                       let nb = 1;
+                      var lastRSSI : any;
                       message.reception.forEach((rec: any) => {
                         if (rec) {
-                          console.log("ob RSSI value",obj["RSSI"]);
-                          if (obj["RSSI"] < 0){
-                            console.log("inferieur à 0");
+                          if (obj["RSSI"] !== "undefined"){
+                            if(nb === 1){
+                              obj["RSSI"] = rec.RSSI;
+                              lastRSSI = obj["RSSI"];
+
+                              obj["stationId"] = rec.id;
+                              obj["SNR"] = rec.SNR;
+                            }
+                            else {
+                              if (rec.RSSI>lastRSSI){
+                                obj["RSSI"] = rec.RSSI;
+                                lastRSSI = obj["RSSI"];
+                                obj["stationId"] = rec.id;
+                                obj["SNR"] = rec.SNR;
+                              }
+                            }
                           }
-                          obj["stationId"] = rec.id;
-                          obj["RSSI"] = rec.RSSI;
-                          obj["SNR"] = rec.SNR;
                         }
 
-                        ++nb;
+                        nb++;
                       });
 
                     }
@@ -905,42 +911,32 @@ class Category {
                       });
                     }
 
-                    if (obj["lat_gps"] || obj["lat"] || obj["lat_sigfox"]) {
-                      if (obj["lat_gps"]) {
-                        obj["all_lat"] = obj["lat_gps"];
-                      }
-                      else if (obj["lat_sigfox"]) {
-                        obj["all_lat"] = obj["lat_sigfox"]
-                      }
-                      else if (obj["lat"]) {
-                        obj["all_lat"] = obj["lat"]
-                      }
-
-                    }
-                    if (obj["lng_gps"] || obj["lng"] || obj["lng_sigfox"]) {
-                      if (obj["lng_gps"]) {
-                        obj["all_lng"] = obj["lng_gps"];
-                      }
-                      else if (obj["lng_sigfox"]) {
-                        obj["all_lng"] = obj["lng_sigfox"]
-                      }
-                      else if (obj["lng"]) {
-                        obj["all_lng"] = obj["lng"]
-                      }
-
-                    }
-
                     if (message.reception) {
-
+                      //Selection of the best RSSI value, with SNR and stationId associated
                       let nb = 1;
+                      var lastRSSI : any;
                       message.reception.forEach((rec: any) => {
                         if (rec) {
-                          obj["stationId" + "_" + nb] = rec.id;
-                          obj["RSSI" + "_" + nb] = rec.RSSI;
-                          obj["SNR" + "_" + nb] = rec.SNR;
+                          if (obj["RSSI"] !== "undefined"){
+                            if(nb === 1){
+                              obj["RSSI"] = rec.RSSI;
+                              lastRSSI = obj["RSSI"];
+
+                              obj["stationId"] = rec.id;
+                              obj["SNR"] = rec.SNR;
+                            }
+                            else {
+                              if (rec.RSSI>lastRSSI){
+                                obj["RSSI"] = rec.RSSI;
+                                lastRSSI = obj["RSSI"];
+                                obj["stationId"] = rec.id;
+                                obj["SNR"] = rec.SNR;
+                              }
+                            }
+                          }
                         }
 
-                        ++nb;
+                        nb++;
                       });
 
                     }

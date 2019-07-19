@@ -289,7 +289,7 @@
                   <p></p>
                   <button tooltip="Download messages (CSV)" class="btn btn-round btn-success btn-ladda"
                           data-style="slide-up" [ladda]='loadingDownload'
-                          (click)="$event.preventDefault(); download('csv');">
+                          (click)="$event.preventDefault(); download('csv')">
                     <i class="fa fa-download"></i> &nbsp; Download
                   </button>
                 </div>
@@ -597,6 +597,38 @@
         <button class="btn btn-sm btn-organization" (click)="shareDeviceWithOrganization(deviceToEdit.id)">Share
         </button>
         <button class="btn btn-sm btn-default" (click)="shareDeviceWithOrganizationModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div bsModal #selectColumnsToDownloadModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="selectColumnsToDownloadModal"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">download category <b>{{deviceToEdit.id}}</b> with selected datas</h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form  (ngSubmit)="download(deviceToEdit.id,'csv')" class="form-horizontal" #editForm="ngForm">
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">Select columns to export</label>
+            <div class="col-md-9">
+              <angular2-multiselect name="selectColumns"
+                                    [data]="selectColumns"
+                                    [(ngModel)]="selectedColumns"
+                                    [settings]="selectColumnsSettings">
+              </angular2-multiselect>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-organization" (click)="download('csv')">Download</button>
+         <button class="btn btn-sm btn-default" (click)="selectColumnsToDownloadModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
