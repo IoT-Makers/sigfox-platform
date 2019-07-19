@@ -289,7 +289,7 @@
                   <p></p>
                   <button tooltip="Download messages (CSV)" class="btn btn-round btn-success btn-ladda"
                           data-style="slide-up" [ladda]='loadingDownload'
-                          (click)="$event.preventDefault(); getColumns('csv');">
+                          (click)="$event.preventDefault(); download('csv');">
                     <i class="fa fa-download"></i> &nbsp; Download
                   </button>
                 </div>
@@ -613,7 +613,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form  (ngSubmit)="download(deviceToEdit.id,'csv')" class="form-horizontal" #editForm="ngForm">
+        <form  (ngSubmit)="download('csv')" class="form-horizontal" #editForm="ngForm">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Select columns to export</label>
             <div class="col-md-9">
