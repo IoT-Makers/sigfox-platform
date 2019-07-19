@@ -25,6 +25,13 @@ var GreinerHormann = require('greiner-hormann');
         {arg: 'message', type: 'Message', required: true, description: 'The message object'}
       ],
     },
+    createFromGeolocReceived: {
+      returns: {arg: 'result', type: 'array'},
+      http: {path: '/from-geoloc', verb: 'post'},
+      accepts: [
+        {arg: 'message', type: 'Message', required: true, description: 'The message object'}
+      ],
+    },
     postSigfox: {
       accepts: [
         {arg: 'req', type: 'object', http: {source: 'req'}},
@@ -234,7 +241,7 @@ class Geoloc {
             geoloc.userId = userId;
             geoloc.messageId = message.id;
             geoloc.deviceId = data.deviceId;
-
+            
             if (messageInstance.data_parsed) {
               /**
                * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
@@ -284,6 +291,45 @@ class Geoloc {
       });
   }
 
+  private createFromGeolocReceived(message: any, req: any) : void {
+    // Models
+    const Geoloc = this.model;
+    const Beacon = this.model.app.models.Beacon;
+
+    if (typeof message === 'undefined') {
+      return console.error('Missing "message"', message);
+    } else if (typeof message.group === 'undefined') {
+      return console.log('----------> Not a capturs device, not trying to decode Geoloc.');
+    }
+
+    let hasGpsLocation = false;
+
+    // Build the GPS Geoloc object
+    const geoloc_gps = new Geoloc;
+    geoloc_gps.id = message.id + 'gps';
+    geoloc_gps.type = 'gps';
+    geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
+    geoloc_gps.createdAt = message.createdAt;
+    geoloc_gps.userId = message.userId;
+    geoloc_gps.messageId = message.id;
+    geoloc_gps.deviceId = message.deviceId;
+
+   
+    if (message.group === "capturs"){
+      console.log("on est rentré dans geoloc");
+
+      if (message.latitude !== null && typeof message.latitude !== 'undefined') {
+        hasGpsLocation = true;
+        geoloc_gps.location.lat = message.latitude;
+        geoloc_gps.location.lng = message.longitude;
+      }
+    }
+    
+    if (hasGpsLocation) {
+      this.createGeoloc(geoloc_gps);
+    }
+    
+  }
   private createFromParsedPayload(message: any, req: any): void {
     // Models
     const Geoloc = this.model;
@@ -330,36 +376,49 @@ class Geoloc {
     geoloc_wifi.deviceId = message.deviceId;
     geoloc_wifi.wifiAccessPoints = [];
 
-    message.data_parsed.forEach((p: any) => {
-      if (p.value !== null && typeof p.value !== 'undefined') {
-        // Check if there is GPS geoloc in parsed data
-        if (p.key === 'lat' && p.value >= -90 && p.value <= 90) {
-          hasGpsLocation = true;
-          geoloc_gps.location.lat = p.value;
-        } else if (p.key === 'lng' && p.value >= -180 && p.value <= 180) {
-          geoloc_gps.location.lng = p.value;
-        }
-        // Check if there is Beacon geoloc in parsed data
-        else if (p.key === 'beaconId') {
-          hasBeaconLocation = true;
-          geoloc_beacon.beaconId = p.value.toString().toUpperCase();
-        }
-        // Check if there is accuracy in parsed data
-        else if (p.key === 'accuracy' || p.key === 'precision') {
-          geoloc_beacon.accuracy = p.value;
-          geoloc_wifi.accuracy = p.value;
-        }
-        // Check if there is WiFi geoloc in parsed data
-        else if (p.key.startsWith('wlan_')) {
-          hasWifiLocation = true;
-          if (p.unit && p.unit !== '') geoloc_wifi.wifiAccessPoints.push({
-            macAddress: p.value.toString(),
-            signalStrength: Number(p.unit)
-          });
-          else geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString()});
-        }
+    if (message.group === "capturs"){
+       console.log("on est rentré dans geoloc");
+
+      if (message.latitude !== null && typeof message.latitude !== 'undefined') {
+        hasGpsLocation = true;
+
+        geoloc_gps.location.lat = message.latitude;
+        geoloc_gps.location.lng = message.longitude;
       }
-    });
+    }else{
+
+      message.data_parsed.forEach((p: any) => {
+        if (p.value !== null && typeof p.value !== 'undefined') {
+          // Check if there is GPS geoloc in parsed data
+          if (p.key === 'lat' && p.value >= -90 && p.value <= 90) {
+            hasGpsLocation = true;
+            geoloc_gps.location.lat = p.value;
+          } else if (p.key === 'lng' && p.value >= -180 && p.value <= 180) {
+            geoloc_gps.location.lng = p.value;
+          }
+          // Check if there is Beacon geoloc in parsed data
+          else if (p.key === 'beaconId') {
+            hasBeaconLocation = true;
+            geoloc_beacon.beaconId = p.value.toString().toUpperCase();
+          }
+          // Check if there is accuracy in parsed data
+          else if (p.key === 'accuracy' || p.key === 'precision') {
+            geoloc_beacon.accuracy = p.value;
+            geoloc_wifi.accuracy = p.value;
+          }
+          // Check if there is WiFi geoloc in parsed data
+          else if (p.key.startsWith('wlan_')) {
+            hasWifiLocation = true;
+            if (p.unit && p.unit !== '') geoloc_wifi.wifiAccessPoints.push({
+              macAddress: p.value.toString(),
+              signalStrength: Number(p.unit)
+            });
+            else geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString()});
+          }
+        }
+      });
+    }
+    
 
     if (hasGpsLocation) {
       this.createGeoloc(geoloc_gps);
