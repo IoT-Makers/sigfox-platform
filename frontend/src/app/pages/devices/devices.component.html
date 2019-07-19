@@ -289,7 +289,7 @@
                   <p></p>
                   <button tooltip="Download messages (CSV)" class="btn btn-round btn-success btn-ladda"
                           data-style="slide-up" [ladda]='loadingDownload'
-                          (click)="$event.preventDefault(); download('csv')">
+                          (click)="$event.preventDefault(); getColumns('csv');">
                     <i class="fa fa-download"></i> &nbsp; Download
                   </button>
                 </div>
