@@ -27,7 +27,7 @@ var GreinerHormann = require('greiner-hormann');
     },
     createFromGeolocReceived: {
       returns: {arg: 'result', type: 'array'},
-      http: {path: '/from-payload', verb: 'post'},
+      http: {path: '/from-geoloc', verb: 'post'},
       accepts: [
         {arg: 'message', type: 'Message', required: true, description: 'The message object'}
       ],

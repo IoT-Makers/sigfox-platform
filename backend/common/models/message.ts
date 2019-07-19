@@ -338,7 +338,6 @@ class Message {
                 });
             }
             else if (message.group == "capturs") {
-              console.log(message.group ," detected !")
               Geoloc.createFromGeolocReceived(
                 messageInstance,
                 (err: any, res: any) => {
