@@ -1116,9 +1116,9 @@ export class DeviceApi extends BaseLoopBackApi {
    *
    * @param {string} id 
    * 
-   * @param {object} req 
+   * @param {string} type
    * 
-   * @param {string} type 
+   * @param {object} req 
    * 
    * @param {object} res 
    *
@@ -1131,10 +1131,10 @@ export class DeviceApi extends BaseLoopBackApi {
    * This usually means the response is a `Device` object.)
    * </em>
    */
-  public getColumns(id: any, type: any = {}, req: any = {}, res: any = {}, customHeaders?: Function): Observable<any> {
+  public getColumns(id: any, type: any, req: any = {}, res: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Devices/download/:type";
+    "/Devices/download/:id/:type";
     let _routeParams: any = {
       type: type,
       id:id
@@ -1153,6 +1153,8 @@ export class DeviceApi extends BaseLoopBackApi {
    * @param {string} id 
    *
    * @param {string} type 
+   * 
+   * @param {string} tosend 
    *
    * @param {object} req 
    *
@@ -1167,13 +1169,14 @@ export class DeviceApi extends BaseLoopBackApi {
    * This usually means the response is a `Device` object.)
    * </em>
    */
-  public download(id: any, type: any, req: any = {}, res: any = {}, customHeaders?: Function): Observable<any> {
+  public download(id: any, type: any, tosend: any, req: any = {}, res: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Devices/download/:id/:type";
+    "/Devices/download/:id/:type/:tosend";
     let _routeParams: any = {
       id: id,
-      type: type
+      type: type,
+      tosend: tosend
     };
     let _postBody: any = {};
     let _urlParams: any = {};

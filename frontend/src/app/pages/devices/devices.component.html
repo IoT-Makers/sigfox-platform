@@ -289,7 +289,7 @@
                   <p></p>
                   <button tooltip="Download messages (CSV)" class="btn btn-round btn-success btn-ladda"
                           data-style="slide-up" [ladda]='loadingDownload'
-                          (click)="$event.preventDefault(); download('csv');">
+                          (click)="$event.preventDefault(); getColumns('csv');">
                     <i class="fa fa-download"></i> &nbsp; Download
                   </button>
                 </div>
@@ -607,13 +607,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">download category <b>{{deviceToEdit.id}}</b> with selected datas</h4>
+        <h4 class="modal-title">download Device <b>{{deviceToEdit.id}}</b> with selected datas</h4>
         <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form  (ngSubmit)="download('csv')" class="form-horizontal" #editForm="ngForm">
+        <form  (ngSubmit)="download('csv', 'rows')" class="form-horizontal" #editForm="ngForm">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Select columns to export</label>
             <div class="col-md-9">
@@ -627,7 +627,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-sm btn-organization" (click)="download('csv')">Download</button>
+        <button class="btn btn-sm btn-organization" (click)="download('csv', 'rows')">Download</button>
          <button class="btn btn-sm btn-default" (click)="selectColumnsToDownloadModal.hide()">Cancel</button>
       </div>
     </div><!-- /.modal-content -->

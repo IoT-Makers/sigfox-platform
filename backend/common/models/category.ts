@@ -899,15 +899,13 @@ class Category {
                       message.Geolocs.forEach((geoloc: any) => {
                         obj["lat_" + geoloc.type] = geoloc.location.lat;
                         obj["lng_" + geoloc.type] = geoloc.location.lng;
-                        obj["accuracy_" + geoloc.type] = geoloc.accuracy;
-                        
+                        obj["accuracy_" + geoloc.type] = geoloc.accuracy; 
                       });
                     }
 
                     if (message.data_parsed) {
                       message.data_parsed.forEach((p: any) => {
                         obj[p.key] = p.value;
-
                       });
                     }
 
@@ -921,7 +919,6 @@ class Category {
                             if(nb === 1){
                               obj["RSSI"] = rec.RSSI;
                               lastRSSI = obj["RSSI"];
-
                               obj["stationId"] = rec.id;
                               obj["SNR"] = rec.SNR;
                             }
@@ -935,10 +932,8 @@ class Category {
                             }
                           }
                         }
-
                         nb++;
                       });
-
                     }
                    
                     data.push(obj);

@@ -166,14 +166,15 @@ export class DevicesComponent implements OnInit, OnDestroy {
     });
   }
 
-  getColumns(type: string): void {
+  /*getColumns(): void {
     this.loadingDownload = true;
     console.log("on rentre dans getcolumns");
-    const url = 'https://api.' + this.document.location.hostname + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    //const url = 'https://api.' + this.document.location.hostname + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
     
     //const url = environment.apiUrl + '/api/Categories/download/' + category.id + '?access_token=' + this.userApi.getCurrentToken().id;
     //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
-    
+    const url = 'http://localhost:3000/api/Devices/download/' + this.deviceToEdit.id + '?access_token=' + this.userApi.getCurrentToken().id;
+
 
     this.http.get(url).timeout(600000).subscribe((res: any[]) => {
         //const blob: Blob = new Blob([res], {type: 'text/csv'});
@@ -192,15 +193,84 @@ export class DevicesComponent implements OnInit, OnDestroy {
       this.loadingDownload = false;
       this.selectColumnsToDownloadModal.show();
     });
+  }*/
+
+  download(type: string, tosend: string) {
+    console.log("on rentre dans download");
+    console.log("device to edit", this.deviceToEdit);
+    this.loadingDownload = true;
+
+    if(this.selectedColumns.length !== 0){
+      console.log("SELECTED COLUMNS !!", this.selectedColumns)
+      let tab : any = [];
+      let tabid : any = [];
+      
+      this.selectedColumns.forEach(column => {
+          tab.push(column);
+          console.log("column val", column);
+      });
+      tab.forEach(p => {
+          tabid.push(p.id);
+      });
+
+      tosend = tabid;
+
+      const url = 'https://api.' + this.document.location.hostname + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '/' + tosend + '?access_token=' + this.userApi.getCurrentToken().id;
+      //const url = 'http://localhost:3000/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '/' + tosend + '?access_token=' + this.userApi.getCurrentToken().id;
+
+      this.http.get(url, {responseType: 'blob'}).subscribe(res => {
+        this.selectColumnsToDownloadModal.hide();
+        console.log("on rentre dans http get")
+        const blob: Blob = new Blob([res], {type: 'text/csv'});
+        const today = moment().format('YYYYMMDD');
+        const filename = this.deviceToEdit.id + '_' + today + '.csv';
+        saveAs(blob, filename);
+        this.loadingDownload = false;
+      }, err => {
+        console.log(err);
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('error', 'Error', 'Server error');
+        this.loadingDownload = false;
+      });
+    }else this.loadingDownload = false;
   }
 
-  download(type: string) {
+
+  getColumns(type: string) {
     console.log("on rentre dans download");
     console.log("device to edit", this.deviceToEdit);
     this.loadingDownload = true;
 
     const url = 'https://api.' + this.document.location.hostname + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
     //const url = 'http://localhost:3000/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+
+    this.http.get(url).timeout(600000).subscribe((res: any[]) => {
+      //const blob: Blob = new Blob([res], {type: 'text/csv'});
+      console.log("getcol res Value", res);
+      this.selectColumns = [];
+      res.forEach(r => {
+          console.log("sous champ:",r);
+          const item2 = {
+              id: r,
+              itemName: r
+            };
+          this.selectColumns.push(item2);
+      });
+      console.log("selectColumns",this.selectColumns)
+    
+    this.loadingDownload = false;
+    this.selectColumnsToDownloadModal.show();
+  });
+  }
+
+  /*download1(type: string) {
+    console.log("on rentre dans download");
+    console.log("device to edit", this.deviceToEdit);
+    this.loadingDownload = true;
+
+    //const url = 'https://api.' + this.document.location.hostname + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    const url = 'http://localhost:3000/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
 
     this.http.get(url, {responseType: 'blob'}).subscribe(res => {
       console.log("on rentre dans http get")
@@ -216,7 +286,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
       this.toast = this.toasterService.pop('error', 'Error', 'Server error');
       this.loadingDownload = false;
     });
-  }
+  }*/
 
   setCircles() {
     for (let i = 0; i < this.displayedDevices.length; i++) {

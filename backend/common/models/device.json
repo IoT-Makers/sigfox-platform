@@ -134,7 +134,8 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
-        "download"
+        "download",
+        "getColumns"
       ]
     }
   ],
