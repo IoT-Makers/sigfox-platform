@@ -176,9 +176,28 @@ export class CategoriesComponent implements OnInit, OnDestroy {
                 itemName: r
               };
             this.selectColumns.push(item2);
+            if (organizationId === "5b150e8f5f045200bdf496ba"){
+              if (item2.id === "Date" || item2.id === "ID" || item2.id === "Name" || item2.id === "Sex" || item2.id === "Age" || item2.id === "Time" || item2.id === "South" || item2.id === "East" || item2.id === "UTM" || item2.id === "Area" || item2.id === "EVENT" || item2.id === "deviceId" || item2.id === "Notes" || item2.id === "gps_acq" || item2.id === "sat" || item2.id === "hdop" || item2.id === "speed" || item2.id === "battery" || item2.id === "seqNumber" || item2.id === "timestamp" || item2.id === "RSSI" ){
+                this.selectedColumns.push(item2);
+              }
+            }
+            
         });
-        console.log("selectColumns",this.selectColumns)
-      
+        
+        
+        
+
+      console.log("selectColumns",this.selectColumns);
+      console.log("organizationId",organizationId);
+      /*if (organizationId === "5b150e8f5f045200bdf496ba"){
+        const item3 = {
+          id: "hola",
+          itemName: "hola"
+        };
+
+        this.selectColumns.push(item3);
+        this.selectedColumns.push(item3);
+      }*/
       this.loadingDownload = false;
       this.selectColumnsToDownloadModal.show();
     });
