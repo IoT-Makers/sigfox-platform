@@ -285,16 +285,11 @@ class Device {
     const Message = this.model.app.models.Message;
     const Device = this.model;
 
-
     if ((type !== "csv"
       && type !== "json")
       || typeof deviceId === "undefined") {
       res.send('Missing "type" ("csv" or "json"), "deviceId"');
     }
-
-    console.log("TYPE VALUE",type);
-    console.log("CAT VALUE", deviceId);
-    console.log("TOSEND VALUE",tosend);
 
     Device.findOne(
       {
@@ -322,16 +317,11 @@ class Device {
           res.send(err);
         } else if (device) {
           device = device.toJSON();
-          console.log("name of device",device.name);
-
 
           let hasProperty = false;
           let nbProperty = 0;
           let propertyKey: any = [];
           let propertyValue: any = [];
-
-          // Obtain the userId with the access token of ctx
-          const userId = req.accessToken.userId;
 
           const today = moment().format('YYYYMMDD');
           const filename = deviceId + '_' + today + '.csv';
@@ -342,7 +332,6 @@ class Device {
           res.set("Content-Type", "application/download");
           res.set("Content-Disposition", "attachment;filename=" + filename);
           res.set("Content-Transfer-Encoding", "binary");
-
 
           if (device.properties){
 
@@ -371,18 +360,17 @@ class Device {
                 next();
               } else if (messages) {
                 const data: any = [];
-                let csv: any = [];
-                let columns : any = [];
                 const options: any = {
                   fields: [],
                 };
-      
+                let csv: any = [];
+                let columns : any = [];
+                
                 columns = tosend.split(',');
-                //console.log("messages", messages)
+
                 messages.forEach((message: any) => {
                   message = message.toJSON();
                   const obj: any = {};
-                  const date = new Date(message.createdAt);
 
                   if (hasProperty) {
                     let nb = 0;
@@ -453,8 +441,7 @@ class Device {
                 });
                 if (data.length > 0) {
                   try {
-                    //csv = json2csv(data, options);
-      
+
                     csv = json2csv(data, {fields: columns} );
                     console.log("Done CSV processing.");
                   } catch (err) {
@@ -474,7 +461,7 @@ class Device {
     // Model
     const Message = this.model.app.models.Message;
     const Device = this.model;
-    console.log("deviceId", deviceId);
+
     if ((type !== "csv"
       && type !== "json")
       || typeof deviceId === "undefined") {
@@ -507,9 +494,7 @@ class Device {
           res.send(err);
         } else if (device) {
           device = device.toJSON();
-          console.log("name of device",device.name);
           
-          let hasProperty = false;
           let nbProperty = 0;
           let propertyKey: any = [];
           let propertyValue: any = [];
@@ -537,7 +522,7 @@ class Device {
           if (device.properties){
 
             device.properties.forEach((property: any) => {
-              hasProperty = true;
+              
               propertyKey[nbProperty] = property.key;
               propertyValue[nbProperty] = property.value;
               if (options.fields.indexOf(propertyKey[nbProperty]) === -1) {
@@ -604,121 +589,6 @@ class Device {
             });
         }});
     
-  }
-
-  public download1(deviceId: string, type: string, req: any, res: any, next: Function): void {
-    // Model
-    const Message = this.model.app.models.Message;
-    console.log("deviceId", deviceId);
-    if ((type !== "csv"
-      && type !== "json")
-      || typeof deviceId === "undefined") {
-      res.send('Missing "type" ("csv" or "json"), "deviceId"');
-    }
-
-
-    // Obtain the userId with the access token of ctx
-    const userId = req.accessToken.userId;
-
-    const today = moment().format('YYYYMMDD');
-    const filename = deviceId + '_' + today + '.csv';
-    res.setTimeout(600000);
-    res.set("Cache-Control", "max-age=0, no-cache, must-revalidate, proxy-revalidate");
-    res.set("Content-Type", "application/force-download");
-    res.set("Content-Type", "application/octet-stream");
-    res.set("Content-Type", "application/download");
-    res.set("Content-Disposition", "attachment;filename=" + filename);
-    res.set("Content-Transfer-Encoding", "binary");
-
-    Message.find(
-      {
-        where: {
-          and: [
-            // {userId: userId},
-            {deviceId},
-          ],
-        },
-        include: ["Geolocs"],
-        order: "createdAt DESC",
-      }, (err: any, messages: any) => {
-        if (err) {
-          console.error(err);
-          res.send(err);
-          next();
-        } else if (messages) {
-          const data: any = [];
-          let csv: any = [];
-          const options: any = {
-            fields: [],
-          };
-          options.fields.push("seqNumber");
-          options.fields.push("createdAt");
-          options.fields.push("year");
-          options.fields.push("month");
-          options.fields.push("day");
-          options.fields.push("hours");
-          options.fields.push("minutes");
-          options.fields.push("seconds");
-          options.fields.push("data");
-          options.fields.push("ack");
-          options.fields.push("data_downlink");
-
-          //console.log("messages", messages)
-
-          messages.forEach((message: any) => {
-            message = message.toJSON();
-            const obj: any = {};
-            const date = new Date(message.createdAt);
-
-            obj.seqNumber = message.seqNumber;
-            obj.createdAt = moment(message.createdAt).format("DD-MMM-YY HH:mm:ss");
-            obj.year = date.getFullYear();
-            obj.month = date.getMonth() + 1;
-            obj.day = date.getDate();
-            obj.hours = date.getHours();
-            obj.minutes = date.getMinutes();
-            obj.seconds = date.getSeconds();
-            obj.data = message.data;
-            obj.ack = message.ack;
-            obj.data_downlink = message.data_downlink;
-
-            if (message.data_parsed) {
-              message.data_parsed.forEach((p: any) => {
-                if (options.fields.indexOf(p.key) === -1) {
-                  options.fields.push(p.key);
-                }
-                obj[p.key] = p.value;
-              });
-            }
-            if (message.Geolocs) {
-              message.Geolocs.forEach((geoloc: any) => {
-                if (options.fields.indexOf("lat_" + geoloc.type) === -1) {
-                  options.fields.push("lat_" + geoloc.type);
-                  options.fields.push("lng_" + geoloc.type);
-                  options.fields.push("accuracy_" + geoloc.type);
-                }
-                obj["lat_" + geoloc.type] = geoloc.location.lat;
-                obj["lng_" + geoloc.type] = geoloc.location.lng;
-                obj["accuracy_" + geoloc.type] = geoloc.accuracy;
-              });
-            }
-            data.push(obj);
-          });
-          if (data.length > 0) {
-            try {
-              csv = json2csv(data, options);
-
-              //csv = json2csv(data, {fields: columns} );
-              console.log("Done CSV processing.");
-            } catch (err) {
-              console.error(err);
-            }
-          }
-          // res.status(200).send({data: csv});
-          res.send(csv);
-          //next();
-        } else next(null, "Error occured - not allowed");
-      });
   }
 
   // Before delete device, remove category organizaton links

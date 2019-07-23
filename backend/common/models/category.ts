@@ -24,7 +24,6 @@ const json2csv = require("json2csv").parse;
     getColumns: {
       accepts: [
         { arg: "categoryId", required: true, type: "string", http: { source: "path" } },
-        //{ arg: "col", required: true, type: "string", http: { source: "path" } },
         { arg: "req", type: "object", http: { source: "req" } },
         { arg: "res", type: "object", http: { source: "res" } }
       ],
@@ -38,7 +37,6 @@ const json2csv = require("json2csv").parse;
       accepts: [
         { arg: "organizationId", required: true, type: "string", http: { source: "path" } },
         { arg: "categoryId", required: true, type: "string", http: { source: "path" } },
-        //{ arg: "col", required: true, type: "string", http: { source: "path" } },
         { arg: "req", type: "object", http: { source: "req" } },
         { arg: "res", type: "object", http: { source: "res" } }
       ],
@@ -312,9 +310,6 @@ class Category {
     // Model
     const Organization = this.model.app.models.Organization;
     const Device = this.model.app.models.Device;
-    console.log("GETCOLUMNSFROMORGANIZATION");
-    console.log('CATEGORYID: ',categoryId );
-    console.log('ORGANIZATIONID: ',organizationId );
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
@@ -356,8 +351,6 @@ class Category {
           }
           
           //const category = organization.Categories[0];
-
-          console.log("Category to catch :", category.name);
           const devices = category.Devices;
 
           const options: any = {
@@ -452,7 +445,6 @@ class Category {
                     }
 
                     if (obj["lat_gps"] || obj["lat"] || obj["lat_sigfox"]) {
-                      console.log("ON RENTRE DANS IF OBJ");
                       if (options.fields.indexOf("all_lat") === -1) {
                         options.fields.push("all_lat");
                       }
@@ -468,7 +460,6 @@ class Category {
                       message.reception.forEach((rec: any) => {
                         if (rec) {
                           if (options.fields.indexOf("stationId") === -1) {
-                            //options.fields.push("stationId" + "_" + nb);
                             options.fields.push("stationId");
                             options.fields.push("RSSI");
                             options.fields.push("SNR");
@@ -485,7 +476,7 @@ class Category {
 
                     //Specific order of columns for LRT Organization
                     if(organization.name === "LRT"){
-                      console.log("LRT organization found!!!!");
+                      console.log("LRT organization found");
                       let nb = 0;
                       let nb1 = 0;
                       let nb2 = 0;
@@ -577,13 +568,10 @@ class Category {
             };
             n++;
           }
+
           const devices = category.Devices;
-
-          console.log("Category to download :", category.name);
-
           const today = moment().format('YYYY.MM.DD');
           //const filename = category.name + '_' + today + '.csv';
-
           const filename =  today + '_' + category.name + '_export.csv';
           res.setTimeout(600000);
           res.set("Cache-Control", "max-age=0, no-cache, must-revalidate, proxy-revalidate");
@@ -657,7 +645,7 @@ class Category {
                     obj.deviceId = message.deviceId;
                     obj.seqNumber = message.seqNumber;
                     obj.createdAt = moment(message.createdAt).format("DD-MMM-YY");
-                    obj.timestamp = message.createdAt;
+                    obj.timestamp = message.createdAt.toJSON();
                     //obj.year = new Date(message.createdAt).getFullYear();
                     //obj.month = new Date(message.createdAt).getMonth() + 1;
                     //obj.day = new Date(message.createdAt).getDate();
@@ -751,10 +739,17 @@ class Category {
                   ++nbProcessedDevices;
 
                   if (data.length > 0 && nbProcessedDevices === category.Devices.length) {
+                    
+                    // Sort all message by date if LRT Organization
+                    var data2: any = [];
+                    if(organization.name === "LRT"){
+                      data2 = data.sort((a : any,b: any) => a.timestamp.localeCompare(b.timestamp));
+                      data2 = data2.reverse();
+                    }
+                    data2 = data;
 
                     try {
-                      csv = json2csv(data, {fields: columns} );
-                      console.log("csv value:",csv);
+                      csv = json2csv(data2, {fields: columns} );
                       console.log("Done CSV processing.");
                     } catch (err) {
                       console.error(err);
@@ -776,18 +771,12 @@ class Category {
     // Model
     const Category = this.model;
     const Device = this.model.app.models.Device;
-    console.log("DOWNLOAD")
     if ((type !== "csv"
       && type !== "json" )
       || typeof categoryId === "undefined") {
       res.send('Missing "type" ("csv" or "json"), "categoryId"');
     }
-    console.log("TYPE VALUE",type);
-    console.log("CAT VALUE", categoryId);
-    console.log("TOSEND VALUE",tosend);
     
-    
-
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
@@ -945,7 +934,6 @@ class Category {
 
                     try {
                       csv = json2csv(data, {fields: columns} );
-                      console.log("csv value:",csv);
                       console.log("Done CSV processing.");
                     } catch (err) {
                       console.error(err);
