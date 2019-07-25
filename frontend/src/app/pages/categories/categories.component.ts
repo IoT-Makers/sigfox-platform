@@ -135,6 +135,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   getColumns(category: Category): void {
     this.categoryToEdit = category;
     this.loadingDownload = true;
+    this.selectedColumns = [];
     const url = environment.apiUrl + '/api/Categories/download/' + category.id + '?access_token=' + this.userApi.getCurrentToken().id;
     //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
     
@@ -161,6 +162,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   getColumnsFromOrganization(organizationId: string, category: Category): void {
     this.categoryToEdit = category;
     this.loadingDownload = true;
+    this.selectedColumns = [];
     const url = environment.apiUrl + '/api/Categories/download/' + organizationId + '/' + category.id + '?access_token=' + this.userApi.getCurrentToken().id;
     //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
     
