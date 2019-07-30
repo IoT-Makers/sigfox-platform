@@ -264,12 +264,12 @@ class Category {
                       });
                     }
 
-                    if (obj["lat_gps"] || obj["lat"] || obj["lat_sigfox"]) {
+                    if (obj["lat_gps"] || obj["lat_sigfox"]) {
                       if (options.fields.indexOf("all_lat") === -1) {
                         options.fields.push("all_lat");
                       }
                     }
-                    if (obj["lng_gps"] || obj["lng"] || obj["lng_sigfox"]) {
+                    if (obj["lng_gps"] || obj["lng_sigfox"]) {
                       if (options.fields.indexOf("all_llng") === -1) {
                         options.fields.push("all_lng");
                       }
@@ -438,21 +438,13 @@ class Category {
 
                     if (message.data_parsed) {
                       message.data_parsed.forEach((p: any) => {
-                        if (options.fields.indexOf(p.key) === -1) {
-                          options.fields.push(p.key);
+                        if (p.key !== "lat" && p.key !== "lng"){
+                          if (options.fields.indexOf(p.key) === -1) {
+                            options.fields.push(p.key);
+                          }
                         }
+                        
                       });
-                    }
-
-                    if (obj["lat_gps"] || obj["lat"] || obj["lat_sigfox"]) {
-                      if (options.fields.indexOf("all_lat") === -1) {
-                        options.fields.push("all_lat");
-                      }
-                    }
-                    if (obj["lng_gps"] || obj["lng"] || obj["lng_sigfox"]) {
-                      if (options.fields.indexOf("all_llng") === -1) {
-                        options.fields.push("all_lng");
-                      }
                     }
 
                     if (message.reception) {
@@ -480,7 +472,7 @@ class Category {
                       let nb = 0;
                       let nb1 = 0;
                       let nb2 = 0;
-                      options2.fields2.push("Date", "ID", "Name", "Sex", "Age", "Time", "South", "East", "UTM", "Area", "EVENT", "deviceId", "Notes", "gps_acq", "sat", "hdop", "speed", "battery", "seqNumber", "timestamp","RSSI");
+                      options2.fields2.push("Date", "ID", "Name", "Sex", "Age", "Time", "South", "East", "UTM", "Area", "EVENT", "deviceId", "Notes", "gps_acq", "sat", "hdop", "speed", "battery", "seqNumber", "timestamp","RSSI","Geoloc type");
                       
                       while (nb < options.fields.length) {
                         if (options2.fields2.indexOf(options.fields[nb]) === -1) {
@@ -705,30 +697,28 @@ class Category {
 
                     //used only when orga is LRT
                     if (organization.name === "LRT"){
-                      if (obj["lat_gps"] || obj["lat"] || obj["lat_sigfox"]) {
+                      if (obj["lat_gps"] || obj["lat_sigfox"]) {
                         if (obj["lat_gps"]) {
                           obj["South"] = obj["lat_gps"];
+                          obj["Geoloc type"] = "SigfoxGPS";
                         }
                         else if (obj["lat_sigfox"]) {
                           obj["South"] = obj["lat_sigfox"];
-                        }
-                        else if (obj["lat"]) {
-                          obj["South"] = obj["lat"];
+                          obj["Geoloc type"] = "SigfoxGeo";
+
                         }
   
                       }
-                      if (obj["lng_gps"] || obj["lng"] || obj["lng_sigfox"]) {
+                      if (obj["lng_gps"] || obj["lng_sigfox"]) {
                         if (obj["lng_gps"]) {
                           obj["East"] = obj["lng_gps"];
                         }
                         else if (obj["lng_sigfox"]) {
                           obj["East"] = obj["lng_sigfox"];
                         }
-                        else if (obj["lng"]) {
-                          obj["East"] = obj["lng"];
-                        }
   
                       }
+                      
                       if (obj.createdAt){
                         obj["Date"] = obj.createdAt;
                       }
