@@ -468,6 +468,8 @@ class Device {
       res.send('Missing "type" ("csv" or "json"), "deviceId"');
     }
    
+    var hasOnlyRhinosParser = true;
+
     Device.findOne(
       {
         where: {
@@ -485,7 +487,7 @@ class Device {
                 limit: 5,
                 order: "createdAt DESC",
               },
-            }],
+            }, "Parser"],
           },
         }],
       }, (err: any, device: any) => {
@@ -495,12 +497,24 @@ class Device {
         } else if (device) {
           device = device.toJSON();
           
+          const parser = device.Parser;
+          console.log("device Id", device.id);
+          if (!device.Parser || (parser.name !== "TEKTOS RHINO TRACKER" && parser.name !== "Rhinos Parser")){
+            hasOnlyRhinosParser = false;
+            console.log("has Only Rhinos Parser", hasOnlyRhinosParser);
+          }
           let nbProperty = 0;
           let propertyKey: any = [];
           let propertyValue: any = [];
 
           const options: any = {
             fields: [],
+          };
+          const options2: any = {
+            fields2: [],
+          };
+          const options3: any = {
+            fields3: [],
           };
           
           options.fields.push("createdAt");
@@ -584,6 +598,38 @@ class Device {
                     });
                   }
                 });
+                if (hasOnlyRhinosParser === true){
+                  console.log("LRT organization found");
+                  let nb = 0;
+                  let nb1 = 0;
+                  let nb2 = 0;
+                  options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "South_LRT", "East_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT", "gps_acq_LRT", "sat_LRT", "hdop_LRT", "speed_LRT", "battery_LRT", "seqNumber_LRT", "timestamp_LRT","RSSI_LRT","Geoloc type_LRT");
+                  
+                  while (nb < options.fields.length) {
+                    if (options2.fields2.indexOf(options.fields[nb] + "_LRT") === -1) {
+                      /*if (options.fields[nb].startsWith("RSSI")) {
+                        options2.fields2.push(options.fields[nb]);
+                      }*/
+
+                      if (!options.fields[nb].startsWith("createdAt")){
+                        options3.fields3.push(options.fields[nb]);
+                      }
+                    }
+                    nb++;
+                  }
+
+                  while (nb1 < options2.fields2.length) {
+                    options.fields[nb1] = options2.fields2[nb1];
+                    nb1++;
+
+                  } options.fields.splice(options2.fields2.length, options.fields.length - options2.fields2.length);
+
+                  while (nb2 < options3.fields3.length) {
+                    options.fields.push(options3.fields3[nb2]);
+                    nb2++;
+
+                  }
+                }
                 // res.status(200).send({data: csv});
                 console.log("options fields avant res", options.fields)
                 res.send(options.fields);
