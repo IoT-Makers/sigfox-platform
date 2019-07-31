@@ -196,6 +196,8 @@ class Category {
           options.fields.push("ack");
           options.fields.push("data_downlink");
 
+
+          var hasOnlyRhinosParser = true;
           let nbProcessedDevices = 0;
 
           category.Devices.forEach((device: any, i: number) => {
@@ -223,13 +225,20 @@ class Category {
                       },
                     }],
                   },
-                }],
+                }, "Parser"],
               }, (err: any, device: any) => {
                 if (err) {
                   console.error(err);
                   //res.send(err);
                 } else if (device) {
                   device = device.toJSON();
+
+                  const parser = device.Parser;
+                  console.log("device Id", device.id);
+                  if (!device.Parser || (parser.name !== "TEKTOS RHINO TRACKER" && parser.name !== "Rhinos Parser")){
+                    hasOnlyRhinosParser = false;
+                    console.log("has Only Rhinos Parser", hasOnlyRhinosParser);
+                  }
 
                   if (device.properties){
                     device.properties.forEach((property: any) => {
@@ -295,6 +304,42 @@ class Category {
                   ++nbProcessedDevices;
 
                   if (nbProcessedDevices === category.Devices.length) {
+
+                    console.log("value of hasRhinosParser", hasOnlyRhinosParser );
+                    
+                    //if(organization.name === "LRT"){
+                    if (hasOnlyRhinosParser === true){
+                      console.log("LRT organization found");
+                      let nb = 0;
+                      let nb1 = 0;
+                      let nb2 = 0;
+                      options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "South_LRT", "East_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT", "gps_acq_LRT", "sat_LRT", "hdop_LRT", "speed_LRT", "battery_LRT", "seqNumber_LRT", "timestamp_LRT","RSSI_LRT","Geoloc type_LRT");
+                      
+                      while (nb < options.fields.length) {
+                        if (options2.fields2.indexOf(options.fields[nb] + "_LRT") === -1) {
+                          /*if (options.fields[nb].startsWith("RSSI")) {
+                            options2.fields2.push(options.fields[nb]);
+                          }*/
+
+                          if (!options.fields[nb].startsWith("createdAt")){
+                            options3.fields3.push(options.fields[nb]);
+                          }
+                        }
+                        nb++;
+                      }
+
+                      while (nb1 < options2.fields2.length) {
+                        options.fields[nb1] = options2.fields2[nb1];
+                        nb1++;
+
+                      } options.fields.splice(options2.fields2.length, options.fields.length - options2.fields2.length);
+
+                      while (nb2 < options3.fields3.length) {
+                        options.fields.push(options3.fields3[nb2]);
+                        nb2++;
+
+                      }
+                    }
  
                     res.send(options.fields);
                   }
@@ -312,6 +357,8 @@ class Category {
     // Model
     const Organization = this.model.app.models.Organization;
     const Device = this.model.app.models.Device;
+    const Parser = this.model.app.models.Parser;
+
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
@@ -382,7 +429,7 @@ class Category {
           options.fields.push("data_downlink");
 
           let nbProcessedDevices = 0;
-
+          var hasOnlyRhinosParser = true;
           devices.forEach((device: any, i: number) => {
             let hasProperty = false;
             let nbProperty = 0;
@@ -405,13 +452,23 @@ class Category {
                       },
                     }],
                   },
-                }],
+                }, "Parser"],
               }, (err: any, device: any) => {
                 if (err) {
                   console.error(err);
                   //res.send(err);
                 } else {
+
                   device = device.toJSON();
+
+                  const parser = device.Parser;
+                  console.log("device Id", device.id);
+                  if (!device.Parser || (parser.name !== "TEKTOS RHINO TRACKER" && parser.name !== "Rhinos Parser")){
+                    hasOnlyRhinosParser = false;
+                    console.log("has Only Rhinos Parser", hasOnlyRhinosParser);
+                  }
+
+                  
 
                   if (device.properties){
                     device.properties.forEach((property: any) => {
@@ -428,6 +485,8 @@ class Category {
                   device.Messages.forEach((message: any) => {
                     const obj: any = {};
 
+
+                    //console.log("message parser ID", message.parserId);
                     if (message.Geolocs) {
                       message.Geolocs.forEach((geoloc: any) => {
                         if (options.fields.indexOf("lat_" + geoloc.type) === -1) {
@@ -468,16 +527,18 @@ class Category {
                   
                   if (nbProcessedDevices === devices.length) {
 
-                    //Specific order of columns for LRT Organization
-                    if(organization.name === "LRT"){
+                    console.log("value of hasRhinosParser", hasOnlyRhinosParser );
+                    
+                    //if(organization.name === "LRT"){
+                    if (hasOnlyRhinosParser === true){
                       console.log("LRT organization found");
                       let nb = 0;
                       let nb1 = 0;
                       let nb2 = 0;
-                      options2.fields2.push("Date", "ID", "Name", "Sex", "Age", "Time", "South", "East", "UTM", "Area", "EVENT", "deviceId", "Notes", "gps_acq", "sat", "hdop", "speed", "battery", "seqNumber", "timestamp","RSSI","Geoloc type");
+                      options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "South_LRT", "East_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT", "gps_acq_LRT", "sat_LRT", "hdop_LRT", "speed_LRT", "battery_LRT", "seqNumber_LRT", "timestamp_LRT","RSSI_LRT","Geoloc type_LRT");
                       
                       while (nb < options.fields.length) {
-                        if (options2.fields2.indexOf(options.fields[nb]) === -1) {
+                        if (options2.fields2.indexOf(options.fields[nb] + "_LRT") === -1) {
                           /*if (options.fields[nb].startsWith("RSSI")) {
                             options2.fields2.push(options.fields[nb]);
                           }*/
@@ -581,6 +642,7 @@ class Category {
 
           columns = tosend.split(',');
 
+          const hasRhinosParser = false;
           let nbProcessedDevices = 0;
 
           devices.forEach((device: any, i: number) => {
