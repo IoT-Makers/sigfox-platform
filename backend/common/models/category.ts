@@ -258,9 +258,11 @@ class Category {
 
                     if (message.data_parsed) {
                       message.data_parsed.forEach((p: any) => {
-                        if (options.fields.indexOf(p.key) === -1) {
-                          options.fields.push(p.key);
-                        }
+                        if (p.key !== "lat" && p.key !== "lng"){
+                          if (options.fields.indexOf(p.key) === -1) {
+                            options.fields.push(p.key);
+                          }
+                        }  
                       });
                     }
 
