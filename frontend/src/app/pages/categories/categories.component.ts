@@ -138,7 +138,6 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.selectedColumns = [];
     const url = environment.apiUrl + '/api/Categories/download/' + category.id + '?access_token=' + this.userApi.getCurrentToken().id;
     //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
-    
 
     this.http.get(url).timeout(600000).subscribe((res: any[]) => {
         //const blob: Blob = new Blob([res], {type: 'text/csv'});
@@ -151,6 +150,11 @@ export class CategoriesComponent implements OnInit, OnDestroy {
                 itemName: r
               };
             this.selectColumns.push(item2);
+            if (item2.id === "Date_LRT" || item2.id === "ID_LRT" || item2.id === "Name_LRT" || item2.id === "Sex_LRT" || item2.id === "Age_LRT" || item2.id === "Time_LRT" || item2.id === "South_LRT" || item2.id === "East_LRT" || item2.id === "UTM_LRT" || item2.id === "Area_LRT" || item2.id === "EVENT_LRT" || item2.id === "deviceId_LRT" || item2.id === "Notes_LRT" || item2.id === "gps_acq_LRT" || item2.id === "sat_LRT" || item2.id === "hdop_LRT" || item2.id === "speed_LRT" || item2.id === "battery_LRT" || item2.id === "seqNumber_LRT" || item2.id === "timestamp_LRT" || item2.id === "RSSI_LRT"  || item2.id === "Geoloc type_LRT"){
+              item2.id = item2.id.replace('_LRT','');
+              item2.itemName = item2.itemName.replace('_LRT','');
+              this.selectedColumns.push(item2);
+            }
         });
         console.log("selectColumns",this.selectColumns)
       
@@ -164,8 +168,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.loadingDownload = true;
     this.selectedColumns = [];
     const url = environment.apiUrl + '/api/Categories/download/' + organizationId + '/' + category.id + '?access_token=' + this.userApi.getCurrentToken().id;
-    //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
-    
+    //const url = 'http://localhost:3000/api/Categories/download/' + category.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id; 
 
     this.http.get(url).timeout(600000).subscribe((res: any[]) => {
         //const blob: Blob = new Blob([res], {type: 'text/csv'});
@@ -178,11 +181,13 @@ export class CategoriesComponent implements OnInit, OnDestroy {
                 itemName: r
               };
             this.selectColumns.push(item2);
-            if (organizationId === "5b150e8f5f045200bdf496ba"){
-              if (item2.id === "Date" || item2.id === "ID" || item2.id === "Name" || item2.id === "Sex" || item2.id === "Age" || item2.id === "Time" || item2.id === "South" || item2.id === "East" || item2.id === "UTM" || item2.id === "Area" || item2.id === "EVENT" || item2.id === "deviceId" || item2.id === "Notes" || item2.id === "gps_acq" || item2.id === "sat" || item2.id === "hdop" || item2.id === "speed" || item2.id === "battery" || item2.id === "seqNumber" || item2.id === "timestamp" || item2.id === "RSSI"  || item2.id === "Geoloc type"){
+            //if (organizationId === "5b150e8f5f045200bdf496ba"){
+              if (item2.id === "Date_LRT" || item2.id === "ID_LRT" || item2.id === "Name_LRT" || item2.id === "Sex_LRT" || item2.id === "Age_LRT" || item2.id === "Time_LRT" || item2.id === "South_LRT" || item2.id === "East_LRT" || item2.id === "UTM_LRT" || item2.id === "Area_LRT" || item2.id === "EVENT_LRT" || item2.id === "deviceId_LRT" || item2.id === "Notes_LRT" || item2.id === "gps_acq_LRT" || item2.id === "sat_LRT" || item2.id === "hdop_LRT" || item2.id === "speed_LRT" || item2.id === "battery_LRT" || item2.id === "seqNumber_LRT" || item2.id === "timestamp_LRT" || item2.id === "RSSI_LRT"  || item2.id === "Geoloc type_LRT"){
+                item2.itemName = item2.itemName.replace('_LRT','');
+                item2.id = item2.id.replace('_LRT','');
                 this.selectedColumns.push(item2);
               }
-            }
+            //}
             
         });
         
