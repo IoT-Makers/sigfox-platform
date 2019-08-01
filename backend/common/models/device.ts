@@ -487,9 +487,9 @@ class Device {
                 limit: 5,
                 order: "createdAt DESC",
               },
-            }, "Parser"],
+            }],
           },
-        }],
+        }, "Parser"],
       }, (err: any, device: any) => {
         if (err) {
           console.error(err);

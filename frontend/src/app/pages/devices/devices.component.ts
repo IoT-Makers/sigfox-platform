@@ -225,9 +225,15 @@ export class DevicesComponent implements OnInit, OnDestroy {
           }
       });
     
-    this.loadingDownload = false;
-    this.selectColumnsToDownloadModal.show();
-  });
+      this.loadingDownload = false;
+      this.selectColumnsToDownloadModal.show();
+    }, err => {
+      console.log(err);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', 'Server error');
+      this.loadingDownload = false;
+    });
   }
 
   setCircles() {
