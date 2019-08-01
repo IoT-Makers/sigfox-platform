@@ -129,11 +129,11 @@
                 </div>
 
               </td>
-              <td *ngIf="device.messagedAt !== '1970-01-01T01:00:00.000Z'" class="text-center">
+              <td *ngIf="device.messagedAt !== '1970-01-01T00:00:00.000Z'" class="text-center">
                 <div class="small text-gray-dark">{{device.messagedAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
                 <strong>{{device.messagedAt | amTimeAgo}}</strong>
               </td>
-              <td *ngIf="device.messagedAt === '1970-01-01T01:00:00.000Z'" class="text-center">
+              <td *ngIf="device.messagedAt === '1970-01-01T00:00:00.000Z'" class="text-center">
                 <div class="small text-gray-dark">{{device.updatedAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
                 <strong>{{device.updatedAt | amTimeAgo}}</strong>
               </td>
