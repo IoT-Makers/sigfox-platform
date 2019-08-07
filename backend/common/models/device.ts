@@ -291,6 +291,9 @@ class Device {
       res.send('Missing "type" ("csv" or "json"), "deviceId"');
     }
 
+    var hasOnlyRhinosParser = true;
+
+
     Device.findOne(
       {
         where: {
@@ -310,13 +313,20 @@ class Device {
               },
             }],
           },
-        }],
+        }, "Parser"],
       }, (err: any, device: any) => {
         if (err) {
           console.error(err);
           res.send(err);
         } else if (device) {
           device = device.toJSON();
+
+          const parser = device.Parser;
+          console.log("device Id", device.id);
+          if (!device.Parser || (parser.name !== "TEKTOS RHINO TRACKER" && parser.name !== "Rhinos Parser")){
+            hasOnlyRhinosParser = false;
+            console.log("has Only Rhinos Parser", hasOnlyRhinosParser);
+          }
 
           let hasProperty = false;
           let nbProperty = 0;
@@ -436,10 +446,43 @@ class Device {
                       nb++;
                     });
                   }
+
+                  if (obj["lat_gps"] || obj["lat_sigfox"]) {
+                    if (obj["lat_gps"]) {
+                      obj["South"] = obj["lat_gps"];
+                      obj["Notes"] = "SigfoxGPS";
+                    }
+                    else if (obj["lat_sigfox"]) {
+                      obj["South"] = obj["lat_sigfox"];
+                      obj["Notes"] = "SigfoxGeo";
+
+                    }
+
+                  }
+                  if (obj["lng_gps"] || obj["lng_sigfox"]) {
+                    if (obj["lng_gps"]) {
+                      obj["East"] = obj["lng_gps"];
+                    }
+                    else if (obj["lng_sigfox"]) {
+                      obj["East"] = obj["lng_sigfox"];
+                    }
+
+                  }
+                  
+                  if (obj.createdAt){
+                    obj["Date"] = obj.createdAt;
+                  }
       
                   data.push(obj);
                 });
                 if (data.length > 0) {
+
+                  //if device is a rhino tracker, messages are sorted from oldest at the beginning to newest.
+                  var data2: any = [];
+                  if (hasOnlyRhinosParser === true){
+                    data2 = data.reverse();
+                  }
+                  data2 = data;
                   try {
 
                     csv = json2csv(data, {fields: columns} );
@@ -603,7 +646,7 @@ class Device {
                   let nb = 0;
                   let nb1 = 0;
                   let nb2 = 0;
-                  options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "South_LRT", "East_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT", "gps_acq_LRT", "sat_LRT", "hdop_LRT", "speed_LRT", "battery_LRT", "seqNumber_LRT", "timestamp_LRT","RSSI_LRT","Geoloc type_LRT");
+                  options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "South_LRT", "East_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT");
                   
                   while (nb < options.fields.length) {
                     if (options2.fields2.indexOf(options.fields[nb] + "_LRT") === -1) {

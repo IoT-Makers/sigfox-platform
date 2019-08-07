@@ -129,10 +129,10 @@
                 </div>
 
               </td>
-              <td  class="text-center">
+              <td class="text-center">
                 <div class="small text-gray-dark">{{device.messagedAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
                 <strong>{{device.messagedAt | amTimeAgo}}</strong>
-              </td>              
+              </td>
               <td *ngIf="!edit">
                 <div *ngIf="!device.properties" class="small text-muted text-center">No properties</div>
                 <div *ngIf="device.properties && device.properties.length === 0" class="small text-muted text-center">

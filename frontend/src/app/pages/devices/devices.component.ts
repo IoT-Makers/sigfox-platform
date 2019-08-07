@@ -218,7 +218,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
               itemName: r
             };
           this.selectColumns.push(item2);
-          if (item2.id === "Date_LRT" || item2.id === "ID_LRT" || item2.id === "Name_LRT" || item2.id === "Sex_LRT" || item2.id === "Age_LRT" || item2.id === "Time_LRT" || item2.id === "South_LRT" || item2.id === "East_LRT" || item2.id === "UTM_LRT" || item2.id === "Area_LRT" || item2.id === "EVENT_LRT" || item2.id === "deviceId_LRT" || item2.id === "Notes_LRT" || item2.id === "gps_acq_LRT" || item2.id === "sat_LRT" || item2.id === "hdop_LRT" || item2.id === "speed_LRT" || item2.id === "battery_LRT" || item2.id === "seqNumber_LRT" || item2.id === "timestamp_LRT" || item2.id === "RSSI_LRT"  || item2.id === "Geoloc type_LRT"){
+          if (item2.id === "Date_LRT" || item2.id === "ID_LRT" || item2.id === "Name_LRT" || item2.id === "Sex_LRT" || item2.id === "Age_LRT" || item2.id === "Time_LRT" || item2.id === "South_LRT" || item2.id === "East_LRT" || item2.id === "UTM_LRT" || item2.id === "Area_LRT" || item2.id === "EVENT_LRT" || item2.id === "deviceId_LRT" || item2.id === "Notes_LRT"){
             item2.itemName = item2.itemName.replace('_LRT','');
             item2.id = item2.id.replace('_LRT','');
             this.selectedColumns.push(item2);

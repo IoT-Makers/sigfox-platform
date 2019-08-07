@@ -309,17 +309,13 @@ class Category {
                     
                     //if(organization.name === "LRT"){
                     if (hasOnlyRhinosParser === true){
-                      console.log("LRT organization found");
                       let nb = 0;
                       let nb1 = 0;
                       let nb2 = 0;
-                      options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "South_LRT", "East_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT", "gps_acq_LRT", "sat_LRT", "hdop_LRT", "speed_LRT", "battery_LRT", "seqNumber_LRT", "timestamp_LRT","RSSI_LRT","Geoloc type_LRT");
+                      options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "South_LRT", "East_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT");
                       
                       while (nb < options.fields.length) {
                         if (options2.fields2.indexOf(options.fields[nb] + "_LRT") === -1) {
-                          /*if (options.fields[nb].startsWith("RSSI")) {
-                            options2.fields2.push(options.fields[nb]);
-                          }*/
 
                           if (!options.fields[nb].startsWith("createdAt")){
                             options3.fields3.push(options.fields[nb]);
@@ -531,17 +527,13 @@ class Category {
                     
                     //if(organization.name === "LRT"){
                     if (hasOnlyRhinosParser === true){
-                      console.log("LRT organization found");
                       let nb = 0;
                       let nb1 = 0;
                       let nb2 = 0;
-                      options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "South_LRT", "East_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT", "gps_acq_LRT", "sat_LRT", "hdop_LRT", "speed_LRT", "battery_LRT", "seqNumber_LRT", "timestamp_LRT","RSSI_LRT","Geoloc type_LRT");
+                      options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "South_LRT", "East_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT");
                       
                       while (nb < options.fields.length) {
                         if (options2.fields2.indexOf(options.fields[nb] + "_LRT") === -1) {
-                          /*if (options.fields[nb].startsWith("RSSI")) {
-                            options2.fields2.push(options.fields[nb]);
-                          }*/
 
                           if (!options.fields[nb].startsWith("createdAt")){
                             options3.fields3.push(options.fields[nb]);
@@ -642,7 +634,7 @@ class Category {
 
           columns = tosend.split(',');
 
-          const hasRhinosParser = false;
+          var hasOnlyRhinosParser = true;
           let nbProcessedDevices = 0;
 
           devices.forEach((device: any, i: number) => {
@@ -668,13 +660,20 @@ class Category {
                       },
                     }],
                   },
-                }],
+                }, "Parser"],
               }, (err: any, device: any) => {
                 if (err) {
                   console.error(err);
                   res.send(err);
                 } else {
                   device = device.toJSON();
+
+                  const parser = device.Parser;
+                  console.log("device Id", device.id);
+                  if (!device.Parser || (parser.name !== "TEKTOS RHINO TRACKER" && parser.name !== "Rhinos Parser")){
+                    hasOnlyRhinosParser = false;
+                    console.log("has Only Rhinos Parser", hasOnlyRhinosParser);
+                  }
 
                   if (device.properties){
                     device.properties.forEach((property: any) => {
@@ -759,16 +758,15 @@ class Category {
 
                     }
 
-                    //used only when orga is LRT
-                    if (organization.name === "LRT"){
+                    //used only when LRT preselection exist
                       if (obj["lat_gps"] || obj["lat_sigfox"]) {
                         if (obj["lat_gps"]) {
                           obj["South"] = obj["lat_gps"];
-                          obj["Geoloc type"] = "SigfoxGPS";
+                          obj["Notes"] = "SigfoxGPS";
                         }
                         else if (obj["lat_sigfox"]) {
                           obj["South"] = obj["lat_sigfox"];
-                          obj["Geoloc type"] = "SigfoxGeo";
+                          obj["Notes"] = "SigfoxGeo";
 
                         }
   
@@ -786,7 +784,7 @@ class Category {
                       if (obj.createdAt){
                         obj["Date"] = obj.createdAt;
                       }
-                    }
+                   
 
                     data.push(obj);
                   });
@@ -794,11 +792,10 @@ class Category {
 
                   if (data.length > 0 && nbProcessedDevices === category.Devices.length) {
                     
-                    // Sort all message by date if LRT Organization
+                    // Sort all message by date if devices are rhinos trackers (rhino parser)
                     var data2: any = [];
-                    if(organization.name === "LRT"){
+                    if (hasOnlyRhinosParser === true){
                       data2 = data.sort((a : any,b: any) => a.timestamp.localeCompare(b.timestamp));
-                      data2 = data2.reverse();
                     }
                     data2 = data;
 
@@ -873,6 +870,8 @@ class Category {
             let nbProperty = 0;
             let propertyKey: any = [];
             let propertyValue: any = [];
+            var hasOnlyRhinosParser = true;
+
 
             Device.findOne(
               {
@@ -894,13 +893,20 @@ class Category {
                       },
                     }],
                   },
-                }],
+                }, "Parser"],
               }, (err: any, device: any) => {
                 if (err) {
                   console.error(err);
                   res.send(err);
                 } else if (device) {
                   device = device.toJSON();
+
+                  const parser = device.Parser;
+                  console.log("device Id", device.id);
+                  if (!device.Parser || (parser.name !== "TEKTOS RHINO TRACKER" && parser.name !== "Rhinos Parser")){
+                    hasOnlyRhinosParser = false;
+                    console.log("has Only Rhinos Parser", hasOnlyRhinosParser);
+                  }
 
                   if (device.properties){
 
@@ -927,7 +933,7 @@ class Category {
                     obj.deviceId = message.deviceId;
                     obj.seqNumber = message.seqNumber;
                     obj.createdAt = moment(message.createdAt).format("DD-MMM-YY");
-                    obj.timestamp = message.createdAt;
+                    obj.timestamp = message.createdAt.toJSON();
                     //obj.year = new Date(message.createdAt).getFullYear();
                     //obj.month = new Date(message.createdAt).getMonth() + 1;
                     //obj.day = new Date(message.createdAt).getDate();
@@ -978,6 +984,32 @@ class Category {
                         nb++;
                       });
                     }
+
+                    if (obj["lat_gps"] || obj["lat_sigfox"]) {
+                      if (obj["lat_gps"]) {
+                        obj["South"] = obj["lat_gps"];
+                        obj["Notes"] = "SigfoxGPS";
+                      }
+                      else if (obj["lat_sigfox"]) {
+                        obj["South"] = obj["lat_sigfox"];
+                        obj["Notes"] = "SigfoxGeo";
+
+                      }
+
+                    }
+                    if (obj["lng_gps"] || obj["lng_sigfox"]) {
+                      if (obj["lng_gps"]) {
+                        obj["East"] = obj["lng_gps"];
+                      }
+                      else if (obj["lng_sigfox"]) {
+                        obj["East"] = obj["lng_sigfox"];
+                      }
+
+                    }
+                    
+                    if (obj.createdAt){
+                      obj["Date"] = obj.createdAt;
+                    }
                    
                     data.push(obj);
                   });
@@ -985,6 +1017,12 @@ class Category {
 
                   // If all devices are treated
                   if (data.length > 0 && nbProcessedDevices === category.Devices.length) {
+
+                    var data2: any = [];
+                    if (hasOnlyRhinosParser === true){
+                      data2 = data.sort((a : any,b: any) => a.timestamp.localeCompare(b.timestamp));
+                    }
+                    data2 = data;
 
                     try {
                       csv = json2csv(data, {fields: columns} );
