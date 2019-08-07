@@ -158,7 +158,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     {id: 'two-weeks', itemName: 'Last two weeks'},
     {id: 'three-weeks', itemName: 'Last three weeks'},
     {id: 'month', itemName: 'Last month'},
-    {id: 'year', itemName: 'Last year'}
+    {id: 'year', itemName: 'Last year'},
+    {id: 'two-years', itemName: 'Last two years'},
+    {id: 'three-years', itemName: 'Last three years'},
+    {id: 'since-beginning', itemName: 'Since first implants'}
+
+
   ];
 
   private selectOneSettings = {
@@ -860,6 +865,18 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       case 'year':
         const ONE_YEAR = 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_YEAR;
+        break;
+      case 'three-years':
+        const TWO_YEARS = 2 * 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - TWO_YEARS;
+        break;  
+      case 'three-years':
+        const THREE_YEARS = 3 * 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - THREE_YEARS;
+        break;
+      case 'since-beginning':
+        const SINCE_BEGIN = 5 * 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
+        widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - SINCE_BEGIN;
         break;
     }
   }
