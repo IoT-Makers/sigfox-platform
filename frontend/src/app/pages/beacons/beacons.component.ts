@@ -323,29 +323,45 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   }
 
   addBeacon(): void {
-    this.userApi.createBeacons(this.user.id, this.beaconToAddOrEdit).subscribe(
-      (beacon: Beacon) => {
-        if (this.toast)
-          this.toasterService.clear(
-            this.toast.toastId,
-            this.toast.toastContainerId
-          );
-        this.toast = this.toasterService.pop(
-          'success',
-          'Success',
-          'Beacon was successfully updated.'
+    if (!this.beaconToAddOrEdit.id.match(/^[0-9a-fA-F]{1,5}$/)) {
+      if (this.toast)
+        this.toasterService.clear(
+          this.toast.toastId,
+          this.toast.toastContainerId
         );
-        this.addOrEditBeaconModal.hide();
-      },
-      err => {
-        if (this.toast)
-          this.toasterService.clear(
-            this.toast.toastId,
-            this.toast.toastContainerId
-          );
-        this.toast = this.toasterService.pop('error', 'Error', err.message);
-      }
-    );
+      this.toast = this.toasterService.pop(
+        'error',
+        'Error',
+        'Beacon id must be a 5 characters long hexadecimal string'
+      );
+      return;
+    } else {
+      this.userApi
+        .createBeacons(this.user.id, this.beaconToAddOrEdit)
+        .subscribe(
+          (beacon: Beacon) => {
+            if (this.toast)
+              this.toasterService.clear(
+                this.toast.toastId,
+                this.toast.toastContainerId
+              );
+            this.toast = this.toasterService.pop(
+              'success',
+              'Success',
+              'Beacon was successfully updated.'
+            );
+            this.addOrEditBeaconModal.hide();
+          },
+          err => {
+            if (this.toast)
+              this.toasterService.clear(
+                this.toast.toastId,
+                this.toast.toastContainerId
+              );
+            this.toast = this.toasterService.pop('error', 'Error', err.message);
+          }
+        );
+    }
   }
 
   ngOnDestroy(): void {
