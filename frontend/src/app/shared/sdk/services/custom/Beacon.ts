@@ -1,15 +1,18 @@
 /* tslint:disable */
-import {Inject, Injectable, Optional} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {SDKModels} from './SDKModels';
-import {BaseLoopBackApi} from '../core/base.service';
-import {LoopBackConfig} from '../../lb.config';
-import {LoopBackAuth} from '../core/auth.service';
-import {LoopBackFilter,} from '../../models/BaseModels';
-import {ErrorHandler} from '../core/error.service';
-import {Observable} from 'rxjs';
-import {Beacon} from '../../models/Beacon';
-import {SocketConnection} from '../../sockets/socket.connections';
+import { Injectable, Inject, Optional } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { SDKModels } from './SDKModels';
+import { BaseLoopBackApi } from '../core/base.service';
+import { LoopBackConfig } from '../../lb.config';
+import { LoopBackAuth } from '../core/auth.service';
+import { LoopBackFilter,  } from '../../models/BaseModels';
+import { ErrorHandler } from '../core/error.service';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Beacon } from '../../models/Beacon';
+import { SocketConnection } from '../../sockets/socket.connections';
+import { Geoloc } from '../../models/Geoloc';
+import { User } from '../../models/User';
 
 
 /**
@@ -324,6 +327,157 @@ export class BeaconApi extends BaseLoopBackApi {
     let _postBody: any = {
       data: data
     };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Beacon` object.)
+   * </em>
+   */
+  public getBubbles(customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Beacons/bubbles";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Beacon` object.)
+   * </em>
+   */
+  public deleteBubbles(customHeaders?: Function): Observable<any> {
+    let _method: string = "DELETE";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Beacons/bubbles";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `id` – `{string}` - Bubble id
+   *
+   *  - `lat` – `{number}` - Bubble latitude
+   *
+   *  - `lng` – `{number}` - Bubble longitude
+   *
+   *  - `txPower` – `{number}` - Bubble longitude
+   *
+   *  - `information` – `{string}` - Bubble information
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Beacon` object.)
+   * </em>
+   */
+  public postBubbles(id: any, lat: any, lng: any, txPower: any, information: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Beacons/bubbles";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof lat !== 'undefined' && lat !== null) _urlParams.lat = lat;
+    if (typeof lng !== 'undefined' && lng !== null) _urlParams.lng = lng;
+    if (typeof txPower !== 'undefined' && txPower !== null) _urlParams.txPower = txPower;
+    if (typeof information !== 'undefined' && information !== null) _urlParams.information = information;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id Bubble id
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Beacon` object.)
+   * </em>
+   */
+  public getBubbleBydId(id: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Beacons/bubbles/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} id Bubble id
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Beacon` object.)
+   * </em>
+   */
+  public deleteBubbleById(id: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "DELETE";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Beacons/bubbles/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
     let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;

@@ -1,15 +1,16 @@
 /* tslint:disable */
-import {Inject, Injectable, Optional} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {SDKModels} from './SDKModels';
-import {BaseLoopBackApi} from '../core/base.service';
-import {LoopBackConfig} from '../../lb.config';
-import {LoopBackAuth} from '../core/auth.service';
-import {LoopBackFilter,} from '../../models/BaseModels';
-import {ErrorHandler} from '../core/error.service';
-import {Observable} from 'rxjs';
-import {Role} from '../../models/Role';
-import {SocketConnection} from '../../sockets/socket.connections';
+import { Injectable, Inject, Optional } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { SDKModels } from './SDKModels';
+import { BaseLoopBackApi } from '../core/base.service';
+import { LoopBackConfig } from '../../lb.config';
+import { LoopBackAuth } from '../core/auth.service';
+import { LoopBackFilter,  } from '../../models/BaseModels';
+import { ErrorHandler } from '../core/error.service';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Role } from '../../models/Role';
+import { SocketConnection } from '../../sockets/socket.connections';
 
 
 /**

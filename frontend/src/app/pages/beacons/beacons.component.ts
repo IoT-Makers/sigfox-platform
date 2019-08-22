@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Beacon, Role, User} from '../../shared/sdk/models';
-import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Beacon, Role, User } from '../../shared/sdk/models';
+import { ToasterConfig, ToasterService } from 'angular2-toaster';
 import * as L from 'leaflet';
-import {icon, latLng, tileLayer} from 'leaflet';
-import {BeaconApi, UserApi} from '../../shared/sdk/services/custom';
-import {RealtimeService} from "../../shared/realtime/realtime.service";
+import { icon, latLng, tileLayer } from 'leaflet';
+import { BeaconApi, UserApi } from '../../shared/sdk/services/custom';
+import { RealtimeService } from '../../shared/realtime/realtime.service';
 
 @Component({
   selector: 'app-messages',
@@ -12,7 +12,6 @@ import {RealtimeService} from "../../shared/realtime/realtime.service";
   styleUrls: ['./beacons.component.scss']
 })
 export class BeaconsComponent implements OnInit, OnDestroy {
-
   private user: User;
 
   public filterQuery = '';
@@ -30,8 +29,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
   // Select
   public selectTypes: Array<Object> = [
-    {id: 'sigfox', itemName: 'Sigfox'},
-    {id: 'bluetooth', itemName: 'Bluetooth'},
+    { id: 'sigfox', itemName: 'Sigfox' },
+    { id: 'bluetooth', itemName: 'Bluetooth' }
   ];
   public selectedTypes = [];
   public selectOneSettings = {
@@ -44,12 +43,11 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   // Notifications
   private toast;
   private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig =
-    new ToasterConfig({
-      tapToDismiss: true,
-      timeout: 3000,
-      animation: 'fade'
-    });
+  public toasterconfig: ToasterConfig = new ToasterConfig({
+    tapToDismiss: true,
+    timeout: 3000,
+    animation: 'fade'
+  });
 
   // Map
   private map: L.Map;
@@ -65,7 +63,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     iconSize: [25, 41], // size of the icon
     iconAnchor: [13, 41], // point of the icon which will correspond to marker's location
     shadowSize: [50, 64], // size of the shadow
-    shadowAnchor: [4, 62],  // the same for the shadow
+    shadowAnchor: [4, 62], // the same for the shadow
     popupAnchor: [-2, -40] // point from which the popup should open relative to the iconAnchor
   };
   public mapOptions = {
@@ -77,18 +75,20 @@ export class BeaconsComponent implements OnInit, OnDestroy {
         attribution: '© OpenStreetMap contributors'
       })
     ],
-    zoom: 5,
-    center: latLng(48.856614, 2.352222),
+    zoom: 3,
+    center: latLng(48.883619, 2.302494),
     fullscreenControl: true,
     trackResize: false
   };
 
   private admin = false;
 
-  constructor(private rt: RealtimeService,
-              private userApi: UserApi,
-              private beaconApi: BeaconApi,
-              toasterService: ToasterService) {
+  constructor(
+    private rt: RealtimeService,
+    private userApi: UserApi,
+    private beaconApi: BeaconApi,
+    toasterService: ToasterService
+  ) {
     this.toasterService = toasterService;
   }
 
@@ -112,13 +112,12 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     this.cleanSetup();
     this.subscribe(this.user.id);
 
-    const api = this.admin ? this.beaconApi.find({
-      order: 'createdAt DESC',
-      limit: 100
-    }) : this.userApi.getBeacons(this.user.id, {
-      order: 'createdAt DESC',
-      limit: 100
-    });
+    const api = this.admin
+      ? this.beaconApi.getBubbles()
+      : this.userApi.getBeacons(this.user.id, {
+          order: 'createdAt DESC',
+          limit: 100
+        });
     // TODO: admin rt
     api.subscribe((beacons: Beacon[]) => {
       this.beacons = beacons;
@@ -131,27 +130,35 @@ export class BeaconsComponent implements OnInit, OnDestroy {
    */
   onMapReady(map: L.Map): void {
     this.map = map;
-    this.map.options.layers[0] = tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-      maxZoom: 21,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-      attribution: '© OpenStreetMap contributors'
-    });
+    this.map.options.layers[0] = tileLayer(
+      'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+      {
+        maxZoom: 21,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: '© OpenStreetMap contributors'
+      }
+    );
     /*this.map.options.center = latLng(48.856614, 2.352222);
     this.map.options.trackResize = false;*/
-    this.map.locate({setView: true, maxZoom: 16});
-    this.map.on('locationfound', (e) => this.onLocationFound(e));
-    this.map.on('locationerror', (e) => this.onLocationError(e));
-    this.map.on('click', (e) => this.onMapClick(e));
+    this.map.locate({ setView: true, maxZoom: 16 });
+    this.map.on('locationfound', e => this.onLocationFound(e));
+    this.map.on('locationerror', e => this.onLocationError(e));
+    this.map.on('click', e => this.onMapClick(e));
     console.log('Map ready!');
   }
 
   onLocationFound(e): void {
     const radius = e.accuracy / 2;
-    this.marker = L.marker(e.latlng, {draggable: true, icon: icon(this.blueIconOptions)});
-    this.marker.on('dragend', (e) => this.onMarkerDragEnd(e));
+    this.marker = L.marker(e.latlng, {
+      draggable: true,
+      icon: icon(this.blueIconOptions)
+    });
+    this.marker.on('dragend', e => this.onMarkerDragEnd(e));
     this.map.addLayer(this.marker);
     L.circle(e.latlng, radius, this.locationOptions).addTo(this.map);
-    this.marker.bindPopup('You are within <b>' + radius + '</b> meters from this point').openPopup();
+    this.marker
+      .bindPopup('You are within <b>' + radius + '</b> meters from this point')
+      .openPopup();
   }
 
   onLocationError(e): void {
@@ -162,10 +169,15 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     if (this.marker) {
       this.map.removeLayer(this.marker);
     }
-    this.marker = L.marker(e.latlng, {draggable: true, icon: icon(this.blueIconOptions)});
-    this.marker.on('dragend', (e) => this.onMarkerDragEnd(e));
+    this.marker = L.marker(e.latlng, {
+      draggable: true,
+      icon: icon(this.blueIconOptions)
+    });
+    this.marker.on('dragend', e => this.onMarkerDragEnd(e));
     this.map.addLayer(this.marker);
-    this.marker.bindPopup(e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5)).openPopup();
+    this.marker
+      .bindPopup(e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5))
+      .openPopup();
     this.beaconToAddOrEdit.location = e.latlng;
   }
 
@@ -180,12 +192,12 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     // New beacon
     this.beaconToAddOrEdit = new Beacon();
     this.beaconToAddOrEdit.type = 'sigfox';
-    this.selectedTypes.push({id: 'sigfox', itemName: 'Sigfox'});
+    this.selectedTypes.push({ id: 'sigfox', itemName: 'Sigfox' });
     // Open modal
     this.addOrEditBeaconModal.show();
     setTimeout(() => {
       this.map.invalidateSize();
-      this.map.setView([52.496908, 13.453922], 19);
+      this.map.setView([48.883619, 2.302494], 6);
     }, 500);
   }
 
@@ -195,10 +207,12 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     // Set selected values
     this.selectTypes.forEach((type: any) => {
       if (beacon.type === type.id) {
-        this.selectedTypes = [{
-          id: type.id,
-          itemName: type.itemName
-        }];
+        this.selectedTypes = [
+          {
+            id: type.id,
+            itemName: type.itemName
+          }
+        ];
         return;
       }
     });
@@ -210,12 +224,18 @@ export class BeaconsComponent implements OnInit, OnDestroy {
       if (this.marker) {
         this.map.removeLayer(this.marker);
       }
-      this.map.setView(new L.LatLng(beacon.location.lat, beacon.location.lng), 20);
-      this.marker = L.marker(new L.LatLng(beacon.location.lat, beacon.location.lng), {
-        draggable: true,
-        icon: icon(this.blueIconOptions)
-      });
-      this.marker.on('dragend', (e) => this.onMarkerDragEnd(e));
+      this.map.setView(
+        new L.LatLng(beacon.location.lat, beacon.location.lng),
+        20
+      );
+      this.marker = L.marker(
+        new L.LatLng(beacon.location.lat, beacon.location.lng),
+        {
+          draggable: true,
+          icon: icon(this.blueIconOptions)
+        }
+      );
+      this.marker.on('dragend', e => this.onMarkerDragEnd(e));
       this.map.addLayer(this.marker);
       if (beacon.name) this.marker.bindTooltip(beacon.name).openTooltip();
     }, 500);
@@ -227,44 +247,105 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   }
 
   removeBeacon(): void {
-    const apiFn = this.admin ? this.beaconApi.deleteById(this.beaconToRemove.id) : this.userApi.destroyByIdBeacons(this.user.id, this.beaconToRemove.id);
-    apiFn.subscribe(value => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Beacon was successfully removed.');
-      this.confirmBeaconModal.hide();
-    }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
-    });
+    const apiFn = this.admin
+      ? this.beaconApi.deleteBubbleById(this.beaconToRemove.id)
+      : this.userApi.destroyByIdBeacons(this.user.id, this.beaconToRemove.id);
+    apiFn.subscribe(
+      value => {
+        if (this.toast)
+          this.toasterService.clear(
+            this.toast.toastId,
+            this.toast.toastContainerId
+          );
+        this.toast = this.toasterService.pop(
+          'success',
+          'Success',
+          'Beacon was successfully removed.'
+        );
+        this.confirmBeaconModal.hide();
+      },
+      err => {
+        if (this.toast)
+          this.toasterService.clear(
+            this.toast.toastId,
+            this.toast.toastContainerId
+          );
+        this.toast = this.toasterService.pop(
+          'error',
+          'Error',
+          err.error.message
+        );
+      }
+    );
   }
 
   editBeacon(): void {
-    const apiFn = this.admin ? this.beaconApi.updateAttributes(this.beaconToAddOrEdit.id, this.beaconToAddOrEdit) : this.userApi.updateByIdBeacons(this.user.id, this.beaconToAddOrEdit.id, this.beaconToAddOrEdit);
-    apiFn.subscribe(value => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Beacon was successfully updated.');
-      this.addOrEditBeaconModal.hide();
-    }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
-    });
+    const apiFn = this.admin
+      ? this.beaconApi.postBubbles(
+          this.beaconToAddOrEdit.id,
+          this.beaconToAddOrEdit.location.lat,
+          this.beaconToAddOrEdit.location.lng,
+          1,
+          this.beaconToAddOrEdit.name
+        )
+      : this.userApi.updateByIdBeacons(
+          this.user.id,
+          this.beaconToAddOrEdit.id,
+          this.beaconToAddOrEdit
+        );
+    apiFn.subscribe(
+      value => {
+        if (this.toast)
+          this.toasterService.clear(
+            this.toast.toastId,
+            this.toast.toastContainerId
+          );
+        this.toast = this.toasterService.pop(
+          'success',
+          'Success',
+          'Beacon was successfully updated.'
+        );
+        this.addOrEditBeaconModal.hide();
+      },
+      err => {
+        if (this.toast)
+          this.toasterService.clear(
+            this.toast.toastId,
+            this.toast.toastContainerId
+          );
+        this.toast = this.toasterService.pop(
+          'error',
+          'Error',
+          err.error.message
+        );
+      }
+    );
   }
 
   addBeacon(): void {
-    this.userApi.createBeacons(this.user.id, this.beaconToAddOrEdit).subscribe((beacon: Beacon) => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Beacon was successfully updated.');
-      this.addOrEditBeaconModal.hide();
-    }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.message);
-    });
+    this.userApi.createBeacons(this.user.id, this.beaconToAddOrEdit).subscribe(
+      (beacon: Beacon) => {
+        if (this.toast)
+          this.toasterService.clear(
+            this.toast.toastId,
+            this.toast.toastContainerId
+          );
+        this.toast = this.toasterService.pop(
+          'success',
+          'Success',
+          'Beacon was successfully updated.'
+        );
+        this.addOrEditBeaconModal.hide();
+      },
+      err => {
+        if (this.toast)
+          this.toasterService.clear(
+            this.toast.toastId,
+            this.toast.toastContainerId
+          );
+        this.toast = this.toasterService.pop('error', 'Error', err.message);
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -276,12 +357,11 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
-
   rtHandler = (payload: any) => {
-    if (payload.action == "CREATE") {
+    if (payload.action == 'CREATE') {
       this.beacons.unshift(payload.content);
-    } else if (payload.action == "DELETE") {
-      this.beacons = this.beacons.filter(function (beacon) {
+    } else if (payload.action == 'DELETE') {
+      this.beacons = this.beacons.filter(function(beacon) {
         return beacon.id !== payload.content.id;
       });
     }
@@ -289,7 +369,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
   subscribe(id: string): void {
     this.rt.informCurrentPage(id, ['beacon']);
-    this.rtHandler = this.rt.addListener("beacon", this.rtHandler);
+    this.rtHandler = this.rt.addListener('beacon', this.rtHandler);
   }
 
   unsubscribe(): void {

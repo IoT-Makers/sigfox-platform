@@ -1,5 +1,12 @@
 /* tslint:disable */
-import {Beacon, Device, GeoPoint, Message, Organization, User} from '../index';
+import {
+  Device,
+  Message,
+  User,
+  Organization,
+  Beacon,
+  GeoPoint
+} from '../index';
 
 declare var Object: any;
 export interface GeolocInterface {

@@ -18,6 +18,7 @@ export interface MessageInterface {
   "downlinkAck"?: boolean;
   "deviceAck"?: boolean;
   "ack"?: boolean;
+  "oob"?: boolean;
   "reception"?: Array<any>;
   "createdAt"?: Date;
   "updatedAt"?: Date;
@@ -39,6 +40,7 @@ export class Message implements MessageInterface {
   "downlinkAck": boolean = false;
   "deviceAck": boolean = false;
   "ack": boolean = false;
+  "oob": boolean = false;
   "reception": Array<any> = <any>[];
   "createdAt": Date = new Date(0);
   "updatedAt": Date = new Date(0);
@@ -118,6 +120,10 @@ export class Message implements MessageInterface {
         },
         "ack": {
           name: 'ack',
+          type: 'boolean'
+        },
+        "oob": {
+          name: 'oob',
           type: 'boolean'
         },
         "reception": {

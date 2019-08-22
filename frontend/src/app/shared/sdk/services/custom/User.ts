@@ -1,17 +1,29 @@
 /* tslint:disable */
-import {Inject, Injectable, Optional} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {SDKModels} from './SDKModels';
-import {BaseLoopBackApi} from '../core/base.service';
-import {LoopBackConfig} from '../../lb.config';
-import {LoopBackAuth} from '../core/auth.service';
-import {LoopBackFilter} from '../../models/BaseModels';
-import {ErrorHandler} from '../core/error.service';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {User} from '../../models/User';
-import {SocketConnection} from '../../sockets/socket.connections';
-import {AccessToken} from '../../models/AccessToken';
+import { Injectable, Inject, Optional } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { SDKModels } from './SDKModels';
+import { BaseLoopBackApi } from '../core/base.service';
+import { LoopBackConfig } from '../../lb.config';
+import { LoopBackAuth } from '../core/auth.service';
+import { LoopBackFilter, SDKToken } from '../../models/BaseModels';
+import { ErrorHandler } from '../core/error.service';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { User } from '../../models/User';
+import { SocketConnection } from '../../sockets/socket.connections';
+import { AccessToken } from '../../models/AccessToken';
+import { Role } from '../../models/Role';
+import { Dashboard } from '../../models/Dashboard';
+import { Category } from '../../models/Category';
+import { Device } from '../../models/Device';
+import { Message } from '../../models/Message';
+import { Geoloc } from '../../models/Geoloc';
+import { Parser } from '../../models/Parser';
+import { Organization } from '../../models/Organization';
+import { Alert } from '../../models/Alert';
+import { Connector } from '../../models/Connector';
+import { Widget } from '../../models/Widget';
+import { Beacon } from '../../models/Beacon';
 
 
 /**
