@@ -87,12 +87,12 @@ export class MessagesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log('Messages: ngOnInit');
     // Get the logged in User object
-    this.myDateValueTo= new Date("2019-06-15T23:59:59");
+    this.myDateValueTo= new Date();//"2019-06-15T23:59:59"
     console.log("INIT DATE TO", this.myDateValueTo);
-    this.myDateValueFrom = new Date("2019-06-15T23:59:59");
+    this.myDateValueFrom = new Date();//"2019-06-15T23:59:59"
 
     this.myDateValueFrom.setDate(this.myDateValueTo.getDate() - 30);
-    console.log("INIT DATE FROM", this.myDateValueTo.getDate());
+    //console.log("INIT DATE FROM", this.myDateValueTo.getDate());
 
     this.maxDate= new Date();
     this.maxDate.setDate(this.maxDate.getDate())
@@ -129,15 +129,17 @@ export class MessagesComponent implements OnInit, OnDestroy {
     var range = 1;
     var setupDateTo = new Date();//remove string to take the actual date "2019-06-19T23:59:59"
     var setupDateFrom = new Date();//remove string to take the actual date "2019-06-19T23:59:59"
-    setupDateFrom.setDate(setupDateTo.getDate() - range);//choose a range by defaut when display all messages
-    setupDateFrom.setHours(0,0,0);
+    
     this.deviceIdSub = this.route.params.subscribe(params => {
       this.filterQuery = params['id'];
       if (this.filterQuery) {
         this.isLimit_Day = this.isLimit_Week = this.isLimit_Month = this.isLimit_0 = this.isLimit_Range = false;
         this.isLimit_0 = true;
-        this.myDateValueFrom.setFullYear(2016,7,12 );
-        this.myDateValueFrom.setHours(0,0,0);
+        this.myDateValueFrom
+        setupDateFrom.setFullYear(2016,7,12 );
+        setupDateFrom.setHours(0,0,0);
+        this.myDateValueFrom = setupDateFrom;
+        this.myDateValueTo = setupDateTo;
         this.messageFilter = {
           order: 'createdAt DESC',
           include: ['Device', 'Geolocs'],
@@ -146,6 +148,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
       } else {
         this.isLimit_Day = this.isLimit_0 = this.isLimit_Month = this.isLimit_Week = this.isLimit_Range = false;
         this.isLimit_Day = true;
+        setupDateFrom.setDate(setupDateTo.getDate() - range);//choose a range by defaut when display all messages
+        setupDateFrom.setHours(0,0,0);
         this.myDateValueTo = setupDateTo;
         this.myDateValueFrom = setupDateFrom;
         this.messageFilter = {
@@ -297,8 +301,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.messages = [];
     this.messagesReady = false;
     // Reset buttons
-    this.myDateValueFrom.setHours(0,0,0);
-    this.myDateValueTo.setHours(23,59,59);
+    var rangeDateTo = this.myDateValueTo;
+    var rangeDateFrom = this.myDateValueFrom;
+    rangeDateFrom.setHours(0,0,0);
+    rangeDateTo.setHours(23,59,59);
     //Make sure the reset prec date and prec button
     this.lastDateFrom = this.myDateValueFrom;
     this.lastDateTo = this.myDateValueTo;
@@ -310,7 +316,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.messageFilter = {
         order: 'createdAt DESC',
         include: ['Device', 'Geolocs'],
-        where: {deviceId: this.filterQuery, and :[ {createdAt: {lte: this.myDateValueTo}},{createdAt: {gte: this.myDateValueFrom}} ]}
+        where: {deviceId: this.filterQuery, and :[ {createdAt: {lte: rangeDateTo}},{createdAt: {gte: rangeDateFrom}} ]}
   
       };
     }else{
@@ -318,7 +324,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.messageFilter = {
         order: 'createdAt DESC',
         include: ['Device', 'Geolocs'],
-        where: { and :[ {createdAt: {lte: this.myDateValueTo}},{createdAt: {gte: this.myDateValueFrom}} ]}
+        where: { and :[ {createdAt: {lte: rangeDateTo}},{createdAt: {gte: rangeDateFrom}} ]}
   
       };
     }

@@ -7,17 +7,7 @@
     <div *ngIf="organization" class="card-header">
       <i class="fa fa-envelope fa-lg text-message"></i><strong> Shared messages</strong>
     </div>
-    <div *ngIf="!messagesReady" class="card-block">
-      Loading messages...
-      <div class="sk-double-bounce">
-        <div class="sk-child sk-double-bounce1"></div>
-        <div class="sk-child sk-double-bounce2"></div>
-      </div>
-    </div>
-    <div *ngIf="messagesReady && !messages.length" class="card-block">
-      No messages yet...
-    </div>
-    <ng-container *ngIf="messages.length>0">
+    <ng-container>
       <div class="card-block">
         <div class="row mb-1">
           <div class="col-md-3 btntop">
@@ -117,7 +107,7 @@
           <pre class="code-preview">From {{myDateValueFrom | date: 'dd-MMM-yyyy HH:mm:ss'}} to {{myDateValueTo | date: 'dd-MMM-yyyy HH:mm:ss'}}</pre>
         </div>
       </div>
-      <div class="table-responsive">
+      <div  *ngIf="messages.length>0" class="table-responsive">
         <table class="table table-hover" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable"
                [mfRowsOnPage]="50">
           <thead class="thead-inverse">
@@ -271,6 +261,16 @@
         </table>
       </div>
     </ng-container>
+    <div *ngIf="!messagesReady" class="card-block">
+        Loading messages...
+        <div class="sk-double-bounce">
+          <div class="sk-child sk-double-bounce1"></div>
+          <div class="sk-child sk-double-bounce2"></div>
+        </div>
+      </div>
+      <div *ngIf="messagesReady && !messages.length" class="card-block">
+        No messages yet...
+      </div>
   </div>
 </div>
 
