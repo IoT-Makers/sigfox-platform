@@ -387,17 +387,19 @@ export class BeaconApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
+   * @param {string} bubbleId Bubble id
+   *
+   * @param {number} lat Bubble latitude
+   *
+   * @param {number} lng Bubble longitude
+   *
+   * @param {number} txPower Bubble longitude
+   *
+   * @param {string} information Bubble information
+   *
    * @param {object} data Request data.
    *
-   *  - `id` – `{string}` - Bubble id
-   *
-   *  - `lat` – `{number}` - Bubble latitude
-   *
-   *  - `lng` – `{number}` - Bubble longitude
-   *
-   *  - `txPower` – `{number}` - Bubble longitude
-   *
-   *  - `information` – `{string}` - Bubble information
+   * This method does not accept any data. Supply an empty object.
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -408,15 +410,14 @@ export class BeaconApi extends BaseLoopBackApi {
    * This usually means the response is a `Beacon` object.)
    * </em>
    */
-  public postBubbles(id: any, lat: any, lng: any, txPower: any, information: any, customHeaders?: Function): Observable<any> {
+  public postBubbles(bubbleId: any, lat: any, lng: any, txPower: any, information: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Beacons/bubbles";
-    let _routeParams: any = {
-      id: id
-    };
+    let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
+    if (typeof bubbleId !== 'undefined' && bubbleId !== null) _urlParams.bubbleId = bubbleId;
     if (typeof lat !== 'undefined' && lat !== null) _urlParams.lat = lat;
     if (typeof lng !== 'undefined' && lng !== null) _urlParams.lng = lng;
     if (typeof txPower !== 'undefined' && txPower !== null) _urlParams.txPower = txPower;

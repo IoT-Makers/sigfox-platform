@@ -34,30 +34,40 @@ const bubbleDbGroupId = process.env.BUBBLE_DB_GROUP_ID;
     postBubbles: {
       http: {path: '/bubbles', verb: 'post'},
       accepts: [
-        {arg: 'id', type: 'string', required: true, description: 'Bubble id'},
+        {
+          arg: 'bubbleId',
+          type: 'string',
+          required: true,
+          description: 'Bubble id',
+          http: {source: 'query'},
+        },
         {
           arg: 'lat',
           type: 'number',
           required: true,
           description: 'Bubble latitude',
+          http: {source: 'query'},
         },
         {
           arg: 'lng',
           type: 'number',
           required: true,
           description: 'Bubble longitude',
+          http: {source: 'query'},
         },
         {
           arg: 'txPower',
           type: 'number',
           required: true,
           description: 'Bubble longitude',
+          http: {source: 'query'},
         },
         {
           arg: 'information',
           type: 'string',
           required: true,
           description: 'Bubble information',
+          http: {source: 'query'},
         },
       ],
       returns: {type: ['Beacon'], root: true},
@@ -175,7 +185,7 @@ class Beacon {
   }
 
   public postBubbles(
-    id: string,
+    bubbleId: string,
     lat: number,
     lng: number,
     txPower: number,
@@ -198,10 +208,10 @@ class Beacon {
         groupId: bubbleDbGroupId,
         entries: [
           {
-            bubbleId: id,
-            lat: lat,
-            lng: lng,
-            txPower: txPower,
+            bubbleId,
+            lat,
+            lng,
+            txPower,
             info: information,
           },
         ],
@@ -213,7 +223,7 @@ class Beacon {
       if (error || response.statusCode !== 200) next(null, response);
       else
         Beacon.upsert(
-          {id, location: {lat, lng}, name: information},
+          {id: bubbleId, location: {lat, lng}, name: information},
           (err: any, beacon: any) => {
             if (err) next('Error while creating/updating beacon');
             else next(null, beacon);
@@ -261,8 +271,8 @@ class Beacon {
       if (error || response.statusCode !== 200) next(null, response);
       else
         Beacon.destroyById(id, (err: any, beacon: any) => {
-          if (err) next(null, 'Error while deleting beacon');
-          else next('OK');
+          if (err) next('Error while deleting beacon');
+          else next(null, 'OK');
         });
     });
   }

@@ -336,31 +336,38 @@ export class BeaconsComponent implements OnInit, OnDestroy {
       );
       return;
     } else {
-      this.userApi
-        .createBeacons(this.user.id, this.beaconToAddOrEdit)
-        .subscribe(
-          (beacon: Beacon) => {
-            if (this.toast)
-              this.toasterService.clear(
-                this.toast.toastId,
-                this.toast.toastContainerId
-              );
-            this.toast = this.toasterService.pop(
-              'success',
-              'Success',
-              'Beacon was successfully updated.'
+      const apiFn = this.admin
+        ? this.beaconApi.postBubbles(
+            this.beaconToAddOrEdit.id,
+            this.beaconToAddOrEdit.location.lat,
+            this.beaconToAddOrEdit.location.lng,
+            1,
+            this.beaconToAddOrEdit.name
+          )
+        : this.userApi.createBeacons(this.user.id, this.beaconToAddOrEdit);
+      apiFn.subscribe(
+        (beacon: Beacon) => {
+          if (this.toast)
+            this.toasterService.clear(
+              this.toast.toastId,
+              this.toast.toastContainerId
             );
-            this.addOrEditBeaconModal.hide();
-          },
-          err => {
-            if (this.toast)
-              this.toasterService.clear(
-                this.toast.toastId,
-                this.toast.toastContainerId
-              );
-            this.toast = this.toasterService.pop('error', 'Error', err.message);
-          }
-        );
+          this.toast = this.toasterService.pop(
+            'success',
+            'Success',
+            'Beacon was successfully updated.'
+          );
+          this.addOrEditBeaconModal.hide();
+        },
+        err => {
+          if (this.toast)
+            this.toasterService.clear(
+              this.toast.toastId,
+              this.toast.toastContainerId
+            );
+          this.toast = this.toasterService.pop('error', 'Error', err.message);
+        }
+      );
     }
   }
 
