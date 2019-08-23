@@ -117,7 +117,7 @@ class Organization {
             organization.toJSON().Devices.forEach((device: any) => {
               devicesIds.push(device.id);
             });
-            filter.where = {deviceId: {inq: devicesIds}};
+            filter.where.deviceId = {inq: devicesIds};
             Message.find(filter, (err: any, messages: any) => {
               if (!err) next(null, messages);
               else next(err);

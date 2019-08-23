@@ -1,3 +1,4 @@
+
 <div class="animated fadeIn">
   <div class="card">
     <div *ngIf="!organization" class="card-header">
@@ -16,39 +17,109 @@
     <div *ngIf="messagesReady && !messages.length" class="card-block">
       No messages yet...
     </div>
-
     <ng-container *ngIf="messages.length>0">
       <div class="card-block">
         <div class="row mb-1">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-addon" (click)="searchFilter(100)">Show</span>
-              <div class="btn-group" role="group" aria-label="Quantity">
-                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_500}"
-                        (click)="searchFilter(500)">500
-                </button>
-                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_1000}"
-                        (click)="searchFilter(1000)">1000
-                </button>
-                <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_0}"
-                        (click)="searchFilter(10000)">All
-                </button>
-              </div>
+          <div class="col-md-3 btntop">
+            <div class="row mb-1">
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <!--<span class="input-group-addon">Show</span>-->
+                        <div class="btn-group" role="group" aria-label="Quantity">
+                          <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_Day}"
+                                  (click)="searchLastFilter('lastday')">Last 24H
+                          </button>
+                          <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_Week}"
+                                  (click)="searchLastFilter('lastweek')">Last Week
+                          </button>
+                          <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_Month}"
+                                  (click)="searchLastFilter('lastmonth')">Last Month
+                          </button>
+                          <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_0}"
+                                  (click)="searchLastFilter('all')">All
+                          </button>
+                        </div>
+                       
+                        
+                      </div>
+                </div>
             </div>
+            
 
             <!--<button class="btn btn-info pull-right" (click)="download()"><i class="fa fa-download"></i> Download</button>-->
           </div>
-          <div class="col-md-4 offset-md-2">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-search"></i></span>
-              <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
+            <div class="col-md-1 btntop">
+                <div class="row mb-1">
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_Range}"
+                        (click)="showSelectRange()">Range
+                    </button>
+                    </div>
+                </div>
+              
             </div>
+            
+            <div class="col-md-4">
+                <div *ngIf="rangebtn" class="row mb-1 rangeclass">
+                    <div class="col-md-5">
+              
+                      <input 
+                      type="text"
+                      class="form-control"
+                      placeholder="Start of time span"
+                      [minDate]="minDate"
+                      [bsConfig]="{ containerClass:'theme-dark-blue', dateInputFormat :'DD-MMM-YYYY  HH:mm:ss'}"
+                      #dp="bsDatepicker"
+                      bsDatepicker
+                      value="{{ myDateValueFrom | date: 'dd-MMM-yyyy  HH:mm:ss' }}"
+                      [(bsValue)]="myDateValueFrom" >
+                    </div>
+
+                    <div class="col-md-5">
+              
+                      <input type="text"
+                      class="form-control"
+                      placeholder="End of time span"
+                      [maxDate]="maxDate"
+                      [bsConfig]="{ containerClass:'theme-dark-blue', dateInputFormat :'DD-MMM-YYYY  HH:mm:ss'}"
+                      #dp="bsDatepicker"
+                      bsDatepicker 
+                      [(bsValue)]="myDateValueTo"
+                      value="{{ myDateValueTo | date: 'dd-MMM-yyyy  HH:mm:ss' }}">       
+                    </div>
+                    
+                    <div class="col-md-1">
+                        <button class="btn btn-success" (click)="searchRangeFilter()">OK</button>
+                    </div>
+
+                </div>
+              
+                      
           </div>
+         
+          
+          
+          <div class="col-md-2 offset-md-2 btntop">
+              <div class="row mb-1">
+                  <div class="col">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
+                      </div>
+                    </div>
+              </div>
+          </div>
+          
+        </div>
+        
+         
+        <div class="datepreview">
+          <pre class="code-preview">From {{myDateValueFrom | date: 'dd-MMM-yyyy HH:mm:ss'}} to {{myDateValueTo | date: 'dd-MMM-yyyy HH:mm:ss'}}</pre>
         </div>
       </div>
       <div class="table-responsive">
         <table class="table table-hover" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable"
-               [mfRowsOnPage]="10">
+               [mfRowsOnPage]="50">
           <thead class="thead-inverse">
           <tr>
             <th class="text-center">
@@ -192,8 +263,8 @@
           </tbody>
           <tfoot>
           <tr>
-            <td colspan="4">
-              <mfBootstrapPaginator [rowsOnPageSet]="[10, 25, 50, 100]"></mfBootstrapPaginator>
+            <td colspan="3">
+              <mfBootstrapPaginator [rowsOnPageSet]="[10,50,100]"></mfBootstrapPaginator>
             </td>
           </tr>
           </tfoot>

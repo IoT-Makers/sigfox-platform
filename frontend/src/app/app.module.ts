@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+//import { BrowserModule } from '@angular/platform-browser';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NAV_DROPDOWN_DIRECTIVES } from './shared/nav-dropdown.directive';
@@ -29,7 +29,7 @@ import { Angulartics2Module } from 'angulartics2';
 @NgModule({
   bootstrap: [AppComponent],
   imports: [
-    BrowserModule,
+    //BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,

@@ -9,6 +9,7 @@ import {ModalModule, TooltipModule} from 'ngx-bootstrap';
 import {AgmCoreModule} from '@agm/core';
 import {ClickCopyDirective} from './click-copy.directive';
 import {ToasterModule} from 'angular2-toaster';
+import {DatepickerModule, BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 @NgModule({
   imports: [
@@ -19,6 +20,8 @@ import {ToasterModule} from 'angular2-toaster';
     ToasterModule.forRoot(),
     ModalModule.forRoot(),
     TooltipModule.forRoot(),
+    BsDatepickerModule.forRoot(),
+    DatepickerModule.forRoot(),
     AgmCoreModule
   ],
   declarations: [
