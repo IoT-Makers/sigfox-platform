@@ -10,10 +10,9 @@
     <ng-container>
       <div class="card-block">
         <div class="row mb-1">
-          <div class="col-md-3 btntop">
+          <div class="col-sm-12 col-md-auto col-lg-auto btntop">
             <div class="row mb-1">
-                <div class="col-md-3">
-                    <div class="input-group">
+                    <div class="input-group col-md-12 col-lg-12">
                         <!--<span class="input-group-addon">Show</span>-->
                         <div class="btn-group" role="group" aria-label="Quantity">
                           <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_Day}"
@@ -29,29 +28,20 @@
                                   (click)="searchLastFilter('all')">All
                           </button>
                         </div>
-                       
-                        
+                        <div class="btn-range">
+                          <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_Range}" 
+                                  (click)="showSelectRange()">Range
+                          </button>
+                        </div>
                       </div>
-                </div>
             </div>
             
 
             <!--<button class="btn btn-info pull-right" (click)="download()"><i class="fa fa-download"></i> Download</button>-->
           </div>
-            <div class="col-md-1 btntop">
-                <div class="row mb-1">
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-secondary btn-outline-primary" [ngClass]="{active : isLimit_Range}"
-                        (click)="showSelectRange()">Range
-                    </button>
-                    </div>
-                </div>
-              
-            </div>
-            
-            <div class="col-md-4">
+            <div class="col-sm-12 col-md-4  col-lg-4 ml-lg-auto mr-lg-auto">
                 <div *ngIf="rangebtn" class="row mb-1 rangeclass">
-                    <div class="col-md-5">
+                    <div class="col-sm-5 col-md-5 col-lg-5">
               
                       <input 
                       type="text"
@@ -65,7 +55,7 @@
                       [(bsValue)]="myDateValueFrom" >
                     </div>
 
-                    <div class="col-md-5">
+                    <div class="col-sm-5 col-md-5 col-lg-5">
               
                       <input type="text"
                       class="form-control"
@@ -74,23 +64,18 @@
                       [bsConfig]="{ containerClass:'theme-dark-blue', dateInputFormat :'DD-MMM-YYYY  HH:mm:ss'}"
                       #dp="bsDatepicker"
                       bsDatepicker 
-                      [(bsValue)]="myDateValueTo"
-                      value="{{ myDateValueTo | date: 'dd-MMM-yyyy  HH:mm:ss' }}">       
+                      value="{{ onValueChange() | date: 'dd-MMM-yyyy  HH:mm:ss' }}"
+                      [(bsValue)]="myDateValueTo">       
                     </div>
-                    
-                    <div class="col-md-1">
-                        <button class="btn btn-success" (click)="searchRangeFilter()">OK</button>
-                    </div>
+
+                    <button class="btn btn-success btn-sm btn-ok" (click)="searchRangeFilter()">OK</button>
 
                 </div>
               
-                      
           </div>
          
-          
-          
-          <div class="col-md-2 offset-md-2 btntop">
-              <div class="row mb-1">
+          <div class="col-md-12 col-lg-3 btntop">
+              <div class="row mb-1 ">
                   <div class="col">
                       <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-search"></i></span>
@@ -102,7 +87,6 @@
           
         </div>
         
-         
         <div class="datepreview">
           <pre class="code-preview">From {{myDateValueFrom | date: 'dd-MMM-yyyy HH:mm:ss'}} to {{myDateValueTo | date: 'dd-MMM-yyyy HH:mm:ss'}}</pre>
         </div>

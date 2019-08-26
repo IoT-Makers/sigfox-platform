@@ -44,11 +44,11 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private isLimit_100 = false;
   private isLimit_500 = false;
   private isLimit_1000 = false;
-  private isLimit_0 = false;
-  private isLimit_Day = true;
-  private isLimit_Week = false;
-  private isLimit_Month = false;
-  private isLimit_Range = false;
+  public isLimit_0 = false;
+  public isLimit_Day = true;
+  public isLimit_Week = false;
+  public isLimit_Month = false;
+  public isLimit_Range = false;
 
   // Notifications
   private toast;
@@ -65,7 +65,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private api;
   private id;
   private admin = false;
-  private rangebtn = false;
+  public rangebtn = false;
   private keepbtn = 0;
 
   constructor(private userApi: UserApi,
@@ -305,7 +305,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     var rangeDateFrom = this.myDateValueFrom;
     rangeDateFrom.setHours(0,0,0);
     rangeDateTo.setHours(23,59,59);
-    //Make sure the reset prec date and prec button
+    //Make sure to reset prec date and prec button
     this.lastDateFrom = this.myDateValueFrom;
     this.lastDateTo = this.myDateValueTo;
     this.keepbtn = 0;
@@ -439,6 +439,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.messages = messages;
       this.messagesReady = true;
     });
+  }
+
+  onValueChange() {
+    return this.myDateValueTo.setHours(23,59,59);
   }
 
   download(): void {

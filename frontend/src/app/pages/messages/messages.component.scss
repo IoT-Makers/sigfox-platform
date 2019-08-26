@@ -6,9 +6,17 @@
     background-color: rgba($color: black, $alpha: 0.1);
 }
 
+.btn-range{
+    margin-left: 1em;
+}
 .btntop{
      padding-top: 0.6em;
      padding-bottom: 0.7em;
+}
+
+.btn-ok{
+    margin: auto;
+    display: block;
 }
 
 .datepreview{
