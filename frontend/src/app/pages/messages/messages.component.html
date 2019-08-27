@@ -57,7 +57,8 @@
 
                     <div class="col-sm-5 col-md-5 col-lg-5">
               
-                      <input type="text"
+                      <input 
+                      type="text"
                       class="form-control"
                       placeholder="End of time span"
                       [maxDate]="maxDate"
@@ -81,7 +82,7 @@
                         <span class="input-group-addon"><i class="fa fa-search"></i></span>
                         <input type="text" class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
                       </div>
-                    </div>
+                  </div>
               </div>
           </div>
           
@@ -90,8 +91,9 @@
         <div class="datepreview">
           <pre class="code-preview">From {{myDateValueFrom | date: 'dd-MMM-yyyy HH:mm:ss'}} to {{myDateValueTo | date: 'dd-MMM-yyyy HH:mm:ss'}}</pre>
         </div>
+
       </div>
-      <div  *ngIf="messages.length>0" class="table-responsive">
+      <div *ngIf="messages.length>0" class="table-responsive">
         <table class="table table-hover" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable"
                [mfRowsOnPage]="50">
           <thead class="thead-inverse">

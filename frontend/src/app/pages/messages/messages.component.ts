@@ -7,9 +7,6 @@ import {AgmMap} from '@agm/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
-import { getDate } from 'ngx-bootstrap/chronos/utils/date-getters';
-import {FormControl, FormGroup} from '@angular/forms';
-import { BsDatepickerDirective } from 'ngx-bootstrap/datepicker';
 
 @Component({
   selector: 'app-messages',
@@ -88,16 +85,11 @@ export class MessagesComponent implements OnInit, OnDestroy {
     console.log('Messages: ngOnInit');
     // Get the logged in User object
     this.myDateValueTo= new Date();//"2019-06-15T23:59:59"
-    console.log("INIT DATE TO", this.myDateValueTo);
     this.myDateValueFrom = new Date();//"2019-06-15T23:59:59"
-
     this.myDateValueFrom.setDate(this.myDateValueTo.getDate() - 30);
-    //console.log("INIT DATE FROM", this.myDateValueTo.getDate());
-
     this.maxDate= new Date();
-    this.maxDate.setDate(this.maxDate.getDate())
+    this.maxDate.setDate(this.maxDate.getDate());
     this.minDate= new Date("2016-08-12T00:00:00");
-    console.log("INIT VALUE FROM :", this.myDateValueFrom,"  TO:", this.myDateValueTo);
     this.user = this.userApi.getCachedCurrent();
     this.userApi.getRoles(this.user.id).subscribe((roles: Role[]) => {
       this.user.roles = roles;
@@ -126,16 +118,15 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   setup(): void {
     // Get and listen messages
+    var setupDateTo = new Date();//"2019-06-19T23:59:59"
+    var setupDateFrom = new Date();//"2019-06-19T23:59:59"
     var range = 1;
-    var setupDateTo = new Date();//remove string to take the actual date "2019-06-19T23:59:59"
-    var setupDateFrom = new Date();//remove string to take the actual date "2019-06-19T23:59:59"
-    
+
     this.deviceIdSub = this.route.params.subscribe(params => {
       this.filterQuery = params['id'];
       if (this.filterQuery) {
         this.isLimit_Day = this.isLimit_Week = this.isLimit_Month = this.isLimit_0 = this.isLimit_Range = false;
         this.isLimit_0 = true;
-        this.myDateValueFrom
         setupDateFrom.setFullYear(2016,7,12 );
         setupDateFrom.setHours(0,0,0);
         this.myDateValueFrom = setupDateFrom;
@@ -267,11 +258,9 @@ export class MessagesComponent implements OnInit, OnDestroy {
       else this.keepbtn = 0;
       this.isLimit_Day = this.isLimit_Week = this.isLimit_Month = this.isLimit_0 = false;
 
-      console.log("keep btn value",this.keepbtn);
     }else{
       this.myDateValueFrom = this.lastDateFrom;
       this.myDateValueTo = this.lastDateTo;
-      console.log("keep btn value",this.keepbtn);
 
       this.isLimit_Range = false;
       switch (this.keepbtn) {
@@ -295,12 +284,9 @@ export class MessagesComponent implements OnInit, OnDestroy {
     
   }
   searchRangeFilter(){
-    console.log("SEARCH RANGE FILTER");
-    console.log("INIT VALUE FROM :", this.myDateValueFrom,"  TO:", this.myDateValueTo);
     this.isLimit_Day = this.isLimit_Week = this.isLimit_Month = this.isLimit_0 = false;
     this.messages = [];
     this.messagesReady = false;
-    // Reset buttons
     var rangeDateTo = this.myDateValueTo;
     var rangeDateFrom = this.myDateValueFrom;
     rangeDateFrom.setHours(0,0,0);
@@ -310,9 +296,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.lastDateTo = this.myDateValueTo;
     this.keepbtn = 0;
 
-    console.log("filter query value",this.filterQuery);
     if(this.filterQuery){
-      console.log("filter query exists");
       this.messageFilter = {
         order: 'createdAt DESC',
         include: ['Device', 'Geolocs'],
@@ -320,7 +304,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
   
       };
     }else{
-      console.log("filter query is empty");
       this.messageFilter = {
         order: 'createdAt DESC',
         include: ['Device', 'Geolocs'],
@@ -329,21 +312,14 @@ export class MessagesComponent implements OnInit, OnDestroy {
       };
     }
     
-
-    console.log(this.messageFilter);
-    console.log(this.id);
     this.api.getMessages(this.id, this.messageFilter).subscribe((messages: Message[]) => {
-      console.log("GETMESSAGES");
       this.messages = messages;
       this.messagesReady = true;
     });
 
-    console.log("MYDATEVALUETO",this.myDateValueTo);
-    console.log("MYDATEVALUEFROM",this.myDateValueFrom);
   }
 
   searchLastFilter(period: string){
-    console.log("SEARCH LAST FILTER");
     this.messages = [];
     this.messagesReady = false;
     this.isLimit_Day = period == "lastday";
@@ -357,39 +333,26 @@ export class MessagesComponent implements OnInit, OnDestroy {
     var toActualDate = new Date();//remove string to take the actual date "2019-06-20T23:59:59"
     var fromDate = new Date();//remove string to take the actual date "2019-06-20T23:59:59"
 
-    console.log("DATE INIT TO", this.myDateValueTo);
-
-    //this.myDateValueFrom = this.toActualDate;
-    // Reset buttons
-
     switch (period) {
       case 'lastday':
         fromDate.setDate(fromDate.getDate() - 1)
         fromDate.setHours(0,0,0);
-        console.log("LAST DAY FROM", fromDate);
-        console.log("LAST DAY TO", toActualDate);
 
         break;
       case 'lastweek':
         fromDate.setDate(fromDate.getDate() - 7)
         fromDate.setHours(0,0,0);
-        console.log("LAST WEEK FROM", fromDate);
-        console.log("LAST WEEK TO", toActualDate);
 
         break;
       case 'lastmonth':
         fromDate.setDate(fromDate.getDate() - 31)
         fromDate.setHours(0,0,0);
-        console.log("LAST MONTH FROM", fromDate);
-        console.log("LAST MONTH TO", toActualDate);
 
         break;
       
       case 'all':
         fromDate.setFullYear(2016,7,12 );
         fromDate.setHours(0,0,0);
-        console.log("LAST MONTH FROM", fromDate);
-        console.log("LAST MONTH TO", toActualDate);
 
         break;
 
@@ -402,9 +365,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
       where: { and :[ {createdAt: {lte: toActualDate}},{createdAt: {gte: fromDate}} ]}
 
     };
-
-    console.log(this.messageFilter);
-    console.log(this.id);
     this.api.getMessages(this.id, this.messageFilter).subscribe((messages: Message[]) => {
       this.messages = messages;
       this.messagesReady = true;
@@ -415,9 +375,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   searchFilter(limit: number) {
-    console.log("SEARCH FILTER");
-    console.log("INIT VALUE FROM :", this.myDateValueFrom,"  TO:", this.myDateValueTo);
-
     this.messages = [];
     this.messagesReady = false;
     // Reset buttons
@@ -432,9 +389,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       include: ['Device', 'Geolocs'],
     };
     this.messageFilter.limit = limit;
-
-    console.log(this.messageFilter);
-    console.log(this.id);
+    
     this.api.getMessages(this.id, this.messageFilter).subscribe((messages: Message[]) => {
       this.messages = messages;
       this.messagesReady = true;
