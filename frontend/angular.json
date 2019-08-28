@@ -19,7 +19,11 @@
             "assets": [
               "src/robots.txt",
               "src/assets",
-              "src/favicon.ico"
+              "src/favicon.ico",
+              { "glob": "worker-javascript.js", "input": "node_modules/ace-builds/src-min/", "output": "/" },
+              { "glob": "worker-css.js", "input": "node_modules/ace-builds/src-min/", "output": "/" },
+              { "glob": "worker-json.js", "input": "node_modules/ace-builds/src-min/", "output": "/" }
+
             ],
             "styles": [
               "src/scss/style.scss",
@@ -38,7 +42,9 @@
             "scripts": [
               "node_modules/chart.js/dist/Chart.bundle.min.js",
               "node_modules/chart.js/dist/Chart.min.js",
-              "src/assets/js/primus.js"
+              "src/assets/js/primus.js",
+              "node_modules/ace-builds/src-min/ace.js",
+              "node_modules/ace-builds/src-min/mode-javascript.js"
             ]
           },
           "configurations": {
@@ -87,7 +93,9 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
               "node_modules/chart.js/dist/Chart.bundle.min.js",
-              "node_modules/chart.js/dist/Chart.min.js"
+              "node_modules/chart.js/dist/Chart.min.js",
+              "node_modules/ace-builds/src-min/ace.js",
+              "node_modules/ace-builds/src-min/mode-javascript.js"
             ],
             "styles": [
               "src/scss/style.scss",
@@ -104,7 +112,11 @@
             ],
             "assets": [
               "src/assets",
-              "src/favicon.ico"
+              "src/favicon.ico",
+              { "glob": "worker-javascript.js", "input": "node_modules/ace-builds/src-min/", "output": "/" },
+              { "glob": "worker-css.js", "input": "node_modules/ace-builds/src-min/", "output": "/" },
+              { "glob": "worker-json.js", "input": "node_modules/ace-builds/src-min/", "output": "/" }
+
             ]
           }
         },
