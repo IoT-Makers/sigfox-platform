@@ -51,6 +51,10 @@
                 Last message
                 <!--<mfDefaultSorter by="messagedAt"><i class="fa fa-sort"></i> Last message</mfDefaultSorter>-->
               </th>
+              <th class="text-center">
+                Data
+                  <!--<mfDefaultSorter by="data_parsed"><i class="fa fa-sort"></i> Data</mfDefaultSorter>-->
+              </th>
               <th *ngIf="!edit" class="text-center">
                 Properties
                 <!--<mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>-->
@@ -133,6 +137,16 @@
                 <div class="small text-gray-dark">{{device.messagedAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
                 <strong>{{device.messagedAt | amTimeAgo}}</strong>
               </td>
+              <td>
+                  <div *ngIf="!device.Messages[0]" class="small text-muted">No data</div>
+                  <div *ngIf="device.Messages[0]">
+                    <div class="small text-gray-dark"
+                         *ngFor="let o of device.Messages[0].data_parsed; let i = index">
+                    <span *ngIf="o.value">{{o.key}}: <strong>{{o.value}}
+                    {{o.unit}}</strong></span>
+                    </div>
+                  </div>
+                </td>
               <td *ngIf="!edit">
                 <div *ngIf="!device.properties" class="small text-muted text-center">No properties</div>
                 <div *ngIf="device.properties && device.properties.length === 0" class="small text-muted text-center">
