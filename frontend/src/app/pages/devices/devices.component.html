@@ -142,8 +142,18 @@
                   <div *ngIf="device.Messages[0]">
                     <div class="small text-gray-dark"
                          *ngFor="let o of device.Messages[0].data_parsed; let i = index">
-                    <span *ngIf="o.value">{{o.key}}: <strong>{{o.value}}
-                    {{o.unit}}</strong></span>
+                    <div *ngIf="o.value">
+                      {{o.key}}: <strong>{{o.value}} {{o.unit}}</strong>
+                      <div *ngIf="o.key === 'ubiscale' || o.value === 'Timeout'">
+                          <div *ngIf="device.Messages[0].Geolocs">
+                              <div *ngFor="let geoloc of device.Messages[0].Geolocs">
+                                  <div><small>lat: <strong>{{geoloc.location.lat}}</strong></small></div>
+                                  <div><small>lng: <strong>{{geoloc.location.lng}}</strong></small></div>
+                                  <div><small>accuracy: <strong>{{geoloc.accuracy}}</strong></small></div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
                     </div>
                   </div>
                 </td>
