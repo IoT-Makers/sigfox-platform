@@ -612,6 +612,20 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  unshare(orga, device, index): void {
+    this.deviceApi.unlinkOrganizations(device.id, orga.id).subscribe(results => {
+      console.log(results);
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('success', 'Success', 'The device has been removed from ' + orga.name + '.');
+      this.deviceToEdit.Organizations.splice(index, 1);
+    }, err => {
+      if (this.toast)
+        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+      this.toast = this.toasterService.pop('error', 'Error', err.message);
+    });
+  }
+  
   editDashboard(): void {
     this.confirmModal.hide();
     this.edit = false;
