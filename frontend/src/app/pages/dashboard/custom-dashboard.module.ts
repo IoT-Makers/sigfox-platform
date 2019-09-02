@@ -8,7 +8,8 @@ import {AgmCoreModule, GoogleMapsAPIWrapper} from '@agm/core';
 import {FormsModule} from '@angular/forms';
 import {MomentModule} from 'angular2-moment';
 import {DataTableModule} from 'angular2-datatable';
-import {ModalModule, TooltipModule} from 'ngx-bootstrap';
+import {ModalModule, TooltipModule, TabsModule} from 'ngx-bootstrap';
+import {LaddaModule} from 'angular2-ladda';
 import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
 import {DirectionsDirective} from './directions.directive';
 import {AgmJsMarkerClustererModule} from '@agm/js-marker-clusterer';
@@ -29,6 +30,7 @@ import {OwlDateTimeModule, OwlNativeDateTimeModule} from "ng-pick-datetime";
     DataTableModule,
     MomentModule,
     TooltipModule.forRoot(),
+    TabsModule.forRoot(),
     AgmCoreModule,
     ChartsModule,
     AgmJsMarkerClustererModule,
@@ -36,7 +38,8 @@ import {OwlDateTimeModule, OwlNativeDateTimeModule} from "ng-pick-datetime";
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     ModalModule.forRoot(),
-    NvD3Module
+    NvD3Module,
+    LaddaModule
   ],
   providers: [
     GoogleMapsAPIWrapper
