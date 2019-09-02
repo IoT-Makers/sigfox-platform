@@ -186,7 +186,7 @@ class Device {
                     id: o.tap,
                     lat: o.lat,
                     lng: o.lng,
-                    // RSSI: o.rssi,
+                    RSSI: o.rssi,
                     linkQuality: messageInstance.linkQuality,
                     SNR: messageInstance.snr
                   };
