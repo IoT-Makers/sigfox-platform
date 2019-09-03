@@ -1093,8 +1093,9 @@
                   </div>
                 </td>
                 <td class="text-center">
-                  <strong>{{ device.messagedAt | amTimeAgo }}</strong>
-                </td>
+                  <!--<strong>{{ device.messagedAt | amTimeAgo }}</strong>-->
+                  <div class="small text-gray-dark">{{device.Messages[0].createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
+                  <strong>{{device.Messages[0].createdAt | amTimeAgo}}</strong>
                 <td>
                   <div
                     *ngIf="!device.properties"

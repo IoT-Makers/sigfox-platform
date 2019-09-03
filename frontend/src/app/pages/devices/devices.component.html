@@ -135,8 +135,10 @@
 
               </td>
               <td class="text-center">
-                <div class="small text-gray-dark">{{device.messagedAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
-                <strong>{{device.messagedAt | amTimeAgo}}</strong>
+                <!-- <div class="small text-gray-dark">{{device.messagedAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
+                <strong>{{device.messagedAt | amTimeAgo}}</strong> -->
+                <div class="small text-gray-dark">{{device.Messages[0].createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</div>
+                <strong>{{device.Messages[0].createdAt | amTimeAgo}}</strong>
               </td>
               <td>
                   <div *ngIf="!device.Messages[0]" class="small text-muted">No data</div>
