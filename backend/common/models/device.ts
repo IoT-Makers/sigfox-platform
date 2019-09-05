@@ -168,7 +168,6 @@ class Device {
             const sigfoxApiPassword = decrypt(connector.password);
 
             let reception: any[] = [];
-
             const credentials = new Buffer(sigfoxApiLogin + ":" + sigfoxApiPassword).toString("base64");
 
             this.model.app.dataSources.sigfox.getMessages(
@@ -201,6 +200,7 @@ class Device {
                 message.seqNumber = messageInstance.seqNumber;
                 message.data = messageInstance.data;
                 message.reception = reception;
+                message.oob = messageInstance.oob ? true : false;
                 message.createdAt = new Date(messageInstance.time * 1000);
                 message.updatedAt = new Date(messageInstance.time * 1000);
                 Message.create(

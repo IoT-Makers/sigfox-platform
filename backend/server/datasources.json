@@ -40,7 +40,7 @@
       {
         "template": {
           "method": "GET",
-          "url": "https://backend.sigfox.com/api/devices/{!deviceId:string}/messages",
+          "url": "https://backend.sigfox.com/api/devices/{!deviceId:string}/messages?oob=true",
           "headers": {
             "Authorization": "Basic {!credentials:string}"
           },

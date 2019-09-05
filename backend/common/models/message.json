@@ -68,6 +68,9 @@
     "ack": {
       "type": "boolean"
     },
+    "oob": {
+      "type": "boolean"
+    },
     "reception": {
       "type": [
         "Reception"
