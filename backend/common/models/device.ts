@@ -200,7 +200,7 @@ class Device {
                 message.seqNumber = messageInstance.seqNumber;
                 message.data = messageInstance.data;
                 message.reception = reception;
-                message.deviceAck = messageInstance.deviceAck;
+                message.ack = messageInstance.ackRequired;
                 message.oob = messageInstance.oob ? true : false;
                 message.createdAt = new Date(messageInstance.time * 1000);
                 message.updatedAt = new Date(messageInstance.time * 1000);
@@ -405,7 +405,17 @@ class Device {
                   //obj.seconds = date.getSeconds();
                   obj.data = message.data;
                   obj.ack = message.ack;
+                  obj.oob = message.oob;
                   obj.data_downlink = message.data_downlink;
+
+                  if(message.deviceAck){
+                    obj.oob = message.deviceAck;
+                    console.log("deviceAck is :", message.deviceAck, "for seqNumber ", message.seqNumber);
+                  }
+                  else {
+                    obj.oob = message.oob;
+                    console.log("OOB is :", message.oob, "for seqNumber ", message.seqNumber);
+                  }
       
                   if (message.data_parsed) {
                     message.data_parsed.forEach((p: any) => {
@@ -575,6 +585,7 @@ class Device {
           //options.fields.push("seconds");
           options.fields.push("data");
           options.fields.push("ack");
+          options.fields.push("oob");
           options.fields.push("data_downlink");
 
           if (device.properties){
@@ -618,7 +629,7 @@ class Device {
                       }
                     });
                   }
-                  
+
                   if (message.Geolocs) {
                     message.Geolocs.forEach((geoloc: any) => {
                       if (options.fields.indexOf("lat_" + geoloc.type) === -1) {
