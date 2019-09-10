@@ -72,7 +72,7 @@ class Geoloc {
     // Models
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
-
+    var timeoutstate: boolean = false;
     var ubistate: boolean = false;
 
 
@@ -142,8 +142,11 @@ class Geoloc {
 
             messageInstance.data_parsed.forEach((p: any) => {
               if (p.value !== null && typeof p.value !== 'undefined') {
+                if (p.value == 'Timeout') {
+                  timeoutstate = true;
+                }
                 // Check if there is Ubiscale geoloc in parsed data
-                if (p.key === 'ubiscale') {
+                else if (p.key === 'ubiscale') {
                   geoloc_gps.type = 'gps';
                   //ubistate=true;
 
@@ -160,14 +163,15 @@ class Geoloc {
           }
 
           // Creating a new Geoloc
-        
-            Geoloc.create(
-              geoloc,
-              (err: any, geolocInstance: any, created: boolean) => { // callback
-                console.log('created in geoloc create',created);
-                if (err) return next(err, geolocInstance);
-                else return next(null, geolocInstance);
-              });
+            if (timeoutstate || created){
+              Geoloc.create(
+                geoloc,
+                (err: any, geolocInstance: any, created: boolean) => { // callback
+                  console.log('created in geoloc create',created);
+                  if (err) return next(err, geolocInstance);
+                  else return next(null, geolocInstance);
+                });
+            } else next(null, geoloc);
          
           
         }
@@ -200,6 +204,7 @@ class Geoloc {
     message.time = data.time;
     message.seqNumber = data.seqNumber;
     message.createdAt = new Date(data.time * 1000);
+    message.deviceAck = true;
     
 
     // Find the corresponding message or create one
@@ -276,7 +281,6 @@ class Geoloc {
               });
             }
 
-           
             // Creating a new Geoloc
             if (timeoutstate){
               Geoloc.create(
