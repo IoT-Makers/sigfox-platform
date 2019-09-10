@@ -59,8 +59,7 @@
                 Properties
                 <!--<mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>-->
               </th>
-              <!--<th *ngIf="!edit && (showDeviceSuccessRate && showDeviceSuccessRate.value === true)" class="text-center"> -->
-                <th *ngIf="!edit && showDeviceSuccessRate" class="text-center">
+              <th *ngIf="!edit && (showDeviceSuccessRate && showDeviceSuccessRate.value === true)" class="text-center">
                 Success rate
                 <!--<mfDefaultSorter by="successRate"><i class="fa fa-sort"></i> Success rate</mfDefaultSorter>-->
               </th>
@@ -172,7 +171,7 @@
                   </div>
                 </div>
               </td>
-              <td *ngIf="!edit && showDeviceSuccessRate" class="text-center">
+              <td *ngIf="!edit && (showDeviceSuccessRate && showDeviceSuccessRate.value === true)" class="text-center">
                 <strong *ngIf="device.successRate" tooltip="Based on the last 100 received">{{device.successRate + ' %'}}</strong>
                 <span *ngIf="!device.successRate">N/A</span>
               </td>
