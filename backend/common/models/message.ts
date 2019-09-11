@@ -350,8 +350,10 @@ class Message {
   }
 
   public updateDevice(deviceId: string, createdAt: Date) {
+    console.log("MESSAGE TS : UPDATE DEVICE");
     // Model
     const Device = this.model.app.models.Device;
+    let oobNb : number = 0;
     Device.findById(deviceId, {
         include: [{
           relation: "Messages",
@@ -368,11 +370,23 @@ class Message {
           if (deviceInstance.Messages && deviceInstance.Messages.length > 0) {
             const device = deviceInstance.toJSON();
             let attendedNbMessages: number;
+            let nbDuplicated = 0;
             attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber + 1;
             if (device.Messages[device.Messages.length - 1].seqNumber > device.Messages[0].seqNumber) {
               attendedNbMessages += 4095;
             }
-            device.successRate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
+
+            //Check if duplicated seqNumber
+            var sortedMessages = device.Messages.slice().sort(function (a: any,b: any) {
+              return a.seqNumber - b.seqNumber;
+            });
+            for ( let i = 0; i < sortedMessages.length -1; i++){
+              if(sortedMessages[i + 1].seqNumber == sortedMessages[i].seqNumber){
+                nbDuplicated++;
+              }
+            }
+
+            device.successRate = ((((device.Messages.length - nbDuplicated) / attendedNbMessages) * 100)).toFixed(2);
             deviceInstance.updateAttribute('successRate', device.successRate);
           }
           // Update the date when the device was last seen
@@ -531,6 +545,12 @@ class Message {
 
   public afterSave(ctx: any, next: Function): void {
     // TODO: merge these 2 functions
+    console.log("-----------1---------------AFTER SAVE-------------------------------------------------");
+    console.log("------------2--------------AFTER SAVE-------------------------------------------------");
+    console.log("-------------3-------------AFTER SAVE-------------------------------------------------");
+    console.log("--------------4------------AFTER SAVE-------------------------------------------------");
+    console.log("---------------5-----------AFTER SAVE-------------------------------------------------");
+
     let msg = ctx.instance;
     if (ctx.isNewInstance) {
       this.linkMessageToOrganization(ctx.instance, (device => {
@@ -538,8 +558,11 @@ class Message {
         this.publish(device, msg, 'CREATE');
       }));
       // Calculate success rate and update device
+      console.log(" UPDATE device called in afer save bc new instance");
+
       this.updateDevice(ctx.instance.deviceId, ctx.instance.createdAt);
     } else {
+      console.log("pas de nouvelle instance")
       const Device = this.model.app.models.Device;
       Device.findById(ctx.instance.deviceId, {include: "Organizations"}, (err: any, device: any) => {
         err ?

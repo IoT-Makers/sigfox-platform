@@ -265,11 +265,23 @@ class Device {
         else {
           device = device.toJSON();
           let attendedNbMessages: number;
+          let nbDuplicated = 0;
           attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber + 1;
           if (device.Messages[device.Messages.length - 1].seqNumber > device.Messages[0].seqNumber) {
             attendedNbMessages += 4095;
           }
-          device.successRate = (((device.Messages.length / attendedNbMessages) * 100)).toFixed(2);
+
+          //Check if duplicated seqNumber
+          var sortedMessages = device.Messages.slice().sort(function (a: any,b: any) {
+            return a.seqNumber - b.seqNumber;
+          });
+          for ( let i = 0; i < sortedMessages.length -1; i++){
+            if(sortedMessages[i + 1].seqNumber == sortedMessages[i].seqNumber){
+              nbDuplicated++;
+            }
+          }
+
+          device.successRate = ((((device.Messages.length - nbDuplicated) / attendedNbMessages) * 100)).toFixed(2);
 
           Device.upsert(
             device,
