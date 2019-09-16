@@ -150,7 +150,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
                 itemName: r
               };
             this.selectColumns.push(item2);
-            if (item2.id === "Date_LRT" || item2.id === "ID_LRT" || item2.id === "Name_LRT" || item2.id === "Sex_LRT" || item2.id === "Age_LRT" || item2.id === "Time_LRT" || item2.id === "South_LRT" || item2.id === "East_LRT" || item2.id === "UTM_LRT" || item2.id === "Area_LRT" || item2.id === "EVENT_LRT" || item2.id === "deviceId_LRT" || item2.id === "Notes_LRT" ){
+            if (item2.id === "Date_LRT" || item2.id === "ID_LRT" || item2.id === "Name_LRT" || item2.id === "Sex_LRT" || item2.id === "Age_LRT" || item2.id === "Time_LRT" || item2.id === "Lat_LRT" || item2.id === "Lng_LRT" || item2.id === "UTM_LRT" || item2.id === "Area_LRT" || item2.id === "EVENT_LRT" || item2.id === "deviceId_LRT" || item2.id === "Notes_LRT" ){
               item2.id = item2.id.replace('_LRT','');
               item2.itemName = item2.itemName.replace('_LRT','');
               this.selectedColumns.push(item2);
@@ -182,7 +182,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
               };
             this.selectColumns.push(item2);
             //if (organizationId === "5b150e8f5f045200bdf496ba"){
-              if (item2.id === "Date_LRT" || item2.id === "ID_LRT" || item2.id === "Name_LRT" || item2.id === "Sex_LRT" || item2.id === "Age_LRT" || item2.id === "Time_LRT" || item2.id === "South_LRT" || item2.id === "East_LRT" || item2.id === "UTM_LRT" || item2.id === "Area_LRT" || item2.id === "EVENT_LRT" || item2.id === "deviceId_LRT" || item2.id === "Notes_LRT"){
+              if (item2.id === "Date_LRT" || item2.id === "ID_LRT" || item2.id === "Name_LRT" || item2.id === "Sex_LRT" || item2.id === "Age_LRT" || item2.id === "Time_LRT" || item2.id === "Lat_LRT" || item2.id === "Lng_LRT" || item2.id === "UTM_LRT" || item2.id === "Area_LRT" || item2.id === "EVENT_LRT" || item2.id === "deviceId_LRT" || item2.id === "Notes_LRT"){
                 item2.itemName = item2.itemName.replace('_LRT','');
                 item2.id = item2.id.replace('_LRT','');
                 this.selectedColumns.push(item2);

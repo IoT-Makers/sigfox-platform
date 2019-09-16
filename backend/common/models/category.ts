@@ -312,7 +312,7 @@ class Category {
                       let nb = 0;
                       let nb1 = 0;
                       let nb2 = 0;
-                      options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "South_LRT", "East_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT");
+                      options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "Lat_LRT", "Lng_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT");
                       
                       while (nb < options.fields.length) {
                         if (options2.fields2.indexOf(options.fields[nb] + "_LRT") === -1) {
@@ -530,7 +530,7 @@ class Category {
                       let nb = 0;
                       let nb1 = 0;
                       let nb2 = 0;
-                      options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "South_LRT", "East_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT");
+                      options2.fields2.push("Date_LRT", "ID_LRT", "Name_LRT", "Sex_LRT", "Age_LRT", "Time_LRT", "Lat_LRT", "Lng_LRT", "UTM_LRT", "Area_LRT", "EVENT_LRT", "deviceId_LRT", "Notes_LRT");
                       
                       while (nb < options.fields.length) {
                         if (options2.fields2.indexOf(options.fields[nb] + "_LRT") === -1) {
@@ -761,11 +761,11 @@ class Category {
                     //used only when LRT preselection exist
                       if (obj["lat_gps"] || obj["lat_sigfox"]) {
                         if (obj["lat_gps"]) {
-                          obj["South"] = obj["lat_gps"];
+                          obj["Lat"] = obj["lat_gps"];
                           obj["Notes"] = "SigfoxGPS";
                         }
                         else if (obj["lat_sigfox"]) {
-                          obj["South"] = obj["lat_sigfox"];
+                          obj["Lat"] = obj["lat_sigfox"];
                           obj["Notes"] = "SigfoxGeo";
 
                         }
@@ -773,10 +773,10 @@ class Category {
                       }
                       if (obj["lng_gps"] || obj["lng_sigfox"]) {
                         if (obj["lng_gps"]) {
-                          obj["East"] = obj["lng_gps"];
+                          obj["Lng"] = obj["lng_gps"];
                         }
                         else if (obj["lng_sigfox"]) {
-                          obj["East"] = obj["lng_sigfox"];
+                          obj["Lng"] = obj["lng_sigfox"];
                         }
   
                       }
@@ -987,11 +987,11 @@ class Category {
 
                     if (obj["lat_gps"] || obj["lat_sigfox"]) {
                       if (obj["lat_gps"]) {
-                        obj["South"] = obj["lat_gps"];
+                        obj["Lat"] = obj["lat_gps"];
                         obj["Notes"] = "SigfoxGPS";
                       }
                       else if (obj["lat_sigfox"]) {
-                        obj["South"] = obj["lat_sigfox"];
+                        obj["Lat"] = obj["lat_sigfox"];
                         obj["Notes"] = "SigfoxGeo";
 
                       }
@@ -999,10 +999,10 @@ class Category {
                     }
                     if (obj["lng_gps"] || obj["lng_sigfox"]) {
                       if (obj["lng_gps"]) {
-                        obj["East"] = obj["lng_gps"];
+                        obj["Lng"] = obj["lng_gps"];
                       }
                       else if (obj["lng_sigfox"]) {
-                        obj["East"] = obj["lng_sigfox"];
+                        obj["Lng"] = obj["lng_sigfox"];
                       }
 
                     }

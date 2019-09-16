@@ -1144,7 +1144,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   setTimeSpan(widget): void {
-    console.log("SET TIME SPAN");
     switch (widget.options.timeSpan) {
       case 'ten-minutes':
         const TEN_MINUTES = 10 * 60 * 1000;  // Hour in milliseconds
@@ -1499,8 +1498,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   loadWidgets(): void {
-    console.log("LOADWIDGETS");
-
     this.dashboardApi.getWidgets(this.dashboard.id, {order: 'createdAt ASC'}).subscribe((widgets: any[]) => {
       this.widgets = widgets;
       console.log(this.widgets);
@@ -1538,7 +1535,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   setWidgetData(widget: any): void {
-    console.log("SETWIDGETDATA");
     // Load widgets
     if (widget.type === 'text' || widget.type === 'image' || widget.type === 'divider') widget.ready = true;
     else {
@@ -2130,7 +2126,6 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   private getDevicesWithFilter(widget: any, newFilter?: any): Observable<any[]> {
-    console.log("GETDEVICEWITHFILTER");
     if (widget.options.timeSpan) this.setTimeSpan(widget);
     if (newFilter) return this.api.getDevices(this.id, newFilter);
     else return this.api.getDevices(this.id, widget.filter);
@@ -2187,7 +2182,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               itemName: r
             };
           this.selectColumns.push(item2);
-          if (item2.id === "Date_LRT" || item2.id === "ID_LRT" || item2.id === "Name_LRT" || item2.id === "Sex_LRT" || item2.id === "Age_LRT" || item2.id === "Time_LRT" || item2.id === "South_LRT" || item2.id === "East_LRT" || item2.id === "UTM_LRT" || item2.id === "Area_LRT" || item2.id === "EVENT_LRT" || item2.id === "deviceId_LRT" || item2.id === "Notes_LRT"){
+          if (item2.id === "Date_LRT" || item2.id === "ID_LRT" || item2.id === "Name_LRT" || item2.id === "Sex_LRT" || item2.id === "Age_LRT" || item2.id === "Time_LRT" || item2.id === "Lat_LRT" || item2.id === "Lng_LRT" || item2.id === "UTM_LRT" || item2.id === "Area_LRT" || item2.id === "EVENT_LRT" || item2.id === "deviceId_LRT" || item2.id === "Notes_LRT"){
             item2.itemName = item2.itemName.replace('_LRT','');
             item2.id = item2.id.replace('_LRT','');
             this.selectedColumns.push(item2);
