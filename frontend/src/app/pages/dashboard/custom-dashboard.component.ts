@@ -16,6 +16,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
 import {Location} from '@angular/common';
 import {environment} from "../../../../environments/environment";
+import { Options, LabelType } from 'ng5-slider';
 
 declare let d3: any;
 declare const google: any;
@@ -318,6 +319,18 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.toasterService = toasterService;
   }
 
+  startDate : Date;
+  days : number;
+  enabledRange: boolean = false;
+  dateRange: Date[];
+  dateTicks: Date;
+  minValue: number;
+  minValue2: string;
+  maxValue: number;
+  options: Options = {
+    draggableRange: true
+  };
+
   ngOnInit(): void {
     console.log('Custom Dashboard: ngOnInit');
     // Get the logged in User object
@@ -402,6 +415,74 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         });
       });
     }));
+  }
+
+  intoRange(date): boolean {
+    var dateTime : number;
+    var geolocDate = new Date(date);
+    dateTime = geolocDate.getTime();
+    if (dateTime >= this.minValue && dateTime <= this.maxValue){
+      return true;
+    }
+    else return false;
+  }
+  
+  createRangeSlider(days){
+    this.dateRange  = this.createDateRange(days);
+    this.minValue = this.dateRange[Math.round(this.dateRange.length * 1/3)].getTime();
+    this.maxValue = this.dateRange[Math.round(this.dateRange.length * 2/3)].getTime();
+    this.options.stepsArray = this.dateRange.map((date: Date) => {
+      return { value: date.getTime() };
+    });
+  }
+
+  createDateRange(days): Date[] {
+    const dates: Date[] = [];
+    if (days > 7) {
+      this.options.translate = (value: number, label: LabelType): string => {
+        return new Date(value).toLocaleDateString();
+      }
+      var now = new Date();
+
+      for (let i: number = 0; i <= days; i++) {
+        this.dateTicks = new Date();
+        this.dateTicks.setHours(0,0,0,0);
+        this.dateTicks.setDate(this.dateTicks.getDate() + 1 - i)
+        dates.push(this.dateTicks);
+      }
+    }
+    else if(days >= 1) {
+      var now = new Date();
+      //From first day at first hour 00:00:00
+      var hours = days * 24 + now.getHours() + 1;
+      this.options.translate = (value: number, label: LabelType): string => {
+        return new Date(value).toLocaleString();
+      }
+      for (let i: number = 0; i <= hours; i++) {
+        this.dateTicks = new Date();
+        this.dateTicks.setHours(now.getHours() + 1,0,0,0)
+        this.dateTicks.setHours(this.dateTicks.getHours() - i);
+        dates.push(this.dateTicks);
+      }
+    }
+    else if (days < 1){
+      var now = new Date();
+      var minutes : number;
+      this.options.translate = (value: number, label: LabelType): string => {
+        return new Date(value).toLocaleTimeString();
+      }
+      if (days === 0.1) minutes = 10;
+      if (days === 0.6) minutes = 60;
+      for (let i: number = 0; i <= minutes; i++) {
+        this.dateTicks = new Date();
+        this.dateTicks.setHours(now.getHours(),now.getMinutes() +1 ,0,0)
+        this.dateTicks.setMinutes(this.dateTicks.getMinutes() - i);
+        dates.push(this.dateTicks);
+      }
+    }
+    
+    var reversed = dates.reverse();
+    return reversed;
   }
 
   getSelectableCategoryFilters(categories: any[]): void {
@@ -1063,56 +1144,85 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   setTimeSpan(widget): void {
+    console.log("SET TIME SPAN");
     switch (widget.options.timeSpan) {
       case 'ten-minutes':
         const TEN_MINUTES = 10 * 60 * 1000;  // Hour in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - TEN_MINUTES;
+        this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
+        this.days = 0.1;
         break;
       case 'hour':
         const ONE_HOUR = 60 * 60 * 1000;  // Hour in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_HOUR;
+        this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
+        this.days = 0.6;
         break;
       case 'day':
         const ONE_DAY = 24 * 60 * 60 * 1000;  // Day in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_DAY;
+        this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
+        this.days = 1;
         break;
       case 'three-days':
         const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;  // Day in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - THREE_DAYS;
+        this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
+        this.days = 3;
         break;
       case 'one-week':
         const ONE_WEEK = 7 * 24 * 60 * 60 * 1000;  // Week in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_WEEK;
+        this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
+        this.days = 7;
         break;
       case 'two-weeks':
         const TWO_WEEK = 2 * 7 * 24 * 60 * 60 * 1000;  // Week in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - TWO_WEEK;
+        this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
+        this.days = 14;
         break;
       case 'three-weeks':
         const THREE_WEEK = 3 * 7 * 24 * 60 * 60 * 1000;  // Week in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - THREE_WEEK;
+        this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
+        this.days = 21;
         break;
       case 'month':
         const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;  // Month in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_MONTH;
+        this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
+        this.days = 31;
         break;
       case 'year':
         const ONE_YEAR = 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - ONE_YEAR;
+        this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
+        this.days = 365;
         break;
-      case 'three-years':
+      case 'two-years':
         const TWO_YEARS = 2 * 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - TWO_YEARS;
+        this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
+        this.days = 730;
         break;  
       case 'three-years':
         const THREE_YEARS = 3 * 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - THREE_YEARS;
+        this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
+        this.days = 1095;
         break;
       case 'since-beginning':
         const SINCE_BEGIN = 5 * 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - SINCE_BEGIN;
+        this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
+        this.days = 1825;
+
         break;
     }
+    console.log("number of days", this.days);
+    this.createRangeSlider(this.days);
+
   }
 
   setWidgetType($event): void {
@@ -1389,6 +1499,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   loadWidgets(): void {
+    console.log("LOADWIDGETS");
+
     this.dashboardApi.getWidgets(this.dashboard.id, {order: 'createdAt ASC'}).subscribe((widgets: any[]) => {
       this.widgets = widgets;
       console.log(this.widgets);
@@ -1426,6 +1538,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   setWidgetData(widget: any): void {
+    console.log("SETWIDGETDATA");
     // Load widgets
     if (widget.type === 'text' || widget.type === 'image' || widget.type === 'divider') widget.ready = true;
     else {
@@ -2017,6 +2130,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   }
 
   private getDevicesWithFilter(widget: any, newFilter?: any): Observable<any[]> {
+    console.log("GETDEVICEWITHFILTER");
     if (widget.options.timeSpan) this.setTimeSpan(widget);
     if (newFilter) return this.api.getDevices(this.id, newFilter);
     else return this.api.getDevices(this.id, widget.filter);

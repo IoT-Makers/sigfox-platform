@@ -19,6 +19,8 @@ import {NvD3Module} from 'ng2-nvd3';
 import 'd3';
 import 'nvd3';
 import {OwlDateTimeModule, OwlNativeDateTimeModule} from "ng-pick-datetime";
+import { Ng5SliderModule } from 'ng5-slider';
+
 
 @NgModule({
   imports: [
@@ -39,7 +41,8 @@ import {OwlDateTimeModule, OwlNativeDateTimeModule} from "ng-pick-datetime";
     OwlNativeDateTimeModule,
     ModalModule.forRoot(),
     NvD3Module,
-    LaddaModule
+    LaddaModule,
+    Ng5SliderModule
   ],
   providers: [
     GoogleMapsAPIWrapper
