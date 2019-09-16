@@ -408,7 +408,7 @@ class Device {
                   obj.deviceId = message.deviceId;
                   obj.seqNumber = message.seqNumber;
                   obj.createdAt = moment(message.createdAt).format("DD-MMM-YY");
-                  obj.timestamp = message.createdAt;
+                  obj.timestamp = message.createdAt.toGMTString();                  
                   //obj.year = date.getFullYear();
                   //obj.month = date.getMonth() + 1;
                   //obj.day = date.getDate();

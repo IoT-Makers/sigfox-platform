@@ -700,7 +700,8 @@ class Category {
                     obj.deviceId = message.deviceId;
                     obj.seqNumber = message.seqNumber;
                     obj.createdAt = moment(message.createdAt).format("DD-MMM-YY");
-                    obj.timestamp = message.createdAt.toJSON();
+                    obj.timestampSorter = message.createdAt.toJSON();
+                    obj.timestamp = message.createdAt.toGMTString();                    
                     //obj.year = new Date(message.createdAt).getFullYear();
                     //obj.month = new Date(message.createdAt).getMonth() + 1;
                     //obj.day = new Date(message.createdAt).getDate();
@@ -795,7 +796,7 @@ class Category {
                     // Sort all message by date if devices are rhinos trackers (rhino parser)
                     var data2: any = [];
                     if (hasOnlyRhinosParser === true){
-                      data2 = data.sort((a : any,b: any) => a.timestamp.localeCompare(b.timestamp));
+                      data2 = data.sort((a : any,b: any) => a.timestampSorter.localeCompare(b.timestampSorter));
                     }
                     data2 = data;
 
@@ -933,7 +934,8 @@ class Category {
                     obj.deviceId = message.deviceId;
                     obj.seqNumber = message.seqNumber;
                     obj.createdAt = moment(message.createdAt).format("DD-MMM-YY");
-                    obj.timestamp = message.createdAt.toJSON();
+                    obj.timestampSorter = message.createdAt.toJSON();
+                    obj.timestamp = message.createdAt.toGMTString();
                     //obj.year = new Date(message.createdAt).getFullYear();
                     //obj.month = new Date(message.createdAt).getMonth() + 1;
                     //obj.day = new Date(message.createdAt).getDate();
@@ -1020,7 +1022,7 @@ class Category {
 
                     var data2: any = [];
                     if (hasOnlyRhinosParser === true){
-                      data2 = data.sort((a : any,b: any) => a.timestamp.localeCompare(b.timestamp));
+                      data2 = data.sort((a : any,b: any) => a.timestampSorter.localeCompare(b.timestampSorter));
                     }
                     data2 = data;
 
