@@ -182,8 +182,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
       tosend = tabid;
 
-      //const url = 'https://api.' + this.document.location.hostname + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '/' + tosend + '?access_token=' + this.userApi.getCurrentToken().id;
-      const url = 'http://localhost:3000/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '/' + tosend + '?access_token=' + this.userApi.getCurrentToken().id;
+      const url = 'https://api.' + this.document.location.hostname + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '/' + tosend + '?access_token=' + this.userApi.getCurrentToken().id;
+      //const url = 'http://localhost:3000/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '/' + tosend + '?access_token=' + this.userApi.getCurrentToken().id;
 
       this.http.get(url, {responseType: 'blob'}).subscribe(res => {
         this.selectColumnsToDownloadModal.hide();
@@ -206,8 +206,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
   getColumns(type: string) {
     this.loadingDownload = true;
     this.selectedColumns = [];
-    //const url = 'https://api.' + this.document.location.hostname + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
-    const url = 'http://localhost:3000/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    const url = 'https://api.' + this.document.location.hostname + '/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
+    //const url = 'http://localhost:3000/api/Devices/download/' + this.deviceToEdit.id + '/' + type + '?access_token=' + this.userApi.getCurrentToken().id;
 
     this.http.get(url).timeout(600000).subscribe((res: any[]) => {
       this.selectColumns = [];

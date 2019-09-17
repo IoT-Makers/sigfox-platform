@@ -149,9 +149,9 @@
                       <div *ngIf="o.key === 'ubiscale' || o.value === 'Timeout'">
                           <div *ngIf="device.Messages[0].Geolocs">
                               <div *ngFor="let geoloc of device.Messages[0].Geolocs">
-                                  <div><small>lat: <strong>{{geoloc.location.lat}}</strong></small></div>
-                                  <div><small>lng: <strong>{{geoloc.location.lng}}</strong></small></div>
-                                  <div><small>accuracy: <strong>{{geoloc.accuracy}}</strong></small></div>
+                                  <div>lat: <strong>{{geoloc.location.lat}}</strong></div>
+                                  <div>lng: <strong>{{geoloc.location.lng}}</strong></div>
+                                  <div>accuracy: <strong>{{geoloc.accuracy}}</strong></div>
                               </div>
                           </div>
                       </div>
