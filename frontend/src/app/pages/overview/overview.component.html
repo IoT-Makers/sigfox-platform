@@ -441,7 +441,7 @@
               </div>
               <div class="card-block mx-auto text-center">
                 <p class="lead">
-                  {{ message.createdAt | date: 'yyyy/MM/dd - HH:mm:ss' }}
+                  {{ device.Messages[0].createdAt | date: 'yyyy/MM/dd - HH:mm:ss' }}
                 </p>
                 <div class="text-justify" *ngIf="message.data_parsed">
                   <div *ngFor="let o of message.data_parsed">
