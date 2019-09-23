@@ -113,7 +113,7 @@ class Beacon {
         content: beacon,
         action: 'DELETE',
       };
-      RabbitPub.getInstance().pub(payload);
+      RabbitPub.getInstance().pub(payload, beacon.userId.toString());
     }
     next();
   }
@@ -126,7 +126,7 @@ class Beacon {
       content: beacon,
       action: ctx.isNewInstance ? 'CREATE' : 'UPDATE',
     };
-    RabbitPub.getInstance().pub(payload);
+    RabbitPub.getInstance().pub(payload, beacon.userId.toString());
     next();
   }
 
@@ -236,10 +236,10 @@ class Beacon {
           {userId, id: bubbleId, location, info, placeIds, txPower},
           (err: any, beacon: any) => {
             if (err) next('Error while upserting beacon');
-            this.publish(
-              {userId, id: bubbleId, location, info, placeIds, txPower},
-              'UPDATE'
-            );
+            // this.publish(
+            //   {userId, id: bubbleId, location, info, placeIds, txPower},
+            //   'UPDATE'
+            // );
             next(null, beacon);
           }
         );
@@ -292,19 +292,19 @@ class Beacon {
           if (err) next('Error while deleting beacon');
           else next(null, 'OK');
         });
-        this.publish({userId, id}, 'DELETE');
+        // this.publish({userId, id}, 'DELETE');
       }
     });
   }
 
-  private publish(beacon: any, action: string) {
-    const payload = {
-      event: 'beacon',
-      content: beacon,
-      action: action,
-    };
-    RabbitPub.getInstance().pub(payload, beacon.userId.toString());
-  }
+  // private publish(beacon: any, action: string) {
+  //   const payload = {
+  //     event: 'beacon',
+  //     content: beacon,
+  //     action: action,
+  //   };
+  //   RabbitPub.getInstance().pub(payload, beacon.userId.toString());
+  // }
 }
 
 module.exports = Beacon;
