@@ -303,7 +303,7 @@ class Beacon {
       content: beacon,
       action: action,
     };
-    RabbitPub.getInstance().pub(payload, beacon.userId);
+    RabbitPub.getInstance().pub(payload, beacon.userId.toString());
   }
 }
 
