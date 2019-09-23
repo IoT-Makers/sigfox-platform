@@ -389,13 +389,13 @@ export class BeaconApi extends BaseLoopBackApi {
    *
    * @param {string} bubbleId Bubble id
    *
-   * @param {number} lat Bubble latitude
+   * @param {string} info Bubble info
    *
-   * @param {number} lng Bubble longitude
+   * @param {string} placeIds Bubble placeIds
    *
-   * @param {number} txPower Bubble longitude
+   * @param {number} txPower Bubble txPower
    *
-   * @param {string} information Bubble information
+   * @param {object} location Bubble location (lat and lng)
    *
    * @param {object} data Request data.
    *
@@ -410,7 +410,7 @@ export class BeaconApi extends BaseLoopBackApi {
    * This usually means the response is a `Beacon` object.)
    * </em>
    */
-  public postBubbles(bubbleId: any, lat: any, lng: any, txPower: any, information: any, customHeaders?: Function): Observable<any> {
+  public postBubbles(bubbleId: any, info: any, placeIds: any, txPower: any, location: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Beacons/bubbles";
@@ -418,10 +418,10 @@ export class BeaconApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof bubbleId !== 'undefined' && bubbleId !== null) _urlParams.bubbleId = bubbleId;
-    if (typeof lat !== 'undefined' && lat !== null) _urlParams.lat = lat;
-    if (typeof lng !== 'undefined' && lng !== null) _urlParams.lng = lng;
+    if (typeof info !== 'undefined' && info !== null) _urlParams.info = info;
+    if (typeof placeIds !== 'undefined' && placeIds !== null) _urlParams.placeIds = placeIds;
     if (typeof txPower !== 'undefined' && txPower !== null) _urlParams.txPower = txPower;
-    if (typeof information !== 'undefined' && information !== null) _urlParams.information = information;
+    if (typeof location !== 'undefined' && location !== null) _urlParams.location = location;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

@@ -31,17 +31,19 @@
       "id": true,
       "required": true
     },
-    "name": {
-      "type": "string"
-    },
-    "type": {
+    "info": {
       "type": "string",
       "required": true
     },
-    "level": {
+    "placeIds": {
+      "type": ["string"],
+      "required": true,
+      "default": "[]"
+    },
+    "txPower": {
       "type": "number",
       "required": true,
-      "default": 0
+      "default": 10
     },
     "location": {
       "type": "GeoPoint",

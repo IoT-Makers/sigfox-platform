@@ -42,31 +42,31 @@ const bubbleDbGroupId = process.env.BUBBLE_DB_GROUP_ID;
           http: {source: 'query'},
         },
         {
-          arg: 'lat',
-          type: 'number',
+          arg: 'info',
+          type: 'string',
           required: true,
-          description: 'Bubble latitude',
+          description: 'Bubble info',
           http: {source: 'query'},
         },
         {
-          arg: 'lng',
-          type: 'number',
+          arg: 'placeIds',
+          type: ['string'],
           required: true,
-          description: 'Bubble longitude',
+          description: 'Bubble placeIds',
           http: {source: 'query'},
         },
         {
           arg: 'txPower',
           type: 'number',
           required: true,
-          description: 'Bubble longitude',
+          description: 'Bubble txPower',
           http: {source: 'query'},
         },
         {
-          arg: 'information',
-          type: 'string',
+          arg: 'location',
+          type: 'object',
           required: true,
-          description: 'Bubble information',
+          description: 'Bubble location (lat and lng)',
           http: {source: 'query'},
         },
       ],
@@ -149,9 +149,9 @@ class Beacon {
           body.entries.map((b: any) => ({
             id: b.bubbleId,
             location: {lat: b.lat, lng: b.lng},
-            name: b.info,
-            type: 'sigfox',
-            level: 0,
+            info: b.info,
+            placeIds: b.placeIds,
+            txPower: b.txPower,
           }));
         next(null, beacons);
       }
@@ -186,10 +186,10 @@ class Beacon {
 
   public postBubbles(
     bubbleId: string,
-    lat: number,
-    lng: number,
+    info: number,
+    placeIds: Array<string>,
     txPower: number,
-    information: number,
+    location: any,
     next: Function
   ): void {
     // Models
@@ -209,10 +209,11 @@ class Beacon {
         entries: [
           {
             bubbleId,
-            lat,
-            lng,
+            lat: location.lat,
+            lng: location.lng,
             txPower,
-            info: information,
+            info,
+            placeIds,
           },
         ],
       },
@@ -221,14 +222,34 @@ class Beacon {
 
     request(options, (error: any, response: any, body: any) => {
       if (error || response.statusCode !== 200) next(null, response);
-      else
-        Beacon.upsert(
-          {id: bubbleId, location: {lat, lng}, name: information},
-          (err: any, beacon: any) => {
-            if (err) next('Error while creating/updating beacon');
-            else next(null, beacon);
+      else {
+        Beacon.findOrCreate(
+          {where: {id: bubbleId}},
+          {id: bubbleId, location, info, placeIds, txPower},
+          (err: any, beacon: any, created: boolean) => {
+            if (err) next('Error while finding/creating beacon');
+            else if (created) {
+              this.publish(
+                {id: bubbleId, location, info, placeIds, txPower},
+                'UPDATE'
+              );
+              next(null, beacon);
+            } else {
+              Beacon.create(
+                {id: bubbleId, location, info, placeIds, txPower},
+                (err: any, beacon: any, created: boolean) => {
+                  if (err) next('Error while creating beacon');
+                  else
+                    this.publish(
+                      {id: bubbleId, location, info, placeIds, txPower},
+                      'CREATE'
+                    );
+                }
+              );
+            }
           }
         );
+      }
     });
   }
 
@@ -269,12 +290,23 @@ class Beacon {
     };
     request(options, (error: any, response: any, body: any) => {
       if (error || response.statusCode !== 200) next(null, response);
-      else
+      else {
         Beacon.destroyById(id, (err: any, beacon: any) => {
           if (err) next('Error while deleting beacon');
           else next(null, 'OK');
         });
+        this.publish(id, 'DELETE');
+      }
     });
+  }
+
+  private publish(beacon: any, action: string) {
+    const payload = {
+      event: 'beacon',
+      content: beacon,
+      action: action,
+    };
+    RabbitPub.getInstance().pub(payload, beacon.userId);
   }
 }
 

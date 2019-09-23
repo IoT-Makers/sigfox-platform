@@ -27,21 +27,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
   public addBeaconFlag = false;
 
-  // Select
-  public selectTypes: Array<Object> = [
-    { id: 'sigfox', itemName: 'Sigfox' },
-    { id: 'bluetooth', itemName: 'Bluetooth' }
-  ];
-  public selectedTypes = [];
-  public selectOneSettings = {
-    singleSelection: true,
-    text: 'Select one type',
-    enableSearchFilter: false,
-    classes: 'select-one'
-  };
-
   // Notifications
-  private toast;
+  private toast: any;
   private toasterService: ToasterService;
   public toasterconfig: ToasterConfig = new ToasterConfig({
     tapToDismiss: true,
@@ -81,6 +68,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     trackResize: false
   };
 
+  private api: any;
+  private id: any;
   private admin = false;
 
   constructor(
@@ -112,17 +101,22 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     this.cleanSetup();
     this.subscribe(this.user.id);
 
-    const api = this.admin
+    const beacons = this.admin
       ? this.beaconApi.getBubbles()
       : this.userApi.getBeacons(this.user.id, {
           order: 'createdAt DESC',
           limit: 100
         });
-    // TODO: admin rt
-    api.subscribe((beacons: Beacon[]) => {
+
+    beacons.subscribe((beacons: Beacon[]) => {
       this.beacons = beacons;
       this.beaconsReady = true;
     });
+
+    this.api = this.userApi;
+    this.id = this.user.id;
+    this.unsubscribe();
+    this.subscribe(this.id);
   }
 
   /**
@@ -187,12 +181,8 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
   openAddBeaconModal(): void {
     this.addBeaconFlag = true;
-    // Reset selects
-    this.selectedTypes = [];
     // New beacon
     this.beaconToAddOrEdit = new Beacon();
-    this.beaconToAddOrEdit.type = 'sigfox';
-    this.selectedTypes.push({ id: 'sigfox', itemName: 'Sigfox' });
     // Open modal
     this.addOrEditBeaconModal.show();
     setTimeout(() => {
@@ -204,18 +194,6 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   openEditBeaconModal(beacon: Beacon): void {
     this.addBeaconFlag = false;
     this.beaconToAddOrEdit = beacon;
-    // Set selected values
-    this.selectTypes.forEach((type: any) => {
-      if (beacon.type === type.id) {
-        this.selectedTypes = [
-          {
-            id: type.id,
-            itemName: type.itemName
-          }
-        ];
-        return;
-      }
-    });
 
     this.addOrEditBeaconModal.show();
 
@@ -237,7 +215,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
       );
       this.marker.on('dragend', e => this.onMarkerDragEnd(e));
       this.map.addLayer(this.marker);
-      if (beacon.name) this.marker.bindTooltip(beacon.name).openTooltip();
+      if (beacon.info) this.marker.bindTooltip(beacon.info).openTooltip();
     }, 500);
   }
 
@@ -280,13 +258,16 @@ export class BeaconsComponent implements OnInit, OnDestroy {
   }
 
   editBeacon(): void {
+    this.beaconToAddOrEdit.placeIds = this.beaconToAddOrEdit.placeIds
+      .toString()
+      .split(',');
     const apiFn = this.admin
       ? this.beaconApi.postBubbles(
           this.beaconToAddOrEdit.id,
-          this.beaconToAddOrEdit.location.lat,
-          this.beaconToAddOrEdit.location.lng,
-          1,
-          this.beaconToAddOrEdit.name
+          this.beaconToAddOrEdit.info,
+          this.beaconToAddOrEdit.placeIds,
+          this.beaconToAddOrEdit.txPower,
+          this.beaconToAddOrEdit.location
         )
       : this.userApi.updateByIdBeacons(
           this.user.id,
@@ -336,13 +317,16 @@ export class BeaconsComponent implements OnInit, OnDestroy {
       );
       return;
     } else {
+      this.beaconToAddOrEdit.placeIds = this.beaconToAddOrEdit.placeIds
+        .toString()
+        .split(',');
       const apiFn = this.admin
         ? this.beaconApi.postBubbles(
             this.beaconToAddOrEdit.id,
-            this.beaconToAddOrEdit.location.lat,
-            this.beaconToAddOrEdit.location.lng,
-            1,
-            this.beaconToAddOrEdit.name
+            this.beaconToAddOrEdit.info,
+            this.beaconToAddOrEdit.placeIds,
+            this.beaconToAddOrEdit.txPower,
+            this.beaconToAddOrEdit.location
           )
         : this.userApi.createBeacons(this.user.id, this.beaconToAddOrEdit);
       apiFn.subscribe(

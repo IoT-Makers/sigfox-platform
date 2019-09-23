@@ -8,9 +8,9 @@ import {
 declare var Object: any;
 export interface BeaconInterface {
   "id": string;
-  "name"?: string;
-  "type": string;
-  "level": number;
+  "info": string;
+  "placeIds": Array<any>;
+  "txPower": number;
   "location": GeoPoint;
   "userId"?: any;
   "createdAt"?: Date;
@@ -21,9 +21,9 @@ export interface BeaconInterface {
 
 export class Beacon implements BeaconInterface {
   "id": string = '';
-  "name": string = '';
-  "type": string = '';
-  "level": number = 0;
+  "info": string = '';
+  "placeIds": Array<any> = <any>[];
+  "txPower": number = 10;
   "location": GeoPoint = <any>null;
   "userId": any = <any>null;
   "createdAt": Date = new Date(0);
@@ -67,18 +67,19 @@ export class Beacon implements BeaconInterface {
           name: 'id',
           type: 'string'
         },
-        "name": {
-          name: 'name',
+        "info": {
+          name: 'info',
           type: 'string'
         },
-        "type": {
-          name: 'type',
-          type: 'string'
+        "placeIds": {
+          name: 'placeIds',
+          type: 'Array&lt;any&gt;',
+          default: <any>[]
         },
-        "level": {
-          name: 'level',
+        "txPower": {
+          name: 'txPower',
           type: 'number',
-          default: 0
+          default: 10
         },
         "location": {
           name: 'location',

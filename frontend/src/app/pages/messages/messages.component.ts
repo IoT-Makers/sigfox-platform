@@ -1,12 +1,23 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Connector, Geoloc, Message, Organization, Reception, Role, User} from '../../shared/sdk/models';
-import {MessageApi, UserApi} from '../../shared/sdk/services';
-import {Subscription} from 'rxjs/Subscription';
-import {OrganizationApi, ReceptionApi} from '../../shared/sdk/services/custom';
-import {AgmMap} from '@agm/core';
-import {ActivatedRoute} from '@angular/router';
-import {ToasterConfig, ToasterService} from 'angular2-toaster';
-import {RealtimeService} from "../../shared/realtime/realtime.service";
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Connector,
+  Geoloc,
+  Message,
+  Organization,
+  Reception,
+  Role,
+  User
+} from '../../shared/sdk/models';
+import { MessageApi, UserApi } from '../../shared/sdk/services';
+import { Subscription } from 'rxjs/Subscription';
+import {
+  OrganizationApi,
+  ReceptionApi
+} from '../../shared/sdk/services/custom';
+import { AgmMap } from '@agm/core';
+import { ActivatedRoute } from '@angular/router';
+import { ToasterConfig, ToasterService } from 'angular2-toaster';
+import { RealtimeService } from '../../shared/realtime/realtime.service';
 
 @Component({
   selector: 'app-messages',
@@ -14,7 +25,6 @@ import {RealtimeService} from "../../shared/realtime/realtime.service";
   styleUrls: ['./messages.component.scss']
 })
 export class MessagesComponent implements OnInit, OnDestroy {
-
   private deviceIdSub: any;
   public user: User;
 
@@ -43,28 +53,29 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private isLimit_0 = false;
 
   // Notifications
-  private toast;
+  private toast: any;
   private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig =
-    new ToasterConfig({
-      tapToDismiss: true,
-      timeout: 5000,
-      animation: 'fade'
-    });
+  public toasterconfig: ToasterConfig = new ToasterConfig({
+    tapToDismiss: true,
+    timeout: 5000,
+    animation: 'fade'
+  });
 
   public filterQuery = '';
 
-  private api;
-  private id;
+  private api: any;
+  private id: any;
   private admin = false;
 
-  constructor(private userApi: UserApi,
-              private messageApi: MessageApi,
-              private organizationApi: OrganizationApi,
-              private receptionApi: ReceptionApi,
-              toasterService: ToasterService,
-              private route: ActivatedRoute,
-              private rt: RealtimeService) {
+  constructor(
+    private userApi: UserApi,
+    private messageApi: MessageApi,
+    private organizationApi: OrganizationApi,
+    private receptionApi: ReceptionApi,
+    toasterService: ToasterService,
+    private route: ActivatedRoute,
+    private rt: RealtimeService
+  ) {
     this.toasterService = toasterService;
   }
 
@@ -82,14 +93,18 @@ export class MessagesComponent implements OnInit, OnDestroy {
       });
 
       // Check if organization view
-      this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
-        if (parentParams.id) {
-          this.userApi.findByIdOrganizations(this.user.id, parentParams.id).subscribe((organization: Organization) => {
-            this.organization = organization;
-            this.setup();
-          });
-        } else this.setup();
-      });
+      this.organizationRouteSub = this.route.parent.parent.params.subscribe(
+        parentParams => {
+          if (parentParams.id) {
+            this.userApi
+              .findByIdOrganizations(this.user.id, parentParams.id)
+              .subscribe((organization: Organization) => {
+                this.organization = organization;
+                this.setup();
+              });
+          } else this.setup();
+        }
+      );
     });
   }
 
@@ -102,7 +117,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
           order: 'createdAt DESC',
           limit: 100,
           include: ['Device', 'Geolocs'],
-          where: {deviceId: this.filterQuery}
+          where: { deviceId: this.filterQuery }
         };
       } else {
         this.messageFilter = {
@@ -117,20 +132,26 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.subscribe(this.id);
 
       if (this.organization) {
-        this.organizationApi.getFilteredMessages(this.organization.id, this.messageFilter).subscribe((messages: Message[]) => {
-          this.messages = messages;
-          this.messagesReady = true;
-        });
+        this.organizationApi
+          .getFilteredMessages(this.organization.id, this.messageFilter)
+          .subscribe((messages: Message[]) => {
+            this.messages = messages;
+            this.messagesReady = true;
+          });
       } else if (this.admin && this.filterQuery) {
-        this.messageApi.find(this.messageFilter).subscribe((messages: Message[]) => {
-          this.messages = messages;
-          this.messagesReady = true;
-        });
+        this.messageApi
+          .find(this.messageFilter)
+          .subscribe((messages: Message[]) => {
+            this.messages = messages;
+            this.messagesReady = true;
+          });
       } else {
-        this.userApi.getMessages(this.user.id, this.messageFilter).subscribe((messages: Message[]) => {
-          this.messages = messages;
-          this.messagesReady = true;
-        });
+        this.userApi
+          .getMessages(this.user.id, this.messageFilter)
+          .subscribe((messages: Message[]) => {
+            this.messages = messages;
+            this.messagesReady = true;
+          });
       }
     });
   }
@@ -147,15 +168,28 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   deleteMessage(message: Message): void {
-    this.userApi.destroyByIdMessages(this.user.id, message.id).subscribe(value => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'The message has been deleted.');
-    }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error);
-    });
+    this.userApi.destroyByIdMessages(this.user.id, message.id).subscribe(
+      value => {
+        if (this.toast)
+          this.toasterService.clear(
+            this.toast.toastId,
+            this.toast.toastContainerId
+          );
+        this.toast = this.toasterService.pop(
+          'success',
+          'Success',
+          'The message has been deleted.'
+        );
+      },
+      err => {
+        if (this.toast)
+          this.toasterService.clear(
+            this.toast.toastId,
+            this.toast.toastContainerId
+          );
+        this.toast = this.toasterService.pop('error', 'Error', err.error);
+      }
+    );
   }
 
   showMarkers(message: Message): void {
@@ -176,35 +210,41 @@ export class MessagesComponent implements OnInit, OnDestroy {
     }
 
     // Coverage
-    this.userApi.getConnectors(this.user.id, {where: {type: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
-      if (connectors.length > 0) {
-        // Show map
-        this.mapModal.show();
-        // Get receptions
-        this.receptionApi.getBaseStationsByDeviceId(message.deviceId, message.time).subscribe((receptionsResult: Reception[]) => {
-            this.receptions = receptionsResult;
-            console.log(this.receptions);
-            if (this.receptions.length > 0) {
-              this.receptions.forEach((reception, i) => {
-                this.receptions[i].lat = Number(reception.lat);
-                this.receptions[i].lng = Number(reception.lng);
-              });
-              if (!message.Geolocs) {
-                this.mapLat = this.receptions[0].location.lat;
-                this.mapLng = this.receptions[0].location.lng;
+    this.userApi
+      .getConnectors(this.user.id, { where: { type: 'sigfox-api' } })
+      .subscribe((connectors: Connector[]) => {
+        if (connectors.length > 0) {
+          // Show map
+          this.mapModal.show();
+          // Get receptions
+          this.receptionApi
+            .getBaseStationsByDeviceId(message.deviceId, message.time)
+            .subscribe(
+              (receptionsResult: Reception[]) => {
+                this.receptions = receptionsResult;
+                console.log(this.receptions);
+                if (this.receptions.length > 0) {
+                  this.receptions.forEach((reception, i) => {
+                    this.receptions[i].lat = Number(reception.lat);
+                    this.receptions[i].lng = Number(reception.lng);
+                  });
+                  if (!message.Geolocs) {
+                    this.mapLat = this.receptions[0].location.lat;
+                    this.mapLng = this.receptions[0].location.lng;
+                  }
+                  this.mapModal.onShown.subscribe((reason: string) => {
+                    this.agmMap.triggerResize();
+                  });
+                }
+              },
+              error => {
+                console.log(error);
               }
-              this.mapModal.onShown.subscribe((reason: string) => {
-                this.agmMap.triggerResize();
-              });
-            }
-          }, error => {
-            console.log(error);
-          }
-        );
-      } else {
-        console.log('No Sigfox API connector');
-      }
-    });
+            );
+        } else {
+          console.log('No Sigfox API connector');
+        }
+      });
   }
 
   searchFilter(limit: number) {
@@ -220,20 +260,24 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
     console.log(this.messageFilter);
 
-    this.api.getMessages(this.id, this.messageFilter).subscribe((messages: Message[]) => {
-      this.messages = messages;
-      this.messagesReady = true;
-    });
+    this.api
+      .getMessages(this.id, this.messageFilter)
+      .subscribe((messages: Message[]) => {
+        this.messages = messages;
+        this.messagesReady = true;
+      });
   }
 
-  download(): void {
-
-  }
+  download(): void {}
 
   rtHandler = (payload: any) => {
     const msg = payload.content;
-    if (msg.userId == this.user.id || (this.organization && msg.Device.Organizations.map(x => x.id).includes(this.organization.id))) {
-      if (payload.action == "CREATE") {
+    if (
+      msg.userId == this.user.id ||
+      (this.organization &&
+        msg.Device.Organizations.map(x => x.id).includes(this.organization.id))
+    ) {
+      if (payload.action == 'CREATE') {
         for (const geoloc of this.geolocBuffer) {
           if (geoloc.content.messageId === msg.id) {
             msg.Geolocs.push(geoloc.content);
@@ -244,8 +288,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
         }
         console.log(msg);
         this.messages.unshift(msg);
-      } else if (payload.action == "DELETE") {
-        this.messages = this.messages.filter((msg) => {
+      } else if (payload.action == 'DELETE') {
+        this.messages = this.messages.filter(msg => {
           return msg.id !== payload.content.id;
         });
       }
@@ -254,10 +298,12 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   private geolocBuffer = [];
   geolocHandler = (payload: any) => {
-    if (payload.action === "CREATE") {
+    if (payload.action === 'CREATE') {
       for (let msg of this.messages) {
         if (msg.id === payload.content.messageId) {
-          msg.Geolocs ? msg.Geolocs.push(payload.content) : msg.Geolocs = [payload.content];
+          msg.Geolocs
+            ? msg.Geolocs.push(payload.content)
+            : (msg.Geolocs = [payload.content]);
           return;
         }
       }
