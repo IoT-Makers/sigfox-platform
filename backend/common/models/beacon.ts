@@ -143,7 +143,7 @@ class Beacon {
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode !== 200) next(null, response);
+      if (error || response.statusCode > 204) next(null, response);
       else {
         body = JSON.parse(body);
         const beacons =
@@ -180,7 +180,7 @@ class Beacon {
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode !== 200) next(null, response);
+      if (error || response.statusCode > 204) next(null, response);
       else
         Beacon.destroyAll({}, (err: any, result: any) => {
           if (err) next('Error while getting beacons');
@@ -230,7 +230,7 @@ class Beacon {
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode >= 204) next(null, response);
+      if (error || response.statusCode > 204) next(null, response);
       else {
         Beacon.upsert(
           {userId, id: bubbleId, location, info, placeIds, txPower},
@@ -261,7 +261,7 @@ class Beacon {
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode !== 200) next(null, response);
+      if (error || response.statusCode > 204) next(null, response);
       else
         Beacon.findById(id, (err: any, beacon: any) => {
           if (err) next('Error while getting beacon');
@@ -286,7 +286,11 @@ class Beacon {
       },
     };
     request(options, (error: any, response: any, body: any) => {
+<<<<<<< HEAD
       if (error || response.statusCode >= 204) next(null, response);
+=======
+      if (error || response.statusCode > 204) next(null, response);
+>>>>>>> master
       else {
         Beacon.destroyById(id, (err: any, beacon: any) => {
           if (err) next('Error while deleting beacon');
