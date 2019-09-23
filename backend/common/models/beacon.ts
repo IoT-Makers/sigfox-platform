@@ -286,7 +286,7 @@ class Beacon {
       },
     };
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode !== 200) next(null, response);
+      if (error || response.statusCode >= 204) next(null, response);
       else {
         Beacon.destroyById(id, (err: any, beacon: any) => {
           if (err) next('Error while deleting beacon');
