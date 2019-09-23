@@ -516,6 +516,18 @@ export class AlertsComponent implements OnInit, OnDestroy {
         };
         this.selectKeys.push(item);
       }
+
+      if (devices[0].Messages[0].group == "capturs") {
+        let capturs_fields = ["type","temperature","battery","batteryPercentage","speed"];
+        capturs_fields.forEach((p: string) => {
+          const item = {
+            id: p,
+            itemName: p
+          };
+          this.selectKeys.push(item);
+        });
+        
+      }
       // Store data_parsed keys
       if (devices[0].Messages[0].data_parsed) {
         devices[0].Messages[0].data_parsed.forEach((p: Property) => {
@@ -526,6 +538,9 @@ export class AlertsComponent implements OnInit, OnDestroy {
           this.selectKeys.push(item);
         });
       }
+      
+      
+
     });
   }
 

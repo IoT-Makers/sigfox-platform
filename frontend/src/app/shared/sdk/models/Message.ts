@@ -14,6 +14,8 @@ export interface MessageInterface {
   "seqNumber": number;
   "data"?: string;
   "data_parsed"?: Array<any>;
+  "group"?: string;
+  "temperature"?: number;
   "data_downlink"?: string;
   "downlinkAck"?: boolean;
   "deviceAck"?: boolean;
@@ -36,6 +38,8 @@ export class Message implements MessageInterface {
   "data": string = '';
   "data_parsed": Array<any> = <any>[];
   "data_downlink": string = '';
+  "group": string = '';
+  "temperature": number = 0;
   "downlinkAck": boolean = false;
   "deviceAck": boolean = false;
   "ack": boolean = false;
@@ -103,6 +107,14 @@ export class Message implements MessageInterface {
         "data_parsed": {
           name: 'data_parsed',
           type: 'Array&lt;any&gt;'
+        },
+        "group":{
+          name: 'group',
+          type: 'string'
+        },
+        "temperature": {
+          name: 'temperature',
+          type: 'number'
         },
         "data_downlink": {
           name: 'data_downlink',

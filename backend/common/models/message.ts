@@ -325,6 +325,7 @@ class Message {
             console.log('Created message as: ', messageInstance);
             if (message.data_parsed) {
               // Check if there is Geoloc in payload and create Geoloc object
+              console.log("DATA PARSED")
               Geoloc.createFromParsedPayload(
                 messageInstance,
                 (err: any, res: any) => {
@@ -337,11 +338,33 @@ class Message {
                 (err: any, res: any) => {
                 });
             }
-            else if (message.group == "capturs") {
+            if (message.group == "capturs") {
+              message.data_parsed = [];
+              let capturs_fields = ["type","temperature","battery","batteryPercentage","speed"];
+              capturs_fields.forEach((p: string) => {
+                if (message[p]){
+                  console.log("message.p --->", message[p]);
+                  const item = {
+                    key: p,
+                    value: message[p]
+                  };
+                  message.data_parsed.push(item);
+                }
+              });
+
+              console.log("infos in message.ts", message);
               Geoloc.createFromGeolocReceived(
                 messageInstance,
                 (err: any, res: any) => {
                 });
+
+                Alert.triggerByData(
+                  message.data_parsed,
+                  device,
+                  req,
+                  (err: any, res: any) => {
+                  });
+                
             }
             return next(null, messageInstance);
           } else return next(null, "This message for device (" + message.deviceId + ") has already been created.");

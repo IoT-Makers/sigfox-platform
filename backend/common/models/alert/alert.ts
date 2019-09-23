@@ -82,6 +82,8 @@ class Alert {
   private triggerByData(data_parsed: any, device: any, req: any, next: Function): void {
     // Get userId
     const userId = req.accessToken.userId;
+    console.log("trigger by data");
+    console.log("data parsed in alert.ts", data_parsed);
     if (!userId) {
       next(null, "Please login or use a valid access token.");
     } else if (!device.Alerts) {
@@ -136,6 +138,9 @@ class Alert {
           // Process conditions
           data_parsed.forEach((p: any) => {
             if (alert.key === p.key) {
+              console.log("alert.key & p.key & alert", alert.key,",", p.key,",",alert );
+
+
               // Verify conditions for the alert to be triggered
               if (
                 (alert.value.exact != null && p.value == alert.value.exact)
