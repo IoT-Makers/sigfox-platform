@@ -28,12 +28,13 @@ const bubbleDbGroupId = process.env.BUBBLE_DB_GROUP_ID;
     },
     deleteBubbles: {
       http: {path: '/bubbles', verb: 'delete'},
-      accepts: [],
+      accepts: [{arg: 'req', type: 'object', http: {source: 'req'}}],
       returns: {type: 'string', root: true},
     },
     postBubbles: {
       http: {path: '/bubbles', verb: 'post'},
       accepts: [
+        {arg: 'req', type: 'object', http: {source: 'req'}},
         {
           arg: 'bubbleId',
           type: 'string',
@@ -82,6 +83,7 @@ const bubbleDbGroupId = process.env.BUBBLE_DB_GROUP_ID;
     deleteBubbleById: {
       http: {path: '/bubbles/:id', verb: 'delete'},
       accepts: [
+        {arg: 'req', type: 'object', http: {source: 'req'}},
         {arg: 'id', type: 'string', required: true, description: 'Bubble id'},
       ],
       returns: {type: 'string', root: true},
@@ -162,7 +164,10 @@ class Beacon {
     });
   }
 
-  public deleteBubbles(next: Function): void {
+  public deleteBubbles(req: any, next: Function): void {
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
     // Models
     const Beacon = this.model;
     const options = {
@@ -185,6 +190,7 @@ class Beacon {
   }
 
   public postBubbles(
+    req: any,
     bubbleId: string,
     info: number,
     placeIds: Array<string>,
@@ -192,6 +198,9 @@ class Beacon {
     location: any,
     next: Function
   ): void {
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
     // Models
     const Beacon = this.model;
 
@@ -221,32 +230,17 @@ class Beacon {
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode !== 200) next(null, response);
+      if (error || response.statusCode >= 204) next(null, response);
       else {
-        Beacon.findOrCreate(
-          {where: {id: bubbleId}},
-          {id: bubbleId, location, info, placeIds, txPower},
-          (err: any, beacon: any, created: boolean) => {
-            if (err) next('Error while finding/creating beacon');
-            else if (created) {
-              this.publish(
-                {id: bubbleId, location, info, placeIds, txPower},
-                'UPDATE'
-              );
-              next(null, beacon);
-            } else {
-              Beacon.create(
-                {id: bubbleId, location, info, placeIds, txPower},
-                (err: any, beacon: any, created: boolean) => {
-                  if (err) next('Error while creating beacon');
-                  else
-                    this.publish(
-                      {id: bubbleId, location, info, placeIds, txPower},
-                      'CREATE'
-                    );
-                }
-              );
-            }
+        Beacon.upsert(
+          {userId, id: bubbleId, location, info, placeIds, txPower},
+          (err: any, beacon: any) => {
+            if (err) next('Error while upserting beacon');
+            this.publish(
+              {userId, id: bubbleId, location, info, placeIds, txPower},
+              'UPDATE'
+            );
+            next(null, beacon);
           }
         );
       }
@@ -276,7 +270,10 @@ class Beacon {
     });
   }
 
-  public deleteBubbleById(id: string, next: Function): void {
+  public deleteBubbleById(req: any, id: string, next: Function): void {
+    // Obtain the userId with the access token of ctx
+    const userId = req.accessToken.userId;
+
     // Models
     const Beacon = this.model;
 
@@ -295,7 +292,7 @@ class Beacon {
           if (err) next('Error while deleting beacon');
           else next(null, 'OK');
         });
-        this.publish(id, 'DELETE');
+        this.publish({userId, id}, 'DELETE');
       }
     });
   }

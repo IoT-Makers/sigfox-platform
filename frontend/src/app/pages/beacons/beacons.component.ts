@@ -226,7 +226,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
   removeBeacon(): void {
     const apiFn = this.admin
-      ? this.beaconApi.deleteBubbleById(this.beaconToRemove.id)
+      ? this.beaconApi.deleteBubbleById(this.user.id, this.beaconToRemove.id)
       : this.userApi.destroyByIdBeacons(this.user.id, this.beaconToRemove.id);
     apiFn.subscribe(
       value => {
@@ -263,6 +263,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
       .split(',');
     const apiFn = this.admin
       ? this.beaconApi.postBubbles(
+          this.user.id,
           this.beaconToAddOrEdit.id,
           this.beaconToAddOrEdit.info,
           this.beaconToAddOrEdit.placeIds,
@@ -322,6 +323,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
         .split(',');
       const apiFn = this.admin
         ? this.beaconApi.postBubbles(
+            this.user.id,
             this.beaconToAddOrEdit.id,
             this.beaconToAddOrEdit.info,
             this.beaconToAddOrEdit.placeIds,

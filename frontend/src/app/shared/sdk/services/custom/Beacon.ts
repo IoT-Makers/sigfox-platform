@@ -362,6 +362,8 @@ export class BeaconApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
+   * @param {object} req 
+   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -371,7 +373,7 @@ export class BeaconApi extends BaseLoopBackApi {
    * This usually means the response is a `Beacon` object.)
    * </em>
    */
-  public deleteBubbles(customHeaders?: Function): Observable<any> {
+  public deleteBubbles(req: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Beacons/bubbles";
@@ -399,7 +401,7 @@ export class BeaconApi extends BaseLoopBackApi {
    *
    * @param {object} data Request data.
    *
-   * This method does not accept any data. Supply an empty object.
+   *  - `req` – `{object}` - 
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -410,7 +412,7 @@ export class BeaconApi extends BaseLoopBackApi {
    * This usually means the response is a `Beacon` object.)
    * </em>
    */
-  public postBubbles(bubbleId: any, info: any, placeIds: any, txPower: any, location: any, customHeaders?: Function): Observable<any> {
+  public postBubbles(req: any = {}, bubbleId: any, info: any, placeIds: any, txPower: any, location: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Beacons/bubbles";
@@ -460,6 +462,8 @@ export class BeaconApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
+   * @param {object} req 
+   *
    * @param {string} id Bubble id
    *
    * @returns {object} An empty reference that will be
@@ -471,7 +475,7 @@ export class BeaconApi extends BaseLoopBackApi {
    * This usually means the response is a `Beacon` object.)
    * </em>
    */
-  public deleteBubbleById(id: any, customHeaders?: Function): Observable<any> {
+  public deleteBubbleById(req: any = {}, id: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/Beacons/bubbles/:id";
