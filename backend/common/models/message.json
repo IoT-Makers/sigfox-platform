@@ -56,9 +56,6 @@
     "group": {
       "type": "string"
     },
-    "temperature": {
-      "type": "number"
-    },
     "data_downlink": {
       "type": "string",
       "pattern": "([a-fA-F0-9]{16})$",
