@@ -505,10 +505,22 @@
                             <button type="button" class="btn btn-outline-primary" (click)="toggleCollapsed()">Select Date Range</button>
                         </p>-->
                         <div class="form-checkbox">
-                          <label> 
-                            <input name="daterange-enabled" type="checkbox" [(ngModel)]="enabledRange"/> 
-                            Select Timespan
-                          </label>
+                          
+                          <div class="row">
+                            <div class="col-6">
+                              <label> 
+                                <input name="daterange-enabled" type="checkbox" [(ngModel)]="enabledRange"/> 
+                                &nbsp; Select Timespan
+                              </label>
+                            </div>
+                            <div class="col-6" *ngIf="enabledRange">
+                              <span class="float-right">
+                                <label>Marker into selected range &nbsp;</label>
+                                <img src="assets/img/markers/marker-red.png" alt="Selected Marker">
+                              </span>
+                            </div>
+                        </div>
+
                         </div>
                         <div *ngIf="enabledRange" class="custom-slider">
                           <ng5-slider [(value)]="minValue" [(highValue)]="maxValue" [options]="options"></ng5-slider>
