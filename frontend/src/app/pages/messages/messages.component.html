@@ -139,8 +139,13 @@
                       <strong>WiFi</strong>
                     </a>
                   </ng-container>
-                </div>
-              </div>
+                  <ng-container *ngIf="geoloc.placeIds">
+                    <div *ngFor="let placeId of geoloc.placeIds">
+                        <div>{{placeId}}</div>
+                    </div>
+                  </ng-container>
+               </div>
+            </div>
             </td>
             <td class="text-center">{{message.seqNumber}}</td>
             <td class="text-center" (click)="showMarkers(message)">

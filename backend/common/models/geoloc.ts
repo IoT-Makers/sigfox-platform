@@ -262,6 +262,8 @@ class Geoloc {
             geoloc.userId = userId;
             geoloc.messageId = message.id;
             geoloc.deviceId = data.deviceId;
+            geoloc.placeIds = data.computedLocation.placeIds;
+
             // Creating a new Geoloc
             Geoloc.create(geoloc, (err: any, geolocInstance: any) => {
               // callback

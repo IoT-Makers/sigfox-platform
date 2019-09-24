@@ -17,6 +17,7 @@ export interface GeolocInterface {
   "accuracy"?: number;
   "source"?: string;
   "createdAt"?: Date;
+  "placeIds"?: Array<any>;
   "deviceId"?: string;
   "messageId"?: string;
   "updatedAt"?: Date;
@@ -37,6 +38,7 @@ export class Geoloc implements GeolocInterface {
   "accuracy": number = 0;
   "source": string = '';
   "createdAt": Date = new Date(0);
+  "placeIds": Array<any> = <any>[];
   "deviceId": string = '';
   "messageId": string = '';
   "updatedAt": Date = new Date(0);
@@ -108,6 +110,10 @@ export class Geoloc implements GeolocInterface {
         "createdAt": {
           name: 'createdAt',
           type: 'Date'
+        },
+        "placeIds": {
+          name: 'placeIds',
+          type: 'Array&lt;any&gt;'
         },
         "deviceId": {
           name: 'deviceId',

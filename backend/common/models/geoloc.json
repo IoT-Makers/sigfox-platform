@@ -52,6 +52,9 @@
     "createdAt": {
       "type": "date",
       "defaultFn": "now"
+    },
+    "placeIds": {
+      "type": ["string"]
     }
   },
   "validations": [],
@@ -100,10 +103,7 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "property": [
-        "postSigfox",
-        "postDataAdvanced"
-      ]
+      "property": ["postSigfox", "postDataAdvanced"]
     },
     {
       "accessType": "*",
