@@ -420,15 +420,22 @@ class Device {
                   obj.oob = message.oob;
                   obj.data_downlink = message.data_downlink;
 
-                  if(message.deviceAck){
+                  //oob received after a direct OOB message, when deviceAck is defined, it's always true
+                  if (message.deviceAck){
                     obj.oob = message.deviceAck;
-                    console.log("deviceAck is :", message.deviceAck, "for seqNumber ", message.seqNumber);
+                  }
+                  // oob received after a retrieve
+                  else if (message.oob !== null && typeof message.oob !== 'undefined'){
+                    obj.oob = message.oob;
+                    //when a retrieve is done, ack is empty because the geoloc provides ack
+                    if (message.oob === true){
+                      obj.ack = false;
+                    }
                   }
                   else {
-                    obj.oob = message.oob;
-                    console.log("OOB is :", message.oob, "for seqNumber ", message.seqNumber);
+                    obj.oob = false;
                   }
-      
+                  
                   if (message.data_parsed) {
                     message.data_parsed.forEach((p: any) => {
                       obj[p.key] = p.value;
