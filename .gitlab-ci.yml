@@ -129,6 +129,22 @@ deploy-master-foundation:
   only:
     - master-foundation
 
+# ======== branch connect on connect domain ========
+build-connect:
+  <<: *build_job
+  variables:
+    SUBDOMAIN: connect
+  only:
+    - connect
+
+deploy-connect:
+  <<: *deploy_job
+  variables:
+    <<: *deploy_var
+    SUBDOMAIN: connect
+  only:
+    - connect
+
 # ======== PROD ========
 # app
 build-app:
@@ -177,27 +193,3 @@ deploy-workshop:
   variables:
     <<: *deploy_var
     SUBDOMAIN: workshop
-
-# stela
-build-stela:
-  <<: *prod_build_job
-  variables:
-    SUBDOMAIN: stela
-
-deploy-stela:
-  <<: *prod_deploy_job
-  variables:
-    <<: *deploy_var
-    SUBDOMAIN: stela
-
-# foncia
-build-foncia:
-  <<: *prod_build_job
-  variables:
-    SUBDOMAIN: foncia
-
-deploy-foncia:
-  <<: *prod_deploy_job
-  variables:
-    <<: *deploy_var
-    SUBDOMAIN: foncia
