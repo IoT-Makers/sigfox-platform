@@ -436,7 +436,7 @@ class Device {
                     obj.oob = false;
                   }
                   
-                  if (message.data_parsed) {
+                  if (message.data_parsed && obj.oob !== true) {
                     message.data_parsed.forEach((p: any) => {
                       obj[p.key] = p.value;
                     });
