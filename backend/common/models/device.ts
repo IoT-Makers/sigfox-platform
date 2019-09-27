@@ -482,7 +482,7 @@ class Device {
                       obj["Lat"] = obj["lat_gps"];
                       obj["Notes"] = "SigfoxGPS";
                     }
-                    else if (obj["lat_sigfox"]) {
+                    else if (obj["lat_sigfox"] && obj.oob !== true) {
                       obj["Lat"] = obj["lat_sigfox"];
                       obj["Notes"] = "SigfoxGeo";
 
@@ -493,7 +493,7 @@ class Device {
                     if (obj["lng_gps"]) {
                       obj["Lng"] = obj["lng_gps"];
                     }
-                    else if (obj["lng_sigfox"]) {
+                    else if (obj["lng_sigfox"] && obj.oob !== true) {
                       obj["Lng"] = obj["lng_sigfox"];
                     }
 
