@@ -62,6 +62,9 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   public categoryToEdit: Category = new Category();
   private newCategory = false;
 
+  public count = 0;
+
+
   public propertyType = ['string', 'number', 'geoloc', 'date', 'boolean'];
 
   // Notifications
@@ -177,7 +180,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
             this.loadingFromBackend = false;
             if (this.toast)
               this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-            this.toast = this.toasterService.pop('success', 'Success', 'Retrieved messages from Sigfox Backend complete.');
+            this.toast = this.toasterService.pop('success', 'Success', 'Retrieved messages of device '+deviceId+' from Sigfox Backend complete.');
           }
         }, err => {
           if (this.toast)
@@ -195,45 +198,37 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   }
 
   parseFromCategory(category: Category){
-    //this.loadingParseMessages = true;
-    var nb = 0;
-    var lastDevice = false;
-    console.log("category Devices parsed", category.Devices);
+
+    this.count = 0;
+    var categoryLength = 0;
     category.Devices.forEach(deviceToParse => {
       
-        if (nb == category.Devices.length - 1){
-          console.log(";dernier device");
-          lastDevice = true;
-        }
-        console.log("deviceToRetrieve", deviceToParse.id);
-        //console.log("loadingparsemessage", this.loadingParseMessages);
-  
-        this.parseAllMessages(deviceToParse.id, lastDevice);
-        nb++;
+        categoryLength = category.Devices.length;
+        this.parseAllMessages(deviceToParse.id, categoryLength);
     });
-    //this.loadingParseMessages = false;
-    //console.log("end loadingparsemessage", this.loadingParseMessages);
-
-
   }
 
-  parseAllMessages(deviceId: string, lastDevice: boolean): void {
+  parseAllMessages(deviceId: string, categoryLength: number): void {
     this.loadingParseMessages = true;
     // Disconnect real-time to avoid app crashing
     this.parserApi.parseAllMessages(deviceId, null, null).subscribe(result => {
-      if (lastDevice) this.loadingParseMessages = false;
       if (result.message === 'Success') {
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('success', 'Success', 'All the messages of '+deviceId+' were successfully parsed.');
       } else {
-        if (lastDevice) this.loadingParseMessages = false;
         if (this.toast)
           this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
         this.toast = this.toasterService.pop('warning', 'Warning', result.message);
       }
+      if (this.count === categoryLength -1 ){
+        this.loadingParseMessages = false;
+        this.count = 0;
+      }
+      else this.count++;
     });
     this.confirmParseModal.hide();
+    
   }
   
   getColumns(category: Category): void {
