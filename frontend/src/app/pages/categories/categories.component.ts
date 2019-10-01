@@ -1,6 +1,6 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Category, Device, Organization, User} from '../../shared/sdk/models';
-import {CategoryApi, DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services';
+import {Category, Device, Organization, User, Connector} from '../../shared/sdk/models';
+import {ParserApi, CategoryApi, DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
 import {ToasterConfig, ToasterService} from 'angular2-toaster';
 import * as moment from 'moment';
@@ -24,8 +24,17 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   @ViewChild('confirmModal') confirmModal: any;
   @ViewChild('shareCategoryWithOrganizationModal') shareCategoryWithOrganizationModal: any;
   @ViewChild('selectColumnsToDownloadModal') selectColumnsToDownloadModal: any;
+  @ViewChild('confirmParseModal') confirmParseModal: any;
+  @ViewChild('confirmDBModal') confirmDBModal: any;
+
 
   // Flags
+  private connectors: Connector[] = [];
+
+  private loadingFromBackend = false;
+  private loadingParseMessages = false;
+
+
   public categoriesReady = false;
 
   private loadingDownload = false;
@@ -87,6 +96,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
               private categoryApi: CategoryApi,
               private deviceApi: DeviceApi,
               private userApi: UserApi,
+              private parserApi: ParserApi,
               private organizationApi: OrganizationApi,
               toasterService: ToasterService,
               private route: ActivatedRoute,
@@ -100,6 +110,11 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     // Get the logged in User object
     this.user = this.userApi.getCachedCurrent();
     this.edit = false;
+
+    // Get the user connectors
+    this.userApi.getConnectors(this.user.id).subscribe((connectors: Connector[]) => {
+      this.connectors = connectors;
+    });
 
     // Check if organization view
     this.organizationRouteSub = this.route.parent.parent.params.subscribe(parentParams => {
@@ -131,6 +146,95 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
   }
 
+  showParseModal(): void {
+    this.confirmParseModal.show();
+  }
+
+  showRetrievalModal(): void {
+    this.confirmDBModal.show();
+  }
+
+  retrieveFromCategory(category: Category){
+
+    category.Devices.forEach(deviceToRetrieve => {
+      this.retrieveMessages(deviceToRetrieve.id, null, null);
+    });
+  }
+
+  retrieveMessages(deviceId: string, limit: number, before: number): void {
+    
+    this.userApi.getConnectors(this.user.id, {where: {type: 'sigfox-api'}}).subscribe((connectors: Connector[]) => {
+      if (connectors.length > 0) {
+        this.loadingFromBackend = true;
+        this.deviceApi.getMessagesFromSigfoxBackend(deviceId, null, before ? before : null, null).subscribe(result => {
+          console.log(result);
+
+          if (result.paging.next) {
+            const before = result.paging.next.substring(result.paging.next.indexOf('before=') + 7);
+            this.retrieveMessages(deviceId, null, before);
+          } else {
+            console.log('Finished process');
+            this.loadingFromBackend = false;
+            if (this.toast)
+              this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+            this.toast = this.toasterService.pop('success', 'Success', 'Retrieved messages from Sigfox Backend complete.');
+          }
+        }, err => {
+          if (this.toast)
+            this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+          this.toast = this.toasterService.pop('error', 'Error', err.message.message);
+          this.loadingFromBackend = false;
+        });
+        this.confirmDBModal.hide();
+      } else {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('warning', 'Warning', 'Please refer your Sigfox API credentials in the connectors page first.');
+      }
+    });
+  }
+
+  parseFromCategory(category: Category){
+    //this.loadingParseMessages = true;
+    var nb = 0;
+    var lastDevice = false;
+    console.log("category Devices parsed", category.Devices);
+    category.Devices.forEach(deviceToParse => {
+      
+        if (nb == category.Devices.length - 1){
+          console.log(";dernier device");
+          lastDevice = true;
+        }
+        console.log("deviceToRetrieve", deviceToParse.id);
+        //console.log("loadingparsemessage", this.loadingParseMessages);
+  
+        this.parseAllMessages(deviceToParse.id, lastDevice);
+        nb++;
+    });
+    //this.loadingParseMessages = false;
+    //console.log("end loadingparsemessage", this.loadingParseMessages);
+
+
+  }
+
+  parseAllMessages(deviceId: string, lastDevice: boolean): void {
+    this.loadingParseMessages = true;
+    // Disconnect real-time to avoid app crashing
+    this.parserApi.parseAllMessages(deviceId, null, null).subscribe(result => {
+      if (lastDevice) this.loadingParseMessages = false;
+      if (result.message === 'Success') {
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('success', 'Success', 'All the messages of '+deviceId+' were successfully parsed.');
+      } else {
+        if (lastDevice) this.loadingParseMessages = false;
+        if (this.toast)
+          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
+        this.toast = this.toasterService.pop('warning', 'Warning', result.message);
+      }
+    });
+    this.confirmParseModal.hide();
+  }
   
   getColumns(category: Category): void {
     this.categoryToEdit = category;

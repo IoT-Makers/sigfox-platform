@@ -136,107 +136,134 @@
           <i class="fa fa-wrench fa-lg"></i> <strong>Edit category</strong> - categoryId: <span class="text-category" tooltip="Click to copy" click-copy>{{categoryToEdit.id}}</span>
         </div>
         <div class="card-block">
-          <form class="form-horizontal" #editForm="ngForm">
-            <div class="form-group row">
-              <label class="col-md-3 form-control-label">Name
-                <small class="text-danger">(required)</small>
-              </label>
-              <div class="col-md-9">
-                <input type="text" class="form-control" placeholder="Device name" name="categoryToEdit.name"
-                       [(ngModel)]="categoryToEdit.name">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-3 form-control-label">Description</label>
-              <div class="col-md-9">
-                  <textarea type="text" class="form-control" placeholder="Describe the category" name="categoryToEdit.description"
-                            [(ngModel)]="categoryToEdit.description">
-                  </textarea>
-              </div>
-            </div>
-            <div class="form-group row">
-              <strong class="col-md-3 form-control-label">Properties</strong>
-            </div>
-            <div *ngIf="categoryToEdit.properties">
-              <div *ngFor="let property of categoryToEdit.properties; let i = index">
+            <tabset class="table-responsive">
+                <tab heading="Information" id="tab1">
 
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Name
-                    <small class="text-danger">(required)</small>
-                  </label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" placeholder="Property name"
-                           [ngModelOptions]="{standalone: true}"
-                           [(ngModel)]="property.key">
-                  </div>
-                </div>
+                    <form class="form-horizontal" #editForm="ngForm">
+                        <div class="form-group row">
+                          <label class="col-md-3 form-control-label">Name
+                            <small class="text-danger">(required)</small>
+                          </label>
+                          <div class="col-md-9">
+                            <input type="text" class="form-control" placeholder="Device name" name="categoryToEdit.name"
+                                   [(ngModel)]="categoryToEdit.name">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-3 form-control-label">Description</label>
+                          <div class="col-md-9">
+                              <textarea type="text" class="form-control" placeholder="Describe the category" name="categoryToEdit.description"
+                                        [(ngModel)]="categoryToEdit.description">
+                              </textarea>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <strong class="col-md-3 form-control-label">Properties</strong>
+                        </div>
+                        <div *ngIf="categoryToEdit.properties">
+                          <div *ngFor="let property of categoryToEdit.properties; let i = index">
+            
+                            <div class="form-group row">
+                              <label class="col-md-3 form-control-label">Name
+                                <small class="text-danger">(required)</small>
+                              </label>
+                              <div class="col-md-9">
+                                <input type="text" class="form-control" placeholder="Property name"
+                                       [ngModelOptions]="{standalone: true}"
+                                       [(ngModel)]="property.key">
+                              </div>
+                            </div>
+            
+                            <div class="form-group row">
+                              <label class="col-md-3 form-control-label">Type
+                                <small class="text-danger">(required)</small>
+                              </label>
+                              <div class="col-md-9">
+                                <select [ngModelOptions]="{standalone: true}" class="form-control" size="1"
+                                        [(ngModel)]="property.type">
+                                  <option [ngValue]="type" *ngFor="let type of propertyType">{{type}}</option>
+                                </select>
+                              </div>
+                            </div>
+            
+                            <div class="form-group row">
+                              <label class="col-md-3 form-control-label">Default</label>
+                              <div class="col-md-9">
+                                <input type="{{property.type}}" class="form-control" placeholder="Default value"
+                                       [ngModelOptions]="{standalone: true}"
+                                       [(ngModel)]="property.value">
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-3">
+                                <button class="btn btn-sm btn-danger" (click)="removeProperty(i)"> Remove property
+                                </button>
+                              </div>
+                            </div>
+                            <hr>
+            
+                          </div>
+                        </div>
+            
+                        <div class="row">
+                          <div class="col-md-12">
+                            <button class="pull-right btn btn-sm btn-outline-success mb-1" (click)="addProperty()"><i
+                              class="fa fa-plus-circle"></i> Add property
+                            </button>
+                          </div>
+                        </div>
+            
+                        <div *ngIf="categoryToEdit.Organizations && categoryToEdit.Organizations.length>0" class="row">
+                          <div class="col-md-12">
+                            <table class="table table-hover table-outline" [mfData]="categoryToEdit.Organizations" #mf="mfDataTable" [mfRowsOnPage]="20">
+                              <thead class="thead-inverse">
+                              <tr>
+                                <th class="text-center">
+                                  <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                                </th>
+                                <th class="text-center">Action</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr *ngFor="let orga of mf.data; let i = index">
+                                <td class="text-center">
+                                  <a [routerLink]="['/organization/' + orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
+                                </td>
+                                <td class="text-center">
+                                  <button class="btn btn-outline-organization btn-round" tooltip="Unshare this category"
+                                          (click)="unshare(orga, categoryToEdit, i)"><i class="fa fa-sign-out fa-lg"></i></button>
+                                </td>
+                              </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+            
+                      </form>
+                </tab>
+                <tab heading="Specific operations" class="text-center">
+                    <div class="col col-md-12 mb-1">
+                        <p *ngIf="loadingFromBackend" class="font-italic font-weight-bold">This operation can take time...</p>
+                        <button tooltip="Retrieve messages from Sigfox Backend" class="btn btn-round btn-danger btn-ladda"
+                                data-style="slide-up" [ladda]='loadingFromBackend'
+                                (click)="$event.preventDefault(); showRetrievalModal()">
+                          <i class="fa fa-database"></i> &nbsp; Retrieve messages of each device
+                        </button>
+                      </div>
+          
+                      <div class="col col-md-12">
+                        <p *ngIf="parseMessages" class="font-italic font-weight-bold">This operation can take time...</p>
+                        <button tooltip="Decode all messages for current parser" class="btn btn-round btn-danger btn-ladda"
+                                data-style="slide-up" [ladda]='loadingParseMessages'
+                                (click)="$event.preventDefault(); showParseModal()">
+                          <i class="fa fa-code"></i> &nbsp; Parse messages of each device
+                        </button>
+                      </div>
+                </tab>
 
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Type
-                    <small class="text-danger">(required)</small>
-                  </label>
-                  <div class="col-md-9">
-                    <select [ngModelOptions]="{standalone: true}" class="form-control" size="1"
-                            [(ngModel)]="property.type">
-                      <option [ngValue]="type" *ngFor="let type of propertyType">{{type}}</option>
-                    </select>
-                  </div>
-                </div>
+            </tabset>
 
-                <div class="form-group row">
-                  <label class="col-md-3 form-control-label">Default</label>
-                  <div class="col-md-9">
-                    <input type="{{property.type}}" class="form-control" placeholder="Default value"
-                           [ngModelOptions]="{standalone: true}"
-                           [(ngModel)]="property.value">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-3">
-                    <button class="btn btn-sm btn-danger" (click)="removeProperty(i)"> Remove property
-                    </button>
-                  </div>
-                </div>
-                <hr>
-
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12">
-                <button class="pull-right btn btn-sm btn-outline-success mb-1" (click)="addProperty()"><i
-                  class="fa fa-plus-circle"></i> Add property
-                </button>
-              </div>
-            </div>
-
-            <div *ngIf="categoryToEdit.Organizations && categoryToEdit.Organizations.length>0" class="row">
-              <div class="col-md-12">
-                <table class="table table-hover table-outline" [mfData]="categoryToEdit.Organizations" #mf="mfDataTable" [mfRowsOnPage]="20">
-                  <thead class="thead-inverse">
-                  <tr>
-                    <th class="text-center">
-                      <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
-                    </th>
-                    <th class="text-center">Action</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let orga of mf.data; let i = index">
-                    <td class="text-center">
-                      <a [routerLink]="['/organization/' + orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
-                    </td>
-                    <td class="text-center">
-                      <button class="btn btn-outline-organization btn-round" tooltip="Unshare this category"
-                              (click)="unshare(orga, categoryToEdit, i)"><i class="fa fa-sign-out fa-lg"></i></button>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-          </form>
+          
         </div>
 
         <div class="card-footer">
@@ -356,5 +383,53 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<div bsModal #confirmDBModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDBModal"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm messages retrieval of every devices of the category <b>{{categoryToEdit.name}}</b></h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>You are about to fetch all the messages belonging to each device of the the category <b>{{categoryToEdit.name}}</b> from the Sigfox
+          Backend.</p>
+        <p class="font-italic"><u>This process may take some time</u>, please do not leave this page.</p>
+        <p>Are you sure you want to do this?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-success" (click)="retrieveFromCategory(categoryToEdit)">Retrieve</button>
+        <button class="btn btn-sm btn-default" (click)="confirmDBModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div bsModal #confirmParseModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="confirmParseModal"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm parse every messages of <b>{{categoryToEdit.name}}</b></h4>
+        <button type="button" class="close" (click)="confirmModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>You are about to parse all the messages belonging to every devices of the category <b>{{categoryToEdit.name}}</b></p>
+        <p>Please use this option if you've just retrieved all devices of this category before, otherwise you should better parse messages device by device </p>
+        <p class="font-italic"><u>This process may take some time</u>, please do not leave this page.</p>
+        <p>Are you sure you want to do this?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-success" (click)="parseFromCategory(categoryToEdit)">Parse</button>
+        <button class="btn btn-sm btn-default" (click)="confirmParseModal.hide()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <toaster-container [toasterconfig]="toasterconfig"></toaster-container>
