@@ -518,7 +518,7 @@ export class AlertsComponent implements OnInit, OnDestroy {
       }
 
       if (devices[0].Messages[0].group == "capturs") {
-        let capturs_fields = ["type","temperature","battery","batteryPercentage","speed"];
+        let capturs_fields = ["event","temperature","battery","batteryPercentage","speed"];
         capturs_fields.forEach((p: string) => {
           const item = {
             id: p,

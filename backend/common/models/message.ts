@@ -340,7 +340,7 @@ class Message {
             }
             if (message.group == "capturs") {
               message.data_parsed = [];
-              let capturs_fields = ["type","temperature","battery","batteryPercentage","speed"];
+              let capturs_fields = ["event","temperature","battery","batteryPercentage","speed"];
               capturs_fields.forEach((p: string) => {
                 if (message[p]){
                   console.log("message.p --->", message[p]);
