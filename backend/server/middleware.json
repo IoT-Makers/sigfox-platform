@@ -35,9 +35,7 @@
   "parse": {},
   "routes": {
     "loopback#rest": {
-      "paths": [
-        "${restApiRoot}"
-      ]
+      "paths": ["${restApiRoot}"]
     }
   },
   "files": {},

@@ -1,10 +1,10 @@
-'use strict';
+
 require('ts-node/register');
 var loopback = require('loopback');
 var boot = require('loopback-boot');
 var cookieParser = require('cookie-parser');
 
-var app = module.exports = loopback();
+var app = (module.exports = loopback());
 app.use(cookieParser());
 
 app.start = function() {
@@ -26,7 +26,5 @@ boot(app, __dirname, function(err) {
   if (err) throw err;
   // don't use autoupdate or automigrate in a multi-container environment
   // start the server if `$ node server.js`
-  if (require.main === module)
-    app.start();
+  if (require.main === module) app.start();
 });
-
