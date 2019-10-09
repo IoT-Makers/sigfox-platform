@@ -72,6 +72,9 @@ class Geoloc {
     // Models
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
+    const Alert = this.model.app.models.Alert;
+    const Device = this.model.app.models.Device;
+
     var timeoutstate: boolean = false;
     var ubistate: boolean = false;
 
@@ -127,6 +130,15 @@ class Geoloc {
           geoloc.messageId = messageInstance.id;
           geoloc.deviceId = messageInstance.deviceId;
 
+          if (messageInstance.group === "capturs"){
+
+            geoloc.speed = data.speed;
+            geoloc.altitude = data.altitude;
+            geoloc.temperature = data.temperature;
+            geoloc.battery = data.battery;
+            geoloc.batteryPercentage = data.batteryPercentage;
+          }
+
           if (messageInstance.data_parsed) {
             /**
              * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
@@ -167,11 +179,48 @@ class Geoloc {
               Geoloc.create(
                 geoloc,
                 (err: any, geolocInstance: any, created: boolean) => { // callback
-                  console.log('created in geoloc create',created);
                   if (err) return next(err, geolocInstance);
                   else return next(null, geolocInstance);
                 });
-            } else next(null, geoloc);
+            } 
+
+            else if (messageInstance.group === "capturs"){
+
+              Geoloc.create(
+                geoloc,
+                (err: any, geolocInstance: any, created: boolean) => { // callback
+                  if (err) return next(err, geolocInstance);
+                  else return next(null, geolocInstance);
+                });
+
+              let data_alert : any[];
+              data_alert = [];
+              let capturs_fields = ["event","temperature","battery","batteryPercentage","speed"];
+              capturs_fields.forEach((p: string) => {
+                if (geoloc[p]){
+                  const item = {
+                    key: p,
+                    value: geoloc[p]
+                  };
+                  data_alert.push(item);
+                }
+              });
+
+              Device.findById(data.deviceId, {include: ["Alerts", "Parser"]}, (err: any, deviceInstance: any) => {
+                if (err) console.error(err);
+                else if (deviceInstance) {
+                  deviceInstance = deviceInstance.toJSON();
+
+                  Alert.triggerByData(
+                    data_alert,
+                    deviceInstance,
+                    req,
+                    (err: any, res: any) => {
+                    });
+                }
+              });
+                
+            }else next(null, geoloc);
          
           
         }
@@ -182,6 +231,9 @@ class Geoloc {
     // Models
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
+    const Alert = this.model.app.models.Alert;
+    const Device = this.model.app.models.Device;
+
     var ubistate: boolean = false;
     var timeoutstate: boolean = false;
 
@@ -247,6 +299,16 @@ class Geoloc {
             geoloc.messageId = message.id;
             geoloc.deviceId = data.deviceId;
             
+
+            if (messageInstance.group === "capturs"){
+
+              geoloc.speed = data.speed;
+              geoloc.altitude = data.altitude;
+              geoloc.temperature = data.temperature;
+              geoloc.battery = data.battery;
+              geoloc.batteryPercentage = data.batteryPercentage;
+            }
+            
             if (messageInstance.data_parsed) {
               /**
                * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
@@ -289,7 +351,44 @@ class Geoloc {
                   if (err) return next("The Geoloc already exists, please check your parser does not force platform Geoloc decoding.", geolocInstance);
                   else return next(null, geolocInstance);
                 });
-            } else next(null, geoloc);
+            }
+            else if (messageInstance.group === "capturs"){
+
+              Geoloc.create(
+                geoloc,
+                (err: any, geolocInstance: any, created: boolean) => { // callback
+                  if (err) return next(err, geolocInstance);
+                  else return next(null, geolocInstance);
+                });
+
+              let data_alert : any[];
+              data_alert = [];
+              let capturs_fields = ["event","temperature","battery","batteryPercentage","speed"];
+              capturs_fields.forEach((p: string) => {
+                if (geoloc[p]){
+                  const item = {
+                    key: p,
+                    value: geoloc[p]
+                  };
+                  data_alert.push(item);
+                }
+              });
+
+              Device.findById(data.deviceId, {include: ["Alerts", "Parser"]}, (err: any, deviceInstance: any) => {
+                if (err) console.error(err);
+                else if (deviceInstance) {
+                  deviceInstance = deviceInstance.toJSON();
+
+                  Alert.triggerByData(
+                    data_alert,
+                    deviceInstance,
+                    req,
+                    (err: any, res: any) => {
+                    });
+                }
+              });
+                
+            }else next(null, geoloc);
           } else next(null, 'No position or invalid payload');
         }
       });

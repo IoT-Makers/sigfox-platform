@@ -339,7 +339,8 @@ class Message {
                 });
             }
             if (message.group == "capturs") {
-              message.data_parsed = [];
+              let data_alert : any[]
+              data_alert = [];
               let capturs_fields = ["event","temperature","battery","batteryPercentage","speed"];
               capturs_fields.forEach((p: string) => {
                 if (message[p]){
@@ -348,7 +349,7 @@ class Message {
                     key: p,
                     value: message[p]
                   };
-                  message.data_parsed.push(item);
+                  data_alert.push(item);
                 }
               });
 
@@ -359,7 +360,7 @@ class Message {
                 });
 
                 Alert.triggerByData(
-                  message.data_parsed,
+                  data_alert,
                   device,
                   req,
                   (err: any, res: any) => {
