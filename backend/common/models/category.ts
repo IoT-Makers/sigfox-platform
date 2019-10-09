@@ -194,6 +194,7 @@ class Category {
           //options.fields.push("seconds"); //
           options.fields.push("data");
           options.fields.push("ack");
+          options.fields.push("oob");
           options.fields.push("data_downlink");
 
 
@@ -422,6 +423,7 @@ class Category {
           //options.fields.push("seconds"); //
           options.fields.push("data");
           options.fields.push("ack");
+          options.fields.push("oob");
           options.fields.push("data_downlink");
 
           let nbProcessedDevices = 0;
@@ -710,8 +712,30 @@ class Category {
                     //obj.seconds = new Date(message.createdAt).getSeconds();
                     obj.data = message.data;
                     obj.ack = message.ack;
+                    obj.oob = message.oob;
                     obj.data_downlink = message.data_downlink;
 
+                    //oob received after a direct OOB message, when deviceAck is defined, it's always true
+                    if (message.deviceAck){
+                      obj.oob = message.deviceAck;
+                    }
+                    // oob received after a retrieve
+                    else if (message.oob !== null && typeof message.oob !== 'undefined'){
+                      obj.oob = message.oob;
+                      //when a retrieve is done, ack is empty because the geoloc provides ack
+                      if (message.oob === true){
+                        obj.ack = false;
+                      }
+                    }
+                    else {
+                      obj.oob = false;
+                    }
+                    
+                    if (message.data_parsed && obj.oob !== true) {
+                      message.data_parsed.forEach((p: any) => {
+                        obj[p.key] = p.value;
+                      });
+                    }
 
                     if (message.Geolocs) {
                       message.Geolocs.forEach((geoloc: any) => {
@@ -719,13 +743,6 @@ class Category {
                         obj["lng_" + geoloc.type] = geoloc.location.lng;
                         obj["accuracy_" + geoloc.type] = geoloc.accuracy;
                         
-                      });
-                    }
-
-                    if (message.data_parsed) {
-                      message.data_parsed.forEach((p: any) => {
-                        obj[p.key] = p.value;
-
                       });
                     }
 
@@ -765,7 +782,7 @@ class Category {
                           obj["Lat"] = obj["lat_gps"];
                           obj["Notes"] = "SigfoxGPS";
                         }
-                        else if (obj["lat_sigfox"]) {
+                        else if (obj["lat_sigfox"] && obj.oob !== true) {
                           obj["Lat"] = obj["lat_sigfox"];
                           obj["Notes"] = "SigfoxGeo";
 
@@ -776,7 +793,7 @@ class Category {
                         if (obj["lng_gps"]) {
                           obj["Lng"] = obj["lng_gps"];
                         }
-                        else if (obj["lng_sigfox"]) {
+                        else if (obj["lng_sigfox"] && obj.oob !== true) {
                           obj["Lng"] = obj["lng_sigfox"];
                         }
   
@@ -944,19 +961,36 @@ class Category {
                     //obj.seconds = new Date(message.createdAt).getSeconds();
                     obj.data = message.data;
                     obj.ack = message.ack;
+                    obj.oob = message.oob;
                     obj.data_downlink = message.data_downlink;
+
+                     //oob received after a direct OOB message, when deviceAck is defined, it's always true
+                    if (message.deviceAck){
+                      obj.oob = message.deviceAck;
+                    }
+                    // oob received after a retrieve
+                    else if (message.oob !== null && typeof message.oob !== 'undefined'){
+                      obj.oob = message.oob;
+                      //when a retrieve is done, ack is empty because the geoloc provides ack
+                      if (message.oob === true){
+                        obj.ack = false;
+                      }
+                    }
+                    else {
+                      obj.oob = false;
+                    }
+                    
+                    if (message.data_parsed && obj.oob !== true) {
+                      message.data_parsed.forEach((p: any) => {
+                        obj[p.key] = p.value;
+                      });
+                    }
 
                     if (message.Geolocs) {
                       message.Geolocs.forEach((geoloc: any) => {
                         obj["lat_" + geoloc.type] = geoloc.location.lat;
                         obj["lng_" + geoloc.type] = geoloc.location.lng;
                         obj["accuracy_" + geoloc.type] = geoloc.accuracy; 
-                      });
-                    }
-
-                    if (message.data_parsed) {
-                      message.data_parsed.forEach((p: any) => {
-                        obj[p.key] = p.value;
                       });
                     }
 
@@ -992,7 +1026,7 @@ class Category {
                         obj["Lat"] = obj["lat_gps"];
                         obj["Notes"] = "SigfoxGPS";
                       }
-                      else if (obj["lat_sigfox"]) {
+                      else if (obj["lat_sigfox"] && obj.oob !== true) {
                         obj["Lat"] = obj["lat_sigfox"];
                         obj["Notes"] = "SigfoxGeo";
 
@@ -1003,7 +1037,7 @@ class Category {
                       if (obj["lng_gps"]) {
                         obj["Lng"] = obj["lng_gps"];
                       }
-                      else if (obj["lng_sigfox"]) {
+                      else if (obj["lng_sigfox"] && obj.oob !== true) {
                         obj["Lng"] = obj["lng_sigfox"];
                       }
 
