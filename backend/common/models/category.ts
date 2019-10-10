@@ -712,7 +712,6 @@ class Category {
                     //obj.seconds = new Date(message.createdAt).getSeconds();
                     obj.data = message.data;
                     obj.ack = message.ack;
-                    obj.oob = message.oob;
                     obj.data_downlink = message.data_downlink;
 
                     //oob received after a direct OOB message, when deviceAck is defined, it's always true
@@ -722,13 +721,13 @@ class Category {
                     // oob received after a retrieve
                     else if (message.oob !== null && typeof message.oob !== 'undefined'){
                       obj.oob = message.oob;
-                      //when a retrieve is done, ack is empty because the geoloc provides ack
-                      if (message.oob === true){
-                        obj.ack = false;
-                      }
                     }
                     else {
                       obj.oob = false;
+                    }
+
+                    if (obj.oob === true){
+                      obj.ack = false;
                     }
                     
                     if (message.data_parsed && obj.oob !== true) {
@@ -961,23 +960,22 @@ class Category {
                     //obj.seconds = new Date(message.createdAt).getSeconds();
                     obj.data = message.data;
                     obj.ack = message.ack;
-                    obj.oob = message.oob;
                     obj.data_downlink = message.data_downlink;
 
-                     //oob received after a direct OOB message, when deviceAck is defined, it's always true
+                    //oob received after a direct OOB message, when deviceAck is defined, it's always true
                     if (message.deviceAck){
                       obj.oob = message.deviceAck;
                     }
                     // oob received after a retrieve
                     else if (message.oob !== null && typeof message.oob !== 'undefined'){
                       obj.oob = message.oob;
-                      //when a retrieve is done, ack is empty because the geoloc provides ack
-                      if (message.oob === true){
-                        obj.ack = false;
-                      }
                     }
                     else {
                       obj.oob = false;
+                    }
+
+                    if(obj.oob === true){
+                      obj.ack = false;
                     }
                     
                     if (message.data_parsed && obj.oob !== true) {
