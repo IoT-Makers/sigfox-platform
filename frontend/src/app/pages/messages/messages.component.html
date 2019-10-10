@@ -143,9 +143,9 @@
               <div class="text-justify" *ngIf="message.group === 'capturs'">
                     <div *ngIf="message.Geolocs">
                         <div *ngFor="let geoloc of message.Geolocs">
-                            <div><small>lat: <strong>{{geoloc.location.lat}}</strong></small></div>
-                            <div><small>lng: <strong>{{geoloc.location.lng}}</strong></small></div>
-                            <div><small>accuracy: <strong>{{geoloc.accuracy}}</strong></small></div>
+                            <div *ngIf="geoloc.location.lat"><small>latitude: <strong>{{geoloc.location.lat}}</strong></small></div>
+                            <div *ngIf="geoloc.location.lng"><small>longitude: <strong>{{geoloc.location.lng}}</strong></small></div>
+                            <div *ngIf="geoloc.accuracy"><small>accuracy: <strong>{{geoloc.accuracy}}</strong></small></div>
                             <div *ngIf="geoloc.altitude"><small>altitude: <strong>{{geoloc.altitude}}</strong></small></div>
                             <div *ngIf="geoloc.speed"><small>speed: <strong>{{geoloc.speed}}</strong></small></div>
                             <div *ngIf="geoloc.temperature"><small>temperature: <strong>{{geoloc.temperature}}</strong></small></div>
@@ -155,9 +155,9 @@
 
                         </div>
                     </div>
-                    <div *ngIf="message.latitude"><small>latitude: <strong>{{message.latitude}}</strong></small></div>
+                    <!--<div *ngIf="message.latitude"><small>latitude: <strong>{{message.latitude}}</strong></small></div>
                     <div *ngIf="message.longitude"><small>longitude: <strong>{{message.longitude}}</strong></small></div>
-                    <div *ngIf="message.altitude"><small>altitude: <strong>{{message.altitude}}</strong></small></div>
+                    <div *ngIf="message.altitude"><small>altitude: <strong>{{message.altitude}}</strong></small></div>-->
                     <div *ngIf="message.speed"><small>speed: <strong>{{message.speed}}</strong></small></div>
                     <div *ngIf="message.temperature"><small>temperature: <strong>{{message.temperature}}</strong></small></div>
                     <div *ngIf="message.battery"><small>battery: <strong>{{message.battery}}</strong></small></div>
