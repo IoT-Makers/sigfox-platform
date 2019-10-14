@@ -395,19 +395,37 @@ class Message {
             const device = deviceInstance.toJSON();
             let attendedNbMessages: number;
             let nbDuplicated = 0;
-            attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber + 1;
-            if (device.Messages[device.Messages.length - 1].seqNumber > device.Messages[0].seqNumber) {
-              attendedNbMessages += 4095;
-            }
+            let maxDuplicatedSeqNumber = 0;
+            let maxSeqNumber = 0;
 
-            //Check if duplicated seqNumber
             var sortedMessages = device.Messages.slice().sort(function (a: any,b: any) {
               return a.seqNumber - b.seqNumber;
             });
+
+            maxSeqNumber = sortedMessages[sortedMessages.length - 1].seqNumber;
+
             for ( let i = 0; i < sortedMessages.length -1; i++){
               if(sortedMessages[i + 1].seqNumber == sortedMessages[i].seqNumber){
-                nbDuplicated++;
+                //Detect if they are duplicated seqNumber from backend
+                if(sortedMessages[i + 1].data == sortedMessages[i].data){
+                  nbDuplicated++;
+                }
+                //if not, the seqNumber is duplicated because of a disenguage seqNumber
+                else {
+                  //We store the higher duplicated seqNumber
+                  maxDuplicatedSeqNumber = sortedMessages[i + 1].seqNumber;
+                } 
               }
+            }
+
+            attendedNbMessages = device.Messages[0].seqNumber - device.Messages[device.Messages.length - 1].seqNumber + 1;
+
+            if (maxSeqNumber > device.Messages[0].seqNumber) {
+              attendedNbMessages += maxSeqNumber;
+
+            }
+            else {
+              attendedNbMessages += maxDuplicatedSeqNumber;
             }
 
             device.successRate = ((((device.Messages.length - nbDuplicated) / attendedNbMessages) * 100)).toFixed(2);
