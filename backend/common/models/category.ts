@@ -644,6 +644,7 @@ class Category {
             let nbProperty = 0;
             let propertyKey: any = [];
             let propertyValue: any = [];
+            let age = 0;
 
             Device.findOne(
               {
@@ -682,6 +683,10 @@ class Category {
                       hasProperty = true;
                       propertyKey[nbProperty] = property.key;
                       propertyValue[nbProperty] = property.value;
+                      if(property.key === "Birthdate"){
+                        var timedif = Math.abs(Date.now() - new Date(property.value).getTime());
+                        age = Math.floor(timedif / (1000 * 3600 * 24) / 365.25);
+                      }
                       ++nbProperty;
                     });
                   }
@@ -693,6 +698,9 @@ class Category {
                       let nb = 0;
                       while (nb < nbProperty) {
                         obj[propertyKey[nb]] = propertyValue[nb];
+                        if (propertyKey[nb] === "Birthdate"){
+                          obj.Age = age;
+                        }
                         nb++;
                       }
                     }
@@ -888,7 +896,7 @@ class Category {
             let propertyKey: any = [];
             let propertyValue: any = [];
             var hasOnlyRhinosParser = true;
-
+            let age = 0;
 
             Device.findOne(
               {
@@ -931,6 +939,10 @@ class Category {
                       hasProperty = true;
                       propertyKey[nbProperty] = property.key;
                       propertyValue[nbProperty] = property.value;
+                      if(property.key === "Birthdate"){
+                        var timedif = Math.abs(Date.now() - new Date(property.value).getTime());
+                        age = Math.floor(timedif / (1000 * 3600 * 24) / 365.25);
+                      }
                       nbProperty++;
                     });
                   }
@@ -942,6 +954,9 @@ class Category {
                       let nb = 0;
                       while (nb < nbProperty) {
                         obj[propertyKey[nb]] = propertyValue[nb];
+                        if (propertyKey[nb] === "Birthdate"){
+                          obj.Age = age;
+                        }
                         nb++;
                       }
                     }
