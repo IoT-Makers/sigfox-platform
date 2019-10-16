@@ -380,7 +380,7 @@ class Device {
               hasProperty = true;
               propertyKey[nbProperty] = property.key;
               propertyValue[nbProperty] = property.value;
-              if(property.key === "Birthdate"){
+              if(property.key === "Birthdate" || property.key === "Birth date"){
                 var timedif = Math.abs(Date.now() - new Date(property.value).getTime());
                 age = Math.floor(timedif / (1000 * 3600 * 24) / 365.25);
               }
@@ -421,7 +421,7 @@ class Device {
                     let nb = 0;
                     while (nb < nbProperty) {
                       obj[propertyKey[nb]] = propertyValue[nb];
-                      if (propertyKey[nb] === "Birthdate"){
+                      if (propertyKey[nb] === "Birthdate"|| propertyKey[nb] === "Birth date"){
                         obj.Age = age;
                       }
 
