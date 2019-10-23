@@ -322,9 +322,7 @@
                                       </th>
                                       <th *ngIf="!edit && (showDeviceSuccessRate && showDeviceSuccessRate.value === true)" class="text-center">
                                         <mfDefaultSorter by="successRate"><i class="fa fa-sort"></i> Success rate</mfDefaultSorter>
-                                      </th>
-                                      <th class="text-center">
-                                          Actions
+                                        Success
                                       </th>
                                     </tr>
                                     </thead>
@@ -377,6 +375,21 @@
                                             </div>
                                           </div>
                                           </div>
+                                        </div>
+                                        <div class="small text-gray-dark" *ngIf="device.Messages[0].group === 'capturs'">
+                                          <div *ngIf="device.Messages[0].latitude">latitude: <strong>{{device.Messages[0].latitude}}</strong></div>
+                                          <div *ngIf="device.Messages[0].longitude">longitude: <strong>{{device.Messages[0].longitude}}</strong></div>
+                                          <div *ngIf="device.Messages[0].altitude">altitude: <strong>{{device.Messages[0].altitude}}</strong></div>
+                                          <div *ngIf="device.Messages[0].speed">speed: <strong>{{device.Messages[0].speed}}</strong></div>
+                                          <div *ngIf="device.Messages[0].temperature">temperature: <strong>{{device.Messages[0].temperature}}</strong></div>
+                                          <div *ngIf="device.Messages[0].battery">battery: <strong>{{device.Messages[0].battery}}</strong></div>
+                                          <div *ngIf="device.Messages[0].batteryPercentage">batteryPercentage: <strong>{{device.Messages[0].batteryPercentage}}</strong></div>
+                                          <div *ngIf="device.Messages[0].event">event : <strong>{{device.Messages[0].event}}</strong></div>
+                                          <div *ngIf="device.Messages[0].group">group: <strong>{{device.Messages[0].group}}</strong></div>
+                                        </div>
+                                        <div class="mt-1 small text-gray-dark" *ngIf="device.Messages[0].deviceAck">
+                                          Device downlink acknowledge: <span class="text-success"
+                                                                            title="Acknowledged by device">{{device.Messages[0].deviceAck}}</span>
                                         </div>
                                       </td>
                                       <td>
