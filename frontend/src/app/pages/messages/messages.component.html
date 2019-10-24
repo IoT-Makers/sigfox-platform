@@ -228,21 +228,23 @@
             </td>
             <td class="text-center">{{message.seqNumber}}</td>
             <td class="text-center" (click)="showMarkers(message)">
-              <p *ngFor="let reception of message.reception">
-                <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success"
-                   aria-hidden="true"></i>
-                <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI"
-                   class="fa fa-signal text-warning" aria-hidden="true"></i>
-                <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger"
-                   aria-hidden="true"></i>
-                {{reception.RSSI}}
-                <span>&nbsp;</span>
-                <i title="Base Station" class="fa fa-podcast text-primary" aria-hidden="true"></i>
-                {{reception.id}}
-                <span>&nbsp;</span>
-                <i title="SNR" class="fa fa-feed" aria-hidden="true"></i>
-                {{reception.SNR}}
-              </p>
+              <div *ngFor="let reception of message.reception;  let i=index">
+                  <p *ngIf="i<10">
+                    <i *ngIf="reception.RSSI >= -120" title="RSSI" class="fa fa-signal text-success"
+                        aria-hidden="true"></i>
+                     <i *ngIf="reception.RSSI < -120 && reception.RSSI > -140" title="RSSI"
+                        class="fa fa-signal text-warning" aria-hidden="true"></i>
+                     <i *ngIf="reception.RSSI <= -140" title="RSSI" class="fa fa-signal text-danger"
+                        aria-hidden="true"></i>
+                     {{reception.RSSI}}
+                     <span>&nbsp;</span>
+                     <i title="Base Station" class="fa fa-podcast text-primary" aria-hidden="true"></i>
+                     {{reception.id}}
+                     <span>&nbsp;</span>
+                     <i title="SNR" class="fa fa-feed" aria-hidden="true"></i>
+                     {{reception.SNR}}
+                  </p>
+              </div>
             </td>
             <td class="text-center">
               <button type="button" class="btn btn-outline-danger btn-round" (click)="deleteMessage(message)">
