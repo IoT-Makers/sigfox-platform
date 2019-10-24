@@ -148,6 +148,8 @@ class Device {
     const Message = this.model.app.models.Message;
     const Geoloc = this.model.app.models.Geoloc;
     const Connector = this.model.app.models.Connector;
+    const Device = this.model;
+    var dateOfImplant = 0;
 
     const userId = req.accessToken.userId;
 
@@ -169,78 +171,113 @@ class Device {
 
             let reception: any[] = [];
             const credentials = new Buffer(sigfoxApiLogin + ":" + sigfoxApiPassword).toString("base64");
-
-            this.model.app.dataSources.sigfox.getMessages(
-              credentials,
-              deviceId,
-              (limit < 100) ? limit : 100,
-              before ? before : new Date(),
-            ).then((result: any) => {
-              // console.log("Length: ", result.data.length);
-              // console.log("Next: ", result.paging.next);
-              result.data.forEach((messageInstance: any, msgCounter: number) => {
-                reception = [];
-                messageInstance.rinfos.forEach((o: any) => {
-                  const rinfo: any = {
-                    id: o.tap,
-                    lat: o.lat,
-                    lng: o.lng,
-                    RSSI: o.rssi,
-                    linkQuality: messageInstance.linkQuality,
-                    SNR: messageInstance.snr
-                  };
-                  reception.push(rinfo);
-                });
-
-                let message = new Message;
-                message.id = messageInstance.device + messageInstance.time + messageInstance.seqNumber;
-                message.userId = userId;
-                message.deviceId = messageInstance.device;
-                message.time = messageInstance.time;
-                message.seqNumber = messageInstance.seqNumber;
-                message.data = messageInstance.data;
-                message.reception = reception;
-                message.ack = messageInstance.ackRequired;
-                message.oob = messageInstance.oob ? true : false;
-                message.createdAt = new Date(messageInstance.time * 1000);
-                message.updatedAt = new Date(messageInstance.time * 1000);
-                Message.create(
-                  message,
-                  (err: any, messagePostProcess: any) => { // callback
-                    if (err) console.log(err);
-                    else if (messageInstance.computedLocation) {
-                      // Build the Geoloc object
-                      const geoloc = new Geoloc;
-                      geoloc.id = message.id + 'sigfox';
-                      geoloc.type = 'sigfox';
-                      geoloc.location = new loopback.GeoPoint({
-                        lat: messageInstance.computedLocation.lat,
-                        lng: messageInstance.computedLocation.lng
-                      });
-                      geoloc.accuracy = messageInstance.computedLocation.radius;
-                      geoloc.createdAt = messagePostProcess.createdAt;
-                      geoloc.userId = messagePostProcess.userId;
-                      geoloc.messageId = messagePostProcess.id;
-                      geoloc.deviceId = messagePostProcess.deviceId;
-                      // Find or create a new Geoloc
-                      Geoloc.upsert(
-                        geoloc,
-                        (err: any, geolocInstance: any) => {
-                          if (err) console.error(err);
-                        });
-                    }
-                  });
-
-                // Done
-                if (msgCounter === result.data.length - 1) {
-                  this.updateDeviceSuccessRate(messageInstance.device);
-                  return next(null, result);
+            Device.findOne(
+              {
+                where: {
+                  and: [
+                    { id: deviceId },
+                  ],
                 }
-              });
-            }).catch((err: any) => {
-              if (err.statusCode === "403") return next(err, "Your Sigfox API credentials are not allowed to do so.");
-              else return next(err, null);
-            });
+                
+              }, (err: any, device: any) => {
+                if (err) return next(err, null);
+                else if (device) {
+                  device = device.toJSON();
+                  console.log("device Id", device.id);
+                  
+                  if (device.properties){
+                    device.properties.forEach((property: any) => {
+                      if (property.key === "Implantation date" && property.value){
+                        var date = new Date(property.value);
+                        //date.setDate(date.getDate() + 1);
+                        dateOfImplant = date.getTime();
+                      }
+    
+                    });
+                  }
+
+                  this.model.app.dataSources.sigfox.getMessages(
+                    credentials,
+                    deviceId,
+                    (limit < 100) ? limit : 100,
+                    before ? before : new Date(),
+                  ).then((result: any) => {
+                    // console.log("Length: ", result.data.length);
+                    // console.log("Next: ", result.paging.next);
+                    result.data.forEach((messageInstance: any, msgCounter: number) => {
+                      reception = [];
+                      messageInstance.rinfos.forEach((o: any) => {
+                        const rinfo: any = {
+                          id: o.tap,
+                          lat: o.lat,
+                          lng: o.lng,
+                          RSSI: o.rssi,
+                          linkQuality: messageInstance.linkQuality,
+                          SNR: messageInstance.snr
+                        };
+                        reception.push(rinfo);
+                      });
+
+                      let message = new Message;
+                      message.id = messageInstance.device + messageInstance.time + messageInstance.seqNumber;
+                      message.userId = userId;
+                      message.deviceId = messageInstance.device;
+                      message.time = messageInstance.time;
+                      message.seqNumber = messageInstance.seqNumber;
+                      message.data = messageInstance.data;
+                      message.reception = reception;
+                      message.ack = messageInstance.ackRequired;
+                      message.oob = messageInstance.oob ? true : false;
+                      message.createdAt = new Date(messageInstance.time * 1000);
+                      message.updatedAt = new Date(messageInstance.time * 1000);
+
+                      //we create messages only after date of implantation if exists
+                      if (messageInstance.time * 1000 > dateOfImplant ){
+                          console.log("message ",messageInstance);
+                        
+                          Message.create(
+                            message,
+                            (err: any, messagePostProcess: any) => { // callback
+                              if (err) console.log(err);
+                              else if (messageInstance.computedLocation) {
+                                // Build the Geoloc object
+                                const geoloc = new Geoloc;
+                                geoloc.id = message.id + 'sigfox';
+                                geoloc.type = 'sigfox';
+                                geoloc.location = new loopback.GeoPoint({
+                                  lat: messageInstance.computedLocation.lat,
+                                  lng: messageInstance.computedLocation.lng
+                                });
+                                geoloc.accuracy = messageInstance.computedLocation.radius;
+                                geoloc.createdAt = messagePostProcess.createdAt;
+                                geoloc.userId = messagePostProcess.userId;
+                                geoloc.messageId = messagePostProcess.id;
+                                geoloc.deviceId = messagePostProcess.deviceId;
+                                // Find or create a new Geoloc
+                                Geoloc.upsert(
+                                  geoloc,
+                                  (err: any, geolocInstance: any) => {
+                                    if (err) console.error(err);
+                                  });
+                              }
+                            });
+                      }
+                        
+                      // Done
+                      if (msgCounter === result.data.length - 1) {
+                        this.updateDeviceSuccessRate(messageInstance.device);
+                        return next(null, result);
+                      }
+                    });
+                  }).catch((err: any) => {
+                    if (err.statusCode === "403") return next(err, "Your Sigfox API credentials are not allowed to do so.");
+                    else return next(err, null);
+                  });
+                }
+              }
+            
+            );
+            
           } else return next(err, "Please refer your Sigfox API connector first.");
         }
       });
