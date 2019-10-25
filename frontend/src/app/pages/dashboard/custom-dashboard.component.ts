@@ -1212,7 +1212,8 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
         this.days = 1095;
         break;
       case 'since-beginning':
-        const SINCE_BEGIN = 5 * 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
+        var d = new Date();
+        const SINCE_BEGIN = (d.getFullYear()- 2014) * 365 * 24 * 60 * 60 * 1000;  // Year in milliseconds
         widget.filter.include[0].scope.where.and[0].createdAt.gte = Date.now() - SINCE_BEGIN;
         this.startDate = widget.filter.include[0].scope.where.and[0].createdAt.gte;
         this.days = 1825;
