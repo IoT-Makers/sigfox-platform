@@ -787,11 +787,11 @@ class Category {
                       if (obj["lat_gps"] || obj["lat_sigfox"]) {
                         if (obj["lat_gps"]) {
                           obj["Lat"] = obj["lat_gps"];
-                          obj["Notes"] = "SigfoxGPS";
+                          obj["EVENT"] = "SigfoxGPS";
                         }
                         else if (obj["lat_sigfox"] && obj.oob !== true) {
                           obj["Lat"] = obj["lat_sigfox"];
-                          obj["Notes"] = "SigfoxGeo";
+                          obj["EVENT"] = "SigfoxGeo";
 
                         }
   
@@ -1037,11 +1037,11 @@ class Category {
                     if (obj["lat_gps"] || obj["lat_sigfox"]) {
                       if (obj["lat_gps"]) {
                         obj["Lat"] = obj["lat_gps"];
-                        obj["Notes"] = "SigfoxGPS";
+                        obj["EVENT"] = "SigfoxGPS";
                       }
                       else if (obj["lat_sigfox"] && obj.oob !== true) {
                         obj["Lat"] = obj["lat_sigfox"];
-                        obj["Notes"] = "SigfoxGeo";
+                        obj["EVENT"] = "SigfoxGeo";
 
                       }
 
