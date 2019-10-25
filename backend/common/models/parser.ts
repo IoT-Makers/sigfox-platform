@@ -234,6 +234,9 @@ class Parser {
 
     const response: any = {};
 
+    var dateOfImplant = 0;
+
+
     if (!userId) {
       response.message = "Please login or use a valid access token.";
       next(null, response);
@@ -251,6 +254,17 @@ class Parser {
       else if (device) {
 
         device = device.toJSON();
+
+        if (device.properties){
+          device.properties.forEach((property: any) => {
+            if (property.key === "Implantation date" && property.value){
+              var date = new Date(property.value);
+              //date.setDate(date.getDate() + 1);
+              dateOfImplant = date.getTime();
+            }
+
+          });
+        }
 
         // If an user doesn't own a device he can parse all messages of the device by knowing the deviceId
         // Check own of device. Only the owner can parse the device's messages
@@ -273,10 +287,17 @@ class Parser {
                     Message.upsert(message, (err: any, messageUpdated: any) => {
                       if (!err && messageUpdated.data_parsed.length > 0) {
                         // Check if there is Geoloc in payload and create Geoloc object
-                        Geoloc.createFromParsedPayload(
-                          messageUpdated,
-                          (err: any, res: any) => {
-                          });
+                        console.log("Parser message time", message.time * 1000);
+                        console.log("Parser date time", dateOfImplant);
+
+                        if (message.time * 1000 > dateOfImplant ){
+                          console.log("Superieur !! On creer la geoloc")
+                          Geoloc.createFromParsedPayload(
+                            messageUpdated,
+                            (err: any, res: any) => {
+                            });
+                        }
+                        
                       }
                     });
                   }

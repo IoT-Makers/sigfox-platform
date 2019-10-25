@@ -232,7 +232,6 @@ class Device {
                       message.updatedAt = new Date(messageInstance.time * 1000);
 
                       //we create messages only after date of implantation if exists
-                      if (messageInstance.time * 1000 > dateOfImplant ){
                           console.log("message ",messageInstance);
                         
                           Message.create(
@@ -254,14 +253,17 @@ class Device {
                                 geoloc.messageId = messagePostProcess.id;
                                 geoloc.deviceId = messagePostProcess.deviceId;
                                 // Find or create a new Geoloc
-                                Geoloc.upsert(
-                                  geoloc,
-                                  (err: any, geolocInstance: any) => {
-                                    if (err) console.error(err);
-                                  });
+                                if (messageInstance.time * 1000 > dateOfImplant ){
+
+                                  Geoloc.upsert(
+                                    geoloc,
+                                    (err: any, geolocInstance: any) => {
+                                      if (err) console.error(err);
+                                    });
+                                }
                               }
                             });
-                      }
+                      
                         
                       // Done
                       if (msgCounter === result.data.length - 1) {
