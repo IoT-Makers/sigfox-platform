@@ -317,6 +317,18 @@ export class BeaconsComponent implements OnInit, OnDestroy {
         'Beacon id must be a 5 characters long hexadecimal string'
       );
       return;
+    } else if (!this.beaconToAddOrEdit.placeIds.length) {
+      if (this.toast)
+        this.toasterService.clear(
+          this.toast.toastId,
+          this.toast.toastContainerId
+        );
+      this.toast = this.toasterService.pop(
+        'error',
+        'Error',
+        'Beacon placeIds must not be empty'
+      );
+      return;
     } else {
       this.beaconToAddOrEdit.placeIds = this.beaconToAddOrEdit.placeIds
         .toString()
