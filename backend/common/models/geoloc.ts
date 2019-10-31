@@ -130,15 +130,6 @@ class Geoloc {
           geoloc.messageId = messageInstance.id;
           geoloc.deviceId = messageInstance.deviceId;
 
-          if (messageInstance.group === "capturs"){
-
-            geoloc.speed = data.speed;
-            geoloc.altitude = data.altitude;
-            geoloc.temperature = data.temperature;
-            geoloc.battery = data.battery;
-            geoloc.batteryPercentage = data.batteryPercentage;
-          }
-
           if (messageInstance.data_parsed) {
             /**
              * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
@@ -183,46 +174,8 @@ class Geoloc {
                   else return next(null, geolocInstance);
                 });
             } 
-
-            else if (messageInstance.group === "capturs"){
-
-              Geoloc.create(
-                geoloc,
-                (err: any, geolocInstance: any, created: boolean) => { // callback
-                  if (err) return next(err, geolocInstance);
-                  else return next(null, geolocInstance);
-                });
-
-              let data_alert : any[];
-              data_alert = [];
-              let capturs_fields = ["event","temperature","battery","batteryPercentage","speed"];
-              capturs_fields.forEach((p: string) => {
-                if (geoloc[p]){
-                  const item = {
-                    key: p,
-                    value: geoloc[p]
-                  };
-                  data_alert.push(item);
-                }
-              });
-
-              Device.findById(data.deviceId, {include: ["Alerts", "Parser"]}, (err: any, deviceInstance: any) => {
-                if (err) console.error(err);
-                else if (deviceInstance) {
-                  deviceInstance = deviceInstance.toJSON();
-
-                  Alert.triggerByData(
-                    data_alert,
-                    deviceInstance,
-                    req,
-                    (err: any, res: any) => {
-                    });
-                }
-              });
-                
-            }else next(null, geoloc);
+            else next(null, geoloc);
          
-          
         }
       });
   }
@@ -299,16 +252,6 @@ class Geoloc {
             geoloc.messageId = message.id;
             geoloc.deviceId = data.deviceId;
             
-
-            if (messageInstance.group === "capturs"){
-
-              geoloc.speed = data.speed;
-              geoloc.altitude = data.altitude;
-              geoloc.temperature = data.temperature;
-              geoloc.battery = data.battery;
-              geoloc.batteryPercentage = data.batteryPercentage;
-            }
-            
             if (messageInstance.data_parsed) {
               /**
                * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
@@ -352,43 +295,7 @@ class Geoloc {
                   else return next(null, geolocInstance);
                 });
             }
-            else if (messageInstance.group === "capturs"){
-
-              Geoloc.create(
-                geoloc,
-                (err: any, geolocInstance: any, created: boolean) => { // callback
-                  if (err) return next(err, geolocInstance);
-                  else return next(null, geolocInstance);
-                });
-
-              let data_alert : any[];
-              data_alert = [];
-              let capturs_fields = ["event","temperature","battery","batteryPercentage","speed"];
-              capturs_fields.forEach((p: string) => {
-                if (geoloc[p]){
-                  const item = {
-                    key: p,
-                    value: geoloc[p]
-                  };
-                  data_alert.push(item);
-                }
-              });
-
-              Device.findById(data.deviceId, {include: ["Alerts", "Parser"]}, (err: any, deviceInstance: any) => {
-                if (err) console.error(err);
-                else if (deviceInstance) {
-                  deviceInstance = deviceInstance.toJSON();
-
-                  Alert.triggerByData(
-                    data_alert,
-                    deviceInstance,
-                    req,
-                    (err: any, res: any) => {
-                    });
-                }
-              });
-                
-            }else next(null, geoloc);
+            else next(null, geoloc);
           } else next(null, 'No position or invalid payload');
         }
       });
@@ -479,50 +386,37 @@ class Geoloc {
     geoloc_wifi.deviceId = message.deviceId;
     geoloc_wifi.wifiAccessPoints = [];
 
-    if (message.group === "capturs"){
-       console.log("on est rentré dans geoloc");
-
-      if (message.latitude !== null && typeof message.latitude !== 'undefined') {
-        hasGpsLocation = true;
-
-        geoloc_gps.location.lat = message.latitude;
-        geoloc_gps.location.lng = message.longitude;
-      }
-    }else{
-
-      message.data_parsed.forEach((p: any) => {
-        if (p.value !== null && typeof p.value !== 'undefined') {
-          // Check if there is GPS geoloc in parsed data
-          if (p.key === 'lat' && p.value >= -90 && p.value <= 90) {
-            hasGpsLocation = true;
-            geoloc_gps.location.lat = p.value;
-          } else if (p.key === 'lng' && p.value >= -180 && p.value <= 180) {
-            geoloc_gps.location.lng = p.value;
-          }
-          // Check if there is Beacon geoloc in parsed data
-          else if (p.key === 'beaconId') {
-            hasBeaconLocation = true;
-            geoloc_beacon.beaconId = p.value.toString().toUpperCase();
-          }
-          // Check if there is accuracy in parsed data
-          else if (p.key === 'accuracy' || p.key === 'precision') {
-            geoloc_beacon.accuracy = p.value;
-            geoloc_wifi.accuracy = p.value;
-          }
-          // Check if there is WiFi geoloc in parsed data
-          else if (p.key.startsWith('wlan_')) {
-            hasWifiLocation = true;
-            if (p.unit && p.unit !== '') geoloc_wifi.wifiAccessPoints.push({
-              macAddress: p.value.toString(),
-              signalStrength: Number(p.unit)
-            });
-            else geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString()});
-          }
+    message.data_parsed.forEach((p: any) => {
+      if (p.value !== null && typeof p.value !== 'undefined') {
+        // Check if there is GPS geoloc in parsed data
+        if (p.key === 'lat' && p.value >= -90 && p.value <= 90) {
+          hasGpsLocation = true;
+          geoloc_gps.location.lat = p.value;
+        } else if (p.key === 'lng' && p.value >= -180 && p.value <= 180) {
+          geoloc_gps.location.lng = p.value;
         }
-      });
-    }
+        // Check if there is Beacon geoloc in parsed data
+        else if (p.key === 'beaconId') {
+          hasBeaconLocation = true;
+          geoloc_beacon.beaconId = p.value.toString().toUpperCase();
+        }
+        // Check if there is accuracy in parsed data
+        else if (p.key === 'accuracy' || p.key === 'precision') {
+          geoloc_beacon.accuracy = p.value;
+          geoloc_wifi.accuracy = p.value;
+        }
+        // Check if there is WiFi geoloc in parsed data
+        else if (p.key.startsWith('wlan_')) {
+          hasWifiLocation = true;
+          if (p.unit && p.unit !== '') geoloc_wifi.wifiAccessPoints.push({
+            macAddress: p.value.toString(),
+            signalStrength: Number(p.unit)
+          });
+          else geoloc_wifi.wifiAccessPoints.push({macAddress: p.value.toString()});
+        }
+      }
+    });
     
-
     if (hasGpsLocation) {
       this.createGeoloc(geoloc_gps);
     }
