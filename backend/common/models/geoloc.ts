@@ -369,6 +369,7 @@ class Geoloc {
         else if (beacon) {
           geoloc_beacon.location.lat = beacon.location.lat;
           geoloc_beacon.location.lng = beacon.location.lng;
+          geoloc_beacon.placeIds = beacon.placeIds;
           this.createGeoloc(geoloc_beacon);
         }
       });
