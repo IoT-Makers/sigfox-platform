@@ -121,12 +121,14 @@ class Beacon {
   public afterSave(ctx: any, next: Function): void {
     // Pub-sub
     let beacon = ctx.instance;
-    const payload = {
-      event: 'beacon',
-      content: beacon,
-      action: ctx.isNewInstance ? 'CREATE' : 'UPDATE',
-    };
-    RabbitPub.getInstance().pub(payload, beacon.userId.toString());
+    if (beacon.userId) {
+      const payload = {
+        event: 'beacon',
+        content: beacon,
+        action: ctx.isNewInstance ? 'CREATE' : 'UPDATE',
+      };
+      RabbitPub.getInstance().pub(payload, beacon.userId.toString());
+    }
     next();
   }
 
@@ -155,6 +157,11 @@ class Beacon {
             placeIds: b.placeIds,
             txPower: b.txPower,
           }));
+        beacons.forEach((b: any) => {
+          Beacon.upsert(b, (err: any, beacon: any) => {
+            if (err) console.log('Error while upserting beacon');
+          });
+        });
         next(null, beacons);
       }
       // Beacon.find({}, (err: any, beacons: any) => {
