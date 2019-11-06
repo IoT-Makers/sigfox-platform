@@ -221,14 +221,21 @@ class user {
       userInstance.updateAttributes({verificationToken});
 
       // Create a custom object your want to pass to the email template. You can create as many key-value pairs as you want
+      // const verificationUrl =
+      //   process.env.API_URL +
+      //   '/api/users/confirm?uid=' +
+      //   userInstance.id +
+      //   '&token=' +
+      //   verificationToken +
+      //   '&redirect=' +
+      //   process.env.BASE_URL;
       const verificationUrl =
         process.env.API_URL +
         '/api/users/confirm?uid=' +
         userInstance.id +
         '&token=' +
         verificationToken +
-        '&redirect=' +
-        process.env.BASE_URL;
+        '&redirect=https://sigfox.page.link/app';
       const customMessage = {verificationUrl};
 
       // Prepare a loopback template renderer
