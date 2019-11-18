@@ -96,10 +96,13 @@ class Beacon {
 
   // Example Operation Hook
   public beforeSave(ctx: any, next: Function): void {
-    console.log('Beacon: Before Save');
-    if (ctx.instance) {
-      ctx.instance.createdAt = new Date();
+    if (ctx.data && ctx.data.id) {
+      console.log('Beacon: Before Save: ' + ctx.data.id);
+      ctx.data.id = ctx.data.id.toUpperCase();
+    } else if (ctx.instance && ctx.instance.id) {
+      console.log('Beacon: Before Save: ' + ctx.instance.id);
       ctx.instance.id = ctx.instance.id.toUpperCase();
+      ctx.instance.createdAt = new Date();
     }
     next();
   }
@@ -145,18 +148,18 @@ class Beacon {
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode > 204) next(null, response);
+      if (error || response.statusCode > 204)
+        next(null, response);
       else {
         body = JSON.parse(body);
-        const beacons =
-          body.entries &&
-          body.entries.map((b: any) => ({
-            id: b.bubbleId,
-            location: {lat: b.lat, lng: b.lng},
-            info: b.info,
-            placeIds: b.placeIds,
-            txPower: b.txPower,
-          }));
+        const beacons = body.entries &&
+            body.entries.map((b: any) => ({
+                               id: b.bubbleId,
+                               location: {lat: b.lat, lng: b.lng},
+                               info: b.info,
+                               placeIds: b.placeIds,
+                               txPower: b.txPower,
+                             }));
         beacons.forEach((b: any) => {
           Beacon.upsert(b, (err: any, beacon: any) => {
             if (err) console.log('Error while upserting beacon');
@@ -187,24 +190,21 @@ class Beacon {
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode > 204) next(null, response);
+      if (error || response.statusCode > 204)
+        next(null, response);
       else
         Beacon.destroyAll({}, (err: any, result: any) => {
-          if (err) next('Error while getting beacons');
-          else next(null, result);
+          if (err)
+            next('Error while getting beacons');
+          else
+            next(null, result);
         });
     });
   }
 
   public postBubbles(
-    req: any,
-    bubbleId: string,
-    info: number,
-    placeIds: Array<string>,
-    txPower: number,
-    location: any,
-    next: Function
-  ): void {
+      req: any, bubbleId: string, info: number, placeIds: Array<string>,
+      txPower: number, location: any, next: Function): void {
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
@@ -237,19 +237,19 @@ class Beacon {
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode > 204) next(null, response);
+      if (error || response.statusCode > 204)
+        next(null, response);
       else {
         Beacon.upsert(
-          {userId, id: bubbleId, location, info, placeIds, txPower},
-          (err: any, beacon: any) => {
-            if (err) next('Error while upserting beacon');
-            // this.publish(
-            //   {userId, id: bubbleId, location, info, placeIds, txPower},
-            //   'UPDATE'
-            // );
-            next(null, beacon);
-          }
-        );
+            {userId, id: bubbleId, location, info, placeIds, txPower},
+            (err: any, beacon: any) => {
+              if (err) next('Error while upserting beacon');
+              // this.publish(
+              //   {userId, id: bubbleId, location, info, placeIds, txPower},
+              //   'UPDATE'
+              // );
+              next(null, beacon);
+            });
       }
     });
   }
@@ -268,11 +268,14 @@ class Beacon {
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode > 204) next(null, response);
+      if (error || response.statusCode > 204)
+        next(null, response);
       else
         Beacon.findById(id, (err: any, beacon: any) => {
-          if (err) next('Error while getting beacon');
-          else next(null, beacon);
+          if (err)
+            next('Error while getting beacon');
+          else
+            next(null, beacon);
         });
     });
   }
@@ -293,11 +296,14 @@ class Beacon {
       },
     };
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode > 204) next(null, response);
+      if (error || response.statusCode > 204)
+        next(null, response);
       else {
         Beacon.destroyById(id, (err: any, beacon: any) => {
-          if (err) next('Error while deleting beacon');
-          else next(null, 'OK');
+          if (err)
+            next('Error while deleting beacon');
+          else
+            next(null, 'OK');
         });
         // this.publish({userId, id}, 'DELETE');
       }

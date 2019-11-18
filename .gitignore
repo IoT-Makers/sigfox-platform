@@ -3,3 +3,5 @@
 **/.idea/
 
 frontend/environments/environment\.prod\.ts
+backend/server/boot/00-provisioning-bubbles.ts
+backend/server/boot/00-provisioning-tags.ts
