@@ -68,13 +68,11 @@ class Geoloc {
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
 
-    if (
-      typeof data.geoloc === 'undefined' ||
-      typeof data.geoloc.location === 'undefined' ||
-      typeof data.deviceId === 'undefined' ||
-      typeof data.time === 'undefined' ||
-      typeof data.seqNumber === 'undefined'
-    ) {
+    if (typeof data.geoloc === 'undefined' ||
+        typeof data.geoloc.location === 'undefined' ||
+        typeof data.deviceId === 'undefined' ||
+        typeof data.time === 'undefined' ||
+        typeof data.seqNumber === 'undefined') {
       return next('Missing "geoloc", "deviceId", "time" and "seqNumber"', data);
     }
 
@@ -96,89 +94,83 @@ class Geoloc {
 
     // Find the corresponding message or create one
     Message.findOrCreate(
-      {
-        where: {id: message.id},
-      },
-      message,
-      (err: any, messageInstance: any, created: boolean) => {
-        if (err) return next(err, data);
-        else if (messageInstance) {
-          if (!created) console.log('Found the corresponding message.');
-          else {
-            /**
-             * TODO: Check below - OOB frame device acknowledge ?
-             */
-            console.log('??? OOB for deviceId: ' + data.deviceId);
-          }
+        {
+          where: {id: message.id},
+        },
+        message, (err: any, messageInstance: any, created: boolean) => {
+          if (err)
+            return next(err, data);
+          else if (messageInstance) {
+            if (!created)
+              console.log('Found the corresponding message.');
+            else {
+              /**
+               * TODO: Check below - OOB frame device acknowledge ?
+               */
+              console.log('??? OOB for deviceId: ' + data.deviceId);
+            }
 
-          // Build the Geoloc object
-          const geoloc = new Geoloc();
-          geoloc.id = messageInstance.id + 'sigfox';
-          geoloc.type = 'sigfox';
-          geoloc.location = new loopback.GeoPoint(data.geoloc.location);
-          geoloc.accuracy = data.geoloc.accuracy;
-          geoloc.createdAt = messageInstance.createdAt;
-          geoloc.userId = userId;
-          geoloc.messageId = messageInstance.id;
-          geoloc.deviceId = messageInstance.deviceId;
+            // Build the Geoloc object
+            const geoloc = new Geoloc();
+            geoloc.id = messageInstance.id + 'sigfox';
+            geoloc.type = 'sigfox';
+            geoloc.location = new loopback.GeoPoint(data.geoloc.location);
+            geoloc.accuracy = data.geoloc.accuracy;
+            geoloc.createdAt = messageInstance.createdAt;
+            geoloc.userId = userId;
+            geoloc.messageId = messageInstance.id;
+            geoloc.deviceId = messageInstance.deviceId;
 
-          if (messageInstance.data_parsed) {
-            /**
-             * Checking if there is Ubiscale positioning, we need the lat & lng of Sigfox in the body of the UbiCloud API call...
-             */
-            // Build the GPS Geoloc object
-            const geoloc_gps = new Geoloc();
-            geoloc_gps.id = messageInstance.id + 'gps';
-            geoloc_gps.location = new loopback.GeoPoint({lat: null, lng: null});
-            geoloc_gps.createdAt = messageInstance.createdAt;
-            geoloc_gps.userId = messageInstance.userId;
-            geoloc_gps.messageId = messageInstance.id;
-            geoloc_gps.deviceId = messageInstance.deviceId;
+            if (messageInstance.data_parsed) {
+              /**
+               * Checking if there is Ubiscale positioning, we need the lat &
+               * lng of Sigfox in the body of the UbiCloud API call...
+               */
+              // Build the GPS Geoloc object
+              const geoloc_gps = new Geoloc();
+              geoloc_gps.id = messageInstance.id + 'gps';
+              geoloc_gps.location =
+                  new loopback.GeoPoint({lat: null, lng: null});
+              geoloc_gps.createdAt = messageInstance.createdAt;
+              geoloc_gps.userId = messageInstance.userId;
+              geoloc_gps.messageId = messageInstance.id;
+              geoloc_gps.deviceId = messageInstance.deviceId;
 
-            messageInstance.data_parsed.forEach((p: any) => {
-              if (p.value !== null && typeof p.value !== 'undefined') {
-                // Check if there is Ubiscale geoloc in parsed data
-                if (p.key === 'ubiscale') {
-                  geoloc_gps.type = 'gps';
-                  if (
-                    process.env.UBISCALE_LOGIN &&
-                    process.env.UBISCALE_PASSWORD
-                  ) {
-                    this.getUbiscaleGeolocation(
-                      geoloc_gps,
-                      geoloc,
-                      messageInstance.deviceId,
-                      p.value,
-                      messageInstance.time
-                    )
-                      .then(value => {
-                        console.log(
-                          '[Ubiscale Geolocation] - Device located successfully with Ubiscale.'
-                        );
-                      })
-                      .catch(reason => {
-                        console.log(
-                          '[Ubiscale Geolocation] - Could not locate device with Ubiscale.'
-                        );
-                      });
+              messageInstance.data_parsed.forEach((p: any) => {
+                if (p.value !== null && typeof p.value !== 'undefined') {
+                  // Check if there is Ubiscale geoloc in parsed data
+                  if (p.key === 'ubiscale') {
+                    geoloc_gps.type = 'gps';
+                    if (process.env.UBISCALE_LOGIN &&
+                        process.env.UBISCALE_PASSWORD) {
+                      this.getUbiscaleGeolocation(
+                              geoloc_gps, geoloc, messageInstance.deviceId,
+                              p.value, messageInstance.time)
+                          .then(value => {
+                            console.log(
+                                '[Ubiscale Geolocation] - Device located successfully with Ubiscale.');
+                          })
+                          .catch(reason => {
+                            console.log(
+                                '[Ubiscale Geolocation] - Could not locate device with Ubiscale.');
+                          });
+                    }
                   }
                 }
-              }
-            });
-          }
-
-          // Creating a new Geoloc
-          Geoloc.create(
-            geoloc,
-            (err: any, geolocInstance: any, created: boolean) => {
-              // callback
-              if (err) return next(err, geolocInstance);
-              else return next(null, geolocInstance);
+              });
             }
-          );
-        }
-      }
-    );
+
+            // Creating a new Geoloc
+            Geoloc.create(
+                geoloc, (err: any, geolocInstance: any, created: boolean) => {
+                  // callback
+                  if (err)
+                    return next(err, geolocInstance);
+                  else
+                    return next(null, geolocInstance);
+                });
+          }
+        });
   }
 
   postDataAdvanced(req: any, data: any, next: Function): void {
@@ -186,16 +178,13 @@ class Geoloc {
     const Geoloc = this.model;
     const Message = this.model.app.models.Message;
 
-    if (
-      typeof data.deviceId === 'undefined' ||
-      typeof data.time === 'undefined' ||
-      typeof data.seqNumber === 'undefined' ||
-      typeof data.computedLocation === 'undefined'
-    ) {
+    if (typeof data.deviceId === 'undefined' ||
+        typeof data.time === 'undefined' ||
+        typeof data.seqNumber === 'undefined' ||
+        typeof data.computedLocation === 'undefined') {
       return next(
-        'Missing "deviceId", "time", "seqNumber" and "computedLocation"',
-        data
-      );
+          'Missing "deviceId", "time", "seqNumber" and "computedLocation"',
+          data);
     }
 
     // Force set uppercase for deviceId
@@ -213,71 +202,67 @@ class Geoloc {
 
     // Find the corresponding message or create one
     Message.findOrCreate(
-      {
-        where: {id: message.id},
-      },
-      message,
-      (err: any, messageInstance: any, created: boolean) => {
-        if (err) return next(err, data);
-        else if (messageInstance) {
-          if (!created)
-            console.log(
-              '[geoloc.ts - postDataAdvanced] - Found the corresponding message.'
-            );
-          else
-            console.log(
-              '[geoloc.ts - postDataAdvanced] - Created new message.' +
-                data.deviceId
-            );
-          if (
-            data.computedLocation.status === 1 ||
-            data.computedLocation.status === 2
-          ) {
-            // Build the Geoloc object
-            const geoloc = new Geoloc();
-            switch (data.computedLocation.source) {
-              case 1:
-                geoloc.type = 'gps';
-                break;
-              case 2:
-                geoloc.type = 'sigfox';
-                break;
-              case 5:
-                geoloc.type = 'wifi';
-                geoloc.source = 'sigfox';
-                break;
-              case 6:
-                geoloc.type = 'wifi';
-                break;
-              default:
-                geoloc.type = 'unknown';
-            }
-            geoloc.id = message.id + geoloc.type;
-            geoloc.location = new loopback.GeoPoint({
-              lat: data.computedLocation.lat,
-              lng: data.computedLocation.lng,
-            });
-            geoloc.accuracy = data.computedLocation.radius;
-            geoloc.createdAt = new Date(data.time * 1000);
-            geoloc.userId = userId;
-            geoloc.messageId = message.id;
-            geoloc.deviceId = data.deviceId;
-            geoloc.placeIds = data.computedLocation.placeIds;
+        {
+          where: {id: message.id},
+        },
+        message, (err: any, messageInstance: any, created: boolean) => {
+          if (err)
+            return next(err, data);
+          else if (messageInstance) {
+            if (!created)
+              console.log(
+                  '[geoloc.ts - postDataAdvanced] - Found the corresponding message.');
+            else
+              console.log(
+                  '[geoloc.ts - postDataAdvanced] - Created new message.' +
+                  data.deviceId);
+            if (data.computedLocation.status === 1 ||
+                data.computedLocation.status === 2) {
+              // Build the Geoloc object
+              const geoloc = new Geoloc();
+              switch (data.computedLocation.source) {
+                case 1:
+                  geoloc.type = 'gps';
+                  break;
+                case 2:
+                  geoloc.type = 'sigfox';
+                  break;
+                case 5:
+                  geoloc.type = 'wifi';
+                  geoloc.source = 'sigfox';
+                  break;
+                case 6:
+                  // geoloc.type = 'wifi';
+                  return next(null, 'Not considering geoloc source 6');
+                default:
+                  geoloc.type = 'unknown';
+              }
+              geoloc.id = message.id + geoloc.type;
+              geoloc.location = new loopback.GeoPoint({
+                lat: data.computedLocation.lat,
+                lng: data.computedLocation.lng,
+              });
+              geoloc.accuracy = data.computedLocation.radius;
+              geoloc.createdAt = new Date(data.time * 1000);
+              geoloc.userId = userId;
+              geoloc.messageId = message.id;
+              geoloc.deviceId = data.deviceId;
+              geoloc.placeIds = data.computedLocation.placeIds;
 
-            // Creating a new Geoloc
-            Geoloc.create(geoloc, (err: any, geolocInstance: any) => {
-              // callback
-              if (err)
-                return next(
-                  'The Geoloc already exists, please check your parser does not force platform Geoloc decoding.',
-                  geolocInstance
-                );
-              else return next(null, geolocInstance);
-            });
-          } else next(null, 'No position or invalid payload');
-        }
-      }
-    );
+              // Creating a new Geoloc
+              Geoloc.create(geoloc, (err: any, geolocInstance: any) => {
+                // callback
+                if (err)
+                  return next(
+                      'The Geoloc already exists, please check your parser does not force platform Geoloc decoding.',
+                      geolocInstance);
+                else
+                  return next(null, geolocInstance);
+              });
+            } else
+              next(null, 'No position or invalid payload');
+          }
+        });
   }
 
   private createFromParsedPayload(message: any, req: any): void {
@@ -289,8 +274,7 @@ class Geoloc {
       return console.error('Missing "message"', message);
     } else if (typeof message.data_parsed === 'undefined') {
       return console.log(
-        '----------> Missing "data_parsed", not trying to decode Geoloc.'
-      );
+          '----------> Missing "data_parsed", not trying to decode Geoloc.');
     }
 
     let hasGpsLocation = false;
@@ -365,7 +349,8 @@ class Geoloc {
 
     if (hasBeaconLocation) {
       Beacon.findById(geoloc_beacon.beaconId, (err: any, beacon: any) => {
-        if (err) console.error(err);
+        if (err)
+          console.error(err);
         else if (beacon) {
           geoloc_beacon.location.lat = beacon.location.lat;
           geoloc_beacon.location.lng = beacon.location.lng;
@@ -376,83 +361,65 @@ class Geoloc {
     }
 
     if (hasWifiLocation) {
-      if (
-        this.HERE.app_id &&
-        this.HERE.app_code &&
-        !process.env.GOOGLE_API_KEY
-      ) {
+      if (this.HERE.app_id && this.HERE.app_code &&
+          !process.env.GOOGLE_API_KEY) {
         this.getHereGeolocation(geoloc_wifi)
-          .then(value => {
-            console.log(
-              '[WiFi Geolocation] - Device located successfully with Here.'
-            );
-          })
-          .catch(reason => {
-            console.log(
-              '[WiFi Geolocation] - Could not locate device with Here.'
-            );
-          });
+            .then(value => {
+              console.log(
+                  '[WiFi Geolocation] - Device located successfully with Here.');
+            })
+            .catch(reason => {
+              console.log(
+                  '[WiFi Geolocation] - Could not locate device with Here.');
+            });
       } else if (
-        (!this.HERE.app_id || !this.HERE.app_code) &&
-        process.env.GOOGLE_API_KEY
-      ) {
+          (!this.HERE.app_id || !this.HERE.app_code) &&
+          process.env.GOOGLE_API_KEY) {
         this.getGoogleGeolocation(geoloc_wifi)
-          .then(value => {
-            console.log(
-              '[WiFi Geolocation] - Device located successfully with Google.'
-            );
-          })
-          .catch(reason => {
-            console.log(
-              '[WiFi Geolocation] - Could not locate device with Google.'
-            );
-          });
+            .then(value => {
+              console.log(
+                  '[WiFi Geolocation] - Device located successfully with Google.');
+            })
+            .catch(reason => {
+              console.log(
+                  '[WiFi Geolocation] - Could not locate device with Google.');
+            });
       } else if (
-        this.HERE.app_id &&
-        this.HERE.app_code &&
-        process.env.GOOGLE_API_KEY
-      ) {
+          this.HERE.app_id && this.HERE.app_code &&
+          process.env.GOOGLE_API_KEY) {
         this.getHereGeolocation(geoloc_wifi)
-          .then(value => {
-            console.log(
-              '[WiFi Geolocation] - Device located successfully with Here.'
-            );
-          })
-          .catch(reason => {
-            console.log(
-              '[WiFi Geolocation] - Could not locate device with Here => falling back on Google.'
-            );
-            this.getGoogleGeolocation(geoloc_wifi)
-              .then(value => {
-                console.log(
-                  '[WiFi Geolocation] - Device located successfully with Google.'
-                );
-              })
-              .catch(reason => {
-                console.log(
-                  '[WiFi Geolocation] - Could not locate device with Google.'
-                );
-              });
-          });
+            .then(value => {
+              console.log(
+                  '[WiFi Geolocation] - Device located successfully with Here.');
+            })
+            .catch(reason => {
+              console.log(
+                  '[WiFi Geolocation] - Could not locate device with Here => falling back on Google.');
+              this.getGoogleGeolocation(geoloc_wifi)
+                  .then(value => {
+                    console.log(
+                        '[WiFi Geolocation] - Device located successfully with Google.');
+                  })
+                  .catch(reason => {
+                    console.log(
+                        '[WiFi Geolocation] - Could not locate device with Google.');
+                  });
+            });
       } else {
         console.error(
-          '[WiFi Geolocation] - Trying to position with WiFi but no service provider has been set - check your environment variables!'
-        );
+            '[WiFi Geolocation] - Trying to position with WiFi but no service provider has been set - check your environment variables!');
       }
     }
   }
 
   getUbiscaleGeolocation(
-    geoloc_gps: any,
-    geoloc_sigfox: any,
-    deviceId: any,
-    ubiscaleData: any,
-    time: any
-  ): Promise<boolean> {
+      geoloc_gps: any, geoloc_sigfox: any, deviceId: any, ubiscaleData: any,
+      time: any): Promise<boolean> {
     return new Promise((resolve: any, reject: any) => {
-      const credentials = new Buffer(
-        process.env.UBISCALE_LOGIN + ':' + process.env.UBISCALE_PASSWORD
-      ).toString('base64');
+      const credentials =
+          new Buffer(
+              process.env.UBISCALE_LOGIN + ':' + process.env.UBISCALE_PASSWORD)
+              .toString('base64');
       const json = {
         network: 'sigfox',
         device: deviceId,
@@ -462,22 +429,22 @@ class Geoloc {
         lng: geoloc_sigfox.location.lng,
       };
 
-      this.model.app.dataSources.ubiscale
-        .locate(credentials, json)
-        .then((result: any) => {
-          //console.error('---------------------------------------------------------------------\n', result);
-          geoloc_gps.source = 'ubiscale';
-          geoloc_gps.location.lat = result.lat;
-          geoloc_gps.location.lng = result.lng;
-          geoloc_gps.accuracy = result.accuracy;
+      this.model.app.dataSources.ubiscale.locate(credentials, json)
+          .then((result: any) => {
+            // console.error('---------------------------------------------------------------------\n',
+            // result);
+            geoloc_gps.source = 'ubiscale';
+            geoloc_gps.location.lat = result.lat;
+            geoloc_gps.location.lng = result.lng;
+            geoloc_gps.accuracy = result.accuracy;
 
-          this.createGeoloc(geoloc_gps);
-          resolve(true);
-        })
-        .catch((err: any) => {
-          console.error(err);
-          reject(false);
-        });
+            this.createGeoloc(geoloc_gps);
+            resolve(true);
+          })
+          .catch((err: any) => {
+            console.error(err);
+            reject(false);
+          });
     });
   }
 
@@ -491,50 +458,53 @@ class Geoloc {
           mac: wifiAccessPoint.macAddress,
           powrx: wifiAccessPoint.signalStrength,
         });
-      else wlans.wlan.push({mac: wifiAccessPoint.macAddress});
+      else
+        wlans.wlan.push({mac: wifiAccessPoint.macAddress});
     });
 
     return new Promise((resolve: any, reject: any) => {
       this.model.app.dataSources.here
-        .locate(this.HERE.app_id, this.HERE.app_code, wlans)
-        .then((result: any) => {
-          //console.error('---------------------------------------------------------------------\n', result);
-          geoloc_wifi.source = 'here';
-          geoloc_wifi.location.lat = result.location.lat;
-          geoloc_wifi.location.lng = result.location.lng;
-          geoloc_wifi.accuracy = result.location.accuracy;
+          .locate(this.HERE.app_id, this.HERE.app_code, wlans)
+          .then((result: any) => {
+            // console.error('---------------------------------------------------------------------\n',
+            // result);
+            geoloc_wifi.source = 'here';
+            geoloc_wifi.location.lat = result.location.lat;
+            geoloc_wifi.location.lng = result.location.lng;
+            geoloc_wifi.accuracy = result.location.accuracy;
 
-          this.createGeoloc(geoloc_wifi);
-          resolve(true);
-        })
-        .catch((err: any) => {
-          //console.error(err);
-          reject(false);
-        });
+            this.createGeoloc(geoloc_wifi);
+            resolve(true);
+          })
+          .catch((err: any) => {
+            // console.error(err);
+            reject(false);
+          });
     });
   }
 
   getGoogleGeolocation(geoloc_wifi: any): Promise<boolean> {
     return new Promise((resolve: any, reject: any) => {
       this.model.app.dataSources.google
-        .locate(process.env.GOOGLE_API_KEY, {
-          considerIp: false,
-          wifiAccessPoints: geoloc_wifi.wifiAccessPoints,
-        })
-        .then((result: any) => {
-          //console.error('---------------------------------------------------------------------\n', result);
-          geoloc_wifi.source = 'google';
-          geoloc_wifi.location.lat = result.location.lat;
-          geoloc_wifi.location.lng = result.location.lng;
-          geoloc_wifi.accuracy = result.accuracy;
+          .locate(process.env.GOOGLE_API_KEY, {
+            considerIp: false,
+            wifiAccessPoints: geoloc_wifi.wifiAccessPoints,
+          })
+          .then((result: any) => {
+            // console.error('---------------------------------------------------------------------\n',
+            // result);
+            geoloc_wifi.source = 'google';
+            geoloc_wifi.location.lat = result.location.lat;
+            geoloc_wifi.location.lng = result.location.lng;
+            geoloc_wifi.accuracy = result.accuracy;
 
-          this.createGeoloc(geoloc_wifi);
-          resolve(true);
-        })
-        .catch((err: any) => {
-          //console.error(err);
-          reject(false);
-        });
+            this.createGeoloc(geoloc_wifi);
+            resolve(true);
+          })
+          .catch((err: any) => {
+            // console.error(err);
+            reject(false);
+          });
     });
   }
 
@@ -544,7 +514,8 @@ class Geoloc {
     const deviceId = geoloc.deviceId;
     const createdAt = geoloc.createdAt;
     Device.findById(deviceId, (err: any, deviceInstance: any) => {
-      if (err) console.error(err);
+      if (err)
+        console.error(err);
       else if (deviceInstance) {
         deviceInstance.updateAttribute('locatedAt', createdAt);
         cb(deviceInstance);
@@ -556,7 +527,8 @@ class Geoloc {
   createGeoloc(geoloc: any) {
     const Geoloc = this.model;
     Geoloc.upsert(geoloc, (err: any, geolocInstance: any) => {
-      if (err) console.error(err);
+      if (err)
+        console.error(err);
       else {
         // console.log('Created geoloc as: ', geolocInstance);
       }
@@ -603,72 +575,60 @@ class Geoloc {
   private checkForAlert(currentGeoloc: any, device: any): void {
     const Alert = this.model.app.models.Alert;
     Alert.find(
-      {where: {and: [{deviceId: device.id}, {active: true}, {key: 'geoloc'}]}},
-      (err: any, alerts: any) => {
-        if (!err && alerts.length > 0) {
-          const Geoloc = this.model.app.models.Geoloc;
-          Geoloc.find(
-            {
-              where: {
-                and: [{deviceId: device.id}, {id: {neq: currentGeoloc.id}}],
-              },
-              limit: 1,
-              order: 'createdAt DESC',
-            },
-            (err: any, lastGeoloc: any) => {
-              if (!lastGeoloc || !lastGeoloc[0]) return;
-              alerts.forEach((alert: any, index: any) => {
-                const currentLoc = currentGeoloc.location;
-                const lastLoc = lastGeoloc[0].location;
-                const currentGeoPoint = new loopback.GeoPoint({
-                  lat: Number(currentLoc.lat),
-                  lng: Number(currentLoc.lng),
+        {
+          where: {and: [{deviceId: device.id}, {active: true}, {key: 'geoloc'}]}
+        },
+        (err: any, alerts: any) => {
+          if (!err && alerts.length > 0) {
+            const Geoloc = this.model.app.models.Geoloc;
+            Geoloc.find(
+                {
+                  where: {
+                    and: [{deviceId: device.id}, {id: {neq: currentGeoloc.id}}],
+                  },
+                  limit: 1,
+                  order: 'createdAt DESC',
+                },
+                (err: any, lastGeoloc: any) => {
+                  if (!lastGeoloc || !lastGeoloc[0]) return;
+                  alerts.forEach((alert: any, index: any) => {
+                    const currentLoc = currentGeoloc.location;
+                    const lastLoc = lastGeoloc[0].location;
+                    const currentGeoPoint = new loopback.GeoPoint({
+                      lat: Number(currentLoc.lat),
+                      lng: Number(currentLoc.lng),
+                    });
+                    const lastGeoPoint = new loopback.GeoPoint({
+                      lat: Number(lastLoc.lat),
+                      lng: Number(lastLoc.lng),
+                    });
+                    alert.geofence.forEach((alertGeofence: any) => {
+                      let precision =
+                          currentGeoloc.precision || currentGeoloc.accuracy;
+                      const currentInZone = this.isDeviceInZone(
+                          currentGeoPoint, precision, alertGeofence);
+                      precision = lastLoc.precision || lastLoc.accuracy || 0;
+                      const lastInZone = this.isDeviceInZone(
+                          lastGeoPoint, precision, alertGeofence);
+                      if (alertGeofence.directions.includes('enter')) {
+                        if (currentInZone && !lastInZone) {
+                          this.sendAlert(
+                              alert, 'device enters the zone', device,
+                              currentGeoloc);
+                        }
+                      }
+                      if (alertGeofence.directions.includes('exit')) {
+                        if (!currentInZone && lastInZone) {
+                          this.sendAlert(
+                              alert, 'device exits the zone', device,
+                              currentGeoloc);
+                        }
+                      }
+                    });
+                  });
                 });
-                const lastGeoPoint = new loopback.GeoPoint({
-                  lat: Number(lastLoc.lat),
-                  lng: Number(lastLoc.lng),
-                });
-                alert.geofence.forEach((alertGeofence: any) => {
-                  let precision =
-                    currentGeoloc.precision || currentGeoloc.accuracy;
-                  const currentInZone = this.isDeviceInZone(
-                    currentGeoPoint,
-                    precision,
-                    alertGeofence
-                  );
-                  precision = lastLoc.precision || lastLoc.accuracy || 0;
-                  const lastInZone = this.isDeviceInZone(
-                    lastGeoPoint,
-                    precision,
-                    alertGeofence
-                  );
-                  if (alertGeofence.directions.includes('enter')) {
-                    if (currentInZone && !lastInZone) {
-                      this.sendAlert(
-                        alert,
-                        'device enters the zone',
-                        device,
-                        currentGeoloc
-                      );
-                    }
-                  }
-                  if (alertGeofence.directions.includes('exit')) {
-                    if (!currentInZone && lastInZone) {
-                      this.sendAlert(
-                        alert,
-                        'device exits the zone',
-                        device,
-                        currentGeoloc
-                      );
-                    }
-                  }
-                });
-              });
-            }
-          );
-        }
-      }
-    );
+          }
+        });
   }
 
   private sendAlert(alert: any, message: string, device: any, location: any) {
@@ -680,21 +640,16 @@ class Geoloc {
   }
 
   // wrapper
-  public isDeviceInZone(
-    marker: any,
-    precision: number,
-    geofence: any
-  ): boolean {
+  public isDeviceInZone(marker: any, precision: number, geofence: any):
+      boolean {
     if (geofence.radius)
       return this.isDeviceInsideCircle(marker, precision, geofence);
-    else return this.isDeviceInsidePolygon(marker, precision, geofence);
+    else
+      return this.isDeviceInsidePolygon(marker, precision, geofence);
   }
 
-  private isDeviceInsidePolygon(
-    marker: any,
-    precision: number,
-    polygon: any
-  ): boolean {
+  private isDeviceInsidePolygon(marker: any, precision: number, polygon: any):
+      boolean {
     if (precision) {
       const geolocPoly = this.circle2Polygon(marker, precision);
       const geolocPolyV = geolocPoly.coordinates[0].map((x: any) => {
@@ -703,7 +658,7 @@ class Geoloc {
       let polygonV = polygon.location.map((x: any) => {
         return {x: x.lng, y: x.lat};
       });
-      polygonV.push(polygonV[0]); // make closed polygon
+      polygonV.push(polygonV[0]);  // make closed polygon
       const intersection = GreinerHormann.intersection(geolocPolyV, polygonV);
       if (!intersection || intersection.length === 0) {
         return false;
@@ -714,16 +669,13 @@ class Geoloc {
         return areaIntersection / areaGeoloc >= 0.5;
       }
     } else {
-      const x = marker.lat,
-        y = marker.lng;
+      const x = marker.lat, y = marker.lng;
       let inside = false;
       for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-        const xi = polygon[i].lat,
-          yi = polygon[i].lng;
-        const xj = polygon[j].lat,
-          yj = polygon[j].lng;
+        const xi = polygon[i].lat, yi = polygon[i].lng;
+        const xj = polygon[j].lat, yj = polygon[j].lng;
         const intersect =
-          yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+            yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
         if (intersect) {
           inside = !inside;
         }
@@ -733,21 +685,16 @@ class Geoloc {
   }
 
   private isDeviceInsideCircle(
-    marker: any,
-    precision: number,
-    alertGeofence: any
-  ): boolean {
+      marker: any, precision: number, alertGeofence: any): boolean {
     const location_geofence = new loopback.GeoPoint(alertGeofence.location[0]);
     if (precision) {
       const d = marker.distanceTo(location_geofence, {type: 'meters'});
-      const R = alertGeofence.radius,
-        r = precision;
+      const R = alertGeofence.radius, r = precision;
       if (d <= R) {
-        if (r + d < R) return true; // 100% in
+        if (r + d < R) return true;  // 100% in
         const areaGeoloc = Math.PI * r * r;
-        const areaIntersection =
-          0.5 *
-          Math.sqrt((-d + r + R) * (d + r - R) * (d - r + R) * (d + r + R));
+        const areaIntersection = 0.5 *
+            Math.sqrt((-d + r + R) * (d + r - R) * (d - r + R) * (d + r + R));
         return areaIntersection / areaGeoloc >= 0.5;
       } else {
         return false;
@@ -774,8 +721,8 @@ class Geoloc {
   }
 
   private circle2Polygon(center: any, r: number) {
-    const coordinates = [center.lng, center.lat]; //[lon, lat]
-    const numberOfEdges = 16; //optional that defaults to 32
+    const coordinates = [center.lng, center.lat];  //[lon, lat]
+    const numberOfEdges = 16;  // optional that defaults to 32
     return circleToPolygon(coordinates, r, numberOfEdges);
   }
 }
