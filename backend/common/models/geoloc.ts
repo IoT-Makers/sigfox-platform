@@ -232,8 +232,8 @@ class Geoloc {
                   geoloc.source = 'sigfox';
                   break;
                 case 6:
-                  // geoloc.type = 'wifi';
-                  return next(null, 'Not considering geoloc source 6');
+                  geoloc.type = 'wifi';
+                  break;
                 default:
                   geoloc.type = 'unknown';
               }
