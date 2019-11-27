@@ -1,7 +1,7 @@
-import {Model} from '@mean-expert/model';
-import {RabbitPub} from '../../server/RabbitPub';
+import { Model } from "@mean-expert/model";
+import { RabbitPub } from "../../server/RabbitPub";
 
-const request = require('request');
+const request = require("request");
 const bubbleDbUrl = process.env.BUBBLE_DB_URL;
 const bubbleDbApiKey = process.env.BUBBLE_DB_API_KEY;
 const bubbleDbName = process.env.BUBBLE_DB_NAME;
@@ -17,78 +17,78 @@ const bubbleDbGroupId = process.env.BUBBLE_DB_GROUP_ID;
  **/
 @Model({
   hooks: {
-    beforeSave: {name: 'before save', type: 'operation'},
-    afterDelete: {name: 'after delete', type: 'operation'},
-    afterSave: {name: 'after save', type: 'operation'},
+    beforeSave: { name: "before save", type: "operation" },
+    afterDelete: { name: "after delete", type: "operation" },
+    afterSave: { name: "after save", type: "operation" }
   },
   remotes: {
     getBubbles: {
-      http: {path: '/bubbles', verb: 'get'},
-      returns: {type: ['Beacon'], root: true},
+      http: { path: "/bubbles", verb: "get" },
+      returns: { type: ["Beacon"], root: true }
     },
     deleteBubbles: {
-      http: {path: '/bubbles', verb: 'delete'},
-      accepts: [{arg: 'req', type: 'object', http: {source: 'req'}}],
-      returns: {type: 'string', root: true},
+      http: { path: "/bubbles", verb: "delete" },
+      accepts: [{ arg: "req", type: "object", http: { source: "req" } }],
+      returns: { type: "string", root: true }
     },
     postBubbles: {
-      http: {path: '/bubbles', verb: 'post'},
+      http: { path: "/bubbles", verb: "post" },
       accepts: [
-        {arg: 'req', type: 'object', http: {source: 'req'}},
+        { arg: "req", type: "object", http: { source: "req" } },
         {
-          arg: 'bubbleId',
-          type: 'string',
+          arg: "bubbleId",
+          type: "string",
           required: true,
-          description: 'Bubble id',
-          http: {source: 'query'},
+          description: "Bubble id",
+          http: { source: "query" }
         },
         {
-          arg: 'info',
-          type: 'string',
+          arg: "info",
+          type: "string",
           required: true,
-          description: 'Bubble info',
-          http: {source: 'query'},
+          description: "Bubble info",
+          http: { source: "query" }
         },
         {
-          arg: 'placeIds',
-          type: ['string'],
+          arg: "placeIds",
+          type: ["string"],
           required: true,
-          description: 'Bubble placeIds',
-          http: {source: 'query'},
+          description: "Bubble placeIds",
+          http: { source: "query" }
         },
         {
-          arg: 'txPower',
-          type: 'number',
+          arg: "txPower",
+          type: "number",
           required: true,
-          description: 'Bubble txPower',
-          http: {source: 'query'},
+          description: "Bubble txPower",
+          http: { source: "query" }
         },
         {
-          arg: 'location',
-          type: 'object',
+          arg: "location",
+          type: "object",
           required: true,
-          description: 'Bubble location (lat and lng)',
-          http: {source: 'query'},
-        },
+          description: "Bubble location (lat and lng)",
+          http: { source: "query" }
+        }
       ],
-      returns: {type: ['Beacon'], root: true},
+      returns: { type: ["Beacon"], root: true }
     },
     getBubbleBydId: {
-      http: {path: '/bubbles/:id', verb: 'get'},
+      http: { path: "/bubbles/:id", verb: "get" },
       accepts: [
-        {arg: 'id', type: 'string', required: true, description: 'Bubble id'},
+        { arg: "id", type: "string", required: true, description: "Bubble id" }
       ],
-      returns: {type: 'Beacon', root: true},
+      returns: { type: "Beacon", root: true }
     },
     deleteBubbleById: {
-      http: {path: '/bubbles/:id', verb: 'delete'},
+      http: { path: "/bubbles/:id", verb: "delete" },
       accepts: [
-        {arg: 'req', type: 'object', http: {source: 'req'}},
-        {arg: 'id', type: 'string', required: true, description: 'Bubble id'},
+        { arg: "req", type: "object", http: { source: "req" } },
+        { arg: "id", type: "string", required: true, description: "Bubble id" }
       ],
-      returns: {type: 'string', root: true},
-    },
-  },
+      returns: { type: "string", root: true }
+    }
+  }
 })
 class Beacon {
   // LoopBack model instance is injected in constructor
@@ -97,10 +97,10 @@ class Beacon {
   // Example Operation Hook
   public beforeSave(ctx: any, next: Function): void {
     if (ctx.data && ctx.data.id) {
-      console.log('Beacon: Before Save: ' + ctx.data.id);
+      console.log("Beacon: Before Save: " + ctx.data.id);
       ctx.data.id = ctx.data.id.toUpperCase();
     } else if (ctx.instance && ctx.instance.id) {
-      console.log('Beacon: Before Save: ' + ctx.instance.id);
+      console.log("Beacon: Before Save: " + ctx.instance.id);
       ctx.instance.id = ctx.instance.id.toUpperCase();
       ctx.instance.createdAt = new Date();
     }
@@ -112,9 +112,9 @@ class Beacon {
     if (beacon) {
       // if the message is delete via a cascade, no instance is provided
       const payload = {
-        event: 'beacon',
+        event: "beacon",
         content: beacon,
-        action: 'DELETE',
+        action: "DELETE"
       };
       RabbitPub.getInstance().pub(payload, beacon.userId.toString());
     }
@@ -126,9 +126,9 @@ class Beacon {
     let beacon = ctx.instance;
     if (beacon.userId) {
       const payload = {
-        event: 'beacon',
+        event: "beacon",
         content: beacon,
-        action: ctx.isNewInstance ? 'CREATE' : 'UPDATE',
+        action: ctx.isNewInstance ? "CREATE" : "UPDATE"
       };
       RabbitPub.getInstance().pub(payload, beacon.userId.toString());
     }
@@ -139,30 +139,30 @@ class Beacon {
     // Models
     const Beacon = this.model;
     const options = {
-      method: 'GET',
+      method: "GET",
       url: bubbleDbUrl,
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': bubbleDbApiKey,
-      },
+        "Content-Type": "application/json",
+        "x-api-key": bubbleDbApiKey
+      }
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode > 204)
-        next(null, response);
+      if (error || response.statusCode > 204) next(null, response);
       else {
         body = JSON.parse(body);
-        const beacons = body.entries &&
-            body.entries.map((b: any) => ({
-                               id: b.bubbleId,
-                               location: {lat: b.lat, lng: b.lng},
-                               info: b.info,
-                               placeIds: b.placeIds,
-                               txPower: b.txPower,
-                             }));
+        const beacons =
+          body.entries &&
+          body.entries.map((b: any) => ({
+            id: b.bubbleId,
+            location: { lat: b.lat, lng: b.lng },
+            info: b.info,
+            placeIds: b.placeIds,
+            txPower: b.txPower
+          }));
         beacons.forEach((b: any) => {
           Beacon.upsert(b, (err: any, beacon: any) => {
-            if (err) console.log('Error while upserting beacon');
+            if (err) console.log("Error while upserting beacon");
           });
         });
         next(null, beacons);
@@ -181,30 +181,33 @@ class Beacon {
     // Models
     const Beacon = this.model;
     const options = {
-      method: 'DELETE',
+      method: "DELETE",
       url: bubbleDbUrl,
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': bubbleDbApiKey,
-      },
+        "Content-Type": "application/json",
+        "x-api-key": bubbleDbApiKey
+      }
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode > 204)
-        next(null, response);
+      if (error || response.statusCode > 204) next(null, response);
       else
         Beacon.destroyAll({}, (err: any, result: any) => {
-          if (err)
-            next('Error while getting beacons');
-          else
-            next(null, result);
+          if (err) next("Error while getting beacons");
+          else next(null, result);
         });
     });
   }
 
   public postBubbles(
-      req: any, bubbleId: string, info: number, placeIds: Array<string>,
-      txPower: number, location: any, next: Function): void {
+    req: any,
+    bubbleId: string,
+    info: number,
+    placeIds: Array<string>,
+    txPower: number,
+    location: any,
+    next: Function
+  ): void {
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
@@ -212,11 +215,11 @@ class Beacon {
     const Beacon = this.model;
 
     const options = {
-      method: 'POST',
+      method: "POST",
       url: bubbleDbUrl,
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': bubbleDbApiKey,
+        "Content-Type": "application/json",
+        "x-api-key": bubbleDbApiKey
       },
       body: {
         name: bubbleDbName,
@@ -229,27 +232,27 @@ class Beacon {
             lng: location.lng,
             txPower,
             info,
-            placeIds,
-          },
-        ],
+            placeIds
+          }
+        ]
       },
-      json: true,
+      json: true
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode > 204)
-        next(null, response);
+      if (error || response.statusCode > 204) next(null, response);
       else {
         Beacon.upsert(
-            {userId, id: bubbleId, location, info, placeIds, txPower},
-            (err: any, beacon: any) => {
-              if (err) next('Error while upserting beacon');
-              // this.publish(
-              //   {userId, id: bubbleId, location, info, placeIds, txPower},
-              //   'UPDATE'
-              // );
-              next(null, beacon);
-            });
+          { userId, id: bubbleId, location, info, placeIds, txPower },
+          (err: any, beacon: any) => {
+            if (err) next("Error while upserting beacon");
+            // this.publish(
+            //   {userId, id: bubbleId, location, info, placeIds, txPower},
+            //   'UPDATE'
+            // );
+            next(null, beacon);
+          }
+        );
       }
     });
   }
@@ -259,23 +262,20 @@ class Beacon {
     const Beacon = this.model;
 
     const options = {
-      method: 'GET',
+      method: "GET",
       url: `${bubbleDbUrl}/${id}`,
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': bubbleDbApiKey,
-      },
+        "Content-Type": "application/json",
+        "x-api-key": bubbleDbApiKey
+      }
     };
 
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode > 204)
-        next(null, response);
+      if (error || response.statusCode > 204) next(null, response);
       else
         Beacon.findById(id, (err: any, beacon: any) => {
-          if (err)
-            next('Error while getting beacon');
-          else
-            next(null, beacon);
+          if (err) next("Error while getting beacon");
+          else next(null, beacon);
         });
     });
   }
@@ -288,22 +288,19 @@ class Beacon {
     const Beacon = this.model;
 
     const options = {
-      method: 'DELETE',
+      method: "DELETE",
       url: `${bubbleDbUrl}/${id}`,
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': bubbleDbApiKey,
-      },
+        "Content-Type": "application/json",
+        "x-api-key": bubbleDbApiKey
+      }
     };
     request(options, (error: any, response: any, body: any) => {
-      if (error || response.statusCode > 204)
-        next(null, response);
+      if (error || response.statusCode > 204) next(null, response);
       else {
         Beacon.destroyById(id, (err: any, beacon: any) => {
-          if (err)
-            next('Error while deleting beacon');
-          else
-            next(null, 'OK');
+          if (err) next("Error while deleting beacon");
+          else next(null, "OK");
         });
         // this.publish({userId, id}, 'DELETE');
       }
