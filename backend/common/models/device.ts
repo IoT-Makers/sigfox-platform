@@ -1,11 +1,11 @@
-import {Model} from '@mean-expert/model';
-import * as _ from 'lodash';
-import {decrypt} from './utils';
-import {RabbitPub} from '../../server/RabbitPub';
+import { Model } from "@mean-expert/model";
+import * as _ from "lodash";
+import { decrypt } from "./utils";
+import { RabbitPub } from "../../server/RabbitPub";
 
-const moment = require('moment');
-const loopback = require('loopback');
-const json2csv = require('json2csv').parse;
+const moment = require("moment");
+const loopback = require("loopback");
+const json2csv = require("json2csv").parse;
 
 /**
  * @module Devicex
@@ -16,86 +16,91 @@ const json2csv = require('json2csv').parse;
  **/
 @Model({
   hooks: {
-    beforeSave: {name: 'before save', type: 'operation'},
-    afterSave: {name: 'after save', type: 'operation'},
-    beforeDelete: {name: 'before delete', type: 'operation'},
-    afterDelete: {name: 'after delete', type: 'operation'},
+    beforeSave: { name: "before save", type: "operation" },
+    afterSave: { name: "after save", type: "operation" },
+    beforeDelete: { name: "before delete", type: "operation" },
+    afterDelete: { name: "after delete", type: "operation" },
     afterRemoteLinkOrganizations: {
-      name: 'prototype.__link__Organizations',
-      type: 'afterRemote',
+      name: "prototype.__link__Organizations",
+      type: "afterRemote"
     },
     afterRemoteUnlinkOrganizations: {
-      name: 'prototype.__unlink__Organizations',
-      type: 'afterRemote',
-    },
+      name: "prototype.__unlink__Organizations",
+      type: "afterRemote"
+    }
   },
   remotes: {
     addDeviceMessagesToOrganization: {
-      http: {path: '/add-device-messages-to-organization', verb: 'post'},
+      http: { path: "/add-device-messages-to-organization", verb: "post" },
       accepts: [
         {
-          arg: 'deviceId',
-          type: 'string',
+          arg: "deviceId",
+          type: "string",
           required: true,
-          description: 'deviceId',
+          description: "deviceId"
         },
         {
-          arg: 'organizationId',
-          type: 'string',
+          arg: "organizationId",
+          type: "string",
           required: true,
-          description: 'organizationId',
-        },
-      ],
+          description: "organizationId"
+        }
+      ]
     },
     removeDeviceMessagesFromOrganization: {
-      http: {path: '/remove-device-messages-from-organization', verb: 'post'},
+      http: { path: "/remove-device-messages-from-organization", verb: "post" },
       accepts: [
         {
-          arg: 'deviceId',
-          type: 'string',
+          arg: "deviceId",
+          type: "string",
           required: true,
-          description: 'deviceId',
+          description: "deviceId"
         },
         {
-          arg: 'organizationId',
-          type: 'string',
+          arg: "organizationId",
+          type: "string",
           required: true,
-          description: 'organizationId',
-        },
-      ],
+          description: "organizationId"
+        }
+      ]
     },
     download: {
       accepts: [
-        {arg: 'id', required: true, type: 'string', http: {source: 'path'}},
-        {arg: 'type', required: true, type: 'string', http: {source: 'path'}},
-        {arg: 'req', type: 'object', http: {source: 'req'}},
-        {arg: 'res', type: 'object', http: {source: 'res'}},
+        { arg: "id", required: true, type: "string", http: { source: "path" } },
+        {
+          arg: "type",
+          required: true,
+          type: "string",
+          http: { source: "path" }
+        },
+        { arg: "req", type: "object", http: { source: "req" } },
+        { arg: "res", type: "object", http: { source: "res" } }
       ],
       http: {
-        path: '/download/:id/:type',
-        verb: 'get',
+        path: "/download/:id/:type",
+        verb: "get"
       },
-      returns: {type: 'object', root: true},
+      returns: { type: "object", root: true }
     },
     getMessagesFromSigfoxBackend: {
       accepts: [
-        {arg: 'id', type: 'string', required: true, description: 'Device Id'},
+        { arg: "id", type: "string", required: true, description: "Device Id" },
         {
-          arg: 'limit',
-          type: 'number',
+          arg: "limit",
+          type: "number",
           required: false,
-          description: 'Limit retrieved messages (max 100)',
+          description: "Limit retrieved messages (max 100)"
         },
-        {arg: 'before', type: 'number', description: 'Before'},
-        {arg: 'req', type: 'object', http: {source: 'req'}},
+        { arg: "before", type: "number", description: "Before" },
+        { arg: "req", type: "object", http: { source: "req" } }
       ],
       http: {
-        path: '/:id/messages-from-sigfox-backend',
-        verb: 'get',
+        path: "/:id/messages-from-sigfox-backend",
+        verb: "get"
       },
-      returns: {type: [], root: true},
-    },
-  },
+      returns: { type: [], root: true }
+    }
+  }
 })
 class Device {
   // LoopBack model instance is injected in constructor
@@ -109,19 +114,19 @@ class Device {
     const Message = this.model.app.models.Message;
     const Organization = this.model.app.models.Organization;
     Message.find(
-      {where: {deviceId: deviceId}, fields: {id: true, createdAt: true}},
+      { where: { deviceId: deviceId }, fields: { id: true, createdAt: true } },
       (err: any, messages: any) => {
         if (!err && messages.length > 0) {
           Organization.findById(organizationId, (err: any, orga: any) => {
             if (!err) {
               const db = Message.dataSource.connector.db;
-              const OrganizationMessage = db.collection('OrganizationMessage');
+              const OrganizationMessage = db.collection("OrganizationMessage");
               OrganizationMessage.insertMany(
                 messages.map((x: any) => ({
                   messageId: x.id,
                   deviceId: deviceId,
                   createdAt: x.createdAt,
-                  organizationId: orga.id,
+                  organizationId: orga.id
                 })),
                 (err: any, result: any) => {
                   if (err) console.error(err);
@@ -153,17 +158,17 @@ class Device {
     Organization.findById(organizationId, (err: any, org: any) => {
       const db = Message.dataSource.connector.db;
       // Delete organization shared messages
-      const OrganizationMessage = db.collection('OrganizationMessage');
+      const OrganizationMessage = db.collection("OrganizationMessage");
       OrganizationMessage.deleteMany(
-        {deviceId: deviceId, organizationId: org.id},
+        { deviceId: deviceId, organizationId: org.id },
         (err: Error, info: Object) => {
           if (err) console.error(err);
         }
       );
       // Delete organization shared alerts
-      const OrganizationAlert = db.collection('OrganizationAlert');
+      const OrganizationAlert = db.collection("OrganizationAlert");
       OrganizationAlert.deleteMany(
-        {deviceId: deviceId, organizationId: org.id},
+        { deviceId: deviceId, organizationId: org.id },
         (err: Error, info: Object) => {
           if (err) console.error(err);
         }
@@ -204,8 +209,8 @@ class Device {
       {
         where: {
           userId,
-          type: 'sigfox-api',
-        },
+          type: "sigfox-api"
+        }
       },
       (err: any, connector: any) => {
         if (err) return next(err, null);
@@ -217,8 +222,8 @@ class Device {
             let reception: any[] = [];
 
             const credentials = new Buffer(
-              sigfoxApiLogin + ':' + sigfoxApiPassword
-            ).toString('base64');
+              sigfoxApiLogin + ":" + sigfoxApiPassword
+            ).toString("base64");
 
             this.model.app.dataSources.sigfox
               .getMessages(
@@ -240,7 +245,7 @@ class Device {
                         lng: o.lng,
                         // RSSI: o.rssi,
                         linkQuality: messageInstance.linkQuality,
-                        SNR: messageInstance.snr,
+                        SNR: messageInstance.snr
                       };
                       reception.push(rinfo);
                     });
@@ -267,11 +272,11 @@ class Device {
                         else if (messageInstance.computedLocation) {
                           // Build the Geoloc object
                           const geoloc = new Geoloc();
-                          geoloc.id = message.id + 'sigfox';
-                          geoloc.type = 'sigfox';
+                          geoloc.id = message.id + "sigfox";
+                          geoloc.type = "sigfox";
                           geoloc.location = new loopback.GeoPoint({
                             lat: messageInstance.computedLocation.lat,
-                            lng: messageInstance.computedLocation.lng,
+                            lng: messageInstance.computedLocation.lng
                           });
                           geoloc.accuracy =
                             messageInstance.computedLocation.radius;
@@ -299,15 +304,15 @@ class Device {
                 );
               })
               .catch((err: any) => {
-                if (err.statusCode === '403')
+                if (err.statusCode === "403")
                   return next(
                     err,
-                    'Your Sigfox API credentials are not allowed to do so.'
+                    "Your Sigfox API credentials are not allowed to do so."
                   );
                 else return next(err, null);
               });
           } else
-            return next(err, 'Please refer your Sigfox API connector first.');
+            return next(err, "Please refer your Sigfox API connector first.");
         }
       }
     );
@@ -318,16 +323,16 @@ class Device {
     const Device = this.model;
     Device.findOne(
       {
-        where: {id: deviceId},
+        where: { id: deviceId },
         include: [
           {
-            relation: 'Messages',
+            relation: "Messages",
             scope: {
-              order: 'createdAt DESC',
-              limit: 100,
-            },
-          },
-        ],
+              order: "createdAt DESC",
+              limit: 100
+            }
+          }
+        ]
       },
       function(err: any, device: any) {
         if (err) console.error(err);
@@ -351,7 +356,7 @@ class Device {
 
           Device.upsert(device, (err: any, deviceUpdated: any) => {
             if (err) console.error(err);
-            else console.log('Updated device as: ' + deviceUpdated);
+            else console.log("Updated device as: " + deviceUpdated);
           });
         }
       }
@@ -369,8 +374,8 @@ class Device {
     const Message = this.model.app.models.Message;
 
     if (
-      (type !== 'csv' && type !== 'json') ||
-      typeof deviceId === 'undefined'
+      (type !== "csv" && type !== "json") ||
+      typeof deviceId === "undefined"
     ) {
       res.send('Missing "type" ("csv" or "json"), "deviceId"');
     }
@@ -378,29 +383,29 @@ class Device {
     // Obtain the userId with the access token of ctx
     const userId = req.accessToken.userId;
 
-    const today = moment().format('YYYY.MM.DD');
-    const filename = today + '_' + deviceId + '_export.csv';
+    const today = moment().format("YYYY.MM.DD");
+    const filename = today + "_" + deviceId + "_export.csv";
     res.setTimeout(600000);
     res.set(
-      'Cache-Control',
-      'max-age=0, no-cache, must-revalidate, proxy-revalidate'
+      "Cache-Control",
+      "max-age=0, no-cache, must-revalidate, proxy-revalidate"
     );
-    res.set('Content-Type', 'application/force-download');
-    res.set('Content-Type', 'application/octet-stream');
-    res.set('Content-Type', 'application/download');
-    res.set('Content-Disposition', 'attachment;filename=' + filename);
-    res.set('Content-Transfer-Encoding', 'binary');
+    res.set("Content-Type", "application/force-download");
+    res.set("Content-Type", "application/octet-stream");
+    res.set("Content-Type", "application/download");
+    res.set("Content-Disposition", "attachment;filename=" + filename);
+    res.set("Content-Transfer-Encoding", "binary");
 
     Message.find(
       {
         where: {
           and: [
             // {userId: userId},
-            {deviceId},
-          ],
+            { deviceId }
+          ]
         },
-        include: ['Geolocs'],
-        order: 'createdAt DESC',
+        include: ["Geolocs"],
+        order: "createdAt DESC"
       },
       (err: any, messages: any) => {
         if (err) {
@@ -411,19 +416,19 @@ class Device {
           const data: any = [];
           let csv: any = [];
           const options: any = {
-            fields: [],
+            fields: []
           };
-          options.fields.push('seqNumber');
-          options.fields.push('createdAt');
-          options.fields.push('year');
-          options.fields.push('month');
-          options.fields.push('day');
-          options.fields.push('hours');
-          options.fields.push('minutes');
-          options.fields.push('seconds');
-          options.fields.push('data');
-          options.fields.push('ack');
-          options.fields.push('data_downlink');
+          options.fields.push("seqNumber");
+          options.fields.push("createdAt");
+          options.fields.push("year");
+          options.fields.push("month");
+          options.fields.push("day");
+          options.fields.push("hours");
+          options.fields.push("minutes");
+          options.fields.push("seconds");
+          options.fields.push("data");
+          options.fields.push("ack");
+          options.fields.push("data_downlink");
 
           messages.forEach((message: any) => {
             message = message.toJSON();
@@ -432,7 +437,7 @@ class Device {
 
             obj.seqNumber = message.seqNumber;
             obj.createdAt = moment(message.createdAt).format(
-              'YYYY-MM-DD HH:mm:ss'
+              "YYYY-MM-DD HH:mm:ss"
             );
             obj.year = date.getFullYear();
             obj.month = date.getMonth() + 1;
@@ -454,14 +459,14 @@ class Device {
             }
             if (message.Geolocs) {
               message.Geolocs.forEach((geoloc: any) => {
-                if (options.fields.indexOf('lat_' + geoloc.type) === -1) {
-                  options.fields.push('lat_' + geoloc.type);
-                  options.fields.push('lng_' + geoloc.type);
-                  options.fields.push('accuracy_' + geoloc.type);
+                if (options.fields.indexOf("lat_" + geoloc.type) === -1) {
+                  options.fields.push("lat_" + geoloc.type);
+                  options.fields.push("lng_" + geoloc.type);
+                  options.fields.push("accuracy_" + geoloc.type);
                 }
-                obj['lat_' + geoloc.type] = geoloc.location.lat;
-                obj['lng_' + geoloc.type] = geoloc.location.lng;
-                obj['accuracy_' + geoloc.type] = geoloc.accuracy;
+                obj["lat_" + geoloc.type] = geoloc.location.lat;
+                obj["lng_" + geoloc.type] = geoloc.location.lng;
+                obj["accuracy_" + geoloc.type] = geoloc.accuracy;
               });
             }
             data.push(obj);
@@ -469,7 +474,7 @@ class Device {
           if (data.length > 0) {
             try {
               csv = json2csv(data, options);
-              console.log('Done CSV processing.');
+              console.log("Done CSV processing.");
             } catch (err) {
               console.error(err);
             }
@@ -477,7 +482,7 @@ class Device {
           // res.status(200).send({data: csv});
           res.send(csv);
           next();
-        } else next(null, 'Error occured - not allowed');
+        } else next(null, "Error occured - not allowed");
       }
     );
   }
@@ -494,7 +499,7 @@ class Device {
 
     if (deviceId) {
       Device.findOne(
-        {where: {id: deviceId}, include: 'Organizations'},
+        { where: { id: deviceId }, include: "Organizations" },
         (err: any, device: any) => {
           // console.log(category);
           if (err) return next(err, null);
@@ -507,16 +512,16 @@ class Device {
                   (err: any, result: any) => {
                     if (!err) {
                       console.log(
-                        'Unlinked device from organization (' + orga.name + ')'
+                        "Unlinked device from organization (" + orga.name + ")"
                       );
                     }
                   }
                 );
               });
               const payload = {
-                event: 'device',
+                event: "device",
                 content: device,
-                action: 'DELETE',
+                action: "DELETE"
               };
               RabbitPub.getInstance().pub(
                 payload,
@@ -524,20 +529,20 @@ class Device {
                 orgIds.map((o: any) => o.id.toString())
               );
             }
-            console.log('Unlinked device from organizations');
+            console.log("Unlinked device from organizations");
             return next();
           }
         }
       );
 
-      Message.destroyAll({deviceId}, (error: any, result: any) => {
-        if (!error) console.log('Deleted all messages for device: ' + deviceId);
+      Message.destroyAll({ deviceId }, (error: any, result: any) => {
+        if (!error) console.log("Deleted all messages for device: " + deviceId);
       });
-      Geoloc.destroyAll({deviceId}, (error: any, result: any) => {
-        if (!error) console.log('Deleted all geolocs for device: ' + deviceId);
+      Geoloc.destroyAll({ deviceId }, (error: any, result: any) => {
+        if (!error) console.log("Deleted all geolocs for device: " + deviceId);
       });
-      Alert.destroyAll({deviceId}, (error: any, result: any) => {
-        if (!error) console.log('Deleted all alerts for device: ' + deviceId);
+      Alert.destroyAll({ deviceId }, (error: any, result: any) => {
+        if (!error) console.log("Deleted all alerts for device: " + deviceId);
       });
     }
   }
@@ -551,10 +556,10 @@ class Device {
     const Category = this.model.app.models.Category;
 
     if (ctx.data && ctx.data.id) {
-      console.log('Device: Before Save: ' + ctx.data.id);
+      console.log("Device: Before Save: " + ctx.data.id);
       ctx.data.id = ctx.data.id.toUpperCase();
     } else if (ctx.instance && ctx.instance.id) {
-      console.log('Device: Before Save: ' + ctx.instance.id);
+      console.log("Device: Before Save: " + ctx.instance.id);
       ctx.instance.id = ctx.instance.id.toUpperCase();
       ctx.instance.createdAt = new Date();
     }
@@ -566,7 +571,7 @@ class Device {
       if (!oldDevice.categoryId && newDevice.categoryId) {
         Category.findById(
           newDevice.categoryId,
-          {include: ['Organizations']},
+          { include: ["Organizations"] },
           (err: any, category: any) => {
             if (err) console.error(err);
             else if (category) {
@@ -576,7 +581,7 @@ class Device {
                 category.Organizations.forEach((org: any) => {
                   oldDevice.Organizations.add(
                     org.id,
-                    {deviceId: newDevice.id},
+                    { deviceId: newDevice.id },
                     () => {
                       Device.addDeviceMessagesToOrganization(
                         newDevice.id,
@@ -591,10 +596,10 @@ class Device {
         );
       }
       // Device is being removed from a category
-      else if (oldDevice.categoryId && newDevice.categoryId.toString() === '') {
+      else if (oldDevice.categoryId && newDevice.categoryId === "") {
         Category.findById(
           oldDevice.categoryId,
-          {include: ['Organizations']},
+          { include: ["Organizations"] },
           (err: any, category: any) => {
             if (err) console.error(err);
             else if (category) {
@@ -618,12 +623,12 @@ class Device {
       else if (
         oldDevice.categoryId &&
         newDevice.categoryId &&
-        oldDevice.categoryId.toString() !== newDevice.categoryId.toString()
+        oldDevice.categoryId !== newDevice.categoryId
       ) {
         // Remove device from linked organizations belonging to old category
         Category.findById(
           oldDevice.categoryId,
-          {include: ['Organizations']},
+          { include: ["Organizations"] },
           (err: any, category: any) => {
             if (err) console.error(err);
             else if (category) {
@@ -644,7 +649,7 @@ class Device {
         );
         Category.findById(
           newDevice.categoryId,
-          {include: ['Organizations']},
+          { include: ["Organizations"] },
           (err: any, category: any) => {
             if (err) console.error(err);
             else if (category) {
@@ -654,7 +659,7 @@ class Device {
                 category.Organizations.forEach((org: any) => {
                   oldDevice.Organizations.add(
                     org.id,
-                    {deviceId: newDevice.id},
+                    { deviceId: newDevice.id },
                     () => {
                       Device.addDeviceMessagesToOrganization(
                         newDevice.id,
@@ -676,9 +681,9 @@ class Device {
     // Pub-sub
     let device = ctx.instance;
     const payload = {
-      event: 'device',
+      event: "device",
       content: device,
-      action: ctx.isNewInstance ? 'CREATE' : 'UPDATE',
+      action: ctx.isNewInstance ? "CREATE" : "UPDATE"
     };
     RabbitPub.getInstance().pub(payload, device.userId, null);
     next();
