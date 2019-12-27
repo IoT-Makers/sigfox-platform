@@ -61,7 +61,7 @@
     "@types/mongodb": "^3.1.14",
     "@types/node": "^10.12.10",
     "copyfiles": "^2.1.0",
-    "eslint": "^3.17.1",
+    "eslint": "^4.18.2",
     "eslint-config-loopback": "^8.0.0"
   },
   "repository": {
