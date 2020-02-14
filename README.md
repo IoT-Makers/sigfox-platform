@@ -1,11 +1,12 @@
 # Sigfox Platform
 
+<a href="https://www.buymeacoffee.com/antoine" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
 ![Gitlab pipeline status (branch)](https://img.shields.io/gitlab/pipeline/AntoinedeChassey/sigfox-platform/master.svg?label=build%20%28master%29)
 ![Gitlab pipeline status (branch)](https://img.shields.io/gitlab/pipeline/AntoinedeChassey/sigfox-platform/staging.svg?label=build%20%28staging%29)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/IoT-Makers/sigfox-platform/dev.svg?label=last%20commit%20%28dev%29)
 [![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors)
 ![GitHub](https://img.shields.io/github/license/IoT-Makers/sigfox-platform.svg)
-![Beerpay](https://img.shields.io/beerpay/IoT-Makers/sigfox-platform.svg)
 
 **Disclaimer: Project under active development, use it at your own risk!**
 
@@ -107,7 +108,7 @@ A short wiki can be found [here](https://github.com/IoT-Makers/sigfox-platform/w
 
 Feel free to submit a Pull Request and don't forget to add you name and your useful links.
 
-## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
+## Support this project
+Hey dude! Help me out for a couple of :beers: or :coffee:!
 
-[![Beerpay](https://beerpay.io/IoT-Makers/sigfox-platform/badge.svg?style=beer-square)](https://beerpay.io/IoT-Makers/sigfox-platform)  [![Beerpay](https://beerpay.io/IoT-Makers/sigfox-platform/make-wish.svg?style=flat-square)](https://beerpay.io/IoT-Makers/sigfox-platform?focus=wish)
+<a href="https://www.buymeacoffee.com/antoine" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
