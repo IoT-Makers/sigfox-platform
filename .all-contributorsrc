@@ -44,7 +44,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "splendf",
+      "name": "Florian Splendido",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/11613206?v=4",
+      "profile": "http://www.splendido.fr",
+      "contributions": [
+        "platform"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "skipCi": true
 }
