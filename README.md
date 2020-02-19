@@ -101,9 +101,20 @@ A short wiki can be found [here](https://github.com/IoT-Makers/sigfox-platform/w
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
-<table><tr><td align="center"><a href="https://github.com/siyu6974"><img src="https://avatars1.githubusercontent.com/u/15876323?v=4" width="100px;" alt="Siyu"/><br /><sub><b>Siyu</b></sub></a><br /><a href="https://github.com/IoT-Makers/sigfox-platform/commits?author=siyu6974" title="Code">💻</a></td><td align="center"><a href="https://twitter.com/aureleq"><img src="https://avatars0.githubusercontent.com/u/5591266?v=4" width="100px;" alt="Aurelien Lequertier"/><br /><sub><b>Aurelien Lequertier</b></sub></a><br /><a href="https://github.com/IoT-Makers/sigfox-platform/commits?author=aureleq" title="Code">💻</a></td><td align="center"><a href="https://github.com/markoceri"><img src="https://avatars1.githubusercontent.com/u/16639103?v=4" width="100px;" alt="Marko"/><br /><sub><b>Marko</b></sub></a><br /><a href="https://github.com/IoT-Makers/sigfox-platform/commits?author=markoceri" title="Code">💻</a></td><td align="center"><a href="https://twitter.com/nestorayuso"><img src="https://avatars2.githubusercontent.com/u/15124932?v=4" width="100px;" alt="Nestor Ayuso"/><br /><sub><b>Nestor Ayuso</b></sub></a><br /><a href="https://github.com/IoT-Makers/sigfox-platform/commits?author=nestorayuso" title="Documentation">📖</a></td></tr></table>
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/siyu6974"><img src="https://avatars1.githubusercontent.com/u/15876323?v=4" width="100px;" alt=""/><br /><sub><b>Siyu</b></sub></a><br /><a href="https://github.com/IoT-Makers/sigfox-platform/commits?author=siyu6974" title="Code">💻</a></td>
+    <td align="center"><a href="https://twitter.com/aureleq"><img src="https://avatars0.githubusercontent.com/u/5591266?v=4" width="100px;" alt=""/><br /><sub><b>Aurelien Lequertier</b></sub></a><br /><a href="https://github.com/IoT-Makers/sigfox-platform/commits?author=aureleq" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/markoceri"><img src="https://avatars1.githubusercontent.com/u/16639103?v=4" width="100px;" alt=""/><br /><sub><b>Marko</b></sub></a><br /><a href="https://github.com/IoT-Makers/sigfox-platform/commits?author=markoceri" title="Code">💻</a></td>
+    <td align="center"><a href="https://twitter.com/nestorayuso"><img src="https://avatars2.githubusercontent.com/u/15124932?v=4" width="100px;" alt=""/><br /><sub><b>Nestor Ayuso</b></sub></a><br /><a href="https://github.com/IoT-Makers/sigfox-platform/commits?author=nestorayuso" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://www.splendido.fr"><img src="https://avatars1.githubusercontent.com/u/11613206?v=4" width="100px;" alt=""/><br /><sub><b>Florian Splendido</b></sub></a><br /><a href="#platform-splendf" title="Packaging/porting to new platform">📦</a></td>
+  </tr>
+</table>
 
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 Feel free to submit a Pull Request and don't forget to add you name and your useful links.
