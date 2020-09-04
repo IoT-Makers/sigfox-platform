@@ -91,7 +91,7 @@
     "ngx-bootstrap": "^2.0.5",
     "ngx-gauge": "^1.0.0-beta.2",
     "ngx-pagination": "^3.2.1",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.13.1",
     "protractor": "^5.1.2",
     "rxjs": "^6.2.0",
     "rxjs-compat": "^6.2.0",
