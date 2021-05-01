@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AccessToken, AppSetting, User} from '../../../shared/sdk/models';
 import {AppSettingApi, UserApi} from '../../../shared/sdk/services';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import {RealtimeService} from "../../../shared/realtime/realtime.service";
 
 @Component({
@@ -25,13 +25,12 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast;
-  private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig =
-    new ToasterConfig({
-      tapToDismiss: true,
-      timeout: 5000,
-      animation: 'fade'
-    });
+  private toasterService: ToastrService;
+  public toasterconfig = {
+    tapToDismiss: true,
+    timeout: 5000,
+    animation: 'fade'
+  };
 
   constructor(
     private rt: RealtimeService,
@@ -39,7 +38,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private appSettingApi: AppSettingApi,
     private route: ActivatedRoute,
     private router: Router,
-    toasterService: ToasterService) {
+    toasterService: ToastrService) {
     this.toasterService = toasterService;
   }
 
@@ -55,9 +54,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       }, err => {
         // console.log(err);
         if (err.statusCode === 401) {
-          if (this.toast)
-            this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-          this.toast = this.toasterService.pop('error', 'Error', 'Invalid username or password.');
+          if (this.toast) {
+            this.toasterService.clear(this.toast.toastId);
+          }
+          this.toast = this.toasterService.error('Error', 'Invalid username or password.', this.toasterconfig);
           this.errorMessage = 'Invalid username or password.';
         } else if (err.statusCode === 500) {
           this.errorMessage = 'Internal server error';

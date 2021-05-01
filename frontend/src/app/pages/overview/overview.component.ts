@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/co
 import {ActivatedRoute} from '@angular/router';
 import {Alert, AppSetting, Category, Device, Geoloc, Message, Organization, User} from '../../shared/sdk/models';
 import {Subscription} from 'rxjs/Subscription';
-import {AgmInfoWindow, LatLngBounds} from '@agm/core';
+import {AgmInfoWindow} from '@agm/core';
 import {
   AppSettingApi,
   ConnectorApi,
@@ -13,7 +13,7 @@ import {
 } from '../../shared/sdk/services/custom';
 import * as moment from 'moment';
 import * as _ from 'lodash';
-import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
 
 declare var Zone: any;
@@ -131,13 +131,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
   };
 
   // Notifications
-  private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig =
-    new ToasterConfig({
-      tapToDismiss: true,
-      timeout: 5000,
-      animation: 'fade'
-    });
+  private toasterService: ToastrService;
+  public toasterconfig = {
+    tapToDismiss: true,
+    timeout: 5000,
+    animation: 'fade'
+  };
 
   public bannerMessage;
 
@@ -254,7 +253,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   fitMapBounds() {
     if (this.map) {
-      const bounds: LatLngBounds = new google.maps.LatLngBounds();
+      const bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds();
       this.devices.forEach((device: any) => {
         if (device.Messages && device.Messages[0] && device.Messages[0].Geolocs[0]) {
           bounds.extend(new google.maps.LatLng(device.Messages[0].Geolocs[0].location.lat, device.Messages[0].Geolocs[0].location.lng));

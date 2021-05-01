@@ -16,7 +16,7 @@ import {
 } from '../../shared/sdk/services/custom';
 import { AgmMap } from '@agm/core';
 import { ActivatedRoute } from '@angular/router';
-import { ToasterConfig, ToasterService } from 'angular2-toaster';
+import { ToastrConfig, ToastrService } from 'ngx-toastr';
 import { RealtimeService } from '../../shared/realtime/realtime.service';
 
 @Component({
@@ -54,12 +54,12 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast: any;
-  private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig = new ToasterConfig({
+  private toasterService: ToastrService;
+  public toasterconfig = {
     tapToDismiss: true,
     timeout: 5000,
     animation: 'fade'
-  });
+  };
 
   public filterQuery = '';
 
@@ -72,7 +72,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     private messageApi: MessageApi,
     private organizationApi: OrganizationApi,
     private receptionApi: ReceptionApi,
-    toasterService: ToasterService,
+    toasterService: ToastrService,
     private route: ActivatedRoute,
     private rt: RealtimeService
   ) {
@@ -170,24 +170,16 @@ export class MessagesComponent implements OnInit, OnDestroy {
   deleteMessage(message: Message): void {
     this.userApi.destroyByIdMessages(this.user.id, message.id).subscribe(
       value => {
-        if (this.toast)
-          this.toasterService.clear(
-            this.toast.toastId,
-            this.toast.toastContainerId
-          );
-        this.toast = this.toasterService.pop(
-          'success',
-          'Success',
-          'The message has been deleted.'
-        );
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.success('Success', 'The message has been deleted.', this.toasterconfig);
       },
       err => {
-        if (this.toast)
-          this.toasterService.clear(
-            this.toast.toastId,
-            this.toast.toastContainerId
-          );
-        this.toast = this.toasterService.pop('error', 'Error', err.error);
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.error('Error', err.error, this.toasterconfig);
       }
     );
   }

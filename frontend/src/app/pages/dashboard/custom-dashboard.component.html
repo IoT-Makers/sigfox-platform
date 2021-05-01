@@ -294,29 +294,28 @@
               <ng-container *ngIf="widget.type === 'table'">
                 <div *ngIf="widget.data" class="table-responsive">
                   <!-- Default table -->
-                  <table *ngIf="widget.options.tableType==='default'" class="table table-hover" [mfData]="widget.data"
-                         #mf="mfDataTable" [mfRowsOnPage]="5">
+                  <table *ngIf="widget.options.tableType==='default'" class="table table-hover" [svData]="widget.data" #sv="svDataTable" [svRowsOnPage]="5">
                     <thead class="thead-inverse">
                     <tr>
                       <th class="text-center">
-                        <mfDefaultSorter by="id"><i class="fa fa-sort"></i> ID</mfDefaultSorter>
+                        <sv-default-sorter by="id"><i class="fa fa-sort"></i> ID</sv-default-sorter>
                       </th>
                       <th class="text-center">
-                        <mfDefaultSorter by="data_downlink"><i class="fa fa-sort"></i> Info</mfDefaultSorter>
+                        <sv-default-sorter by="data_downlink"><i class="fa fa-sort"></i> Info</sv-default-sorter>
                       </th>
                       <th class="text-center">
-                        <mfDefaultSorter by="updatedAt"><i class="fa fa-sort"></i> Last Message</mfDefaultSorter>
+                        <sv-default-sorter by="updatedAt"><i class="fa fa-sort"></i> Last Message</sv-default-sorter>
                       </th>
                       <th class="text-center">
-                        <mfDefaultSorter by="data_parsed"><i class="fa fa-sort"></i> Data</mfDefaultSorter>
+                        <sv-default-sorter by="data_parsed"><i class="fa fa-sort"></i> Data</sv-default-sorter>
                       </th>
                       <th class="text-center">
-                        <mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>
+                        <sv-default-sorter by="properties"><i class="fa fa-sort"></i> Properties</sv-default-sorter>
                       </th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let device of mf.data; let i = index">
+                    <tr *ngFor="let device of sv.data; let i = index">
                       <td class="text-center">
                         <a
                           [routerLink]="[!organization ? '/messages' : '/organization/' + organization.id + '/messages', device.id]"><strong
@@ -370,15 +369,14 @@
                     <tfoot>
                     <tr>
                       <td colspan="4">
-                        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                        <sv-bootstrap-paginator [rowsOnPageSet]="[5,10,15]"></sv-bootstrap-paginator>
                       </td>
                     </tr>
                     </tfoot>
                   </table>
                   <!-- End Default table -->
                   <!-- Custom table -->
-                  <table *ngIf="widget.options.tableType === 'custom'" class="table table-hover" [mfData]="widget.data"
-                         #mf="mfDataTable" [mfRowsOnPage]="5">
+                  <table *ngIf="widget.options.tableType === 'custom'" class="table table-hover" [svData]="widget.data" #sv="svDataTable" [svRowsOnPage]="5">
                     <thead class="thead-inverse">
                     <tr>
                       <th class="text-center" *ngFor="let col of widget.options.columns">
@@ -396,7 +394,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let data of mf.data; let i = index">
+                    <tr *ngFor="let data of sv.data; let i = index">
                       <ng-container *ngFor="let col of widget.options.columns; let j = index">
                         <ng-container [ngSwitch]="col.as">
                           <td *ngSwitchCase="'ID'"
@@ -448,7 +446,7 @@
                     <tfoot>
                     <tr>
                       <td colspan="4">
-                        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                        <sv-bootstrap-paginator [rowsOnPageSet]="[5,10,15]"></sv-bootstrap-paginator>
                       </td>
                     </tr>
                     </tfoot>
@@ -2384,5 +2382,3 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

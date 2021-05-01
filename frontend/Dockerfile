@@ -1,8 +1,9 @@
-FROM node:10-alpine as builder
+FROM node:14-alpine as builder
 
 WORKDIR /frontend
 COPY package*.json /frontend/
-RUN npm install
+COPY yarn.lock /frontend/
+RUN yarn --frozen-lockfile
 COPY ./ /frontend/
 
 ARG BUILD_ENV

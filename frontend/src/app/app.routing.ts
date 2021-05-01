@@ -9,16 +9,16 @@ import { OrganizationGuard } from './_guards/organization.guard';
 export const routes: Routes = [
   {
     path: 'login',
-    loadChildren: './pages/user/login/login.module#LoginModule'
+    loadChildren: () => import('./pages/user/login/login.module').then(m => m.LoginModule)
   },
   {
     path: 'register',
-    loadChildren: './pages/user/register/register.module#RegisterModule'
+    loadChildren: () => import('./pages/user/register/register.module').then(m => m.RegisterModule)
   },
   {
     path: 'reset-password',
     loadChildren:
-      './pages/user/reset-password/reset-password.module#ResetPasswordModule'
+      () => import('./pages/user/reset-password/reset-password.module').then(m => m.ResetPasswordModule)
   },
   {
     path: '',
@@ -30,66 +30,66 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: './pages/overview/overview.module#OverviewModule'
+        loadChildren: () => import('./pages/overview/overview.module').then(m => m.OverviewModule)
       },
 
-      { path: 'demo', loadChildren: './pages/demo/demo.module#DemoModule' },
+      { path: 'demo', loadChildren: () => import('./pages/demo/demo.module').then(m => m.DemoModule) },
 
       {
         path: 'dashboard/:id',
         canActivate: [DashboardGuard],
         loadChildren:
-          './pages/dashboard/custom-dashboard.module#CustomDashboardModule'
+          () => import('./pages/dashboard/custom-dashboard.module').then(m => m.CustomDashboardModule)
       },
 
       {
         path: 'categories',
-        loadChildren: './pages/categories/categories.module#CategoriesModule'
+        loadChildren: () => import('./pages/categories/categories.module').then(m => m.CategoriesModule)
       },
       {
         path: 'devices',
-        loadChildren: './pages/devices/devices.module#DevicesModule'
+        loadChildren: () => import('./pages/devices/devices.module').then(m => m.DevicesModule)
       },
       {
         path: 'devices/:id/tracking',
-        loadChildren: './pages/tracking/tracking.module#TrackingModule'
+        loadChildren: () => import('./pages/tracking/tracking.module').then(m => m.TrackingModule)
       },
       {
         path: 'alerts',
-        loadChildren: './pages/alerts/alerts.module#AlertsModule'
+        loadChildren: () => import('./pages/alerts/alerts.module').then(m => m.AlertsModule)
       },
       {
         path: 'messages',
-        loadChildren: './pages/messages/messages.module#MessagesModule'
+        loadChildren: () => import('./pages/messages/messages.module').then(m => m.MessagesModule)
       },
       {
         path: 'messages/:id',
-        loadChildren: './pages/messages/messages.module#MessagesModule'
+        loadChildren: () => import('./pages/messages/messages.module').then(m => m.MessagesModule)
       },
 
       {
         path: 'profile',
-        loadChildren: './pages/user/profile/profile.module#ProfileModule'
+        loadChildren: () => import('./pages/user/profile/profile.module').then(m => m.ProfileModule)
       },
 
-      { path: 'api', loadChildren: './pages/api/api.module#ApiModule' },
+      { path: 'api', loadChildren: () => import('./pages/api/api.module').then(m => m.ApiModule) },
       {
         path: 'parsers',
-        loadChildren: './pages/parsers/parsers.module#ParsersModule'
+        loadChildren: () => import('./pages/parsers/parsers.module').then(m => m.ParsersModule)
       },
       {
         path: 'connectors',
-        loadChildren: './pages/connectors/connectors.module#ConnectorsModule'
+        loadChildren: () => import('./pages/connectors/connectors.module').then(m => m.ConnectorsModule)
       },
       {
         path: 'beacons',
-        loadChildren: './pages/beacons/beacons.module#BeaconsModule'
+        loadChildren: () => import('./pages/beacons/beacons.module').then(m => m.BeaconsModule)
       },
 
       {
         path: 'admin',
         canActivate: [AdminGuard],
-        loadChildren: './pages/admin/admin.module#AdminModule'
+        loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule)
       }
     ]
   },
@@ -103,34 +103,34 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: './pages/overview/overview.module#OverviewModule'
+        loadChildren: () => import('./pages/overview/overview.module').then(m => m.OverviewModule)
       },
 
       {
         path: 'dashboard/:id',
         loadChildren:
-          './pages/dashboard/custom-dashboard.module#CustomDashboardModule'
+          () => import('./pages/dashboard/custom-dashboard.module').then(m => m.CustomDashboardModule)
       },
 
       {
         path: 'categories',
-        loadChildren: './pages/categories/categories.module#CategoriesModule'
+        loadChildren: () => import('./pages/categories/categories.module').then(m => m.CategoriesModule)
       },
       {
         path: 'devices',
-        loadChildren: './pages/devices/devices.module#DevicesModule'
+        loadChildren: () => import('./pages/devices/devices.module').then(m => m.DevicesModule)
       },
       {
         path: 'devices/:id/tracking',
-        loadChildren: './pages/tracking/tracking.module#TrackingModule'
+        loadChildren: () => import('./pages/tracking/tracking.module').then(m => m.TrackingModule)
       },
       {
         path: 'messages',
-        loadChildren: './pages/messages/messages.module#MessagesModule'
+        loadChildren: () => import('./pages/messages/messages.module').then(m => m.MessagesModule)
       },
       {
         path: 'messages/:id',
-        loadChildren: './pages/messages/messages.module#MessagesModule'
+        loadChildren: () => import('./pages/messages/messages.module').then(m => m.MessagesModule)
       }
     ]
   } /*
@@ -149,7 +149,7 @@ export const routes: Routes = [
   }*/,
   {
     path: 'not-found',
-    loadChildren: './pages/not-found/not-found.module#NotFoundModule'
+    loadChildren: () => import('./pages/not-found/not-found.module').then(m => m.NotFoundModule)
   },
   { path: '**', redirectTo: 'not-found' }
 ];

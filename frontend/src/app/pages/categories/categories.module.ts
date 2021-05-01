@@ -1,16 +1,17 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {MomentModule} from 'angular2-moment';
+import {MomentModule} from 'ngx-moment';
 import {FormsModule} from '@angular/forms';
 import {CategoriesComponent} from './categories.component';
 import {CategoriesRoutingModule} from './categories-routing.module';
-import {ToasterModule} from 'angular2-toaster';
-import {ModalModule, TooltipModule} from 'ngx-bootstrap';
+import {ToastrModule} from 'ngx-toastr';
+import {ModalModule} from 'ngx-bootstrap/modal';
+import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import {ClickCopyDirective} from './click-copy.directive';
-import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
+import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown';
 import {LaddaModule} from 'angular2-ladda';
 import {HttpClientModule} from '@angular/common/http';
-import {DataTableModule} from 'angular2-datatable';
+import {DataTablesModule} from 'angular-datatables';
 
 @NgModule({
   imports: [
@@ -18,8 +19,8 @@ import {DataTableModule} from 'angular2-datatable';
     CommonModule,
     MomentModule,
     FormsModule,
-    DataTableModule,
-    ToasterModule.forRoot(),
+    DataTablesModule,
+    ToastrModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
     AngularMultiSelectModule,

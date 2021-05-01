@@ -9,7 +9,7 @@ import {
   ParserApi,
   UserApi
 } from '../../shared/sdk/services/custom';
-import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import {
   Component,
   ElementRef,
@@ -79,13 +79,12 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast;
-  private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig =
-    new ToasterConfig({
-      tapToDismiss: true,
-      timeout: 5000,
-      animation: 'fade'
-    });
+  private toasterService: ToastrService;
+  public toasterconfig = {
+    tapToDismiss: true,
+    timeout: 5000,
+    animation: 'fade'
+  };
 
   public selectOrganizationsSettings = {
     singleSelection: false,
@@ -113,7 +112,7 @@ export class DevicesComponent implements OnInit, OnDestroy {
               private appSettingApi: AppSettingApi,
               private deviceApi: DeviceApi,
               private elRef: ElementRef,
-              toasterService: ToasterService,
+              toasterService: ToastrService,
               @Inject(DOCUMENT) private document: any,
               private messageApi: MessageApi,
               private route: ActivatedRoute,
@@ -165,9 +164,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
       this.loadingDownload = false;
     }, err => {
       console.log(err);
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', 'Server error');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', 'Server error', this.toasterconfig);
       this.loadingDownload = false;
     });
   }
@@ -273,13 +273,15 @@ export class DevicesComponent implements OnInit, OnDestroy {
   updateDevice(): void {
     this.edit = false;
     this.api.updateByIdDevices(this.id, this.deviceToEdit.id, this.deviceToEdit).subscribe(value => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'The device was successfully updated.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.success('Success', 'The device was successfully updated.', this.toasterconfig);
     }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', 'Not allowed.', this.toasterconfig);
     });
   }
 
@@ -290,9 +292,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
         console.log(category);
         this.deviceToEdit.properties = category.properties;
       }, err => {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.error('Error', 'Not allowed.', this.toasterconfig);
       });
     }
 
@@ -320,21 +323,24 @@ export class DevicesComponent implements OnInit, OnDestroy {
           } else {
             console.log('Finished process');
             this.loadingFromBackend = false;
-            if (this.toast)
-              this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-            this.toast = this.toasterService.pop('success', 'Success', 'Retrieved messages from Sigfox Backend complete.');
+            if (this.toast) {
+              this.toasterService.clear(this.toast.toastId);
+            }
+            this.toast = this.toasterService.success('Success', 'Retrieved messages from Sigfox Backend complete.', this.toasterconfig);
           }
         }, err => {
-          if (this.toast)
-            this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-          this.toast = this.toasterService.pop('error', 'Error', err.message.message);
+          if (this.toast) {
+            this.toasterService.clear(this.toast.toastId);
+          }
+          this.toast = this.toasterService.error('Error', err.message.message, this.toasterconfig);
           this.loadingFromBackend = false;
         });
         this.confirmDBModal.hide();
       } else {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('warning', 'Warning', 'Please refer your Sigfox API credentials in the connectors page first.');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.warning('Warning', 'Please refer your Sigfox API credentials in the connectors page first.', this.toasterconfig);
       }
     });
   }
@@ -345,14 +351,16 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.parserApi.parseAllMessages(deviceId, null, null).subscribe(result => {
       this.loadingParseMessages = false;
       if (result.message === 'Success') {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('success', 'Success', 'All the messages were successfully parsed.');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.success('Success', 'All the messages were successfully parsed.', this.toasterconfig);
       } else {
         this.loadingParseMessages = false;
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('warning', 'Warning', result.message);
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.warning('Warning', result.message, this.toasterconfig);
       }
     });
     this.confirmParseModal.hide();
@@ -386,13 +394,15 @@ export class DevicesComponent implements OnInit, OnDestroy {
     this.userApi.destroyByIdDevices(this.user.id, this.deviceToRemove.id).subscribe(value => {
       this.edit = false;
       this.confirmModal.hide();
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'The device and its messages were successfully deleted.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.success('Success', 'The device and its messages were successfully deleted.', this.toasterconfig);
     }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', 'Not allowed.', this.toasterconfig);
     });
   }
 
@@ -429,9 +439,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
           this.deviceToEdit.Organizations.push(org);
         });
       }, err => {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.error);
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.error('Error', err.error, this.toasterconfig);
       });
     });
   }
@@ -439,14 +450,16 @@ export class DevicesComponent implements OnInit, OnDestroy {
   unshare(orga, device, index): void {
     this.deviceApi.unlinkOrganizations(device.id, orga.id).subscribe(results => {
       console.log(results);
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'The device has been removed from ' + orga.name + '.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.success('Success', 'The device has been removed from ' + orga.name + '.', this.toasterconfig);
       this.deviceToEdit.Organizations.splice(index, 1);
     }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.message);
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', err.message, this.toasterconfig);
     });
   }
 

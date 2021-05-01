@@ -2,7 +2,7 @@ import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angu
 import {OrganizationApi, RealTime, UserApi} from '../../../shared/sdk/services';
 import {DOCUMENT} from '@angular/common';
 import {Organization, User} from '../../../shared/sdk/models';
-import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
 
 @Component({
@@ -31,19 +31,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast;
-  private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig =
-    new ToasterConfig({
-      tapToDismiss: true,
-      timeout: 5000,
-      animation: 'fade'
-    });
+  private toasterService: ToastrService;
+  public toasterconfig = {
+    tapToDismiss: true,
+    timeout: 5000,
+    animation: 'fade'
+  };
 
   constructor(@Inject(DOCUMENT) private document: any,
               private rt: RealTime,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
-              toasterService: ToasterService,
+              toasterService: ToastrService,
               private router: Router) {
     this.toasterService = toasterService;
   }
@@ -66,19 +65,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
   updatePassword(): void {
     if (this.newPassword === this.newPasswordConfirm) {
       this.userApi.changePassword(this.oldPassword, this.newPassword).subscribe((result: any) => {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('success', 'Success', 'Password was successfully modified.');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.success('Success', 'Password was successfully modified.', this.toasterconfig);
         this.updatePasswordModal.hide();
       }, (error: any) => {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', error.message);
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.error('Error', error.message, this.toasterconfig);
       });
     } else {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', 'Please make sure the passwords match.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', 'Please make sure the passwords match.', this.toasterconfig);
     }
   }
 
@@ -92,9 +94,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
     ).subscribe((user: User) => {
       this.user = user;
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Profile was updated successfully.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.success('Success', 'Profile was updated successfully.', this.toasterconfig);
       this.updateUserModal.hide();
       //this.rt.onReady().subscribe();
     });
@@ -102,9 +105,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   deleteUser(): void {
     this.userApi.deleteById(this.user.id).subscribe((value: any) => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Account was deleted successfully.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.success('Success', 'Account was deleted successfully.', this.toasterconfig);
       this.deleteUserModal.hide();
     });
 
@@ -119,13 +123,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
   leaveOrganization(organization: Organization): void {
     this.userApi.unlinkOrganizations(this.user.id, organization.id).subscribe(result => {
       this.getOrganizations();
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Unlinked from organization successfully.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.success('Success', 'Unlinked from organization successfully.', this.toasterconfig);
     }, (error: any) => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', error.message);
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', error.message, this.toasterconfig);
     });
   }
 
@@ -133,13 +139,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.organizationApi.deleteById(organization.id).subscribe(result => {
       console.log(result);
       this.getOrganizations();
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Organization was deleted successfully.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.success('Success', 'Organization was deleted successfully.', this.toasterconfig);
     }, (error: any) => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', error.message);
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', error.message, this.toasterconfig);
     });
   }
 

@@ -38,26 +38,26 @@
             <tr>
               <th class="text-center">
                 ID
-                <!--<mfDefaultSorter by="id"><i class="fa fa-sort"></i> ID</mfDefaultSorter>-->
+                <!--<sv-default-sorter by="id"><i class="fa fa-sort"></i> ID</sv-default-sorter>-->
               </th>
               <th class="text-center">
                 Info
-                <!--<mfDefaultSorter by="name"><i class="fa fa-sort"></i> Info</mfDefaultSorter>-->
+                <!--<sv-default-sorter by="name"><i class="fa fa-sort"></i> Info</sv-default-sorter>-->
               </th>
               <th *ngIf="!edit" class="text-center">
                 Geoloc
               </th>
               <th class="text-center">
                 Last message
-                <!--<mfDefaultSorter by="messagedAt"><i class="fa fa-sort"></i> Last message</mfDefaultSorter>-->
+                <!--<sv-default-sorter by="messagedAt"><i class="fa fa-sort"></i> Last message</sv-default-sorter>-->
               </th>
               <th *ngIf="!edit" class="text-center">
                 Properties
-                <!--<mfDefaultSorter by="properties"><i class="fa fa-sort"></i> Properties</mfDefaultSorter>-->
+                <!--<sv-default-sorter by="properties"><i class="fa fa-sort"></i> Properties</sv-default-sorter>-->
               </th>
               <th *ngIf="!edit && (showDeviceSuccessRate && showDeviceSuccessRate.value === true)" class="text-center">
                 Success rate
-                <!--<mfDefaultSorter by="successRate"><i class="fa fa-sort"></i> Success rate</mfDefaultSorter>-->
+                <!--<sv-default-sorter by="successRate"><i class="fa fa-sort"></i> Success rate</sv-default-sorter>-->
               </th>
               <th class="text-center">Action</th>
             </tr>
@@ -303,18 +303,17 @@
                 </div>
                 <div *ngIf="deviceToEdit.Organizations.length>0" class="col col-md-12">
                   <p></p>
-                  <table class="table table-hover table-outline" [mfData]="deviceToEdit.Organizations" #mf="mfDataTable"
-                         [mfRowsOnPage]="20">
+                  <table class="table table-hover table-outline" [svData]="deviceToEdit.Organizations" #sv="svDataTable" [svRowsOnPage]="20">
                     <thead class="thead-inverse">
                     <tr>
                       <th class="text-center">
-                        <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                        <sv-default-sorter by="name"><i class="fa fa-sort"></i> Name</sv-default-sorter>
                       </th>
                       <th class="text-center">Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let orga of mf.data; let i = index">
+                    <tr *ngFor="let orga of sv.data; let i = index">
                       <td class="text-center">
                         <a [routerLink]="['/organization/' + orga.id]"><strong
                           class="text-organization">{{orga.name}}</strong></a>
@@ -601,5 +600,3 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

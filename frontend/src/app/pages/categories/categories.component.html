@@ -211,17 +211,17 @@
 
             <div *ngIf="categoryToEdit.Organizations && categoryToEdit.Organizations.length>0" class="row">
               <div class="col-md-12">
-                <table class="table table-hover table-outline" [mfData]="categoryToEdit.Organizations" #mf="mfDataTable" [mfRowsOnPage]="20">
+                <table class="table table-hover table-outline" [svData]="categoryToEdit.Organizations" #sv="svDataTable" [svRowsOnPage]="20">
                   <thead class="thead-inverse">
                   <tr>
                     <th class="text-center">
-                      <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                      <sv-default-sorter by="name"><i class="fa fa-sort"></i> Name</sv-default-sorter>
                     </th>
                     <th class="text-center">Action</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let orga of mf.data; let i = index">
+                  <tr *ngFor="let orga of sv.data; let i = index">
                     <td class="text-center">
                       <a [routerLink]="['/organization/' + orga.id]"><strong class="text-organization">{{orga.name}}</strong></a>
                     </td>
@@ -307,5 +307,3 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

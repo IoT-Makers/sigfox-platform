@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Beacon, Role, User } from '../../shared/sdk/models';
-import { ToasterConfig, ToasterService } from 'angular2-toaster';
+import { ToastrConfig, ToastrService } from 'ngx-toastr';
 import * as L from 'leaflet';
 import { icon, latLng, tileLayer } from 'leaflet';
 import { BeaconApi, UserApi } from '../../shared/sdk/services/custom';
@@ -29,12 +29,12 @@ export class BeaconsComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast: any;
-  private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig = new ToasterConfig({
+  private toasterService: ToastrService;
+  public toasterconfig = {
     tapToDismiss: true,
     timeout: 3000,
     animation: 'fade'
-  });
+  };
 
   // Map
   private map: L.Map;
@@ -76,7 +76,7 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     private rt: RealtimeService,
     private userApi: UserApi,
     private beaconApi: BeaconApi,
-    toasterService: ToasterService
+    toasterService: ToastrService
   ) {
     this.toasterService = toasterService;
   }
@@ -109,7 +109,9 @@ export class BeaconsComponent implements OnInit, OnDestroy {
         });
 
     beacons.subscribe((beacons: Beacon[]) => {
-      this.beacons = beacons;
+      if (beacons) {
+        this.beacons = beacons;
+      }
       this.beaconsReady = true;
     });
 
@@ -231,28 +233,14 @@ export class BeaconsComponent implements OnInit, OnDestroy {
     apiFn.subscribe(
       value => {
         if (this.toast)
-          this.toasterService.clear(
-            this.toast.toastId,
-            this.toast.toastContainerId
-          );
-        this.toast = this.toasterService.pop(
-          'success',
-          'Success',
-          'Beacon was successfully removed.'
-        );
+          this.toasterService.clear(this.toast.toastId);
+        this.toast = this.toasterService.success('Success', 'Beacon was successfully removed.', this.toasterconfig);
         this.confirmBeaconModal.hide();
       },
       err => {
         if (this.toast)
-          this.toasterService.clear(
-            this.toast.toastId,
-            this.toast.toastContainerId
-          );
-        this.toast = this.toasterService.pop(
-          'error',
-          'Error',
-          err.error.message
-        );
+          this.toasterService.clear(this.toast.toastId);
+        this.toast = this.toasterService.error('Error', err.error.message, this.toasterconfig);
       }
     );
   }
@@ -277,57 +265,33 @@ export class BeaconsComponent implements OnInit, OnDestroy {
         );
     apiFn.subscribe(
       value => {
-        if (this.toast)
-          this.toasterService.clear(
-            this.toast.toastId,
-            this.toast.toastContainerId
-          );
-        this.toast = this.toasterService.pop(
-          'success',
-          'Success',
-          'Beacon was successfully updated.'
-        );
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.success('Success', 'Beacon was successfully updated.', this.toasterconfig);
         this.addOrEditBeaconModal.hide();
       },
       err => {
-        if (this.toast)
-          this.toasterService.clear(
-            this.toast.toastId,
-            this.toast.toastContainerId
-          );
-        this.toast = this.toasterService.pop(
-          'error',
-          'Error',
-          err.error.message
-        );
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.error('Error', err.error.message, this.toasterconfig);
       }
     );
   }
 
   addBeacon(): void {
     if (!this.beaconToAddOrEdit.id.match(/^[0-9a-fA-F]{1,5}$/)) {
-      if (this.toast)
-        this.toasterService.clear(
-          this.toast.toastId,
-          this.toast.toastContainerId
-        );
-      this.toast = this.toasterService.pop(
-        'error',
-        'Error',
-        'Beacon id must be a 5 characters long hexadecimal string'
-      );
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', 'Beacon id must be a 5 characters long hexadecimal string', this.toasterconfig);
       return;
     } else if (!this.beaconToAddOrEdit.placeIds.length) {
-      if (this.toast)
-        this.toasterService.clear(
-          this.toast.toastId,
-          this.toast.toastContainerId
-        );
-      this.toast = this.toasterService.pop(
-        'error',
-        'Error',
-        'Beacon placeIds must not be empty'
-      );
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', 'Beacon placeIds must not be empty', this.toasterconfig);
       return;
     } else {
       this.beaconToAddOrEdit.placeIds = this.beaconToAddOrEdit.placeIds
@@ -345,25 +309,17 @@ export class BeaconsComponent implements OnInit, OnDestroy {
         : this.userApi.createBeacons(this.user.id, this.beaconToAddOrEdit);
       apiFn.subscribe(
         (beacon: Beacon) => {
-          if (this.toast)
-            this.toasterService.clear(
-              this.toast.toastId,
-              this.toast.toastContainerId
-            );
-          this.toast = this.toasterService.pop(
-            'success',
-            'Success',
-            'Beacon was successfully updated.'
-          );
+          if (this.toast) {
+            this.toasterService.clear(this.toast.toastId);
+          }
+          this.toast = this.toasterService.success('Success', 'Beacon was successfully updated.', this.toasterconfig);
           this.addOrEditBeaconModal.hide();
         },
         err => {
-          if (this.toast)
-            this.toasterService.clear(
-              this.toast.toastId,
-              this.toast.toastContainerId
-            );
-          this.toast = this.toasterService.pop('error', 'Error', err.message);
+          if (this.toast) {
+            this.toasterService.clear(this.toast.toastId);
+          }
+          this.toast = this.toasterService.error('Error', err.message, this.toasterconfig);
         }
       );
     }

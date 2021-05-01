@@ -2,11 +2,13 @@ import {NgModule} from '@angular/core';
 import {ApiComponent} from './api.component';
 import {ApiRoutingModule} from './api-routing.module';
 import {CommonModule} from '@angular/common';
-import {DataTableModule} from 'angular2-datatable';
-import {AccordionModule, ModalModule, TooltipModule} from 'ngx-bootstrap';
-import {ToasterModule} from 'angular2-toaster';
+import {DataTablesModule} from 'angular-datatables';
+import {AccordionModule} from 'ngx-bootstrap/accordion';
+import {ModalModule} from 'ngx-bootstrap/modal';
+import {TooltipModule} from 'ngx-bootstrap/tooltip';
+import {ToastrModule} from 'ngx-toastr';
 import {FormsModule} from '@angular/forms';
-import {MomentModule} from 'angular2-moment';
+import {MomentModule} from 'ngx-moment';
 import {ClickCopyDirective} from './click-copy.directive';
 import {AngularMultiSelectModule} from "angular2-multiselect-dropdown";
 
@@ -16,12 +18,12 @@ import {AngularMultiSelectModule} from "angular2-multiselect-dropdown";
     CommonModule,
     MomentModule,
     FormsModule,
-    ToasterModule.forRoot(),
+    ToastrModule.forRoot(),
     AccordionModule.forRoot(),
     AngularMultiSelectModule,
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
-    DataTableModule
+    DataTablesModule
   ],
   declarations: [
     ApiComponent,

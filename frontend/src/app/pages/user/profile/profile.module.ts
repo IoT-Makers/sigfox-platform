@@ -2,21 +2,22 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ProfileComponent} from './profile.component';
 import {ProfileRoutingModule} from './profile-routing.module';
-import {AccordionModule, ModalModule} from 'ngx-bootstrap';
+import {AccordionModule} from 'ngx-bootstrap/accordion';
+import {ModalModule} from 'ngx-bootstrap/modal';
 import {FormsModule} from '@angular/forms';
-import {DataTableModule} from 'angular2-datatable';
+import {DataTablesModule} from 'angular-datatables';
 import {DataFilterPipe} from './datafilterpipe';
-import {ToasterModule} from 'angular2-toaster';
+import {ToastrModule} from 'ngx-toastr';
 
 @NgModule({
   imports: [
     ProfileRoutingModule,
-    DataTableModule,
+    DataTablesModule,
     CommonModule,
     ModalModule.forRoot(),
     AccordionModule.forRoot(),
     FormsModule,
-    ToasterModule.forRoot()
+    ToastrModule.forRoot()
   ],
   declarations: [
     ProfileComponent,

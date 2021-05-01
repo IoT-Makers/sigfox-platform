@@ -1,6 +1,6 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
-import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
 import {Subscription} from 'rxjs/Subscription';
 import {Connector, FireLoopRef, User} from '../../shared/sdk/models';
@@ -47,19 +47,18 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast;
-  private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig =
-    new ToasterConfig({
-      tapToDismiss: true,
-      timeout: 3000,
-      animation: 'fade'
-    });
+  private toasterService: ToastrService;
+  public toasterconfig = {
+    tapToDismiss: true,
+    timeout: 3000,
+    animation: 'fade'
+  };
 
   constructor(@Inject(DOCUMENT) private document: any,
               private userApi: UserApi,
               private rt: RealtimeService,
               private connectorApi: ConnectorApi,
-              toasterService: ToasterService) {
+              toasterService: ToastrService) {
     this.toasterService = toasterService;
   }
 
@@ -119,32 +118,36 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   removeConnector(): void {
     this.userApi.destroyByIdConnectors(this.user.id, this.connectorToRemove.id).subscribe(value => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully removed.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.success('Success', 'Connector was successfully removed.', this.toasterconfig);
       this.confirmConnectorModal.hide();
     }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', err.error.message, this.toasterconfig);
     });
   }
 
   editConnector(): void {
     this.userApi.updateByIdConnectors(this.user.id, this.connectorToEdit.id, this.connectorToEdit).subscribe(value => {
       if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully updated.');
+        this.toasterService.clear(this.toast.toastId);
+      this.toast = this.toasterService.success('Success', 'Connector was successfully updated.', this.toasterconfig);
       this.editConnectorModal.hide();
     }, err => {
       if (err.error.statusCode === 401) {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('warning', 'Ouch', 'Could not connect to Sigfox. Are the API credentials correct?');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.warning('Ouch', 'Could not connect to Sigfox. Are the API credentials correct?', this.toasterconfig);
       } else {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.error('Error', err.error.message, this.toasterconfig);
       }
     });
   }
@@ -152,18 +155,20 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
   addConnector(): void {
     this.userApi.createConnectors(this.user.id, this.connectorToAdd).subscribe((connector: Connector) => {
       if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Connector was successfully updated.');
+        this.toasterService.clear(this.toast.toastId);
+      this.toast = this.toasterService.success('Success', 'Connector was successfully updated.', this.toasterconfig);
       this.addConnectorModal.hide();
     }, err => {
       if (err.error.statusCode === 401) {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('warning', 'Ouch', 'Could not connect to Sigfox. Are the API credentials correct?');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.warning('Ouch', 'Could not connect to Sigfox. Are the API credentials correct?', this.toasterconfig);
       } else {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.error.message);
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.error('Error', err.error.message, this.toasterconfig);
       }
     });
   }

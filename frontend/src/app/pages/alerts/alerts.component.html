@@ -29,32 +29,32 @@
 
           <!-- Table -->
           <div *ngIf="alerts.length > 0" class="table-responsive">
-            <table class="table table-hover table-outline" [mfData]="alerts" #mf="mfDataTable" [mfRowsOnPage]="10">
+            <table class="table table-hover table-outline" [svData]="alerts" #sv="svDataTable" [svRowsOnPage]="10">
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">
-                  <mfDefaultSorter by="active"><i class="fa fa-sort"></i> Active</mfDefaultSorter>
+                  <sv-default-sorter by="active"><i class="fa fa-sort"></i> Active</sv-default-sorter>
                 </th>
                 <th class="text-center">
-                  <mfDefaultSorter by="id"><i class="fa fa-sort"></i> Device</mfDefaultSorter>
+                  <sv-default-sorter by="id"><i class="fa fa-sort"></i> Device</sv-default-sorter>
                 </th>
                 <th class="text-center">
-                  <mfDefaultSorter by="one_shot"><i class="fa fa-sort"></i> One shot</mfDefaultSorter>
+                  <sv-default-sorter by="one_shot"><i class="fa fa-sort"></i> One shot</sv-default-sorter>
                 </th>
                 <th class="text-center">
                   Trigger
                 </th>
                 <th class="text-center">
-                  <mfDefaultSorter by="Connector.name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                  <sv-default-sorter by="Connector.name"><i class="fa fa-sort"></i> Name</sv-default-sorter>
                 </th>
                 <th class="text-center">
-                  <mfDefaultSorter by="triggeredAt"><i class="fa fa-sort"></i> Last triggered</mfDefaultSorter>
+                  <sv-default-sorter by="triggeredAt"><i class="fa fa-sort"></i> Last triggered</sv-default-sorter>
                 </th>
                 <th class="text-center">Action</th>
               </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let alert of mf.data; let i = index">
+              <tr *ngFor="let alert of sv.data; let i = index">
                 <td class="text-center">
                   <label for="{{alert.id + 'active'}}" class="switch switch-sm switch-3d switch-success-outline-alt">
                     <input id="{{alert.id + 'active'}}" (change)="editAlert(alert, 'active')" [(ngModel)]="alert.active" type="checkbox"
@@ -149,7 +149,7 @@
               <tfoot>
               <tr>
                 <td colspan="4">
-                  <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                  <sv-bootstrap-paginator [rowsOnPageSet]="[5,10,15]"></sv-bootstrap-paginator>
                 </td>
               </tr>
               </tfoot>
@@ -482,5 +482,3 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

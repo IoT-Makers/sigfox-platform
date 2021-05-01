@@ -119,25 +119,24 @@
           <ng-container *ngIf="organizations.length > 0">
             <!--Table-->
             <div class="table-responsive">
-              <table class="table table-hover table-outline" [mfData]="organizations" #mf="mfDataTable"
-                     [mfRowsOnPage]="50">
+              <table class="table table-hover table-outline" [svData]="organizations" #sv="svDataTable" [svRowsOnPage]="50">
                 <thead class="thead-inverse">
                 <tr>
                   <th class="text-center">
                     Logo
                   </th>
                   <th class="text-center">
-                    <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                    <sv-default-sorter by="name"><i class="fa fa-sort"></i> Name</sv-default-sorter>
                   </th>
                   <th class="text-center">
-                    <mfDefaultSorter by="Members.length"><i class="fa fa-sort"></i> Users</mfDefaultSorter>
+                    <sv-default-sorter by="Members.length"><i class="fa fa-sort"></i> Users</sv-default-sorter>
                   </th>
 
                   <th class="text-center">Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let organization of  mf.data; let i = index">
+                <tr *ngFor="let organization of  sv.data; let i = index">
                   <td class="text-center">
                     <div class="small text-center">
                       <img src="{{organization.logo}}" height="50px" class="img-avatar">
@@ -288,5 +287,3 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

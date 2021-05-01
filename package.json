@@ -15,9 +15,9 @@
   },
   "scripts": {
     "contributors:add": "all-contributors add",
-    "preinstall": "cd backend/ && npm install && cd ../frontend && npm install && cd ..",
-    "postinstall": "npm run build",
-    "build": "cd frontend/ && npm cache verify && npm run build && cd ..",
+    "preinstall": "cd backend/ && yarn --frozen-lockfile && cd ../frontend && yarn --frozen-lockfile && cd ..",
+    "postinstall": "yarn build",
+    "build": "cd frontend/ && npm cache verify && yarn build && cd ..",
     "start": "npm run serve",
     "backend": "cd backend/ && node server/server.js && cd ..",
     "frontend": "cd frontend/ && node server/server.ts && cd ..",

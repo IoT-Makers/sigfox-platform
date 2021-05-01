@@ -3,13 +3,13 @@ import {AlertsComponent} from './alerts.component';
 import {AlertsRoutingModule} from './alerts-routing.module';
 import {CommonModule} from '@angular/common';
 import {DataFilterPipe} from './datafilterpipe';
-import {ToasterModule} from 'angular2-toaster';
+import {ToastrModule} from 'ngx-toastr';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TooltipModule} from 'ngx-bootstrap';
-import {DataTableModule} from 'angular2-datatable';
-import {MomentModule} from 'angular2-moment';
-import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
-import {ModalModule} from 'ngx-bootstrap';
+import {DataTablesModule} from 'angular-datatables';
+import {MomentModule} from 'ngx-moment';
+import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown';
+import {TooltipModule} from 'ngx-bootstrap/tooltip';
+import {ModalModule} from 'ngx-bootstrap/modal';
 import {GoogleMapsAPIWrapper} from '@agm/core';
 import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import {LeafletDrawModule} from '@asymmetrik/ngx-leaflet-draw';
@@ -18,13 +18,13 @@ import {LeafletDrawModule} from '@asymmetrik/ngx-leaflet-draw';
   imports: [
     AlertsRoutingModule,
     CommonModule,
-    DataTableModule,
+    DataTablesModule,
     FormsModule,
     MomentModule,
     TooltipModule.forRoot(),
     AngularMultiSelectModule,
     ModalModule.forRoot(),
-    ToasterModule.forRoot(),
+    ToastrModule.forRoot(),
     ReactiveFormsModule,
     LeafletModule,
     LeafletDrawModule

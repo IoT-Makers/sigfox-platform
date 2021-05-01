@@ -47,33 +47,33 @@
         </div>
       </div>
       <div class="table-responsive">
-        <table class="table table-hover" [mfData]="messages | dataFilter : filterQuery" #mf="mfDataTable"
-               [mfRowsOnPage]="10">
+        <table class="table table-hover" [svData]="messages | dataFilter : filterQuery" #sv="svDataTable"
+               [svRowsOnPage]="10">
           <thead class="thead-inverse">
           <tr>
             <th class="text-center">
-              <mfDefaultSorter by="createdAt"><i class="fa fa-sort"></i> Date</mfDefaultSorter>
+              <sv-default-sorter by="createdAt"><i class="fa fa-sort"></i> Date</sv-default-sorter>
             </th>
             <th class="text-center">
-              <mfDefaultSorter by="data"><i class="fa fa-sort"></i> Data</mfDefaultSorter>
+              <sv-default-sorter by="data"><i class="fa fa-sort"></i> Data</sv-default-sorter>
             </th>
             <th class="text-center">
-              <mfDefaultSorter by="deviceId"><i class="fa fa-sort"></i> Device</mfDefaultSorter>
+              <sv-default-sorter by="deviceId"><i class="fa fa-sort"></i> Device</sv-default-sorter>
             </th>
             <th class="text-center">
-              <mfDefaultSorter by="Geolocs"><i class="fa fa-sort"></i> Geoloc</mfDefaultSorter>
+              <sv-default-sorter by="Geolocs"><i class="fa fa-sort"></i> Geoloc</sv-default-sorter>
             </th>
             <th class="text-center">
-              <mfDefaultSorter by="seqNumber"><i class="fa fa-sort"></i> Seq Number</mfDefaultSorter>
+              <sv-default-sorter by="seqNumber"><i class="fa fa-sort"></i> Seq Number</sv-default-sorter>
             </th>
             <th class="text-center">
-              <mfDefaultSorter by="reception"><i class="fa fa-sort"></i> Reception</mfDefaultSorter>
+              <sv-default-sorter by="reception"><i class="fa fa-sort"></i> Reception</sv-default-sorter>
             </th>
             <th class="text-center">Action</th>
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let message of mf.data">
+          <tr *ngFor="let message of sv.data">
             <td class="text-center">{{message.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</td>
             <td class="text-center">
               <span class="text-message">{{message.data}}</span>
@@ -175,7 +175,7 @@
           <tfoot>
           <tr>
             <td colspan="4">
-              <mfBootstrapPaginator [rowsOnPageSet]="[10, 25, 50, 100]"></mfBootstrapPaginator>
+              <sv-bootstrap-paginator [rowsOnPageSet]="[10, 25, 50, 100]"></sv-bootstrap-paginator>
             </td>
           </tr>
           </tfoot>
@@ -202,7 +202,6 @@
                  [longitude]="mapLng"
                  [zoom]="mapZoom"
                  [styles]=""
-                 [fullscreenControl]="true"
                  [mapTypeId]="'roadmap'">
           <!-- Receptions -->
           <ng-container *ngFor="let reception of receptions">
@@ -333,5 +332,3 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

@@ -1,6 +1,8 @@
 import {Injectable, Optional} from '@angular/core';
 import * as _ from 'lodash';
 
+declare function Primus(url: string, options: Object): void;
+
 export class RealtimeServiceConfig {
   public primusURL: string
 }

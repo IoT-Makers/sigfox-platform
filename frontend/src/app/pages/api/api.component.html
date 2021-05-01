@@ -13,15 +13,14 @@
               Please create a developer access token first
             </p>
             <div *ngIf="user.devAccessTokens.length > 0" class="table-responsive">
-              <table class="table table-hover"
-                     [mfData]="user.devAccessTokens" #mf="mfDataTable" [mfRowsOnPage]="10">
+              <table class="table table-hover" [svData]="user.devAccessTokens" #sv="svDataTable" [svRowsOnPage]="10">
                 <thead class="thead-inverse">
                 <tr>
                   <th class="text-center">
-                    <mfDefaultSorter by="created">Date</mfDefaultSorter>
+                    <sv-default-sorter by="created">Date</sv-default-sorter>
                   </th>
                   <th class="text-center">
-                    <mfDefaultSorter by="id">ID</mfDefaultSorter>
+                    <sv-default-sorter by="id">ID</sv-default-sorter>
                   </th>
                   <th class="text-center">
                     Remove
@@ -29,7 +28,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of mf.data">
+                <tr *ngFor="let item of sv.data">
                   <td class="text-center">{{item.created | date:"yyyy/MM/dd HH:mm:ss"}}</td>
                   <td class="text-center" click-copy (click)="toastClick()">{{item.id}}</td>
                   <td class="text-center">
@@ -42,7 +41,7 @@
                 <tfoot>
                 <tr>
                   <td colspan="4">
-                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                    <sv-bootstrap-paginator [rowsOnPageSet]="[5,10,15]"></sv-bootstrap-paginator>
                   </td>
                 </tr>
                 </tfoot>
@@ -348,5 +347,3 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

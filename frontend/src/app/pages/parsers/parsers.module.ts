@@ -3,12 +3,12 @@ import {ParsersComponent} from './parsers.component';
 import {ParsersRoutingModule} from './parsers-routing.module';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {ToasterModule} from 'angular2-toaster';
+import {ToastrModule} from 'ngx-toastr';
 import {ModalModule} from 'ngx-bootstrap/modal';
 import {AceEditorModule} from 'ng2-ace-editor';
-import {TooltipModule} from 'ngx-bootstrap';
+import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import {ClickCopyDirective} from './click-copy.directive';
-import {MomentModule} from "angular2-moment";
+import {MomentModule} from "ngx-moment";
 
 
 @NgModule({
@@ -20,7 +20,7 @@ import {MomentModule} from "angular2-moment";
     ModalModule.forRoot(),
     TooltipModule.forRoot(),
     AceEditorModule,
-    ToasterModule.forRoot()
+    ToastrModule.forRoot()
   ],
   declarations: [
     ParsersComponent,

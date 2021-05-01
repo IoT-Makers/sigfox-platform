@@ -45,44 +45,29 @@
 
           <!-- Table -->
           <div *ngIf="beacons.length > 0" class="table-responsive">
-            <table
-              class="table table-hover table-outline"
-              [mfData]="beacons | dataFilter: filterQuery"
-              #mf="mfDataTable"
-              [mfRowsOnPage]="10"
-            >
+            <table class="table table-hover table-outline" [svData]="beacons | dataFilter: filterQuery" #sv="svDataTable" [svRowsOnPage]="10">
               <thead class="thead-inverse">
                 <tr>
                   <th class="text-center">
-                    <mfDefaultSorter by="ID"
-                      ><i class="fa fa-sort"></i> ID</mfDefaultSorter
-                    >
+                    <sv-default-sorter by="ID"><i class="fa fa-sort"></i> ID</sv-default-sorter>
                   </th>
                   <th class="text-center">
-                    <mfDefaultSorter by="info"
-                      ><i class="fa fa-sort"></i> Info</mfDefaultSorter
-                    >
+                    <sv-default-sorter by="info"><i class="fa fa-sort"></i> Info</sv-default-sorter>
                   </th>
                   <th class="text-center">
-                    <mfDefaultSorter by="placeIds"
-                      ><i class="fa fa-sort"></i> PlaceIds</mfDefaultSorter
-                    >
+                    <sv-default-sorter by="placeIds"><i class="fa fa-sort"></i> PlaceIds</sv-default-sorter>
                   </th>
                   <th class="text-center">
-                    <mfDefaultSorter by="txPower"
-                      ><i class="fa fa-sort"></i> TX Power</mfDefaultSorter
-                    >
+                    <sv-default-sorter by="txPower"><i class="fa fa-sort"></i> TX Power</sv-default-sorter>
                   </th>
                   <th class="text-center">
-                    <mfDefaultSorter by="updatedAt"
-                      ><i class="fa fa-sort"></i> Updated</mfDefaultSorter
-                    >
+                    <sv-default-sorter by="updatedAt"><i class="fa fa-sort"></i> Updated</sv-default-sorter>
                   </th>
                   <th class="text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let beacon of mf.data; let i = index">
+                <tr *ngFor="let beacon of sv.data; let i = index">
                   <td class="text-center text-beacon">
                     <strong>{{ beacon.id }}</strong>
                   </td>
@@ -121,9 +106,7 @@
               <tfoot>
                 <tr>
                   <td colspan="4">
-                    <mfBootstrapPaginator
-                      [rowsOnPageSet]="[5, 10, 15]"
-                    ></mfBootstrapPaginator>
+                    <sv-bootstrap-paginator [rowsOnPageSet]="[5, 10, 15]"></sv-bootstrap-paginator>
                   </td>
                 </tr>
               </tfoot>
@@ -470,5 +453,3 @@
   <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
-
-<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

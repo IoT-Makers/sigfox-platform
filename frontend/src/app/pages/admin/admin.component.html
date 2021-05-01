@@ -200,33 +200,33 @@
             <ng-container *ngIf="users.length > 0">
               <!--Table-->
               <div class="table-responsive">
-                <table class="table table-hover table-outline" [mfData]="users" #mf="mfDataTable" [mfRowsOnPage]="50">
+                <table class="table table-hover table-outline" [svData]="users" #sv="svDataTable" [svRowsOnPage]="50">
                   <thead class="thead-inverse">
                   <tr>
                     <th class="text-center">
                       User
                     </th>
                     <th class="text-center">
-                      <mfDefaultSorter by="email"><i class="fa fa-sort"></i> Email</mfDefaultSorter>
+                      <sv-default-sorter by="email"><i class="fa fa-sort"></i> Email</sv-default-sorter>
                     </th>
                     <th class="text-center">
-                      <mfDefaultSorter by="Devices"><i class="fa fa-sort"></i> Devices</mfDefaultSorter>
+                      <sv-default-sorter by="Devices"><i class="fa fa-sort"></i> Devices</sv-default-sorter>
                     </th>
                     <th class="text-center">
-                      <mfDefaultSorter by="Messages"><i class="fa fa-sort"></i> Messages</mfDefaultSorter>
+                      <sv-default-sorter by="Messages"><i class="fa fa-sort"></i> Messages</sv-default-sorter>
                     </th>
                     <th class="text-center">
-                      <mfDefaultSorter by="loggedAt"><i class="fa fa-sort"></i> Last login</mfDefaultSorter>
+                      <sv-default-sorter by="loggedAt"><i class="fa fa-sort"></i> Last login</sv-default-sorter>
                     </th>
                     <th class="text-center">
-                      <mfDefaultSorter by="connectedAt"><i class="fa fa-sort"></i> Last connect (RT)</mfDefaultSorter>
+                      <sv-default-sorter by="connectedAt"><i class="fa fa-sort"></i> Last connect (RT)</sv-default-sorter>
                     </th>
                     <th class="text-center">Roles</th>
                     <th class="text-center">Action</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let user of  mf.data; let i = index">
+                  <tr *ngFor="let user of  sv.data; let i = index">
                     <td class="text-center">
                       <div class="small text-center">
                         <img src="{{user.avatar}}" height="50px" class="img-avatar">
@@ -305,31 +305,31 @@
             <ng-container *ngIf="organizations.length > 0">
               <!--Table-->
               <div class="table-responsive">
-                <table class="table table-hover table-outline" [mfData]="organizations" #mf="mfDataTable"
-                       [mfRowsOnPage]="50">
+                <table class="table table-hover table-outline" [svData]="organizations" #sv="svDataTable"
+                       [svRowsOnPage]="50">
                   <thead class="thead-inverse">
                   <tr>
                     <th class="text-center">
                       Logo
                     </th>
                     <th class="text-center">
-                      <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                      <sv-default-sorter by="name"><i class="fa fa-sort"></i> Name</sv-default-sorter>
                     </th>
                     <th class="text-center">
-                      <mfDefaultSorter by="visitedAt"><i class="fa fa-sort"></i> Visited</mfDefaultSorter>
+                      <sv-default-sorter by="visitedAt"><i class="fa fa-sort"></i> Visited</sv-default-sorter>
                     </th>
                     <th class="text-center">
-                      <mfDefaultSorter by="createdAt"><i class="fa fa-sort"></i> Created</mfDefaultSorter>
+                      <sv-default-sorter by="createdAt"><i class="fa fa-sort"></i> Created</sv-default-sorter>
                     </th>
                     <th class="text-center">
-                      <mfDefaultSorter by="Members.length"><i class="fa fa-sort"></i> Users</mfDefaultSorter>
+                      <sv-default-sorter by="Members.length"><i class="fa fa-sort"></i> Users</sv-default-sorter>
                     </th>
 
                     <th class="text-center">Action</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let orga of  mf.data; let i = index">
+                  <tr *ngFor="let orga of  sv.data; let i = index">
                     <td class="text-center">
                       <div class="small text-center">
                         <img src="{{orga.logo}}" height="50px" class="img-avatar">
@@ -444,5 +444,3 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

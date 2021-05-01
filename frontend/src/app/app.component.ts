@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { setTheme } from 'ngx-bootstrap';
+import { setTheme } from 'ngx-bootstrap/utils';
 import { UserApi } from './shared/sdk/services/custom';
 import { User } from './shared/sdk/models';
 import { RealtimeService } from './shared/realtime/realtime.service';
