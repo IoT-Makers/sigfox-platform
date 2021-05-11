@@ -28,23 +28,23 @@
 
           <!-- Table -->
           <div *ngIf="connectors.length > 0" class="table-responsive">
-            <table class="table table-hover table-outline" [mfData]="connectors" #mf="mfDataTable" [mfRowsOnPage]="10">
+            <table class="table table-hover table-outline" [svData]="connectors" #sv="svDataTable" [svRowsOnPage]="10">
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">
-                  <mfDefaultSorter by="name"><i class="fa fa-sort"></i> Name</mfDefaultSorter>
+                  <sv-default-sorter by="name"><i class="fa fa-sort"></i> Name</sv-default-sorter>
                 </th>
                 <th class="text-center">
-                  <mfDefaultSorter by="type"><i class="fa fa-sort"></i> Type</mfDefaultSorter>
+                  <sv-default-sorter by="type"><i class="fa fa-sort"></i> Type</sv-default-sorter>
                 </th>
                 <th class="text-center">
-                  <mfDefaultSorter by="updatedAt"><i class="fa fa-sort"></i> Updated</mfDefaultSorter>
+                  <sv-default-sorter by="updatedAt"><i class="fa fa-sort"></i> Updated</sv-default-sorter>
                 </th>
                 <th class="text-center">Action</th>
               </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let connector of mf.data; let i = index">
+              <tr *ngFor="let connector of sv.data; let i = index">
                 <td class="text-center text-connector">
                   <strong>{{connector.name}}</strong>
                 </td>
@@ -67,7 +67,7 @@
               <tfoot>
               <tr>
                 <td colspan="4">
-                  <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                  <sv-bootstrap-paginator [rowsOnPageSet]="[5,10,15]"></sv-bootstrap-paginator>
                 </td>
               </tr>
               </tfoot>
@@ -746,5 +746,3 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<toaster-container [toasterconfig]="toasterconfig"></toaster-container>

@@ -16,7 +16,7 @@ export class RealtimeModule {
     }
   }
 
-  static forRoot(config: RealtimeServiceConfig): ModuleWithProviders {
+  static forRoot(config: RealtimeServiceConfig): ModuleWithProviders<RealtimeModule> {
     return {
       ngModule: RealtimeModule,
       providers: [

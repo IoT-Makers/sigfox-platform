@@ -2,25 +2,24 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ConnectorsComponent} from './connectors.component';
 import {ConnectorsRoutingModule} from './connectors-routing.module';
-import {ModalModule, TooltipModule} from 'ngx-bootstrap';
+import {ModalModule} from 'ngx-bootstrap/modal';
+import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import {FormsModule} from '@angular/forms';
-import {DataTableModule} from 'angular2-datatable';
+import {DataTablesModule} from 'angular-datatables';
 import {DataFilterPipe} from './datafilterpipe';
-import {ToasterModule} from 'angular2-toaster';
-import {SelectModule} from 'ng2-select';
-import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
-import {MomentModule} from 'angular2-moment';
+import {ToastrModule} from 'ngx-toastr';
+import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown';
+import {MomentModule} from 'ngx-moment';
 import {InternationalPhoneModule} from "ng4-intl-phone";
 
 @NgModule({
   imports: [
     ConnectorsRoutingModule,
-    DataTableModule,
+    DataTablesModule,
     CommonModule,
     ModalModule.forRoot(),
     FormsModule,
-    ToasterModule.forRoot(),
-    SelectModule,
+    ToastrModule.forRoot(),
     TooltipModule.forRoot(),
     AngularMultiSelectModule,
     MomentModule,

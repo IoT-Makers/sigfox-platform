@@ -2,7 +2,7 @@ import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Category, Device, Organization, User} from '../../shared/sdk/models';
 import {CategoryApi, DeviceApi, OrganizationApi, UserApi} from '../../shared/sdk/services';
 import {Subscription} from 'rxjs/Subscription';
-import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import * as moment from 'moment';
 import {HttpClient} from '@angular/common/http';
 import {DOCUMENT} from '@angular/common';
@@ -52,13 +52,12 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast;
-  private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig =
-    new ToasterConfig({
-      tapToDismiss: true,
-      timeout: 5000,
-      animation: 'fade'
-    });
+  private toasterService: ToastrService;
+  public toasterconfig = {
+    tapToDismiss: true,
+    timeout: 5000,
+    animation: 'fade'
+  };
 
   public selectOrganizationsSettings = {
     singleSelection: false,
@@ -74,7 +73,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
               private deviceApi: DeviceApi,
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
-              toasterService: ToasterService,
+              toasterService: ToastrService,
               private route: ActivatedRoute,
               @Inject(DOCUMENT) private document: any,
               private http: HttpClient) {
@@ -130,9 +129,10 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       this.loadingDownload = false;
     }, err => {
       console.log(err);
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', 'Server error');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', 'Server error', this.toasterconfig);
       this.loadingDownload = false;
     });
   }
@@ -150,9 +150,10 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       this.loadingDownload = false;
     }, err => {
       console.log(err);
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', 'Server error');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', 'Server error', this.toasterconfig);
       this.loadingDownload = false;
     });
   }
@@ -182,23 +183,27 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     if (this.newCategory) {
       // this operation is actually a create
       this.userApi.createCategories(this.user.id, this.categoryToEdit).subscribe((category: Category) => {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('success', 'Success', 'Category was successfully updated.');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.success('Success', 'Category was successfully updated.', this.toasterconfig);
       }, err => {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.error('Error', 'Not allowed.', this.toasterconfig);
       });
     } else {
       this.userApi.updateByIdCategories(this.user.id, this.categoryToEdit.id, this.categoryToEdit).subscribe((category: Category) => {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('success', 'Success', 'Category was successfully updated.');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.success('Success', 'Category was successfully updated.', this.toasterconfig);
       }, err => {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.error('Error', 'Not allowed.', this.toasterconfig);
       });
     }
   }
@@ -220,12 +225,13 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   remove(): void {
     this.userApi.destroyByIdCategories(this.user.id, this.categoryToRemove.id).subscribe(value => {
       if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Category was successfully removed.');
+        this.toasterService.clear(this.toast.toastId);
+      this.toast = this.toasterService.success('Success', 'Category was successfully removed.', this.toasterconfig);
     }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', 'Not allowed.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', 'Not allowed.', this.toasterconfig);
     });
     this.confirmModal.hide();
   }
@@ -267,23 +273,26 @@ export class CategoriesComponent implements OnInit, OnDestroy {
         });
 
       }, err => {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', err.message);
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.error('Error', err.message, this.toasterconfig);
       });
     });
   }
 
   unshare(orga, category, index): void {
     this.categoryApi.unlinkOrganizations(category.id, orga.id).subscribe(results => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'The category has been removed from ' + orga.name + '.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.success('Success', 'The category has been removed from ' + orga.name + '.', this.toasterconfig);
       this.categoryToEdit.Organizations.splice(index, 1);
     }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.message);
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', err.message, this.toasterconfig);
     });
   }
 

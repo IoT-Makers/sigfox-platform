@@ -1,7 +1,9 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "target": "es5",
+    "downlevelIteration": true,
+    "module": "commonjs",
+    "target": "es2015",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,

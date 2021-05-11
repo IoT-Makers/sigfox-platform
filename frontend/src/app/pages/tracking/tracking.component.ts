@@ -9,7 +9,7 @@ import {
   ParserApi,
   UserApi
 } from '../../shared/sdk/services/custom';
-import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import {Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {ActivatedRoute} from '@angular/router';
@@ -45,13 +45,12 @@ export class TrackingComponent implements OnInit, OnDestroy {
   public isDefaultView = true;
   // Notifications
   private toast;
-  private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig =
-    new ToasterConfig({
-      tapToDismiss: true,
-      timeout: 5000,
-      animation: 'fade'
-    });
+  private toasterService: ToastrService;
+  public toasterconfig = {
+    tapToDismiss: true,
+    timeout: 5000,
+    animation: 'fade'
+  };
   private api;
   private id;
   private deviceId;
@@ -63,7 +62,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
               private appSettingApi: AppSettingApi,
               private deviceApi: DeviceApi,
               private elRef: ElementRef,
-              toasterService: ToasterService,
+              toasterService: ToastrService,
               @Inject(DOCUMENT) private document: any,
               private messageApi: MessageApi,
               private route: ActivatedRoute) {

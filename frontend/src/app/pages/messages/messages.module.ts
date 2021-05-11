@@ -2,21 +2,22 @@ import {NgModule} from '@angular/core';
 import {MessagesComponent} from './messages.component';
 import {MessagesRoutingModule} from './messages-routing.module';
 import {CommonModule} from '@angular/common';
-import {DataTableModule} from 'angular2-datatable';
+import {DataTablesModule} from 'angular-datatables';
 import {DataFilterPipe} from './datafilterpipe';
 import {FormsModule} from '@angular/forms';
-import {ModalModule, TooltipModule} from 'ngx-bootstrap';
+import {ModalModule} from 'ngx-bootstrap/modal';
+import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import {AgmCoreModule} from '@agm/core';
 import {ClickCopyDirective} from './click-copy.directive';
-import {ToasterModule} from 'angular2-toaster';
+import {ToastrModule} from 'ngx-toastr';
 
 @NgModule({
   imports: [
     MessagesRoutingModule,
     CommonModule,
-    DataTableModule,
+    DataTablesModule,
     FormsModule,
-    ToasterModule.forRoot(),
+    ToastrModule.forRoot(),
     ModalModule.forRoot(),
     TooltipModule.forRoot(),
     AgmCoreModule

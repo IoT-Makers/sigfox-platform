@@ -1,6 +1,6 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AccessToken, User} from '../../shared/sdk/models';
-import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
 import {DOCUMENT} from '@angular/common';
 
@@ -30,18 +30,17 @@ export class ApiComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast;
-  private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig =
-    new ToasterConfig({
-      tapToDismiss: true,
-      timeout: 3000,
-      animation: 'fade'
-    });
+  private toasterService: ToastrService;
+  public toasterconfig = {
+    tapToDismiss: true,
+    timeout: 3000,
+    animation: 'fade'
+  };
 
   constructor(@Inject(DOCUMENT) private document: any,
               private userApi: UserApi,
               private connectorApi: ConnectorApi,
-              toasterService: ToasterService) {
+              toasterService: ToastrService) {
     this.toasterService = toasterService;
   }
 
@@ -64,13 +63,15 @@ export class ApiComponent implements OnInit, OnDestroy {
       this.connectorApi.createSigfoxBackendCallbacks(this.selectedDevicetypes[0].id).subscribe((result: any) => {
         if (result.statusCode === 200) {
           this.selectedDevicetypes = [];
-          if (this.toast)
-            this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-          this.toast = this.toasterService.pop('success', 'Success', 'Callbacks were successfully created.');
+          if (this.toast) {
+            this.toasterService.clear(this.toast.toastId);
+          }
+          this.toast = this.toasterService.success('Success', 'Callbacks were successfully created.', this.toasterconfig);
         } else {
-          if (this.toast)
-            this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-          this.toast = this.toasterService.pop('error', 'Error', 'Error occurred, are you sure you have the DEVICE MANAGER [W] or CUSTOMER [W] API rights on the Sigfox Backend?');
+          if (this.toast) {
+            this.toasterService.clear(this.toast.toastId);
+          }
+          this.toast = this.toasterService.error('Error', 'Error occurred, are you sure you have the DEVICE MANAGER [W] or CUSTOMER [W] API rights on the Sigfox Backend?', this.toasterconfig);
         }
       });
     }
@@ -87,9 +88,10 @@ export class ApiComponent implements OnInit, OnDestroy {
           this.selectDevicetypes.push(item);
         });
       } else {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('warning', 'Warning', 'To automatically create the callbacks, please create the Sigfox API connector first!');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.warning('Warning', 'To automatically create the callbacks, please create the Sigfox API connector first!', this.toasterconfig);
       }
     });
   }
@@ -119,8 +121,8 @@ export class ApiComponent implements OnInit, OnDestroy {
 
   toastClick() {
     if (this.toast)
-      this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-    this.toast = this.toasterService.pop('info', 'Click', 'Copied to clipboard.');
+      this.toasterService.clear(this.toast.toastId);
+    this.toast = this.toasterService.info('Click', 'Copied to clipboard.');
   }
 
   ngOnDestroy(): void {

@@ -2,14 +2,14 @@ import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChil
 import {ActivatedRoute, Router} from '@angular/router';
 import {DashboardApi, UserApi} from '../../shared/sdk/services/index';
 import {Category, Dashboard, Device, User, Widget} from '../../shared/sdk/models/index';
-import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {ToastrService} from 'ngx-toastr';
 import {Message, Organization} from '../../shared/sdk/models';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import {MessageApi, OrganizationApi} from '../../shared/sdk/services/custom';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Rx';
-import {AgmMap, LatLngBounds} from '@agm/core';
+import {AgmMap} from '@agm/core';
 import {Subscription} from 'rxjs/Subscription';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
 import {Location} from '@angular/common';
@@ -245,13 +245,12 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast;
-  private toasterService: ToasterService;
-  public toasterconfig: ToasterConfig =
-    new ToasterConfig({
-      tapToDismiss: true,
-      timeout: 5000,
-      animation: 'fade'
-    });
+  private toasterService: ToastrService;
+  public toasterconfig = {
+    tapToDismiss: true,
+    timeout: 5000,
+    animation: 'fade'
+  };
 
   private api;
   private id;
@@ -263,7 +262,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
               private organizationApi: OrganizationApi,
               private route: ActivatedRoute,
               private router: Router,
-              toasterService: ToasterService,
+              toasterService: ToastrService,
               private _location: Location,
               private http: HttpClient) {
     this.toasterService = toasterService;
@@ -398,26 +397,30 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
   saveDashboard(): void {
     this.api.updateByIdDashboards(this.id, this.dashboard.id, this.dashboard).subscribe((dashboard: Dashboard) => {
       this.editFlag = false;
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toasterService.pop('success', 'Success', 'Successfully saved dashboard.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toasterService.success('Success', 'Successfully saved dashboard.', this.toasterconfig);
     }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error);
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', err.error, this.toasterconfig);
     });
   }
 
   deleteDashboard(): void {
     this.api.destroyByIdDashboards(this.id, this.dashboard.id).subscribe((dashboard: Dashboard) => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toasterService.pop('success', 'Success', 'Successfully deleted dashboard.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toasterService.success('Success', 'Successfully deleted dashboard.', this.toasterconfig);
       this._location.back();
     }, err => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', err.error);
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', err.error, this.toasterconfig);
     });
   }
 
@@ -929,7 +932,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   addWidget(): void {
     if (this.newWidget.type !== 'text' && this.newWidget.type !== 'image' && this.newWidget.type !== 'divider' && this.newWidget.filter.where.or.length === 0) {
-      this.toasterService.pop('error', 'Error', 'Please select at least one category or device.');
+      this.toasterService.error('Error', 'Please select at least one category or device.', this.toasterconfig);
       return;
     }
 
@@ -943,7 +946,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.newWidget.userId = this.user.id;
     this.dashboardApi.createWidgets(this.dashboard.id, this.newWidget).subscribe(widget => {
       this.loadWidgets();
-      this.toasterService.pop('success', 'Success', 'Successfully created widget.');
+      this.toasterService.success('Success', 'Successfully created widget.', this.toasterconfig);
 
       this.newWidgetFlag = false;
 
@@ -960,7 +963,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
   updateWidget(): void {
     if (this.newWidget.type !== 'text' && this.newWidget.type !== 'image' && this.newWidget.type !== 'divider' && this.newWidget.filter.where.or.length === 0) {
-      this.toasterService.pop('error', 'Error', 'Please select at least one category or device.');
+      this.toasterService.error('Error', 'Please select at least one category or device.', this.toasterconfig);
       return;
     }
     this.setWidgetFilter();
@@ -977,7 +980,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
 
     this.dashboardApi.updateByIdWidgets(this.dashboard.id, this.newWidget.id, this.newWidget).subscribe(widget => {
       this.loadWidget(widget);
-      this.toasterService.pop('success', 'Success', 'The widget was successfully updated.');
+      this.toasterService.success('Success', 'The widget was successfully updated.', this.toasterconfig);
       this.editWidgetFlag = false;
       this.addOrEditWidgetModal.hide();
     });
@@ -987,7 +990,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     this.dashboardApi.destroyByIdWidgets(this.dashboard.id, widget.id).subscribe(() => {
       this.loadWidgets();
       this.cancel();
-      this.toasterService.pop('success', 'Success', 'Successfully deleted widget.');
+      this.toasterService.success('Success', 'Successfully deleted widget.', this.toasterconfig);
     });
   }
 
@@ -1086,7 +1089,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
       this.searchBox.addListener('places_changed', () => this.goToSearchedPlace());
     }
-    const bounds: LatLngBounds = new google.maps.LatLngBounds();
+    const bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds();
     if (devices) {
       devices.forEach((device: any) => {
         if (device.Geolocs && device.Geolocs[0]) {
@@ -1120,7 +1123,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
     if (places.length === 0) {
       return;
     }
-    const bounds: LatLngBounds = new google.maps.LatLngBounds();
+    const bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds();
     places.forEach((place) => {
       if (place.geometry.viewport) bounds.union(place.geometry.viewport);
       else bounds.extend(place.geometry.location);
@@ -1144,7 +1147,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       if (this.widgets) {
         this.dashboardReady = false;
         // Build widgets
-        let topics = new Set();
+        let topics = new Set<string>();
         this.widgets.forEach((widget: any, countWidgets: number) => {
           widget.ready = false;
           // Load widgets
@@ -1699,7 +1702,7 @@ export class CustomDashboardComponent implements OnInit, OnDestroy {
       widgetFilter.where = {id: device.id};
       widgetFilter.include[0].scope.limit = 1000;
       this.getDevicesWithFilter(widget, widgetFilter).subscribe((devices: any[]) => {
-        const bounds: LatLngBounds = new google.maps.LatLngBounds();
+        const bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds();
         device.Geolocs = devices[0].Geolocs;
         if (widget.options.geolocType === 'preferBestAccuracy') {
           device.Geolocs = this.groupBy(device.Geolocs, "messageId");

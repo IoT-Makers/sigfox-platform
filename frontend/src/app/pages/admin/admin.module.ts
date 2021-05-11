@@ -2,13 +2,15 @@ import {NgModule} from '@angular/core';
 import {AdminComponent} from './admin.component';
 import {AdminRoutingModule} from './admin-routing.module';
 import {CommonModule} from '@angular/common';
-import {ToasterModule} from 'angular2-toaster';
-import {AccordionModule, ModalModule, TooltipModule} from 'ngx-bootstrap';
+import {ToastrModule} from 'ngx-toastr';
+import {AccordionModule} from 'ngx-bootstrap/accordion';
+import {ModalModule} from 'ngx-bootstrap/modal';
+import {TooltipModule} from 'ngx-bootstrap/tooltip';
 
-import {MomentModule} from 'angular2-moment';
+import {MomentModule} from 'ngx-moment';
 import {FormsModule} from '@angular/forms';
 
-import {DataTableModule} from 'angular2-datatable';
+import {DataTablesModule} from 'angular-datatables';
 
 
 @NgModule({
@@ -17,11 +19,11 @@ import {DataTableModule} from 'angular2-datatable';
     CommonModule,
     MomentModule,
     FormsModule,
-    ToasterModule.forRoot(),
+    ToastrModule.forRoot(),
     AccordionModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
-    DataTableModule
+    DataTablesModule
   ],
   declarations: [
     AdminComponent

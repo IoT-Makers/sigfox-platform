@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AppSetting, FireLoopRef, Organization, Role, User} from '../../shared/sdk/models';
 import {AppSettingApi, OrganizationApi, RoleApi, UserApi} from '../../shared/sdk/services';
-import {ToasterConfig, ToasterService} from 'angular2-toaster';
+import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs/Subscription';
 import {
   AlertApi,
@@ -15,7 +15,6 @@ import {
   WidgetApi
 } from '../../shared/sdk/services/custom';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
-import {el} from "@angular/platform-browser/testing/src/browser_util";
 
 @Component({
   selector: 'app-messages',
@@ -64,12 +63,11 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast;
-  public toasterconfig: ToasterConfig =
-    new ToasterConfig({
-      tapToDismiss: true,
-      timeout: 5000,
-      animation: 'fade'
-    });
+  public toasterconfig = {
+    tapToDismiss: true,
+    timeout: 5000,
+    animation: 'fade'
+  };
 
 
   constructor(private rt: RealtimeService,
@@ -86,7 +84,7 @@ export class AdminComponent implements OnInit, OnDestroy {
               private organizationApi: OrganizationApi,
               private appSettingApi: AppSettingApi,
               private roleApi: RoleApi,
-              private toasterService: ToasterService) {
+              private toasterService: ToastrService) {
 
     this.toasterService = toasterService;
   }
@@ -187,8 +185,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   deleteUser(): void {
     this.userApi.deleteById(this.userToRemove.id).subscribe((value: any) => {
       if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Account was deleted successfully.');
+        this.toasterService.clear(this.toast.toastId);
+      this.toast = this.toasterService.success('Success', 'Account was deleted successfully.', this.toasterconfig);
       this.confirmModal.hide();
       this.getUsers();
     });
@@ -243,19 +241,22 @@ export class AdminComponent implements OnInit, OnDestroy {
   addUser(): void {
     this.userApi.create(this.userToAddOrEdit).subscribe((user: User) => {
       this.getUsers();
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Account was created successfully.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.success('Success', 'Account was created successfully.', this.toasterconfig);
     }, (err) => {
       if (err.error.statusCode === 422) {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', 'Email exists.');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.error('Error', 'Email exists.', this.toasterconfig);
         console.log('Admin | Error 422 | Email already taken');
       } else {
-        if (this.toast)
-          this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-        this.toast = this.toasterService.pop('error', 'Error', 'Invalid username or password');
+        if (this.toast) {
+          this.toasterService.clear(this.toast.toastId);
+        }
+        this.toast = this.toasterService.error('Error', 'Invalid username or password', this.toasterconfig);
         console.log('Admin | Error | Invalid username or password ', err);
       }
     });
@@ -267,13 +268,15 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.organizationApi.deleteById(organization.id).subscribe(result => {
       console.log(result);
       this.getOrganizations();
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('success', 'Success', 'Organization was deleted successfully.');
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.success('Success', 'Organization was deleted successfully.', this.toasterconfig);
     }, (error: any) => {
-      if (this.toast)
-        this.toasterService.clear(this.toast.toastId, this.toast.toastContainerId);
-      this.toast = this.toasterService.pop('error', 'Error', error.message);
+      if (this.toast) {
+        this.toasterService.clear(this.toast.toastId);
+      }
+      this.toast = this.toasterService.error('Error', error.message, this.toasterconfig);
     });
   }
 

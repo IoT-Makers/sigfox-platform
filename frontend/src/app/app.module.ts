@@ -4,7 +4,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NAV_DROPDOWN_DIRECTIVES } from './shared/nav-dropdown.directive';
 import { AppComponent } from './app.component';
-import { ChartsModule } from 'ng2-charts/ng2-charts';
+import { ChartsModule } from 'ng2-charts';
 import { SIDEBAR_TOGGLE_DIRECTIVES } from './shared/sidebar.directive';
 import { AsideToggleDirective } from './shared/aside.directive';
 import { BreadcrumbsComponent } from './shared/breadcrumb.component';
@@ -14,10 +14,12 @@ import { SDKBrowserModule } from './shared/sdk/index';
 import { AuthGuard } from './_guards/auth.guard';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AgmCoreModule } from '@agm/core';
-import { BsDropdownModule, ModalModule, TooltipModule } from 'ngx-bootstrap';
-import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown/angular2-multiselect-dropdown';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { ToasterModule } from 'angular2-toaster';
+import { ToastrModule } from 'ngx-toastr';
 import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
 import { AdminGuard } from './_guards/admin.guard';
 import { DashboardGuard } from './_guards/dashboard.guard';
@@ -38,7 +40,7 @@ import { Angulartics2Module } from 'angulartics2';
     ModalModule.forRoot(),
     ChartsModule,
     SDKBrowserModule.forRoot(),
-    ToasterModule.forRoot(),
+    ToastrModule.forRoot(),
     LeafletModule.forRoot(),
     LeafletDrawModule.forRoot(),
     AgmCoreModule.forRoot({
