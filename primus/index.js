@@ -26,7 +26,11 @@ global.primus = Primus.createServer(function connection(spark) {
 
 
 // Connect to the db
-MongoClient.connect(mongodbUrl, {useNewUrlParser: true}, function (err, client) {
+let opts = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+};
+MongoClient.connect(mongodbUrl, opts, function (err, client) {
     if (err) {
         log.error("MONGO_URL not set on Primus");
         throw err;
