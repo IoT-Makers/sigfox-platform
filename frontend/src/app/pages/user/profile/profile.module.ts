@@ -8,6 +8,7 @@ import {FormsModule} from '@angular/forms';
 import {DataTablesModule} from 'angular-datatables';
 import {DataFilterPipe} from './datafilterpipe';
 import {ToastrModule} from 'ngx-toastr';
+import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -17,7 +18,10 @@ import {ToastrModule} from 'ngx-toastr';
     ModalModule.forRoot(),
     AccordionModule.forRoot(),
     FormsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    TranslateModule.forChild({
+      extend: true
+    }),
   ],
   declarations: [
     ProfileComponent,

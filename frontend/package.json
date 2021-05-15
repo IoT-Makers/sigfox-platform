@@ -18,6 +18,7 @@
     "set-env": "npm run config",
     "build": "ng build --prod",
     "start": "ng serve",
+    "start:dev": "ng serve --port 4201",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e --port 4201"
@@ -44,6 +45,8 @@
     "@ngrx/effects": "10",
     "@ngrx/entity": "10",
     "@ngrx/store": "10",
+    "@ngx-translate/core": "^13.0.0",
+    "@ngx-translate/http-loader": "^6.0.0",
     "@types/datatables.net": "^1.10.19",
     "@types/googlemaps": "3.39.12",
     "@types/jquery": "^3.5.5",

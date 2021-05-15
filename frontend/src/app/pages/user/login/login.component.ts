@@ -4,6 +4,7 @@ import {AppSettingApi, UserApi} from '../../../shared/sdk/services';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import {RealtimeService} from "../../../shared/realtime/realtime.service";
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -25,7 +26,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast;
-  private toasterService: ToastrService;
   public toasterconfig = {
     tapToDismiss: true,
     timeout: 5000,
@@ -38,8 +38,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     private appSettingApi: AppSettingApi,
     private route: ActivatedRoute,
     private router: Router,
-    toasterService: ToastrService) {
-    this.toasterService = toasterService;
+    private translate: TranslateService,
+    private toasterService: ToastrService) {
+      this.toasterService = toasterService;
   }
 
   onLogin(): void {
@@ -58,9 +59,9 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.toasterService.clear(this.toast.toastId);
           }
           this.toast = this.toasterService.error('Error', 'Invalid username or password.', this.toasterconfig);
-          this.errorMessage = 'Invalid username or password.';
+          this.errorMessage = this.translate.instant("error.invalid_login");
         } else if (err.statusCode === 500) {
-          this.errorMessage = 'Internal server error';
+          this.errorMessage = this.translate.instant("error.internal_server");
         } else {
           this.errorMessage = err.message;
         }

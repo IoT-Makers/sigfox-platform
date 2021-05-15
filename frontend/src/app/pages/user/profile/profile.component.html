@@ -1,95 +1,84 @@
 <div class="animated fadeIn">
-  <h3 *ngIf="user.username">Welcome {{user.username}}</h3>
-  <h3 *ngIf="!user.username">Welcome</h3>
-  <hr>
   <div class="row">
     <div class="col-sm-12">
       <div class="card mb-3">
         <div class="card-header card-default">
-          My Profile
+          <p translate>profile</p>
+          <div>
+            <a role="button" (click)="updateUserModal.show()">
+              <i class="fa fa-pencil" ></i>
+            </a>
+          </div>
         </div>
-        <div class="card-block">
+        <div class="card-block profile">
           <div>
             <b>
-              <i class="fa fa-user" aria-hidden="true"></i>
-              <span class="mr-1"></span> Username:
+              <i class="fa fa-user mr1" aria-hidden="true"></i><span class="mr-1"></span>
+              <span translate>username</span>
             </b>
             <span *ngIf="user.username">{{user.username}}</span>
-            <span *ngIf="!user.username" class="small text-danger"><i>Please set your username by clicking on the "Modify" button below.</i></span>
+            <span *ngIf="!user.username" class="small text-danger">
+              <i translate>please_set_username</i>
+            </span>
           </div>
-          <hr>
+          <hr />
           <div>
             <b>
-              <i class="fa fa-envelope" aria-hidden="true"></i>
-              <span class="mr-1"></span> Email:
-            </b> {{user.email}}
+              <i class="fa fa-envelope" aria-hidden="true"></i><span class="mr-1"></span>
+              <span translate>email</span>
+            </b>
+            <span>{{user.email}}</span>
           </div>
-          <hr>
+          <hr />
           <div>
             <b>
-              <i class="fa fa-check-circle" aria-hidden="true"></i>
-              <span class="mr-1"></span> Verified:
-            </b> <span [ngClass]="user.emailVerified ? 'text-success' : 'text-danger'">{{user.emailVerified}}</span>
+              <i class="fa fa-check-circle" aria-hidden="true"></i><span class="mr-1"></span>
+              <span translate>verified</span>
+            </b>
+            <span [ngClass]="user.emailVerified ? 'text-success' : 'text-danger'">{{user.emailVerified}}</span>
           </div>
-          <hr>
+          <hr />
           <div class="embed-responsive">
             <b>
-              <i class="fa fa-camera" aria-hidden="true"></i>
-              <span class="mr-1"></span> Avatar:
-            </b> {{user.avatar}}
-          </div>
-          <hr>
-          <div>
-            <b>
-              <i class="fa fa-calendar" aria-hidden="true"></i>
-              <span class="mr-1"></span> Created:
-            </b> {{user.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}
-          </div>
-          <hr>
-          <div>
-            <b>
-              <i class="fa fa-calendar" aria-hidden="true"></i>
-              <span class="mr-1"></span> Updated:
-            </b> {{user.updatedAt | date:"yyyy/MM/dd HH:mm:ss"}}
-          </div>
-          <hr>
-          <div>
-            <b>
-              <i class="fa fa-calendar" aria-hidden="true"></i>
-              <span class="mr-1"></span> Last login:
-            </b> {{user.loggedAt | date:"yyyy/MM/dd HH:mm:ss"}}
-          </div>
-          <hr>
-          <div>
-            <b>
-              <i class="fa fa-key" aria-hidden="true"></i>
-              <span class="mr-1"></span> Password:
+              <i class="fa fa-camera" aria-hidden="true"></i><span class="mr-1"></span>
+              <span translate>avatar</span>
             </b>
-            <button class="btn btn-sm btn-success btn-round" (click)="updatePasswordModal.show()">Change password
-            </button>
+            <img src={{user.avatar}} height=32 />
           </div>
-          <!--<hr>
-          <div *ngIf="user.emailVerified; then verifiedEmail else unverifiedEmail"></div>
-          <ng-template #verifiedEmail>
-            <div class="text-success">
-              <b>
-                <i class="fa fa-check-circle" aria-hidden="true"></i>
-                <span class="mr-1"></span> Email verified
-              </b>
-            </div>
-          </ng-template>
-          <ng-template #unverifiedEmail>
-            <div class="text-danger">
-              <b>
-                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                <span class="mr-1"></span> Please verify your email
-              </b>
-            </div>
-          </ng-template>-->
+          <hr />
+          <div>
+            <b>
+              <i class="fa fa-calendar" aria-hidden="true"></i><span class="mr-1"></span>
+              <span translate>created</span>
+            </b>
+            <span>{{user.createdAt | date:"yyyy/MM/dd HH:mm:ss"}}</span>
+          </div>
+          <hr />
+          <div>
+            <b>
+              <i class="fa fa-calendar" aria-hidden="true"></i><span class="mr-1"></span>
+              <span translate>updated</span>
+            </b>
+            <span>{{user.updatedAt | date:"yyyy/MM/dd HH:mm:ss"}}</span>
+          </div>
+          <hr />
+          <div>
+            <b>
+              <i class="fa fa-calendar" aria-hidden="true"></i><span class="mr-1"></span>
+              <span translate>last_login</span>
+            </b>
+            <span>{{user.loggedAt | date:"yyyy/MM/dd HH:mm:ss"}}</span>
+          </div>
+          <hr />
+          <div>
+            <b>
+              <i class="fa fa-key" aria-hidden="true"></i><span class="mr-1"></span>
+              <span translate>password</span>
+            </b>
+            <button class="btn btn-sm btn-success btn-round" (click)="updatePasswordModal.show()" translate>change_password</button>
+          </div>
         </div>
-        <div class="card-footer mt-1">
-          <button class="btn btn-sm btn-primary" (click)="updateUserModal.show()">Modify</button>
-          <button class="btn btn-sm btn-danger" (click)="deleteUserModal.show()">Delete account</button>
+        <div class="card-footer">
           <div class="pull-right">
             <span class="small text-user">userId: {{user.id}}</span>
           </div>
@@ -166,14 +155,15 @@
               </table>
             </div>
           </ng-container>
-
-
-
         </div>
       </div>
     </div>
   </div>
-
+  <div class="row text-center mb-1">
+    <div class="col-md-12">
+      <button class="btn btn-sm btn-danger" (click)="deleteUserModal.show()">Delete account</button>
+    </div>
+  </div>
 </div>
 
 

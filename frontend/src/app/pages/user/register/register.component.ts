@@ -4,10 +4,12 @@ import {UserApi, AppSettingApi} from '../../../shared/sdk/services';
 import {Router} from '@angular/router';
 import * as _ from 'lodash';
 import {RealtimeService} from "../../../shared/realtime/realtime.service";
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
-  templateUrl: 'register.component.html'
+  templateUrl: 'register.component.html',
+  styleUrls: ['./register.component.scss']
 })
 
 export class RegisterComponent {
@@ -24,14 +26,15 @@ export class RegisterComponent {
   constructor(private rt: RealtimeService,
               private userApi: UserApi,
               private appSettingApi: AppSettingApi,
-              private router: Router) {
+              private router: Router,
+              private translate: TranslateService) {
     this.getAppSettings();
   }
 
   onRegister(): void {
     console.log('Registering');
     if (this.user.password !== this.verifyPassword) {
-      this.errorMessage = 'Passwords do not match';
+      this.errorMessage = this.translate.instant('error.not_match_password');
       return;
     }
 
@@ -45,15 +48,15 @@ export class RegisterComponent {
     }, err => {
       // console.log(err);
       if (err.statusCode === 422)
-        this.errorMessage = 'Email already taken.';
+        this.errorMessage = this.translate.instant('error.conflict_email');
       else
-        this.errorMessage = 'Invalid username or password.';
+        this.errorMessage = this.translate.instant('error.invalid_format');
     });
   }
 
   verify(): void {
     if (this.user.password !== this.verifyPassword) {
-      this.errorMessage = 'Passwords do not match';
+      this.errorMessage = this.translate.instant('error.not_match_password');
     } else {
       this.errorMessage = '';
     }
@@ -77,9 +80,9 @@ export class RegisterComponent {
       }, err => {
         // console.log(err);
         if (err.statusCode === 401) {
-          this.errorMessage = 'Invalid username or password.';
+          this.errorMessage = this.translate.instant('error.invalid_login');
         } else if (err.statusCode === 500) {
-          this.errorMessage = 'Internal server error';
+          this.errorMessage = this.translate.instant('error.internal_server');
         } else {
           this.errorMessage = err.message;
         }

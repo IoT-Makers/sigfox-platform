@@ -1,0 +1,30 @@
+{
+  "input_account": "アカウント情報を入力",
+  "login": "ログイン",
+  "forgot_password": "パスワードを忘れた方",
+  "error": {
+    "invalid_login": "ユーザ名かパスワードが間違っています",
+    "intarnal_server": "ログインに失敗しました",
+    "not_match_password": "パスワードが一致しません",
+    "conflict_email": "登録済みのメールアドレスです",
+    "invalid_format": "入力した内容が不正です"
+  },
+  "signup": "アカウントの作成",
+  "register": "登録",
+  "hey": "ようこそ",
+  "setting_username": "プロフィールページからユーザー名を設定してください。プロフィールページはページの右上から開くことができます。",
+  "profile": "プロフィール",
+  "username": "ユーザー名",
+  "please_set_username": "右上の編集ボタンからユーザー名を設定してください",
+  "email": "メールアドレス",
+  "verified": "認証状況",
+  "avatar": "アバター",
+  "created": "作成日",
+  "updated": "更新日",
+  "last_login": "最終ログイン",
+  "password": "パスワード",
+  "delete_account": "アカウントを削除する",
+  "organizations": "組織",
+  "repeat_password": "パスワード(確認)",
+  "change_password": "変更"
+}
