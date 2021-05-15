@@ -23,8 +23,8 @@
   "updated": "更新日",
   "last_login": "最終ログイン",
   "password": "パスワード",
-  "delete_account": "アカウントを削除する",
-  "organizations": "組織",
   "repeat_password": "パスワード(確認)",
-  "change_password": "変更"
+  "change_password": "変更",
+  "delete_account": "アカウントを削除する",
+  "organizations": "組織"
 }

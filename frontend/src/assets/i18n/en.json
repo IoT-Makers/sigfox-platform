@@ -23,8 +23,8 @@
   "updated": "Updated",
   "last_login": "Last login",
   "password": "Password",
-  "delete_account": "Delete account",
-  "organizations": "Organizations",
   "repeat_password": "Repeat password",
-  "change_password": "Change password"
+  "change_password": "Change password",
+  "delete_account": "Delete account",
+  "organizations": "Organizations"
 }
