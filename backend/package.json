@@ -18,7 +18,7 @@
     "lint": "eslint .",
     "start": "node server/server.js",
     "compile": "tsc && copyfiles \"server/**/*.json\" build/server -u 1",
-    "posttest": "npm run lint && nsp check"
+    "posttest": "yarn lint && yarn nsp check"
   },
   "dependencies": {
     "@mean-expert/boot-script": "^1.0.0",
