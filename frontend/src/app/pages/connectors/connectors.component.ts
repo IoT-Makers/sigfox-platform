@@ -155,8 +155,9 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   addConnector(): void {
     this.userApi.createConnectors(this.user.id, this.connectorToAdd).subscribe((connector: Connector) => {
-      if (this.toast)
+      if (this.toast) {
         this.toasterService.clear(this.toast.toastId);
+      }
       this.toast = this.toasterService.success('Success', 'Connector was successfully updated.', this.toasterconfig);
       this.addConnectorModal.hide();
     }, err => {

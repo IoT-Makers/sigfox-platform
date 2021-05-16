@@ -190,7 +190,7 @@
             <ng-container *ngIf="connectorToAdd.type === 'nexmo-sms'">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">API Key
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -202,7 +202,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">API Secret
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="password" class="form-control"
@@ -214,7 +214,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Destination number
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <int-phone-prefix name="connectorToAdd.recipient" [(ngModel)]="connectorToAdd.recipient" required></int-phone-prefix>
@@ -279,7 +279,7 @@
             <ng-container *ngIf="connectorToAdd.type === 'free-mobile'">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Login
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -291,7 +291,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Password
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="password" class="form-control"
@@ -329,7 +329,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Host
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -341,7 +341,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Port
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="number" class="form-control"
@@ -353,7 +353,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Topic
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -369,7 +369,7 @@
             <ng-container *ngIf="connectorToAdd.type === 'office-365'" class="form-group row">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Login
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -381,7 +381,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Password
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="password" class="form-control"
@@ -393,7 +393,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Recipient email
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="email" class="form-control"
@@ -437,7 +437,7 @@
           <div class="col-md-12">
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Name
-                <small class="text-danger">(required)</small>
+                <small class="text-danger">*</small>
               </label>
               <div class="col-md-9">
                 <input type="text" class="form-control"
@@ -449,7 +449,7 @@
             </div>
             <div class="form-group row">
               <label class="col-md-3 form-control-label">Type
-                <small class="text-danger">(required)</small>
+                <small class="text-danger">*</small>
               </label>
               <div class="col-md-9">
                 <angular2-multiselect #selectTypesEdit
@@ -478,7 +478,7 @@
             <ng-container *ngIf="connectorToEdit.type === 'sigfox-api'">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Login
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -490,7 +490,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Password
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="password" class="form-control"
@@ -506,7 +506,7 @@
             <ng-container *ngIf="connectorToEdit.type === 'nexmo-sms'">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">API Key
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -518,7 +518,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">API Secret
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="password" class="form-control"
@@ -530,7 +530,7 @@
               </div>
               <!--<div class="form-group row">
                 <label class="col-md-3 form-control-label">Source number
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <int-phone-prefix name="connectorToEdit.host" [(ngModel)]="connectorToEdit.host" required></int-phone-prefix>
@@ -538,7 +538,7 @@
               </div>-->
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Destination number
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <int-phone-prefix name="connectorToEdit.recipient" [(ngModel)]="connectorToEdit.recipient" required></int-phone-prefix>
@@ -550,7 +550,7 @@
             <ng-container *ngIf="connectorToEdit.type === 'webhook'">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">URL
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -562,7 +562,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Method
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <select class="form-control" size="1"
@@ -601,7 +601,7 @@
             <ng-container *ngIf="connectorToEdit.type === 'free-mobile'">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Login
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -613,7 +613,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Password
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="password" class="form-control"
@@ -651,7 +651,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Host
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -663,7 +663,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Port
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="number" class="form-control"
@@ -675,7 +675,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Topic
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -691,7 +691,7 @@
             <ng-container *ngIf="connectorToEdit.type === 'office-365'" class="form-group row">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Login
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -703,7 +703,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Password
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="password" class="form-control"
@@ -715,7 +715,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Recipient email
-                  <small class="text-danger">(required)</small>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <input type="email" class="form-control"
