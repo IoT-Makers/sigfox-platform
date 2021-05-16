@@ -33,8 +33,6 @@ export const routes: Routes = [
         loadChildren: () => import('./pages/overview/overview.module').then(m => m.OverviewModule)
       },
 
-      { path: 'demo', loadChildren: () => import('./pages/demo/demo.module').then(m => m.DemoModule) },
-
       {
         path: 'dashboard/:id',
         canActivate: [DashboardGuard],
@@ -133,20 +131,7 @@ export const routes: Routes = [
         loadChildren: () => import('./pages/messages/messages.module').then(m => m.MessagesModule)
       }
     ]
-  } /*
-  {
-    path: 'pages',
-    component: SimpleLayoutComponent,
-    data: {
-      title: 'Pages'
-    },
-    children: [
-      {
-        path: '',
-        loadChildren: './pages/pages.module#PagesModule',
-      }
-    ]
-  }*/,
+  },
   {
     path: 'not-found',
     loadChildren: () => import('./pages/not-found/not-found.module').then(m => m.NotFoundModule)
