@@ -1,0 +1,30 @@
+{
+  "input_account": "Sign In to your account",
+  "login": "Login",
+  "forgot_password": "Forgot password?",
+  "error": {
+    "invalid_login": "Invalid username or password.",
+    "intarnal_server": "Internal server error",
+    "not_match_password": "Passwords do not match.",
+    "conflict_email": "Email already taken.",
+    "invalid_format": "Invalid username or password."
+  },
+  "signup": "Create your account",
+  "register": "Create Account",
+  "hey": "Hey!",
+  "setting_username": "Don't forget you can set your username by clicking on your email on the top right corner.",
+  "profile": "My Profile",
+  "username": "Username",
+  "please_set_username": "Please set your username by clicking on the top right button below.",
+  "email": "Email",
+  "verified": "Verified",
+  "avatar": "Avatar",
+  "created": "Created",
+  "updated": "Updated",
+  "last_login": "Last login",
+  "password": "Password",
+  "delete_account": "Delete account",
+  "organizations": "Organizations",
+  "repeat_password": "Repeat password",
+  "change_password": "Change password"
+}

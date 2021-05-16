@@ -15,6 +15,7 @@ import * as moment from 'moment';
 import * as _ from 'lodash';
 import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
+import {TranslateService} from '@ngx-translate/core';
 
 declare var Zone: any;
 declare const google: any;
@@ -147,6 +148,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
               private messageApi: MessageApi,
               private appSettingApi: AppSettingApi,
               private connectorApi: ConnectorApi,
+              private translate: TranslateService,
               private route: ActivatedRoute) {
   }
 

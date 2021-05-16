@@ -4,6 +4,7 @@ import {DOCUMENT} from '@angular/common';
 import {Organization, User} from '../../../shared/sdk/models';
 import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
@@ -43,6 +44,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
               private userApi: UserApi,
               private organizationApi: OrganizationApi,
               toasterService: ToastrService,
+              private translate: TranslateService,
               private router: Router) {
     this.toasterService = toasterService;
   }

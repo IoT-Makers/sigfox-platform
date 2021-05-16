@@ -5,6 +5,7 @@ import { User } from './shared/sdk/models';
 import { RealtimeService } from './shared/realtime/realtime.service';
 import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2/gst';
 import { NavigationEnd, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -18,10 +19,17 @@ export class AppComponent implements OnInit {
     private userApi: UserApi,
     private rt: RealtimeService,
     private router: Router,
-    private angulartics: Angulartics2GoogleGlobalSiteTag
+    private angulartics: Angulartics2GoogleGlobalSiteTag,
+    translate: TranslateService,
   ) {
     setTheme('bs4'); // or 'bs3'
     //angulartics.startTracking();
+
+    translate.setDefaultLang('en');
+
+    const browserLang = translate.getBrowserLang();
+    translate.use(browserLang);
+
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) =>

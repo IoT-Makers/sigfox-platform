@@ -10,6 +10,7 @@ import {MomentModule} from 'ngx-moment';
 import {AlertModule} from 'ngx-bootstrap/alert';
 import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import {NgxGaugeModule} from 'ngx-gauge';
+import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -21,7 +22,10 @@ import {NgxGaugeModule} from 'ngx-gauge';
     MomentModule,
     TooltipModule.forRoot(),
     AgmCoreModule,
-    AlertModule.forRoot()
+    AlertModule.forRoot(),
+    TranslateModule.forChild({
+      extend: true
+    }),
   ],
   declarations: [
     OverviewComponent,

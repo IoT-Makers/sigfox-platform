@@ -4,13 +4,18 @@ import {LoginComponent} from './login.component';
 import {LoginRoutingModule} from './login-routing.module';
 import {FormsModule} from '@angular/forms';
 import {ToastrModule} from 'ngx-toastr';
+import {TranslateModule} from '@ngx-translate/core';
+
 
 @NgModule({
   imports: [
     LoginRoutingModule,
     CommonModule,
     FormsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    TranslateModule.forChild({
+      extend: true
+    }),
   ],
   declarations: [
     LoginComponent

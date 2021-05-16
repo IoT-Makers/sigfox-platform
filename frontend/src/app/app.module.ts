@@ -27,6 +27,13 @@ import { OrganizationGuard } from './_guards/organization.guard';
 import { RealtimeModule } from './shared/realtime/realtime.module';
 import { environment } from '../../environments/environment';
 import { Angulartics2Module } from 'angulartics2';
+import { HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -52,7 +59,15 @@ import { Angulartics2Module } from 'angulartics2';
       primusURL: environment.primusUrl || 'http://localhost:2333'
     }),
     Angulartics2Module.forRoot(),
-    TooltipModule.forRoot()
+    TooltipModule.forRoot(),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+      defaultLanguage: 'en',
+    }),
   ],
   declarations: [
     AppComponent,
