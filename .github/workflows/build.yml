@@ -17,14 +17,19 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-
     steps:
+      - name: Setup repo
+        uses: actions/checkout@v2
+
+      - name: Install dependency packages
+        run: yarn --frozen-lockfile
+
       - name: lint backend
         run: cd backend && yarn lint
 
   build-image:
+    needs: lint
     runs-on: ubuntu-latest
-    
     steps:
       - name: Setup repo
         uses: actions/checkout@v2
