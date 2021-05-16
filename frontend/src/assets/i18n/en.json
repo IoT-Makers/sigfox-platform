@@ -45,5 +45,10 @@
   "shared_devices": "Shared devices",
   "shared_messages": "Shared messages",
   "admin": "Admin",
-  "access_tokens": "Developer Access Tokens"
+  "access_tokens": "Developer Access Tokens",
+  "add_connector": "Add new connector",
+  "name": "Name",
+  "connector_name": "Connector name",
+  "type": "Type",
+  "description": "Description"
 }

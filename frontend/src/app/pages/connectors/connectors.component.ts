@@ -1,10 +1,11 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
-import {ToastrConfig, ToastrService} from 'ngx-toastr';
+import {ToastrService} from 'ngx-toastr';
 import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
 import {Subscription} from 'rxjs/Subscription';
-import {Connector, FireLoopRef, User} from '../../shared/sdk/models';
+import {Connector, User} from '../../shared/sdk/models';
 import {RealtimeService} from "../../shared/realtime/realtime.service";
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
@@ -47,7 +48,6 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast;
-  private toasterService: ToastrService;
   public toasterconfig = {
     tapToDismiss: true,
     timeout: 3000,
@@ -58,7 +58,8 @@ export class ConnectorsComponent implements OnInit, OnDestroy {
               private userApi: UserApi,
               private rt: RealtimeService,
               private connectorApi: ConnectorApi,
-              toasterService: ToastrService) {
+              private translate: TranslateService,
+              private toasterService: ToastrService) {
     this.toasterService = toasterService;
   }
 

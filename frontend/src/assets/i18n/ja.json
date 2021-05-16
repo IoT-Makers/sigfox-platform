@@ -45,5 +45,10 @@
   "shared_devices": "共有デバイス",
   "shared_messages": "共有メッセージ",
   "admin": "管理",
-  "access_tokens": "アクセストークン"
+  "access_tokens": "アクセストークン",
+  "add_connector": "コネクターを追加",
+  "name": "名前",
+  "connector_name": "コネクター名",
+  "type": "タイプ",
+  "description": "説明"
 }

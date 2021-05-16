@@ -5,7 +5,8 @@
         <div class="card-header">
           <div class="row">
             <div class="col-10">
-              <i class="fa fa-plug fa-lg text-connector"></i><strong> Connectors</strong>
+              <i class="fa fa-plug fa-lg text-connector mr-1"></i>
+              <strong translate>connectors</strong>
             </div>
             <div class="col-2">
               <button class="pull-right btn btn-sm btn-round btn-success" (click)="openAddConnectorModal()">
@@ -28,23 +29,28 @@
 
           <!-- Table -->
           <div *ngIf="connectors.length > 0" class="table-responsive">
-            <table class="table table-hover table-outline" [svData]="connectors" #sv="svDataTable" [svRowsOnPage]="10">
+            <table datatable class="table table-hover table-outline">
               <thead class="thead-inverse">
               <tr>
                 <th class="text-center">
-                  <sv-default-sorter by="name"><i class="fa fa-sort"></i> Name</sv-default-sorter>
+                  <i class="fa fa-sort"></i>
+                  <span>Name</span>
                 </th>
                 <th class="text-center">
-                  <sv-default-sorter by="type"><i class="fa fa-sort"></i> Type</sv-default-sorter>
+                  <i class="fa fa-sort"></i>
+                  <span>Type</span>
                 </th>
                 <th class="text-center">
-                  <sv-default-sorter by="updatedAt"><i class="fa fa-sort"></i> Updated</sv-default-sorter>
+                  <i class="fa fa-sort"></i>
+                  <span>Updated</span>
                 </th>
-                <th class="text-center">Action</th>
+                <th class="text-center">
+                  <span>Action</span>
+                </th>
               </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let connector of sv.data; let i = index">
+              <tr *ngFor="let connector of connectors; let i = index">
                 <td class="text-center text-connector">
                   <strong>{{connector.name}}</strong>
                 </td>
@@ -56,21 +62,22 @@
                 </td>
                 <td class="text-center">
                   <div class="btn-group-sm">
-                    <button class="btn btn-outline-primary btn-round" tooltip="Edit connector"
-                            (click)="openEditConnectorModal(connector)"><i class="fa fa-pencil fa-lg"></i></button>
-                    <button class="btn btn-outline-danger btn-round" tooltip="Delete connector"
-                            (click)="openConfirmConnectorModal(connector)"><i class="fa fa-trash fa-lg"></i></button>
+                    <button
+                      class="btn btn-outline-primary btn-round"
+                      tooltip="Edit connector"
+                      (click)="openEditConnectorModal(connector)">
+                      <i class="fa fa-pencil fa-lg"></i>
+                    </button>
+                    <button
+                      class="btn btn-outline-danger btn-round ml-1"
+                      tooltip="Delete connector"
+                      (click)="openConfirmConnectorModal(connector)">
+                      <i class="fa fa-trash fa-lg"></i>
+                    </button>
                   </div>
                 </td>
               </tr>
               </tbody>
-              <tfoot>
-              <tr>
-                <td colspan="4">
-                  <sv-bootstrap-paginator [rowsOnPageSet]="[5,10,15]"></sv-bootstrap-paginator>
-                </td>
-              </tr>
-              </tfoot>
             </table>
           </div>
           <!-- End Table -->
@@ -90,7 +97,7 @@
     <div class="modal-content">
       <form class="form-horizontal" (ngSubmit)="addConnector()" #addConnectorForm="ngForm">
         <div class="modal-header">
-          <h4 class="modal-title">Add new connector</h4>
+          <h4 class="modal-title" translate>add_connector</h4>
           <button type="button" class="close" (click)="addConnectorModal.hide()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -99,67 +106,82 @@
           <!-- Add Connector -->
           <div class="col-md-12">
             <div class="form-group row">
-              <label class="col-md-3 form-control-label">Name
-                <small class="text-danger">(required)</small>
+              <label class="col-md-3 form-control-label">
+                <span translate>name</span>
+                <small class="text-danger">*</small>
               </label>
               <div class="col-md-9">
-                <input type="text" class="form-control"
-                       name="connectorToAdd.name"
-                       placeholder="Connector name"
-                       [(ngModel)]="connectorToAdd.name">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="connectorToAdd.name"
+                  placeholder="{{ 'connector_name' | translate }}"
+                  [(ngModel)]="connectorToAdd.name">
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-3 form-control-label">Type
-                <small class="text-danger">(required)</small>
+              <label class="col-md-3 form-control-label">
+                <span translate>type</span>
+                <small class="text-danger">*</small>
               </label>
               <div class="col-md-9">
-                <angular2-multiselect #selectTypesAdd
-                                      name="selectTypes"
-                                      [data]="selectTypes"
-                                      [(ngModel)]="selectedTypes"
-                                      [settings]="selectOneSettings"
-                                      (onSelect)="connectorToAdd.type = $event.id; selectTypesAdd.isActive = false;"
-                                      (onDeSelect)="connectorToAdd.type = null"
-                                      required>
+                <angular2-multiselect
+                  #selectTypesAdd
+                  name="selectTypes"
+                  [data]="selectTypes"
+                  [(ngModel)]="selectedTypes"
+                  [settings]="selectOneSettings"
+                  (onSelect)="connectorToAdd.type = $event.id; selectTypesAdd.isActive = false;"
+                  (onDeSelect)="connectorToAdd.type = null"
+                  required>
                 </angular2-multiselect>
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-3 form-control-label">Description
-                <small>(optional)</small>
+              <label class="col-md-3 form-control-label">
+                <span translate>description</span>
               </label>
               <div class="col-md-9">
-                <input type="text" class="form-control"
-                       name="connectorToAdd.description"
-                       placeholder="Connector description"
-                       [(ngModel)]="connectorToAdd.description">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="connectorToAdd.description"
+                  placeholder="Connector description"
+                  [(ngModel)]="connectorToAdd.description" />
               </div>
             </div>
             <!-- Sigfox API -->
             <ng-container *ngIf="connectorToAdd.type === 'sigfox-api'">
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Login
-                  <small class="text-danger">(required)</small>
+                <label class="col-md-3 form-control-label">
+                  <span>Login</span>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
-                  <input type="text" class="form-control"
-                         name="connectorToAdd.login"
-                         placeholder="Connector login"
-                         [(ngModel)]="connectorToAdd.login"
-                         required>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="connectorToAdd.login"
+                    placeholder="Connector login"
+                    [(ngModel)]="connectorToAdd.login"
+                    autocomplete="off"
+                    required>
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Password
-                  <small class="text-danger">(required)</small>
+                <label class="col-md-3 form-control-label">
+                  <span>Password</span>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
-                  <input type="password" class="form-control"
-                         name="connectorToAdd.password"
-                         placeholder="Connector password"
-                         [(ngModel)]="connectorToAdd.password"
-                         required>
+                  <input
+                    type="password"
+                    class="form-control"
+                    name="connectorToAdd.password"
+                    placeholder="Connector password"
+                    [(ngModel)]="connectorToAdd.password"
+                    autocomplete="off"
+                    required>
                 </div>
               </div>
             </ng-container>
@@ -190,14 +212,6 @@
                          required>
                 </div>
               </div>
-              <!--<div class="form-group row">
-                <label class="col-md-3 form-control-label">Source number
-                  <small class="text-danger">(required)</small>
-                </label>
-                <div class="col-md-9">
-                  <int-phone-prefix name="connectorToAdd.host" [(ngModel)]="connectorToAdd.host" required></int-phone-prefix>
-                </div>
-              </div>-->
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">Destination number
                   <small class="text-danger">(required)</small>
@@ -211,19 +225,22 @@
             <!-- Webhook -->
             <ng-container *ngIf="connectorToAdd.type === 'webhook'">
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">URL
-                  <small class="text-danger">(required)</small>
+                <label class="col-md-3 form-control-label">
+                  <span>URL</span>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
-                  <input type="text" class="form-control"
+                  <input type="text"
+                         class="form-control"
                          name="connectorToAdd.url"
                          placeholder="Request URL"
                          [(ngModel)]="connectorToAdd.url">
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Method
-                  <small class="text-danger">(required)</small>
+                <label class="col-md-3 form-control-label">
+                  <span>Method</span>
+                  <small class="text-danger">*</small>
                 </label>
                 <div class="col-md-9">
                   <select class="form-control" size="1"
@@ -235,8 +252,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Login
-                  <small>(optional)</small>
+                <label class="col-md-3 form-control-label">
+                  <span>Login</span>
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control"
@@ -246,8 +263,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 form-control-label">Password
-                  <small>(optional)</small>
+                <label class="col-md-3 form-control-label">
+                  <span>Password</span>
                 </label>
                 <div class="col-md-9">
                   <input type="password" class="form-control"
