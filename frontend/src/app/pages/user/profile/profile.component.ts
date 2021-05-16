@@ -28,7 +28,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   public newPasswordConfirm;
 
   // Flag
-  public organizationsReady = false;
+  public organizationsReady: boolean = false;
 
   // Notifications
   private toast;
@@ -60,7 +60,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.userApi.getOrganizations(this.user.id, {include: 'Members'}).subscribe((organizations: Organization[]) => {
       this.organizations = organizations;
       this.organizationsReady = true;
-      console.log(organizations);
     });
   }
 

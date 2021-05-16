@@ -57,8 +57,8 @@
               "node_modules/chart.js/dist/Chart.min.js",
               "node_modules/ace-builds/src-min/ace.js",
               "node_modules/ace-builds/src-min/mode-javascript.js",
-              "node_modules/datatables.net/js/jquery.dataTables.js",
-              "node_modules/jquery/dist/jquery.js"
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/datatables.net/js/jquery.dataTables.js"
             ]
           },
           "configurations": {

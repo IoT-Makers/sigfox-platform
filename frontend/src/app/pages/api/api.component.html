@@ -1,62 +1,60 @@
 <div class="animated fadeIn">
-  <h3>Developer Access Tokens</h3>
-  <hr>
   <div class="row">
-    <div class="col-12">
-      <accordion>
-        <accordion-group>
-          <div accordion-heading>
-            Manage Tokens
-          </div>
-          <div class="card-block">
-            <p *ngIf="!user.devAccessTokens" class="text-danger">
-              Please create a developer access token first
-            </p>
-            <div *ngIf="user.devAccessTokens.length > 0" class="table-responsive">
-              <table class="table table-hover" [svData]="user.devAccessTokens" #sv="svDataTable" [svRowsOnPage]="10">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <strong translate>access_tokens</strong>
+          <button class="btn-round btn-outline-success btn-sm"
+            (click)="createDevAccessToken()">
+            <i class="fa fa-plus-circle"></i>
+          </button>
+        </div>
+        <div class="card-block">
+          <ng-container *ngIf="!userReady">
+            Loading access token...
+            <div class="sk-double-bounce">
+              <div class="sk-child sk-double-bounce1"></div>
+              <div class="sk-child sk-double-bounce2"></div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="userReady && !user.devAccessTokens.length">
+            No access token yet...
+          </ng-container>
+          <ng-container *ngIf="user.devAccessTokens.length > 0">
+            <div class="table-responsive">
+              <table datatable class="table table-hover">
                 <thead class="thead-inverse">
-                <tr>
-                  <th class="text-center">
-                    <sv-default-sorter by="created">Date</sv-default-sorter>
-                  </th>
-                  <th class="text-center">
-                    <sv-default-sorter by="id">ID</sv-default-sorter>
-                  </th>
-                  <th class="text-center">
-                    Remove
-                  </th>
-                </tr>
+                  <tr>
+                    <th class="text-center">Date</th>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">Remove</th>
+                  </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of sv.data">
-                  <td class="text-center">{{item.created | date:"yyyy/MM/dd HH:mm:ss"}}</td>
-                  <td class="text-center" click-copy (click)="toastClick()">{{item.id}}</td>
-                  <td class="text-center">
-                    <button type="button" class="btn btn-danger btn-round" (click)="openConfirmTokenModal(item)">
-                      <i class="fa fa-trash"></i>
-                    </button>
-                  </td>
-                </tr>
+                  <tr *ngFor="let item of user.devAccessTokens">
+                    <td class="text-center">
+                      <span>{{item.created | date:"yyyy/MM/dd HH:mm:ss"}}</span>
+                    </td>
+                    <td class="text-center" click-copy (click)="toastClick()">
+                      <span>{{item.id}}</span>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-danger btn-round" (click)="openConfirmTokenModal(item)">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
                 </tbody>
-                <tfoot>
-                <tr>
-                  <td colspan="4">
-                    <sv-bootstrap-paginator [rowsOnPageSet]="[5,10,15]"></sv-bootstrap-paginator>
-                  </td>
-                </tr>
-                </tfoot>
               </table>
             </div>
-          </div>
-          <button class="btn btn-success" (click)="createDevAccessToken()"><i class="fa fa-plus-circle"></i> Create new
-          </button>
-        </accordion-group>
-      </accordion>
+          </ng-container>
+        </div>
+      </div>
     </div>
   </div>
 
   <h3>Sigfox Backend Integration</h3>
-  <hr>
+  <hr />
   <div class="row">
     <div class="col-md-4">
       <accordion>

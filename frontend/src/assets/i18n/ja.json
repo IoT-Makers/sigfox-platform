@@ -44,5 +44,6 @@
   "shared_categories": "共有カテゴリー",
   "shared_devices": "共有デバイス",
   "shared_messages": "共有メッセージ",
-  "admin": "管理"
+  "admin": "管理",
+  "access_tokens": "アクセストークン"
 }

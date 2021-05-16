@@ -106,46 +106,52 @@
           <ng-container *ngIf="organizationsReady && !organizations.length">
             No organizations yet...
           </ng-container>
-
           <ng-container *ngIf="organizations.length > 0">
-            <!--Table-->
             <div class="table-responsive">
-              <table datatable class="table table-hover table-outline">
+              <table datatable class="table table-hover">
                 <thead class="thead-inverse">
-                <tr>
-                  <th class="text-center">Logo</th>
-                  <th class="text-center"><sv-default-sorter by="name"><i class="fa fa-sort"></i>Name</sv-default-sorter></th>
-                  <th class="text-center"><sv-default-sorter by="Members.length"><i class="fa fa-sort"></i>Users</sv-default-sorter></th>
-                  <th class="text-center">Action</th>
-                </tr>
+                  <tr>
+                    <th class="text-center">Logo</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Users</th>
+                    <th class="text-center">Action</th>
+                  </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let organization of organizations; let i = index">
-                  <td class="text-center">
-                    <div class="small text-center">
-                      <img src="{{organization.logo}}" height="50px" class="img-avatar">
-                    </div>
-                  </td>
-                  <td class="text-center">
-                    <a [routerLink]="['/organization/', organization.id]">
-                      <strong class="text-organization">{{organization.name}}</strong>
-                    </a>
-                  </td>
-                  <td class="text-center">
-                    <div class="font-weight-bold">
-                      {{organization.Members.length}}
-                    </div>
-                  </td>
+                  <tr *ngFor="let organization of organizations; let i = index">
+                    <td class="text-center">
+                      <div class="small text-center">
+                        <img src="{{organization.logo}}" height="50px" class="img-avatar">
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      <a [routerLink]="['/organization/', organization.id]">
+                        <strong class="text-organization">{{organization.name}}</strong>
+                      </a>
+                    </td>
+                    <td class="text-center">
+                      <div class="font-weight-bold">{{organization.Members.length}}</div>
+                    </td>
 
-                  <td class="text-center">
-                    <div class="btn-group-sm">
-                      <button *ngIf="organization.userId !== user.id" class="btn btn-outline-organization btn-round" tooltip="Leave organization"
-                              (click)="leaveOrganization(organization)"><i class="fa fa-sign-out fa-lg"></i></button>
-                      <button *ngIf="organization.userId === user.id" class="btn btn-outline-danger btn-round" tooltip="Delete organization"
-                              (click)="deleteOrganization(organization)"><i class="fa fa-trash fa-lg"></i></button>
-                    </div>
-                  </td>
-                </tr>
+                    <td class="text-center">
+                      <div class="btn-group-sm">
+                        <button
+                          *ngIf="organization.userId !== user.id"
+                          class="btn btn-outline-organization btn-round"
+                          tooltip="Leave organization"
+                          (click)="leaveOrganization(organization)">
+                          <i class="fa fa-sign-out fa-lg"></i>
+                        </button>
+                        <button
+                          *ngIf="organization.userId === user.id"
+                          class="btn btn-outline-danger btn-round"
+                          tooltip="Delete organization"
+                          (click)="deleteOrganization(organization)">
+                          <i class="fa fa-trash fa-lg"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -163,7 +169,7 @@
 
 
 <div bsModal #updatePasswordModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-     aria-labelledby="updatePasswordModal" aria-hidden="true">
+                                                                              aria-labelledby="updatePasswordModal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -178,21 +184,21 @@
             <label class="col-md-3 form-control-label">Current password</label>
             <div class="col-md-9">
               <input type="password" class="form-control" (keyup.enter)="updatePassword()"
-                     placeholder="Your current password" name="oldPassword" [(ngModel)]="oldPassword">
+                                     placeholder="Your current password" name="oldPassword" [(ngModel)]="oldPassword">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">New password</label>
             <div class="col-md-9">
               <input type="password" class="form-control" (keyup.enter)="updatePassword()" placeholder="New password"
-                     name="newPassword" [(ngModel)]="newPassword">
+                                                                                           name="newPassword" [(ngModel)]="newPassword">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">Retype new password</label>
             <div class="col-md-9">
               <input type="password" class="form-control" (keyup.enter)="updatePassword()"
-                     placeholder="Retype new password" name="newPasswordConfirm" [(ngModel)]="newPasswordConfirm">
+                                     placeholder="Retype new password" name="newPasswordConfirm" [(ngModel)]="newPasswordConfirm">
             </div>
           </div>
         </form>
@@ -207,7 +213,7 @@
 
 
 <div bsModal #updateUserModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-     aria-labelledby="updateUserModal" aria-hidden="true">
+                                                                          aria-labelledby="updateUserModal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -222,24 +228,24 @@
             <label class="col-md-3 form-control-label">Username</label>
             <div class="col-md-9">
               <input type="text" class="form-control" (keyup.enter)="updateUser()"
-                     placeholder="{{user.username ? user.username : 'How do you want us to call you?'}}"
-                     name="user.username" [(ngModel)]="user.username">
+                                 placeholder="{{user.username ? user.username : 'How do you want us to call you?'}}"
+                                 name="user.username" [(ngModel)]="user.username">
             </div>
           </div>
           <!--<div class="form-group row">
             <label class="col-md-3 form-control-label">Email</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.email}}"
-                     name="user.email" [(ngModel)]="user.email">
+            <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.email}}"
+            name="user.email" [(ngModel)]="user.email">
             </div>
-          </div>-->
-          <div class="form-group row">
-            <label class="col-md-3 form-control-label">Avatar</label>
-            <div class="col-md-9">
-              <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.avatar}}"
-                     name="user.avatar" [(ngModel)]="user.avatar">
+            </div>-->
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label">Avatar</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control" (keyup.enter)="updateUser()" placeholder="{{user.avatar}}"
+                                                                                     name="user.avatar" [(ngModel)]="user.avatar">
+              </div>
             </div>
-          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -251,7 +257,7 @@
 </div><!-- /.modal -->
 
 <div bsModal #deleteUserModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-     aria-labelledby="deleteUserModal" aria-hidden="true">
+                                                                          aria-labelledby="deleteUserModal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -263,7 +269,7 @@
       <div class="modal-body">
         <p>Are you sure you wish to delete your account?</p>
         <p class="font-weight-bold text-danger">This action is irreversible and will permanently delete all your data
-          (categories, devices, messages, connectors, ...).</p>
+        (categories, devices, messages, connectors, ...).</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="deleteUserModal.hide()">Close</button>

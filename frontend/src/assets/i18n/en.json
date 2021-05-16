@@ -44,5 +44,6 @@
   "shared_categories": "Shared categories",
   "shared_devices": "Shared devices",
   "shared_messages": "Shared messages",
-  "admin": "Admin"
+  "admin": "Admin",
+  "access_tokens": "Developer Access Tokens"
 }
