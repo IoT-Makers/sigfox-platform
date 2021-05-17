@@ -111,6 +111,7 @@ A short wiki can be found [here](https://github.com/IoT-Makers/sigfox-platform/w
     <td align="center"><a href="https://twitter.com/nestorayuso"><img src="https://avatars2.githubusercontent.com/u/15124932?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nestor Ayuso</b></sub></a><br /><a href="https://github.com/IoT-Makers/sigfox-platform/commits?author=nestorayuso" title="Documentation">📖</a></td>
     <td align="center"><a href="http://www.splendido.fr"><img src="https://avatars1.githubusercontent.com/u/11613206?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Florian Splendido</b></sub></a><br /><a href="#platform-splendf" title="Packaging/porting to new platform">📦</a></td>
     <td align="center"><a href="https://github.com/honeytrap15"><img src="https://avatars.githubusercontent.com/u/5158471?v=4?s=100" width="100px;" alt=""/><br /><sub><b>takegami</b></sub></a><br /><a href="https://github.com/IoT-Makers/sigfox-platform/commits?author=honeytrap15" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.inn-farm.co.jp/"><img src="https://avatars.githubusercontent.com/u/84294566?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Innovation Farm, Inc.</b></sub></a><br /><a href="https://github.com/IoT-Makers/sigfox-platform/commits?author=Innovation-Farm" title="Code">💻</a></td>
   </tr>
 </table>
 
