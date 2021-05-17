@@ -11,6 +11,7 @@ import {ToastrModule} from 'ngx-toastr';
 import {AngularMultiSelectModule} from 'angular2-multiselect-dropdown';
 import {MomentModule} from 'ngx-moment';
 import {InternationalPhoneModule} from "ng4-intl-phone";
+import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -23,12 +24,16 @@ import {InternationalPhoneModule} from "ng4-intl-phone";
     TooltipModule.forRoot(),
     AngularMultiSelectModule,
     MomentModule,
-    InternationalPhoneModule
+    InternationalPhoneModule,
+    TranslateModule.forChild({
+      extend: true
+    }),
   ],
   declarations: [
     ConnectorsComponent,
     DataFilterPipe
   ]
 })
+
 export class ConnectorsModule {
 }

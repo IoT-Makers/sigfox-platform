@@ -11,6 +11,8 @@ import {FormsModule} from '@angular/forms';
 import {MomentModule} from 'ngx-moment';
 import {ClickCopyDirective} from './click-copy.directive';
 import {AngularMultiSelectModule} from "angular2-multiselect-dropdown";
+import {TranslateModule} from '@ngx-translate/core';
+
 
 @NgModule({
   imports: [
@@ -23,7 +25,10 @@ import {AngularMultiSelectModule} from "angular2-multiselect-dropdown";
     AngularMultiSelectModule,
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
-    DataTablesModule
+    DataTablesModule,
+    TranslateModule.forChild({
+      extend: true
+    }),
   ],
   declarations: [
     ApiComponent,

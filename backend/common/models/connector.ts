@@ -65,7 +65,10 @@ class Connector {
       const password = ctx.instance.password;
       // Encrypt the password to be stored
       if (password) ctx.instance.password = encrypt(password);
-      if (type === "sigfox-api") return this.testConnection(type, login, password, next);
+      if (type === "sigfox-api") {
+        console.log("create sigfox connector");
+        return this.testConnection(type, login, password, next);
+      }
       next();
     } else if (ctx.data) { // Update
       const type = ctx.data.type;
@@ -218,8 +221,7 @@ class Connector {
   // Test connector connection
   public testConnection(type: string, login: string, password: string, next: Function): void {
     if (type === "sigfox-api") {
-      const credentials = new Buffer(login + ":" + password).toString("base64");
-
+      const credentials = Buffer.from(login + ":" + password).toString("base64");
       this.model.app.dataSources.sigfox.testConnection(credentials).then((result: any) => {
         next(null, result);
       }).catch((err: any) => {

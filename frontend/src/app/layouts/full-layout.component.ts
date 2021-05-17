@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Dashboard, Organization, Role, User} from '../shared/sdk/models';
+import {TranslateService} from '@ngx-translate/core';
 import {
   AppSettingApi,
   BeaconApi,
@@ -77,6 +78,7 @@ export class FullLayoutComponent implements OnInit, OnDestroy {
               private beaconApi: BeaconApi,
               private dashboardApi: DashboardApi,
               private route: ActivatedRoute,
+              private translate: TranslateService,
               private router: Router) {
 
     /*this.router.routeReuseStrategy.shouldReuseRoute = function () {

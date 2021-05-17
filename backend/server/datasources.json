@@ -36,7 +36,7 @@
       {
         "template": {
           "method": "GET",
-          "url": "https://backend.sigfox.com/api/devices/{!deviceId:string}/messages?oob=true",
+          "url": "https:/api.sigfox.com/v2/devices/{!deviceId:string}/messages?oob=true",
           "headers": {
             "Authorization": "Basic {!credentials:string}"
           },
@@ -53,7 +53,7 @@
       {
         "template": {
           "method": "POST",
-          "url": "https://backend.sigfox.com/api/devicetypes/{!devicetypeId:string}/callbacks/new",
+          "url": "https://api.sigfox.com/v2/device-types/{!devicetypeId:string}/callbacks",
           "headers": {
             "Authorization": "Basic {!credentials:string}",
             "Content-Type": "application/json"
@@ -67,7 +67,7 @@
       {
         "template": {
           "method": "GET",
-          "url": "https://backend.sigfox.com/api/devicetypes",
+          "url": "https://api.sigfox.com/v2/device-types",
           "headers": {
             "Authorization": "Basic {credentials:string}"
           }

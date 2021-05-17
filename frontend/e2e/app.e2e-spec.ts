@@ -10,6 +10,7 @@ import { RegisterPage } from './po/register.po';
 
 const email: string = 'testuser@test.local';
 const password: string = 'testpass';
+const organization: string = 'test organization';
 
 
 browser.waitForAngularEnabled(false);
@@ -41,7 +42,7 @@ describe('Register', () => {
     browser.sleep(500);
 
     browser.getCurrentUrl().then(url => {
-      expect(url).toEqual("http://localhost:4201/#/");
+      expect(url).toEqual("http://localhost:4201/#/login");
     });
   });
 
@@ -157,9 +158,25 @@ describe('Overview', () => {
 
 });
 
+describe('Organizations', () => {
+  const header: Header = new Header();
+
+  it('be able to create organization', async() => {
+    // FIXME: wait for hide toast.
+    browser.sleep(5000);
+
+    header.createOrganization(organization, "https://www.shareicon.net/data/128x128/2017/06/21/887415_group_512x512.png");
+
+    browser.sleep(500);
+    browser.getCurrentUrl().then(url => {
+      expect(url).toContain("http://localhost:4201/#/organization/");
+    });
+  })
+
+});
+
 describe('Profile', () => {
   const page: ProfilePage = new ProfilePage();
-  const header: Header = new Header();
 
   it('be able to open profile page', async() => {
     page.open();
@@ -167,6 +184,21 @@ describe('Profile', () => {
 
     browser.getCurrentUrl().then(url => {
       expect(url).toEqual("http://localhost:4201/#/profile");
+    });
+  });
+
+  it('show organizations', () => {
+    page.getOrganizations().then(items => {
+      expect(items.length).toEqual(1);
+      expect(items[0].getText()).toEqual(organization);
+    });
+  });
+
+  it('be able to delete organization', () => {
+    page.deleteOrganization();
+    browser.sleep(1000);
+    page.getOrganizations().then(items => {
+      expect(items.length).toEqual(0);
     });
   });
 

@@ -1,4 +1,3 @@
-'use strict';
 const fs = require('fs');
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -14,24 +13,24 @@ if (MONGO_URL) {
   };
 } else console.error('Env MONGO_URL not set');
 
-let minio_access;
-let minio_secret;
+let minioAccess = null;
+let minioSecret = null;
 
 try {
   // docker secret
-  minio_access = fs
+  minioAccess = fs
     .readFileSync('/run/secrets/minio_access_key', 'utf8')
     .trim();
-  minio_secret = fs
-    .readFileSync('/run/secrets/minio_secret_key', 'utf8')
+  minioSecret = fs
+    .readFileSync('/run/secrets/minio_aecret_key', 'utf8')
     .trim();
 } catch (e) {
   // for local dev
-  minio_access = process.env.MINIO_ACCESS_KEY;
-  minio_secret = process.env.MINIO_SECRET_KEY;
+  minioAccess = process.env.MINIO_ACCESS_KEY;
+  minioSecret = process.env.MINIO_SECRET_KEY;
 }
 
-if (!(minio_access && minio_secret))
+if (!(minioAccess && minioSecret))
   console.warn('Env minio_access_key or minio_secret_key not set');
 
 const subdomain = process.env.MONGO_URL.split('/').pop();
@@ -41,8 +40,8 @@ let minio = {
   name: 'minio',
   connector: 'loopback-component-storage',
   provider: 'amazon',
-  key: minio_secret || '',
-  keyId: minio_access || '',
+  key: minioSecret || '',
+  keyId: minioAccess || '',
   forcePathBucket: true,
   endpoint: baseUrl.replace(subdomain, 'minio'),
   bucket: 'public',

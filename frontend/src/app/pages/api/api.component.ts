@@ -2,6 +2,7 @@ import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AccessToken, User} from '../../shared/sdk/models';
 import {ToastrConfig, ToastrService} from 'ngx-toastr';
 import {ConnectorApi, UserApi} from '../../shared/sdk/services/custom';
+import {TranslateService} from '@ngx-translate/core';
 import {DOCUMENT} from '@angular/common';
 
 @Component({
@@ -12,6 +13,7 @@ import {DOCUMENT} from '@angular/common';
 export class ApiComponent implements OnInit, OnDestroy {
 
   public user: User;
+  public userReady: boolean = false;
 
   @ViewChild('confirmTokenModal') confirmTokenModal: any;
 
@@ -30,7 +32,6 @@ export class ApiComponent implements OnInit, OnDestroy {
 
   // Notifications
   private toast;
-  private toasterService: ToastrService;
   public toasterconfig = {
     tapToDismiss: true,
     timeout: 3000,
@@ -40,8 +41,8 @@ export class ApiComponent implements OnInit, OnDestroy {
   constructor(@Inject(DOCUMENT) private document: any,
               private userApi: UserApi,
               private connectorApi: ConnectorApi,
-              toasterService: ToastrService) {
-    this.toasterService = toasterService;
+              private translate: TranslateService,
+              private toasterService: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -49,9 +50,12 @@ export class ApiComponent implements OnInit, OnDestroy {
     // Get the logged in User object (avatar, email, ...)
     this.user = this.userApi.getCachedCurrent();
     // Fix
-    if (!this.user.devAccessTokens) this.user.devAccessTokens = [];
+    if (!this.user.devAccessTokens) {
+      this.user.devAccessTokens = [];
+    }
     this.userApi.getDevAccessTokens(this.user.id, {where: {ttl: -1}}).subscribe((devTokens: any[]) => {
       this.user.devAccessTokens = devTokens;
+      this.userReady = true;
     });
     this.callbackURL = 'https://api.' + this.document.location.hostname + '/api';
 
