@@ -21,11 +21,8 @@ jobs:
       - name: Setup repo
         uses: actions/checkout@v2
 
-      - name: Install dependency packages
-        run: yarn --frozen-lockfile
-
       - name: lint backend
-        run: cd backend && yarn lint
+        run: cd backend && yarn --frozen-lockfile && yarn lint
 
   build-image:
     needs: lint
