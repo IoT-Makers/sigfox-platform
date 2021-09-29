@@ -60,7 +60,7 @@
     "d3": "^3.5.17",
     "d3-geo": "^1.11.1",
     "d3-geo-projection": "^2.4.1",
-    "datatables.net": "^1.10.20",
+    "datatables.net": "^1.11.3",
     "datatables.net-dt": "^1.10.24",
     "dotenv": "^6.1.0",
     "dragula": "^3.7.2",
