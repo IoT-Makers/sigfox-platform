@@ -81,7 +81,7 @@
     "leaflet-draw": "0.4",
     "leaflet.fullscreen": "^1.4.4",
     "loopback-filters": "^1.0.0",
-    "moment": "^2.22.2",
+    "moment": "^2.29.2",
     "ng-angular9-datatable": "^0.9.13",
     "ng2-ace-editor": "^0.3.4",
     "ng2-charts": "2.3",
