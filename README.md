@@ -8,7 +8,7 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors)
 ![GitHub](https://img.shields.io/github/license/IoT-Makers/sigfox-platform.svg)
 
-**Disclaimer: Project under active development, use it at your own risk!**
+**Disclaimer: This project is no longer developed, use it at your own risk!**
 
 ## About this project
 This is a cloud platform to manage Sigfox devices and visualize messages.
