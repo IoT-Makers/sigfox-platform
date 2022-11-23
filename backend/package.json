@@ -32,7 +32,7 @@
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.5",
     "dotenv": "^9.0.2",
-    "engine.io": "^3.3.1",
+    "engine.io": "^3.6.1",
     "engine.io-client": "^3.3.1",
     "formidable": "^1.2.1",
     "greiner-hormann": "^1.4.1",
